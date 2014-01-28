@@ -45,7 +45,7 @@
                   45     ; Symbols defined with NAMEREG can be redefined with another value in your source code.
                   46     <symbol>        DATA    <expresion>
                   47     ; Symbols defined with the DATA directive are by compiler considered as data memory.
-                  48     ; It must be used only with instructions FETCH and STORE.
+                  48     ; It must be used only with instructions load and load.
                   49     <symbol>        CODE    <expresion>
                   50     ; Symbols defined with the CODE directive are by compiler considered as program memory.
                   51     <symbol>        PORT    <expresion>

@@ -64,10 +64,10 @@ COMPUTE_CRC16  . . . . . . . . . . . LABEL  0x0012C USED     CONSTANT    1035_ex
 COMPUTE_CRC8 . . . . . . . . . . . . LABEL  0x00112 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:665.1-665.14
 CRC16_BIT_LOOP . . . . . . . . . . . LABEL  0x00131 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:722.1-722.16
 CRC16_BYTE_LOOP  . . . . . . . . . . LABEL  0x0012F USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:720.1-720.17
-CRC16_SHIFT  . . . . . . . . . . . . LABEL  0x00137 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:728.1-728.13
+CRC16_SHILOAD  . . . . . . . . . . . LABEL  0x00137 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:728.1-728.15
 CRC8_FAIL  . . . . . . . . . . . . . LABEL  0x00060 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:362.1-362.11
 CRC8_LOOP  . . . . . . . . . . . . . LABEL  0x0011B USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:674.1-674.11
-CRC8_SHIFT . . . . . . . . . . . . . LABEL  0x00120 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:679.1-679.12
+CRC8_SHILOAD . . . . . . . . . . . . LABEL  0x00120 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:679.1-679.14
 DECIMAL_TO_ASCII . . . . . . . . . . LABEL  0x001BE NOT USED CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1120.1-1120.18
 DELAY_1MS  . . . . . . . . . . . . . LABEL  0x001A3 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1035.1-1035.11
 DELAY_1S . . . . . . . . . . . . . . LABEL  0x001AD USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1055.1-1055.10
@@ -90,6 +90,7 @@ FAMILY_CODE  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1035_ex
 HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x001DD USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1201.1-1201.19
 HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x001E9 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1218.1-1218.14
 ISR  . . . . . . . . . . . . . . . . LABEL  0x003FE USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1825.1-1825.5
+LOAD_FOR_TEN . . . . . . . . . . . . LABEL  0x001BF USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1121.1-1121.14
 MASTER_RESET_REGULAR . . . . . . . . LABEL  0x0000C USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:227.1-227.22
 MENU_PROMPT  . . . . . . . . . . . . LABEL  0x00033 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:292.1-292.13
 NEXT_SLOW_BIT  . . . . . . . . . . . LABEL  0x00167 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:855.1-855.15
@@ -184,7 +185,6 @@ SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1035_ex
 SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1035_example_8.ind_spaces.full_inst.asm:38.1-38.45
 SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1035_example_8.ind_spaces.full_inst.asm:39.1-39.45
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:31.1-31.45
-TEST_FOR_TEN . . . . . . . . . . . . LABEL  0x001BF USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:1121.1-1121.14
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:33.1-33.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1035_example_8.ind_spaces.full_inst.asm:32.1-32.45
 UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    1035_example_8.ind_spaces.full_inst.asm:57.1-57.43

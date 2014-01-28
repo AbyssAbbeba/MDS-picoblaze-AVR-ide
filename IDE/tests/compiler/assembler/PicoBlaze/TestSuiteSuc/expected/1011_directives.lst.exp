@@ -1,4 +1,4 @@
-                   1     ; test case for directives
+                   1     ; load case for directives
                    2     device kcpsm1
                    3
                    4
@@ -158,7 +158,7 @@ W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 b
   000AA          132     i11     PORT     AAh
   00015          133     i12     PORT     0x04 | 0x11
                  134
-                 135     ; expresions test
+                 135     ; expresions load
   00005          136     ss1     EQU     +5
   3FFFB          137     ss2     EQU     -5
 R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.

@@ -74,8 +74,8 @@ DELAY_20MS . . . . . . . . . . . . . LABEL  0x001A5 USED     CONSTANT    1041_ex
 DELAY_40US . . . . . . . . . . . . . LABEL  0x0019B USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:957.1-957.12
 END_PROGRAM_MCS  . . . . . . . . . . LABEL  0x000A5 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:435.1-435.17
 ERASE_COMMAND  . . . . . . . . . . . LABEL  0x00033 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:274.1-274.15
+ERASE_LOAD_SECTOR  . . . . . . . . . LABEL  0x000F1 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:578.1-578.19
 ERASE_SPI_SECTOR . . . . . . . . . . LABEL  0x0015F USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:843.1-843.18
-ERASE_TEST_SECTOR  . . . . . . . . . LABEL  0x000F1 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:578.1-578.19
 HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x001E6 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1159.1-1159.19
 HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x001F2 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1176.1-1176.14
 ID_COMMAND . . . . . . . . . . . . . LABEL  0x00022 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:252.1-252.12
@@ -84,12 +84,13 @@ ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1041_ex
 ISR_SEND_CHARACTER . . . . . . . . . LABEL  0x003FC USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1665.1-1665.20
 ISR_SEND_XON . . . . . . . . . . . . LABEL  0x003FB USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1664.1-1664.14
 LINE_START . . . . . . . . . . . . . NUMBER 0x0002B USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:195.1-195.45
+LOAD_FOR_TEN . . . . . . . . . . . . LABEL  0x001C8 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1079.1-1079.14
 MCS_ADDRESS  . . . . . . . . . . . . LABEL  0x000B9 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:492.1-492.13
 MCS_ADDRESS_BOUNDARY . . . . . . . . LABEL  0x000A1 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:431.1-431.22
 MEMORY_BLANK_FAIL  . . . . . . . . . LABEL  0x000FF USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:592.1-592.19
 MEMORY_BLANK_RESULT  . . . . . . . . LABEL  0x00100 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:593.1-593.21
-MEMORY_COMMS_TEST  . . . . . . . . . LABEL  0x00102 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:609.1-609.19
-MEMORY_TEST  . . . . . . . . . . . . LABEL  0x000DB NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:550.1-550.13
+MEMORY_COMMS_LOAD  . . . . . . . . . LABEL  0x00102 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:609.1-609.19
+MEMORY_LOAD  . . . . . . . . . . . . LABEL  0x000DB NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:550.1-550.13
 MEMORY_VERIFY_FAIL . . . . . . . . . LABEL  0x000EE USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:572.1-572.20
 MEMORY_VERIFY_RESULT . . . . . . . . LABEL  0x000EF USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:573.1-573.22
 NEW_LOW_ADDRESS  . . . . . . . . . . LABEL  0x000C4 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:503.1-503.17
@@ -182,7 +183,6 @@ SPI_SDO  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1041_ex
 SPI_SPARE_CONTROL  . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:41.1-41.45
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:25.1-25.45
 SWAP_BITS  . . . . . . . . . . . . . LABEL  0x0008E USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:412.1-412.11
-TEST_FOR_TEN . . . . . . . . . . . . LABEL  0x001C8 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1079.1-1079.14
 TX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:26.1-26.45
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:28.1-28.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1041_example_14.ind_spaces.full_inst.asm:27.1-27.45
@@ -192,7 +192,7 @@ UART_WRITE . . . . . . . . . . . . . LABEL  0x001C5 USED     CONSTANT    1041_ex
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:35.1-35.45
 UPPER_CASE . . . . . . . . . . . . . LABEL  0x001CE USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:1097.1-1097.12
 VERIFY_BLANK_PAGE  . . . . . . . . . LABEL  0x000F9 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:586.1-586.19
-VERIFY_TEST_PAGE . . . . . . . . . . LABEL  0x000E8 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:566.1-566.18
+VERIFY_LOAD_PAGE . . . . . . . . . . LABEL  0x000E8 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:566.1-566.18
 WAIT_1MS . . . . . . . . . . . . . . LABEL  0x001A1 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:969.1-969.10
 WAIT_1S  . . . . . . . . . . . . . . LABEL  0x001AB USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:991.1-991.9
 WAIT_1US . . . . . . . . . . . . . . LABEL  0x00198 USED     CONSTANT    1041_example_14.ind_spaces.full_inst.asm:949.1-949.10

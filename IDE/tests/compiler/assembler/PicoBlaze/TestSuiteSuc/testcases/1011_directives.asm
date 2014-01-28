@@ -1,4 +1,4 @@
-; test case for directives
+; load case for directives
 device kcpsm1
 
 
@@ -132,7 +132,7 @@ i10     PORT     11h
 i11     PORT     AAh
 i12     PORT     0x04 | 0x11
 
-; expresions test
+; expresions load
 ss1     EQU     +5
 ss2     EQU     -5
 ss3     EQU     +5h

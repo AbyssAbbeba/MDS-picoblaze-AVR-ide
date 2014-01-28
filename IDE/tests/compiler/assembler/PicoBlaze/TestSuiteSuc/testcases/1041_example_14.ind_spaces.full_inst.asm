@@ -63,7 +63,7 @@ uart_data               REG             sf                      ;used to pass da
 ;Useful data constants
 ;
 ;
-;Constant to define a software delay of 1us. This must be adjusted to reflect the
+;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
 ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
 ;calculation highly predictable. The '6' in the following equation even allows for
 ;'CALL delay_1us' instruction in the initiating code.
@@ -180,17 +180,17 @@ spi_control_status      EQU             0x04                    ;SPI status sign
 ;
 ;
 ;
-;Store up to one line of an MCS file as bytes
+;load up to one line of an MCS file as bytes
 ;A typical data line consists of:-
-;:     Start character which is not stored
+;:     Start character which is not loadd
 ;10    Number of data bytes included (16 in this case)
 ;aaaa  Lower 16-bits of the storage address
 ;00    Record type (data in this case)
 ;dddd...   Data bytes (typically 16 which is the maximum)
 ;cc    Checksum
-;CR/LF Line will end in carriage return and/or line feed which is not stored.
+;CR/LF Line will end in carriage return and/or line feed which is not loadd.
 ;
-;So a total of 21 could be stored before processing.
+;So a total of 21 could be loadd before processing.
 ;
 line_start              EQU             0x2b                    ;21 bytes until end of memory
 ;
@@ -214,17 +214,17 @@ prompt:                 CALL            send_cr
                         LOAD            uart_data, #character_greater_than ;prompt for input
                         CALL            send_to_uart
                         CALL            read_upper_case
-                        COMPARE         s0, #_character_e       ;command test
+                        load         s0, #_character_e       ;command load
                         JUMP            z, erase_command
-                        COMPARE         s0, #_character_s       ;command test
+                        load         s0, #_character_s       ;command load
                         JUMP            z, sector_erase_command
-                        COMPARE         s0, #_character_p       ;command test
+                        load         s0, #_character_p       ;command load
                         JUMP            z, program_command
-                        COMPARE         s0, #_character_r       ;command test
+                        load         s0, #_character_r       ;command load
                         JUMP            z, read_command
-                        COMPARE         s0, #_character_i       ;command test
+                        load         s0, #_character_i       ;command load
                         JUMP            z, id_command
-                        COMPARE         s0, #_character_h       ;command test
+                        load         s0, #_character_h       ;command load
                         JUMP            z, welcome_start
                         CALL            send_cr                 ;no valid command input
                         LOAD            uart_data, #character_question ;display ???
@@ -275,7 +275,7 @@ erase_command:          CALL            send_cr
                         CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
                         CALL            read_from_uart          ;read command character from UART
                         CALL            send_to_uart            ;echo input
-                        COMPARE         uart_data, #_character_y
+                        load         uart_data, #_character_y
                         JUMP            nz, abort_erase
                         CALL            send_cr
                         CALL            send_erase_in_progress
@@ -297,7 +297,7 @@ sector_erase_command:   CALL            send_cr
                         CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
                         CALL            read_from_uart          ;read command character from UART
                         CALL            send_to_uart            ;echo input
-                        COMPARE         uart_data, #_character_y
+                        load         uart_data, #_character_y
                         JUMP            nz, abort_erase
                         CALL            send_cr
                         CALL            send_erase_in_progress
@@ -333,7 +333,7 @@ program_command:        CALL            send_cr
 read_command:           CALL            send_page_address       ;obtain 24-bit address
                         CALL            obtain_8bits
                         JUMP            c, read_command         ;bad input address
-                        COMPARE         s0, #0x20               ;test for address greater than 1FFFFF
+                        load         s0, #0x20               ;load for address greater than 1FFFFF
                         JUMP            nc, read_command        ;value too big
                         LOAD            s9, s0
                         CALL            obtain_8bits
@@ -364,7 +364,7 @@ obtain_8bits:           CALL            read_upper_case         ;obtain one byte
 ;
 ;One important factor of programming the SPI FLASH for use as configuration
 ;memory is that the bits within each byte must be in reverse order. This
-;is because an SPI device outputs data MSB first compared with a Xilinx
+;is because an SPI device outputs data MSB first loadd with a Xilinx
 ;serial PROM which outputs LSB first. Therefore this routine will swap
 ;the bits of each byte provided by the MCS file before programming.
 ;
@@ -378,36 +378,36 @@ obtain_8bits:           CALL            read_upper_case         ;obtain one byte
 program_mcs:            LOAD            sa, #0x00               ;page is closed
 next_prog_line:         CALL            read_mcs_line           ;read line
                         CALL            mcs_address             ;find start address and record type
-                        COMPARE         sb, #0x01               ;test for end record
+                        load         sb, #0x01               ;load for end record
                         JUMP            z, end_program_mcs
                         CALL            send_hex_3bytes         ;send address for other lines
                         CALL            send_cr
-                        COMPARE         sb, #0x04               ;test for extended address record
+                        load         sb, #0x04               ;load for extended address record
                         JUMP            z, mcs_address_boundary
 ;
 ;Assume data record type 00 now and program SPI page
 ;
-                        SUB             se, #0x01               ;location of checksum just after last stored data byte
+                        SUB             se, #0x01               ;location of checksum just aloader last loadd data byte
                         LOAD            sd, #line_start         ;Point to first data byte
                         ADD             sd, #0x04
-                        COMPARE         sa, #0x00               ;check if page is closed
+                        load         sa, #0x00               ;check if page is closed
                         JUMP            z, program_byte         ;jump if page needs to be opened
-                        FETCH           s2, page_address_h      ;check new address is sequential
-                        COMPARE         s2, s9
+                        load           s2, page_address_h      ;check new address is sequential
+                        load         s2, s9
                         JUMP            nz, addr_out_of_sequence
-                        FETCH           s2, page_address_m      ;check new address is sequential
-                        COMPARE         s2, s8
+                        load           s2, page_address_m      ;check new address is sequential
+                        load         s2, s8
                         JUMP            nz, addr_out_of_sequence
-                        FETCH           s2, page_address_l      ;check new address is sequential
-                        COMPARE         s2, s7
+                        load           s2, page_address_l      ;check new address is sequential
+                        load         s2, s7
                         JUMP            z, program_byte         ;continue with open page
 addr_out_of_sequence:   CALL            close_prog_page_spi     ;close page because address out of sequence
                         LOAD            sa, #0x00               ;page is now closed
-program_byte:           COMPARE         sa, #0x00               ;check if page is closed
+program_byte:           load         sa, #0x00               ;check if page is closed
                         JUMP            nz, page_is_open        ;jump is page already open
                         CALL            open_prog_page_spi      ;open page with address [s9,s8,s7]
                         LOAD            sa, #0x01               ;page is open
-page_is_open:           FETCH           s1, @sd                 ;fetch data byte
+page_is_open:           load           s1, sd                 ;load data byte
                         LOAD            s0, #0x08               ;reverse order of bits
 swap_bits:              SR0             s1
                         SLA             s2
@@ -417,22 +417,22 @@ swap_bits:              SR0             s1
                         ADD             s7, #0x01               ;increment address to keep track
                         ADDCY           s8, #0x00
                         ADDCY           s9, #0x00
-                        COMPARE         s7, #0x00               ;test if crossing page boundary FF to 00
+                        load         s7, #0x00               ;load if crossing page boundary FF to 00
                         JUMP            nz, byte_programmed
                         CALL            close_prog_page_spi
                         LOAD            sa, #0x00               ;page is now closed
 byte_programmed:        ADD             sd, #0x01               ;move to next byte
-                        COMPARE         sd, se                  ;check for last on line
-                        JUMP            nz, program_byte        ;fetch next byte to program
-                        STORE           s9, page_address_h      ;remember next address in sequence
-                        STORE           s8, page_address_m
-                        STORE           s7, page_address_l
+                        load         sd, se                  ;check for last on line
+                        JUMP            nz, program_byte        ;load next byte to program
+                        load           s9, page_address_h      ;remember next address in sequence
+                        load           s8, page_address_m
+                        load           s7, page_address_l
                         JUMP            next_prog_line          ;read next line for programming
-mcs_address_boundary:   COMPARE         sa, #0x00               ;check if page needs to be closed
+mcs_address_boundary:   load         sa, #0x00               ;check if page needs to be closed
                         JUMP            z, next_prog_line
                         CALL            close_prog_page_spi
                         JUMP            program_mcs
-end_program_mcs:        COMPARE         sa, #0x00               ;check if page needs to be closed
+end_program_mcs:        load         sa, #0x00               ;check if page needs to be closed
                         RETURN          z
                         CALL            close_prog_page_spi
                         RETURN
@@ -447,7 +447,7 @@ end_program_mcs:        COMPARE         sa, #0x00               ;check if page n
 ;will remove any additional CR or LF characters.
 ;
 ;It then reads each subsequent pair of ASCII characters, converts them to true hex in the
-;range 00 to FF and stores them in scratch pad memory.
+;range 00 to FF and loads them in scratch pad memory.
 ;
 ;The end of the line is determined by either a CR or LF character.
 ;
@@ -456,18 +456,18 @@ end_program_mcs:        COMPARE         sa, #0x00               ;check if page n
 ;
 read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
 wait_mcs_line_start:    CALL            read_from_uart          ;read character
-                        COMPARE         uart_data, #character_colon ;test for start character
+                        load         uart_data, #character_colon ;load for start character
                         JUMP            nz, wait_mcs_line_start
 read_mcs_byte:          CALL            read_from_uart          ;read character
-                        COMPARE         uart_data, #character_cr ;test for end of line
+                        load         uart_data, #character_cr ;load for end of line
                         RETURN          z
-                        COMPARE         uart_data, #character_lf ;test for end of line
+                        load         uart_data, #character_lf ;load for end of line
                         RETURN          z
                         LOAD            s3, uart_data           ;upper nibble character
                         CALL            read_from_uart          ;read character
                         LOAD            s2, uart_data           ;lower nibble character
                         CALL            ascii_byte_to_hex       ;convert to true hex value
-                        STORE           s0, @se                 ;write to SPM
+                        load           s0, #se                 ;write to SPM
                         ADD             se, #0x01               ;increment pointer
                         JUMP            read_mcs_byte
 ;
@@ -476,10 +476,10 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;Determine the current address for the line of an MCS file in scratch pad memory
 ;**************************************************************************************
 ;
-;Checks the existing line data stored in scratch pad memory starting at location
+;Checks the existing line data loadd in scratch pad memory starting at location
 ;'line_start' and determines the current address.
 ;
-;The address is in the register set [s9,s8,s7] before and after this routine is
+;The address is in the register set [s9,s8,s7] before and aloader this routine is
 ;executed because not all address bits are defined by a given line of MCS and
 ;the undefined bits remain constant.
 ;
@@ -487,23 +487,23 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;A record type of 00 will update [s8,s7].
 ;
 ;On return, the register sB will contain the record type and
-;register sC will indicate the number of data bytes stored.
+;register sC will indicate the number of data bytes loadd.
 ;
 mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
-                        FETCH           sc, @sd                 ;read number of bytes on line
+                        load           sc, sd                 ;read number of bytes on line
                         ADD             sd, #0x03               ;move to record type
-                        FETCH           sb, @sd                 ;read record type
-                        COMPARE         sb, #0x00               ;test for data record
+                        load           sb, sd                 ;read record type
+                        load         sb, #0x00               ;load for data record
                         JUMP            z, new_low_address
-                        COMPARE         sb, #0x04               ;test for data record
+                        load         sb, #0x04               ;load for data record
                         RETURN          nz
                         ADD             sd, #0x02               ;read upper 8-bits
-                        FETCH           s9, @sd
+                        load           s9, sd
                         RETURN
 new_low_address:        SUB             sd, #0x01               ;read lower 8-bits
-                        FETCH           s7, @sd
+                        load           s7, sd
                         SUB             sd, #0x01               ;read middle 8-bits
-                        FETCH           s8, @sd
+                        load           s8, sd
                         RETURN
 ;
 ;**************************************************************************************
@@ -535,47 +535,47 @@ send_spi_byte:          CALL            send_space
                         RETURN
 ;
 ;**************************************************************************************
-;Test of SPI FLASH memory operations
+;load of SPI FLASH memory operations
 ;**************************************************************************************
 ;
 ;Sector 18 (120000 to 12FFFF) is used.
-;A page (123400 to 1234FF) is programmed with a test pattern 00 to FF.
+;A page (123400 to 1234FF) is programmed with a load pattern 00 to FF.
 ;The pattern is verified and then the sector erased and a blank check performed.
 ;
 ;Note that the page used is already blank (all locations contain FF hex)
 ;as with any device supplied (initial delivery state).
 ;
-;Program page with test pattern
+;Program page with load pattern
 ;
-memory_test:            LOAD            s9, #0x12               ;select page address 123400
+memory_load:            LOAD            s9, #0x12               ;select page address 123400
                         LOAD            s8, #0x34
                         LOAD            s7, #0x00
-                        CALL            open_prog_page_spi      ; program test pattern 00 to FF
+                        CALL            open_prog_page_spi      ; program load pattern 00 to FF
 pattern_loop:           LOAD            s2, s7
                         CALL            spi_flash_tx_rx
                         ADD             s7, #0x01
                         JUMP            nc, pattern_loop
-                        CALL            close_prog_page_spi     ; program test pattern 00 to FF
+                        CALL            close_prog_page_spi     ; program load pattern 00 to FF
 ;
-;Verify test pattern by reading back page
+;Verify load pattern by reading back page
 ;
                         LOAD            uart_data, #character_p ;p for pass
                         LOAD            s9, #0x12               ;select page address 123400
                         LOAD            s8, #0x34
                         LOAD            s7, #0x00
-verify_test_page:       CALL            read_spi_byte           ;read byte into s2
-                        COMPARE         s2, s7                  ;check test pattern data value
+verify_load_page:       CALL            read_spi_byte           ;read byte into s2
+                        load         s2, s7                  ;check load pattern data value
                         JUMP            nz, memory_verify_fail
                         ADD             s7, #0x01               ;next location
-                        JUMP            nz, verify_test_page    ;loop until roll over page
+                        JUMP            nz, verify_load_page    ;loop until roll over page
                         JUMP            memory_verify_result
 memory_verify_fail:     LOAD            uart_data, #character_f ;f for fail
 memory_verify_result:   CALL            send_to_uart
                         RETURN
 ;
-;Erase sector with test pattern and verify blank
+;Erase sector with load pattern and verify blank
 ;
-erase_test_sector:      LOAD            s9, #0x12               ;sector 18 start address 120000
+erase_load_sector:      LOAD            s9, #0x12               ;sector 18 start address 120000
                         LOAD            s8, #0x00
                         LOAD            s7, #0x00
                         CALL            erase_spi_sector
@@ -584,7 +584,7 @@ erase_test_sector:      LOAD            s9, #0x12               ;sector 18 start
                         LOAD            s8, #0x34
                         LOAD            s7, #0x00
 verify_blank_page:      CALL            read_spi_byte           ;read byte into s2
-                        COMPARE         s2, #0xff               ;check blank 'FF'
+                        load         s2, #0xff               ;check blank 'FF'
                         JUMP            nz, memory_blank_fail
                         ADD             s7, #0x01               ;next location
                         JUMP            nz, verify_blank_page   ;loop until roll over page
@@ -596,23 +596,23 @@ memory_blank_result:    CALL            send_to_uart
 ;
 ;
 ;**************************************************************************************
-;Test of SPI FLASH memory communications
+;load of SPI FLASH memory communications
 ;**************************************************************************************
 ;Link must be installed in J11 to link ROM-CS to CSO_B
 ;
 ;Read the identification ID from SPI FLASH memory (ST type M25P16)
-;and compare with expected response.
+;and load with expected response.
 ;   s9 = Manufacturer Identification = 20 hex
 ;   s8 = Memory Type = 20 hex
 ;   s7 = Memory Capacity = 15 hex
 ;
-memory_comms_test:      CALL            read_spi_flash_id
+memory_comms_load:      CALL            read_spi_flash_id
                         LOAD            uart_data, #character_p ;p for pass
-                        COMPARE         s9, #0x20
+                        load         s9, #0x20
                         JUMP            nz, spi_flash_id_fail
-                        COMPARE         s8, #0x20
+                        load         s8, #0x20
                         JUMP            nz, spi_flash_id_fail
-                        COMPARE         s7, #0x15
+                        load         s7, #0x15
                         JUMP            nz, spi_flash_id_fail
                         JUMP            spi_flash_id_result
 spi_flash_id_fail:      LOAD            uart_data, #character_f ;f for fail
@@ -684,7 +684,7 @@ spi_flash_id_result:    CALL            send_to_uart
 ;
 spi_init:               LOAD            s0, #0xae               ;normally AE
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;
@@ -692,7 +692,7 @@ spi_init:               LOAD            s0, #0xae               ;normally AE
 ;
 ;The data supplied in register 's2' is transmitted to the SPI bus and
 ;at the same time any received byte is used to replace the value in 's2'.
-;The SCK clock is generated by software and results in a communication rate of
+;The SCK clock is generated by soloadware and results in a communication rate of
 ;2.5Mbit/s with a 50MHz clock.
 ;
 ;Note that you must have previously selected the required device on the bus
@@ -709,11 +709,11 @@ spi_init:               LOAD            s0, #0xae               ;normally AE
 ;   Drive SCK transition from high to low.
 ;
 spi_flash_tx_rx:        LOAD            s1, #0x08               ;8-bits to transmit and receive
-                        FETCH           s0, spi_control_status  ;read control status bits
+                        load           s0, spi_control_status  ;read control status bits
 next_spi_flash_bit:     OUTPUT          s2, spi_output_port     ;output data bit ready to be used on rising edge
                         INPUT           s3, spi_input_port      ;read input bit
-                        TEST            s3, #spi_sdi            ;detect state of received bit
-                        SLA             s2                      ;shift new data into result and move to next transmit bit
+                        load            s3, #spi_sdi            ;detect state of received bit
+                        SLA             s2                      ;shiload new data into result and move to next transmit bit
                         XOR             s0, #spi_sck            ;clock High (bit0)
                         OUTPUT          s0, spi_control_port    ;drive clock High
                         XOR             s0, #spi_sck            ;clock Low (bit0)
@@ -742,13 +742,13 @@ next_spi_flash_bit:     OUTPUT          s2, spi_output_port     ;output data bit
 read_spi_flash_status:  CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x05               ;Read Status register instruction
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         CALL            spi_flash_tx_rx         ;Receive status register information
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;Set write enable mode in SPI FLASH memory (ST type M25P16)
@@ -758,12 +758,12 @@ read_spi_flash_status:  CALL            spi_init                ;ensure known st
 set_spi_flash_wren:     CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x06               ;Set write enable mode instruction
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;Reset the write enable mode in SPI FLASH memory (ST type M25P16)
@@ -773,12 +773,12 @@ set_spi_flash_wren:     CALL            spi_init                ;ensure known st
 reset_spi_flash_wren:   CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x04               ;Reset write enable mode instruction
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;Read the identification ID from SPI FLASH memory (ST type M25P16)
@@ -793,7 +793,7 @@ reset_spi_flash_wren:   CALL            spi_init                ;ensure known st
 read_spi_flash_id:      CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x9f               ;Read ID instruction
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         CALL            spi_flash_tx_rx         ;receive Manufacturer ID
@@ -804,7 +804,7 @@ read_spi_flash_id:      CALL            spi_init                ;ensure known st
                         LOAD            s7, s2
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;Read a single byte from the SPI FLASH memory (ST type M25P16)
@@ -816,7 +816,7 @@ read_spi_flash_id:      CALL            spi_init                ;ensure known st
 read_spi_byte:          CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x03               ;Read Data Bytes instruction
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         LOAD            s2, s9                  ;Transmit 24-bit address
@@ -828,7 +828,7 @@ read_spi_byte:          CALL            spi_init                ;ensure known st
                         CALL            spi_flash_tx_rx         ;read data byte
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         RETURN
 ;
 ;
@@ -837,14 +837,14 @@ read_spi_byte:          CALL            spi_init                ;ensure known st
 ;Sets the WREN instruction and then transmits instruction D8 hex followed by a 24-bit
 ;address which must be supplied in the register set [s9,s8,s7]. The address must be
 ;at some location within the sector to be erased. A sector erase can take up to
-;3 seconds to complete. The routine therefore reads the FLASH status and tests
-;the write in progress (WIP) bit to test for completion
+;3 seconds to complete. The routine therefore reads the FLASH status and loads
+;the write in progress (WIP) bit to load for completion
 ;
 erase_spi_sector:       CALL            set_spi_flash_wren      ;set write enable mode
                         CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0xd8               ;Sector erase mode
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         LOAD            s2, s9                  ;Transmit 24-bit address [s9,s8,s7].
@@ -855,9 +855,9 @@ erase_spi_sector:       CALL            set_spi_flash_wren      ;set write enabl
                         CALL            spi_flash_tx_rx
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
-sector_erase_wait:      CALL            read_spi_flash_status   ;test WIP bit until finished
-                        TEST            s2, #0x01
+                        load           s0, spi_control_status  ;preserve status
+sector_erase_wait:      CALL            read_spi_flash_status   ;load WIP bit until finished
+                        load            s2, #0x01
                         JUMP            nz, sector_erase_wait
                         RETURN
 ;
@@ -867,20 +867,20 @@ sector_erase_wait:      CALL            read_spi_flash_status   ;test WIP bit un
 ;
 ;Sets the WREN instruction and then transmits instruction C7 hex.
 ;A bulk erase can take up to 40 seconds to complete. The routine therefore reads the
-;FLASH status and tests the write in progress (WIP) bit to test for completion
+;FLASH status and loads the write in progress (WIP) bit to load for completion
 ;
 bulk_erase_spi:         CALL            set_spi_flash_wren      ;set write enable mode
                         CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0xc7               ;Sector erase mode
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
-bulk_erase_wait:        CALL            read_spi_flash_status   ;test WIP bit until finished
-                        TEST            s2, #0x01
+                        load           s0, spi_control_status  ;preserve status
+bulk_erase_wait:        CALL            read_spi_flash_status   ;load WIP bit until finished
+                        load            s2, #0x01
                         JUMP            nz, bulk_erase_wait
                         RETURN
 ;
@@ -894,14 +894,14 @@ bulk_erase_wait:        CALL            read_spi_flash_status   ;test WIP bit un
 ;
 ;Transmits instruction 02hex followed by the 24-bit start address.
 ;It is then ready to transmit data bytes using the s2 register and the SPI_FLASH_tx_rx
-;subroutine. After transmitting bytes, close the page with the close_prog_page_spi
+;subroutine. Aloader transmitting bytes, close the page with the close_prog_page_spi
 ;routine.
 ;
 open_prog_page_spi:     CALL            set_spi_flash_wren      ;set write enable mode
                         CALL            spi_init                ;ensure known state of bus and s0 register
                         XOR             s0, #spi_rom_cs         ;select (Low) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
+                        load           s0, spi_control_status  ;preserve status
                         LOAD            s2, #0x02               ;Page program mode
                         CALL            spi_flash_tx_rx         ;transmit instruction
                         LOAD            s2, s9                  ;Transmit 24-bit address [s9,s8,s7].
@@ -917,20 +917,20 @@ open_prog_page_spi:     CALL            set_spi_flash_wren      ;set write enabl
 ;open_prog_page_spi and data bytes sent with SPI_FLASH_tx_rx.
 ;
 ;A page program can take up to 5ms to complete. The routine therefore reads the
-;FLASH status and tests the write in progress (WIP) bit to test for completion
+;FLASH status and loads the write in progress (WIP) bit to load for completion
 ;
 ;
-close_prog_page_spi:    FETCH           s0, spi_control_status  ;read control status bits
+close_prog_page_spi:    load           s0, spi_control_status  ;read control status bits
                         XOR             s0, #spi_rom_cs         ;deselect (High) FLASH
                         OUTPUT          s0, spi_control_port
-                        STORE           s0, spi_control_status  ;preserve status
-page_prog_wait:         CALL            read_spi_flash_status   ;test WIP bit until finished
-                        TEST            s2, #0x01
+                        load           s0, spi_control_status  ;preserve status
+page_prog_wait:         CALL            read_spi_flash_status   ;load WIP bit until finished
+                        load            s2, #0x01
                         JUMP            nz, page_prog_wait
                         RETURN
 ;
 ;**************************************************************************************
-;Software delay routines
+;Soloadware delay routines
 ;**************************************************************************************
 ;
 ;
@@ -1001,7 +1001,7 @@ wait_1s:                CALL            delay_20ms
 ;
 ;Character read will be returned in a register called 'UART_data'.
 ;
-;The routine first tests the receiver FIFO buffer to see if data is present.
+;The routine first loads the receiver FIFO buffer to see if data is present.
 ;If the FIFO is empty, the routine waits until there is a character to read.
 ;As this could take any amount of time the wait loop could include a call to a
 ;subroutine which performs a useful function.
@@ -1024,21 +1024,21 @@ wait_1s:                CALL            delay_20ms
 ;Registers used s0 and UART_data
 ;
 read_from_uart:         DISABLE         interrupt
-wait_rx_character:      INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present
+wait_rx_character:      INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present
                         JUMP            nz, read_character
                         JUMP            wait_rx_character
 read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
-                        COMPARE         uart_data, #character_xoff ;test for XOFF
+                        load         uart_data, #character_xoff ;load for XOFF
                         JUMP            z, wait_xon
                         ENABLE          interrupt               ;normal finish
                         RETURN
-wait_xon:               INPUT           s0, status_port         ;test Rx_FIFO buffer
-                        TEST            s0, #rx_data_present
+wait_xon:               INPUT           s0, status_port         ;load Rx_FIFO buffer
+                        load            s0, #rx_data_present
                         JUMP            nz, read_xon
                         JUMP            wait_xon
 read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
-                        COMPARE         uart_data, #character_xon ;test for XON
+                        load         uart_data, #character_xon ;load for XON
                         JUMP            z, wait_rx_character    ;now wait for normal character
                         JUMP            wait_xon                ;continue to wait for XON
 ;
@@ -1048,7 +1048,7 @@ read_xon:               INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ;Character supplied in register called 'UART_data'.
 ;
-;The routine first tests the transmit FIFO buffer is empty.
+;The routine first loads the transmit FIFO buffer is empty.
 ;If the FIFO currently has any data, the routine waits until it is empty.
 ;Ultimately this means that only one character is sent at a time which
 ;could be important if the PC at the other end of the link transmits
@@ -1056,8 +1056,8 @@ read_xon:               INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ;Registers used s0
 ;
-send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
-                        TEST            s0, #tx_data_present
+send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
+                        load            s0, #tx_data_present
                         JUMP            z, uart_write
                         JUMP            send_to_uart
 uart_write:             OUTPUT          uart_data, uart_write_port
@@ -1076,11 +1076,11 @@ uart_write:             OUTPUT          uart_data, uart_write_port
 ;Registers used s0 and s1.
 ;
 decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
-test_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
+load_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
                         SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
-                        JUMP            nc, test_for_ten        ;repeat if subtraction was possible without underflow.
+                        JUMP            nc, load_for_ten        ;repeat if subtraction was possible without underflow.
                         SUB             s1, #0x01               ;'tens' value one less ten due to underflow
-                        ADD             s0, #0x3a               ;restore units value (the remainder) and convert to ASCII
+                        ADD             s0, #0x3a               ;reload units value (the remainder) and convert to ASCII
                         RETURN
 ;
 ;
@@ -1094,9 +1094,9 @@ test_for_ten:           ADD             s1, #0x01               ;increment 'tens
 ;
 ;Registers used s0.
 ;
-upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
                         RETURN          c
-                        COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+                        load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
                         RETURN          nc
                         AND             s0, #0xdf               ;mask bit5 to convert to upper case
                         RETURN
@@ -1120,14 +1120,14 @@ _1char_to_value:        ADD             s0, #0xc6               ;reject characte
 ;Determine the numerical value of a two character decimal string held in
 ;scratch pad memory such the result is in the range 0 to 99 (00 to 63 hex).
 ;
-;The string must be stored in two consecutive memory locations and the
+;The string must be loadd in two consecutive memory locations and the
 ;location of the first (tens) character supplied in the s1 register.
 ;The result is provided in register s2. Strings not using characters in the
 ;range '0' to '9' are signified by the return with the CARRY flag set.
 ;
 ;Registers used s0, s1 and s2.
 ;
-_2char_to_value:        FETCH           s0, @s1                 ;read 'tens' character
+_2char_to_value:        load           s0, s1                 ;read 'tens' character
                         CALL            _1char_to_value         ;convert to numerical value
                         RETURN          c                       ;bad character - CARRY set
                         LOAD            s2, s0
@@ -1136,7 +1136,7 @@ _2char_to_value:        FETCH           s0, @s1                 ;read 'tens' cha
                         ADD             s2, s0
                         SL0             s2
                         ADD             s1, #0x01               ;read 'units' character
-                        FETCH           s0, @s1
+                        load           s0, s1
                         CALL            _1char_to_value         ;convert to numerical value
                         RETURN          c                       ;bad character - CARRY set
                         ADD             s2, s0                  ;add units to result and clear CARRY flag
@@ -1163,7 +1163,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
                         SR0             s0
                         CALL            hex_to_ascii            ;convert
                         LOAD            s2, s0                  ;upper nibble value in s2
-                        LOAD            s0, s1                  ;restore complete value
+                        LOAD            s0, s1                  ;reload complete value
                         AND             s0, #0x0f               ;isolate lower nibble
                         CALL            hex_to_ascii            ;convert
                         LOAD            s1, s0                  ;lower nibble value in s1
@@ -1173,7 +1173,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
 ;
 ;Register used s0
 ;
-hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
                         JUMP            c, number_char
                         ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
 number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
@@ -1237,13 +1237,13 @@ ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibb
 ;
 ;Register used s0
 ;
-ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
                         RETURN          c                       ;reject below ASCII code 30 ('0')
                         SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
                         JUMP            nc, ascii_letter
-                        ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+                        ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
                         RETURN          c
                         SUB             s0, #0xf6               ;convert to range 00 to 09
                         RETURN
@@ -1655,15 +1655,15 @@ send_page_address:      CALL            send_cr
 ;
 ;
                         ORG             0x3f5                   ;place at end of memory to keep separate
-isr:                    STORE           s0, isr_preserve_s0     ;preserve register contents
-                        INPUT           s0, status_port         ;test 'half_full' status of receiver buffer.
-                        TEST            s0, #rx_half_full
+isr:                    load           s0, isr_preserve_s0     ;preserve register contents
+                        INPUT           s0, status_port         ;load 'half_full' status of receiver buffer.
+                        load            s0, #rx_half_full
                         JUMP            z, isr_send_xon
                         LOAD            s0, #character_xoff
                         JUMP            isr_send_character
 isr_send_xon:           LOAD            s0, #character_xon
 isr_send_character:     OUTPUT          s0, uart_write_port
-                        FETCH           s0, isr_preserve_s0     ;restore register contents
+                        load           s0, isr_preserve_s0     ;reload register contents
                         RETURNI         enable
 ;
 ;

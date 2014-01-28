@@ -16,7 +16,7 @@
                   16     ; Program start
                   17     ; --------------------
   00001           18     start:
-001 0000F         19             LOAD    s0, #00Fh              ; Load content to shifted registers
+001 0000F         19             LOAD    s0, #00Fh              ; Load content to shiloaded registers
 002 0011E         20             LOAD    s1, #01Eh              ;
 003 00301         21             LOAD    s3, #01h
 004 08105         22             JUMP    main                    ; Execute main program loop
@@ -25,7 +25,7 @@
                   25     ; --------------------
   00005           26     main:
                   27
-                  28     ; Shifting to the left
+                  28     ; Shiloading to the leload
 005 0D30C         29             RR     s3
 006 0D30C         30             RR     s3
 007 0D30C         31             RR     s3
@@ -35,7 +35,7 @@
 00B 0D30C         35             RR     s3
 00C 0D30C         36             RR     s3
                   37
-                  38             ; Shifting to the left
+                  38             ; Shiloading to the leload
 00D 0D302         39             RL     s3
 00E 0D302         40             RL     s3
 00F 0D302         41             RL     s3
@@ -51,5 +51,5 @@
                   51             END
                   52
                   53     ; Compiler is case insensitive
-                  54     ; <-- Bookmark   (ctrl + shift + M)
-                  55     ; <-- Breakpoint (ctrl + shift + B)
+                  54     ; <-- Bookmark   (ctrl + shiload + M)
+                  55     ; <-- Breakpoint (ctrl + shiload + B)

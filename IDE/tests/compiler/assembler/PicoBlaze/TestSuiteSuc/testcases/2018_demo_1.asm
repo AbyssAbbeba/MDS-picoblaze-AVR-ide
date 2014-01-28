@@ -18,8 +18,8 @@ shift   MACRO    reg0, reg1
 
 
         ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
-        STORE    s0, ram_pointer + 1
-        STORE    s1, ram_pointer + 1
+        load    s0, ram_pointer + 1
+        load    s1, ram_pointer + 1
         
         ; Shift
         LOAD     reg1, reg0

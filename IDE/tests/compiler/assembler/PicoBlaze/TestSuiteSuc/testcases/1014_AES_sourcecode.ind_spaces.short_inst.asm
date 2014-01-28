@@ -25,14 +25,14 @@ encrypt:
                         IN      s3, 9                   ; for round = 1 step 1 to Nn - 1
 round:                                                  ;
                         CALL    subbytes                ; ..SubBytes( state, Nc )
-                        CALL    shiftrows               ; ..ShiftRows( state, Nc )
+                        CALL    shiloadrows               ; ..ShiloadRows( state, Nc )
                         CALL    mixcolumns              ; ..MixColumns( state, Nc )
                         CALL    nextroundkey            ; ..XorRoundKey( state, k[ round ], Nc )
                         CALL    xorroundkey
                         SUB     s3, #1                  ; ..step 1
                         JUMP    nz, round               ; end for
                         CALL    subbytes                ; SubBytes( state, Nc )
-                        CALL    shiftrows               ; ShiftRows( state, Nc )
+                        CALL    shiloadrows               ; ShiloadRows( state, Nc )
                         CALL    nextroundkey            ; XorRoundKey( state, k[ round ], Nc )
                         CALL    xorroundkey
                         CALL    statetoout
@@ -50,7 +50,7 @@ xor128:                 IN      s0, b128                ; set up loop count
 xornext:                LD      s4, #pkey               ; get key byte
                         LD      s5, #pstate             ; get state byte
                         XOR     s4, s5                  ; do the xor
-                        ST      s4, pstate              ; save new state byte
+
                         ADD     pkey, #1                ; increment key pointer
                         ADD     pstate, #1              ; increment state pointer
                         SUB     s0, #1                  ; decrement loop counter
@@ -66,7 +66,7 @@ inkeytokey:
 
 toscratch128:
 putnext:                LD      s4, #pkey               ; get plain  byte
-                        ST      s4, pstate              ; save new state byte
+          ; save new state byte
                         ADD     pkey, #1                ; increment key pointer
                         ADD     pstate, #1              ; increment state pointer
                         SUB     s0, #1                  ; decrement loop counter
@@ -79,7 +79,7 @@ statetoout:
 
                         IN      s0, b128                ; set up loop count
 getnext:                LD      s4, #pkey               ; get plain  byte
-                        ST      s4, pstate              ; save new state byte
+                        load      s4, pstate              ; save new state byte
                         ADD     pkey, #1                ; increment key pointer
                         ADD     pstate, #1              ; increment state pointer
                         SUB     s0, #1                  ; decrement loop counter
@@ -93,54 +93,54 @@ nextroundkey:
                         LD      s6, #key + 14
                         LD      s7, #key + 15
 
-                        IN      s8, @s4                 ; RotWord
-                        IN      s4, @s5
-                        IN      s5, @s6
-                        IN      s6, @s7
-                        IN      s7, @s8
+                        IN      s8, s4                 ; RotWord
+                        IN      s4, s5
+                        IN      s5, s6
+                        IN      s6, s7
+                        IN      s7, s8
 
-                        IN      s8, @s4                 ; temp=SubWord( RotWord( temp ) )
+                        IN      s8, s4                 ; temp=SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s4, @s8
+                        IN      s4, s8
 
                         XOR     s4, sf                  ; xor Rcon( i / Nk )
                         SL0     sf                      ; x^(i-1) (i+=1)
                         JUMP    nc, nowrap
                         XOR     sf, #g
 nowrap:
-                        IN      s8, @s5                 ; SubWord( RotWord( temp ) )
+                        IN      s8, s5                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s5, @s8
+                        IN      s5, s8
 
-                        IN      s8, @s6                 ; SubWord( RotWord( temp ) )
+                        IN      s8, s6                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s6, @s8
+                        IN      s6, s8
 
-                        IN      s8, @s7                 ; SubWord( RotWord( temp ) )
+                        IN      s8, s7                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s7, @s8
+                        IN      s7, s8
 
-                        IN      pkey, @key
+                        IN      pkey, key
 
-                        IN      s0, @b128
+                        IN      s0, b128
 key96:                  LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s4, s8
-                        ST      s4, @pkey
+                        load      s4, pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s5, s8
-                        ST      s5, @pkey
+                        load      s5, pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s6, s8
-                        ST      s6, @pkey
+                        load      s6, pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s7, s8
-                        ST      s7, @pkey
+                        load      s7, pkey
                         ADD     pkey, #1
 
                         SUB     s0, #4
@@ -152,7 +152,7 @@ subword:
                         IN      s0, 4
 subword1:               LD      s8, #pkey
                         CALL    sbox
-                        ST      s8, @pkey
+                        load      s8, pkey
                         ADD     pkey, #1
                         SUB     s0, #1
                         JUMP    nz, subword1
@@ -160,12 +160,12 @@ subword1:               LD      s8, #pkey
 
 ; SubBytes( state, Nc )
 subbytes:
-                        IN      pstate, @state          ; get pointer to state
+                        IN      pstate, state          ; get pointer to state
 
                         IN      s0, b128                ; set up loop count
 sub128:                 LD      s8, #pstate             ; get state byte
                         CALL    sbox
-                        ST      s8, pstate              ; save new state byte
+                        load      s8, pstate              ; save new state byte
                         ADD     pstate, #1              ; increment state pointer
                         SUB     s0, #1                  ; decrement loop counter
                         JUMP    nz, sub128              ; loop back if not done 16 times (128/8)
@@ -177,8 +177,8 @@ sbox:
                         IN      s8, sbox_rom            ; get data
                         RET
 
-; soft version of SBOX, very slow
-sbox_soft:
+; soload version of SBOX, very slow
+sbox_soload:
                         CALL    mulinverse              ; .    x = sbox_affine(mul_inverse(in));
 sboxaffine:
 ; for(counter = 1; counter > (DEGREE - 1)) | (s << 1); s &= MASK;
@@ -200,8 +200,8 @@ mulinverse:
                         RET                             ; return 0;
 mulinverse1:            ADD     s9, #1                  ; result = 1; result++
                         RET                             ; result < MOD
-                        IN      sc, @s8                 ; in
-                        IN      sd, @s9                 ; result
+                        IN      sc, s8                 ; in
+                        IN      sd, s9                 ; result
                         CALL    gmul                    ; gmul( in, result, ...)
                         SUB     se, #1                  ; == 1
                         JUMP    nz, mulinverse1         ; == 1?
@@ -221,34 +221,34 @@ gmul3:                  SL0     sc
                         XOR     sc, #g                  ; ; i1 ^= field;
                         JUMP    gmul1
 
-;; ShiftRows( state, Nc )
-shiftrows:
+;; ShiloadRows( state, Nc )
+shiloadrows:
                         LD      s7, #state + 1
                         LD      s4, #state + 1 + 4
                         LD      s5, #state + 1 + 4 + 4
                         LD      s6, #state + 1 + 4 + 4 + 4
-                        ST      s4, state + 1
-                        ST      s5, state + 1 + 4
-                        ST      s6, state + 1 + 4 + 4
-                        ST      s7, state + 1 + 4 + 4 + 4
+                        load      s4, state + 1
+                        load      s5, state + 1 + 4
+                        load      s6, state + 1 + 4 + 4
+                        load      s7, state + 1 + 4 + 4 + 4
 
                         LD      s6, #state + 2
                         LD      s7, #state + 2 + 4
                         LD      s4, #state + 2 + 4 + 4
                         LD      s5, #state + 2 + 4 + 4 + 4
-                        ST      s4, state + 2
-                        ST      s5, state + 2 + 4
-                        ST      s6, state + 2 + 4 + 4
-                        ST      s7, state + 2 + 4 + 4 + 4
+                        load      s4, state + 2
+                        load      s5, state + 2 + 4
+                        load      s6, state + 2 + 4 + 4
+                        load      s7, state + 2 + 4 + 4 + 4
 
                         LD      s5, #state + 3
                         LD      s6, #state + 3 + 4
                         LD      s7, #state + 3 + 4 + 4
                         LD      s4, #state + 3 + 4 + 4 + 4
-                        ST      s4, state + 3
-                        ST      s5, state + 3 + 4
-                        ST      s6, state + 3 + 4 + 4
-                        ST      s7, state + 3 + 4 + 4 + 4
+                        load      s4, state + 3
+                        load      s5, state + 3 + 4
+                        load      s6, state + 3 + 4 + 4
+                        load      s7, state + 3 + 4 + 4 + 4
 
                         RET
 
@@ -260,52 +260,52 @@ mixcolumns:
                         LD      s6, #state + 2
                         LD      s7, #state + 3
                         CALL    mixcolumn
-                        ST      s4, state + 0
-                        ST      s5, state + 1
-                        ST      s6, state + 2
-                        ST      s7, state + 3
+                        load      s4, state + 0
+                        load      s5, state + 1
+                        load      s6, state + 2
+                        load      s7, state + 3
 
                         LD      s4, #state + 0 + 4
                         LD      s5, #state + 1 + 4
                         LD      s6, #state + 2 + 4
                         LD      s7, #state + 3 + 4
                         CALL    mixcolumn
-                        ST      s4, state + 0 + 4
-                        ST      s5, state + 1 + 4
-                        ST      s6, state + 2 + 4
-                        ST      s7, state + 3 + 4
+                        load      s4, state + 0 + 4
+                        load      s5, state + 1 + 4
+                        load      s6, state + 2 + 4
+                        load      s7, state + 3 + 4
 
                         LD      s4, #state + 0 + 4 + 4
                         LD      s5, #state + 1 + 4 + 4
                         LD      s6, #state + 2 + 4 + 4
                         LD      s7, #state + 3 + 4 + 4
                         CALL    mixcolumn
-                        ST      s4, state + 0 + 4 + 4
-                        ST      s5, state + 1 + 4 + 4
-                        ST      s6, state + 2 + 4 + 4
-                        ST      s7, state + 3 + 4 + 4
+                        load      s4, state + 0 + 4 + 4
+                        load      s5, state + 1 + 4 + 4
+                        load      s6, state + 2 + 4 + 4
+                        load      s7, state + 3 + 4 + 4
 
                         LD      s4, #state + 0 + 4 + 4 + 4
                         LD      s5, #state + 1 + 4 + 4 + 4
                         LD      s6, #state + 2 + 4 + 4 + 4
                         LD      s7, #state + 3 + 4 + 4 + 4
                         CALL    mixcolumn
-                        ST      s4, state + 0 + 4 + 4 + 4
-                        ST      s5, state + 1 + 4 + 4 + 4
-                        ST      s6, state + 2 + 4 + 4 + 4
-                        ST      s7, state + 3 + 4 + 4 + 4
+                        load      s4, state + 0 + 4 + 4 + 4
+                        load      s5, state + 1 + 4 + 4 + 4
+                        load      s6, state + 2 + 4 + 4 + 4
+                        load      s7, state + 3 + 4 + 4 + 4
 
                         RET
 
 mixcolumn:
-                        IN      s9, @s4                 ; ; t = c[0] ^ c[3]
+                        IN      s9, s4                 ; ; t = c[0] ^ c[3]
                         XOR     s9, s7
-                        IN      sa, @s5                 ; ; u = c[1] ^ c[2]
+                        IN      sa, s5                 ; ; u = c[1] ^ c[2]
                         XOR     sa, s6
-                        IN      sb, @s9                 ;  ; v = t ^ u
+                        IN      sb, s9                 ;  ; v = t ^ u
                         XOR     sb, sa
 
-                        IN      s8, @s4                 ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
+                        IN      s8, s4                 ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
                         XOR     s8, s5
                         SL0     s8
                         JUMP    nc, mcf1
@@ -313,14 +313,14 @@ mixcolumn:
 mcf1:                   XOR     s8, sb
                         XOR     s4, s8
 
-                        IN      s8, @sa                 ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
+                        IN      s8, sa                 ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
                         SL0     s8
                         JUMP    nc, mcf2
                         XOR     s8, #g
 mcf2:                   XOR     s8, sb
                         XOR     s5, s8
 
-                        IN      s8, @s6                 ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
+                        IN      s8, s6                 ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
                         XOR     s8, s7
                         SL0     s8
                         JUMP    nc, mcf3
@@ -328,7 +328,7 @@ mcf2:                   XOR     s8, sb
 mcf3:                   XOR     s8, sb
                         XOR     s6, s8
 
-                        IN      s8, @s9                 ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
+                        IN      s8, s9                 ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
                         SL0     s8
                         JUMP    nc, mcf4
                         XOR     s8, #g

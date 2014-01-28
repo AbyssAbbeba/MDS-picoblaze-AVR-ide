@@ -167,17 +167,17 @@
                  167     ;
                  168     ;
                  169     ;
-                 170     ;Store up to one line of an MCS file as bytes
+                 170     ;load up to one line of an MCS file as bytes
                  171     ;A typical data line consists of:-
-                 172     ;:     Start character which is not stored
+                 172     ;:     Start character which is not loadd
                  173     ;10    Number of data bytes included (16 in this case)
                  174     ;aaaa  Lower 16-bits of the storage address
                  175     ;00    Record type (data in this case)
                  176     ;dddd...   Data bytes (typically 16 which is the maximum)
                  177     ;cc    Checksum
-                 178     ;CR/LF Line will end in carriage return and/or line feed which is not stored.
+                 178     ;CR/LF Line will end in carriage return and/or line feed which is not loadd.
                  179     ;
-                 180     ;So a total of 21 bytes could be stored before processing.
+                 180     ;So a total of 21 bytes could be loadd before processing.
                  181     ;This is located at the end of scratch pad memory.
                  182     ;
   0002B          183     line_start              EQU             0x2b                    ;21 bytes until end of memory
@@ -208,43 +208,35 @@
 009 00F3E        208                             LOAD            uart_data, #character_greater_than ;prompt for input
 00A 36131        209                             CALL            send_to_uart
 00B 36022        210                             CALL            read_upper_case
-                 211                             COMPARE         s0, #_character_e       ;test for commands and execute as required
-E: instruction not supported on the this device: COMPARE sX, kk.
-00C 3502A        212                             JUMP            z, erase_command
-                 213                             COMPARE         s0, #_character_b
-E: instruction not supported on the this device: COMPARE sX, kk.
-00D 3502C        214                             JUMP            z, block_erase_command
-                 215                             COMPARE         s0, #_character_p
-E: instruction not supported on the this device: COMPARE sX, kk.
-00E 35047        216                             JUMP            z, program_command
-                 217                             COMPARE         s0, #_character_w
-E: instruction not supported on the this device: COMPARE sX, kk.
-00F 3508C        218                             JUMP            z, write_command
-                 219                             COMPARE         s0, #_character_r
-E: instruction not supported on the this device: COMPARE sX, kk.
-010 350A3        220                             JUMP            z, read_command
-                 221                             COMPARE         s0, #_character_i
-E: instruction not supported on the this device: COMPARE sX, kk.
-011 350C2        222                             JUMP            z, sf_information
-                 223                             COMPARE         s0, #_character_h
-E: instruction not supported on the this device: COMPARE sX, kk.
-012 35003        224                             JUMP            z, welcome_start
-                 225                             COMPARE         s0, #_character_s
-E: instruction not supported on the this device: COMPARE sX, kk.
-013 350D5        226                             JUMP            z, sf_status
-014 36193        227                             CALL            send_cr                 ;no valid command input
-015 00F3F        228                             LOAD            uart_data, #character_question ;display ???
-016 36131        229                             CALL            send_to_uart
-017 36131        230                             CALL            send_to_uart
-018 36131        231                             CALL            send_to_uart
-019 34007        232                             JUMP            prompt                  ;Try again!
+00C 00045        211                             load         s0, #_character_e       ;load for commands and execute as required
+00D 3502A        212                             JUMP            z, erase_command
+00E 00042        213                             load         s0, #_character_b
+00F 3502C        214                             JUMP            z, block_erase_command
+010 00050        215                             load         s0, #_character_p
+011 35047        216                             JUMP            z, program_command
+012 00057        217                             load         s0, #_character_w
+013 3508C        218                             JUMP            z, write_command
+014 00052        219                             load         s0, #_character_r
+015 350A3        220                             JUMP            z, read_command
+016 00049        221                             load         s0, #_character_i
+017 350C2        222                             JUMP            z, sf_information
+018 00048        223                             load         s0, #_character_h
+019 35003        224                             JUMP            z, welcome_start
+01A 00053        225                             load         s0, #_character_s
+01B 350D5        226                             JUMP            z, sf_status
+01C 36193        227                             CALL            send_cr                 ;no valid command input
+01D 00F3F        228                             LOAD            uart_data, #character_question ;display ???
+01E 36131        229                             CALL            send_to_uart
+01F 36131        230                             CALL            send_to_uart
+020 36131        231                             CALL            send_to_uart
+021 34007        232                             JUMP            prompt                  ;Try again!
                  233     ;
                  234     ;
-01A 3611F        235     read_upper_case:        CALL            read_from_uart          ;read command character from UART
-01B 36131        236                             CALL            send_to_uart            ;echo character
-01C 10078        237                             LOAD            s0, uart_data           ;convert to upper case
-01D 3613E        238                             CALL            upper_case
-01E 24000        239                             RETURN
+022 3611F        235     read_upper_case:        CALL            read_from_uart          ;read command character from UART
+023 36131        236                             CALL            send_to_uart            ;echo character
+024 10078        237                             LOAD            s0, uart_data           ;convert to upper case
+025 3613E        238                             CALL            upper_case
+026 24000        239                             RETURN
                  240     ;
                  241     ;
                  242     ;**************************************************************************************
@@ -257,9 +249,9 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  249     ;
                  250     ; Register used s0
                  251     ;
-01F 00006        252     sf_init:                LOAD            s0, #0x06
-020 22008        253                             OUTPUT          s0, sf_control_port
-021 24000        254                             RETURN
+027 00006        252     sf_init:                LOAD            s0, #0x06
+028 22008        253                             OUTPUT          s0, sf_control_port
+029 24000        254                             RETURN
                  255     ;
                  256     ;
                  257     ;**************************************************************************************
@@ -274,8 +266,8 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  266     ;
                  267     ; Registers used s1,s7,s8,s9
                  268     ;
-022 009FE        269     erase_command:          LOAD            s9, #0xfe               ;define base address of block 127 = FE0000
-023 3402D        270                             JUMP            blocks_erase
+02A 009FE        269     erase_command:          LOAD            s9, #0xfe               ;define base address of block 127 = FE0000
+02B 3402D        270                             JUMP            blocks_erase
                  271     ;
                  272     ;
                  273     ;**************************************************************************************
@@ -292,29 +284,28 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  284     ;
                  285     ; Registers used s0,s1,s7,s8,s9
                  286     ;
-024 00904        287     block_erase_command:    LOAD            s9, #0x04               ;define base address of block 3 = 040000
-025 36193        288     blocks_erase:           CALL            send_cr
-026 362D4        289                             CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
-027 3611F        290                             CALL            read_from_uart          ;read command character from UART
-028 36131        291                             CALL            send_to_uart            ;echo input
-                 292                             COMPARE         uart_data, #_character_y
-E: instruction not supported on the this device: COMPARE sX, kk.
-029 3543F        293                             JUMP            nz, abort_erase
-02A 36193        294                             CALL            send_cr
-02B 36209        295                             CALL            send_erase_in_progress
-02C 36193        296                             CALL            send_cr
-02D 00800        297                             LOAD            s8, #0x00               ;define lower address of each block = xx0000
-02E 00700        298                             LOAD            s7, #0x00
-02F 00F2E        299     blocks_erase_loop:      LOAD            uart_data, #character_fullstop ;progress dots
-030 36131        300                             CALL            send_to_uart
-031 36041        301                             CALL            sf_erase_block          ;erase block
-032 0C902        302                             SUB             s9, #0x02               ;decrement base address by 1 block
-033 35C38        303                             JUMP            nc, blocks_erase_loop   ;repeat until block 0 is erased
-034 3622C        304                             CALL            send_ok
-035 34007        305                             JUMP            prompt
+02C 00904        287     block_erase_command:    LOAD            s9, #0x04               ;define base address of block 3 = 040000
+02D 36193        288     blocks_erase:           CALL            send_cr
+02E 362D4        289                             CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
+02F 3611F        290                             CALL            read_from_uart          ;read command character from UART
+030 36131        291                             CALL            send_to_uart            ;echo input
+031 00F59        292                             load         uart_data, #_character_y
+032 3543F        293                             JUMP            nz, abort_erase
+033 36193        294                             CALL            send_cr
+034 36209        295                             CALL            send_erase_in_progress
+035 36193        296                             CALL            send_cr
+036 00800        297                             LOAD            s8, #0x00               ;define lower address of each block = xx0000
+037 00700        298                             LOAD            s7, #0x00
+038 00F2E        299     blocks_erase_loop:      LOAD            uart_data, #character_fullstop ;progress dots
+039 36131        300                             CALL            send_to_uart
+03A 36041        301                             CALL            sf_erase_block          ;erase block
+03B 0C902        302                             SUB             s9, #0x02               ;decrement base address by 1 block
+03C 35C38        303                             JUMP            nc, blocks_erase_loop   ;repeat until block 0 is erased
+03D 3622C        304                             CALL            send_ok
+03E 34007        305                             JUMP            prompt
                  306     ;
-036 362F1        307     abort_erase:            CALL            send_abort
-037 34007        308                             JUMP            prompt
+03F 362F1        307     abort_erase:            CALL            send_abort
+040 34007        308                             JUMP            prompt
                  309     ;
                  310     ;
                  311     ;**************************************************************************************
@@ -332,23 +323,23 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  323     ;
                  324     ; Registers used s1,s7,s8,s9
                  325     ;
-038 00120        326     sf_erase_block:         LOAD            s1, #0x20               ;block erase command
-039 360EA        327                             CALL            sf_byte_write
-03A 001D0        328                             LOAD            s1, #0xd0               ;write confirm command
-03B 360EA        329                             CALL            sf_byte_write
-03C 360F7        330                             CALL            wait_sf_ready           ;wait for erase to complete
-03D 24000        331                             RETURN
+041 00120        326     sf_erase_block:         LOAD            s1, #0x20               ;block erase command
+042 360EA        327                             CALL            sf_byte_write
+043 001D0        328                             LOAD            s1, #0xd0               ;write confirm command
+044 360EA        329                             CALL            sf_byte_write
+045 360F7        330                             CALL            wait_sf_ready           ;wait for erase to complete
+046 24000        331                             RETURN
                  332     ;
                  333     ;
                  334     ;**************************************************************************************
                  335     ; Program Command - Program StrataFLASH memory with data defined in an MCS file
                  336     ;**************************************************************************************
                  337     ;
-03E 36193        338     program_command:        CALL            send_cr
-03F 361E2        339                             CALL            send_waiting_mcs_file
-040 3604C        340                             CALL            program_mcs
-041 3622C        341                             CALL            send_ok
-042 34007        342                             JUMP            prompt
+047 36193        338     program_command:        CALL            send_cr
+048 361E2        339                             CALL            send_waiting_mcs_file
+049 3604C        340                             CALL            program_mcs
+04A 3622C        341                             CALL            send_ok
+04B 34007        342                             JUMP            prompt
                  343     ;
                  344     ;**************************************************************************************
                  345     ; Program StrataFLASH memory with data defined in an MCS file
@@ -362,24 +353,23 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  353     ;progress can be monitored.
                  354     ;
                  355     ;
-043 36057        356     program_mcs:            CALL            read_mcs_line           ;read line from UART
-044 36067        357                             CALL            mcs_address             ;find start address and record type
-                 358                             COMPARE         sb, #0x01               ;test for end record
-E: instruction not supported on the this device: COMPARE sX, kk.
-045 25000        359                             RETURN          z                       ;end of programming
-                 360                             COMPARE         sb, #0x04               ;test for extended address record
-E: instruction not supported on the this device: COMPARE sX, kk.
-046 3504C        361                             JUMP            z, program_mcs          ;no data with this record and upper address now correct
+04C 36057        356     program_mcs:            CALL            read_mcs_line           ;read line from UART
+04D 36067        357                             CALL            mcs_address             ;find start address and record type
+04E 00B01        358                             load         sb, #0x01               ;load for end record
+04F 25000        359                             RETURN          z                       ;end of programming
+050 00B04        360                             load         sb, #0x04               ;load for extended address record
+051 3504C        361                             JUMP            z, program_mcs          ;no data with this record and upper address now correct
                  362     ;
                  363     ;Assume data record type 00 which is data so need to program specified number
                  364     ;of bytes into memory at correct address.
                  365     ;
-047 3616D        366     write_spm_data:         CALL            send_hex_3bytes         ;send address to indicate progress
-048 36193        367                             CALL            send_cr
-                 368                             FETCH           sa, line_start          ;read number of data bytes to program
-E: instruction not supported on the this device: FETCH sX, ss.
-049 36077        369                             CALL            sf_buffer_write         ;write bytes to memory
-04A 3404C        370                             JUMP            program_mcs
+052 3616D        366     write_spm_data:         CALL            send_hex_3bytes         ;send address to indicate progress
+053 36193        367                             CALL            send_cr
+054 10A58        368                             load           sa, line_start          ;read number of data bytes to program
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x2b, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xb.
+055 36077        369                             CALL            sf_buffer_write         ;write bytes to memory
+056 3404C        370                             JUMP            program_mcs
                  371     ;
                  372     ;
                  373     ;**************************************************************************************
@@ -392,40 +382,37 @@ E: instruction not supported on the this device: FETCH sX, ss.
                  380     ;will remove any additional CR or LF characters.
                  381     ;
                  382     ;It then reads each subsequent pair of ASCII characters, converts them to true hex in the
-                 383     ;range 00 to FF and stores them in scratch pad memory.
+                 383     ;range 00 to FF and loads them in scratch pad memory.
                  384     ;
                  385     ;The end of the line is determined by either a CR or LF character.
                  386     ;
                  387     ;The value last returned in register 'sE' will be the pointer to the location in
                  388     ;scratch pad memory following the last byte for the line read.
                  389     ;
-04B 00E2B        390     read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
-04C 3611F        391     wait_mcs_line_start:    CALL            read_from_uart          ;read character
-                 392                             COMPARE         uart_data, #character_colon ;test for start character
-E: instruction not supported on the this device: COMPARE sX, kk.
-04D 35458        393                             JUMP            nz, wait_mcs_line_start
-04E 3611F        394     read_mcs_byte:          CALL            read_from_uart          ;read character
-                 395                             COMPARE         uart_data, #character_cr ;test for end of line
-E: instruction not supported on the this device: COMPARE sX, kk.
-04F 25000        396                             RETURN          z
-                 397                             COMPARE         uart_data, #character_lf ;test for end of line
-E: instruction not supported on the this device: COMPARE sX, kk.
-050 25000        398                             RETURN          z
-051 10378        399                             LOAD            s3, uart_data           ;upper nibble character
-052 3611F        400                             CALL            read_from_uart          ;read character
-053 10278        401                             LOAD            s2, uart_data           ;lower nibble character
-054 36174        402                             CALL            ascii_byte_to_hex       ;convert to true hex value
-                 403                             STORE           s0, @se                 ;write to SPM
-E: instruction not supported on the this device: STORE sX, sY.
-055 08E01        404                             ADD             se, #0x01               ;increment pointer
-056 3405B        405                             JUMP            read_mcs_byte
+057 00E2B        390     read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
+058 3611F        391     wait_mcs_line_start:    CALL            read_from_uart          ;read character
+059 00F3A        392                             load         uart_data, #character_colon ;load for start character
+05A 35458        393                             JUMP            nz, wait_mcs_line_start
+05B 3611F        394     read_mcs_byte:          CALL            read_from_uart          ;read character
+05C 00F0D        395                             load         uart_data, #character_cr ;load for end of line
+05D 25000        396                             RETURN          z
+05E 00F0A        397                             load         uart_data, #character_lf ;load for end of line
+05F 25000        398                             RETURN          z
+060 10378        399                             LOAD            s3, uart_data           ;upper nibble character
+061 3611F        400                             CALL            read_from_uart          ;read character
+062 10278        401                             LOAD            s2, uart_data           ;lower nibble character
+063 36174        402                             CALL            ascii_byte_to_hex       ;convert to true hex value
+064 0000E        403                             load           s0, #se                 ;write to SPM
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+065 08E01        404                             ADD             se, #0x01               ;increment pointer
+066 3405B        405                             JUMP            read_mcs_byte
                  406     ;
                  407     ;
                  408     ;**************************************************************************************
                  409     ;Determine the current address for the line of an MCS file in scratch pad memory
                  410     ;**************************************************************************************
                  411     ;
-                 412     ;Checks the existing line data stored in scratch pad memory starting at location
+                 412     ;Checks the existing line data loadd in scratch pad memory starting at location
                  413     ;'line_start' and determines the current address.
                  414     ;
                  415     ;The address is in the register set [s9,s8,s7] before and after this routine is
@@ -436,31 +423,29 @@ E: instruction not supported on the this device: STORE sX, sY.
                  420     ;A record type of 00 will update [s8,s7].
                  421     ;
                  422     ;On return, the register sB will contain the record type and
-                 423     ;register sC will indicate the number of data bytes stored.
+                 423     ;register sC will indicate the number of data bytes loadd.
                  424     ;
-057 00D2B        425     mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
-                 426                             FETCH           sc, @sd                 ;read number of bytes on line
-E: instruction not supported on the this device: FETCH sX, sY.
-058 08D03        427                             ADD             sd, #0x03               ;move to record type
-                 428                             FETCH           sb, @sd                 ;read record type
-E: instruction not supported on the this device: FETCH sX, sY.
-                 429                             COMPARE         sb, #0x00               ;test for data record
-E: instruction not supported on the this device: COMPARE sX, kk.
-059 35072        430                             JUMP            z, new_low_address
-                 431                             COMPARE         sb, #0x04               ;test for data record
-E: instruction not supported on the this device: COMPARE sX, kk.
-05A 25400        432                             RETURN          nz
-05B 08D02        433                             ADD             sd, #0x02               ;read upper 8-bits
-                 434                             FETCH           s9, @sd
-E: instruction not supported on the this device: FETCH sX, sY.
-05C 24000        435                             RETURN
-05D 0CD01        436     new_low_address:        SUB             sd, #0x01               ;read lower 8-bits
-                 437                             FETCH           s7, @sd
-E: instruction not supported on the this device: FETCH sX, sY.
-05E 0CD01        438                             SUB             sd, #0x01               ;read middle 8-bits
-                 439                             FETCH           s8, @sd
-E: instruction not supported on the this device: FETCH sX, sY.
-05F 24000        440                             RETURN
+067 00D2B        425     mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
+068 00C0D        426                             load           sc, #sd                 ;read number of bytes on line
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+069 08D03        427                             ADD             sd, #0x03               ;move to record type
+06A 00B0D        428                             load           sb, #sd                 ;read record type
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+06B 00B00        429                             load         sb, #0x00               ;load for data record
+06C 35072        430                             JUMP            z, new_low_address
+06D 00B04        431                             load         sb, #0x04               ;load for data record
+06E 25400        432                             RETURN          nz
+06F 08D02        433                             ADD             sd, #0x02               ;read upper 8-bits
+070 0090D        434                             load           s9, #sd
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+071 24000        435                             RETURN
+072 0CD01        436     new_low_address:        SUB             sd, #0x01               ;read lower 8-bits
+073 0070D        437                             load           s7, #sd
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+074 0CD01        438                             SUB             sd, #0x01               ;read middle 8-bits
+075 0080D        439                             load           s8, #sd
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+076 24000        440                             RETURN
                  441     ;
                  442     ;
                  443     ;**************************************************************************************
@@ -483,7 +468,7 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  460     ;   Write command to confirm operation (D0 hex).
                  461     ;   Read Status register and wait for ready.
                  462     ;
-                 463     ;   This routine additionally restores the normal read array mode before returning.
+                 463     ;   This routine additionally reloads the normal read array mode before returning.
                  464     ;
                  465     ; The number of bytes to be written should be supplied in register sA and must be
                  466     ; a value between 1 and 32 (01 and 20 hex).
@@ -501,52 +486,51 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  478     ; Registers used s0,s1,s7,s8,s9,sA,sD,sE
                  479     ;
                  480     ;
-060 001E8        481     sf_buffer_write:        LOAD            s1, #0xe8               ;command for buffer write
-061 360EA        482                             CALL            sf_byte_write
-062 360E0        483                             CALL            sf_byte_read            ;read status register into s0
-                 484                             TEST            s0, #0x80               ;test ready/busy flag
-E: instruction not supported on the this device: TEST sX, kk.
-063 35077        485                             JUMP            z, sf_buffer_write      ;repeat command until ready
-064 10150        486                             LOAD            s1, sa                  ;Specify number of bytes to write
-065 0C101        487                             SUB             s1, #0x01               ;one less than actual number!
-066 360EA        488                             CALL            sf_byte_write
-067 0032F        489                             LOAD            s3, #data_start         ;point to data in scratch pad memory
-  00080          490     write_buffer_loop:      FETCH           s1, @s3                 ;fetch data
-E: instruction not supported on the this device: FETCH sX, sY.
-068 360EA        491                             CALL            sf_byte_write           ;write to buffer
-069 08701        492                             ADD             s7, #0x01               ;increment address
-06A 0A800        493                             ADDCY           s8, #0x00
-06B 0A900        494                             ADDCY           s9, #0x00
-06C 08301        495                             ADD             s3, #0x01               ;increment SPM pointer
-06D 0CA01        496                             SUB             sa, #0x01               ;count bytes remaining
-06E 35480        497                             JUMP            nz, write_buffer_loop
-06F 001D0        498                             LOAD            s1, #0xd0               ;command to confirm write
-070 360EA        499                             CALL            sf_byte_write
-071 360F7        500                             CALL            wait_sf_ready           ;wait for program to complete and set read array mode
-072 24000        501                             RETURN
+077 001E8        481     sf_buffer_write:        LOAD            s1, #0xe8               ;command for buffer write
+078 360EA        482                             CALL            sf_byte_write
+079 360E0        483                             CALL            sf_byte_read            ;read status register into s0
+07A 00080        484                             load            s0, #0x80               ;load ready/busy flag
+07B 35077        485                             JUMP            z, sf_buffer_write      ;repeat command until ready
+07C 10150        486                             LOAD            s1, sa                  ;Specify number of bytes to write
+07D 0C101        487                             SUB             s1, #0x01               ;one less than actual number!
+07E 360EA        488                             CALL            sf_byte_write
+07F 0032F        489                             LOAD            s3, #data_start         ;point to data in scratch pad memory
+080 00103        490     write_buffer_loop:      load           s1, #s3                 ;load data
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+081 360EA        491                             CALL            sf_byte_write           ;write to buffer
+082 08701        492                             ADD             s7, #0x01               ;increment address
+083 0A800        493                             ADDCY           s8, #0x00
+084 0A900        494                             ADDCY           s9, #0x00
+085 08301        495                             ADD             s3, #0x01               ;increment SPM pointer
+086 0CA01        496                             SUB             sa, #0x01               ;count bytes remaining
+087 35480        497                             JUMP            nz, write_buffer_loop
+088 001D0        498                             LOAD            s1, #0xd0               ;command to confirm write
+089 360EA        499                             CALL            sf_byte_write
+08A 360F7        500                             CALL            wait_sf_ready           ;wait for program to complete and set read array mode
+08B 24000        501                             RETURN
                  502     ;
                  503     ;
                  504     ;**************************************************************************************
                  505     ; Write Command - Write one byte to specified address
                  506     ;**************************************************************************************
                  507     ;
-073 362FE        508     write_command:          CALL            send_address            ;obtain 24-bit address 000000 to FFFFFF
-074 3618D        509                             CALL            obtain_8bits
-075 3588C        510                             JUMP            c, write_command        ;bad input address
-076 10900        511                             LOAD            s9, s0
-077 3618D        512                             CALL            obtain_8bits
-078 3588C        513                             JUMP            c, write_command        ;bad input address
-079 10800        514                             LOAD            s8, s0
-07A 3618D        515                             CALL            obtain_8bits
-07B 3588C        516                             JUMP            c, write_command        ;bad input address
-07C 10700        517                             LOAD            s7, s0
-07D 3630E        518     get_data:               CALL            send_data               ;obtain 8-bit data 00 to FF into s0
-07E 3618D        519                             CALL            obtain_8bits
-07F 35896        520                             JUMP            c, get_data             ;bad input data
-080 3609D        521                             CALL            sf_single_byte_write
-081 36193        522                             CALL            send_cr
-082 3622C        523                             CALL            send_ok
-083 34007        524                             JUMP            prompt
+08C 362FE        508     write_command:          CALL            send_address            ;obtain 24-bit address 000000 to FFFFFF
+08D 3618D        509                             CALL            obtain_8bits
+08E 3588C        510                             JUMP            c, write_command        ;bad input address
+08F 10900        511                             LOAD            s9, s0
+090 3618D        512                             CALL            obtain_8bits
+091 3588C        513                             JUMP            c, write_command        ;bad input address
+092 10800        514                             LOAD            s8, s0
+093 3618D        515                             CALL            obtain_8bits
+094 3588C        516                             JUMP            c, write_command        ;bad input address
+095 10700        517                             LOAD            s7, s0
+096 3630E        518     get_data:               CALL            send_data               ;obtain 8-bit data 00 to FF into s0
+097 3618D        519                             CALL            obtain_8bits
+098 35896        520                             JUMP            c, get_data             ;bad input data
+099 3609D        521                             CALL            sf_single_byte_write
+09A 36193        522                             CALL            send_cr
+09B 3622C        523                             CALL            send_ok
+09C 34007        524                             JUMP            prompt
                  525     ;
                  526     ;
                  527     ;**************************************************************************************
@@ -569,54 +553,54 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  544     ;
                  545     ; Registers used s0,s1,s7,s8,s9
                  546     ;
-084 00140        547     sf_single_byte_write:   LOAD            s1, #0x40               ;command for single byte program
-085 360EA        548                             CALL            sf_byte_write
-086 10100        549                             LOAD            s1, s0                  ;write data to be programmed
-087 360EA        550                             CALL            sf_byte_write
-088 360F7        551                             CALL            wait_sf_ready           ;wait for program to complete
-089 24000        552                             RETURN
+09D 00140        547     sf_single_byte_write:   LOAD            s1, #0x40               ;command for single byte program
+09E 360EA        548                             CALL            sf_byte_write
+09F 10100        549                             LOAD            s1, s0                  ;write data to be programmed
+0A0 360EA        550                             CALL            sf_byte_write
+0A1 360F7        551                             CALL            wait_sf_ready           ;wait for program to complete
+0A2 24000        552                             RETURN
                  553     ;
                  554     ;
                  555     ;**************************************************************************************
                  556     ;Read Command - Read one page of memory at specified address
                  557     ;**************************************************************************************
                  558     ;
-08A 362FE        559     read_command:           CALL            send_address            ;obtain 24-bit address 000000 to FFFFFF
-08B 3618D        560                             CALL            obtain_8bits            ;read value from UART
-08C 358A3        561                             JUMP            c, read_command         ;bad input address
-08D 10900        562                             LOAD            s9, s0
-08E 3618D        563                             CALL            obtain_8bits
-08F 358A3        564                             JUMP            c, read_command         ;bad input address
-090 10800        565                             LOAD            s8, s0
-091 3618D        566                             CALL            obtain_8bits
-092 358A3        567                             JUMP            c, read_command         ;bad input address
-093 10700        568                             LOAD            s7, s0
-094 36193        569                             CALL            send_cr
-095 360B1        570                             CALL            send_sf_page
-096 3622C        571                             CALL            send_ok
-097 34007        572                             JUMP            prompt
+0A3 362FE        559     read_command:           CALL            send_address            ;obtain 24-bit address 000000 to FFFFFF
+0A4 3618D        560                             CALL            obtain_8bits            ;read value from UART
+0A5 358A3        561                             JUMP            c, read_command         ;bad input address
+0A6 10900        562                             LOAD            s9, s0
+0A7 3618D        563                             CALL            obtain_8bits
+0A8 358A3        564                             JUMP            c, read_command         ;bad input address
+0A9 10800        565                             LOAD            s8, s0
+0AA 3618D        566                             CALL            obtain_8bits
+0AB 358A3        567                             JUMP            c, read_command         ;bad input address
+0AC 10700        568                             LOAD            s7, s0
+0AD 36193        569                             CALL            send_cr
+0AE 360B1        570                             CALL            send_sf_page
+0AF 3622C        571                             CALL            send_ok
+0B0 34007        572                             JUMP            prompt
                  573     ;
                  574     ;The start address should be provided in register set [s9,s8,s7].
                  575     ;The display will be next 256 bytes displayed as 16 lines of 16 bytes
                  576     ;with each line commencing with the address of the first byte.
                  577     ;
-098 00610        578     send_sf_page:           LOAD            s6, #0x10               ;16 lines to display
-099 36193        579     send_sf_line:           CALL            send_cr
-09A 3616D        580                             CALL            send_hex_3bytes         ;display address
-09B 36196        581                             CALL            send_space
-09C 00510        582                             LOAD            s5, #0x10               ;16 bytes to display on a line
-09D 36196        583     send_sf_byte:           CALL            send_space
-09E 360E0        584                             CALL            sf_byte_read            ;read byte into s0
-09F 08701        585                             ADD             s7, #0x01               ;increment StrataFLASH address
-0A0 0A800        586                             ADDCY           s8, #0x00
-0A1 0A900        587                             ADDCY           s9, #0x00
-0A2 36167        588                             CALL            send_hex_byte           ;display byte
-0A3 0C501        589                             SUB             s5, #0x01               ;count bytes per line
-0A4 354B6        590                             JUMP            nz, send_sf_byte
-0A5 0C601        591                             SUB             s6, #0x01               ;count lines
-0A6 354B2        592                             JUMP            nz, send_sf_line
-0A7 36193        593                             CALL            send_cr
-0A8 24000        594                             RETURN
+0B1 00610        578     send_sf_page:           LOAD            s6, #0x10               ;16 lines to display
+0B2 36193        579     send_sf_line:           CALL            send_cr
+0B3 3616D        580                             CALL            send_hex_3bytes         ;display address
+0B4 36196        581                             CALL            send_space
+0B5 00510        582                             LOAD            s5, #0x10               ;16 bytes to display on a line
+0B6 36196        583     send_sf_byte:           CALL            send_space
+0B7 360E0        584                             CALL            sf_byte_read            ;read byte into s0
+0B8 08701        585                             ADD             s7, #0x01               ;increment StrataFLASH address
+0B9 0A800        586                             ADDCY           s8, #0x00
+0BA 0A900        587                             ADDCY           s9, #0x00
+0BB 36167        588                             CALL            send_hex_byte           ;display byte
+0BC 0C501        589                             SUB             s5, #0x01               ;count bytes per line
+0BD 354B6        590                             JUMP            nz, send_sf_byte
+0BE 0C601        591                             SUB             s6, #0x01               ;count lines
+0BF 354B2        592                             JUMP            nz, send_sf_line
+0C0 36193        593                             CALL            send_cr
+0C1 24000        594                             RETURN
                  595     ;
                  596     ;
                  597     ;**************************************************************************************
@@ -638,25 +622,25 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  613     ;
                  614     ; Registers used s0,s7,s8,s9
                  615     ;
-0A9 36193        616     sf_information:         CALL            send_cr                 ;send 'ID=' to terminal
-0AA 362C6        617                             CALL            send_id
-0AB 00F3D        618                             LOAD            uart_data, #character_equals
-0AC 36131        619                             CALL            send_to_uart
-0AD 36196        620                             CALL            send_space
-0AE 00900        621                             LOAD            s9, #0x00               ;define base address 000000
-0AF 00800        622                             LOAD            s8, #0x00
-0B0 00700        623                             LOAD            s7, #0x00
-0B1 00190        624                             LOAD            s1, #0x90               ;command to read device information
-0B2 360EA        625                             CALL            sf_byte_write
-0B3 360E0        626                             CALL            sf_byte_read            ;read Device Manufacturer Code into s0
-0B4 36167        627                             CALL            send_hex_byte           ;display byte
-0B5 36196        628                             CALL            send_space
-0B6 00702        629                             LOAD            s7, #0x02               ;change address
-0B7 360E0        630                             CALL            sf_byte_read            ;read Memory ID code into s0
-0B8 36167        631                             CALL            send_hex_byte           ;display byte
-0B9 36193        632                             CALL            send_cr
-0BA 360F4        633                             CALL            set_sf_read_array_mode  ;restore normal read array mode
-0BB 34007        634                             JUMP            prompt
+0C2 36193        616     sf_information:         CALL            send_cr                 ;send 'ID=' to terminal
+0C3 362C6        617                             CALL            send_id
+0C4 00F3D        618                             LOAD            uart_data, #character_equals
+0C5 36131        619                             CALL            send_to_uart
+0C6 36196        620                             CALL            send_space
+0C7 00900        621                             LOAD            s9, #0x00               ;define base address 000000
+0C8 00800        622                             LOAD            s8, #0x00
+0C9 00700        623                             LOAD            s7, #0x00
+0CA 00190        624                             LOAD            s1, #0x90               ;command to read device information
+0CB 360EA        625                             CALL            sf_byte_write
+0CC 360E0        626                             CALL            sf_byte_read            ;read Device Manufacturer Code into s0
+0CD 36167        627                             CALL            send_hex_byte           ;display byte
+0CE 36196        628                             CALL            send_space
+0CF 00702        629                             LOAD            s7, #0x02               ;change address
+0D0 360E0        630                             CALL            sf_byte_read            ;read Memory ID code into s0
+0D1 36167        631                             CALL            send_hex_byte           ;display byte
+0D2 36193        632                             CALL            send_cr
+0D3 360F4        633                             CALL            set_sf_read_array_mode  ;reload normal read array mode
+0D4 34007        634                             JUMP            prompt
                  635     ;
                  636     ;
                  637     ;**************************************************************************************
@@ -678,17 +662,17 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  653     ;
                  654     ; This mode is also entered automatically when performing program and erase operations.
                  655     ;
-0BC 00900        656     sf_status:              LOAD            s9, #0x00               ;define base address 000000
-0BD 00800        657                             LOAD            s8, #0x00
-0BE 00700        658                             LOAD            s7, #0x00
-0BF 00170        659                             LOAD            s1, #0x70               ;command to read status register
-0C0 360EA        660                             CALL            sf_byte_write
-0C1 36193        661                             CALL            send_cr
-0C2 360E0        662                             CALL            sf_byte_read            ;read status register into s0
-0C3 36167        663                             CALL            send_hex_byte           ;display byte
-0C4 36193        664                             CALL            send_cr
-0C5 360F4        665                             CALL            set_sf_read_array_mode
-0C6 34007        666                             JUMP            prompt
+0D5 00900        656     sf_status:              LOAD            s9, #0x00               ;define base address 000000
+0D6 00800        657                             LOAD            s8, #0x00
+0D7 00700        658                             LOAD            s7, #0x00
+0D8 00170        659                             LOAD            s1, #0x70               ;command to read status register
+0D9 360EA        660                             CALL            sf_byte_write
+0DA 36193        661                             CALL            send_cr
+0DB 360E0        662                             CALL            sf_byte_read            ;read status register into s0
+0DC 36167        663                             CALL            send_hex_byte           ;display byte
+0DD 36193        664                             CALL            send_cr
+0DE 360F4        665                             CALL            set_sf_read_array_mode
+0DF 34007        666                             JUMP            prompt
                  667     ;
                  668     ;
                  669     ;**************************************************************************************
@@ -710,16 +694,16 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  685     ;
                  686     ; Registers used s0,s1,s7,s8,s9
                  687     ;
-0C7 22980        688     sf_byte_read:           OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
-0C8 22840        689                             OUTPUT          s8, sf_addr_mi_port
-0C9 22720        690                             OUTPUT          s7, sf_addr_lo_port
-0CA 00105        691                             LOAD            s1, #0x05               ;set controls
-0CB 22108        692                             OUTPUT          s1, sf_control_port
-0CC 00106        693                             LOAD            s1, #0x06               ;>75ns delay
-0CD 00106        694                             LOAD            s1, #0x06               ;but do something useful!
-0CE 20002        695                             INPUT           s0, sf_data_in_port     ;read data byte
-0CF 22108        696                             OUTPUT          s1, sf_control_port     ;clear controls
-0D0 24000        697                             RETURN
+0E0 22980        688     sf_byte_read:           OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
+0E1 22840        689                             OUTPUT          s8, sf_addr_mi_port
+0E2 22720        690                             OUTPUT          s7, sf_addr_lo_port
+0E3 00105        691                             LOAD            s1, #0x05               ;set controls
+0E4 22108        692                             OUTPUT          s1, sf_control_port
+0E5 00106        693                             LOAD            s1, #0x06               ;>75ns delay
+0E6 00106        694                             LOAD            s1, #0x06               ;but do something useful!
+0E7 20002        695                             INPUT           s0, sf_data_in_port     ;read data byte
+0E8 22108        696                             OUTPUT          s1, sf_control_port     ;clear controls
+0E9 24000        697                             RETURN
                  698     ;
                  699     ;
                  700     ;**************************************************************************************
@@ -741,16 +725,16 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  716     ;
                  717     ; Registers used s1,s7,s8,s9
                  718     ;
-0D1 22980        719     sf_byte_write:          OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
-0D2 22840        720                             OUTPUT          s8, sf_addr_mi_port
-0D3 22720        721                             OUTPUT          s7, sf_addr_lo_port
-0D4 22110        722                             OUTPUT          s1, sf_data_out_port    ;set data byte to be written
-0D5 00100        723                             LOAD            s1, #0x00               ;set controls
-0D6 22108        724                             OUTPUT          s1, sf_control_port
-0D7 00106        725                             LOAD            s1, #0x06               ;>60ns delay
-0D8 00106        726                             LOAD            s1, #0x06               ;but do something useful!
-0D9 22108        727                             OUTPUT          s1, sf_control_port     ;clear controls
-0DA 24000        728                             RETURN
+0EA 22980        719     sf_byte_write:          OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
+0EB 22840        720                             OUTPUT          s8, sf_addr_mi_port
+0EC 22720        721                             OUTPUT          s7, sf_addr_lo_port
+0ED 22110        722                             OUTPUT          s1, sf_data_out_port    ;set data byte to be written
+0EE 00100        723                             LOAD            s1, #0x00               ;set controls
+0EF 22108        724                             OUTPUT          s1, sf_control_port
+0F0 00106        725                             LOAD            s1, #0x06               ;>60ns delay
+0F1 00106        726                             LOAD            s1, #0x06               ;but do something useful!
+0F2 22108        727                             OUTPUT          s1, sf_control_port     ;clear controls
+0F3 24000        728                             RETURN
                  729     ;
                  730     ;
                  731     ;**************************************************************************************
@@ -767,9 +751,9 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  742     ;
                  743     ; Registers used s1,s7,s8,s9
                  744     ;
-0DB 001FF        745     set_sf_read_array_mode: LOAD            s1, #0xff               ;command to read array
-0DC 360EA        746                             CALL            sf_byte_write
-0DD 24000        747                             RETURN
+0F4 001FF        745     set_sf_read_array_mode: LOAD            s1, #0xff               ;command to read array
+0F5 360EA        746                             CALL            sf_byte_write
+0F6 24000        747                             RETURN
                  748     ;
                  749     ;
                  750     ;**************************************************************************************
@@ -777,7 +761,7 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  752     ;**************************************************************************************
                  753     ;
                  754     ; This routine will typically be used after instigating a program or erase
-                 755     ; command. It continuously reads the StrataFLASH status register and tests the
+                 755     ; command. It continuously reads the StrataFLASH status register and loads the
                  756     ; information provided by bit7 which indicates if the memory is busy(0) or ready(1).
                  757     ; The routine waits for the ready condition before sending a read array command
                  758     ; which puts the memory back to normal read mode.
@@ -790,16 +774,15 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  765     ; Registers used s0,s1,s7,s8,s9,sD,sE   (s7,s8,s9 not changed)
                  766     ;
                  767     ;
-0DE 00E00        768     wait_sf_ready:          LOAD            se, #0x00               ;clear 16-bit counter timer
-0DF 00D00        769                             LOAD            sd, #0x00
-0E0 08D01        770     wait_sf_loop:           ADD             sd, #0x01               ;increment counter timer
-0E1 0AE00        771                             ADDCY           se, #0x00
-0E2 360E0        772                             CALL            sf_byte_read            ;read status register into s0
-                 773                             TEST            s0, #0x80               ;test ready/busy flag
-E: instruction not supported on the this device: TEST sX, kk.
-0E3 350F9        774                             JUMP            z, wait_sf_loop
-0E4 360F4        775                             CALL            set_sf_read_array_mode  ;restore normal read array mode
-0E5 24000        776                             RETURN
+0F7 00E00        768     wait_sf_ready:          LOAD            se, #0x00               ;clear 16-bit counter timer
+0F8 00D00        769                             LOAD            sd, #0x00
+0F9 08D01        770     wait_sf_loop:           ADD             sd, #0x01               ;increment counter timer
+0FA 0AE00        771                             ADDCY           se, #0x00
+0FB 360E0        772                             CALL            sf_byte_read            ;read status register into s0
+0FC 00080        773                             load            s0, #0x80               ;load ready/busy flag
+0FD 350F9        774                             JUMP            z, wait_sf_loop
+0FE 360F4        775                             CALL            set_sf_read_array_mode  ;reload normal read array mode
+0FF 24000        776                             RETURN
                  777     ;
                  778     ;
                  779     ;**************************************************************************************
@@ -810,13 +793,13 @@ E: instruction not supported on the this device: TEST sX, kk.
                  784     ; StrataFLASH memory in 600ns increments. This routine can be used to display that
                  785     ; value if required.
                  786     ;
-0E6 36193        787     send_counter_timer:     CALL            send_cr
-0E7 10070        788                             LOAD            s0, se
-0E8 36167        789                             CALL            send_hex_byte
-0E9 10068        790                             LOAD            s0, sd
-0EA 36167        791                             CALL            send_hex_byte
-0EB 36193        792                             CALL            send_cr
-0EC 24000        793                             RETURN
+100 36193        787     send_counter_timer:     CALL            send_cr
+101 10070        788                             LOAD            s0, se
+102 36167        789                             CALL            send_hex_byte
+103 10068        790                             LOAD            s0, sd
+104 36167        791                             CALL            send_hex_byte
+105 36193        792                             CALL            send_cr
+106 24000        793                             RETURN
                  794     ;
                  795     ;
                  796     ;**************************************************************************************
@@ -833,31 +816,31 @@ E: instruction not supported on the this device: TEST sX, kk.
                  807     ;
                  808     ;Registers used s0
                  809     ;
-0ED 0000B        810     delay_1us:              LOAD            s0, #delay_1us_constant
-0EE 0C001        811     wait_1us:               SUB             s0, #0x01
-0EF 35508        812                             JUMP            nz, wait_1us
-0F0 24000        813                             RETURN
+107 0000B        810     delay_1us:              LOAD            s0, #delay_1us_constant
+108 0C001        811     wait_1us:               SUB             s0, #0x01
+109 35508        812                             JUMP            nz, wait_1us
+10A 24000        813                             RETURN
                  814     ;
                  815     ;Delay of 40us.
                  816     ;
                  817     ;Registers used s0, s1
                  818     ;
-0F1 00128        819     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
-0F2 36107        820     wait_40us:              CALL            delay_1us
-0F3 0C101        821                             SUB             s1, #0x01
-0F4 3550C        822                             JUMP            nz, wait_40us
-0F5 24000        823                             RETURN
+10B 00128        819     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+10C 36107        820     wait_40us:              CALL            delay_1us
+10D 0C101        821                             SUB             s1, #0x01
+10E 3550C        822                             JUMP            nz, wait_40us
+10F 24000        823                             RETURN
                  824     ;
                  825     ;
                  826     ;Delay of 1ms.
                  827     ;
                  828     ;Registers used s0, s1, s2
                  829     ;
-0F6 00219        830     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
-0F7 3610B        831     wait_1ms:               CALL            delay_40us
-0F8 0C201        832                             SUB             s2, #0x01
-0F9 35511        833                             JUMP            nz, wait_1ms
-0FA 24000        834                             RETURN
+110 00219        830     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+111 3610B        831     wait_1ms:               CALL            delay_40us
+112 0C201        832                             SUB             s2, #0x01
+113 35511        833                             JUMP            nz, wait_1ms
+114 24000        834                             RETURN
                  835     ;
                  836     ;Delay of 20ms.
                  837     ;
@@ -865,21 +848,21 @@ E: instruction not supported on the this device: TEST sX, kk.
                  839     ;
                  840     ;Registers used s0, s1, s2, s3
                  841     ;
-0FB 00314        842     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
-0FC 36110        843     wait_20ms:              CALL            delay_1ms
-0FD 0C301        844                             SUB             s3, #0x01
-0FE 35516        845                             JUMP            nz, wait_20ms
-0FF 24000        846                             RETURN
+115 00314        842     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+116 36110        843     wait_20ms:              CALL            delay_1ms
+117 0C301        844                             SUB             s3, #0x01
+118 35516        845                             JUMP            nz, wait_20ms
+119 24000        846                             RETURN
                  847     ;
                  848     ;Delay of approximately 1 second.
                  849     ;
                  850     ;Registers used s0, s1, s2, s3, s4
                  851     ;
-100 00414        852     delay_1s:               LOAD            s4, #0x14               ;50 x 20ms = 1000ms
-101 36115        853     wait_1s:                CALL            delay_20ms
-102 0C401        854                             SUB             s4, #0x01
-103 3551B        855                             JUMP            nz, wait_1s
-104 24000        856                             RETURN
+11A 00414        852     delay_1s:               LOAD            s4, #0x14               ;50 x 20ms = 1000ms
+11B 36115        853     wait_1s:                CALL            delay_20ms
+11C 0C401        854                             SUB             s4, #0x01
+11D 3551B        855                             JUMP            nz, wait_1s
+11E 24000        856                             RETURN
                  857     ;
                  858     ;
                  859     ;**************************************************************************************
@@ -890,7 +873,7 @@ E: instruction not supported on the this device: TEST sX, kk.
                  864     ;
                  865     ;Character read will be returned in a register called 'UART_data'.
                  866     ;
-                 867     ;The routine first tests the receiver FIFO buffer to see if data is present.
+                 867     ;The routine first loads the receiver FIFO buffer to see if data is present.
                  868     ;If the FIFO is empty, the routine waits until there is a character to read.
                  869     ;As this could take any amount of time the wait loop could include a call to a
                  870     ;subroutine which performs a useful function.
@@ -912,28 +895,24 @@ E: instruction not supported on the this device: TEST sX, kk.
                  886     ;
                  887     ;Registers used s0 and UART_data
                  888     ;
-105 3C000        889     read_from_uart:         DISABLE         interrupt
-106 20000        890     wait_rx_character:      INPUT           s0, status_port         ;test Rx_FIFO buffer
-                 891                             TEST            s0, #rx_data_present
-E: instruction not supported on the this device: TEST sX, kk.
-107 35524        892                             JUMP            nz, read_character
-108 34120        893                             JUMP            wait_rx_character
-109 20F01        894     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
-                 895                             COMPARE         uart_data, #character_xoff ;test for XOFF
-E: instruction not supported on the this device: COMPARE sX, kk.
-10A 35129        896                             JUMP            z, wait_xon
-10B 3C001        897                             ENABLE          interrupt               ;normal finish
-10C 24000        898                             RETURN
-10D 20000        899     wait_xon:               INPUT           s0, status_port         ;test Rx_FIFO buffer
-                 900                             TEST            s0, #rx_data_present
-E: instruction not supported on the this device: TEST sX, kk.
-10E 3552D        901                             JUMP            nz, read_xon
-10F 34129        902                             JUMP            wait_xon
-110 20F01        903     read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
-                 904                             COMPARE         uart_data, #character_xon ;test for XON
-E: instruction not supported on the this device: COMPARE sX, kk.
-111 35120        905                             JUMP            z, wait_rx_character    ;now wait for normal character
-112 34129        906                             JUMP            wait_xon                ;continue to wait for XON
+11F 3C000        889     read_from_uart:         DISABLE         interrupt
+120 20000        890     wait_rx_character:      INPUT           s0, status_port         ;load Rx_FIFO buffer
+121 00008        891                             load            s0, #rx_data_present
+122 35524        892                             JUMP            nz, read_character
+123 34120        893                             JUMP            wait_rx_character
+124 20F01        894     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+125 00F13        895                             load         uart_data, #character_xoff ;load for XOFF
+126 35129        896                             JUMP            z, wait_xon
+127 3C001        897                             ENABLE          interrupt               ;normal finish
+128 24000        898                             RETURN
+129 20000        899     wait_xon:               INPUT           s0, status_port         ;load Rx_FIFO buffer
+12A 00008        900                             load            s0, #rx_data_present
+12B 3552D        901                             JUMP            nz, read_xon
+12C 34129        902                             JUMP            wait_xon
+12D 20F01        903     read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
+12E 00F11        904                             load         uart_data, #character_xon ;load for XON
+12F 35120        905                             JUMP            z, wait_rx_character    ;now wait for normal character
+130 34129        906                             JUMP            wait_xon                ;continue to wait for XON
                  907     ;
                  908     ;
                  909     ;
@@ -941,7 +920,7 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  911     ;
                  912     ;Character supplied in register called 'UART_data'.
                  913     ;
-                 914     ;The routine first tests the transmit FIFO buffer is empty.
+                 914     ;The routine first loads the transmit FIFO buffer is empty.
                  915     ;If the FIFO currently has any data, the routine waits until it is empty.
                  916     ;Ultimately this means that only one character is sent at a time which
                  917     ;could be important if the PC at the other end of the link transmits
@@ -949,13 +928,12 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  919     ;
                  920     ;Registers used s0
                  921     ;
-113 20000        922     send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
-                 923                             TEST            s0, #tx_data_present
-E: instruction not supported on the this device: TEST sX, kk.
-114 35135        924                             JUMP            z, uart_write
-115 34131        925                             JUMP            send_to_uart
-116 22F04        926     uart_write:             OUTPUT          uart_data, uart_write_port
-117 24000        927                             RETURN
+131 20000        922     send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
+132 00001        923                             load            s0, #tx_data_present
+133 35135        924                             JUMP            z, uart_write
+134 34131        925                             JUMP            send_to_uart
+135 22F04        926     uart_write:             OUTPUT          uart_data, uart_write_port
+136 24000        927                             RETURN
                  928     ;
                  929     ;
                  930     ;**************************************************************************************
@@ -974,13 +952,13 @@ E: instruction not supported on the this device: TEST sX, kk.
                  943     ;
                  944     ;Registers used s0 and s1.
                  945     ;
-118 00130        946     decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
-119 08101        947     test_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
-11A 0C00A        948                             SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
-11B 35D38        949                             JUMP            nc, test_for_ten        ;repeat if subtraction was possible without underflow.
-11C 0C101        950                             SUB             s1, #0x01               ;'tens' value one less ten due to underflow
-11D 0803A        951                             ADD             s0, #0x3a               ;restore units value (the remainder) and convert to ASCII
-11E 24000        952                             RETURN
+137 00130        946     decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
+138 08101        947     load_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
+139 0C00A        948                             SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
+13A 35D38        949                             JUMP            nc, load_for_ten        ;repeat if subtraction was possible without underflow.
+13B 0C101        950                             SUB             s1, #0x01               ;'tens' value one less ten due to underflow
+13C 0803A        951                             ADD             s0, #0x3a               ;reload units value (the remainder) and convert to ASCII
+13D 24000        952                             RETURN
                  953     ;
                  954     ;
                  955     ;
@@ -993,14 +971,12 @@ E: instruction not supported on the this device: TEST sX, kk.
                  962     ;
                  963     ;Registers used s0.
                  964     ;
-  0013E          965     upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
-E: instruction not supported on the this device: COMPARE sX, kk.
-11F 25800        966                             RETURN          c
-                 967                             COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
-E: instruction not supported on the this device: COMPARE sX, kk.
-120 25C00        968                             RETURN          nc
-121 020DF        969                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
-122 24000        970                             RETURN
+13E 00061        965     upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+13F 25800        966                             RETURN          c
+140 0007B        967                             load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+141 25C00        968                             RETURN          nc
+142 020DF        969                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+143 24000        970                             RETURN
                  971     ;
                  972     ;
                  973     ;Convert character '0' to '9' to numerical value in range 0 to 9
@@ -1012,38 +988,38 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  979     ;
                  980     ;Registers used s0.
                  981     ;
-123 080C6        982     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
-124 25800        983                             RETURN          c                       ;carry flag is set
-125 0C0F6        984                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
-126 24000        985                             RETURN                                  ;carry is set if value not in range
+144 080C6        982     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
+145 25800        983                             RETURN          c                       ;carry flag is set
+146 0C0F6        984                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
+147 24000        985                             RETURN                                  ;carry is set if value not in range
                  986     ;
                  987     ;
                  988     ;Determine the numerical value of a two character decimal string held in
                  989     ;scratch pad memory such the result is in the range 0 to 99 (00 to 63 hex).
                  990     ;
-                 991     ;The string must be stored in two consecutive memory locations and the
+                 991     ;The string must be loadd in two consecutive memory locations and the
                  992     ;location of the first (tens) character supplied in the s1 register.
                  993     ;The result is provided in register s2. Strings not using characters in the
                  994     ;range '0' to '9' are signified by the return with the CARRY flag set.
                  995     ;
                  996     ;Registers used s0, s1 and s2.
                  997     ;
-  00148          998     _2char_to_value:        FETCH           s0, @s1                 ;read 'tens' character
-E: instruction not supported on the this device: FETCH sX, sY.
-127 36144        999                             CALL            _1char_to_value         ;convert to numerical value
-128 25800       1000                             RETURN          c                       ;bad character - CARRY set
-129 10200       1001                             LOAD            s2, s0
-12A 28206       1002                             SL0             s2                      ;multiply 'tens' value by 10 (0A hex)
-12B 28206       1003                             SL0             s2
-12C 18200       1004                             ADD             s2, s0
-12D 28206       1005                             SL0             s2
-12E 08101       1006                             ADD             s1, #0x01               ;read 'units' character
-                1007                             FETCH           s0, @s1
-E: instruction not supported on the this device: FETCH sX, sY.
-12F 36144       1008                             CALL            _1char_to_value         ;convert to numerical value
-130 25800       1009                             RETURN          c                       ;bad character - CARRY set
-131 18200       1010                             ADD             s2, s0                  ;add units to result and clear CARRY flag
-132 24000       1011                             RETURN
+148 00001        998     _2char_to_value:        load           s0, #s1                 ;read 'tens' character
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+149 36144        999                             CALL            _1char_to_value         ;convert to numerical value
+14A 25800       1000                             RETURN          c                       ;bad character - CARRY set
+14B 10200       1001                             LOAD            s2, s0
+14C 28206       1002                             SL0             s2                      ;multiply 'tens' value by 10 (0A hex)
+14D 28206       1003                             SL0             s2
+14E 18200       1004                             ADD             s2, s0
+14F 28206       1005                             SL0             s2
+150 08101       1006                             ADD             s1, #0x01               ;read 'units' character
+151 00001       1007                             load           s0, #s1
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+152 36144       1008                             CALL            _1char_to_value         ;convert to numerical value
+153 25800       1009                             RETURN          c                       ;bad character - CARRY set
+154 18200       1010                             ADD             s2, s0                  ;add units to result and clear CARRY flag
+155 24000       1011                             RETURN
                 1012     ;
                 1013     ;
                 1014     ;Convert hexadecimal value provided in register s0 into ASCII characters
@@ -1059,40 +1035,40 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1024     ;
                 1025     ;Registers used s0, s1 and s2.
                 1026     ;
-133 10100       1027     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
-134 2800E       1028                             SR0             s0                      ;isolate upper nibble
-135 2800E       1029                             SR0             s0
-136 2800E       1030                             SR0             s0
-137 2800E       1031                             SR0             s0
-138 36162       1032                             CALL            hex_to_ascii            ;convert
-139 10200       1033                             LOAD            s2, s0                  ;upper nibble value in s2
-13A 10008       1034                             LOAD            s0, s1                  ;restore complete value
-13B 0200F       1035                             AND             s0, #0x0f               ;isolate lower nibble
-13C 36162       1036                             CALL            hex_to_ascii            ;convert
-13D 10100       1037                             LOAD            s1, s0                  ;lower nibble value in s1
-13E 24000       1038                             RETURN
+156 10100       1027     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+157 2800E       1028                             SR0             s0                      ;isolate upper nibble
+158 2800E       1029                             SR0             s0
+159 2800E       1030                             SR0             s0
+15A 2800E       1031                             SR0             s0
+15B 36162       1032                             CALL            hex_to_ascii            ;convert
+15C 10200       1033                             LOAD            s2, s0                  ;upper nibble value in s2
+15D 10008       1034                             LOAD            s0, s1                  ;reload complete value
+15E 0200F       1035                             AND             s0, #0x0f               ;isolate lower nibble
+15F 36162       1036                             CALL            hex_to_ascii            ;convert
+160 10100       1037                             LOAD            s1, s0                  ;lower nibble value in s1
+161 24000       1038                             RETURN
                 1039     ;
                 1040     ;Convert hexadecimal value provided in register s0 into ASCII character
                 1041     ;
                 1042     ;Register used s0
                 1043     ;
-13F 0C00A       1044     hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
-140 35965       1045                             JUMP            c, number_char
-141 08007       1046                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
-142 0803A       1047     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
-143 24000       1048                             RETURN
+162 0C00A       1044     hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
+163 35965       1045                             JUMP            c, number_char
+164 08007       1046                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+165 0803A       1047     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+166 24000       1048                             RETURN
                 1049     ;
                 1050     ;
                 1051     ;Send the two character HEX value of the register contents 's0' to the UART
                 1052     ;
                 1053     ;Registers used s0, s1, s2
                 1054     ;
-144 36156       1055     send_hex_byte:          CALL            hex_byte_to_ascii
-145 10F10       1056                             LOAD            uart_data, s2
-146 36131       1057                             CALL            send_to_uart
-147 10F08       1058                             LOAD            uart_data, s1
-148 36131       1059                             CALL            send_to_uart
-149 24000       1060                             RETURN
+167 36156       1055     send_hex_byte:          CALL            hex_byte_to_ascii
+168 10F10       1056                             LOAD            uart_data, s2
+169 36131       1057                             CALL            send_to_uart
+16A 10F08       1058                             LOAD            uart_data, s1
+16B 36131       1059                             CALL            send_to_uart
+16C 24000       1060                             RETURN
                 1061     ;
                 1062     ;
                 1063     ;
@@ -1100,13 +1076,13 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1065     ;
                 1066     ;Registers used s0, s1, s2
                 1067     ;
-14A 10048       1068     send_hex_3bytes:        LOAD            s0, s9
-14B 36167       1069                             CALL            send_hex_byte
-14C 10040       1070                             LOAD            s0, s8
-14D 36167       1071                             CALL            send_hex_byte
-14E 10038       1072                             LOAD            s0, s7
-14F 36167       1073                             CALL            send_hex_byte
-150 24000       1074                             RETURN
+16D 10048       1068     send_hex_3bytes:        LOAD            s0, s9
+16E 36167       1069                             CALL            send_hex_byte
+16F 10040       1070                             LOAD            s0, s8
+170 36167       1071                             CALL            send_hex_byte
+171 10038       1072                             LOAD            s0, s7
+172 36167       1073                             CALL            send_hex_byte
+173 24000       1074                             RETURN
                 1075     ;
                 1076     ;
                 1077     ;Convert the HEX ASCII characters contained in 's3' and 's2' into
@@ -1119,19 +1095,19 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1084     ;
                 1085     ;Registers used s0, s2 and s3.
                 1086     ;
-151 10018       1087     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
-152 36181       1088                             CALL            ascii_to_hex            ;convert to value
-153 25800       1089                             RETURN          c                       ;reject if out of range
-154 10300       1090                             LOAD            s3, s0                  ;remember value
-155 28306       1091                             SL0             s3                      ;multiply value by 16 to put in upper nibble
-156 28306       1092                             SL0             s3
-157 28306       1093                             SL0             s3
-158 28306       1094                             SL0             s3
-159 10010       1095                             LOAD            s0, s2                  ;Take lower nibble
-15A 36181       1096                             CALL            ascii_to_hex            ;convert to value
-15B 25800       1097                             RETURN          c                       ;reject if out of range
-15C 14018       1098                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
-15D 24000       1099                             RETURN
+174 10018       1087     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+175 36181       1088                             CALL            ascii_to_hex            ;convert to value
+176 25800       1089                             RETURN          c                       ;reject if out of range
+177 10300       1090                             LOAD            s3, s0                  ;remember value
+178 28306       1091                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+179 28306       1092                             SL0             s3
+17A 28306       1093                             SL0             s3
+17B 28306       1094                             SL0             s3
+17C 10010       1095                             LOAD            s0, s2                  ;Take lower nibble
+17D 36181       1096                             CALL            ascii_to_hex            ;convert to value
+17E 25800       1097                             RETURN          c                       ;reject if out of range
+17F 14018       1098                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+180 24000       1099                             RETURN
                 1100     ;
                 1101     ;
                 1102     ;Routine to convert ASCII data in 's0' to an equivalent HEX value.
@@ -1140,28 +1116,28 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1105     ;
                 1106     ;Register used s0
                 1107     ;
-15E 080B9       1108     ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
-15F 25800       1109                             RETURN          c
-160 0C0E9       1110                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
-161 25800       1111                             RETURN          c                       ;reject below ASCII code 30 ('0')
-162 0C011       1112                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
-163 35D8B       1113                             JUMP            nc, ascii_letter
-164 08007       1114                             ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
-165 25800       1115                             RETURN          c
-166 0C0F6       1116                             SUB             s0, #0xf6               ;convert to range 00 to 09
-167 24000       1117                             RETURN
-168 0800A       1118     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
-169 24000       1119                             RETURN
+181 080B9       1108     ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
+182 25800       1109                             RETURN          c
+183 0C0E9       1110                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+184 25800       1111                             RETURN          c                       ;reject below ASCII code 30 ('0')
+185 0C011       1112                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+186 35D8B       1113                             JUMP            nc, ascii_letter
+187 08007       1114                             ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
+188 25800       1115                             RETURN          c
+189 0C0F6       1116                             SUB             s0, #0xf6               ;convert to range 00 to 09
+18A 24000       1117                             RETURN
+18B 0800A       1118     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+18C 24000       1119                             RETURN
                 1120     ;
                 1121     ;
                 1122     ;Read two hex characters from UART and convert to single byte data
                 1123     ;
-16A 36022       1124     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
-16B 10300       1125                             LOAD            s3, s0
-16C 36022       1126                             CALL            read_upper_case
-16D 10200       1127                             LOAD            s2, s0
-16E 36174       1128                             CALL            ascii_byte_to_hex
-16F 24000       1129                             RETURN
+18D 36022       1124     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
+18E 10300       1125                             LOAD            s3, s0
+18F 36022       1126                             CALL            read_upper_case
+190 10200       1127                             LOAD            s2, s0
+191 36174       1128                             CALL            ascii_byte_to_hex
+192 24000       1129                             RETURN
                 1130     ;
                 1131     ;**************************************************************************************
                 1132     ;Text messages
@@ -1170,447 +1146,447 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1135     ;
                 1136     ;Send Carriage Return to the UART
                 1137     ;
-170 00F0D       1138     send_cr:                LOAD            uart_data, #character_cr
-171 36131       1139                             CALL            send_to_uart
-172 24000       1140                             RETURN
+193 00F0D       1138     send_cr:                LOAD            uart_data, #character_cr
+194 36131       1139                             CALL            send_to_uart
+195 24000       1140                             RETURN
                 1141     ;
                 1142     ;Send a space to the UART
                 1143     ;
-173 00F20       1144     send_space:             LOAD            uart_data, #character_space
-174 36131       1145                             CALL            send_to_uart
-175 24000       1146                             RETURN
+196 00F20       1144     send_space:             LOAD            uart_data, #character_space
+197 36131       1145                             CALL            send_to_uart
+198 24000       1146                             RETURN
                 1147     ;
                 1148     ;
                 1149     ;Send 'PicoBlaze NOR FLASH Programmer' string to the UART
                 1150     ;
-176 36193       1151     send_welcome:           CALL            send_cr
-177 36193       1152                             CALL            send_cr
-178 00F50       1153                             LOAD            uart_data, #_character_p
-179 36131       1154                             CALL            send_to_uart
-17A 00F69       1155                             LOAD            uart_data, #character_i
-17B 36131       1156                             CALL            send_to_uart
-17C 00F63       1157                             LOAD            uart_data, #character_c
-17D 36131       1158                             CALL            send_to_uart
-17E 00F6F       1159                             LOAD            uart_data, #character_o
-17F 36131       1160                             CALL            send_to_uart
-180 00F42       1161                             LOAD            uart_data, #_character_b
-181 36131       1162                             CALL            send_to_uart
-182 00F6C       1163                             LOAD            uart_data, #character_l
-183 36131       1164                             CALL            send_to_uart
-184 00F61       1165                             LOAD            uart_data, #character_a
-185 36131       1166                             CALL            send_to_uart
-186 00F7A       1167                             LOAD            uart_data, #character_z
-187 36131       1168                             CALL            send_to_uart
-188 00F65       1169                             LOAD            uart_data, #character_e
-189 36131       1170                             CALL            send_to_uart
-18A 36196       1171                             CALL            send_space
-18B 00F4E       1172                             LOAD            uart_data, #_character_n
-18C 36131       1173                             CALL            send_to_uart
-18D 00F4F       1174                             LOAD            uart_data, #_character_o
-18E 36131       1175                             CALL            send_to_uart
-18F 00F52       1176                             LOAD            uart_data, #_character_r
-190 36131       1177                             CALL            send_to_uart
-191 36196       1178                             CALL            send_space
-192 00F46       1179                             LOAD            uart_data, #_character_f
-193 36131       1180                             CALL            send_to_uart
-194 00F4C       1181                             LOAD            uart_data, #_character_l
-195 36131       1182                             CALL            send_to_uart
-196 00F41       1183                             LOAD            uart_data, #_character_a
-197 36131       1184                             CALL            send_to_uart
-198 00F53       1185                             LOAD            uart_data, #_character_s
-199 36131       1186                             CALL            send_to_uart
-19A 00F48       1187                             LOAD            uart_data, #_character_h
-19B 36131       1188                             CALL            send_to_uart
-19C 36196       1189                             CALL            send_space
-19D 00F50       1190                             LOAD            uart_data, #_character_p
-19E 36131       1191                             CALL            send_to_uart
-19F 00F72       1192                             LOAD            uart_data, #character_r
-1A0 36131       1193                             CALL            send_to_uart
-1A1 00F6F       1194                             LOAD            uart_data, #character_o
-1A2 36131       1195                             CALL            send_to_uart
-1A3 00F67       1196                             LOAD            uart_data, #character_g
-1A4 36131       1197                             CALL            send_to_uart
-1A5 00F72       1198                             LOAD            uart_data, #character_r
-1A6 36131       1199                             CALL            send_to_uart
-1A7 00F61       1200                             LOAD            uart_data, #character_a
-1A8 36131       1201                             CALL            send_to_uart
-1A9 00F6D       1202                             LOAD            uart_data, #character_m
-1AA 36131       1203                             CALL            send_to_uart
-1AB 00F6D       1204                             LOAD            uart_data, #character_m
-1AC 36131       1205                             CALL            send_to_uart
-1AD 00F65       1206                             LOAD            uart_data, #character_e
-1AE 36131       1207                             CALL            send_to_uart
-1AF 00F72       1208                             LOAD            uart_data, #character_r
-1B0 36131       1209                             CALL            send_to_uart
-1B1 36196       1210                             CALL            send_space
-1B2 00F76       1211                             LOAD            uart_data, #character_v
-1B3 36131       1212                             CALL            send_to_uart
-1B4 00F31       1213                             LOAD            uart_data, #character_1
-1B5 36131       1214                             CALL            send_to_uart
-1B6 00F2E       1215                             LOAD            uart_data, #character_fullstop
-1B7 36131       1216                             CALL            send_to_uart
-1B8 00F30       1217                             LOAD            uart_data, #character_0
-1B9 36131       1218                             CALL            send_to_uart
-1BA 00F30       1219                             LOAD            uart_data, #character_0
-1BB 36131       1220                             CALL            send_to_uart
-1BC 36193       1221                             CALL            send_cr
-1BD 36193       1222                             CALL            send_cr
-1BE 24000       1223                             RETURN
+199 36193       1151     send_welcome:           CALL            send_cr
+19A 36193       1152                             CALL            send_cr
+19B 00F50       1153                             LOAD            uart_data, #_character_p
+19C 36131       1154                             CALL            send_to_uart
+19D 00F69       1155                             LOAD            uart_data, #character_i
+19E 36131       1156                             CALL            send_to_uart
+19F 00F63       1157                             LOAD            uart_data, #character_c
+1A0 36131       1158                             CALL            send_to_uart
+1A1 00F6F       1159                             LOAD            uart_data, #character_o
+1A2 36131       1160                             CALL            send_to_uart
+1A3 00F42       1161                             LOAD            uart_data, #_character_b
+1A4 36131       1162                             CALL            send_to_uart
+1A5 00F6C       1163                             LOAD            uart_data, #character_l
+1A6 36131       1164                             CALL            send_to_uart
+1A7 00F61       1165                             LOAD            uart_data, #character_a
+1A8 36131       1166                             CALL            send_to_uart
+1A9 00F7A       1167                             LOAD            uart_data, #character_z
+1AA 36131       1168                             CALL            send_to_uart
+1AB 00F65       1169                             LOAD            uart_data, #character_e
+1AC 36131       1170                             CALL            send_to_uart
+1AD 36196       1171                             CALL            send_space
+1AE 00F4E       1172                             LOAD            uart_data, #_character_n
+1AF 36131       1173                             CALL            send_to_uart
+1B0 00F4F       1174                             LOAD            uart_data, #_character_o
+1B1 36131       1175                             CALL            send_to_uart
+1B2 00F52       1176                             LOAD            uart_data, #_character_r
+1B3 36131       1177                             CALL            send_to_uart
+1B4 36196       1178                             CALL            send_space
+1B5 00F46       1179                             LOAD            uart_data, #_character_f
+1B6 36131       1180                             CALL            send_to_uart
+1B7 00F4C       1181                             LOAD            uart_data, #_character_l
+1B8 36131       1182                             CALL            send_to_uart
+1B9 00F41       1183                             LOAD            uart_data, #_character_a
+1BA 36131       1184                             CALL            send_to_uart
+1BB 00F53       1185                             LOAD            uart_data, #_character_s
+1BC 36131       1186                             CALL            send_to_uart
+1BD 00F48       1187                             LOAD            uart_data, #_character_h
+1BE 36131       1188                             CALL            send_to_uart
+1BF 36196       1189                             CALL            send_space
+1C0 00F50       1190                             LOAD            uart_data, #_character_p
+1C1 36131       1191                             CALL            send_to_uart
+1C2 00F72       1192                             LOAD            uart_data, #character_r
+1C3 36131       1193                             CALL            send_to_uart
+1C4 00F6F       1194                             LOAD            uart_data, #character_o
+1C5 36131       1195                             CALL            send_to_uart
+1C6 00F67       1196                             LOAD            uart_data, #character_g
+1C7 36131       1197                             CALL            send_to_uart
+1C8 00F72       1198                             LOAD            uart_data, #character_r
+1C9 36131       1199                             CALL            send_to_uart
+1CA 00F61       1200                             LOAD            uart_data, #character_a
+1CB 36131       1201                             CALL            send_to_uart
+1CC 00F6D       1202                             LOAD            uart_data, #character_m
+1CD 36131       1203                             CALL            send_to_uart
+1CE 00F6D       1204                             LOAD            uart_data, #character_m
+1CF 36131       1205                             CALL            send_to_uart
+1D0 00F65       1206                             LOAD            uart_data, #character_e
+1D1 36131       1207                             CALL            send_to_uart
+1D2 00F72       1208                             LOAD            uart_data, #character_r
+1D3 36131       1209                             CALL            send_to_uart
+1D4 36196       1210                             CALL            send_space
+1D5 00F76       1211                             LOAD            uart_data, #character_v
+1D6 36131       1212                             CALL            send_to_uart
+1D7 00F31       1213                             LOAD            uart_data, #character_1
+1D8 36131       1214                             CALL            send_to_uart
+1D9 00F2E       1215                             LOAD            uart_data, #character_fullstop
+1DA 36131       1216                             CALL            send_to_uart
+1DB 00F30       1217                             LOAD            uart_data, #character_0
+1DC 36131       1218                             CALL            send_to_uart
+1DD 00F30       1219                             LOAD            uart_data, #character_0
+1DE 36131       1220                             CALL            send_to_uart
+1DF 36193       1221                             CALL            send_cr
+1E0 36193       1222                             CALL            send_cr
+1E1 24000       1223                             RETURN
                 1224     ;
                 1225     ;
                 1226     ;
                 1227     ;Send 'Waiting_MCS_file' string to the UART
                 1228     ;
-1BF 00F57       1229     send_waiting_mcs_file:  LOAD            uart_data, #_character_w
-1C0 36131       1230                             CALL            send_to_uart
-1C1 00F61       1231                             LOAD            uart_data, #character_a
-1C2 36131       1232                             CALL            send_to_uart
-1C3 00F69       1233                             LOAD            uart_data, #character_i
-1C4 36131       1234                             CALL            send_to_uart
-1C5 00F74       1235                             LOAD            uart_data, #character_t
-1C6 36131       1236                             CALL            send_to_uart
-1C7 00F69       1237                             LOAD            uart_data, #character_i
-1C8 36131       1238                             CALL            send_to_uart
-1C9 00F6E       1239                             LOAD            uart_data, #character_n
-1CA 36131       1240                             CALL            send_to_uart
-1CB 00F67       1241                             LOAD            uart_data, #character_g
-1CC 36131       1242                             CALL            send_to_uart
-1CD 36196       1243                             CALL            send_space
-1CE 00F66       1244                             LOAD            uart_data, #character_f
-1CF 36131       1245                             CALL            send_to_uart
-1D0 00F6F       1246                             LOAD            uart_data, #character_o
-1D1 36131       1247                             CALL            send_to_uart
-1D2 00F72       1248                             LOAD            uart_data, #character_r
-1D3 36131       1249                             CALL            send_to_uart
-1D4 36196       1250     send_mcs_file:          CALL            send_space
-1D5 00F4D       1251                             LOAD            uart_data, #_character_m
-1D6 36131       1252                             CALL            send_to_uart
-1D7 00F43       1253                             LOAD            uart_data, #_character_c
-1D8 36131       1254                             CALL            send_to_uart
-1D9 00F53       1255                             LOAD            uart_data, #_character_s
-1DA 36131       1256                             CALL            send_to_uart
-1DB 36196       1257                             CALL            send_space
-1DC 00F46       1258                             LOAD            uart_data, #_character_f
-1DD 36131       1259                             CALL            send_to_uart
-1DE 00F69       1260                             LOAD            uart_data, #character_i
-1DF 36131       1261                             CALL            send_to_uart
-1E0 00F6C       1262                             LOAD            uart_data, #character_l
-1E1 36131       1263                             CALL            send_to_uart
-1E2 00F65       1264                             LOAD            uart_data, #character_e
-1E3 36131       1265                             CALL            send_to_uart
-1E4 36193       1266                             CALL            send_cr
-1E5 24000       1267                             RETURN
+1E2 00F57       1229     send_waiting_mcs_file:  LOAD            uart_data, #_character_w
+1E3 36131       1230                             CALL            send_to_uart
+1E4 00F61       1231                             LOAD            uart_data, #character_a
+1E5 36131       1232                             CALL            send_to_uart
+1E6 00F69       1233                             LOAD            uart_data, #character_i
+1E7 36131       1234                             CALL            send_to_uart
+1E8 00F74       1235                             LOAD            uart_data, #character_t
+1E9 36131       1236                             CALL            send_to_uart
+1EA 00F69       1237                             LOAD            uart_data, #character_i
+1EB 36131       1238                             CALL            send_to_uart
+1EC 00F6E       1239                             LOAD            uart_data, #character_n
+1ED 36131       1240                             CALL            send_to_uart
+1EE 00F67       1241                             LOAD            uart_data, #character_g
+1EF 36131       1242                             CALL            send_to_uart
+1F0 36196       1243                             CALL            send_space
+1F1 00F66       1244                             LOAD            uart_data, #character_f
+1F2 36131       1245                             CALL            send_to_uart
+1F3 00F6F       1246                             LOAD            uart_data, #character_o
+1F4 36131       1247                             CALL            send_to_uart
+1F5 00F72       1248                             LOAD            uart_data, #character_r
+1F6 36131       1249                             CALL            send_to_uart
+1F7 36196       1250     send_mcs_file:          CALL            send_space
+1F8 00F4D       1251                             LOAD            uart_data, #_character_m
+1F9 36131       1252                             CALL            send_to_uart
+1FA 00F43       1253                             LOAD            uart_data, #_character_c
+1FB 36131       1254                             CALL            send_to_uart
+1FC 00F53       1255                             LOAD            uart_data, #_character_s
+1FD 36131       1256                             CALL            send_to_uart
+1FE 36196       1257                             CALL            send_space
+1FF 00F46       1258                             LOAD            uart_data, #_character_f
+200 36131       1259                             CALL            send_to_uart
+201 00F69       1260                             LOAD            uart_data, #character_i
+202 36131       1261                             CALL            send_to_uart
+203 00F6C       1262                             LOAD            uart_data, #character_l
+204 36131       1263                             CALL            send_to_uart
+205 00F65       1264                             LOAD            uart_data, #character_e
+206 36131       1265                             CALL            send_to_uart
+207 36193       1266                             CALL            send_cr
+208 24000       1267                             RETURN
                 1268     ;
                 1269     ;
                 1270     ;Send 'Erase in progress' string to the UART
                 1271     ;
-1E6 36220       1272     send_erase_in_progress: CALL            send_erase
-1E7 00F69       1273                             LOAD            uart_data, #character_i
-1E8 36131       1274                             CALL            send_to_uart
-1E9 00F6E       1275                             LOAD            uart_data, #character_n
-1EA 36131       1276                             CALL            send_to_uart
-1EB 36196       1277                             CALL            send_space
-1EC 00F50       1278                             LOAD            uart_data, #_character_p
-1ED 36131       1279                             CALL            send_to_uart
-1EE 00F72       1280                             LOAD            uart_data, #character_r
-1EF 36131       1281                             CALL            send_to_uart
-1F0 00F6F       1282                             LOAD            uart_data, #character_o
-1F1 36131       1283                             CALL            send_to_uart
-1F2 00F67       1284                             LOAD            uart_data, #character_g
-1F3 36131       1285                             CALL            send_to_uart
-1F4 00F72       1286                             LOAD            uart_data, #character_r
-1F5 36131       1287                             CALL            send_to_uart
-1F6 00F65       1288                             LOAD            uart_data, #character_e
-1F7 36131       1289                             CALL            send_to_uart
-1F8 00F73       1290                             LOAD            uart_data, #character_s
-1F9 36131       1291                             CALL            send_to_uart
-1FA 36131       1292                             CALL            send_to_uart
-1FB 36193       1293                             CALL            send_cr
-1FC 24000       1294                             RETURN
+209 36220       1272     send_erase_in_progress: CALL            send_erase
+20A 00F69       1273                             LOAD            uart_data, #character_i
+20B 36131       1274                             CALL            send_to_uart
+20C 00F6E       1275                             LOAD            uart_data, #character_n
+20D 36131       1276                             CALL            send_to_uart
+20E 36196       1277                             CALL            send_space
+20F 00F50       1278                             LOAD            uart_data, #_character_p
+210 36131       1279                             CALL            send_to_uart
+211 00F72       1280                             LOAD            uart_data, #character_r
+212 36131       1281                             CALL            send_to_uart
+213 00F6F       1282                             LOAD            uart_data, #character_o
+214 36131       1283                             CALL            send_to_uart
+215 00F67       1284                             LOAD            uart_data, #character_g
+216 36131       1285                             CALL            send_to_uart
+217 00F72       1286                             LOAD            uart_data, #character_r
+218 36131       1287                             CALL            send_to_uart
+219 00F65       1288                             LOAD            uart_data, #character_e
+21A 36131       1289                             CALL            send_to_uart
+21B 00F73       1290                             LOAD            uart_data, #character_s
+21C 36131       1291                             CALL            send_to_uart
+21D 36131       1292                             CALL            send_to_uart
+21E 36193       1293                             CALL            send_cr
+21F 24000       1294                             RETURN
                 1295     ;
                 1296     ;
                 1297     ;Send 'Erase ' string to the UART
                 1298     ;
-1FD 00F45       1299     send_erase:             LOAD            uart_data, #_character_e
-1FE 36131       1300                             CALL            send_to_uart
-1FF 00F72       1301                             LOAD            uart_data, #character_r
-200 36131       1302                             CALL            send_to_uart
-201 00F61       1303                             LOAD            uart_data, #character_a
-202 36131       1304                             CALL            send_to_uart
-203 00F73       1305                             LOAD            uart_data, #character_s
-204 36131       1306                             CALL            send_to_uart
-205 00F65       1307                             LOAD            uart_data, #character_e
-206 36131       1308                             CALL            send_to_uart
-207 36196       1309                             CALL            send_space
-208 24000       1310                             RETURN
+220 00F45       1299     send_erase:             LOAD            uart_data, #_character_e
+221 36131       1300                             CALL            send_to_uart
+222 00F72       1301                             LOAD            uart_data, #character_r
+223 36131       1302                             CALL            send_to_uart
+224 00F61       1303                             LOAD            uart_data, #character_a
+225 36131       1304                             CALL            send_to_uart
+226 00F73       1305                             LOAD            uart_data, #character_s
+227 36131       1306                             CALL            send_to_uart
+228 00F65       1307                             LOAD            uart_data, #character_e
+229 36131       1308                             CALL            send_to_uart
+22A 36196       1309                             CALL            send_space
+22B 24000       1310                             RETURN
                 1311     ;
                 1312     ;
                 1313     ;Send carriage return, 'OK' and carriage return to the UART
                 1314     ;
-209 36193       1315     send_ok:                CALL            send_cr
-20A 00F4F       1316                             LOAD            uart_data, #_character_o
-20B 36131       1317                             CALL            send_to_uart
-20C 00F4B       1318                             LOAD            uart_data, #_character_k
-20D 36131       1319                             CALL            send_to_uart
-20E 36193       1320                             CALL            send_cr
-20F 24000       1321                             RETURN
+22C 36193       1315     send_ok:                CALL            send_cr
+22D 00F4F       1316                             LOAD            uart_data, #_character_o
+22E 36131       1317                             CALL            send_to_uart
+22F 00F4B       1318                             LOAD            uart_data, #_character_k
+230 36131       1319                             CALL            send_to_uart
+231 36193       1320                             CALL            send_cr
+232 24000       1321                             RETURN
                 1322     ;
                 1323     ;
                 1324     ;
                 1325     ;Send menu to the UART
                 1326     ;
-210 36193       1327     send_menu:              CALL            send_cr
-211 00F45       1328                             LOAD            uart_data, #_character_e
-212 36131       1329                             CALL            send_to_uart
-213 00F2D       1330                             LOAD            uart_data, #character_minus
-214 36131       1331                             CALL            send_to_uart
-215 36220       1332                             CALL            send_erase
-216 00F61       1333                             LOAD            uart_data, #character_a
-217 36131       1334                             CALL            send_to_uart
-218 00F6C       1335                             LOAD            uart_data, #character_l
-219 36131       1336                             CALL            send_to_uart
-21A 36131       1337                             CALL            send_to_uart
-21B 36193       1338                             CALL            send_cr
-21C 00F42       1339                             LOAD            uart_data, #_character_b
-21D 36131       1340                             CALL            send_to_uart
-21E 00F2D       1341                             LOAD            uart_data, #character_minus
-21F 36131       1342                             CALL            send_to_uart
-220 36220       1343                             CALL            send_erase
-221 00F62       1344                             LOAD            uart_data, #character_b
-222 36131       1345                             CALL            send_to_uart
-223 00F6C       1346                             LOAD            uart_data, #character_l
-224 36131       1347                             CALL            send_to_uart
-225 00F6F       1348                             LOAD            uart_data, #character_o
-226 36131       1349                             CALL            send_to_uart
-227 00F63       1350                             LOAD            uart_data, #character_c
-228 36131       1351                             CALL            send_to_uart
-229 00F6B       1352                             LOAD            uart_data, #character_k
-22A 36131       1353                             CALL            send_to_uart
-22B 00F73       1354                             LOAD            uart_data, #character_s
-22C 36131       1355                             CALL            send_to_uart
-22D 36196       1356                             CALL            send_space
-22E 00F31       1357                             LOAD            uart_data, #character_1
-22F 36131       1358                             CALL            send_to_uart
-230 00F2D       1359                             LOAD            uart_data, #character_minus
-231 36131       1360                             CALL            send_to_uart
-232 00F33       1361                             LOAD            uart_data, #character_3
-233 36131       1362                             CALL            send_to_uart
-234 36193       1363                             CALL            send_cr
-235 00F50       1364                             LOAD            uart_data, #_character_p
-236 36131       1365                             CALL            send_to_uart
-237 00F2D       1366                             LOAD            uart_data, #character_minus
-238 36131       1367                             CALL            send_to_uart
-239 00F50       1368                             LOAD            uart_data, #_character_p
-23A 36131       1369                             CALL            send_to_uart
-23B 00F72       1370                             LOAD            uart_data, #character_r
-23C 36131       1371                             CALL            send_to_uart
-23D 00F6F       1372                             LOAD            uart_data, #character_o
-23E 36131       1373                             CALL            send_to_uart
-23F 00F67       1374                             LOAD            uart_data, #character_g
-240 36131       1375                             CALL            send_to_uart
-241 00F72       1376                             LOAD            uart_data, #character_r
-242 36131       1377                             CALL            send_to_uart
-243 00F61       1378                             LOAD            uart_data, #character_a
-244 36131       1379                             CALL            send_to_uart
-245 00F6D       1380                             LOAD            uart_data, #character_m
-246 36131       1381                             CALL            send_to_uart
-247 361F7       1382                             CALL            send_mcs_file
-248 00F57       1383                             LOAD            uart_data, #_character_w
-249 36131       1384                             CALL            send_to_uart
-24A 00F2D       1385                             LOAD            uart_data, #character_minus
-24B 36131       1386                             CALL            send_to_uart
-24C 00F57       1387                             LOAD            uart_data, #_character_w
-24D 36131       1388                             CALL            send_to_uart
-24E 00F72       1389                             LOAD            uart_data, #character_r
-24F 36131       1390                             CALL            send_to_uart
-250 00F69       1391                             LOAD            uart_data, #character_i
-251 36131       1392                             CALL            send_to_uart
-252 00F74       1393                             LOAD            uart_data, #character_t
-253 36131       1394                             CALL            send_to_uart
-254 00F65       1395                             LOAD            uart_data, #character_e
-255 36131       1396                             CALL            send_to_uart
-256 36196       1397                             CALL            send_space
-257 362CB       1398                             CALL            send_byte
-258 36193       1399                             CALL            send_cr
-259 00F52       1400                             LOAD            uart_data, #_character_r
-25A 36131       1401                             CALL            send_to_uart
-25B 00F2D       1402                             LOAD            uart_data, #character_minus
-25C 36131       1403                             CALL            send_to_uart
-25D 00F52       1404                             LOAD            uart_data, #_character_r
-25E 36131       1405                             CALL            send_to_uart
-25F 00F65       1406                             LOAD            uart_data, #character_e
-260 36131       1407                             CALL            send_to_uart
-261 00F61       1408                             LOAD            uart_data, #character_a
-262 36131       1409                             CALL            send_to_uart
-263 00F64       1410                             LOAD            uart_data, #character_d
-264 36131       1411                             CALL            send_to_uart
-265 36196       1412                             CALL            send_space
-266 00F32       1413                             LOAD            uart_data, #character_2
-267 36131       1414                             CALL            send_to_uart
-268 00F35       1415                             LOAD            uart_data, #character_5
-269 36131       1416                             CALL            send_to_uart
-26A 00F36       1417                             LOAD            uart_data, #character_6
-26B 36131       1418                             CALL            send_to_uart
-26C 36196       1419                             CALL            send_space
-26D 362CB       1420                             CALL            send_byte
-26E 00F73       1421                             LOAD            uart_data, #character_s
-26F 36131       1422                             CALL            send_to_uart
-270 36193       1423                             CALL            send_cr
-271 00F49       1424                             LOAD            uart_data, #_character_i
-272 36131       1425                             CALL            send_to_uart
-273 00F2D       1426                             LOAD            uart_data, #character_minus
-274 36131       1427                             CALL            send_to_uart
-275 00F44       1428                             LOAD            uart_data, #_character_d
-276 36131       1429                             CALL            send_to_uart
-277 00F65       1430                             LOAD            uart_data, #character_e
-278 36131       1431                             CALL            send_to_uart
-279 00F76       1432                             LOAD            uart_data, #character_v
-27A 36131       1433                             CALL            send_to_uart
-27B 00F69       1434                             LOAD            uart_data, #character_i
-27C 36131       1435                             CALL            send_to_uart
-27D 00F63       1436                             LOAD            uart_data, #character_c
-27E 36131       1437                             CALL            send_to_uart
-27F 00F65       1438                             LOAD            uart_data, #character_e
-280 36131       1439                             CALL            send_to_uart
-281 36196       1440                             CALL            send_space
-282 362C6       1441                             CALL            send_id
-283 36193       1442                             CALL            send_cr
-284 00F48       1443                             LOAD            uart_data, #_character_h
-285 36131       1444                             CALL            send_to_uart
-286 00F2D       1445                             LOAD            uart_data, #character_minus
-287 36131       1446                             CALL            send_to_uart
-288 00F48       1447                             LOAD            uart_data, #_character_h
-289 36131       1448                             CALL            send_to_uart
-28A 00F65       1449                             LOAD            uart_data, #character_e
-28B 36131       1450                             CALL            send_to_uart
-28C 00F6C       1451                             LOAD            uart_data, #character_l
-28D 36131       1452                             CALL            send_to_uart
-28E 00F70       1453                             LOAD            uart_data, #character_p
-28F 36131       1454                             CALL            send_to_uart
-290 36193       1455                             CALL            send_cr
-291 00F53       1456                             LOAD            uart_data, #_character_s
-292 36131       1457                             CALL            send_to_uart
-293 00F2D       1458                             LOAD            uart_data, #character_minus
-294 36131       1459                             CALL            send_to_uart
-295 00F53       1460                             LOAD            uart_data, #_character_s
-296 36131       1461                             CALL            send_to_uart
-297 00F74       1462                             LOAD            uart_data, #character_t
-298 36131       1463                             CALL            send_to_uart
-299 00F61       1464                             LOAD            uart_data, #character_a
-29A 36131       1465                             CALL            send_to_uart
-29B 00F74       1466                             LOAD            uart_data, #character_t
-29C 36131       1467                             CALL            send_to_uart
-29D 00F75       1468                             LOAD            uart_data, #character_u
-29E 36131       1469                             CALL            send_to_uart
-29F 00F73       1470                             LOAD            uart_data, #character_s
-2A0 36131       1471                             CALL            send_to_uart
-2A1 36193       1472                             CALL            send_cr
-2A2 24000       1473                             RETURN
+233 36193       1327     send_menu:              CALL            send_cr
+234 00F45       1328                             LOAD            uart_data, #_character_e
+235 36131       1329                             CALL            send_to_uart
+236 00F2D       1330                             LOAD            uart_data, #character_minus
+237 36131       1331                             CALL            send_to_uart
+238 36220       1332                             CALL            send_erase
+239 00F61       1333                             LOAD            uart_data, #character_a
+23A 36131       1334                             CALL            send_to_uart
+23B 00F6C       1335                             LOAD            uart_data, #character_l
+23C 36131       1336                             CALL            send_to_uart
+23D 36131       1337                             CALL            send_to_uart
+23E 36193       1338                             CALL            send_cr
+23F 00F42       1339                             LOAD            uart_data, #_character_b
+240 36131       1340                             CALL            send_to_uart
+241 00F2D       1341                             LOAD            uart_data, #character_minus
+242 36131       1342                             CALL            send_to_uart
+243 36220       1343                             CALL            send_erase
+244 00F62       1344                             LOAD            uart_data, #character_b
+245 36131       1345                             CALL            send_to_uart
+246 00F6C       1346                             LOAD            uart_data, #character_l
+247 36131       1347                             CALL            send_to_uart
+248 00F6F       1348                             LOAD            uart_data, #character_o
+249 36131       1349                             CALL            send_to_uart
+24A 00F63       1350                             LOAD            uart_data, #character_c
+24B 36131       1351                             CALL            send_to_uart
+24C 00F6B       1352                             LOAD            uart_data, #character_k
+24D 36131       1353                             CALL            send_to_uart
+24E 00F73       1354                             LOAD            uart_data, #character_s
+24F 36131       1355                             CALL            send_to_uart
+250 36196       1356                             CALL            send_space
+251 00F31       1357                             LOAD            uart_data, #character_1
+252 36131       1358                             CALL            send_to_uart
+253 00F2D       1359                             LOAD            uart_data, #character_minus
+254 36131       1360                             CALL            send_to_uart
+255 00F33       1361                             LOAD            uart_data, #character_3
+256 36131       1362                             CALL            send_to_uart
+257 36193       1363                             CALL            send_cr
+258 00F50       1364                             LOAD            uart_data, #_character_p
+259 36131       1365                             CALL            send_to_uart
+25A 00F2D       1366                             LOAD            uart_data, #character_minus
+25B 36131       1367                             CALL            send_to_uart
+25C 00F50       1368                             LOAD            uart_data, #_character_p
+25D 36131       1369                             CALL            send_to_uart
+25E 00F72       1370                             LOAD            uart_data, #character_r
+25F 36131       1371                             CALL            send_to_uart
+260 00F6F       1372                             LOAD            uart_data, #character_o
+261 36131       1373                             CALL            send_to_uart
+262 00F67       1374                             LOAD            uart_data, #character_g
+263 36131       1375                             CALL            send_to_uart
+264 00F72       1376                             LOAD            uart_data, #character_r
+265 36131       1377                             CALL            send_to_uart
+266 00F61       1378                             LOAD            uart_data, #character_a
+267 36131       1379                             CALL            send_to_uart
+268 00F6D       1380                             LOAD            uart_data, #character_m
+269 36131       1381                             CALL            send_to_uart
+26A 361F7       1382                             CALL            send_mcs_file
+26B 00F57       1383                             LOAD            uart_data, #_character_w
+26C 36131       1384                             CALL            send_to_uart
+26D 00F2D       1385                             LOAD            uart_data, #character_minus
+26E 36131       1386                             CALL            send_to_uart
+26F 00F57       1387                             LOAD            uart_data, #_character_w
+270 36131       1388                             CALL            send_to_uart
+271 00F72       1389                             LOAD            uart_data, #character_r
+272 36131       1390                             CALL            send_to_uart
+273 00F69       1391                             LOAD            uart_data, #character_i
+274 36131       1392                             CALL            send_to_uart
+275 00F74       1393                             LOAD            uart_data, #character_t
+276 36131       1394                             CALL            send_to_uart
+277 00F65       1395                             LOAD            uart_data, #character_e
+278 36131       1396                             CALL            send_to_uart
+279 36196       1397                             CALL            send_space
+27A 362CB       1398                             CALL            send_byte
+27B 36193       1399                             CALL            send_cr
+27C 00F52       1400                             LOAD            uart_data, #_character_r
+27D 36131       1401                             CALL            send_to_uart
+27E 00F2D       1402                             LOAD            uart_data, #character_minus
+27F 36131       1403                             CALL            send_to_uart
+280 00F52       1404                             LOAD            uart_data, #_character_r
+281 36131       1405                             CALL            send_to_uart
+282 00F65       1406                             LOAD            uart_data, #character_e
+283 36131       1407                             CALL            send_to_uart
+284 00F61       1408                             LOAD            uart_data, #character_a
+285 36131       1409                             CALL            send_to_uart
+286 00F64       1410                             LOAD            uart_data, #character_d
+287 36131       1411                             CALL            send_to_uart
+288 36196       1412                             CALL            send_space
+289 00F32       1413                             LOAD            uart_data, #character_2
+28A 36131       1414                             CALL            send_to_uart
+28B 00F35       1415                             LOAD            uart_data, #character_5
+28C 36131       1416                             CALL            send_to_uart
+28D 00F36       1417                             LOAD            uart_data, #character_6
+28E 36131       1418                             CALL            send_to_uart
+28F 36196       1419                             CALL            send_space
+290 362CB       1420                             CALL            send_byte
+291 00F73       1421                             LOAD            uart_data, #character_s
+292 36131       1422                             CALL            send_to_uart
+293 36193       1423                             CALL            send_cr
+294 00F49       1424                             LOAD            uart_data, #_character_i
+295 36131       1425                             CALL            send_to_uart
+296 00F2D       1426                             LOAD            uart_data, #character_minus
+297 36131       1427                             CALL            send_to_uart
+298 00F44       1428                             LOAD            uart_data, #_character_d
+299 36131       1429                             CALL            send_to_uart
+29A 00F65       1430                             LOAD            uart_data, #character_e
+29B 36131       1431                             CALL            send_to_uart
+29C 00F76       1432                             LOAD            uart_data, #character_v
+29D 36131       1433                             CALL            send_to_uart
+29E 00F69       1434                             LOAD            uart_data, #character_i
+29F 36131       1435                             CALL            send_to_uart
+2A0 00F63       1436                             LOAD            uart_data, #character_c
+2A1 36131       1437                             CALL            send_to_uart
+2A2 00F65       1438                             LOAD            uart_data, #character_e
+2A3 36131       1439                             CALL            send_to_uart
+2A4 36196       1440                             CALL            send_space
+2A5 362C6       1441                             CALL            send_id
+2A6 36193       1442                             CALL            send_cr
+2A7 00F48       1443                             LOAD            uart_data, #_character_h
+2A8 36131       1444                             CALL            send_to_uart
+2A9 00F2D       1445                             LOAD            uart_data, #character_minus
+2AA 36131       1446                             CALL            send_to_uart
+2AB 00F48       1447                             LOAD            uart_data, #_character_h
+2AC 36131       1448                             CALL            send_to_uart
+2AD 00F65       1449                             LOAD            uart_data, #character_e
+2AE 36131       1450                             CALL            send_to_uart
+2AF 00F6C       1451                             LOAD            uart_data, #character_l
+2B0 36131       1452                             CALL            send_to_uart
+2B1 00F70       1453                             LOAD            uart_data, #character_p
+2B2 36131       1454                             CALL            send_to_uart
+2B3 36193       1455                             CALL            send_cr
+2B4 00F53       1456                             LOAD            uart_data, #_character_s
+2B5 36131       1457                             CALL            send_to_uart
+2B6 00F2D       1458                             LOAD            uart_data, #character_minus
+2B7 36131       1459                             CALL            send_to_uart
+2B8 00F53       1460                             LOAD            uart_data, #_character_s
+2B9 36131       1461                             CALL            send_to_uart
+2BA 00F74       1462                             LOAD            uart_data, #character_t
+2BB 36131       1463                             CALL            send_to_uart
+2BC 00F61       1464                             LOAD            uart_data, #character_a
+2BD 36131       1465                             CALL            send_to_uart
+2BE 00F74       1466                             LOAD            uart_data, #character_t
+2BF 36131       1467                             CALL            send_to_uart
+2C0 00F75       1468                             LOAD            uart_data, #character_u
+2C1 36131       1469                             CALL            send_to_uart
+2C2 00F73       1470                             LOAD            uart_data, #character_s
+2C3 36131       1471                             CALL            send_to_uart
+2C4 36193       1472                             CALL            send_cr
+2C5 24000       1473                             RETURN
                 1474     ;
                 1475     ;
                 1476     ;Send 'ID' to the UART
                 1477     ;
-2A3 00F49       1478     send_id:                LOAD            uart_data, #_character_i
-2A4 36131       1479                             CALL            send_to_uart
-2A5 00F44       1480                             LOAD            uart_data, #_character_d
-2A6 36131       1481                             CALL            send_to_uart
-2A7 24000       1482                             RETURN
+2C6 00F49       1478     send_id:                LOAD            uart_data, #_character_i
+2C7 36131       1479                             CALL            send_to_uart
+2C8 00F44       1480                             LOAD            uart_data, #_character_d
+2C9 36131       1481                             CALL            send_to_uart
+2CA 24000       1482                             RETURN
                 1483     ;
                 1484     ;
                 1485     ;Send 'byte' to the UART
                 1486     ;
-2A8 00F62       1487     send_byte:              LOAD            uart_data, #character_b
-2A9 36131       1488                             CALL            send_to_uart
-2AA 00F79       1489                             LOAD            uart_data, #character_y
-2AB 36131       1490                             CALL            send_to_uart
-2AC 00F74       1491                             LOAD            uart_data, #character_t
-2AD 36131       1492                             CALL            send_to_uart
-2AE 00F65       1493                             LOAD            uart_data, #character_e
-2AF 36131       1494                             CALL            send_to_uart
-2B0 24000       1495                             RETURN
+2CB 00F62       1487     send_byte:              LOAD            uart_data, #character_b
+2CC 36131       1488                             CALL            send_to_uart
+2CD 00F79       1489                             LOAD            uart_data, #character_y
+2CE 36131       1490                             CALL            send_to_uart
+2CF 00F74       1491                             LOAD            uart_data, #character_t
+2D0 36131       1492                             CALL            send_to_uart
+2D1 00F65       1493                             LOAD            uart_data, #character_e
+2D2 36131       1494                             CALL            send_to_uart
+2D3 24000       1495                             RETURN
                 1496     ;
                 1497     ;
                 1498     ;Send 'Confirm Erase (Y/n) ' to the UART
                 1499     ;
-2B1 36193       1500     send_confirm:           CALL            send_cr
-2B2 00F43       1501                             LOAD            uart_data, #_character_c
-2B3 36131       1502                             CALL            send_to_uart
-2B4 00F6F       1503                             LOAD            uart_data, #character_o
-2B5 36131       1504                             CALL            send_to_uart
-2B6 00F6E       1505                             LOAD            uart_data, #character_n
-2B7 36131       1506                             CALL            send_to_uart
-2B8 00F66       1507                             LOAD            uart_data, #character_f
-2B9 36131       1508                             CALL            send_to_uart
-2BA 00F69       1509                             LOAD            uart_data, #character_i
-2BB 36131       1510                             CALL            send_to_uart
-2BC 00F72       1511                             LOAD            uart_data, #character_r
-2BD 36131       1512                             CALL            send_to_uart
-2BE 00F6D       1513                             LOAD            uart_data, #character_m
-2BF 36131       1514                             CALL            send_to_uart
-2C0 36196       1515                             CALL            send_space
-2C1 36220       1516                             CALL            send_erase
-2C2 00F28       1517                             LOAD            uart_data, #character_open
-2C3 36131       1518                             CALL            send_to_uart
-2C4 00F59       1519                             LOAD            uart_data, #_character_y
-2C5 36131       1520                             CALL            send_to_uart
-2C6 00F2F       1521                             LOAD            uart_data, #character_divide
-2C7 36131       1522                             CALL            send_to_uart
-2C8 00F6E       1523                             LOAD            uart_data, #character_n
-2C9 36131       1524                             CALL            send_to_uart
-2CA 00F29       1525                             LOAD            uart_data, #character_close
-2CB 36131       1526                             CALL            send_to_uart
-2CC 36196       1527                             CALL            send_space
-2CD 24000       1528                             RETURN
+2D4 36193       1500     send_confirm:           CALL            send_cr
+2D5 00F43       1501                             LOAD            uart_data, #_character_c
+2D6 36131       1502                             CALL            send_to_uart
+2D7 00F6F       1503                             LOAD            uart_data, #character_o
+2D8 36131       1504                             CALL            send_to_uart
+2D9 00F6E       1505                             LOAD            uart_data, #character_n
+2DA 36131       1506                             CALL            send_to_uart
+2DB 00F66       1507                             LOAD            uart_data, #character_f
+2DC 36131       1508                             CALL            send_to_uart
+2DD 00F69       1509                             LOAD            uart_data, #character_i
+2DE 36131       1510                             CALL            send_to_uart
+2DF 00F72       1511                             LOAD            uart_data, #character_r
+2E0 36131       1512                             CALL            send_to_uart
+2E1 00F6D       1513                             LOAD            uart_data, #character_m
+2E2 36131       1514                             CALL            send_to_uart
+2E3 36196       1515                             CALL            send_space
+2E4 36220       1516                             CALL            send_erase
+2E5 00F28       1517                             LOAD            uart_data, #character_open
+2E6 36131       1518                             CALL            send_to_uart
+2E7 00F59       1519                             LOAD            uart_data, #_character_y
+2E8 36131       1520                             CALL            send_to_uart
+2E9 00F2F       1521                             LOAD            uart_data, #character_divide
+2EA 36131       1522                             CALL            send_to_uart
+2EB 00F6E       1523                             LOAD            uart_data, #character_n
+2EC 36131       1524                             CALL            send_to_uart
+2ED 00F29       1525                             LOAD            uart_data, #character_close
+2EE 36131       1526                             CALL            send_to_uart
+2EF 36196       1527                             CALL            send_space
+2F0 24000       1528                             RETURN
                 1529     ;
                 1530     ;
                 1531     ;Send 'Abort' to the UART
                 1532     ;
-2CE 36193       1533     send_abort:             CALL            send_cr
-2CF 00F41       1534                             LOAD            uart_data, #_character_a
-2D0 36131       1535                             CALL            send_to_uart
-2D1 00F62       1536                             LOAD            uart_data, #character_b
-2D2 36131       1537                             CALL            send_to_uart
-2D3 00F6F       1538                             LOAD            uart_data, #character_o
-2D4 36131       1539                             CALL            send_to_uart
-2D5 00F72       1540                             LOAD            uart_data, #character_r
-2D6 36131       1541                             CALL            send_to_uart
-2D7 00F74       1542                             LOAD            uart_data, #character_t
-2D8 36131       1543                             CALL            send_to_uart
-2D9 36193       1544                             CALL            send_cr
-2DA 24000       1545                             RETURN
+2F1 36193       1533     send_abort:             CALL            send_cr
+2F2 00F41       1534                             LOAD            uart_data, #_character_a
+2F3 36131       1535                             CALL            send_to_uart
+2F4 00F62       1536                             LOAD            uart_data, #character_b
+2F5 36131       1537                             CALL            send_to_uart
+2F6 00F6F       1538                             LOAD            uart_data, #character_o
+2F7 36131       1539                             CALL            send_to_uart
+2F8 00F72       1540                             LOAD            uart_data, #character_r
+2F9 36131       1541                             CALL            send_to_uart
+2FA 00F74       1542                             LOAD            uart_data, #character_t
+2FB 36131       1543                             CALL            send_to_uart
+2FC 36193       1544                             CALL            send_cr
+2FD 24000       1545                             RETURN
                 1546     ;
                 1547     ;Send 'address=' to the UART
                 1548     ;
-2DB 36193       1549     send_address:           CALL            send_cr
-2DC 00F61       1550                             LOAD            uart_data, #character_a
-2DD 36131       1551                             CALL            send_to_uart
-2DE 00F64       1552                             LOAD            uart_data, #character_d
-2DF 36131       1553                             CALL            send_to_uart
-2E0 36131       1554                             CALL            send_to_uart
-2E1 00F72       1555                             LOAD            uart_data, #character_r
-2E2 36131       1556                             CALL            send_to_uart
-2E3 00F65       1557                             LOAD            uart_data, #character_e
-2E4 36131       1558                             CALL            send_to_uart
-2E5 00F73       1559                             LOAD            uart_data, #character_s
-2E6 36131       1560                             CALL            send_to_uart
-2E7 36131       1561                             CALL            send_to_uart
-2E8 00F3D       1562     send_equals:            LOAD            uart_data, #character_equals
-2E9 36131       1563                             CALL            send_to_uart
-2EA 24000       1564                             RETURN
+2FE 36193       1549     send_address:           CALL            send_cr
+2FF 00F61       1550                             LOAD            uart_data, #character_a
+300 36131       1551                             CALL            send_to_uart
+301 00F64       1552                             LOAD            uart_data, #character_d
+302 36131       1553                             CALL            send_to_uart
+303 36131       1554                             CALL            send_to_uart
+304 00F72       1555                             LOAD            uart_data, #character_r
+305 36131       1556                             CALL            send_to_uart
+306 00F65       1557                             LOAD            uart_data, #character_e
+307 36131       1558                             CALL            send_to_uart
+308 00F73       1559                             LOAD            uart_data, #character_s
+309 36131       1560                             CALL            send_to_uart
+30A 36131       1561                             CALL            send_to_uart
+30B 00F3D       1562     send_equals:            LOAD            uart_data, #character_equals
+30C 36131       1563                             CALL            send_to_uart
+30D 24000       1564                             RETURN
                 1565     ;
                 1566     ;
                 1567     ;Send 'data=' to the UART
                 1568     ;
-2EB 36193       1569     send_data:              CALL            send_cr
-2EC 00F64       1570                             LOAD            uart_data, #character_d
-2ED 36131       1571                             CALL            send_to_uart
-2EE 00F61       1572                             LOAD            uart_data, #character_a
-2EF 36131       1573                             CALL            send_to_uart
-2F0 00F74       1574                             LOAD            uart_data, #character_t
-2F1 36131       1575                             CALL            send_to_uart
-2F2 00F61       1576                             LOAD            uart_data, #character_a
-2F3 36131       1577                             CALL            send_to_uart
-2F4 3430B       1578                             JUMP            send_equals
+30E 36193       1569     send_data:              CALL            send_cr
+30F 00F64       1570                             LOAD            uart_data, #character_d
+310 36131       1571                             CALL            send_to_uart
+311 00F61       1572                             LOAD            uart_data, #character_a
+312 36131       1573                             CALL            send_to_uart
+313 00F74       1574                             LOAD            uart_data, #character_t
+314 36131       1575                             CALL            send_to_uart
+315 00F61       1576                             LOAD            uart_data, #character_a
+316 36131       1577                             CALL            send_to_uart
+317 3430B       1578                             JUMP            send_equals
                 1579     ;
                 1580     ;
                 1581     ;**************************************************************************************
@@ -1628,19 +1604,18 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1593     ;
                 1594     ;
   003F5         1595                             ORG             0x3f5                   ;place at end of memory to keep separate
-  003F5         1596     isr:                    STORE           s0, isr_preserve_s0     ;preserve register contents
-E: instruction not supported on the this device: STORE sX, ss.
-3F5 20000       1597                             INPUT           s0, status_port         ;test 'half_full' status of receiver buffer.
-                1598                             TEST            s0, #rx_half_full
-E: instruction not supported on the this device: TEST sX, kk.
-3F6 353FB       1599                             JUMP            z, isr_send_xon
-3F7 00013       1600                             LOAD            s0, #character_xoff
-3F8 343FC       1601                             JUMP            isr_send_character
-3F9 00011       1602     isr_send_xon:           LOAD            s0, #character_xon
-3FA 22004       1603     isr_send_character:     OUTPUT          s0, uart_write_port
-                1604                             FETCH           s0, isr_preserve_s0     ;restore register contents
-E: instruction not supported on the this device: FETCH sX, ss.
-3FB 2C001       1605                             RETURNI         enable
+3F5 10000       1596     isr:                    load           s0, isr_preserve_s0     ;preserve register contents
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+3F6 20000       1597                             INPUT           s0, status_port         ;load 'half_full' status of receiver buffer.
+3F7 00010       1598                             load            s0, #rx_half_full
+3F8 353FB       1599                             JUMP            z, isr_send_xon
+3F9 00013       1600                             LOAD            s0, #character_xoff
+3FA 343FC       1601                             JUMP            isr_send_character
+3FB 00011       1602     isr_send_xon:           LOAD            s0, #character_xon
+3FC 22004       1603     isr_send_character:     OUTPUT          s0, uart_write_port
+3FD 10000       1604                             load           s0, isr_preserve_s0     ;reload register contents
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+3FE 2C001       1605                             RETURNI         enable
                 1606     ;
                 1607     ;
                 1608     ;**************************************************************************************

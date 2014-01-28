@@ -1,10 +1,10 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     device kcpsm1
                    3
                    4     ;=========================================================
-                   5     ; routine: mult_soft
+                   5     ; routine: mult_soload
                    6     ;  function: 8-bit unsigned multiplier using
-                   7     ;           shift-and-add algorithm
+                   7     ;           shiload-and-add algorithm
                    8     ;  input register:
                    9     ;     s3: multiplicand
                   10     ;     s4: multiplier
@@ -18,17 +18,17 @@
                   18
                   19
                   20
-  00000           21     mult_soft:
+  00000           21     mult_soload:
 000 00500         22                             LOAD            s5, #00                 ;clear s5
 001 00608         23                             LOAD            s6, #08                 ;initialize loop index
   00002           24     mult_loop:
-002 0D40E         25                             SR0             s4                      ;shift lsb to carry
-003 09D05         26                             JUMP            nc, shift_prod          ;lsb is 0
+002 0D40E         25                             SR0             s4                      ;shiload lsb to carry
+003 09D05         26                             JUMP            nc, shiload_prod          ;lsb is 0
 004 0C534         27                             ADD             s5, s3                  ;lsb is 1
-  00005           28     shift_prod:
-005 0D508         29                             SRA             s5                      ;shift upper byte right,
+  00005           28     shiload_prod:
+005 0D508         29                             SRA             s5                      ;shiload upper byte right,
                   30     ;carry to MSB, LSB to carry
-006 0D608         31                             SRA             s6                      ;shift lower byte right,
+006 0D608         31                             SRA             s6                      ;shiload lower byte right,
                   32     ;lsb of s5 to MSB of s6
 007 06601         33                             SUB             s6, #01                 ;dec loop index
 008 09502         34                             JUMP            nz, mult_loop           ;repeat until i=0

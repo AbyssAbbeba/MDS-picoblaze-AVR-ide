@@ -5,10 +5,10 @@ BIT_MASK . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1005_su
 B_LSB  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1005_subroutine.asm:34.1-34.26
 B_MSB  . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    1005_subroutine.asm:36.1-36.26
 COMPLEMENT . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    1005_subroutine.asm:67.1-67.31
-DIVIDEND . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1005_subroutine.asm:153.1-153.30
+DIVIDEND . . . . . . . . . . . . . . REG.   0x00000 NOT USED CONSTANT    1005_subroutine.asm:153.1-153.30
 DIVISOR  . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1005_subroutine.asm:155.1-155.29
-DIV_8BY8 . . . . . . . . . . . . . . LABEL  0x00027 NOT USED CONSTANT    1005_subroutine.asm:152.1-152.10
-DIV_LOOP . . . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    1005_subroutine.asm:169.1-169.10
+DIV_8BY8 . . . . . . . . . . . . . . LABEL  0x00026 NOT USED CONSTANT    1005_subroutine.asm:152.1-152.10
+DIV_LOOP . . . . . . . . . . . . . . LABEL  0x00028 USED     CONSTANT    1005_subroutine.asm:169.1-169.10
 HI_BYTE  . . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    1005_subroutine.asm:49.17-49.37
 INC_16 . . . . . . . . . . . . . . . LABEL  0x00011 NOT USED CONSTANT    1005_subroutine.asm:47.1-47.8
 LO_BYTE  . . . . . . . . . . . . . . REG.   0x00008 USED     CONSTANT    1005_subroutine.asm:48.18-48.38
@@ -19,8 +19,8 @@ MULTIPLIER_MSB . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1005_su
 MULT_8X8 . . . . . . . . . . . . . . LABEL  0x00019 NOT USED CONSTANT    1005_subroutine.asm:75.1-75.10
 MULT_LOOP  . . . . . . . . . . . . . LABEL  0x0001C USED     CONSTANT    1005_subroutine.asm:99.1-99.11
 NEGATE . . . . . . . . . . . . . . . LABEL  0x00013 NOT USED CONSTANT    1005_subroutine.asm:56.1-56.8
-NO_ADD . . . . . . . . . . . . . . . LABEL  0x0001F USED     CONSTANT    1005_subroutine.asm:108.1-108.8
-NO_SUB . . . . . . . . . . . . . . . LABEL  0x00030 USED     CONSTANT    1005_subroutine.asm:185.1-185.8
+NO_ADD . . . . . . . . . . . . . . . LABEL  0x0001E USED     CONSTANT    1005_subroutine.asm:108.1-108.8
+NO_SUB . . . . . . . . . . . . . . . LABEL  0x0002D USED     CONSTANT    1005_subroutine.asm:184.1-184.8
 PODPROG1 . . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    1005_subroutine.asm:12.1-12.10
 PODPROG2 . . . . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    1005_subroutine.asm:15.1-15.10
 PODPROG3 . . . . . . . . . . . . . . LABEL  0x00005 USED     CONSTANT    1005_subroutine.asm:17.1-17.10
@@ -47,7 +47,7 @@ SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICI
 SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
 SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
 SE . . . . . . . . . . . . . . . . . REG.   0x0000E USED     CONSTANT    IMPLICIT
-SET_CARRY  . . . . . . . . . . . . . LABEL  0x00032 NOT USED CONSTANT    1005_subroutine.asm:193.1-193.11
+SET_CARRY  . . . . . . . . . . . . . LABEL  0x0002F NOT USED CONSTANT    1005_subroutine.asm:192.1-192.11
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
 START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1005_subroutine.asm:7.1-7.7
 SX . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1005_subroutine.asm:44.1-44.34

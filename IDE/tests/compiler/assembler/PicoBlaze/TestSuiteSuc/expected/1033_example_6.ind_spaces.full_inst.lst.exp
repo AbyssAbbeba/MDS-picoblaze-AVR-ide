@@ -5,7 +5,7 @@
                    5     ;
                    6     ;Version v1.00 - 21th December 2005
                    7     ;
-                   8     ;This program uses an 8KHz interrupt to generate test waveforms on the
+                   8     ;This program uses an 8KHz interrupt to generate load waveforms on the
                    9     ;4 analogue outputs provided by the Linear Technology LTC2624 device.
                   10     ;
                   11     ;As well as the port connections vital to communication with the UART and the SPI
@@ -106,7 +106,7 @@
                  106     ;
                  107     ;Amplifier gain settings.
                  108     ;
-                 109     ;Stored value is the 4-bit code for gain setting
+                 109     ;loadd value is the 4-bit code for gain setting
                  110     ;  Code  1   2   3    4     5    6     7
                  111     ;  Gain -1  -2  -5  -10   -20  -50  -100
   00004          112     amp_a_gain              EQU             0x04                    ;Amplifier A gain value
@@ -130,7 +130,7 @@
   00072          130     vref_lsb                EQU             0x72                    ;Reference voltage in milli-volts
   00006          131     vref_msb                EQU             0x06                    ;Nominal value 1.65v so value is 1650 (0672 hex)
                  132     ;
-                 133     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 133     ;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
                  134     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
                  135     ;calculation highly predictable. The '6' in the following equation even allows for
                  136     ;'CALL delay_1us' instruction in the initiating code.
@@ -265,66 +265,63 @@ W: value out of range: 0x1b3, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x20c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc.
                  254     ;
 00E 00000        255                             LOAD            s0, #0x00               ;clear event counter
-                 256                             STORE           s0, sample_count
-E: instruction not supported on the this device: STORE sX, ss.
+00F 0C060        256                             load           s0, sample_count
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  257     ;
                  258     ;
                  259     ;
                  260     ;
-00F 00001        261                             LOAD            s0, #0x01               ;set initial amplifier gain to 1 on both channels
-                 262                             STORE           s0, amp_a_gain
-E: instruction not supported on the this device: STORE sX, ss.
-                 263                             STORE           s0, amp_b_gain
-E: instruction not supported on the this device: STORE sX, ss.
-010 08192        264                             JUMP            new_gain_set            ;set, display the initial gain and enable interrupts
+010 00001        261                             LOAD            s0, #0x01               ;set initial amplifier gain to 1 on both channels
+011 0C040        262                             load           s0, amp_a_gain
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 0C050        263                             load           s0, amp_b_gain
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+013 08192        264                             JUMP            new_gain_set            ;set, display the initial gain and enable interrupts
                  265     ;
                  266     ;
                  267     ;The program is interrupt driven to maintain an 8KHz sample rate. The main body
                  268     ;of the program waits for an interrupt to occur. The interrupt updates all four
-                 269     ;analogue outputs with values stored in scratch pad memory. This takes approximately
+                 269     ;analogue outputs with values loadd in scratch pad memory. This takes approximately
                  270     ;58us of the 125us available between interrupts. The main program then prepares
                  271     ;new values for the analogue outputs (in less than 67us) before waiting for the
                  272     ;next interrupt.
                  273     ;
                  274     ;
-011 00FFF        275     warm_start:             LOAD            sf, #0xff               ;flag set and wait for interrupt to be serviced
-012 08030        276                             ENABLE          interrupt               ;normal operation
-013 0AE00        277     wait_int:               INPUT           se, switch_port         ;test for button press changes to amplifier gain
-                 278                             TEST            se, #btn_north          ;sE used as this in not effected by ISR
-E: instruction not supported on the this device: TEST sX, kk.
-014 09586        279                             JUMP            nz, gain_increase
-                 280                             TEST            se, #btn_south
-E: instruction not supported on the this device: TEST sX, kk.
-015 0958D        281                             JUMP            nz, gain_decrease
-                 282                             COMPARE         sf, #0xff               ;wait for interrupt
-E: instruction not supported on the this device: COMPARE sX, kk.
-016 09116        283                             JUMP            z, wait_int             ;interrupt clears the flag
+014 00FFF        275     warm_start:             LOAD            sf, #0xff               ;flag set and wait for interrupt to be serviced
+015 08030        276                             ENABLE          interrupt               ;normal operation
+016 0AE00        277     wait_int:               INPUT           se, switch_port         ;load for button press changes to amplifier gain
+017 00E01        278                             load            se, #btn_north          ;sE used as this in not effected by ISR
+018 09586        279                             JUMP            nz, gain_increase
+019 00E04        280                             load            se, #btn_south
+01A 0958D        281                             JUMP            nz, gain_decrease
+01B 00FFF        282                             load         sf, #0xff               ;wait for interrupt
+01C 09116        283                             JUMP            z, wait_int             ;interrupt clears the flag
                  284     ;
                  285     ;
                  286     ;
                  287     ;Drive LEDs with simple binary count of the samples to indicate
                  288     ;that the design is active.
                  289     ;
-                 290                             FETCH           s0, sample_count        ;increment counter
-E: instruction not supported on the this device: FETCH sX, ss.
-017 04001        291                             ADD             s0, #0x01
-                 292                             STORE           s0, sample_count
-E: instruction not supported on the this device: STORE sX, ss.
-018 0E080        293                             OUTPUT          s0, led_port            ;count increments at 1Hz
+01D 0C060        290                             load           s0, sample_count        ;increment counter
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01E 04001        291                             ADD             s0, #0x01
+01F 0C060        292                             load           s0, sample_count
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+020 0E080        293                             OUTPUT          s0, led_port            ;count increments at 1Hz
                  294     ;
                  295     ;
                  296     ;Display the A/D Channel 0 value as hex on LCD
                  297     ;
-019 0052C        298                             LOAD            s5, #0x2c               ;Line 2 position 12
-01A 08311        299                             CALL            lcd_cursor
+021 0052C        298                             LOAD            s5, #0x2c               ;Line 2 position 12
+022 08311        299                             CALL            lcd_cursor
 W: value out of range: 0x211, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
-                 300                             FETCH           s0, adc0_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-01B 08399        301                             CALL            disp_hex_byte
+023 0C010        300                             load           s0, adc0_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+024 08399        301                             CALL            disp_hex_byte
 W: value out of range: 0x199, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x99.
-                 302                             FETCH           s0, adc0_lsb
-E: instruction not supported on the this device: FETCH sX, ss.
-01C 08399        303                             CALL            disp_hex_byte
+025 0C000        302                             load           s0, adc0_lsb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+026 08399        303                             CALL            disp_hex_byte
 W: value out of range: 0x199, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x99.
                  304     ;
                  305     ;
@@ -370,40 +367,39 @@ W: value out of range: 0x199, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  345     ;
                  346     ;The values can be made perfect by rounding before truncation
                  347     ;
-                 348                             FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 349                             FETCH           s3, adc0_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-01D 00011        350                             LOAD            s0, #0x11               ;scaling value for input to A/D converter
-01E 00127        351                             LOAD            s1, #0x27
-01F 083E4        352                             CALL            mult_16x16s             ;[s7,s6,s5,s4]=[s3,s2]x[s1,s0]
-020 0D506        353                             SL0             s5                      ;round value before truncation
-021 05600        354                             ADDCY           s6, #0x00
-022 05700        355                             ADDCY           s7, #0x00
+027 0C200        348                             load           s2, adc0_lsb            ;Read A/D channel 0 value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+028 0C310        349                             load           s3, adc0_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+029 00011        350                             LOAD            s0, #0x11               ;scaling value for input to A/D converter
+02A 00127        351                             LOAD            s1, #0x27
+02B 083E4        352                             CALL            mult_16x16s             ;[s7,s6,s5,s4]=[s3,s2]x[s1,s0]
+02C 0D506        353                             SL0             s5                      ;round value before truncation
+02D 05600        354                             ADDCY           s6, #0x00
+02E 05700        355                             ADDCY           s7, #0x00
                  356     ;
                  357     ;The register pair [s7,s6] now holds the binary value
                  358     ;representing the input level to the A/D converter in milli-volts.
                  359     ;This is now displayed on the LCD. Negative values need to be converted to
                  360     ;signed magnitude for display.
                  361     ;
-023 00520        362                             LOAD            s5, #0x20               ;Line 2 position 0
-024 08311        363                             CALL            lcd_cursor
+02F 00520        362                             LOAD            s5, #0x20               ;Line 2 position 0
+030 08311        363                             CALL            lcd_cursor
 W: value out of range: 0x211, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
-025 0837F        364                             CALL            disp_ad                 ;display A/D=
+031 0837F        364                             CALL            disp_ad                 ;display A/D=
 W: value out of range: 0x17f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7f.
-                 365                             TEST            s7, #0x80               ;test sign bit of value
-E: instruction not supported on the this device: TEST sX, kk.
-026 09536        366                             JUMP            nz, neg_ad
-027 0052B        367                             LOAD            s5, #character_plus
-028 0813B        368                             JUMP            ad_sign
-029 036FF        369     neg_ad:                 XOR             s6, #0xff               ;complement [s7,s6] to make positive
-02A 037FF        370                             XOR             s7, #0xff
-02B 04601        371                             ADD             s6, #0x01
-02C 05700        372                             ADDCY           s7, #0x00
-02D 0052D        373                             LOAD            s5, #character_minus
-02E 083D1        374     ad_sign:                CALL            lcd_write_data          ;display sign of value
+032 00780        365                             load            s7, #0x80               ;load sign bit of value
+033 09536        366                             JUMP            nz, neg_ad
+034 0052B        367                             LOAD            s5, #character_plus
+035 0813B        368                             JUMP            ad_sign
+036 036FF        369     neg_ad:                 XOR             s6, #0xff               ;complement [s7,s6] to make positive
+037 037FF        370                             XOR             s7, #0xff
+038 04601        371                             ADD             s6, #0x01
+039 05700        372                             ADDCY           s7, #0x00
+03A 0052D        373                             LOAD            s5, #character_minus
+03B 083D1        374     ad_sign:                CALL            lcd_write_data          ;display sign of value
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-02F 08374        375                             CALL            disp_volts              ;display 4 digit value as X.XXXv
+03C 08374        375                             CALL            disp_volts              ;display 4 digit value as X.XXXv
                  376     ;
                  377     ;Convert A/D channel 0 value to display the VINA decimal voltage
                  378     ;
@@ -436,50 +432,44 @@ W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  405     ;      -50            -200   (FF38)
                  406     ;     -100            -100   (FF9C)
                  407     ;
-                 408                             FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 409                             FETCH           s3, adc0_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-                 410                             FETCH           s4, amp_a_gain          ;read A gain and select appropiate gain setting
-E: instruction not supported on the this device: FETCH sX, ss.
-030 000EF        411                             LOAD            s0, #0xef               ;scaling value for amplifier gain of -1
-031 001D8        412                             LOAD            s1, #0xd8
-                 413                             COMPARE         s4, #0x01
-E: instruction not supported on the this device: COMPARE sX, kk.
-032 0915A        414                             JUMP            z, mult_vina
-033 00077        415                             LOAD            s0, #0x77               ;scaling value for amplifier gain of -2
-034 001EC        416                             LOAD            s1, #0xec
-                 417                             COMPARE         s4, #0x02
-E: instruction not supported on the this device: COMPARE sX, kk.
-035 0915A        418                             JUMP            z, mult_vina
-036 00030        419                             LOAD            s0, #0x30               ;scaling value for amplifier gain of -5
-037 001F8        420                             LOAD            s1, #0xf8
-                 421                             COMPARE         s4, #0x03
-E: instruction not supported on the this device: COMPARE sX, kk.
-038 0915A        422                             JUMP            z, mult_vina
-039 00018        423                             LOAD            s0, #0x18               ;scaling value for amplifier gain of -10
-03A 001FC        424                             LOAD            s1, #0xfc
-                 425                             COMPARE         s4, #0x05
-E: instruction not supported on the this device: COMPARE sX, kk.
-03B 0915A        426                             JUMP            z, mult_vina
-03C 0000C        427                             LOAD            s0, #0x0c               ;scaling value for amplifier gain of -20
-03D 001FE        428                             LOAD            s1, #0xfe
-                 429                             COMPARE         s4, #0x06
-E: instruction not supported on the this device: COMPARE sX, kk.
-03E 0915A        430                             JUMP            z, mult_vina
-03F 00038        431                             LOAD            s0, #0x38               ;scaling value for amplifier gain of -50
-040 001FF        432                             LOAD            s1, #0xff
-                 433                             COMPARE         s4, #0x01
-E: instruction not supported on the this device: COMPARE sX, kk.
-041 0915A        434                             JUMP            z, mult_vina
-042 0009C        435                             LOAD            s0, #0x9c               ;scaling value for amplifier gain of -100
-043 001FF        436                             LOAD            s1, #0xff
-044 083E4        437     mult_vina:              CALL            mult_16x16s             ;[s7,s6,s5,s4]=[s3,s2]x[s1,s0]
-045 0D506        438                             SL0             s5                      ;round value before truncation
-046 05600        439                             ADDCY           s6, #0x00
-047 05700        440                             ADDCY           s7, #0x00
-048 04672        441                             ADD             s6, #vref_lsb           ;add 1.65v offset represented at 1650 (0672 hex)
-049 05706        442                             ADDCY           s7, #vref_msb
+03D 0C200        408                             load           s2, adc0_lsb            ;Read A/D channel 0 value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03E 0C310        409                             load           s3, adc0_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03F 0C440        410                             load           s4, amp_a_gain          ;read A gain and select appropiate gain setting
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+040 000EF        411                             LOAD            s0, #0xef               ;scaling value for amplifier gain of -1
+041 001D8        412                             LOAD            s1, #0xd8
+042 00401        413                             load         s4, #0x01
+043 0915A        414                             JUMP            z, mult_vina
+044 00077        415                             LOAD            s0, #0x77               ;scaling value for amplifier gain of -2
+045 001EC        416                             LOAD            s1, #0xec
+046 00402        417                             load         s4, #0x02
+047 0915A        418                             JUMP            z, mult_vina
+048 00030        419                             LOAD            s0, #0x30               ;scaling value for amplifier gain of -5
+049 001F8        420                             LOAD            s1, #0xf8
+04A 00403        421                             load         s4, #0x03
+04B 0915A        422                             JUMP            z, mult_vina
+04C 00018        423                             LOAD            s0, #0x18               ;scaling value for amplifier gain of -10
+04D 001FC        424                             LOAD            s1, #0xfc
+04E 00405        425                             load         s4, #0x05
+04F 0915A        426                             JUMP            z, mult_vina
+050 0000C        427                             LOAD            s0, #0x0c               ;scaling value for amplifier gain of -20
+051 001FE        428                             LOAD            s1, #0xfe
+052 00406        429                             load         s4, #0x06
+053 0915A        430                             JUMP            z, mult_vina
+054 00038        431                             LOAD            s0, #0x38               ;scaling value for amplifier gain of -50
+055 001FF        432                             LOAD            s1, #0xff
+056 00401        433                             load         s4, #0x01
+057 0915A        434                             JUMP            z, mult_vina
+058 0009C        435                             LOAD            s0, #0x9c               ;scaling value for amplifier gain of -100
+059 001FF        436                             LOAD            s1, #0xff
+05A 083E4        437     mult_vina:              CALL            mult_16x16s             ;[s7,s6,s5,s4]=[s3,s2]x[s1,s0]
+05B 0D506        438                             SL0             s5                      ;round value before truncation
+05C 05600        439                             ADDCY           s6, #0x00
+05D 05700        440                             ADDCY           s7, #0x00
+05E 04672        441                             ADD             s6, #vref_lsb           ;add 1.65v offset represented at 1650 (0672 hex)
+05F 05706        442                             ADDCY           s7, #vref_msb
                  443     ;
                  444     ;The register pair [s7,s6] now holds the binary value
                  445     ;representing the VINA input level in milli-volts.
@@ -492,36 +482,32 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  452     ;then an indication of the actual value being applied being greater or
                  453     ;less than that computed will be made.
                  454     ;
-04A 00517        455                             LOAD            s5, #0x17               ;Line 1 position 7
-04B 08311        456                             CALL            lcd_cursor
+060 00517        455                             LOAD            s5, #0x17               ;Line 1 position 7
+061 08311        456                             CALL            lcd_cursor
 W: value out of range: 0x211, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
-04C 08378        457                             CALL            disp_va                 ;display VA=
+062 08378        457                             CALL            disp_va                 ;display VA=
 W: value out of range: 0x178, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x78.
-                 458                             FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-E: instruction not supported on the this device: FETCH sX, ss.
-                 459                             FETCH           s3, adc0_msb
-E: instruction not supported on the this device: FETCH sX, ss.
-                 460                             COMPARE         s3, #0xe0               ;test for maximum negative
-E: instruction not supported on the this device: COMPARE sX, kk.
-04D 0956C        461                             JUMP            nz, test_max_pos
-                 462                             COMPARE         s2, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-04E 0956C        463                             JUMP            nz, test_max_pos
-04F 0053E        464                             LOAD            s5, #character_greater_than ;display >
-050 083D1        465                             CALL            lcd_write_data
+063 0C200        458                             load           s2, adc0_lsb            ;Read A/D channel 0 value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+064 0C310        459                             load           s3, adc0_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+065 003E0        460                             load         s3, #0xe0               ;load for maximum negative
+066 0956C        461                             JUMP            nz, load_max_pos
+067 00200        462                             load         s2, #0x00
+068 0956C        463                             JUMP            nz, load_max_pos
+069 0053E        464                             LOAD            s5, #character_greater_than ;display >
+06A 083D1        465                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-051 08172        466                             JUMP            disp_vina_volts
-  0006C          467     test_max_pos:           COMPARE         s3, #0x1f               ;test for maximum positive
-E: instruction not supported on the this device: COMPARE sX, kk.
-052 09572        468                             JUMP            nz, disp_vina_volts
-                 469                             COMPARE         s2, #0xff
-E: instruction not supported on the this device: COMPARE sX, kk.
-053 09572        470                             JUMP            nz, disp_vina_volts
-054 0053C        471                             LOAD            s5, #character_less_than ;display <
-055 083D1        472                             CALL            lcd_write_data
+06B 08172        466                             JUMP            disp_vina_volts
+06C 0031F        467     load_max_pos:           load         s3, #0x1f               ;load for maximum positive
+06D 09572        468                             JUMP            nz, disp_vina_volts
+06E 002FF        469                             load         s2, #0xff
+06F 09572        470                             JUMP            nz, disp_vina_volts
+070 0053C        471                             LOAD            s5, #character_less_than ;display <
+071 083D1        472                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-056 08374        473     disp_vina_volts:        CALL            disp_volts              ;display 4 digit value as X.XXXv
-057 08114        474                             JUMP            warm_start
+072 08374        473     disp_vina_volts:        CALL            disp_volts              ;display 4 digit value as X.XXXv
+073 08114        474                             JUMP            warm_start
                  475     ;
                  476     ;
                  477     ;**************************************************************************************
@@ -531,35 +517,35 @@ W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  481     ;Value to be displayed must be unsigned (positive) in the
                  482     ;[s7,s6] register pair. Only the lower 4 digits are displayed.
                  483     ;
-058 08302        484     disp_volts:             CALL            integer16_to_bcd        ;convert [s7,s6] to BCD in scratch pad memory
+074 08302        484     disp_volts:             CALL            integer16_to_bcd        ;convert [s7,s6] to BCD in scratch pad memory
 W: value out of range: 0x102, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2.
-                 485                             FETCH           s5, decimal3
-E: instruction not supported on the this device: FETCH sX, ss.
-059 04530        486                             ADD             s5, #0x30               ;convert to ASCII
-05A 083D1        487                             CALL            lcd_write_data
+075 0C5A0        485                             load           s5, decimal3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+076 04530        486                             ADD             s5, #0x30               ;convert to ASCII
+077 083D1        487                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-05B 0052E        488                             LOAD            s5, #character_stop
-05C 083D1        489                             CALL            lcd_write_data
+078 0052E        488                             LOAD            s5, #character_stop
+079 083D1        489                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-                 490                             FETCH           s5, decimal2
-E: instruction not supported on the this device: FETCH sX, ss.
-05D 04530        491                             ADD             s5, #0x30               ;convert to ASCII
-05E 083D1        492                             CALL            lcd_write_data
+07A 0C590        490                             load           s5, decimal2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07B 04530        491                             ADD             s5, #0x30               ;convert to ASCII
+07C 083D1        492                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-                 493                             FETCH           s5, decimal1
-E: instruction not supported on the this device: FETCH sX, ss.
-05F 04530        494                             ADD             s5, #0x30               ;convert to ASCII
-060 083D1        495                             CALL            lcd_write_data
+07D 0C580        493                             load           s5, decimal1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07E 04530        494                             ADD             s5, #0x30               ;convert to ASCII
+07F 083D1        495                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-                 496                             FETCH           s5, decimal0
-E: instruction not supported on the this device: FETCH sX, ss.
-061 04530        497                             ADD             s5, #0x30               ;convert to ASCII
-062 083D1        498                             CALL            lcd_write_data
+080 0C570        496                             load           s5, decimal0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+081 04530        497                             ADD             s5, #0x30               ;convert to ASCII
+082 083D1        498                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-063 00520        499                             LOAD            s5, #character_space    ;ensure next position is cleared
-064 083D1        500                             CALL            lcd_write_data
+083 00520        499                             LOAD            s5, #character_space    ;ensure next position is cleared
+084 083D1        500                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-065 08080        501                             RETURN
+085 08080        501                             RETURN
                  502     ;
                  503     ;**************************************************************************************
                  504     ;Changing amplifier gain using press buttons
@@ -576,147 +562,139 @@ W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  515     ;   -50        6
                  516     ;  -100        7
                  517     ;
-066 08010        518     gain_increase:          DISABLE         interrupt               ;stop normal operation
-                 519                             FETCH           s0, amp_a_gain          ;read current gain
-E: instruction not supported on the this device: FETCH sX, ss.
-067 04001        520                             ADD             s0, #0x01
-                 521                             COMPARE         s0, #0x08               ;test for too big
-E: instruction not supported on the this device: COMPARE sX, kk.
-068 09592        522                             JUMP            nz, new_gain_set
-069 00007        523                             LOAD            s0, #0x07               ;maximum gain
-06A 08192        524                             JUMP            new_gain_set
-06B 08010        525     gain_decrease:          DISABLE         interrupt               ;stop normal operation
-                 526                             FETCH           s0, amp_a_gain          ;read current gain
-E: instruction not supported on the this device: FETCH sX, ss.
-06C 06001        527                             SUB             s0, #0x01
-06D 09592        528                             JUMP            nz, new_gain_set
-06E 00001        529                             LOAD            s0, #0x01               ;minimum gain
-  00092          530     new_gain_set:           STORE           s0, amp_a_gain          ;store new value
-E: instruction not supported on the this device: STORE sX, ss.
-                 531                             FETCH           s2, amp_b_gain          ;form the amplifier control byte
-E: instruction not supported on the this device: FETCH sX, ss.
-06F 0D206        532                             SL0             s2                      ;B amplifier set by upper 4 bits
-070 0D206        533                             SL0             s2
-071 0D206        534                             SL0             s2
-072 0D206        535                             SL0             s2
-073 0C202        536                             OR              s2, s0                  ;A amplifier set by lower
-074 08322        537                             CALL            set_amp                 ;set SPI amplifier
+086 08010        518     gain_increase:          DISABLE         interrupt               ;stop normal operation
+087 0C040        519                             load           s0, amp_a_gain          ;read current gain
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+088 04001        520                             ADD             s0, #0x01
+089 00008        521                             load         s0, #0x08               ;load for too big
+08A 09592        522                             JUMP            nz, new_gain_set
+08B 00007        523                             LOAD            s0, #0x07               ;maximum gain
+08C 08192        524                             JUMP            new_gain_set
+08D 08010        525     gain_decrease:          DISABLE         interrupt               ;stop normal operation
+08E 0C040        526                             load           s0, amp_a_gain          ;read current gain
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08F 06001        527                             SUB             s0, #0x01
+090 09592        528                             JUMP            nz, new_gain_set
+091 00001        529                             LOAD            s0, #0x01               ;minimum gain
+092 0C040        530     new_gain_set:           load           s0, amp_a_gain          ;load new value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+093 0C250        531                             load           s2, amp_b_gain          ;form the amplifier control byte
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+094 0D206        532                             SL0             s2                      ;B amplifier set by upper 4 bits
+095 0D206        533                             SL0             s2
+096 0D206        534                             SL0             s2
+097 0D206        535                             SL0             s2
+098 0C202        536                             OR              s2, s0                  ;A amplifier set by lower
+099 08322        537                             CALL            set_amp                 ;set SPI amplifier
 W: value out of range: 0x122, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x22.
                  538     ;display gain setting on LCD
-075 00510        539                             LOAD            s5, #0x10               ;Line 1 position 0
-076 08311        540                             CALL            lcd_cursor
+09A 00510        539                             LOAD            s5, #0x10               ;Line 1 position 0
+09B 08311        540                             CALL            lcd_cursor
 W: value out of range: 0x211, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
-077 00547        541                             LOAD            s5, #_character_g
-078 083D1        542                             CALL            lcd_write_data
+09C 00547        541                             LOAD            s5, #_character_g
+09D 083D1        542                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-079 0053D        543                             LOAD            s5, #character_equals
-07A 083D1        544                             CALL            lcd_write_data
+09E 0053D        543                             LOAD            s5, #character_equals
+09F 083D1        544                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-07B 0052D        545                             LOAD            s5, #character_minus
-07C 083D1        546                             CALL            lcd_write_data
+0A0 0052D        545                             LOAD            s5, #character_minus
+0A1 083D1        546                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-                 547                             FETCH           s0, amp_a_gain          ;read A gain setting
-E: instruction not supported on the this device: FETCH sX, ss.
-                 548                             COMPARE         s0, #0x01               ;determine actual gain value
-E: instruction not supported on the this device: COMPARE sX, kk.
-07D 095AC        549                             JUMP            nz, test_a2
-07E 00531        550                             LOAD            s5, #character_1        ;gain is -1
-07F 083D1        551                             CALL            lcd_write_data
+0A2 0C040        547                             load           s0, amp_a_gain          ;read A gain setting
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A3 00001        548                             load         s0, #0x01               ;determine actual gain value
+0A4 095AC        549                             JUMP            nz, load_a2
+0A5 00531        550                             LOAD            s5, #character_1        ;gain is -1
+0A6 083D1        551                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-080 00520        552                             LOAD            s5, #character_space
-081 083D1        553                             CALL            lcd_write_data
+0A7 00520        552                             LOAD            s5, #character_space
+0A8 083D1        553                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-082 00520        554                             LOAD            s5, #character_space
-083 083D1        555                             CALL            lcd_write_data
+0A9 00520        554                             LOAD            s5, #character_space
+0AA 083D1        555                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-084 081DF        556                             JUMP            wait_no_press
-  000AC          557     test_a2:                COMPARE         s0, #0x02
-E: instruction not supported on the this device: COMPARE sX, kk.
-085 095B5        558                             JUMP            nz, test_a3
-086 00532        559                             LOAD            s5, #character_2        ;gain is -2
-087 083D1        560                             CALL            lcd_write_data
+0AB 081DF        556                             JUMP            wait_no_press
+0AC 00002        557     load_a2:                load         s0, #0x02
+0AD 095B5        558                             JUMP            nz, load_a3
+0AE 00532        559                             LOAD            s5, #character_2        ;gain is -2
+0AF 083D1        560                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-088 00520        561                             LOAD            s5, #character_space
-089 083D1        562                             CALL            lcd_write_data
+0B0 00520        561                             LOAD            s5, #character_space
+0B1 083D1        562                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-08A 00520        563                             LOAD            s5, #character_space
-08B 083D1        564                             CALL            lcd_write_data
+0B2 00520        563                             LOAD            s5, #character_space
+0B3 083D1        564                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-08C 081DF        565                             JUMP            wait_no_press
-  000B5          566     test_a3:                COMPARE         s0, #0x03
-E: instruction not supported on the this device: COMPARE sX, kk.
-08D 095BE        567                             JUMP            nz, test_a4
-08E 00535        568                             LOAD            s5, #character_5        ;gain is -5
-08F 083D1        569                             CALL            lcd_write_data
+0B4 081DF        565                             JUMP            wait_no_press
+0B5 00003        566     load_a3:                load         s0, #0x03
+0B6 095BE        567                             JUMP            nz, load_a4
+0B7 00535        568                             LOAD            s5, #character_5        ;gain is -5
+0B8 083D1        569                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-090 00520        570                             LOAD            s5, #character_space
-091 083D1        571                             CALL            lcd_write_data
+0B9 00520        570                             LOAD            s5, #character_space
+0BA 083D1        571                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-092 00520        572                             LOAD            s5, #character_space
-093 083D1        573                             CALL            lcd_write_data
+0BB 00520        572                             LOAD            s5, #character_space
+0BC 083D1        573                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-094 081DF        574                             JUMP            wait_no_press
-  000BE          575     test_a4:                COMPARE         s0, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-095 095C7        576                             JUMP            nz, test_a5
-096 00531        577                             LOAD            s5, #character_1        ;gain is -10
-097 083D1        578                             CALL            lcd_write_data
+0BD 081DF        574                             JUMP            wait_no_press
+0BE 00004        575     load_a4:                load         s0, #0x04
+0BF 095C7        576                             JUMP            nz, load_a5
+0C0 00531        577                             LOAD            s5, #character_1        ;gain is -10
+0C1 083D1        578                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-098 00530        579                             LOAD            s5, #character_0
-099 083D1        580                             CALL            lcd_write_data
+0C2 00530        579                             LOAD            s5, #character_0
+0C3 083D1        580                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-09A 00520        581                             LOAD            s5, #character_space
-09B 083D1        582                             CALL            lcd_write_data
+0C4 00520        581                             LOAD            s5, #character_space
+0C5 083D1        582                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-09C 081DF        583                             JUMP            wait_no_press
-  000C7          584     test_a5:                COMPARE         s0, #0x05
-E: instruction not supported on the this device: COMPARE sX, kk.
-09D 095D0        585                             JUMP            nz, test_a6
-09E 00532        586                             LOAD            s5, #character_2        ;gain is -20
-09F 083D1        587                             CALL            lcd_write_data
+0C6 081DF        583                             JUMP            wait_no_press
+0C7 00005        584     load_a5:                load         s0, #0x05
+0C8 095D0        585                             JUMP            nz, load_a6
+0C9 00532        586                             LOAD            s5, #character_2        ;gain is -20
+0CA 083D1        587                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0A0 00530        588                             LOAD            s5, #character_0
-0A1 083D1        589                             CALL            lcd_write_data
+0CB 00530        588                             LOAD            s5, #character_0
+0CC 083D1        589                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0A2 00520        590                             LOAD            s5, #character_space
-0A3 083D1        591                             CALL            lcd_write_data
+0CD 00520        590                             LOAD            s5, #character_space
+0CE 083D1        591                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0A4 081DF        592                             JUMP            wait_no_press
-  000D0          593     test_a6:                COMPARE         s0, #0x06
-E: instruction not supported on the this device: COMPARE sX, kk.
-0A5 095D9        594                             JUMP            nz, gain_a7
-0A6 00535        595                             LOAD            s5, #character_5        ;gain is -50
-0A7 083D1        596                             CALL            lcd_write_data
+0CF 081DF        592                             JUMP            wait_no_press
+0D0 00006        593     load_a6:                load         s0, #0x06
+0D1 095D9        594                             JUMP            nz, gain_a7
+0D2 00535        595                             LOAD            s5, #character_5        ;gain is -50
+0D3 083D1        596                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0A8 00530        597                             LOAD            s5, #character_0
-0A9 083D1        598                             CALL            lcd_write_data
+0D4 00530        597                             LOAD            s5, #character_0
+0D5 083D1        598                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0AA 00520        599                             LOAD            s5, #character_space
-0AB 083D1        600                             CALL            lcd_write_data
+0D6 00520        599                             LOAD            s5, #character_space
+0D7 083D1        600                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0AC 081DF        601                             JUMP            wait_no_press
-0AD 00531        602     gain_a7:                LOAD            s5, #character_1        ;gain is -100
-0AE 083D1        603                             CALL            lcd_write_data
+0D8 081DF        601                             JUMP            wait_no_press
+0D9 00531        602     gain_a7:                LOAD            s5, #character_1        ;gain is -100
+0DA 083D1        603                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0AF 00530        604                             LOAD            s5, #character_0
-0B0 083D1        605                             CALL            lcd_write_data
+0DB 00530        604                             LOAD            s5, #character_0
+0DC 083D1        605                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0B1 00530        606                             LOAD            s5, #character_0
-0B2 083D1        607                             CALL            lcd_write_data
+0DD 00530        606                             LOAD            s5, #character_0
+0DE 083D1        607                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-0B3 083AE        608     wait_no_press:          CALL            delay_20ms              ;delay to help avoid switch bounce
+0DF 083AE        608     wait_no_press:          CALL            delay_20ms              ;delay to help avoid switch bounce
 W: value out of range: 0x1ae, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xae.
-0B4 0A000        609                             INPUT           s0, switch_port         ;check for release of press buttons
-                 610                             TEST            s0, #0x05               ;north and south buttons
-E: instruction not supported on the this device: TEST sX, kk.
-0B5 095DF        611                             JUMP            nz, wait_no_press
-0B6 08114        612                             JUMP            warm_start
+0E0 0A000        609                             INPUT           s0, switch_port         ;check for release of press buttons
+0E1 00005        610                             load            s0, #0x05               ;north and south buttons
+0E2 095DF        611                             JUMP            nz, wait_no_press
+0E3 08114        612                             JUMP            warm_start
                  613     ;
                  614     ;**************************************************************************************
                  615     ;16-bit by 16-bit Signed multiplier
                  616     ;**************************************************************************************
                  617     ;
-                 618     ;16 bit signed multiplication using shift and add technique.
+                 618     ;16 bit signed multiplication using shiload and add technique.
                  619     ;The full precision 32-bit product is returned.
                  620     ;
                  621     ;The key to signed multiplication is to think of all bits of the second operand
@@ -729,39 +707,37 @@ E: instruction not supported on the this device: TEST sX, kk.
                  628     ;
                  629     ;Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,sA
                  630     ;
-0B7 00700        631     mult_16x16s:            LOAD            s7, #0x00               ;clear accumulator
-0B8 00600        632                             LOAD            s6, #0x00
-0B9 00500        633                             LOAD            s5, #0x00               ;Set bit 14 to act as a bit shift counter
-0BA 00400        634                             LOAD            s4, #0x00
-0BB 00800        635                             LOAD            s8, #0x00               ;sign extend [s3,s2] to form [s9,s8,s3,s2]
-                 636                             TEST            s3, #0x80               ;test sign of first operand
-E: instruction not supported on the this device: TEST sX, kk.
-0BC 091EC        637                             JUMP            z, m16s_pos
-0BD 008FF        638                             LOAD            s8, #0xff
-0BE 0C980        639     m16s_pos:               LOAD            s9, s8                  ;[s9,s8,s3,s2]=0000xxxx or FFFFxxxx as required
-0BF 00A0F        640                             LOAD            sa, #0x0f               ;15 positive shift and add operations to perform
-0C0 0D10E        641     m16s_loop:              SR0             s1                      ;shift right operand [s1,s0]
-0C1 0D008        642                             SRA             s0
-0C2 09DF5        643                             JUMP            nc, m16s_noadd          ;test for a '1'
-0C3 0C424        644                             ADD             s4, s2                  ;32-bit addition [s7,s6,s5,s4]=[s7,s6,s5,s4]+[s9,s8,s3,s2]
-0C4 0C535        645                             ADDCY           s5, s3
-0C5 0C685        646                             ADDCY           s6, s8
-0C6 0C795        647                             ADDCY           s7, s9
-0C7 0D206        648     m16s_noadd:             SL0             s2                      ;multiply first operand by 2
-0C8 0D300        649                             SLA             s3
-0C9 0D800        650                             SLA             s8
-0CA 0D900        651                             SLA             s9
-0CB 06A01        652                             SUB             sa, #0x01
-0CC 095EE        653                             JUMP            nz, m16s_loop           ;move to next unsigned bit
-                 654                             TEST            s0, #0x01               ;test sign bit of operand [s1,s0]
-E: instruction not supported on the this device: TEST sX, kk.
-0CD 09D01        655                             JUMP            nc, m16s_nosub
+0E4 00700        631     mult_16x16s:            LOAD            s7, #0x00               ;clear accumulator
+0E5 00600        632                             LOAD            s6, #0x00
+0E6 00500        633                             LOAD            s5, #0x00               ;Set bit 14 to act as a bit shiload counter
+0E7 00400        634                             LOAD            s4, #0x00
+0E8 00800        635                             LOAD            s8, #0x00               ;sign extend [s3,s2] to form [s9,s8,s3,s2]
+0E9 00380        636                             load            s3, #0x80               ;load sign of first operand
+0EA 091EC        637                             JUMP            z, m16s_pos
+0EB 008FF        638                             LOAD            s8, #0xff
+0EC 0C980        639     m16s_pos:               LOAD            s9, s8                  ;[s9,s8,s3,s2]=0000xxxx or FFFFxxxx as required
+0ED 00A0F        640                             LOAD            sa, #0x0f               ;15 positive shiload and add operations to perform
+0EE 0D10E        641     m16s_loop:              SR0             s1                      ;shiload right operand [s1,s0]
+0EF 0D008        642                             SRA             s0
+0F0 09DF5        643                             JUMP            nc, m16s_noadd          ;load for a '1'
+0F1 0C424        644                             ADD             s4, s2                  ;32-bit addition [s7,s6,s5,s4]=[s7,s6,s5,s4]+[s9,s8,s3,s2]
+0F2 0C535        645                             ADDCY           s5, s3
+0F3 0C685        646                             ADDCY           s6, s8
+0F4 0C795        647                             ADDCY           s7, s9
+0F5 0D206        648     m16s_noadd:             SL0             s2                      ;multiply first operand by 2
+0F6 0D300        649                             SLA             s3
+0F7 0D800        650                             SLA             s8
+0F8 0D900        651                             SLA             s9
+0F9 06A01        652                             SUB             sa, #0x01
+0FA 095EE        653                             JUMP            nz, m16s_loop           ;move to next unsigned bit
+0FB 00001        654                             load            s0, #0x01               ;load sign bit of operand [s1,s0]
+0FC 09D01        655                             JUMP            nc, m16s_nosub
 W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
-0CE 0C426        656                             SUB             s4, s2                  ;32-bit subtraction [s7,s6,s5,s4]=[s7,s6,s5,s4]-[s9,s8,s3,s2]
-0CF 0C537        657                             SUBCY           s5, s3
-0D0 0C687        658                             SUBCY           s6, s8
-0D1 0C797        659                             SUBCY           s7, s9
-0D2 08080        660     m16s_nosub:             RETURN
+0FD 0C426        656                             SUB             s4, s2                  ;32-bit subtraction [s7,s6,s5,s4]=[s7,s6,s5,s4]-[s9,s8,s3,s2]
+0FE 0C537        657                             SUBCY           s5, s3
+0FF 0C687        658                             SUBCY           s6, s8
+100 0C797        659                             SUBCY           s7, s9
+101 08080        660     m16s_nosub:             RETURN
                  661     ;
                  662     ;
                  663     ;
@@ -780,17 +756,17 @@ W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  676     ;
                  677     ;Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8
                  678     ;
-0D3 00005        679     integer16_to_bcd:       LOAD            s0, #0x05               ;5 digits to be formed from value up to 65535
-0D4 00807        680                             LOAD            s8, #decimal0           ;pointer for LS-Digit
-0D5 0830A        681     int_to_bcd_loop:        CALL            divide_16bit_by_10      ;[s7,s6]=[s7,s6]/10  with remainder in s4
+102 00005        679     integer16_to_bcd:       LOAD            s0, #0x05               ;5 digits to be formed from value up to 65535
+103 00807        680                             LOAD            s8, #decimal0           ;pointer for LS-Digit
+104 0830A        681     int_to_bcd_loop:        CALL            divide_16bit_by_10      ;[s7,s6]=[s7,s6]/10  with remainder in s4
 W: value out of range: 0x10a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa.
-                 682                             STORE           s4, @s8                 ;remainder becomes digit value
-E: instruction not supported on the this device: STORE sX, sY.
-0D6 04801        683                             ADD             s8, #0x01               ;move to next most significant digit
-0D7 06001        684                             SUB             s0, #0x01               ;one less digit to compute
-0D8 09504        685                             JUMP            nz, int_to_bcd_loop
+105 00408        682                             load           s4, #s8                 ;remainder becomes digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+106 04801        683                             ADD             s8, #0x01               ;move to next most significant digit
+107 06001        684                             SUB             s0, #0x01               ;one less digit to compute
+108 09504        685                             JUMP            nz, int_to_bcd_loop
 W: value out of range: 0x104, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4.
-0D9 08080        686                             RETURN
+109 08080        686                             RETURN
                  687     ;
                  688     ;Divide 16-bit binary integer by 10
                  689     ;
@@ -803,30 +779,30 @@ W: value out of range: 0x104, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  696     ;Registers used s1,s2,s3,s4,s5,s6,s7
                  697     ;Other registers are used but are preserved
                  698     ;
-0DA 0C460        699     divide_16bit_by_10:     LOAD            s4, s6                  ;copy input value to [s5,s4]
-0DB 0C570        700                             LOAD            s5, s7
-0DC 00600        701                             LOAD            s6, #0x00               ;clear result
-0DD 00700        702                             LOAD            s7, #0x00
-0DE 00200        703                             LOAD            s2, #0x00               ;initialise '10' value into msb's of set [s3,s2]
-0DF 003A0        704                             LOAD            s3, #0xa0
-0E0 0010D        705                             LOAD            s1, #0x0d               ;13 subtract and shift iterations to be performed
-0E1 0C426        706     div10_loop:             SUB             s4, s2                  ;perform 16-bit subtract [s5,s4]-[s3,s2]
-0E2 0C537        707                             SUBCY           s5, s3
-0E3 09916        708                             JUMP            c, div10_restore
+10A 0C460        699     divide_16bit_by_10:     LOAD            s4, s6                  ;copy input value to [s5,s4]
+10B 0C570        700                             LOAD            s5, s7
+10C 00600        701                             LOAD            s6, #0x00               ;clear result
+10D 00700        702                             LOAD            s7, #0x00
+10E 00200        703                             LOAD            s2, #0x00               ;initialise '10' value into msb's of set [s3,s2]
+10F 003A0        704                             LOAD            s3, #0xa0
+110 0010D        705                             LOAD            s1, #0x0d               ;13 subtract and shiload iterations to be performed
+111 0C426        706     div10_loop:             SUB             s4, s2                  ;perform 16-bit subtract [s5,s4]-[s3,s2]
+112 0C537        707                             SUBCY           s5, s3
+113 09916        708                             JUMP            c, div10_reload
 W: value out of range: 0x116, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x16.
-0E4 0D607        709                             SL1             s6                      ;shift '1' into result because subtract was possible
-0E5 08119        710                             JUMP            div10_shifts
+114 0D607        709                             SL1             s6                      ;shiload '1' into result because subtract was possible
+115 08119        710                             JUMP            div10_shiloads
 W: value out of range: 0x119, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
-0E6 0C424        711     div10_restore:          ADD             s4, s2                  ;perform 32-bit addition [s5,s4]+[s3,s2]
-0E7 0C535        712                             ADDCY           s5, s3                  ;to restore value
-0E8 0D606        713                             SL0             s6                      ;shift '0' into result because subtract was not possible
-0E9 0D700        714     div10_shifts:           SLA             s7                      ;complete 16-bit shift left
-0EA 0D30E        715                             SR0             s3                      ;divide '10' value by 2 (shift right 1 place)
-0EB 0D208        716                             SRA             s2
-0EC 06101        717                             SUB             s1, #0x01               ;count iterations
-0ED 09511        718                             JUMP            nz, div10_loop
+116 0C424        711     div10_reload:          ADD             s4, s2                  ;perform 32-bit addition [s5,s4]+[s3,s2]
+117 0C535        712                             ADDCY           s5, s3                  ;to reload value
+118 0D606        713                             SL0             s6                      ;shiload '0' into result because subtract was not possible
+119 0D700        714     div10_shiloads:           SLA             s7                      ;complete 16-bit shiload leload
+11A 0D30E        715                             SR0             s3                      ;divide '10' value by 2 (shiload right 1 place)
+11B 0D208        716                             SRA             s2
+11C 06101        717                             SUB             s1, #0x01               ;count iterations
+11D 09511        718                             JUMP            nz, div10_loop
 W: value out of range: 0x111, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
-0EE 08080        719                             RETURN
+11E 08080        719                             RETURN
                  720     ;
                  721     ;
                  722     ;**************************************************************************************
@@ -877,9 +853,9 @@ W: value out of range: 0x111, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  767     ;   SPI_amp_shdn = 0      Amplifier active and available
                  768     ;   SPI_dac_clr  = 1      D/A clear off
                  769     ;
-0EF 000AE        770     spi_init:               LOAD            s0, #0xae               ;normally AE
-0F0 0E008        771                             OUTPUT          s0, spi_control_port
-0F1 08080        772                             RETURN
+11F 000AE        770     spi_init:               LOAD            s0, #0xae               ;normally AE
+120 0E008        771                             OUTPUT          s0, spi_control_port
+121 08080        772                             RETURN
                  773     ;
                  774     ;
                  775     ;
@@ -901,33 +877,32 @@ W: value out of range: 0x111, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  791     ; 0101 = 5 hex = Gain -20
                  792     ; 0110 = 6 hex = Gain -50
                  793     ; 0111 = 7 hex = Gain -100
-                 794     ; 1000 = 8 hex = software shutdown (power on default). Hi-Z output.
+                 794     ; 1000 = 8 hex = soloadware shutdown (power on default). Hi-Z output.
                  795     ;
                  796     ;On return, the s2, register will contain the response from the LTC6912-1 amplifier.
                  797     ;This will be the same format and indicate the previous setting of the amplifier.
                  798     ;The response is obtained from the dedicated AMP_SDI signal since the LTC6912 output
                  799     ;is always active and can not be on a shared SPI bus.
                  800     ;
-0F2 0831F        801     set_amp:                CALL            spi_init                ;ensure known state of bus and s0 register
+122 0831F        801     set_amp:                CALL            spi_init                ;ensure known state of bus and s0 register
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
-0F3 03008        802                             XOR             s0, #spi_amp_cs         ;select low on Amplifier chip select
-0F4 0E008        803                             OUTPUT          s0, spi_control_port
-0F5 00108        804                             LOAD            s1, #0x08               ;8-bits to transmit and receive
-0F6 0E204        805     next_amp_spi_bit:       OUTPUT          s2, spi_output_port     ;output data bit
-0F7 03001        806                             XOR             s0, #spi_sck            ;clock High (bit0)
-0F8 0E008        807                             OUTPUT          s0, spi_control_port    ;drive clock High
-0F9 0A301        808                             INPUT           s3, spi_input_port      ;read input bit
-                 809                             TEST            s3, #spi_amp_sdi        ;detect state of received bit
-E: instruction not supported on the this device: TEST sX, kk.
-0FA 0D200        810                             SLA             s2                      ;shift new data into result and move to next transmit bit
-0FB 03001        811                             XOR             s0, #spi_sck            ;clock Low (bit0)
-0FC 0E008        812                             OUTPUT          s0, spi_control_port    ;drive clock Low
-0FD 06101        813                             SUB             s1, #0x01               ;count bits
-0FE 09526        814                             JUMP            nz, next_amp_spi_bit    ;repeat until finished
+123 03008        802                             XOR             s0, #spi_amp_cs         ;select low on Amplifier chip select
+124 0E008        803                             OUTPUT          s0, spi_control_port
+125 00108        804                             LOAD            s1, #0x08               ;8-bits to transmit and receive
+126 0E204        805     next_amp_spi_bit:       OUTPUT          s2, spi_output_port     ;output data bit
+127 03001        806                             XOR             s0, #spi_sck            ;clock High (bit0)
+128 0E008        807                             OUTPUT          s0, spi_control_port    ;drive clock High
+129 0A301        808                             INPUT           s3, spi_input_port      ;read input bit
+12A 00340        809                             load            s3, #spi_amp_sdi        ;detect state of received bit
+12B 0D200        810                             SLA             s2                      ;shiload new data into result and move to next transmit bit
+12C 03001        811                             XOR             s0, #spi_sck            ;clock Low (bit0)
+12D 0E008        812                             OUTPUT          s0, spi_control_port    ;drive clock Low
+12E 06101        813                             SUB             s1, #0x01               ;count bits
+12F 09526        814                             JUMP            nz, next_amp_spi_bit    ;repeat until finished
 W: value out of range: 0x126, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x26.
-0FF 03008        815                             XOR             s0, #spi_amp_cs         ;deselect the amplifier
-100 0E008        816                             OUTPUT          s0, spi_control_port
-101 08080        817                             RETURN
+130 03008        815                             XOR             s0, #spi_amp_cs         ;deselect the amplifier
+131 0E008        816                             OUTPUT          s0, spi_control_port
+132 08080        817                             RETURN
                  818     ;
                  819     ;
                  820     ;
@@ -971,36 +946,35 @@ W: value out of range: 0x126, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  858     ;to its SDO pin changes as a result of rising edges of SCK clock which
                  859     ;is not the same as the falling edge used by other devices.
                  860     ;
-102 0831F        861     adc_read:               CALL            spi_init                ;ensure known state of bus and s0 register
+133 0831F        861     adc_read:               CALL            spi_init                ;ensure known state of bus and s0 register
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
-103 03010        862                             XOR             s0, #spi_adc_conv       ;Pulse AD-CONV High to take sample and start
-104 0E008        863                             OUTPUT          s0, spi_control_port    ;  conversion and transmission of data.
-105 03010        864                             XOR             s0, #spi_adc_conv       ;AD-CONV Low
-106 0E008        865                             OUTPUT          s0, spi_control_port
-107 00122        866                             LOAD            s1, #0x22               ;34 clocks to read all data
-108 03001        867     next_adc_bit:           XOR             s0, #spi_sck            ;clock High (bit0)
-109 0E008        868                             OUTPUT          s0, spi_control_port    ;drive clock High
-10A 03001        869                             XOR             s0, #spi_sck            ;clock Low (bit0)
-10B 0E008        870                             OUTPUT          s0, spi_control_port    ;drive clock Low
-10C 0A301        871                             INPUT           s3, spi_input_port      ;read input bit
-                 872                             TEST            s3, #spi_sdi            ;detect state of received bit
-E: instruction not supported on the this device: TEST sX, kk.
-10D 0D600        873                             SLA             s6                      ;shift new data into result registers
-10E 0D700        874                             SLA             s7
-10F 0D800        875                             SLA             s8
-110 0D900        876                             SLA             s9
-111 06101        877                             SUB             s1, #0x01               ;count bits
-112 09539        878                             JUMP            nz, next_adc_bit        ;repeat until finished
+134 03010        862                             XOR             s0, #spi_adc_conv       ;Pulse AD-CONV High to take sample and start
+135 0E008        863                             OUTPUT          s0, spi_control_port    ;  conversion and transmission of data.
+136 03010        864                             XOR             s0, #spi_adc_conv       ;AD-CONV Low
+137 0E008        865                             OUTPUT          s0, spi_control_port
+138 00122        866                             LOAD            s1, #0x22               ;34 clocks to read all data
+139 03001        867     next_adc_bit:           XOR             s0, #spi_sck            ;clock High (bit0)
+13A 0E008        868                             OUTPUT          s0, spi_control_port    ;drive clock High
+13B 03001        869                             XOR             s0, #spi_sck            ;clock Low (bit0)
+13C 0E008        870                             OUTPUT          s0, spi_control_port    ;drive clock Low
+13D 0A301        871                             INPUT           s3, spi_input_port      ;read input bit
+13E 00380        872                             load            s3, #spi_sdi            ;detect state of received bit
+13F 0D600        873                             SLA             s6                      ;shiload new data into result registers
+140 0D700        874                             SLA             s7
+141 0D800        875                             SLA             s8
+142 0D900        876                             SLA             s9
+143 06101        877                             SUB             s1, #0x01               ;count bits
+144 09539        878                             JUMP            nz, next_adc_bit        ;repeat until finished
 W: value out of range: 0x139, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x39.
-113 0D90A        879                             SRX             s9                      ;sign extend 14-bit result in [s9,s8]
-114 0D808        880                             SRA             s8
-115 0D90A        881                             SRX             s9
-116 0D808        882                             SRA             s8
-117 0D70A        883                             SRX             s7                      ;sign extend 14-bit result in [s7,s6]
-118 0D608        884                             SRA             s6
-119 0D70A        885                             SRX             s7
-11A 0D608        886                             SRA             s6
-11B 08080        887                             RETURN
+145 0D90A        879                             SRX             s9                      ;sign extend 14-bit result in [s9,s8]
+146 0D808        880                             SRA             s8
+147 0D90A        881                             SRX             s9
+148 0D808        882                             SRA             s8
+149 0D70A        883                             SRX             s7                      ;sign extend 14-bit result in [s7,s6]
+14A 0D608        884                             SRA             s6
+14B 0D70A        885                             SRX             s7
+14C 0D608        886                             SRA             s6
+14D 08080        887                             RETURN
                  888     ;
                  889     ;
                  890     ;**************************************************************************************
@@ -1011,106 +985,106 @@ W: value out of range: 0x139, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  895     ;Display 'PicoBlaze' on LCD at current cursor position
                  896     ;
                  897     ;
-11C 00550        898     disp_picoblaze:         LOAD            s5, #_character_p
-11D 083D1        899                             CALL            lcd_write_data
+14E 00550        898     disp_picoblaze:         LOAD            s5, #_character_p
+14F 083D1        899                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-11E 00569        900                             LOAD            s5, #character_i
-11F 083D1        901                             CALL            lcd_write_data
+150 00569        900                             LOAD            s5, #character_i
+151 083D1        901                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-120 00563        902                             LOAD            s5, #character_c
-121 083D1        903                             CALL            lcd_write_data
+152 00563        902                             LOAD            s5, #character_c
+153 083D1        903                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-122 0056F        904                             LOAD            s5, #character_o
-123 083D1        905                             CALL            lcd_write_data
+154 0056F        904                             LOAD            s5, #character_o
+155 083D1        905                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-124 00542        906                             LOAD            s5, #_character_b
-125 083D1        907                             CALL            lcd_write_data
+156 00542        906                             LOAD            s5, #_character_b
+157 083D1        907                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-126 0056C        908                             LOAD            s5, #character_l
-127 083D1        909                             CALL            lcd_write_data
+158 0056C        908                             LOAD            s5, #character_l
+159 083D1        909                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-128 00561        910                             LOAD            s5, #character_a
-129 083D1        911                             CALL            lcd_write_data
+15A 00561        910                             LOAD            s5, #character_a
+15B 083D1        911                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-12A 0057A        912                             LOAD            s5, #character_z
-12B 083D1        913                             CALL            lcd_write_data
+15C 0057A        912                             LOAD            s5, #character_z
+15D 083D1        913                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-12C 00565        914                             LOAD            s5, #character_e
-12D 083D1        915                             CALL            lcd_write_data
+15E 00565        914                             LOAD            s5, #character_e
+15F 083D1        915                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-12E 08080        916                             RETURN
+160 08080        916                             RETURN
                  917     ;
                  918     ;
                  919     ;Display 'ADC Control' on LCD at current cursor position
                  920     ;
                  921     ;
-12F 00541        922     disp_adc_control:       LOAD            s5, #_character_a
-130 083D1        923                             CALL            lcd_write_data
+161 00541        922     disp_adc_control:       LOAD            s5, #_character_a
+162 083D1        923                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-131 00544        924                             LOAD            s5, #_character_d
-132 083D1        925                             CALL            lcd_write_data
+163 00544        924                             LOAD            s5, #_character_d
+164 083D1        925                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-133 00543        926                             LOAD            s5, #_character_c
-134 083D1        927                             CALL            lcd_write_data
+165 00543        926                             LOAD            s5, #_character_c
+166 083D1        927                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-135 00520        928                             LOAD            s5, #character_space
-136 083D1        929                             CALL            lcd_write_data
+167 00520        928                             LOAD            s5, #character_space
+168 083D1        929                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-137 00543        930                             LOAD            s5, #_character_c
-138 083D1        931                             CALL            lcd_write_data
+169 00543        930                             LOAD            s5, #_character_c
+16A 083D1        931                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-139 0056F        932                             LOAD            s5, #character_o
-13A 083D1        933                             CALL            lcd_write_data
+16B 0056F        932                             LOAD            s5, #character_o
+16C 083D1        933                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-13B 0056E        934                             LOAD            s5, #character_n
-13C 083D1        935                             CALL            lcd_write_data
+16D 0056E        934                             LOAD            s5, #character_n
+16E 083D1        935                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-13D 00574        936                             LOAD            s5, #character_t
-13E 083D1        937                             CALL            lcd_write_data
+16F 00574        936                             LOAD            s5, #character_t
+170 083D1        937                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-13F 00572        938                             LOAD            s5, #character_r
-140 083D1        939                             CALL            lcd_write_data
+171 00572        938                             LOAD            s5, #character_r
+172 083D1        939                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-141 0056F        940                             LOAD            s5, #character_o
-142 083D1        941                             CALL            lcd_write_data
+173 0056F        940                             LOAD            s5, #character_o
+174 083D1        941                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-143 0056C        942                             LOAD            s5, #character_l
-144 083D1        943                             CALL            lcd_write_data
+175 0056C        942                             LOAD            s5, #character_l
+176 083D1        943                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-145 08080        944                             RETURN
+177 08080        944                             RETURN
                  945     ;
                  946     ;
                  947     ;Display 'VA=' on LCD at current cursor position
                  948     ;
                  949     ;
-146 00556        950     disp_va:                LOAD            s5, #_character_v
-147 083D1        951                             CALL            lcd_write_data
+178 00556        950     disp_va:                LOAD            s5, #_character_v
+179 083D1        951                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-148 00541        952                             LOAD            s5, #_character_a
-149 083D1        953                             CALL            lcd_write_data
+17A 00541        952                             LOAD            s5, #_character_a
+17B 083D1        953                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-14A 0053D        954                             LOAD            s5, #character_equals
-14B 083D1        955                             CALL            lcd_write_data
+17C 0053D        954                             LOAD            s5, #character_equals
+17D 083D1        955                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-14C 08080        956                             RETURN
+17E 08080        956                             RETURN
                  957     ;
                  958     ;
                  959     ;Display 'A/D' on LCD at current cursor position
                  960     ;
                  961     ;
-14D 00541        962     disp_ad:                LOAD            s5, #_character_a
-14E 083D1        963                             CALL            lcd_write_data
+17F 00541        962     disp_ad:                LOAD            s5, #_character_a
+180 083D1        963                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-14F 0052F        964                             LOAD            s5, #character_divide
-150 083D1        965                             CALL            lcd_write_data
+181 0052F        964                             LOAD            s5, #character_divide
+182 083D1        965                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-151 00544        966                             LOAD            s5, #_character_d
-152 083D1        967                             CALL            lcd_write_data
+183 00544        966                             LOAD            s5, #_character_d
+184 083D1        967                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-153 0053D        968                             LOAD            s5, #character_equals
-154 083D1        969                             CALL            lcd_write_data
+185 0053D        968                             LOAD            s5, #character_equals
+186 083D1        969                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-155 08080        970                             RETURN
+187 08080        970                             RETURN
                  971     ;
                  972     ;
                  973     ;
@@ -1131,31 +1105,31 @@ W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  988     ;
                  989     ;Registers used s0, s1 and s2.
                  990     ;
-156 0C100        991     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
-157 0D00E        992                             SR0             s0                      ;isolate upper nibble
-158 0D00E        993                             SR0             s0
-159 0D00E        994                             SR0             s0
-15A 0D00E        995                             SR0             s0
-15B 08394        996                             CALL            hex_to_ascii            ;convert
+188 0C100        991     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+189 0D00E        992                             SR0             s0                      ;isolate upper nibble
+18A 0D00E        993                             SR0             s0
+18B 0D00E        994                             SR0             s0
+18C 0D00E        995                             SR0             s0
+18D 08394        996                             CALL            hex_to_ascii            ;convert
 W: value out of range: 0x194, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x94.
-15C 0C200        997                             LOAD            s2, s0                  ;upper nibble value in s2
-15D 0C010        998                             LOAD            s0, s1                  ;restore complete value
-15E 0100F        999                             AND             s0, #0x0f               ;isolate lower nibble
-15F 08394       1000                             CALL            hex_to_ascii            ;convert
+18E 0C200        997                             LOAD            s2, s0                  ;upper nibble value in s2
+18F 0C010        998                             LOAD            s0, s1                  ;reload complete value
+190 0100F        999                             AND             s0, #0x0f               ;isolate lower nibble
+191 08394       1000                             CALL            hex_to_ascii            ;convert
 W: value out of range: 0x194, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x94.
-160 0C100       1001                             LOAD            s1, s0                  ;lower nibble value in s1
-161 08080       1002                             RETURN
+192 0C100       1001                             LOAD            s1, s0                  ;lower nibble value in s1
+193 08080       1002                             RETURN
                 1003     ;
                 1004     ;Convert hexadecimal value provided in register s0 into ASCII character
                 1005     ;
                 1006     ;Register used s0
                 1007     ;
-162 0600A       1008     hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
-163 09997       1009                             JUMP            c, number_char
+194 0600A       1008     hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
+195 09997       1009                             JUMP            c, number_char
 W: value out of range: 0x197, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x97.
-164 04007       1010                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
-165 0403A       1011     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
-166 08080       1012                             RETURN
+196 04007       1010                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+197 0403A       1011     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+198 08080       1012                             RETURN
                 1013     ;
                 1014     ;
                 1015     ;Display the two character HEX value of the register contents 's0' on
@@ -1163,20 +1137,20 @@ W: value out of range: 0x197, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1017     ;
                 1018     ;Registers used s0, s1, s2, s4, s5, s6
                 1019     ;
-167 08388       1020     disp_hex_byte:          CALL            hex_byte_to_ascii
+199 08388       1020     disp_hex_byte:          CALL            hex_byte_to_ascii
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
-168 0C610       1021                             LOAD            s6, s1                  ;remember lower hex character
-169 0C520       1022                             LOAD            s5, s2                  ;display upper hex character
-16A 083D1       1023                             CALL            lcd_write_data
+19A 0C610       1021                             LOAD            s6, s1                  ;remember lower hex character
+19B 0C520       1022                             LOAD            s5, s2                  ;display upper hex character
+19C 083D1       1023                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-16B 0C560       1024                             LOAD            s5, s6                  ;display lower hex character
-16C 083D1       1025                             CALL            lcd_write_data
+19D 0C560       1024                             LOAD            s5, s6                  ;display lower hex character
+19E 083D1       1025                             CALL            lcd_write_data
 W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd1.
-16D 08080       1026                             RETURN
+19F 08080       1026                             RETURN
                 1027     ;
                 1028     ;
                 1029     ;**************************************************************************************
-                1030     ;Software delay routines
+                1030     ;Soloadware delay routines
                 1031     ;**************************************************************************************
                 1032     ;
                 1033     ;
@@ -1191,36 +1165,36 @@ W: value out of range: 0x1d1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1042     ;
                 1043     ;Registers used s0
                 1044     ;
-16E 0000B       1045     delay_1us:              LOAD            s0, #delay_1us_constant
-16F 06001       1046     wait_1us:               SUB             s0, #0x01
-170 095A1       1047                             JUMP            nz, wait_1us
+1A0 0000B       1045     delay_1us:              LOAD            s0, #delay_1us_constant
+1A1 06001       1046     wait_1us:               SUB             s0, #0x01
+1A2 095A1       1047                             JUMP            nz, wait_1us
 W: value out of range: 0x1a1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa1.
-171 08080       1048                             RETURN
+1A3 08080       1048                             RETURN
                 1049     ;
                 1050     ;Delay of 40us.
                 1051     ;
                 1052     ;Registers used s0, s1
                 1053     ;
-172 00128       1054     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
-173 083A0       1055     wait_40us:              CALL            delay_1us
+1A4 00128       1054     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+1A5 083A0       1055     wait_40us:              CALL            delay_1us
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-174 06101       1056                             SUB             s1, #0x01
-175 095A5       1057                             JUMP            nz, wait_40us
+1A6 06101       1056                             SUB             s1, #0x01
+1A7 095A5       1057                             JUMP            nz, wait_40us
 W: value out of range: 0x1a5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa5.
-176 08080       1058                             RETURN
+1A8 08080       1058                             RETURN
                 1059     ;
                 1060     ;
                 1061     ;Delay of 1ms.
                 1062     ;
                 1063     ;Registers used s0, s1, s2
                 1064     ;
-177 00219       1065     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
-178 083A4       1066     wait_1ms:               CALL            delay_40us
+1A9 00219       1065     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+1AA 083A4       1066     wait_1ms:               CALL            delay_40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-179 06201       1067                             SUB             s2, #0x01
-17A 095AA       1068                             JUMP            nz, wait_1ms
+1AB 06201       1067                             SUB             s2, #0x01
+1AC 095AA       1068                             JUMP            nz, wait_1ms
 W: value out of range: 0x1aa, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xaa.
-17B 08080       1069                             RETURN
+1AD 08080       1069                             RETURN
                 1070     ;
                 1071     ;Delay of 20ms.
                 1072     ;
@@ -1228,25 +1202,25 @@ W: value out of range: 0x1aa, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1074     ;
                 1075     ;Registers used s0, s1, s2, s3
                 1076     ;
-17C 00314       1077     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
-17D 083A9       1078     wait_20ms:              CALL            delay_1ms
+1AE 00314       1077     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+1AF 083A9       1078     wait_20ms:              CALL            delay_1ms
 W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
-17E 06301       1079                             SUB             s3, #0x01
-17F 095AF       1080                             JUMP            nz, wait_20ms
+1B0 06301       1079                             SUB             s3, #0x01
+1B1 095AF       1080                             JUMP            nz, wait_20ms
 W: value out of range: 0x1af, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xaf.
-180 08080       1081                             RETURN
+1B2 08080       1081                             RETURN
                 1082     ;
                 1083     ;Delay of approximately 1 second.
                 1084     ;
                 1085     ;Registers used s0, s1, s2, s3, s4
                 1086     ;
-181 00432       1087     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
-182 083AE       1088     wait_1s:                CALL            delay_20ms
+1B3 00432       1087     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+1B4 083AE       1088     wait_1s:                CALL            delay_20ms
 W: value out of range: 0x1ae, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xae.
-183 06401       1089                             SUB             s4, #0x01
-184 095B4       1090                             JUMP            nz, wait_1s
+1B5 06401       1089                             SUB             s4, #0x01
+1B6 095B4       1090                             JUMP            nz, wait_1s
 W: value out of range: 0x1b4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb4.
-185 08080       1091                             RETURN
+1B7 08080       1091                             RETURN
                 1092     ;
                 1093     ;
                 1094     ;
@@ -1257,7 +1231,7 @@ W: value out of range: 0x1b4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1099     ;LCD module is a 16 character by 2 line display but all displays are very similar
                 1100     ;The 4-wire data interface will be used (DB4 to DB7).
                 1101     ;
-                1102     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                1102     ;The LCD modules are relatively slow and soloadware delay loops are used to slow down
                 1103     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
                 1104     ;a different section (see above in this case).
                 1105     ;
@@ -1268,13 +1242,13 @@ W: value out of range: 0x1b4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1110     ;
                 1111     ;Registers used s0, s4
                 1112     ;
-186 03401       1113     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
-187 0E440       1114                             OUTPUT          s4, lcd_output_port
-188 083A0       1115                             CALL            delay_1us
+1B8 03401       1113     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+1B9 0E440       1114                             OUTPUT          s4, lcd_output_port
+1BA 083A0       1115                             CALL            delay_1us
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-189 03401       1116                             XOR             s4, #lcd_e              ;E=0
-18A 0E440       1117                             OUTPUT          s4, lcd_output_port
-18B 08080       1118                             RETURN
+1BB 03401       1116                             XOR             s4, #lcd_e              ;E=0
+1BC 0E440       1117                             OUTPUT          s4, lcd_output_port
+1BD 08080       1118                             RETURN
                 1119     ;
                 1120     ;Write 4-bit instruction to LCD display.
                 1121     ;
@@ -1285,11 +1259,11 @@ W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1126     ;
                 1127     ;Registers used s4
                 1128     ;
-18C 014F8       1129     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
-18D 0E440       1130                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-18E 083B8       1131                             CALL            lcd_pulse_e
+1BE 014F8       1129     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+1BF 0E440       1130                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1C0 083B8       1131                             CALL            lcd_pulse_e
 W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
-18F 08080       1132                             RETURN
+1C1 08080       1132                             RETURN
                 1133     ;
                 1134     ;
                 1135     ;Write 8-bit instruction to LCD display.
@@ -1303,25 +1277,25 @@ W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1143     ;
                 1144     ;Registers used s0, s1, s4, s5
                 1145     ;
-190 0C450       1146     lcd_write_inst8:        LOAD            s4, s5
-191 014F0       1147                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-192 02408       1148                             OR              s4, #lcd_drive          ;Enable=1
-193 083BE       1149                             CALL            lcd_write_inst4         ;write upper nibble
+1C2 0C450       1146     lcd_write_inst8:        LOAD            s4, s5
+1C3 014F0       1147                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1C4 02408       1148                             OR              s4, #lcd_drive          ;Enable=1
+1C5 083BE       1149                             CALL            lcd_write_inst4         ;write upper nibble
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-194 083A0       1150                             CALL            delay_1us               ;wait >1us
+1C6 083A0       1150                             CALL            delay_1us               ;wait >1us
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-195 0C450       1151                             LOAD            s4, s5                  ;select lower nibble with
-196 0D407       1152                             SL1             s4                      ;Enable=1
-197 0D406       1153                             SL0             s4                      ;RS=0 Instruction
-198 0D406       1154                             SL0             s4                      ;RW=0 Write
-199 0D406       1155                             SL0             s4                      ;E=0
-19A 083BE       1156                             CALL            lcd_write_inst4         ;write lower nibble
+1C7 0C450       1151                             LOAD            s4, s5                  ;select lower nibble with
+1C8 0D407       1152                             SL1             s4                      ;Enable=1
+1C9 0D406       1153                             SL0             s4                      ;RS=0 Instruction
+1CA 0D406       1154                             SL0             s4                      ;RW=0 Write
+1CB 0D406       1155                             SL0             s4                      ;E=0
+1CC 083BE       1156                             CALL            lcd_write_inst4         ;write lower nibble
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-19B 083A4       1157                             CALL            delay_40us              ;wait >40us
+1CD 083A4       1157                             CALL            delay_40us              ;wait >40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-19C 004F0       1158                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-19D 0E440       1159                             OUTPUT          s4, lcd_output_port     ;Release master enable
-19E 08080       1160                             RETURN
+1CE 004F0       1158                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1CF 0E440       1159                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1D0 08080       1160                             RETURN
                 1161     ;
                 1162     ;
                 1163     ;
@@ -1336,27 +1310,27 @@ W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1172     ;
                 1173     ;Registers used s0, s1, s4, s5
                 1174     ;
-19F 0C450       1175     lcd_write_data:         LOAD            s4, s5
-1A0 014F0       1176                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1A1 0240C       1177                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
-1A2 0E440       1178                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1A3 083B8       1179                             CALL            lcd_pulse_e             ;write upper nibble
+1D1 0C450       1175     lcd_write_data:         LOAD            s4, s5
+1D2 014F0       1176                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1D3 0240C       1177                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+1D4 0E440       1178                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1D5 083B8       1179                             CALL            lcd_pulse_e             ;write upper nibble
 W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
-1A4 083A0       1180                             CALL            delay_1us               ;wait >1us
+1D6 083A0       1180                             CALL            delay_1us               ;wait >1us
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-1A5 0C450       1181                             LOAD            s4, s5                  ;select lower nibble with
-1A6 0D407       1182                             SL1             s4                      ;Enable=1
-1A7 0D407       1183                             SL1             s4                      ;RS=1 Data
-1A8 0D406       1184                             SL0             s4                      ;RW=0 Write
-1A9 0D406       1185                             SL0             s4                      ;E=0
-1AA 0E440       1186                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1AB 083B8       1187                             CALL            lcd_pulse_e             ;write lower nibble
+1D7 0C450       1181                             LOAD            s4, s5                  ;select lower nibble with
+1D8 0D407       1182                             SL1             s4                      ;Enable=1
+1D9 0D407       1183                             SL1             s4                      ;RS=1 Data
+1DA 0D406       1184                             SL0             s4                      ;RW=0 Write
+1DB 0D406       1185                             SL0             s4                      ;E=0
+1DC 0E440       1186                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1DD 083B8       1187                             CALL            lcd_pulse_e             ;write lower nibble
 W: value out of range: 0x1b8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb8.
-1AC 083A4       1188                             CALL            delay_40us              ;wait >40us
+1DE 083A4       1188                             CALL            delay_40us              ;wait >40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-1AD 004F0       1189                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1AE 0E440       1190                             OUTPUT          s4, lcd_output_port     ;Release master enable
-1AF 08080       1191                             RETURN
+1DF 004F0       1189                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1E0 0E440       1190                             OUTPUT          s4, lcd_output_port     ;Release master enable
+1E1 08080       1191                             RETURN
                 1192     ;
                 1193     ;
                 1194     ;
@@ -1377,35 +1351,35 @@ W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1209     ;
                 1210     ;Registers used s0, s1, s4, s5
                 1211     ;
-1B0 0040E       1212     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
-1B1 0E440       1213                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
-1B2 03401       1214                             XOR             s4, #lcd_e              ;E=1
-1B3 0E440       1215                             OUTPUT          s4, lcd_output_port
-1B4 083A0       1216                             CALL            delay_1us               ;wait >260ns to access data
+1E2 0040E       1212     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+1E3 0E440       1213                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+1E4 03401       1214                             XOR             s4, #lcd_e              ;E=1
+1E5 0E440       1215                             OUTPUT          s4, lcd_output_port
+1E6 083A0       1216                             CALL            delay_1us               ;wait >260ns to access data
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-1B5 0A502       1217                             INPUT           s5, lcd_input_port      ;read upper nibble
-1B6 03401       1218                             XOR             s4, #lcd_e              ;E=0
-1B7 0E440       1219                             OUTPUT          s4, lcd_output_port
-1B8 083A0       1220                             CALL            delay_1us               ;wait >1us
+1E7 0A502       1217                             INPUT           s5, lcd_input_port      ;read upper nibble
+1E8 03401       1218                             XOR             s4, #lcd_e              ;E=0
+1E9 0E440       1219                             OUTPUT          s4, lcd_output_port
+1EA 083A0       1220                             CALL            delay_1us               ;wait >1us
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-1B9 03401       1221                             XOR             s4, #lcd_e              ;E=1
-1BA 0E440       1222                             OUTPUT          s4, lcd_output_port
-1BB 083A0       1223                             CALL            delay_1us               ;wait >260ns to access data
+1EB 03401       1221                             XOR             s4, #lcd_e              ;E=1
+1EC 0E440       1222                             OUTPUT          s4, lcd_output_port
+1ED 083A0       1223                             CALL            delay_1us               ;wait >260ns to access data
 W: value out of range: 0x1a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
-1BC 0A002       1224                             INPUT           s0, lcd_input_port      ;read lower nibble
-1BD 03401       1225                             XOR             s4, #lcd_e              ;E=0
-1BE 0E440       1226                             OUTPUT          s4, lcd_output_port
-1BF 015F0       1227                             AND             s5, #0xf0               ;merge upper and lower nibbles
-1C0 0D00E       1228                             SR0             s0
-1C1 0D00E       1229                             SR0             s0
-1C2 0D00E       1230                             SR0             s0
-1C3 0D00E       1231                             SR0             s0
-1C4 0C502       1232                             OR              s5, s0
-1C5 00404       1233                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
-1C6 0E440       1234                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
-1C7 083A4       1235                             CALL            delay_40us              ;wait >40us
+1EE 0A002       1224                             INPUT           s0, lcd_input_port      ;read lower nibble
+1EF 03401       1225                             XOR             s4, #lcd_e              ;E=0
+1F0 0E440       1226                             OUTPUT          s4, lcd_output_port
+1F1 015F0       1227                             AND             s5, #0xf0               ;merge upper and lower nibbles
+1F2 0D00E       1228                             SR0             s0
+1F3 0D00E       1229                             SR0             s0
+1F4 0D00E       1230                             SR0             s0
+1F5 0D00E       1231                             SR0             s0
+1F6 0C502       1232                             OR              s5, s0
+1F7 00404       1233                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+1F8 0E440       1234                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
+1F9 083A4       1235                             CALL            delay_40us              ;wait >40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-1C8 08080       1236                             RETURN
+1FA 08080       1236                             RETURN
                 1237     ;
                 1238     ;
                 1239     ;Reset and initialise display to communicate using 4-bit data mode
@@ -1415,49 +1389,49 @@ W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1243     ;following by the 8-bit instructions to set up the display.
                 1244     ;
                 1245     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
-                1246     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1246     ;  06 = '000001' Entry mode, '1' increment, '0' no display shiload
                 1247     ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
                 1248     ;  01 = '00000001' Display clear
                 1249     ;
                 1250     ;Registers used s0, s1, s2, s3, s4
                 1251     ;
-1C9 083AE       1252     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
+1FB 083AE       1252     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
 W: value out of range: 0x1ae, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xae.
-1CA 00430       1253                             LOAD            s4, #0x30
-1CB 083BE       1254                             CALL            lcd_write_inst4         ;send '3'
+1FC 00430       1253                             LOAD            s4, #0x30
+1FD 083BE       1254                             CALL            lcd_write_inst4         ;send '3'
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-1CC 083AE       1255                             CALL            delay_20ms              ;wait >4.1ms
+1FE 083AE       1255                             CALL            delay_20ms              ;wait >4.1ms
 W: value out of range: 0x1ae, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xae.
-1CD 083BE       1256                             CALL            lcd_write_inst4         ;send '3'
+1FF 083BE       1256                             CALL            lcd_write_inst4         ;send '3'
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-1CE 083A9       1257                             CALL            delay_1ms               ;wait >100us
+200 083A9       1257                             CALL            delay_1ms               ;wait >100us
 W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
-1CF 083BE       1258                             CALL            lcd_write_inst4         ;send '3'
+201 083BE       1258                             CALL            lcd_write_inst4         ;send '3'
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-1D0 083A4       1259                             CALL            delay_40us              ;wait >40us
+202 083A4       1259                             CALL            delay_40us              ;wait >40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-1D1 00420       1260                             LOAD            s4, #0x20
-1D2 083BE       1261                             CALL            lcd_write_inst4         ;send '2'
+203 00420       1260                             LOAD            s4, #0x20
+204 083BE       1261                             CALL            lcd_write_inst4         ;send '2'
 W: value out of range: 0x1be, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbe.
-1D3 083A4       1262                             CALL            delay_40us              ;wait >40us
+205 083A4       1262                             CALL            delay_40us              ;wait >40us
 W: value out of range: 0x1a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
-1D4 00528       1263                             LOAD            s5, #0x28               ;Function set
-1D5 083C2       1264                             CALL            lcd_write_inst8
+206 00528       1263                             LOAD            s5, #0x28               ;Function set
+207 083C2       1264                             CALL            lcd_write_inst8
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1D6 00506       1265                             LOAD            s5, #0x06               ;Entry mode
-1D7 083C2       1266                             CALL            lcd_write_inst8
+208 00506       1265                             LOAD            s5, #0x06               ;Entry mode
+209 083C2       1266                             CALL            lcd_write_inst8
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1D8 0050C       1267                             LOAD            s5, #0x0c               ;Display control
-1D9 083C2       1268                             CALL            lcd_write_inst8
+20A 0050C       1267                             LOAD            s5, #0x0c               ;Display control
+20B 083C2       1268                             CALL            lcd_write_inst8
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1DA 00501       1269     lcd_clear:              LOAD            s5, #0x01               ;Display clear
-1DB 083C2       1270                             CALL            lcd_write_inst8
+20C 00501       1269     lcd_clear:              LOAD            s5, #0x01               ;Display clear
+20D 083C2       1270                             CALL            lcd_write_inst8
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1DC 083A9       1271                             CALL            delay_1ms               ;wait >1.64ms for display to clear
+20E 083A9       1271                             CALL            delay_1ms               ;wait >1.64ms for display to clear
 W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
-1DD 083A9       1272                             CALL            delay_1ms
+20F 083A9       1272                             CALL            delay_1ms
 W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
-1DE 08080       1273                             RETURN
+210 08080       1273                             RETURN
                 1274     ;
                 1275     ;Position the cursor ready for characters to be written.
                 1276     ;The display is formed of 2 lines of 16 characters and each
@@ -1476,20 +1450,19 @@ W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1289     ;
                 1290     ;Registers used s0, s1, s2, s3, s4
                 1291     ;
-  00211         1292     lcd_cursor:             TEST            s5, #0x10               ;test for line 1
-E: instruction not supported on the this device: TEST sX, kk.
-1DF 09117       1293                             JUMP            z, set_line2
+211 00510       1292     lcd_cursor:             load            s5, #0x10               ;load for line 1
+212 09117       1293                             JUMP            z, set_line2
 W: value out of range: 0x217, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x17.
-1E0 0150F       1294                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
-1E1 02580       1295                             OR              s5, #0x80
-1E2 083C2       1296                             CALL            lcd_write_inst8         ;instruction write to set cursor
+213 0150F       1294                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
+214 02580       1295                             OR              s5, #0x80
+215 083C2       1296                             CALL            lcd_write_inst8         ;instruction write to set cursor
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1E3 08080       1297                             RETURN
-1E4 0150F       1298     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
-1E5 025C0       1299                             OR              s5, #0xc0
-1E6 083C2       1300                             CALL            lcd_write_inst8         ;instruction write to set cursor
+216 08080       1297                             RETURN
+217 0150F       1298     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
+218 025C0       1299                             OR              s5, #0xc0
+219 083C2       1300                             CALL            lcd_write_inst8         ;instruction write to set cursor
 W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
-1E7 08080       1301                             RETURN
+21A 08080       1301                             RETURN
                 1302     ;
                 1303     ;
                 1304     ;**************************************************************************************
@@ -1498,22 +1471,22 @@ W: value out of range: 0x1c2, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1307     ;
                 1308     ;Interrupts occur at 1 second intervals.
                 1309     ;
-                1310     ;Each interrupt is used to take analogue samples and store them in scratch pad memory.
+                1310     ;Each interrupt is used to take analogue samples and load them in scratch pad memory.
                 1311     ;The interrupt clears a 'flag' in register sF so that the main program can advance.
                 1312     ;
-1E8 08333       1313     isr:                    CALL            adc_read                ;read A/D Converter
+21B 08333       1313     isr:                    CALL            adc_read                ;read A/D Converter
 W: value out of range: 0x133, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x33.
-                1314                             STORE           s8, adc0_lsb            ;store ADC Channel 0
-E: instruction not supported on the this device: STORE sX, ss.
-                1315                             STORE           s9, adc0_msb
-E: instruction not supported on the this device: STORE sX, ss.
-                1316                             STORE           s6, adc1_lsb            ;store ADC Channel 1
-E: instruction not supported on the this device: STORE sX, ss.
-                1317                             STORE           s7, adc1_msb
-E: instruction not supported on the this device: STORE sX, ss.
+21C 0C800       1314                             load           s8, adc0_lsb            ;load ADC Channel 0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+21D 0C910       1315                             load           s9, adc0_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+21E 0C620       1316                             load           s6, adc1_lsb            ;load ADC Channel 1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+21F 0C730       1317                             load           s7, adc1_msb
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                 1318     ;
-1E9 00F00       1319                             LOAD            sf, #0x00               ;clear flag
-1EA 080F0       1320                             RETURNI         enable
+220 00F00       1319                             LOAD            sf, #0x00               ;clear flag
+221 080F0       1320                             RETURNI         enable
                 1321     ;
                 1322     ;
                 1323     ;**************************************************************************************

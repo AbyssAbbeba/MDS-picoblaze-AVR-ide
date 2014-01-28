@@ -5,7 +5,7 @@
 ;
 ;Version v1.00 - 21th December 2005
 device kcpsm2
-;This program uses an 8KHz interrupt to generate test waveforms on the
+;This program uses an 8KHz interrupt to generate load waveforms on the
 ;4 analogue outputs provided by the Linear Technology LTC2624 device.
 ;
 ;As well as the port connections vital to communication with the UART and the SPI
@@ -106,7 +106,7 @@ adc1_msb                EQU             0x03                    ;               
 ;
 ;Amplifier gain settings.
 ;
-;Stored value is the 4-bit code for gain setting
+;loadd value is the 4-bit code for gain setting
 ;  Code  1   2   3    4     5    6     7
 ;  Gain -1  -2  -5  -10   -20  -50  -100
 amp_a_gain              EQU             0x04                    ;Amplifier A gain value
@@ -253,20 +253,20 @@ cold_start:             CALL            spi_init                ;initialise SPI 
                         CALL            lcd_clear               ;Clear display
 ;
                         LOAD            s0, #0x00               ;clear event counter
-                        STORE           s0, sample_count
+                        load           s0, sample_count
 ;
 ;
 ;
 ;
                         LOAD            s0, #0x01               ;set initial amplifier gain to 1 on both channels
-                        STORE           s0, amp_a_gain
-                        STORE           s0, amp_b_gain
+                        load           s0, amp_a_gain
+                        load           s0, amp_b_gain
                         JUMP            new_gain_set            ;set, display the initial gain and enable interrupts
 ;
 ;
 ;The program is interrupt driven to maintain an 8KHz sample rate. The main body
 ;of the program waits for an interrupt to occur. The interrupt updates all four
-;analogue outputs with values stored in scratch pad memory. This takes approximately
+;analogue outputs with values loadd in scratch pad memory. This takes approximately
 ;58us of the 125us available between interrupts. The main program then prepares
 ;new values for the analogue outputs (in less than 67us) before waiting for the
 ;next interrupt.
@@ -274,12 +274,12 @@ cold_start:             CALL            spi_init                ;initialise SPI 
 ;
 warm_start:             LOAD            sf, #0xff               ;flag set and wait for interrupt to be serviced
                         ENABLE          interrupt               ;normal operation
-wait_int:               INPUT           se, switch_port         ;test for button press changes to amplifier gain
-                        TEST            se, #btn_north          ;sE used as this in not effected by ISR
+wait_int:               INPUT           se, switch_port         ;load for button press changes to amplifier gain
+                        load            se, #btn_north          ;sE used as this in not effected by ISR
                         JUMP            nz, gain_increase
-                        TEST            se, #btn_south
+                        load            se, #btn_south
                         JUMP            nz, gain_decrease
-                        COMPARE         sf, #0xff               ;wait for interrupt
+                        load         sf, #0xff               ;wait for interrupt
                         JUMP            z, wait_int             ;interrupt clears the flag
 ;
 ;
@@ -287,9 +287,9 @@ wait_int:               INPUT           se, switch_port         ;test for button
 ;Drive LEDs with simple binary count of the samples to indicate
 ;that the design is active.
 ;
-                        FETCH           s0, sample_count        ;increment counter
+                        load           s0, sample_count        ;increment counter
                         ADD             s0, #0x01
-                        STORE           s0, sample_count
+                        load           s0, sample_count
                         OUTPUT          s0, led_port            ;count increments at 1Hz
 ;
 ;
@@ -297,9 +297,9 @@ wait_int:               INPUT           se, switch_port         ;test for button
 ;
                         LOAD            s5, #0x2c               ;Line 2 position 12
                         CALL            lcd_cursor
-                        FETCH           s0, adc0_msb
+                        load           s0, adc0_msb
                         CALL            disp_hex_byte
-                        FETCH           s0, adc0_lsb
+                        load           s0, adc0_lsb
                         CALL            disp_hex_byte
 ;
 ;
@@ -345,8 +345,8 @@ wait_int:               INPUT           se, switch_port         ;test for button
 ;
 ;The values can be made perfect by rounding before truncation
 ;
-                        FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-                        FETCH           s3, adc0_msb
+                        load           s2, adc0_lsb            ;Read A/D channel 0 value
+                        load           s3, adc0_msb
                         LOAD            s0, #0x11               ;scaling value for input to A/D converter
                         LOAD            s1, #0x27
                         CALL            mult_16x16s             ;[s7,s6,s5,s4]=[s3,s2]x[s1,s0]
@@ -362,7 +362,7 @@ wait_int:               INPUT           se, switch_port         ;test for button
                         LOAD            s5, #0x20               ;Line 2 position 0
                         CALL            lcd_cursor
                         CALL            disp_ad                 ;display A/D=
-                        TEST            s7, #0x80               ;test sign bit of value
+                        load            s7, #0x80               ;load sign bit of value
                         JUMP            nz, neg_ad
                         LOAD            s5, #character_plus
                         JUMP            ad_sign
@@ -405,32 +405,32 @@ ad_sign:                CALL            lcd_write_data          ;display sign of
 ;      -50            -200   (FF38)
 ;     -100            -100   (FF9C)
 ;
-                        FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-                        FETCH           s3, adc0_msb
-                        FETCH           s4, amp_a_gain          ;read A gain and select appropiate gain setting
+                        load           s2, adc0_lsb            ;Read A/D channel 0 value
+                        load           s3, adc0_msb
+                        load           s4, amp_a_gain          ;read A gain and select appropiate gain setting
                         LOAD            s0, #0xef               ;scaling value for amplifier gain of -1
                         LOAD            s1, #0xd8
-                        COMPARE         s4, #0x01
+                        load         s4, #0x01
                         JUMP            z, mult_vina
                         LOAD            s0, #0x77               ;scaling value for amplifier gain of -2
                         LOAD            s1, #0xec
-                        COMPARE         s4, #0x02
+                        load         s4, #0x02
                         JUMP            z, mult_vina
                         LOAD            s0, #0x30               ;scaling value for amplifier gain of -5
                         LOAD            s1, #0xf8
-                        COMPARE         s4, #0x03
+                        load         s4, #0x03
                         JUMP            z, mult_vina
                         LOAD            s0, #0x18               ;scaling value for amplifier gain of -10
                         LOAD            s1, #0xfc
-                        COMPARE         s4, #0x05
+                        load         s4, #0x05
                         JUMP            z, mult_vina
                         LOAD            s0, #0x0c               ;scaling value for amplifier gain of -20
                         LOAD            s1, #0xfe
-                        COMPARE         s4, #0x06
+                        load         s4, #0x06
                         JUMP            z, mult_vina
                         LOAD            s0, #0x38               ;scaling value for amplifier gain of -50
                         LOAD            s1, #0xff
-                        COMPARE         s4, #0x01
+                        load         s4, #0x01
                         JUMP            z, mult_vina
                         LOAD            s0, #0x9c               ;scaling value for amplifier gain of -100
                         LOAD            s1, #0xff
@@ -455,18 +455,18 @@ mult_vina:              CALL            mult_16x16s             ;[s7,s6,s5,s4]=[
                         LOAD            s5, #0x17               ;Line 1 position 7
                         CALL            lcd_cursor
                         CALL            disp_va                 ;display VA=
-                        FETCH           s2, adc0_lsb            ;Read A/D channel 0 value
-                        FETCH           s3, adc0_msb
-                        COMPARE         s3, #0xe0               ;test for maximum negative
-                        JUMP            nz, test_max_pos
-                        COMPARE         s2, #0x00
-                        JUMP            nz, test_max_pos
+                        load           s2, adc0_lsb            ;Read A/D channel 0 value
+                        load           s3, adc0_msb
+                        load         s3, #0xe0               ;load for maximum negative
+                        JUMP            nz, load_max_pos
+                        load         s2, #0x00
+                        JUMP            nz, load_max_pos
                         LOAD            s5, #character_greater_than ;display >
                         CALL            lcd_write_data
                         JUMP            disp_vina_volts
-test_max_pos:           COMPARE         s3, #0x1f               ;test for maximum positive
+load_max_pos:           load         s3, #0x1f               ;load for maximum positive
                         JUMP            nz, disp_vina_volts
-                        COMPARE         s2, #0xff
+                        load         s2, #0xff
                         JUMP            nz, disp_vina_volts
                         LOAD            s5, #character_less_than ;display <
                         CALL            lcd_write_data
@@ -482,18 +482,18 @@ disp_vina_volts:        CALL            disp_volts              ;display 4 digit
 ;[s7,s6] register pair. Only the lower 4 digits are displayed.
 ;
 disp_volts:             CALL            integer16_to_bcd        ;convert [s7,s6] to BCD in scratch pad memory
-                        FETCH           s5, decimal3
+                        load           s5, decimal3
                         ADD             s5, #0x30               ;convert to ASCII
                         CALL            lcd_write_data
                         LOAD            s5, #character_stop
                         CALL            lcd_write_data
-                        FETCH           s5, decimal2
+                        load           s5, decimal2
                         ADD             s5, #0x30               ;convert to ASCII
                         CALL            lcd_write_data
-                        FETCH           s5, decimal1
+                        load           s5, decimal1
                         ADD             s5, #0x30               ;convert to ASCII
                         CALL            lcd_write_data
-                        FETCH           s5, decimal0
+                        load           s5, decimal0
                         ADD             s5, #0x30               ;convert to ASCII
                         CALL            lcd_write_data
                         LOAD            s5, #character_space    ;ensure next position is cleared
@@ -516,19 +516,19 @@ disp_volts:             CALL            integer16_to_bcd        ;convert [s7,s6]
 ;  -100        7
 ;
 gain_increase:          DISABLE         interrupt               ;stop normal operation
-                        FETCH           s0, amp_a_gain          ;read current gain
+                        load           s0, amp_a_gain          ;read current gain
                         ADD             s0, #0x01
-                        COMPARE         s0, #0x08               ;test for too big
+                        load         s0, #0x08               ;load for too big
                         JUMP            nz, new_gain_set
                         LOAD            s0, #0x07               ;maximum gain
                         JUMP            new_gain_set
 gain_decrease:          DISABLE         interrupt               ;stop normal operation
-                        FETCH           s0, amp_a_gain          ;read current gain
+                        load           s0, amp_a_gain          ;read current gain
                         SUB             s0, #0x01
                         JUMP            nz, new_gain_set
                         LOAD            s0, #0x01               ;minimum gain
-new_gain_set:           STORE           s0, amp_a_gain          ;store new value
-                        FETCH           s2, amp_b_gain          ;form the amplifier control byte
+new_gain_set:           load           s0, amp_a_gain          ;load new value
+                        load           s2, amp_b_gain          ;form the amplifier control byte
                         SL0             s2                      ;B amplifier set by upper 4 bits
                         SL0             s2
                         SL0             s2
@@ -544,9 +544,9 @@ new_gain_set:           STORE           s0, amp_a_gain          ;store new value
                         CALL            lcd_write_data
                         LOAD            s5, #character_minus
                         CALL            lcd_write_data
-                        FETCH           s0, amp_a_gain          ;read A gain setting
-                        COMPARE         s0, #0x01               ;determine actual gain value
-                        JUMP            nz, test_a2
+                        load           s0, amp_a_gain          ;read A gain setting
+                        load         s0, #0x01               ;determine actual gain value
+                        JUMP            nz, load_a2
                         LOAD            s5, #character_1        ;gain is -1
                         CALL            lcd_write_data
                         LOAD            s5, #character_space
@@ -554,8 +554,8 @@ new_gain_set:           STORE           s0, amp_a_gain          ;store new value
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
                         JUMP            wait_no_press
-test_a2:                COMPARE         s0, #0x02
-                        JUMP            nz, test_a3
+load_a2:                load         s0, #0x02
+                        JUMP            nz, load_a3
                         LOAD            s5, #character_2        ;gain is -2
                         CALL            lcd_write_data
                         LOAD            s5, #character_space
@@ -563,8 +563,8 @@ test_a2:                COMPARE         s0, #0x02
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
                         JUMP            wait_no_press
-test_a3:                COMPARE         s0, #0x03
-                        JUMP            nz, test_a4
+load_a3:                load         s0, #0x03
+                        JUMP            nz, load_a4
                         LOAD            s5, #character_5        ;gain is -5
                         CALL            lcd_write_data
                         LOAD            s5, #character_space
@@ -572,8 +572,8 @@ test_a3:                COMPARE         s0, #0x03
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
                         JUMP            wait_no_press
-test_a4:                COMPARE         s0, #0x04
-                        JUMP            nz, test_a5
+load_a4:                load         s0, #0x04
+                        JUMP            nz, load_a5
                         LOAD            s5, #character_1        ;gain is -10
                         CALL            lcd_write_data
                         LOAD            s5, #character_0
@@ -581,8 +581,8 @@ test_a4:                COMPARE         s0, #0x04
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
                         JUMP            wait_no_press
-test_a5:                COMPARE         s0, #0x05
-                        JUMP            nz, test_a6
+load_a5:                load         s0, #0x05
+                        JUMP            nz, load_a6
                         LOAD            s5, #character_2        ;gain is -20
                         CALL            lcd_write_data
                         LOAD            s5, #character_0
@@ -590,7 +590,7 @@ test_a5:                COMPARE         s0, #0x05
                         LOAD            s5, #character_space
                         CALL            lcd_write_data
                         JUMP            wait_no_press
-test_a6:                COMPARE         s0, #0x06
+load_a6:                load         s0, #0x06
                         JUMP            nz, gain_a7
                         LOAD            s5, #character_5        ;gain is -50
                         CALL            lcd_write_data
@@ -607,7 +607,7 @@ gain_a7:                LOAD            s5, #character_1        ;gain is -100
                         CALL            lcd_write_data
 wait_no_press:          CALL            delay_20ms              ;delay to help avoid switch bounce
                         INPUT           s0, switch_port         ;check for release of press buttons
-                        TEST            s0, #0x05               ;north and south buttons
+                        load            s0, #0x05               ;north and south buttons
                         JUMP            nz, wait_no_press
                         JUMP            warm_start
 ;
@@ -633,14 +633,14 @@ mult_16x16s:            LOAD            s7, #0x00               ;clear accumulat
                         LOAD            s5, #0x00               ;Set bit 14 to act as a bit shift counter
                         LOAD            s4, #0x00
                         LOAD            s8, #0x00               ;sign extend [s3,s2] to form [s9,s8,s3,s2]
-                        TEST            s3, #0x80               ;test sign of first operand
+                        load            s3, #0x80               ;load sign of first operand
                         JUMP            z, m16s_pos
                         LOAD            s8, #0xff
 m16s_pos:               LOAD            s9, s8                  ;[s9,s8,s3,s2]=0000xxxx or FFFFxxxx as required
                         LOAD            sa, #0x0f               ;15 positive shift and add operations to perform
 m16s_loop:              SR0             s1                      ;shift right operand [s1,s0]
                         SRA             s0
-                        JUMP            nc, m16s_noadd          ;test for a '1'
+                        JUMP            nc, m16s_noadd          ;load for a '1'
                         ADD             s4, s2                  ;32-bit addition [s7,s6,s5,s4]=[s7,s6,s5,s4]+[s9,s8,s3,s2]
                         ADDCY           s5, s3
                         ADDCY           s6, s8
@@ -651,7 +651,7 @@ m16s_noadd:             SL0             s2                      ;multiply first 
                         SLA             s9
                         SUB             sa, #0x01
                         JUMP            nz, m16s_loop           ;move to next unsigned bit
-                        TEST            s0, #0x01               ;test sign bit of operand [s1,s0]
+                        load            s0, #0x01               ;load sign bit of operand [s1,s0]
                         JUMP            nc, m16s_nosub
                         SUB             s4, s2                  ;32-bit subtraction [s7,s6,s5,s4]=[s7,s6,s5,s4]-[s9,s8,s3,s2]
                         SUBCY           s5, s3
@@ -679,7 +679,7 @@ m16s_nosub:             RETURN
 integer16_to_bcd:       LOAD            s0, #0x05               ;5 digits to be formed from value up to 65535
                         LOAD            s8, #decimal0           ;pointer for LS-Digit
 int_to_bcd_loop:        CALL            divide_16bit_by_10      ;[s7,s6]=[s7,s6]/10  with remainder in s4
-                        STORE           s4, @s8                 ;remainder becomes digit value
+                        load           s4, #s8                 ;remainder becomes digit value
                         ADD             s8, #0x01               ;move to next most significant digit
                         SUB             s0, #0x01               ;one less digit to compute
                         JUMP            nz, int_to_bcd_loop
@@ -705,11 +705,11 @@ divide_16bit_by_10:     LOAD            s4, s6                  ;copy input valu
                         LOAD            s1, #0x0d               ;13 subtract and shift iterations to be performed
 div10_loop:             SUB             s4, s2                  ;perform 16-bit subtract [s5,s4]-[s3,s2]
                         SUBCY           s5, s3
-                        JUMP            c, div10_restore
+                        JUMP            c, div10_reload
                         SL1             s6                      ;shift '1' into result because subtract was possible
                         JUMP            div10_shifts
-div10_restore:          ADD             s4, s2                  ;perform 32-bit addition [s5,s4]+[s3,s2]
-                        ADDCY           s5, s3                  ;to restore value
+div10_reload:          ADD             s4, s2                  ;perform 32-bit addition [s5,s4]+[s3,s2]
+                        ADDCY           s5, s3                  ;to reload value
                         SL0             s6                      ;shift '0' into result because subtract was not possible
 div10_shifts:           SLA             s7                      ;complete 16-bit shift left
                         SR0             s3                      ;divide '10' value by 2 (shift right 1 place)
@@ -806,7 +806,7 @@ next_amp_spi_bit:       OUTPUT          s2, spi_output_port     ;output data bit
                         XOR             s0, #spi_sck            ;clock High (bit0)
                         OUTPUT          s0, spi_control_port    ;drive clock High
                         INPUT           s3, spi_input_port      ;read input bit
-                        TEST            s3, #spi_amp_sdi        ;detect state of received bit
+                        load            s3, #spi_amp_sdi        ;detect state of received bit
                         SLA             s2                      ;shift new data into result and move to next transmit bit
                         XOR             s0, #spi_sck            ;clock Low (bit0)
                         OUTPUT          s0, spi_control_port    ;drive clock Low
@@ -869,7 +869,7 @@ next_adc_bit:           XOR             s0, #spi_sck            ;clock High (bit
                         XOR             s0, #spi_sck            ;clock Low (bit0)
                         OUTPUT          s0, spi_control_port    ;drive clock Low
                         INPUT           s3, spi_input_port      ;read input bit
-                        TEST            s3, #spi_sdi            ;detect state of received bit
+                        load            s3, #spi_sdi            ;detect state of received bit
                         SLA             s6                      ;shift new data into result registers
                         SLA             s7
                         SLA             s8
@@ -995,7 +995,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
                         SR0             s0
                         CALL            hex_to_ascii            ;convert
                         LOAD            s2, s0                  ;upper nibble value in s2
-                        LOAD            s0, s1                  ;restore complete value
+                        LOAD            s0, s1                  ;reload complete value
                         AND             s0, #0x0f               ;isolate lower nibble
                         CALL            hex_to_ascii            ;convert
                         LOAD            s1, s0                  ;lower nibble value in s1
@@ -1005,7 +1005,7 @@ hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value 
 ;
 ;Register used s0
 ;
-hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
                         JUMP            c, number_char
                         ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
 number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
@@ -1289,7 +1289,7 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST            s5, #0x10               ;test for line 1
+lcd_cursor:             load            s5, #0x10               ;load for line 1
                         JUMP            z, set_line2
                         AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR              s5, #0x80
@@ -1307,14 +1307,14 @@ set_line2:              AND             s5, #0x0f               ;make address in
 ;
 ;Interrupts occur at 1 second intervals.
 ;
-;Each interrupt is used to take analogue samples and store them in scratch pad memory.
+;Each interrupt is used to take analogue samples and load them in scratch pad memory.
 ;The interrupt clears a 'flag' in register sF so that the main program can advance.
 ;
 isr:                    CALL            adc_read                ;read A/D Converter
-                        STORE           s8, adc0_lsb            ;store ADC Channel 0
-                        STORE           s9, adc0_msb
-                        STORE           s6, adc1_lsb            ;store ADC Channel 1
-                        STORE           s7, adc1_msb
+                        load           s8, adc0_lsb            ;load ADC Channel 0
+                        load           s9, adc0_msb
+                        load           s6, adc1_lsb            ;load ADC Channel 1
+                        load           s7, adc1_msb
 ;
                         LOAD            sf, #0x00               ;clear flag
                         RETURNI         enable

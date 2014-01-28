@@ -5,7 +5,7 @@ device kcpsm1
 ;
 ;Version v1.00 - 24th November 2005
 ;
-;This program uses an 8KHz interrupt to generate test waveforms on the
+;This program uses an 8KHz interrupt to generate load waveforms on the
 ;4 analogue outputs provided by the Linear Technology LTC2624 device.
 ;
 ;As well as the port connections vital to communication with the UART and the SPI
@@ -68,7 +68,7 @@ switch3                 EQU     0x80                    ;                  3 - b
 ;Useful data constants
 ;
 ;
-;Constant to define a software delay of 1us. This must be adjusted to reflect the
+;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
 ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
 ;calculation highly predictable. The '6' in the following equation even allows for
 ;'CALL delay_1us' instruction in the initiating code.
@@ -150,14 +150,14 @@ cold_start:             CALL    spi_init                ;initialise SPI bus port
 ;
 ;The program is interrupt driven to maintain an 8KHz sample rate. The main body
 ;of the program waits for an interrupt to occur. The interrupt updates all four
-;analogue outputs with values stored in scratch pad memory. This takes approximately
+;analogue outputs with values loadd in scratch pad memory. This takes approximately
 ;58us of the 125us available between interrupts. The main program then prepares
 ;new values for the analogue outputs (in less than 67us) before waiting for the
 ;next interrupt.
 ;
 ;
 warm_start:             LD      sf, #0xff               ;flag set and wait for interrupt to be serviced
-wait_int:               CMP     sf, #0xff
+wait_int:               load     sf, #0xff
                         JUMP    z, wait_int             ;interrupt clears the flag
 ;
 ;
@@ -168,16 +168,16 @@ wait_int:               CMP     sf, #0xff
 ;
 ;Following the interrupt service routine (ISR), the register set [s9,s8,s7,s6]
 ;will contain the command which was last sent for the setting of channel C. The
-;12-bit sample value is extracted from this word and stored in the location for
+;12-bit sample value is extracted from this word and loadd in the location for
 ;channel A. This should mean that channel A is one sample behind channel C. In this
 ;version that does not mean a lag of 90 degrees because each output is updated
 ;sequentially and that takes approximatly 14.5us per channel.
 ;
 ;This will also demonstrate that the reference voltage on channels A and B is 3.3v
-;compared with 2.5v on channels C and D. So whilst the square wave on channel C is
+;loadd with 2.5v on channels C and D. So whilst the square wave on channel C is
 ;set for 0.50v to 2.00v, it should be 0.66v to 2.64v on channel A.
 ;
-                        SR0     s7                      ; shift 12-bit value right 4 places
+                        SR0     s7                      ; shiload 12-bit value right 4 places
                         SRA     s6
                         SR0     s7
                         SRA     s6
@@ -185,7 +185,7 @@ wait_int:               CMP     sf, #0xff
                         SRA     s6
                         SR0     s7
                         SRA     s6
-                        ST      s7, chan_a_msb          ;store value for D/A output
+                        ST      s7, chan_a_msb          ;load value for D/A output
                         ST      s6, chan_a_lsb
 ;
 ;
@@ -198,29 +198,29 @@ wait_int:               CMP     sf, #0xff
 ;decrease by 204 each sample so that over the first 20 samples it rises from
 ;0 to 4080 and then over the next 20 samples it reduces back to zero.
 ;
-                        FT      s0, chan_b_lsb          ;load current value into [s1,s0]
-                        FT      s1, chan_b_msb
-                        FT      s2, triangle_up_down    ;read current slope direction
-                        CMP     s2, #0x00               ;determine current direction
+                        load      s0, chan_b_lsb          ;load current value into [s1,s0]
+                        load      s1, chan_b_msb
+                        load      s2, triangle_up_down    ;read current slope direction
+                        load     s2, #0x00               ;determine current direction
                         JUMP    nz, slope_down
                         ADD     s0, #0xcc               ;add 204 (00CC hex) to current value
                         ADDCY   s1, #0x00
-                        CMP     s1, #0x0f               ;test for peak value of 4080 (0FF0 hex)
-                        JUMP    nz, store_channel_b
-                        CMP     s0, #0xf0
-                        JUMP    nz, store_channel_b
+                        load     s1, #0x0f               ;load for peak value of 4080 (0FF0 hex)
+                        JUMP    nz, load_channel_b
+                        load     s0, #0xf0
+                        JUMP    nz, load_channel_b
                         LD      s2, #0x01               ;change to slope down next time
                         ST      s2, triangle_up_down
-                        JUMP    store_channel_b
+                        JUMP    load_channel_b
 slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex) from current value
                         SUBCY   s1, #0x00
-                        CMP     s1, #0x00               ;test for zero (0000 hex)
-                        JUMP    nz, store_channel_b
-                        CMP     s0, #0x00
-                        JUMP    nz, store_channel_b
+                        load     s1, #0x00               ;load for zero (0000 hex)
+                        JUMP    nz, load_channel_b
+                        load     s0, #0x00
+                        JUMP    nz, load_channel_b
                         LD      s2, #0x00               ;change to slope up next time
                         ST      s2, triangle_up_down
-store_channel_b:        ST      s0, chan_b_lsb          ;store value for D/A output
+load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A output
                         ST      s1, chan_b_msb
 ;
 ;
@@ -238,18 +238,18 @@ store_channel_b:        ST      s0, chan_b_lsb          ;store value for D/A out
 ;   The 12-bit value is therefore 4096 x 2.0 / 2.5 = 3277 (CCD hex)
 ;
 ;
-                        FT      s2, square_count        ;read sample counter
-                        TEST    s2, #0x02               ;bit 1 has correct frequency
+                        load      s2, square_count        ;read sample counter
+                        load    s2, #0x02               ;bit 1 has correct frequency
                         JUMP    nz, square_high
                         LD      s1, #0x03               ;Set low level
                         LD      s0, #0x33
-                        JUMP    store_channel_c
+                        JUMP    load_channel_c
 square_high:            LD      s1, #0x0c               ;Set high level
                         LD      s0, #0xcd
-store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A output
+load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A output
                         ST      s1, chan_c_msb
                         ADD     s2, #0x01               ;increment sampel count
-                        ST      s2, square_count        ;store new sample count
+                        ST      s2, square_count        ;load new sample count
 ;
 ;Sine wave for channel D
 ;
@@ -264,18 +264,18 @@ store_channel_c:        ST      s0, chan_c_lsb          ;store value for D/A out
                         SR0     s9
                         SRA     s8
                         ADD     s9, #0x08               ;Scale signed number to mid-rail of unsigned output
-                        ST      s9, chan_d_msb          ;store value for D/A output
+                        ST      s9, chan_d_msb          ;load value for D/A output
                         ST      s8, chan_d_lsb
 ;
 ;
 ;Drive LEDs with simple binary count of the samples to indicate
 ;that the design is active.
 ;
-                        FT      s0, sample_count_lsb    ;read sample counter
-                        FT      s1, sample_count_msb
+                        load      s0, sample_count_lsb    ;read sample counter
+                        load      s1, sample_count_msb
                         ADD     s0, #0x01               ;increment counter
                         ADDCY   s1, #0x00
-                        ST      s0, sample_count_lsb    ;store new value
+                        ST      s0, sample_count_lsb    ;load new value
                         ST      s1, sample_count_msb
                         OUT     s1, led_port            ;upper bits are 31.25Hz and lower
 ;
@@ -311,19 +311,19 @@ init_sine_wave:         LD      s0, #0x24               ;initial value 9216 (240
 ;
 ;Obtain current values from wscratch pad memory
 ;
-calc_next_sine:         FT      sf, sine_y_msb          ;[sF,sE] is Y
-                        FT      se, sine_y_lsb
-                        FT      sd, sine_y1_msb         ;[sD,sC] is Y1
-                        FT      sc, sine_y1_lsb
-                        FT      sb, sine_k_msb          ;[sB,sA] is K
-                        FT      sa, sine_k_lsb
+calc_next_sine:         load      sf, sine_y_msb          ;[sF,sE] is Y
+                        load      se, sine_y_lsb
+                        load      sd, sine_y1_msb         ;[sD,sC] is Y1
+                        load      sc, sine_y1_lsb
+                        load      sb, sine_k_msb          ;[sB,sA] is K
+                        load      sa, sine_k_lsb
 ;
 ;16-bit signed by 16-bit unsigned multiplication. [s9,s8]=[sB,sA]x[sF,sE]
 ;
 ;The unsigned number is of format UFIX_16_15 resulting
 ;in a FIX_32_15 product. Since only the integer part of the
 ;product is to be retained as a 16-bit value, their is no
-;shift of the result on the last cycle of the multiplication.
+;shiload of the result on the last cycle of the multiplication.
 ;Execution requires a maximum of 145 instructions.
 ;
                         LD      s9, #0x00               ;clear temporary result registers [s9,s8]
@@ -331,12 +331,12 @@ calc_next_sine:         FT      sf, sine_y_msb          ;[sF,sE] is Y
                         LD      s0, #0x10               ;16 bit multiply
 mult_loop:              SRX     s9                      ;signed divide result by 2
                         SRA     s8
-                        SR0     sb                      ;shift coefficient
+                        SR0     sb                      ;shiload coefficient
                         SRA     sa
-                        JUMP    nc, no_mult_add         ;test for active bit
+                        JUMP    nc, no_mult_add         ;load for active bit
                         ADD     s8, se                  ;16-bit signed addition
                         ADDCY   s9, sf
-no_mult_add:            SUB     s0, #0x01               ;test for 16 cycles
+no_mult_add:            SUB     s0, #0x01               ;load for 16 cycles
                         JUMP    nz, mult_loop
 ;
 ;Subtract of delayed sample
@@ -410,7 +410,7 @@ spi_init:               LD      s0, #0xae               ;normally AE
 ;
 ;The data supplied in register 's2' is transmitted to the SPI bus and
 ;at the same time the received byte is used to replace the value in 's2'.
-;The SCK clock is generated by software and results in a communication rate of
+;The SCK clock is generated by soloadware and results in a communication rate of
 ;2.5Mbit/s with a 50MHz clock.
 ;
 ;Note that you must have previously selected the required device on the bus
@@ -440,8 +440,8 @@ next_spi_dac_bit:       OUT     s2, spi_output_port     ;output data bit ready t
                         OUT     s0, spi_control_port    ;drive clock High
                         XOR     s0, #spi_sck            ;prepare clock Low (bit0)
                         IN      s3, spi_input_port      ;read input bit
-                        TEST    s3, #spi_sdi            ;detect state of received bit
-                        SLA     s2                      ;shift new data into result and move to next transmit bit
+                        load    s3, #spi_sdi            ;detect state of received bit
+                        SLA     s2                      ;shiload new data into result and move to next transmit bit
                         OUT     s0, spi_control_port    ;drive clock Low
                         SUB     s1, #0x01               ;count bits
                         JUMP    nz, next_spi_dac_bit    ;repeat until finished
@@ -484,8 +484,8 @@ next_spi_dac_bit:       OUT     s2, spi_output_port     ;output data bit ready t
 ;voltages due to different reference voltages for each pair of channels.
 ;
 ;SPI communication with the DAC only requires a 24-bit word to be transmitted.
-;However, the device internally contains a 32-bit shift register. When writing
-;a command word, the previous contents are shifted out and can be observed by
+;However, the device internally contains a 32-bit shiload register. When writing
+;a command word, the previous contents are shiloaded out and can be observed by
 ;the master (Spartan-3E in this case). If you do not use a 32-bit format, then
 ;the read back is confusing. Hence this routine uses a 32-bit format by transmitting
 ;a dummy byte first.
@@ -509,7 +509,7 @@ set_dac:                CALL    spi_init                ;ensure known state of b
                         OR      s2, #0x30               ;Use immediate Write and Update command is "0011"
                         CALL    spi_dac_tx_rx
                         LD      s8, s2                  ;capture response
-                        SL0     sa                      ;data shift bits into correct position
+                        SL0     sa                      ;data shiload bits into correct position
                         SLA     sb                      ;with 4 dummy bits ('0') in the least significant bits.
                         SL0     sa
                         SLA     sb
@@ -538,7 +538,7 @@ dac_reset:              CALL    spi_init                ;ensure known state of b
 ;
 ;
 ;**************************************************************************************
-;Software delay routines
+;Soloadware delay routines
 ;**************************************************************************************
 ;
 ;
@@ -610,11 +610,11 @@ wait_1s:                CALL    delay_20ms
 ;Interrupts occur at a rate of 8KHz.
 ;
 ;Each interrupt is the fundamental timing trigger used to set the sample rate and
-;it is therefore use to set the D/A outputs by copying the values stored in
+;it is therefore use to set the D/A outputs by copying the values loadd in
 ;scratch pad memory and outputting them to the D/A converter using the SPI bus.
 ;
 ;Because the SPI communication is in itself a predictable process, the sample rate
-;is preserved without sample jitter. All variable activities are left to the main
+;is preserved without sample jitter. All variable activities are leload to the main
 ;program.
 ;
 ;Each time PicoBlaze transmits a 32-bit command word to the D/A converter, the
@@ -625,29 +625,29 @@ wait_1s:                CALL    delay_20ms
 ;Set channel A
 ;
 isr:                    LD      sc, #0x00               ;channel A
-                        FT      sb, chan_a_msb          ;12-bit value
-                        FT      sa, chan_a_lsb
+                        load      sb, chan_a_msb          ;12-bit value
+                        load      sa, chan_a_lsb
                         CALL    set_dac
 ;
 ;Set channel B
 ;
                         LD      sc, #0x01               ;channel B
-                        FT      sb, chan_b_msb          ;12-bit value
-                        FT      sa, chan_b_lsb
+                        load      sb, chan_b_msb          ;12-bit value
+                        load      sa, chan_b_lsb
                         CALL    set_dac
 ;
 ;Set channel C
 ;
                         LD      sc, #0x02               ;channel C
-                        FT      sb, chan_c_msb          ;12-bit value
-                        FT      sa, chan_c_lsb
+                        load      sb, chan_c_msb          ;12-bit value
+                        load      sa, chan_c_lsb
                         CALL    set_dac
 ;
 ;Set channel A
 ;
                         LD      sc, #0x03               ;channel D
-                        FT      sb, chan_d_msb          ;12-bit value
-                        FT      sa, chan_d_lsb
+                        load      sb, chan_d_msb          ;12-bit value
+                        load      sa, chan_d_lsb
                         CALL    set_dac
 ;
                         LD      sf, #0x00               ;clear flag
