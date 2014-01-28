@@ -3,10 +3,6 @@
 
 device kcpsm3
 
-s1       EQU        04h
-s2       EQU        0x04
-s3       EQU        6
-s4       EQU        7
 
 
 Start:

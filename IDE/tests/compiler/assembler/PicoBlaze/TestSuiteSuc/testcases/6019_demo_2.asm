@@ -4,6 +4,9 @@
 ; Simple example of waiting loop
 device kcpsm6
 
+temp1   autoreg
+temp2   autoreg
+temp3   autoreg
 ; Press Start simulation and Animate to run the program
 
                     ORG       0x000

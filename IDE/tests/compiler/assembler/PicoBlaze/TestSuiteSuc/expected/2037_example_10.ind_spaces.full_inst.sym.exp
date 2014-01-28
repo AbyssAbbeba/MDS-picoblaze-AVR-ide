@@ -80,6 +80,7 @@ ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2037_ex
 ISR_SEND_CHARACTER . . . . . . . . . LABEL  0x003FC USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:1603.1-1603.20
 ISR_SEND_XON . . . . . . . . . . . . LABEL  0x003FB USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:1602.1-1602.14
 LINE_START . . . . . . . . . . . . . NUMBER 0x0002B USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:183.1-183.45
+LOAD_FOR_TEN . . . . . . . . . . . . LABEL  0x00138 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:947.1-947.14
 MCS_ADDRESS  . . . . . . . . . . . . LABEL  0x00067 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:425.1-425.13
 NEW_LOW_ADDRESS  . . . . . . . . . . LABEL  0x00072 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:436.1-436.17
 NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x00165 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:1047.1-1047.13
@@ -173,7 +174,6 @@ SF_STS . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2037_ex
 SF_WE  . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2037_example_10.ind_spaces.full_inst.asm:45.1-45.45
 SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2037_example_10.ind_spaces.full_inst.asm:26.1-26.45
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:19.1-19.45
-TEST_FOR_TEN . . . . . . . . . . . . LABEL  0x00138 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:947.1-947.14
 TX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2037_example_10.ind_spaces.full_inst.asm:20.1-20.45
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2037_example_10.ind_spaces.full_inst.asm:22.1-22.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2037_example_10.ind_spaces.full_inst.asm:21.1-21.45

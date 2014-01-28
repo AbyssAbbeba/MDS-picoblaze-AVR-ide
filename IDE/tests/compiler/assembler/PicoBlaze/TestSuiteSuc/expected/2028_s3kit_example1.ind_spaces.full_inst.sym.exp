@@ -57,6 +57,14 @@ LINK_FIFO_HALF_FULL  . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2028_s3
 LINK_FIFO_READ_PORT  . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:72.1-72.45
 LINK_FIFO_RESET  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:65.1-65.45
 LINK_FIFO_STATUS_PORT  . . . . . . . NUMBER 0x00001 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:67.1-67.45
+LOAD_LED0_START  . . . . . . . . . . LABEL  0x00026 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:202.1-202.17
+LOAD_LED1_START  . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:222.1-222.17
+LOAD_LED2_START  . . . . . . . . . . LABEL  0x0004A USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:240.1-240.17
+LOAD_LED3_START  . . . . . . . . . . LABEL  0x0005B USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:259.1-259.17
+LOAD_LED4_START  . . . . . . . . . . LABEL  0x0006C USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:277.1-277.17
+LOAD_LED5_START  . . . . . . . . . . LABEL  0x0007D USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:295.1-295.17
+LOAD_LED6_START  . . . . . . . . . . LABEL  0x00093 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:318.1-318.17
+LOAD_LED7_START  . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:333.1-333.17
 NORMAL_LED1  . . . . . . . . . . . . LABEL  0x00031 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:214.1-214.13
 NORMAL_LED6  . . . . . . . . . . . . LABEL  0x0008B USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:310.1-310.13
 NORMAL_LED_SEQUENCE  . . . . . . . . LABEL  0x00015 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:182.1-182.21
@@ -106,14 +114,6 @@ SECURITY_INTERRUPT . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2028_s3
 SECURITY_REQUEST_PORT  . . . . . . . NUMBER 0x00040 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:56.1-56.45
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
 STOP_COMPLETELY  . . . . . . . . . . LABEL  0x000F8 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:491.1-491.17
-TEST_LED0_START  . . . . . . . . . . LABEL  0x00026 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:202.1-202.17
-TEST_LED1_START  . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:222.1-222.17
-TEST_LED2_START  . . . . . . . . . . LABEL  0x0004A USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:240.1-240.17
-TEST_LED3_START  . . . . . . . . . . LABEL  0x0005B USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:259.1-259.17
-TEST_LED4_START  . . . . . . . . . . LABEL  0x0006C USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:277.1-277.17
-TEST_LED5_START  . . . . . . . . . . LABEL  0x0007D USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:295.1-295.17
-TEST_LED6_START  . . . . . . . . . . LABEL  0x00093 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:318.1-318.17
-TEST_LED7_START  . . . . . . . . . . LABEL  0x000A1 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:333.1-333.17
 UPDATE_LED0  . . . . . . . . . . . . LABEL  0x00029 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:205.1-205.13
 UPDATE_LED1  . . . . . . . . . . . . LABEL  0x0003F USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:228.1-228.13
 UPDATE_LED2  . . . . . . . . . . . . LABEL  0x00050 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:246.1-246.13

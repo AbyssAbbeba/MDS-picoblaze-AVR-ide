@@ -5,6 +5,9 @@
 device          KCPSM3
 
 ; Press Start simulation and Animate to run the program
+temp1   autoreg
+temp2   autoreg
+temp3   autoreg
 
                     ORG       0x000
                     JUMP      Start

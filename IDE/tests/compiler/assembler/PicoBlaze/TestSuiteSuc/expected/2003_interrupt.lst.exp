@@ -1,10 +1,10 @@
-                   1     ; Compiler test case for Assembler
+                   1     ; Compiler load case for Assembler
                    2     device kcpsm2
-  00000            3     TESTsymb9               AUTOREG
-  00001            4     TESTsymb13              AUTOREG
-  00002            5     TESTsymb10              AUTOREG
-  00003            6     TESTsymb11              AUTOREG
-  00004            7     TESTsymb12              AUTOREG
+  00000            3     loadsymb9               AUTOREG
+  00001            4     loadsymb13              AUTOREG
+  00002            5     loadsymb10              AUTOREG
+  00003            6     loadsymb11              AUTOREG
+  00004            7     loadsymb12              AUTOREG
                    8
   00000            9     Start:
 000 35000         10             JUMP        Z, 0x000
@@ -23,32 +23,28 @@ W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while
 007 3780D         19             CALL      C,Podprog
 008 37C0D         20             CALL      NC,Podprog
                   21
-                  22             STORE     TESTsymb9,@TESTsymb13
-E: instruction not supported on the this device: STORE sX, sY.
-                  23             STORE     TESTsymb10,@10
-W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: STORE sX, sY.
-                  24             FETCH     TESTsymb11,@TESTsymb13
-E: instruction not supported on the this device: FETCH sX, sY.
-                  25             FETCH     TESTsymb12,@5
-W: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: FETCH sX, sY.
+009 00001         22             load     loadsymb9,#loadsymb13
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+00A 0020A         23             load     loadsymb10,#10
+00B 00301         24             load     loadsymb11,#loadsymb13
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+00C 00405         25             load     loadsymb12,#5
                   26
   0000D           27     Podprog:
-009 24000         28             RETURN
-00A 25000         29             RETURN    Z
-00B 25400         30             RETURN    NZ
-00C 25800         31             RETURN    C
-00D 25C00         32             RETURN    NC
+00D 24000         28             RETURN
+00E 25000         29             RETURN    Z
+00F 25400         30             RETURN    NZ
+010 25800         31             RETURN    C
+011 25C00         32             RETURN    NC
                   33
                   34
                   35       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
                   36     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
                   37     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
                   38     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-                  39     ;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+                  39     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
                   40     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
                   41     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
                   42     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
                   43     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-                  44     ;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+                  44     ;CALL NC,aaa load sX,sY load sX,sY RL sX

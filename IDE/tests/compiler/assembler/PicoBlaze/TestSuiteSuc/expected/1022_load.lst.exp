@@ -36,13 +36,13 @@
                   36     ; UART status checking MACRO (IF TX can be done)
                   37     UART_ready_wait     MACRO
                   38                         INPUT       Temp1, UART_stat    ; checking UART status
-                  39                         TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                  39                         load        Temp1, 4            ; load bit 2 (is Tx ready?)
                   40                         JUMP        Z, ($ - 2)
                   41                         ENDM
                   42     ; UART status checking MACRO (NEW RX data?)
                   43     UART_new_data_wait  MACRO
                   44                         INPUT       Temp1, UART_stat    ; checking UART status
-                  45                         TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                  45                         load        Temp1, 8            ; load bit 2 (is Tx ready?)
                   46                         JUMP        Z, ($ - 2)
                   47                         ENDM
                   48     ;==============================================================================;
@@ -84,7 +84,7 @@
                   84     ;  100.00 MHz               20.00 ns
                   85     ;
                   86     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-                  87     ;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  87     ;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
                   88     ;
                   89     ; Waiting loops
                   90     ;==============================================================================;

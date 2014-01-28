@@ -93,54 +93,54 @@ nextroundkey:
                         LD      s6, #key + 14
                         LD      s7, #key + 15
 
-                        IN      s8, @s4                 ; RotWord
-                        IN      s4, @s5
-                        IN      s5, @s6
-                        IN      s6, @s7
-                        IN      s7, @s8
+                        IN      s8, #s4                 ; RotWord
+                        IN      s4, #s5
+                        IN      s5, #s6
+                        IN      s6, #s7
+                        IN      s7, #s8
 
-                        IN      s8, @s4                 ; temp=SubWord( RotWord( temp ) )
+                        IN      s8, #s4                 ; temp=SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s4, @s8
+                        IN      s4, #s8
 
                         XOR     s4, sf                  ; xor Rcon( i / Nk )
                         SL0     sf                      ; x^(i-1) (i+=1)
                         JUMP    nc, nowrap
                         XOR     sf, #g
 nowrap:
-                        IN      s8, @s5                 ; SubWord( RotWord( temp ) )
+                        IN      s8, #s5                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s5, @s8
+                        IN      s5, #s8
 
-                        IN      s8, @s6                 ; SubWord( RotWord( temp ) )
+                        IN      s8, #s6                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s6, @s8
+                        IN      s6, #s8
 
-                        IN      s8, @s7                 ; SubWord( RotWord( temp ) )
+                        IN      s8, #s7                 ; SubWord( RotWord( temp ) )
                         CALL    sbox
-                        IN      s7, @s8
+                        IN      s7, #s8
 
-                        IN      pkey, @key
+                        IN      pkey, #key
 
-                        IN      s0, @b128
+                        IN      s0, #b128
 key96:                  LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s4, s8
-                        ST      s4, @pkey
+                        ST      s4, #pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s5, s8
-                        ST      s5, @pkey
+                        ST      s5, #pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s6, s8
-                        ST      s6, @pkey
+                        ST      s6, #pkey
                         ADD     pkey, #1
 
                         LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
                         XOR     s7, s8
-                        ST      s7, @pkey
+                        ST      s7, #pkey
                         ADD     pkey, #1
 
                         SUB     s0, #4
@@ -152,7 +152,7 @@ subword:
                         IN      s0, 4
 subword1:               LD      s8, #pkey
                         CALL    sbox
-                        ST      s8, @pkey
+                        ST      s8, #pkey
                         ADD     pkey, #1
                         SUB     s0, #1
                         JUMP    nz, subword1
@@ -160,7 +160,7 @@ subword1:               LD      s8, #pkey
 
 ; SubBytes( state, Nc )
 subbytes:
-                        IN      pstate, @state          ; get pointer to state
+                        IN      pstate, #state          ; get pointer to state
 
                         IN      s0, b128                ; set up loop count
 sub128:                 LD      s8, #pstate             ; get state byte
@@ -200,8 +200,8 @@ mulinverse:
                         RET                             ; return 0;
 mulinverse1:            ADD     s9, #1                  ; result = 1; result++
                         RET                             ; result < MOD
-                        IN      sc, @s8                 ; in
-                        IN      sd, @s9                 ; result
+                        IN      sc, #s8                 ; in
+                        IN      sd, #s9                 ; result
                         CALL    gmul                    ; gmul( in, result, ...)
                         SUB     se, #1                  ; == 1
                         JUMP    nz, mulinverse1         ; == 1?
@@ -298,14 +298,14 @@ mixcolumns:
                         RET
 
 mixcolumn:
-                        IN      s9, @s4                 ; ; t = c[0] ^ c[3]
+                        IN      s9, #s4                 ; ; t = c[0] ^ c[3]
                         XOR     s9, s7
-                        IN      sa, @s5                 ; ; u = c[1] ^ c[2]
+                        IN      sa, #s5                 ; ; u = c[1] ^ c[2]
                         XOR     sa, s6
-                        IN      sb, @s9                 ;  ; v = t ^ u
+                        IN      sb, #s9                 ;  ; v = t ^ u
                         XOR     sb, sa
 
-                        IN      s8, @s4                 ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
+                        IN      s8, #s4                 ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
                         XOR     s8, s5
                         SL0     s8
                         JUMP    nc, mcf1
@@ -313,14 +313,14 @@ mixcolumn:
 mcf1:                   XOR     s8, sb
                         XOR     s4, s8
 
-                        IN      s8, @sa                 ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
+                        IN      s8, #sa                 ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
                         SL0     s8
                         JUMP    nc, mcf2
                         XOR     s8, #g
 mcf2:                   XOR     s8, sb
                         XOR     s5, s8
 
-                        IN      s8, @s6                 ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
+                        IN      s8, #s6                 ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
                         XOR     s8, s7
                         SL0     s8
                         JUMP    nc, mcf3
@@ -328,7 +328,7 @@ mcf2:                   XOR     s8, sb
 mcf3:                   XOR     s8, sb
                         XOR     s6, s8
 
-                        IN      s8, @s9                 ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
+                        IN      s8, #s9                 ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
                         SL0     s8
                         JUMP    nc, mcf4
                         XOR     s8, #g

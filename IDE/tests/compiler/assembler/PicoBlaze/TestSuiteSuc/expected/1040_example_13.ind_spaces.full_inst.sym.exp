@@ -76,9 +76,6 @@ CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    1040_ex
 CHK_SF . . . . . . . . . . . . . . . LABEL  0x001C1 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:706.1-706.8
 CLR_INT1 . . . . . . . . . . . . . . LABEL  0x003B1 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1443.1-1443.10
 CLR_INT2 . . . . . . . . . . . . . . LABEL  0x00334 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1315.1-1315.10
-CMP_2  . . . . . . . . . . . . . . . LABEL  0x003C8 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1467.1-1467.7
-CMP_3  . . . . . . . . . . . . . . . LABEL  0x003CC USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1471.1-1471.7
-CMP_4  . . . . . . . . . . . . . . . LABEL  0x003CF USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1474.1-1474.7
 DAYB . . . . . . . . . . . . . . . . NUMBER 0x00026 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:105.1-105.45
 DAYH . . . . . . . . . . . . . . . . NUMBER 0x0001D USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:96.1-96.45
 DAYL . . . . . . . . . . . . . . . . NUMBER 0x0001E USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:97.1-97.45
@@ -163,6 +160,11 @@ LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1040_ex
 LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:11.1-11.45
 LED_PATTERN  . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:68.1-68.45
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:3.1-3.45
+LOAD_2 . . . . . . . . . . . . . . . LABEL  0x003C8 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1467.1-1467.8
+LOAD_3 . . . . . . . . . . . . . . . LABEL  0x003CC USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1471.1-1471.8
+LOAD_4 . . . . . . . . . . . . . . . LABEL  0x003CF USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1474.1-1474.8
+LOAD_BIT0  . . . . . . . . . . . . . LABEL  0x00123 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:529.1-529.11
+LOAD_MS2 . . . . . . . . . . . . . . LABEL  0x003F6 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1516.1-1516.10
 LOOP . . . . . . . . . . . . . . . . LABEL  0x00091 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:375.1-375.6
 M7_END . . . . . . . . . . . . . . . LABEL  0x0019D USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:666.1-666.8
 MAR  . . . . . . . . . . . . . . . . NUMBER 0x0002A USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:109.1-109.45
@@ -221,7 +223,7 @@ REAL_TIME_END  . . . . . . . . . . . LABEL  0x003EE USED     CONSTANT    1040_ex
 RESET  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:229.1-229.7
 RESTART  . . . . . . . . . . . . . . LABEL  0x00041 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:294.1-294.9
 RN . . . . . . . . . . . . . . . . . LABEL  0x00193 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:656.1-656.4
-ROTARY_LEFT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:24.1-24.45
+ROTARY_LELOAD  . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:24.1-24.47
 ROTARY_PORT  . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:23.1-23.45
 ROTARY_PRESS . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:25.1-25.45
 ROTARY_PRESS1  . . . . . . . . . . . LABEL  0x00123 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:530.1-530.15
@@ -266,8 +268,8 @@ SEP2 . . . . . . . . . . . . . . . . NUMBER 0x0003C USED     CONSTANT    1040_ex
 SETUP  . . . . . . . . . . . . . . . LABEL  0x001A9 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:679.1-679.7
 SET_LINE2  . . . . . . . . . . . . . LABEL  0x00319 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1274.1-1274.11
 SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
-SHIFT_DELAY_LSB  . . . . . . . . . . NUMBER 0x000F4 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:139.1-139.45
-SHIFT_DELAY_MSB  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:138.1-138.45
+SHILOAD_DELAY_LSB  . . . . . . . . . NUMBER 0x000F4 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:139.1-139.47
+SHILOAD_DELAY_MSB  . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:138.1-138.47
 SKIP1  . . . . . . . . . . . . . . . LABEL  0x00123 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:532.1-532.7
 SPACE2 . . . . . . . . . . . . . . . LABEL  0x0015A USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:593.1-593.8
 SPACE3 . . . . . . . . . . . . . . . LABEL  0x00143 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:568.1-568.8
@@ -275,7 +277,6 @@ SPACE4 . . . . . . . . . . . . . . . LABEL  0x00132 USED     CONSTANT    1040_ex
 SPACE5 . . . . . . . . . . . . . . . LABEL  0x000DC USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:456.1-456.8
 SPACE6 . . . . . . . . . . . . . . . LABEL  0x000CB USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:437.1-437.8
 SPACE7 . . . . . . . . . . . . . . . LABEL  0x000BA USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:418.1-418.8
-STORE_MS2  . . . . . . . . . . . . . LABEL  0x003F6 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1516.1-1516.11
 SWITCH0  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:14.1-14.45
 SWITCH1  . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:15.1-15.45
 SWITCH2  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:16.1-16.45
@@ -283,7 +284,6 @@ SWITCH3  . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1040_ex
 SWITCH_PORT  . . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:13.1-13.45
 T2_5M_INT  . . . . . . . . . . . . . LABEL  0x003B3 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1446.1-1446.11
 TEMP . . . . . . . . . . . . . . . . NUMBER 0x00016 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:89.1-89.45
-TEST_BIT0  . . . . . . . . . . . . . LABEL  0x00123 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:529.1-529.11
 THU  . . . . . . . . . . . . . . . . LABEL  0x00108 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:502.1-502.5
 TUE  . . . . . . . . . . . . . . . . LABEL  0x000F4 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:482.1-482.5
 UNDER  . . . . . . . . . . . . . . . LABEL  0x0016D USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:614.1-614.7

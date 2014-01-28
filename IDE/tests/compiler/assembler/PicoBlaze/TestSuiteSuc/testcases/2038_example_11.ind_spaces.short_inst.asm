@@ -189,8 +189,8 @@ character_bs            EQU     0x08                    ;Back Space command char
 ;
 cold_start:             LD      s0, #0x00
                         LD      s1, #pwm_channel0
-clear_loop:             ST      s0, @s1
-                        CMP     s1, #pwm_channel11
+clear_loop:             ST      s0, #s1
+                        load     s1, #pwm_channel11
                         JUMP    z, enable_int
                         ADD     s1, #0x01
                         JUMP    clear_loop
@@ -240,56 +240,56 @@ delay_s0_loop:          SUB     s0, #0x01
 ;Pattern generation
 ;
                         FT      s0, led0_sequence       ;read sequence for LED0
-                        CMP     s0, #0x00
-                        JUMP    z, test_led0_start
+                        load     s0, #0x00
+                        JUMP    z, load_led0_start
                         SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
                         JUMP    z, update_led0
                         ADD     s0, #0x20
 inc_led0:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led0
-test_led0_start:        FT      s1, led1_sequence       ;start LED0 if LED1 = 4
-                        CMP     s1, #0x04
+load_led0_start:        FT      s1, led1_sequence       ;start LED0 if LED1 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led0
 update_led0:            ST      s0, led0_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel0
 ;
                         FT      s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
-                        CMP     s1, #0x0b
+                        load     s1, #0x0b
                         JUMP    nz, normal_led1
                         LD      s0, #0x04
                         JUMP    update_led1
 normal_led1:            FT      s0, led1_sequence       ;read sequence for LED1
-                        CMP     s0, #0x00
-                        JUMP    z, test_led1_start
+                        load     s0, #0x00
+                        JUMP    z, load_led1_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led1
                         ADD     s0, #0x10
 inc_led1:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led1
-test_led1_start:        FT      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
-                        CMP     s1, #0x0b
+load_led1_start:        FT      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+                        load     s1, #0x0b
                         JUMP    z, inc_led1
                         FT      s1, led2_sequence       ;start LED1 if LED2 = 4
-                        CMP     s1, #0x04
+                        load     s1, #0x04
                         JUMP    z, inc_led1
 update_led1:            ST      s0, led1_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel1
 ;
                         FT      s0, led2_sequence       ;read sequence for LED2
-                        CMP     s0, #0x00
-                        JUMP    z, test_led2_start
+                        load     s0, #0x00
+                        JUMP    z, load_led2_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led2
                         ADD     s0, #0x10
 inc_led2:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led2
-test_led2_start:        FT      s1, led1_sequence       ;start LED2 if LED1 = 4
-                        CMP     s1, #0x04
+load_led2_start:        FT      s1, led1_sequence       ;start LED2 if LED1 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led2
                         FT      s1, led3_sequence       ;start LED2 if LED3 = 4
-                        CMP     s1, #0x04
+                        load     s1, #0x04
                         JUMP    z, inc_led2
 update_led2:            ST      s0, led2_sequence
                         CALL    led_to_duty
@@ -297,89 +297,89 @@ update_led2:            ST      s0, led2_sequence
 ;
 ;
                         FT      s0, led3_sequence       ;read sequence for LED3
-                        CMP     s0, #0x00
-                        JUMP    z, test_led3_start
+                        load     s0, #0x00
+                        JUMP    z, load_led3_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led3
                         ADD     s0, #0x10
 inc_led3:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led3
-test_led3_start:        FT      s1, led2_sequence       ;start LED3 if LED2 = 4
-                        CMP     s1, #0x04
+load_led3_start:        FT      s1, led2_sequence       ;start LED3 if LED2 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led3
                         FT      s1, led4_sequence       ;start LED3 if LED4 = 4
-                        CMP     s1, #0x04
+                        load     s1, #0x04
                         JUMP    z, inc_led3
 update_led3:            ST      s0, led3_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel3
 ;
                         FT      s0, led4_sequence       ;read sequence for LED4
-                        CMP     s0, #0x00
-                        JUMP    z, test_led4_start
+                        load     s0, #0x00
+                        JUMP    z, load_led4_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led4
                         ADD     s0, #0x10
 inc_led4:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led4
-test_led4_start:        FT      s1, led3_sequence       ;start LED4 if LED3 = 4
-                        CMP     s1, #0x04
+load_led4_start:        FT      s1, led3_sequence       ;start LED4 if LED3 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led4
                         FT      s1, led5_sequence       ;start LED4 if LED5 = 4
-                        CMP     s1, #0x04
+                        load     s1, #0x04
                         JUMP    z, inc_led4
 update_led4:            ST      s0, led4_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel4
 ;
                         FT      s0, led5_sequence       ;read sequence for LED5
-                        CMP     s0, #0x00
-                        JUMP    z, test_led5_start
+                        load     s0, #0x00
+                        JUMP    z, load_led5_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led5
                         ADD     s0, #0x10
 inc_led5:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led5
-test_led5_start:        FT      s1, led4_sequence       ;start LED5 if LED4 = 4
-                        CMP     s1, #0x04
+load_led5_start:        FT      s1, led4_sequence       ;start LED5 if LED4 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led5
                         FT      s1, led6_sequence       ;start LED5 if LED6 = 4
-                        CMP     s1, #0x04
+                        load     s1, #0x04
                         JUMP    z, inc_led5
 update_led5:            ST      s0, led5_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel5
 ;
                         FT      s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
-                        CMP     s1, #0x0b
+                        load     s1, #0x0b
                         JUMP    nz, normal_led6
                         LD      s0, #0x04
                         JUMP    update_led6
 normal_led6:            FT      s0, led6_sequence       ;read sequence for LED6
-                        CMP     s0, #0x00
-                        JUMP    z, test_led6_start
+                        load     s0, #0x00
+                        JUMP    z, load_led6_start
                         SUB     s0, #0x10               ;reset count if maximum
                         JUMP    z, update_led6
                         ADD     s0, #0x10
 inc_led6:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led6
-test_led6_start:        FT      s1, led5_sequence       ;start LED6 if LED5 = 4
-                        CMP     s1, #0x04
+load_led6_start:        FT      s1, led5_sequence       ;start LED6 if LED5 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led6
 update_led6:            ST      s0, led6_sequence
                         CALL    led_to_duty
                         ST      s1, pwm_channel6
 ;
                         FT      s0, led7_sequence       ;read sequence for LED7
-                        CMP     s0, #0x00
-                        JUMP    z, test_led7_start
+                        load     s0, #0x00
+                        JUMP    z, load_led7_start
                         SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
                         JUMP    z, update_led7
                         ADD     s0, #0x20
 inc_led7:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led7
-test_led7_start:        FT      s1, led6_sequence       ;start LED7 if LED6 = 4
-                        CMP     s1, #0x04
+load_led7_start:        FT      s1, led6_sequence       ;start LED7 if LED6 = 4
+                        load     s1, #0x04
                         JUMP    z, inc_led7
 update_led7:            ST      s0, led7_sequence
                         CALL    led_to_duty
@@ -416,7 +416,7 @@ update_led7:            ST      s0, led7_sequence
 ; 10   00  and zero for all larger values of s0
 ;
 led_to_duty:            LD      s1, #0x00
-                        CMP     s0, #0x00               ;test for zero
+                        load     s0, #0x00               ;load for zero
                         RET
                         LD      s1, #0x01               ;inject '1'
 go_up_loop:             SUB     s0, #0x01
@@ -438,7 +438,7 @@ go_down_loop:           SUB     s0, #0x01
 ;
 ; Character read will be returned in a register called 'UART_data'.
 ;
-; The routine first tests the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if data is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
@@ -446,8 +446,8 @@ go_down_loop:           SUB     s0, #0x01
 ;
 ; Registers used s0 and UART_data
 ;
-read_from_uart:         IN      s0, status_port         ;test Rx_FIFO buffer
-                        TEST    s0, #rx_data_present    ;wait if empty
+read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
+                        load    s0, #rx_data_present    ;wait if empty
                         JUMP    nz, read_character
                         JUMP    read_from_uart
 read_character:         IN      uart_data, uart_read_port ;read from FIFO
@@ -459,13 +459,13 @@ read_character:         IN      uart_data, uart_read_port ;read from FIFO
 ;
 ; Character supplied in register called 'UART_data'.
 ;
-; The routine first tests the transmit FIFO buffer to see if it is full.
+; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
 ;
 ; Registers used s0
 ;
-send_to_uart:           IN      s0, status_port         ;test Tx_FIFO buffer
-                        TEST    s0, #tx_full            ;wait if full
+send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
+                        load    s0, #tx_full            ;wait if full
                         JUMP    z, uart_write
                         JUMP    send_to_uart
 uart_write:             OUT     uart_data, uart_write_port
@@ -588,47 +588,47 @@ isr:                    ST      s0, isr_preserve_s0     ;preserve registers to b
                         FT      s1, pwm_duty_counter    ;read 8-bit counter of steps
                         ADD     s1, #0x01               ;increment counter (will roll over to zero)
                         ST      s1, pwm_duty_counter    ;update count value in memory for next interrupt.
-;Read duty factor for each channel and compare it with the duty counter and set or
+;Read duty factor for each channel and load it with the duty counter and set or
 ;reset a bit in register s2 accordingly.
                         FT      s0, pwm_channel11       ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel10       ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel9        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel8        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         OUT     s2, simple_port         ;drive pins on connector J4
                         FT      s0, pwm_channel7        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel6        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel5        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel4        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel3        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel2        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel1        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         FT      s0, pwm_channel0        ;read desired setting of pulse width
-                        CMP     s1, s0                  ;set carry flag if duty factor > duty counter
+                        load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         OUT     s2, led_port            ;drive LEDs
-                        FT      s0, isr_preserve_s0     ;restore register values
+                        FT      s0, isr_preserve_s0     ;reload register values
                         FT      s1, isr_preserve_s1
                         FT      s2, isr_preserve_s2
                         RETIE

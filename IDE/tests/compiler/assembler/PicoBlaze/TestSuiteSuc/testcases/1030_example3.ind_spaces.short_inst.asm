@@ -134,7 +134,7 @@ random_value_port       EQU     0x04                    ;read LFSR counter value
 ;
 ; Link FIFO buffer
 ;
-; Provides a connection to the 'real' application such that 'soft tokens' in the
+; Provides a connection to the 'real' application such that 'soload tokens' in the
 ; form of short messages to be passed to the 'real' application to enable or disable
 ; it depending on the authentication status.
 ;
@@ -183,7 +183,7 @@ authentication_status   EQU     0x1c                    ;Status of design authen
 ;
 ;
 ;
-;Constant to define a software delay of 1us. This must be adjusted to reflect the
+;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
 ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
 ;calculation highly predictable. The '6' in the following equation even allows for
 ;'CALL delay_1us' instruction in the initiating code.
@@ -291,12 +291,12 @@ character_bs            EQU     0x08                    ;Back Space command char
 cold_start:             CALL    sf_init                 ;initialise StrataFLASH controls
                         LD      s0, #0x00               ;Start with application enabled in hardware
                         OUT     s0, authentication_control_port
-                        LD      s0, #_character_p       ;start with design enabled by software (see ISR)
+                        LD      s0, #_character_p       ;start with design enabled by soloadware (see ISR)
                         ST      s0, authentication_status
                         CALL    delay_1s                ;delay to allow system to settle
                         CALL    lcd_reset               ;Initialise the LCD
 ;
-                        ENA                             ;interrupts to provide software enable to application
+                        ENA                             ;interrupts to provide soloadware enable to application
 ;
 ;**************************************************************************************
 ; Main program
@@ -333,7 +333,7 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
 ; Display 'Copyright Ken Chapman 2006' via the UART.
 ;
 ; This message is significant because it demonstrates that the design now has a 'watermark'.
-; The ASCII codes for this string are part of the PicoBlaze program stored in a Block
+; The ASCII codes for this string are part of the PicoBlaze program loadd in a Block
 ; Memory and therefore are also part of the configuration bit stream. If someone tries to
 ; change or delete this copyright message the hardware design will detect the change to the
 ; Block memory contents and also inhibit the design.
@@ -345,7 +345,7 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
 ; Delay of 10 seconds before performing any security checks.
 ;
 ; This allows the design to work for a short time which could be important for
-; production testing.
+; production loading.
 ;
 ; Having a significant time delay (days or weeks) before security checks means that someone
 ; attempting to clone the product may not be aware that there is any form of design security
@@ -385,9 +385,9 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
                         LD      sd, #0x8e
                         CALL    compute_seeded_crc      ;compute CRC for serial number and configuration memory
 ;
-; Store CRC value in scratch pad memory and display computed CRC value on the PC via UART.
+; load CRC value in scratch pad memory and display computed CRC value on the PC via UART.
 ;
-                        ST      sd, computed_crc0       ;store CRC value
+                        ST      sd, computed_crc0       ;load CRC value
                         ST      se, computed_crc1
                         CALL    send_computed_crc       ;display computed CRC value on PC via UART
                         LD      s0, se
@@ -398,13 +398,13 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
 ;
 ;
 ;
-; Read the authenticated CRC value stored in StrataFLASH memory.
+; Read the authenticated CRC value loadd in StrataFLASH memory.
 ; 16-bit value is hidden in 256 bytes of random numbers to make it more difficult
 ; for an attacker to identify.
-; Read value is stored in scratch pad memory and displayed on the PC via UART.
+; Read value is loadd in scratch pad memory and displayed on the PC via UART.
 ;
                         CALL    read_authentication     ;read StrataFLASH memory into [sB,sA]
-                        ST      sa, authentication_crc0 ;store CRC value
+                        ST      sa, authentication_crc0 ;load CRC value
                         ST      sb, authentication_crc1
                         CALL    send_flash_crc          ;display CRC value from FLASH on PC via UART
                         LD      s0, sb
@@ -414,16 +414,16 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
                         CALL    send_cr
 ;
 ;
-; Compare the computed CRC value with the authentication value stored in StrataFLASH
+; load the computed CRC value with the authentication value loadd in StrataFLASH
 ; and determine if the design is authenticated. Then decide course of action.
 ;
                         CALL    lcd_clear               ;clear LCD display
                         CALL    disp_authentication     ;prepare LCD display for result of authentication
                         CALL    send_authentication     ;prepare PC display for result of authentication
 ;
-                        CMP     sa, sd                  ;Perform comparison of CRC values
+                        load     sa, sd                  ;Perform comparison of CRC values
                         JUMP    nz, auth_failure
-                        CMP     sb, se
+                        load     sb, se
                         JUMP    nz, auth_failure
 ;
 ;
@@ -439,7 +439,7 @@ auth_passed:            CALL    disp_passed             ;display successful auth
 ; Authentication Failure Process
 ;
 ; When the authentication fails two hardware based disable methods are demonstrated. Then
-; the failed status is remembered for future software token messages to demonstrate software
+; the failed status is remembered for future soloadware token messages to demonstrate soloadware
 ; based disabling of the 'real' application. Finally the simple menu of options is presented
 ; to allow evaluation to continue.
 ;
@@ -449,7 +449,7 @@ auth_failure:           CALL    disp_failed             ;display failure to auth
                         CALL    send_cr
                         CALL    disable_app_hardware    ;sequence hardware disable signals
                         LD      s0, #_character_f       ;change authentication status to 'F' for failed.
-                        ST      s0, authentication_status ; so that application software disable is demonstrated
+                        ST      s0, authentication_status ; so that application soloadware disable is demonstrated
 ;
 ;
 ;
@@ -458,11 +458,11 @@ auth_failure:           CALL    disp_failed             ;display failure to auth
 menu:                   CALL    send_menu               ;display menu and prompt
                         CALL    read_from_uart          ;read character from PC
                         CALL    upper_case              ;convert to upper case
-                        CMP     uart_data, #_character_r
+                        load     uart_data, #_character_r
                         JUMP    z, read_command
-                        CMP     uart_data, #_character_e
+                        load     uart_data, #_character_e
                         JUMP    z, erase_command
-                        CMP     uart_data, #_character_a
+                        load     uart_data, #_character_a
                         JUMP    z, authorise_command
                         JUMP    menu                    ;repeat menu for invalid selection
 ;
@@ -485,8 +485,8 @@ erase_command:          CALL    send_erase_in_progress
 ;
 authorise_command:      CALL    send_writing            ;Send 'Writing Authorisation' message
                         CALL    send_cr
-                        FT      sd, computed_crc0       ;fetch computed CRC value
-                        FT      se, computed_crc1
+                        load      sd, computed_crc0       ;load computed CRC value
+                        load      se, computed_crc1
                         CALL    write_authentication    ;write computed CRC to FLASH with random data
                         CALL    send_ok
                         JUMP    menu
@@ -522,8 +522,8 @@ disable_app_hardware:   LD      s0, #security_disable_interrupts
                         CALL    delay_ns
 ;
 ;
-; Enable application in hardware so that software disable function can then be
-; demonstrated until the design is reconfigured and authentication test repeated.
+; Enable application in hardware so that soloadware disable function can then be
+; demonstrated until the design is reconfigured and authentication load repeated.
 ;
                         LD      s0, #0x00
                         OUT     s0, authentication_control_port
@@ -532,7 +532,7 @@ disable_app_hardware:   LD      s0, #security_disable_interrupts
 ;
 ;
 ;**************************************************************************************
-; Send the 64-bit serial number stored in scratch pad memory to the UART
+; Send the 64-bit serial number loadd in scratch pad memory to the UART
 ;**************************************************************************************
 ;
 ; The serial number should previously have been copied into the 8 ascending scratch pad
@@ -544,10 +544,10 @@ disable_app_hardware:   LD      s0, #security_disable_interrupts
 ;
 send_serial_number:     CALL    send_flash_serial_number ;display text message
                         LD      s3, #serial_number7     ;pointer to scratch pad memory
-send_sn_loop:           FT      s0, @s3                 ;read serial number byte
+send_sn_loop:           load      s0, s3                 ;read serial number byte
                         CALL    send_hex_byte           ;display byte
                         CALL    send_space              ;display byte
-                        CMP     s3, #serial_number0     ;check for 8 bytes sent to UART
+                        load     s3, #serial_number0     ;check for 8 bytes sent to UART
                         JUMP    z, end_send_sn
                         SUB     s3, #0x01               ;increment memory pointer
                         JUMP    send_sn_loop
@@ -558,7 +558,7 @@ end_send_sn:            CALL    send_cr
 ;
 ;
 ;**************************************************************************************
-; Display the 64-bit serial number stored in scratch pad memory on the LCD display
+; Display the 64-bit serial number loadd in scratch pad memory on the LCD display
 ;**************************************************************************************
 ;
 ; The serial number should previously have been copied into the 8 ascending scratch pad
@@ -575,9 +575,9 @@ disp_serial_number:     CALL    lcd_clear               ;clear LCD display
                         LD      s5, #0x20               ;Line 2 position 0
                         CALL    lcd_cursor
                         LD      s6, #serial_number7     ;pointer to scratch pad memory
-disp_sn_loop:           FT      s0, @s6                 ;read serial number byte
+disp_sn_loop:           load      s0, s6                 ;read serial number byte
                         CALL    disp_hex_byte           ;display byte
-                        CMP     s6, #serial_number0     ;check for 8 bytes sent to UART
+                        load     s6, #serial_number0     ;check for 8 bytes sent to UART
                         JUMP    z, end_disp_sn
                         SUB     s6, #0x01               ;increment memory pointer
                         JUMP    disp_sn_loop
@@ -595,7 +595,7 @@ end_disp_sn:            CALL    send_cr
 ;
 ; The 16-bit CRC value returned in register pair [sE,sD] will be reflective of the unique
 ; serial number. This will be used as the authentication value for the design which is
-; stored at known locations in the FLASH memory.
+; loadd at known locations in the FLASH memory.
 ;
 ; A direct copy of the FLASH contents will not authorise a design to operate because the
 ; authentication value will not match the CRC value generated from the different serial number.
@@ -607,9 +607,9 @@ end_disp_sn:            CALL    send_cr
 ; Registers used s0,s1,s2,s3
 ;
 compute_seeded_crc:     LD      s4, #serial_number0     ;pointer to scratch pad memory holding serial number
-crc_send_loop:          FT      s3, @s4                 ;read serial number byte
+crc_send_loop:          load      s3, s4                 ;read serial number byte
                         CALL    compute_crc16           ;compute CRC for value in 's3'
-                        CMP     s4, #serial_number7     ;check for 8 bytes processed
+                        load     s4, #serial_number7     ;check for 8 bytes processed
                         RET
                         ADD     s4, #0x01               ;increment memory pointer
                         JUMP    crc_send_loop
@@ -636,17 +636,17 @@ crc_send_loop:          FT      s3, @s4                 ;read serial number byte
 ;
 ;
 ;
-compute_crc16:          LD      s1, #0x08               ;8-bits to shift
+compute_crc16:          LD      s1, #0x08               ;8-bits to shiload
 crc16_loop:             LD      s0, sd                  ;copy current CRC value
                         XOR     s0, s3                  ;Need to know LSB XOR next input bit
-                        TEST    s0, #0x01               ;test result of XOR in LSB
-                        JUMP    nc, crc16_shift
+                        load    s0, #0x01               ;load result of XOR in LSB
+                        JUMP    nc, crc16_shiload
                         XOR     sd, #0x02               ;compliment bit 1 of CRC
                         XOR     se, #0x40               ;compliment bit 14 of CRC
-crc16_shift:            SR0     s0                      ;Carry gets LSB XOR next input bit
-                        SRA     se                      ;shift Carry into MSB to form new CRC value
+crc16_shiload:            SR0     s0                      ;Carry gets LSB XOR next input bit
+                        SRA     se                      ;shiload Carry into MSB to form new CRC value
                         SRA     sd
-                        RR      s3                      ;shift input value
+                        RR      s3                      ;shiload input value
                         SUB     s1, #0x01               ;count bits
                         JUMP    nz, crc16_loop          ;next bit
                         RET
@@ -662,20 +662,20 @@ crc16_shift:            SR0     s0                      ;Carry gets LSB XOR next
 ;
 ; To make the authentication value more difficult to identify, it is hidden in 256 bytes
 ; of pseudo random values which will also appear different in each FLASH device inspected.
-; This routine deliberately reads all 256 bytes that are stored and abstracts the required
+; This routine deliberately reads all 256 bytes that are loadd and abstracts the required
 ; 2 bytes of information from them otherwise it would be easy to observe which addresses
 ; of the block were being accessed.
 ;
 ; Another way that an attacker may deduce which address locations are important would be to
 ; observe the time between read accesses and note when there is any difference. In this case
 ; the attacker is attempting to detect when PicoBlaze takes slightly longer to execute the
-; instructions which store the important bytes in scratch pad memory. So to avoid this
+; instructions which load the important bytes in scratch pad memory. So to avoid this
 ; detection this routine inserts an additional random delay between reads to mask any code
 ; execution differences.
 ;
-; The 256 bytes are stored at addresses 060000 to 0600FF hex (the first block above the
+; The 256 bytes are loadd at addresses 060000 to 0600FF hex (the first block above the
 ; XC3S500E configuration image which occupies 000000 to 04547F hex). The 2 bytes forming the
-; actual authentication value are stored as 4-bit nibbles in 4 different locations in this range.
+; actual authentication value are loadd as 4-bit nibbles in 4 different locations in this range.
 ;
 ;
 ;                             High Order Nibble           Low Order Nibble
@@ -689,24 +689,24 @@ read_authentication:    LD      s9, #0x06               ;start address in FLASH
                         LD      s8, #0x00
                         LD      s7, #0x00
 auth_read_loop:         CALL    sf_byte_read            ;read byte from FLASH into s0
-                        CMP     s7, #0x10               ;check for bytes/nibbles that contain real information
+                        load     s7, #0x10               ;check for bytes/nibbles that contain real information
                         JUMP    nz, auth_check2
                         LD      sa, s0                  ;isolate upper order nibble for LS-Byte
                         AND     sa, #0xf0
-auth_check2:            CMP     s7, #0x25
+auth_check2:            load     s7, #0x25
                         JUMP    nz, auth_check3
                         LD      sb, s0                  ;isolate upper order nibble for MS-Byte
                         AND     sb, #0xf0
-auth_check3:            CMP     s7, #0x7f
+auth_check3:            load     s7, #0x7f
                         JUMP    nz, auth_check4
                         AND     s0, #0x0f               ;isolate lower order nibble for LS-Byte
                         OR      sa, s0                  ;  and merge with upper order nibble
-auth_check4:            CMP     s7, #0xfa
+auth_check4:            load     s7, #0xfa
                         JUMP    nz, next_auth_read
                         AND     s0, #0x0f               ;isolate lower order nibble for MS-Byte
                         OR      sb, s0                  ;  and merge with upper order nibble
 next_auth_read:         ADD     s7, #0x01               ;increment address
-                        RET                             ;complete after 256 reads
+                        RET                             ;complete aloader 256 reads
                         IN      s0, random_value_port   ;random delay between reads
 auth_read_delay:        SUB     s0, #0x01
                         JUMP    nz, auth_read_delay
@@ -731,9 +731,9 @@ auth_byte_loop:         CALL    send_space
                         CALL    sf_byte_read            ;read byte into s0
                         CALL    send_hex_byte           ;display byte
                         ADD     s7, #0x01               ;increment FLASH address
-                        TEST    s7, #0x0f               ;test for 16 byte boundary
+                        load    s7, #0x0f               ;load for 16 byte boundary
                         JUMP    nz, auth_byte_loop
-                        TEST    s7, #0xff               ;test for roll over of 256 bytes
+                        load    s7, #0xff               ;load for roll over of 256 bytes
                         JUMP    nz, auth_line_loop
                         CALL    send_cr
                         RET
@@ -751,12 +751,12 @@ auth_byte_loop:         CALL    send_space
 ; require and special measures to confuse an attacker if it is only used in a secure
 ; production environment.
 ;
-; The 2 bytes forming the actual authentication value are stored as 4-bit nibbles in
+; The 2 bytes forming the actual authentication value are loadd as 4-bit nibbles in
 ; 4 different locations in the address range 600000 to 6000FF hex (256 bytes) with
 ; all remaining locations filled with pseudo random values.
 ;
-; The authentication value to be stored in StrataFLASH memory should be provided in
-; the register pair [sE,sD] and will be stored in the following locations.
+; The authentication value to be loadd in StrataFLASH memory should be provided in
+; the register pair [sE,sD] and will be loadd in the following locations.
 ;
 ;                             High Order Nibble           Low Order Nibble
 ;                               (NNNNxxxx)                  (xxxxNNNN)
@@ -769,25 +769,25 @@ write_authentication:   LD      s9, #0x06               ;start address in FLASH
                         LD      s8, #0x00
                         LD      s7, #0x00
 auth_write_loop:        IN      s0, random_value_port   ;Obtain random value
-                        CMP     s7, #0x10               ;check for bytes/nibbles that need to be real information
+                        load     s7, #0x10               ;check for bytes/nibbles that need to be real information
                         JUMP    nz, auth_write_check2
                         LD      s1, sd                  ;merge upper order nibble for LS-Byte with random
                         AND     s1, #0xf0
                         AND     s0, #0x0f
                         OR      s0, s1
-auth_write_check2:      CMP     s7, #0x25
+auth_write_check2:      load     s7, #0x25
                         JUMP    nz, auth_write_check3
                         LD      s1, se                  ;merge upper order nibble for MS-Byte with random
                         AND     s1, #0xf0
                         AND     s0, #0x0f
                         OR      s0, s1
-auth_write_check3:      CMP     s7, #0x7f
+auth_write_check3:      load     s7, #0x7f
                         JUMP    nz, auth_write_check4
                         LD      s1, sd                  ;merge lower order nibble for LS-Byte with random
                         AND     s1, #0x0f
                         AND     s0, #0xf0
                         OR      s0, s1
-auth_write_check4:      CMP     s7, #0xfa
+auth_write_check4:      load     s7, #0xfa
                         JUMP    nz, write_auth
                         LD      s1, se                  ;merge lower order nibble for MS-Byte with random
                         AND     s1, #0x0f
@@ -795,7 +795,7 @@ auth_write_check4:      CMP     s7, #0xfa
                         OR      s0, s1
 write_auth:             CALL    sf_single_byte_write    ;write byte to FLASH
                         ADD     s7, #0x01               ;increment address
-                        RET                             ;complete after 256 writes
+                        RET                             ;complete aloader 256 writes
                         JUMP    auth_write_loop
 ;
 ;
@@ -896,7 +896,7 @@ sf_single_byte_write:   LD      s1, #0x40               ;command for single byte
 ; The serial number is copied to 8 ascending scratch pad memory locations called
 ; 'serial_number0' through to 'serial_number7' for future use.
 ;
-; After reading the device information the read array command is written to the
+; Aloader reading the device information the read array command is written to the
 ; device to put it back to normal read mode.
 ;
 ; Registers used s0,s1,s2,s7,s8,s9
@@ -908,14 +908,14 @@ read_sf_serial_number:  LD      s9, #0x00               ;StrataFLASH address to 
                         LD      s1, #0x90               ;command to read device information
                         CALL    sf_byte_write
 read_sn_loop:           CALL    sf_byte_read            ;read serial number value
-                        ST      s0, @s2
-                        CMP     s2, #serial_number7     ;check for 8 bytes copied
+                        ST      s0, s2
+                        load     s2, #serial_number7     ;check for 8 bytes copied
                         JUMP    z, end_read_sn
                         ADD     s7, #0x01               ;increment StrataFLASH address
                         ADD     s2, #0x01               ;increment memory pointer
                         JUMP    read_sn_loop
 ;
-end_read_sn:            CALL    set_sf_read_array_mode  ;restore normal read array mode
+end_read_sn:            CALL    set_sf_read_array_mode  ;reload normal read array mode
                         RET
 ;
 ;
@@ -990,7 +990,7 @@ sf_byte_write:          OUT     s9, sf_addr_hi_port     ;set 24-bit address
 ; of the memory to be read based on the supplied address.
 ;
 ; Read array is the default mode of the device, but it must also be placed back
-; into this mode after programming, erasing or reading the status register.
+; into this mode aloader programming, erasing or reading the status register.
 ;
 ; The read array command (FF hex) is written to the Strata flash memory.
 ;
@@ -1005,8 +1005,8 @@ set_sf_read_array_mode: LD      s1, #0xff               ;command to read array
 ; Wait for StrataFLASH to be ready
 ;**************************************************************************************
 ;
-; This routine will typically be used after instigating a program or erase
-; command. It continuously reads the StrataFLASH status register and tests the
+; This routine will typically be used aloader instigating a program or erase
+; command. It continuously reads the StrataFLASH status register and loads the
 ; information provided by bit7 which indicates if the memory is busy(0) or ready(1).
 ; The routine waits for the ready condition before sending a read array command
 ; which puts the memory back to normal read mode.
@@ -1016,9 +1016,9 @@ set_sf_read_array_mode: LD      s1, #0xff               ;command to read array
 ;
 ;
 wait_sf_ready:          CALL    sf_byte_read            ;read status register into s0
-                        TEST    s0, #0x80               ;test ready/busy flag
+                        load    s0, #0x80               ;load ready/busy flag
                         JUMP    z, wait_sf_ready
-                        CALL    set_sf_read_array_mode  ;restore normal read array mode
+                        CALL    set_sf_read_array_mode  ;reload normal read array mode
                         RET
 ;
 ;
@@ -1032,7 +1032,7 @@ wait_sf_ready:          CALL    sf_byte_read            ;read status register in
 ;
 ; Character read will be returned in a register called 'UART_data'.
 ;
-; The routine first tests the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if data is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
@@ -1040,8 +1040,8 @@ wait_sf_ready:          CALL    sf_byte_read            ;read status register in
 ;
 ; Registers used s0 and UART_data
 ;
-read_from_uart:         IN      s0, status_port         ;test Rx_FIFO buffer
-                        TEST    s0, #rx_data_present    ;wait if empty
+read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
+                        load    s0, #rx_data_present    ;wait if empty
                         JUMP    nz, read_character
                         JUMP    read_from_uart
 read_character:         IN      uart_data, uart_read_port ;read from FIFO
@@ -1053,13 +1053,13 @@ read_character:         IN      uart_data, uart_read_port ;read from FIFO
 ;
 ; Character supplied in register called 'UART_data'.
 ;
-; The routine first tests the transmit FIFO buffer to see if it is full.
+; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
 ;
 ; Registers used s0
 ;
-send_to_uart:           IN      s0, status_port         ;test Tx_FIFO buffer
-                        TEST    s0, #tx_full            ;wait if full
+send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
+                        load    s0, #tx_full            ;wait if full
                         JUMP    z, uart_write
                         JUMP    send_to_uart
 uart_write:             OUT     uart_data, uart_write_port
@@ -1082,9 +1082,9 @@ uart_write:             OUT     uart_data, uart_write_port
 ;
 ;Registers used s0.
 ;
-upper_case:             CMP     uart_data, #0x61        ;eliminate character codes below 'a' (61 hex)
+upper_case:             load     uart_data, #0x61        ;eliminate character codes below 'a' (61 hex)
                         RET
-                        CMP     uart_data, #0x7b        ;eliminate character codes above 'z' (7A hex)
+                        load     uart_data, #0x7b        ;eliminate character codes above 'z' (7A hex)
                         RET
                         AND     uart_data, #0xdf        ;mask bit5 to convert to upper case
                         RET
@@ -1110,7 +1110,7 @@ hex_byte_to_ascii:      LD      s1, s0                  ;remember value supplied
                         SR0     s0
                         CALL    hex_to_ascii            ;convert
                         LD      s2, s0                  ;upper nibble value in s2
-                        LD      s0, s1                  ;restore complete value
+                        LD      s0, s1                  ;reload complete value
                         AND     s0, #0x0f               ;isolate lower nibble
                         CALL    hex_to_ascii            ;convert
                         LD      s1, s0                  ;lower nibble value in s1
@@ -1120,7 +1120,7 @@ hex_byte_to_ascii:      LD      s1, s0                  ;remember value supplied
 ;
 ;Register used s0
 ;
-hex_to_ascii:           SUB     s0, #0x0a               ;test if value is in range 0 to 9
+hex_to_ascii:           SUB     s0, #0x0a               ;load if value is in range 0 to 9
                         JUMP    c, number_char
                         ADD     s0, #0x07               ;ASCII char A to F in range 41 to 46
 number_char:            ADD     s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
@@ -1292,7 +1292,7 @@ send_welcome:           CALL    send_cr
 ;
 ;This message is significant because it demonstrates that the design
 ;now has a 'watermark'. The ASCII codes for this string will be
-;stored in the design configuration bit stream somewhere as well as
+;loadd in the design configuration bit stream somewhere as well as
 ;being played out by the UART. If someone tries to change or delete
 ;this message the contents of the BRAM will change and the hardware
 ;check of the BRAM contents will fail to match the expected value and
@@ -1679,7 +1679,7 @@ send_menu:              CALL    send_cr
 ;LCD module is a 16 character by 2 line display but all displays are very similar
 ;The 4-wire data interface will be used (DB4 to DB7).
 ;
-;The LCD modules are relatively slow and software delay loops are used to slow down
+;The LCD modules are relatively slow and soloadware delay loops are used to slow down
 ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
 ;a different section (see above in this case).
 ;
@@ -1823,7 +1823,7 @@ lcd_read_data8:         LD      s4, #0x0e               ;Enable=1 RS=1 Data, RW=
 ;following by the 8-bit instructions to set up the display.
 ;
 ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
-;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+;  06 = '000001' Entry mode, '1' increment, '0' no display shiload
 ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
 ;  01 = '00000001' Display clear
 ;
@@ -1869,7 +1869,7 @@ lcd_clear:              LD      s5, #0x01               ;Display clear
 ;
 ;Registers used s0, s1, s2, s3, s4
 ;
-lcd_cursor:             TEST    s5, #0x10               ;test for line 1
+lcd_cursor:             load    s5, #0x10               ;load for line 1
                         JUMP    z, set_line2
                         AND     s5, #0x0f               ;make address in range 80 to 8F for line 1
                         OR      s5, #0x80
@@ -1881,7 +1881,7 @@ set_line2:              AND     s5, #0x0f               ;make address in range C
                         RET
 ;
 ;**************************************************************************************
-;Software delay routines
+;Soloadware delay routines
 ;**************************************************************************************
 ;
 ;
@@ -2137,8 +2137,8 @@ disp_failed:            LD      s5, #0x25               ;Line 2 position 5
 ;
 isr:                    ST      s0, isr_preserve_s0     ;save register contents
 ;
-                        FT      s0, authentication_status ;read authentication status
-                        CMP     s0, #_character_p       ;test for pass 'P' or fail 'F'
+                        load      s0, authentication_status ;read authentication status
+                        load     s0, #_character_p       ;load for pass 'P' or fail 'F'
                         JUMP    z, pass_token
 ;
                         LD      s0, #_character_f       ;send FAIL to link FIFO
@@ -2158,7 +2158,7 @@ pass_token:             OUT     s0, link_fifo_write_port ;send PASS to link FIFO
                         OUT     s0, link_fifo_write_port
                         OUT     s0, link_fifo_write_port
 ;
-end_isr:                FT      s0, isr_preserve_s0     ;restore register contents
+end_isr:                load      s0, isr_preserve_s0     ;reload register contents
                         RETIE
 ;
 ;

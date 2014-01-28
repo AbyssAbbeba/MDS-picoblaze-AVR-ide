@@ -8,7 +8,7 @@
                    8     ; sD: address of the command register
                    9     ; sC: address of the SPI control/status register
                   10     ; -------------------------------------------------------------------------------
-                  11     DEVICE          KCPSM3
+                  11
                   12
   00001           13     bMOSI           EQU    0b00000001
   00080           14     bMISO           EQU    0b10000000
@@ -17,10 +17,12 @@
   00000           17     ESPI24:
                   18           ; address of the SPI register, contains MOSI, MISO, SCLK signals
   00000           19     SPI24:
-000 0BFD0         20                     IN      sF, @sD                  ; switch on the appropriate CE
+000 0AF0D         20                     IN      sF, sD                  ; switch on the appropriate CE
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 001 03EFF         21                     XOR     sE, #FFh
 002 0CFE1         22                     AND     sF, sE
-003 0FFD0         23                     OUT     sF, @sD
+003 0EF0D         23                     OUT     sF, sD
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   24
 004 0C010         25                     LOAD    s0, s1
 005 0831C         26                     CALL    SPI8
@@ -29,48 +31,58 @@
 008 0C030         29                     LOAD    s0, s3
 009 0831C         30                     CALL    SPI8
                   31
-00A 0BFD0         32                     IN      sF, @sD
+00A 0AF0D         32                     IN      sF, sD
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 00B 03EFF         33                     XOR     sE, #FFh
 00C 0CFE2         34                     OR      sF, sE
-00D 0FFD0         35                     OUT     sF, @sD                  ; switch off the CE
+00D 0EF0D         35                     OUT     sF, sD                  ; switch off the CE
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   36
 00E 08080         37                     RET
                   38
   0000F           39     ESPI16:
                   40           ; address of the SPI register, contains MOSI, MISO, SCLK signals
   0000F           41     SPI16:
-00F 0BFD0         42                     IN      sF, @sD                  ; switch on the appropriate CE
+00F 0AF0D         42                     IN      sF, sD                  ; switch on the appropriate CE
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 010 03EFF         43                     XOR     sE, #FFh
 011 0CFE1         44                     AND     sF, sE
-012 0FFD0         45                     OUT     sF, @sD
+012 0EF0D         45                     OUT     sF, sD
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   46
 013 0C010         47                     LOAD    s0, s1
 014 0831C         48                     CALL    SPI8
 015 0C020         49                     LOAD    s0, s2
 016 0831C         50                     CALL    SPI8
                   51
-017 0BFD0         52                     IN      sF, @sD
+017 0AF0D         52                     IN      sF, sD
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 018 03EFF         53                     XOR     sE, #FFh
 019 0CFE2         54                     OR      sF, sE
-01A 0FFD0         55                     OUT     sF, @sD                  ; switch off the CE
+01A 0EF0D         55                     OUT     sF, sD                  ; switch off the CE
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   56
 01B 08080         57                     RET
                   58
   0001C           59     ESPI8:
                   60         ; address of the SPI register, contains MOSI, MISO, SCLK signals
   0001C           61     SPI8:
-01C 0BFD0         62                     IN      sF, @sD                  ; switch on the appropriate CE
+01C 0AF0D         62                     IN      sF, sD                  ; switch on the appropriate CE
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 01D 03EFF         63                     XOR     sE, #FFh
 01E 0CFE1         64                     AND     sF, sE
-01F 0FFD0         65                     OUT     sF, @sD
+01F 0EF0D         65                     OUT     sF, sD
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   66
 020 0C010         67                     LOAD    s0, s1
 021 0831C         68                     CALL    SPI8
                   69
-022 0BFD0         70                     IN      sF, @sD
+022 0AF0D         70                     IN      sF, sD
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 023 03EFF         71                     XOR     sE, #FFh
 024 0CFE2         72                     OR      sF, sE
-025 0FFD0         73                     OUT     sF, @sD                  ; switch off the CE
+025 0EF0D         73                     OUT     sF, sD                  ; switch off the CE
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   74
 026 08080         75                     RET
                   76
@@ -80,21 +92,22 @@
                   80     ; uses sF
                   81     ; -------------------------------------------------------------------------------
                   82
-  00027           83     SPI8_:                                          ; shift 8 bits
+  00027           83     SPI8_:                                          ; shiload 8 bits
 027 08328         84                     CALL    SPI4_
                   85
-  00028           86     SPI4_:                                          ; shift 4 bits
+  00028           86     SPI4_:                                          ; shiload 4 bits
 028 08329         87                     CALL    SPI2_
                   88
-  00029           89     SPI2_:                                          ; shift 2 bits
+  00029           89     SPI2_:                                          ; shiload 2 bits
 029 0832A         90                     CALL    SPI1_
                   91
                   92     ; -------------------------------------------------------------------------------
                   93     ; send one bit w/clock
                   94     ; -------------------------------------------------------------------------------
                   95
-  0002A           96     SPI1_:                                          ; shift 1 bit
-02A 0BFC0         97                     IN      sF, @sC
+  0002A           96     SPI1_:                                          ; shiload 1 bit
+02A 0AF0C         97                     IN      sF, sC
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 02B 0CFE1         98                     AND     sF, ~ bMOSI             ; clear MOSI bit
 W: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 R: result is negative number: 0xfffffffffffffffe, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xe.
@@ -103,21 +116,22 @@ R: result is negative number: 0xfffffffffffffffe, this will represented as 4-bit
 02D 0CF12        101                     OR      sF, bMOSI               ; set MOSI bit
 W: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  102
-02E 0FFC0        103                     OUT     sF, @sC                  ; update MOSI signal
+02E 0EF0C        103                     OUT     sF, sC                  ; update MOSI signal
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 02F 0CF22        104                     OR      sF, bSCLK               ; set SCLK bit
 W: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-030 0FFC0        105                     OUT     sF, @sC                  ; update SCLK signal
+030 0EF0C        105                     OUT     sF, sC                  ; update SCLK signal
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
 031 0CFD1        106                     AND     sF, ~ bSCLK             ; clear SCLK bit
 W: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 R: result is negative number: 0xfffffffffffffffd, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xd.
-032 0FFC0        107                     OUT     sF, @sC                  ; update SCLK bit
+032 0EF0C        107                     OUT     sF, sC                  ; update SCLK bit
+W: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                  108
-033 0BFC0        109                     IN      sF, @sC
-                 110                     TEST    sF, bMISO               ; test MISO signal
-W: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-E: instruction not supported on the this device: TEST sX, sY.
-034 09080        111                     RET     Z
-035 02001        112                     OR      s0, #1                   ; reflect it in s0
-036 08080        113                     RET
-                 114
-                 115     ; -----------SPI Subroutines end-------------------------------------------------
+033 0AF0C        109                     IN      sF, sC
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+034 09080        110                     RET     Z
+035 02001        111                     OR      s0, #1                   ; reflect it in s0
+036 08080        112                     RET
+                 113
+                 114     ; -----------SPI Subroutines end-------------------------------------------------

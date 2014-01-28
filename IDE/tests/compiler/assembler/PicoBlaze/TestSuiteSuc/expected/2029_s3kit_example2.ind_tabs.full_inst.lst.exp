@@ -126,42 +126,41 @@
                  126     ;
 000 00000        127     cold_start:		LOAD		s0, #0x00
 001 00101        128     			LOAD		s1, #pwm_channel0
-  00002          129     clear_loop:		STORE		s0, @s1
-E: instruction not supported on the this device: STORE sX, sY.
-                 130     			COMPARE		s1, #pwm_channel7
-E: instruction not supported on the this device: COMPARE sX, kk.
-002 35007        131     			JUMP		z, enable_int
-003 08101        132     			ADD		s1, #0x01
-004 34002        133     			JUMP		clear_loop
+002 00001        129     clear_loop:		load		s0, #s1
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+003 00108        130     			load		s1, #pwm_channel7
+004 35007        131     			JUMP		z, enable_int
+005 08101        132     			ADD		s1, #0x01
+006 34002        133     			JUMP		clear_loop
                  134     ;
-005 3C001        135     enable_int:		ENABLE		interrupt		;interrupts used to set PWM frequency
+007 3C001        135     enable_int:		ENABLE		interrupt		;interrupts used to set PWM frequency
                  136     ;
                  137     ;
                  138     ; Initialise LED pattern sequence
                  139     ;
-006 00001        140     			LOAD		s0, #0x01		;trigger to start wave pattern
-                 141     			STORE		s0, led0_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-007 00000        142     			LOAD		s0, #0x00
-                 143     			STORE		s0, led1_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 144     			STORE		s0, led2_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 145     			STORE		s0, led3_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 146     			STORE		s0, led4_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 147     			STORE		s0, led5_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 148     			STORE		s0, led6_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-                 149     			STORE		s0, led7_sequence
-E: instruction not supported on the this device: STORE sX, ss.
+008 00001        140     			LOAD		s0, #0x01		;trigger to start wave pattern
+009 10080        141     			load		s0, led0_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00A 00000        142     			LOAD		s0, #0x00
+00B 10088        143     			load		s0, led1_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00C 10090        144     			load		s0, led2_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00D 10098        145     			load		s0, led3_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00E 100A0        146     			load		s0, led4_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00F 100A8        147     			load		s0, led5_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+010 100B0        148     			load		s0, led6_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+011 100B8        149     			load		s0, led7_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  150     ;
                  151     ;
                  152     ; Reset authentication check counter
                  153     ;
-008 00F00        154     			LOAD		sf, #0x00
+012 00F00        154     			LOAD		sf, #0x00
                  155     ;
                  156     ;
                  157     ;**************************************************************************************
@@ -184,229 +183,206 @@ E: instruction not supported on the this device: STORE sX, ss.
                  174     ;
                  175     ;
                  176     ;
-009 08F01        177     warm_start:		ADD		sf, #0x01		;authentication check timer
-00A 358B6        178     			JUMP		c, authentication_check	;Check made approximately every 8 seconds.
+013 08F01        177     warm_start:		ADD		sf, #0x01		;authentication check timer
+014 358B6        178     			JUMP		c, authentication_check	;Check made approximately every 8 seconds.
                  179     ;
-00B 00203        180     normal_led_sequence:	LOAD		s2, #0x03		;simple delay loop (delay will be increased by ISR processing)
-00C 001FF        181     delay_s2_loop:		LOAD		s1, #0xff
-00D 000FF        182     delay_s1_loop:		LOAD		s0, #0xff
-00E 0C001        183     delay_s0_loop:		SUB		s0, #0x01
-00F 35C18        184     			JUMP		nc, delay_s0_loop
-010 0C101        185     			SUB		s1, #0x01
-011 35C17        186     			JUMP		nc, delay_s1_loop
-012 0C201        187     			SUB		s2, #0x01
-013 35C16        188     			JUMP		nc, delay_s2_loop
+015 00203        180     normal_led_sequence:	LOAD		s2, #0x03		;simple delay loop (delay will be increased by ISR processing)
+016 001FF        181     delay_s2_loop:		LOAD		s1, #0xff
+017 000FF        182     delay_s1_loop:		LOAD		s0, #0xff
+018 0C001        183     delay_s0_loop:		SUB		s0, #0x01
+019 35C18        184     			JUMP		nc, delay_s0_loop
+01A 0C101        185     			SUB		s1, #0x01
+01B 35C17        186     			JUMP		nc, delay_s1_loop
+01C 0C201        187     			SUB		s2, #0x01
+01D 35C16        188     			JUMP		nc, delay_s2_loop
                  189     ;
                  190     ;Pattern generation
                  191     ;
-                 192     			FETCH		s0, led0_sequence	;read sequence for LED0
-E: instruction not supported on the this device: FETCH sX, ss.
-                 193     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-014 35026        194     			JUMP		z, test_led0_start
-015 0C020        195     			SUB		s0, #0x20		;Count longer to ensure end stops then reset count if maximum
-016 35029        196     			JUMP		z, update_led0
-017 08020        197     			ADD		s0, #0x20
-018 08001        198     inc_led0:		ADD		s0, #0x01		;increment counter
-019 34029        199     			JUMP		update_led0
-  00026          200     test_led0_start:	FETCH		s1, led1_sequence	;start LED0 if LED1 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 201     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-01A 35024        202     			JUMP		z, inc_led0
-  00029          203     update_led0:		STORE		s0, led0_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-01B 360A8        204     			CALL		led_to_duty
-                 205     			STORE		s1, pwm_channel0
-E: instruction not supported on the this device: STORE sX, ss.
+01E 10080        192     			load		s0, led0_sequence	;read sequence for LED0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01F 00000        193     			load		s0, #0x00
+020 35026        194     			JUMP		z, load_led0_start
+021 0C020        195     			SUB		s0, #0x20		;Count longer to ensure end stops then reset count if maximum
+022 35029        196     			JUMP		z, update_led0
+023 08020        197     			ADD		s0, #0x20
+024 08001        198     inc_led0:		ADD		s0, #0x01		;increment counter
+025 34029        199     			JUMP		update_led0
+026 10188        200     load_led0_start:	load		s1, led1_sequence	;start LED0 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+027 00104        201     			load		s1, #0x04
+028 35024        202     			JUMP		z, inc_led0
+029 10080        203     update_led0:		load		s0, led0_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02A 360A8        204     			CALL		led_to_duty
+02B 10108        205     			load		s1, pwm_channel0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  206     ;
-                 207     			FETCH		s1, led0_sequence	; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 208     			COMPARE		s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-01C 35431        209     			JUMP		nz, normal_led1
-01D 00004        210     			LOAD		s0, #0x04
-01E 3403F        211     			JUMP		update_led1
-  00031          212     normal_led1:		FETCH		s0, led1_sequence	;read sequence for LED1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 213     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-01F 35039        214     			JUMP		z, test_led1_start
-020 0C010        215     			SUB		s0, #0x10		;reset count if maximum
-021 3503F        216     			JUMP		z, update_led1
-022 08010        217     			ADD		s0, #0x10
-023 08001        218     inc_led1:		ADD		s0, #0x01		;increment counter
-024 3403F        219     			JUMP		update_led1
-  00039          220     test_led1_start:	FETCH		s1, led0_sequence	;start LED1 if LED0 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 221     			COMPARE		s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-025 35037        222     			JUMP		z, inc_led1
-                 223     			FETCH		s1, led2_sequence	;start LED1 if LED2 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 224     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-026 35037        225     			JUMP		z, inc_led1
-  0003F          226     update_led1:		STORE		s0, led1_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-027 360A8        227     			CALL		led_to_duty
-                 228     			STORE		s1, pwm_channel1
-E: instruction not supported on the this device: STORE sX, ss.
+02C 10180        207     			load		s1, led0_sequence	; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02D 0010B        208     			load		s1, #0x0b
+02E 35431        209     			JUMP		nz, normal_led1
+02F 00004        210     			LOAD		s0, #0x04
+030 3403F        211     			JUMP		update_led1
+031 10088        212     normal_led1:		load		s0, led1_sequence	;read sequence for LED1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+032 00000        213     			load		s0, #0x00
+033 35039        214     			JUMP		z, load_led1_start
+034 0C010        215     			SUB		s0, #0x10		;reset count if maximum
+035 3503F        216     			JUMP		z, update_led1
+036 08010        217     			ADD		s0, #0x10
+037 08001        218     inc_led1:		ADD		s0, #0x01		;increment counter
+038 3403F        219     			JUMP		update_led1
+039 10180        220     load_led1_start:	load		s1, led0_sequence	;start LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03A 0010B        221     			load		s1, #0x0b
+03B 35037        222     			JUMP		z, inc_led1
+03C 10190        223     			load		s1, led2_sequence	;start LED1 if LED2 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03D 00104        224     			load		s1, #0x04
+03E 35037        225     			JUMP		z, inc_led1
+03F 10088        226     update_led1:		load		s0, led1_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+040 360A8        227     			CALL		led_to_duty
+041 10110        228     			load		s1, pwm_channel1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  229     ;
-                 230     			FETCH		s0, led2_sequence	;read sequence for LED2
-E: instruction not supported on the this device: FETCH sX, ss.
-                 231     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-028 3504A        232     			JUMP		z, test_led2_start
-029 0C010        233     			SUB		s0, #0x10		;reset count if maximum
-02A 35050        234     			JUMP		z, update_led2
-02B 08010        235     			ADD		s0, #0x10
-02C 08001        236     inc_led2:		ADD		s0, #0x01		;increment counter
-02D 34050        237     			JUMP		update_led2
-  0004A          238     test_led2_start:	FETCH		s1, led1_sequence	;start LED2 if LED1 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 239     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-02E 35048        240     			JUMP		z, inc_led2
-                 241     			FETCH		s1, led3_sequence	;start LED2 if LED3 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 242     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-02F 35048        243     			JUMP		z, inc_led2
-  00050          244     update_led2:		STORE		s0, led2_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-030 360A8        245     			CALL		led_to_duty
-                 246     			STORE		s1, pwm_channel2
-E: instruction not supported on the this device: STORE sX, ss.
+042 10090        230     			load		s0, led2_sequence	;read sequence for LED2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+043 00000        231     			load		s0, #0x00
+044 3504A        232     			JUMP		z, load_led2_start
+045 0C010        233     			SUB		s0, #0x10		;reset count if maximum
+046 35050        234     			JUMP		z, update_led2
+047 08010        235     			ADD		s0, #0x10
+048 08001        236     inc_led2:		ADD		s0, #0x01		;increment counter
+049 34050        237     			JUMP		update_led2
+04A 10188        238     load_led2_start:	load		s1, led1_sequence	;start LED2 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+04B 00104        239     			load		s1, #0x04
+04C 35048        240     			JUMP		z, inc_led2
+04D 10198        241     			load		s1, led3_sequence	;start LED2 if LED3 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+04E 00104        242     			load		s1, #0x04
+04F 35048        243     			JUMP		z, inc_led2
+050 10090        244     update_led2:		load		s0, led2_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+051 360A8        245     			CALL		led_to_duty
+052 10118        246     			load		s1, pwm_channel2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  247     ;
                  248     ;
-                 249     			FETCH		s0, led3_sequence	;read sequence for LED3
-E: instruction not supported on the this device: FETCH sX, ss.
-                 250     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-031 3505B        251     			JUMP		z, test_led3_start
-032 0C010        252     			SUB		s0, #0x10		;reset count if maximum
-033 35061        253     			JUMP		z, update_led3
-034 08010        254     			ADD		s0, #0x10
-035 08001        255     inc_led3:		ADD		s0, #0x01		;increment counter
-036 34061        256     			JUMP		update_led3
-  0005B          257     test_led3_start:	FETCH		s1, led2_sequence	;start LED3 if LED2 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 258     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-037 35059        259     			JUMP		z, inc_led3
-                 260     			FETCH		s1, led4_sequence	;start LED3 if LED4 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 261     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-038 35059        262     			JUMP		z, inc_led3
-  00061          263     update_led3:		STORE		s0, led3_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-039 360A8        264     			CALL		led_to_duty
-                 265     			STORE		s1, pwm_channel3
-E: instruction not supported on the this device: STORE sX, ss.
+053 10098        249     			load		s0, led3_sequence	;read sequence for LED3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+054 00000        250     			load		s0, #0x00
+055 3505B        251     			JUMP		z, load_led3_start
+056 0C010        252     			SUB		s0, #0x10		;reset count if maximum
+057 35061        253     			JUMP		z, update_led3
+058 08010        254     			ADD		s0, #0x10
+059 08001        255     inc_led3:		ADD		s0, #0x01		;increment counter
+05A 34061        256     			JUMP		update_led3
+05B 10190        257     load_led3_start:	load		s1, led2_sequence	;start LED3 if LED2 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+05C 00104        258     			load		s1, #0x04
+05D 35059        259     			JUMP		z, inc_led3
+05E 101A0        260     			load		s1, led4_sequence	;start LED3 if LED4 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+05F 00104        261     			load		s1, #0x04
+060 35059        262     			JUMP		z, inc_led3
+061 10098        263     update_led3:		load		s0, led3_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+062 360A8        264     			CALL		led_to_duty
+063 10120        265     			load		s1, pwm_channel3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  266     ;
-                 267     			FETCH		s0, led4_sequence	;read sequence for LED4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 268     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-03A 3506C        269     			JUMP		z, test_led4_start
-03B 0C010        270     			SUB		s0, #0x10		;reset count if maximum
-03C 35072        271     			JUMP		z, update_led4
-03D 08010        272     			ADD		s0, #0x10
-03E 08001        273     inc_led4:		ADD		s0, #0x01		;increment counter
-03F 34072        274     			JUMP		update_led4
-  0006C          275     test_led4_start:	FETCH		s1, led3_sequence	;start LED4 if LED3 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 276     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-040 3506A        277     			JUMP		z, inc_led4
-                 278     			FETCH		s1, led5_sequence	;start LED4 if LED5 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 279     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-041 3506A        280     			JUMP		z, inc_led4
-  00072          281     update_led4:		STORE		s0, led4_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-042 360A8        282     			CALL		led_to_duty
-                 283     			STORE		s1, pwm_channel4
-E: instruction not supported on the this device: STORE sX, ss.
+064 100A0        267     			load		s0, led4_sequence	;read sequence for LED4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+065 00000        268     			load		s0, #0x00
+066 3506C        269     			JUMP		z, load_led4_start
+067 0C010        270     			SUB		s0, #0x10		;reset count if maximum
+068 35072        271     			JUMP		z, update_led4
+069 08010        272     			ADD		s0, #0x10
+06A 08001        273     inc_led4:		ADD		s0, #0x01		;increment counter
+06B 34072        274     			JUMP		update_led4
+06C 10198        275     load_led4_start:	load		s1, led3_sequence	;start LED4 if LED3 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+06D 00104        276     			load		s1, #0x04
+06E 3506A        277     			JUMP		z, inc_led4
+06F 101A8        278     			load		s1, led5_sequence	;start LED4 if LED5 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+070 00104        279     			load		s1, #0x04
+071 3506A        280     			JUMP		z, inc_led4
+072 100A0        281     update_led4:		load		s0, led4_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+073 360A8        282     			CALL		led_to_duty
+074 10128        283     			load		s1, pwm_channel4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  284     ;
-                 285     			FETCH		s0, led5_sequence	;read sequence for LED5
-E: instruction not supported on the this device: FETCH sX, ss.
-                 286     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-043 3507D        287     			JUMP		z, test_led5_start
-044 0C010        288     			SUB		s0, #0x10		;reset count if maximum
-045 35083        289     			JUMP		z, update_led5
-046 08010        290     			ADD		s0, #0x10
-047 08001        291     inc_led5:		ADD		s0, #0x01		;increment counter
-048 34083        292     			JUMP		update_led5
-  0007D          293     test_led5_start:	FETCH		s1, led4_sequence	;start LED5 if LED4 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 294     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-049 3507B        295     			JUMP		z, inc_led5
-                 296     			FETCH		s1, led6_sequence	;start LED5 if LED6 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 297     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-04A 3507B        298     			JUMP		z, inc_led5
-  00083          299     update_led5:		STORE		s0, led5_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-04B 360A8        300     			CALL		led_to_duty
-                 301     			STORE		s1, pwm_channel5
-E: instruction not supported on the this device: STORE sX, ss.
+075 100A8        285     			load		s0, led5_sequence	;read sequence for LED5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+076 00000        286     			load		s0, #0x00
+077 3507D        287     			JUMP		z, load_led5_start
+078 0C010        288     			SUB		s0, #0x10		;reset count if maximum
+079 35083        289     			JUMP		z, update_led5
+07A 08010        290     			ADD		s0, #0x10
+07B 08001        291     inc_led5:		ADD		s0, #0x01		;increment counter
+07C 34083        292     			JUMP		update_led5
+07D 101A0        293     load_led5_start:	load		s1, led4_sequence	;start LED5 if LED4 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07E 00104        294     			load		s1, #0x04
+07F 3507B        295     			JUMP		z, inc_led5
+080 101B0        296     			load		s1, led6_sequence	;start LED5 if LED6 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+081 00104        297     			load		s1, #0x04
+082 3507B        298     			JUMP		z, inc_led5
+083 100A8        299     update_led5:		load		s0, led5_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+084 360A8        300     			CALL		led_to_duty
+085 10130        301     			load		s1, pwm_channel5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  302     ;
-                 303     			FETCH		s1, led7_sequence	; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
-E: instruction not supported on the this device: FETCH sX, ss.
-                 304     			COMPARE		s1, #0x0b
-E: instruction not supported on the this device: COMPARE sX, kk.
-04C 3548B        305     			JUMP		nz, normal_led6
-04D 00004        306     			LOAD		s0, #0x04
-04E 34096        307     			JUMP		update_led6
-  0008B          308     normal_led6:		FETCH		s0, led6_sequence	;read sequence for LED6
-E: instruction not supported on the this device: FETCH sX, ss.
-                 309     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-04F 35093        310     			JUMP		z, test_led6_start
-050 0C010        311     			SUB		s0, #0x10		;reset count if maximum
-051 35096        312     			JUMP		z, update_led6
-052 08010        313     			ADD		s0, #0x10
-053 08001        314     inc_led6:		ADD		s0, #0x01		;increment counter
-054 34096        315     			JUMP		update_led6
-  00093          316     test_led6_start:	FETCH		s1, led5_sequence	;start LED6 if LED5 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 317     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-055 35091        318     			JUMP		z, inc_led6
-  00096          319     update_led6:		STORE		s0, led6_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-056 360A8        320     			CALL		led_to_duty
-                 321     			STORE		s1, pwm_channel6
-E: instruction not supported on the this device: STORE sX, ss.
+086 101B8        303     			load		s1, led7_sequence	; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+087 0010B        304     			load		s1, #0x0b
+088 3548B        305     			JUMP		nz, normal_led6
+089 00004        306     			LOAD		s0, #0x04
+08A 34096        307     			JUMP		update_led6
+08B 100B0        308     normal_led6:		load		s0, led6_sequence	;read sequence for LED6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08C 00000        309     			load		s0, #0x00
+08D 35093        310     			JUMP		z, load_led6_start
+08E 0C010        311     			SUB		s0, #0x10		;reset count if maximum
+08F 35096        312     			JUMP		z, update_led6
+090 08010        313     			ADD		s0, #0x10
+091 08001        314     inc_led6:		ADD		s0, #0x01		;increment counter
+092 34096        315     			JUMP		update_led6
+093 101A8        316     load_led6_start:	load		s1, led5_sequence	;start LED6 if LED5 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+094 00104        317     			load		s1, #0x04
+095 35091        318     			JUMP		z, inc_led6
+096 100B0        319     update_led6:		load		s0, led6_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+097 360A8        320     			CALL		led_to_duty
+098 10138        321     			load		s1, pwm_channel6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  322     ;
-                 323     			FETCH		s0, led7_sequence	;read sequence for LED7
-E: instruction not supported on the this device: FETCH sX, ss.
-                 324     			COMPARE		s0, #0x00
-E: instruction not supported on the this device: COMPARE sX, kk.
-057 350A1        325     			JUMP		z, test_led7_start
-058 0C020        326     			SUB		s0, #0x20		;Count longer to ensure end stops then reset count if maximum
-059 350A4        327     			JUMP		z, update_led7
-05A 08020        328     			ADD		s0, #0x20
-05B 08001        329     inc_led7:		ADD		s0, #0x01		;increment counter
-05C 340A4        330     			JUMP		update_led7
-  000A1          331     test_led7_start:	FETCH		s1, led6_sequence	;start LED7 if LED6 = 4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 332     			COMPARE		s1, #0x04
-E: instruction not supported on the this device: COMPARE sX, kk.
-05D 3509F        333     			JUMP		z, inc_led7
-  000A4          334     update_led7:		STORE		s0, led7_sequence
-E: instruction not supported on the this device: STORE sX, ss.
-05E 360A8        335     			CALL		led_to_duty
-                 336     			STORE		s1, pwm_channel7
-E: instruction not supported on the this device: STORE sX, ss.
-05F 34013        337     			JUMP		warm_start
+099 100B8        323     			load		s0, led7_sequence	;read sequence for LED7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+09A 00000        324     			load		s0, #0x00
+09B 350A1        325     			JUMP		z, load_led7_start
+09C 0C020        326     			SUB		s0, #0x20		;Count longer to ensure end stops then reset count if maximum
+09D 350A4        327     			JUMP		z, update_led7
+09E 08020        328     			ADD		s0, #0x20
+09F 08001        329     inc_led7:		ADD		s0, #0x01		;increment counter
+0A0 340A4        330     			JUMP		update_led7
+0A1 101B0        331     load_led7_start:	load		s1, led6_sequence	;start LED7 if LED6 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A2 00104        332     			load		s1, #0x04
+0A3 3509F        333     			JUMP		z, inc_led7
+0A4 100B8        334     update_led7:		load		s0, led7_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A5 360A8        335     			CALL		led_to_duty
+0A6 10140        336     			load		s1, pwm_channel7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A7 34013        337     			JUMP		warm_start
                  338     ;
                  339     ;
                  340     ; Convert LED sequence number into PWM intensity figure
@@ -437,21 +413,20 @@ E: instruction not supported on the this device: STORE sX, ss.
                  365     ; 0F   01
                  366     ; 10   00  and zero for all larger values of s0
                  367     ;
-060 00100        368     led_to_duty:		LOAD		s1, #0x00
-                 369     			COMPARE		s0, #0x00		;test for zero
-E: instruction not supported on the this device: COMPARE sX, kk.
-061 25000        370     			RETURN		z
-062 00101        371     			LOAD		s1, #0x01		;inject '1'
-063 0C001        372     go_up_loop:		SUB		s0, #0x01
-064 25000        373     			RETURN		z
-065 28106        374     			SL0		s1			;multiply by 2
-066 358B1        375     			JUMP		c, go_down
-067 340AC        376     			JUMP		go_up_loop
-068 00140        377     go_down:		LOAD		s1, #0x40
-069 0C001        378     go_down_loop:		SUB		s0, #0x01
-06A 25000        379     			RETURN		z
-06B 2810E        380     			SR0		s1			;divide by 2
-06C 340B2        381     			JUMP		go_down_loop
+0A8 00100        368     led_to_duty:		LOAD		s1, #0x00
+0A9 00000        369     			load		s0, #0x00		;load for zero
+0AA 25000        370     			RETURN		z
+0AB 00101        371     			LOAD		s1, #0x01		;inject '1'
+0AC 0C001        372     go_up_loop:		SUB		s0, #0x01
+0AD 25000        373     			RETURN		z
+0AE 28106        374     			SL0		s1			;multiply by 2
+0AF 358B1        375     			JUMP		c, go_down
+0B0 340AC        376     			JUMP		go_up_loop
+0B1 00140        377     go_down:		LOAD		s1, #0x40
+0B2 0C001        378     go_down_loop:		SUB		s0, #0x01
+0B3 25000        379     			RETURN		z
+0B4 2810E        380     			SR0		s1			;divide by 2
+0B5 340B2        381     			JUMP		go_down_loop
                  382     ;
                  383     ;
                  384     ;
@@ -477,116 +452,105 @@ E: instruction not supported on the this device: COMPARE sX, kk.
                  404     ; >>>>> (line moved to the beginning) <<<<<
                  405     ;
                  406     ;
-06D 00001        407     authentication_check:	LOAD		s0, #link_fifo_reset	;clear link FIFO to ensure no unexpected characters
-06E 22020        408     			OUTPUT		s0, link_fifo_control_port
-06F 00000        409     			LOAD		s0, #0x00
-070 22020        410     			OUTPUT		s0, link_fifo_control_port
+0B6 00001        407     authentication_check:	LOAD		s0, #link_fifo_reset	;clear link FIFO to ensure no unexpected characters
+0B7 22020        408     			OUTPUT		s0, link_fifo_control_port
+0B8 00000        409     			LOAD		s0, #0x00
+0B9 22020        410     			OUTPUT		s0, link_fifo_control_port
                  411     ;
-071 00001        412     			LOAD		s0, #security_interrupt	;generate interrupt to authentication processor
-072 22040        413     			OUTPUT		s0, security_request_port
-073 00000        414     			LOAD		s0, #0x00
-074 22040        415     			OUTPUT		s0, security_request_port
+0BA 00001        412     			LOAD		s0, #security_interrupt	;generate interrupt to authentication processor
+0BB 22040        413     			OUTPUT		s0, security_request_port
+0BC 00000        414     			LOAD		s0, #0x00
+0BD 22040        415     			OUTPUT		s0, security_request_port
                  416     ;
-075 360F9        417     			CALL		read_link_fifo		;read each character and compare
-                 418     			COMPARE		s0, #character_p
-E: instruction not supported on the this device: COMPARE sX, kk.
-076 354CB        419     			JUMP		nz, fail_confirm
-077 360F9        420     			CALL		read_link_fifo
-                 421     			COMPARE		s0, #character_a
-E: instruction not supported on the this device: COMPARE sX, kk.
-078 354CB        422     			JUMP		nz, fail_confirm
-079 360F9        423     			CALL		read_link_fifo
-                 424     			COMPARE		s0, #character_s
-E: instruction not supported on the this device: COMPARE sX, kk.
-07A 354CB        425     			JUMP		nz, fail_confirm
-07B 360F9        426     			CALL		read_link_fifo
-                 427     			COMPARE		s0, #character_s
-E: instruction not supported on the this device: COMPARE sX, kk.
-07C 354CB        428     			JUMP		nz, fail_confirm
-07D 34015        429     			JUMP		normal_led_sequence	;Continue normal operation for PASS message
+0BE 360F9        417     			CALL		read_link_fifo		;read each character and load
+0BF 00050        418     			load		s0, #character_p
+0C0 354CB        419     			JUMP		nz, fail_confirm
+0C1 360F9        420     			CALL		read_link_fifo
+0C2 00041        421     			load		s0, #character_a
+0C3 354CB        422     			JUMP		nz, fail_confirm
+0C4 360F9        423     			CALL		read_link_fifo
+0C5 00053        424     			load		s0, #character_s
+0C6 354CB        425     			JUMP		nz, fail_confirm
+0C7 360F9        426     			CALL		read_link_fifo
+0C8 00053        427     			load		s0, #character_s
+0C9 354CB        428     			JUMP		nz, fail_confirm
+0CA 34015        429     			JUMP		normal_led_sequence	;Continue normal operation for PASS message
                  430     ;
                  431     ;
                  432     ; To confirm that the authentication is really a FAIL message
-                 433     ; another request is made to the authentication processor and tested.
+                 433     ; another request is made to the authentication processor and loaded.
                  434     ;
-07E 000FF        435     fail_confirm:		LOAD		s0, #0xff		;short delay to ensure authentication processor is ready
-07F 0C001        436     request_delay:		SUB		s0, #0x01		;   to respond to new interrupt request
-080 354CC        437     			JUMP		nz, request_delay
+0CB 000FF        435     fail_confirm:		LOAD		s0, #0xff		;short delay to ensure authentication processor is ready
+0CC 0C001        436     request_delay:		SUB		s0, #0x01		;   to respond to new interrupt request
+0CD 354CC        437     			JUMP		nz, request_delay
                  438     ;
-081 00001        439     			LOAD		s0, #link_fifo_reset	;clear link FIFO to ensure no unexpected characters
-082 22020        440     			OUTPUT		s0, link_fifo_control_port
-083 00000        441     			LOAD		s0, #0x00
-084 22020        442     			OUTPUT		s0, link_fifo_control_port
+0CE 00001        439     			LOAD		s0, #link_fifo_reset	;clear link FIFO to ensure no unexpected characters
+0CF 22020        440     			OUTPUT		s0, link_fifo_control_port
+0D0 00000        441     			LOAD		s0, #0x00
+0D1 22020        442     			OUTPUT		s0, link_fifo_control_port
                  443     ;
-085 00001        444     			LOAD		s0, #security_interrupt	;generate interrupt to authentication processor
-086 22040        445     			OUTPUT		s0, security_request_port
-087 00000        446     			LOAD		s0, #0x00
-088 22040        447     			OUTPUT		s0, security_request_port
+0D2 00001        444     			LOAD		s0, #security_interrupt	;generate interrupt to authentication processor
+0D3 22040        445     			OUTPUT		s0, security_request_port
+0D4 00000        446     			LOAD		s0, #0x00
+0D5 22040        447     			OUTPUT		s0, security_request_port
                  448     ;
-089 360F9        449     			CALL		read_link_fifo		;read each character and compare
-                 450     			COMPARE		s0, #character_f
-E: instruction not supported on the this device: COMPARE sX, kk.
-08A 35415        451     			JUMP		nz, normal_led_sequence
-08B 360F9        452     			CALL		read_link_fifo
-                 453     			COMPARE		s0, #character_a
-E: instruction not supported on the this device: COMPARE sX, kk.
-08C 35415        454     			JUMP		nz, normal_led_sequence
-08D 360F9        455     			CALL		read_link_fifo
-                 456     			COMPARE		s0, #character_i
-E: instruction not supported on the this device: COMPARE sX, kk.
-08E 35415        457     			JUMP		nz, normal_led_sequence
-08F 360F9        458     			CALL		read_link_fifo
-                 459     			COMPARE		s0, #character_l
-E: instruction not supported on the this device: COMPARE sX, kk.
-090 35415        460     			JUMP		nz, normal_led_sequence
+0D6 360F9        449     			CALL		read_link_fifo		;read each character and load
+0D7 00046        450     			load		s0, #character_f
+0D8 35415        451     			JUMP		nz, normal_led_sequence
+0D9 360F9        452     			CALL		read_link_fifo
+0DA 00041        453     			load		s0, #character_a
+0DB 35415        454     			JUMP		nz, normal_led_sequence
+0DC 360F9        455     			CALL		read_link_fifo
+0DD 00049        456     			load		s0, #character_i
+0DE 35415        457     			JUMP		nz, normal_led_sequence
+0DF 360F9        458     			CALL		read_link_fifo
+0E0 0004C        459     			load		s0, #character_l
+0E1 35415        460     			JUMP		nz, normal_led_sequence
                  461     ;
                  462     ;
                  463     ; When the design fails to authenticate the LEDs will appear to
                  464     ; turn on and then slowly fade to off using PWM.
                  465     ;
-091 000FF        466     failed_led_sequence:	LOAD		s0, #0xff		;maximum intensity on all LEDs
-092 00400        467     			LOAD		s4, #0x00		;reset fade rate control
-093 00101        468     all_led_fade:		LOAD		s1, #pwm_channel0
-  000E5          469     all_led_fade_loop:	STORE		s0, @s1
-E: instruction not supported on the this device: STORE sX, sY.
-                 470     			COMPARE		s1, #pwm_channel7
-E: instruction not supported on the this device: COMPARE sX, kk.
-094 350EA        471     			JUMP		z, decay_leds
-095 08101        472     			ADD		s1, #0x01
-096 340E5        473     			JUMP		all_led_fade_loop
-097 10120        474     decay_leds:		LOAD		s1, s4			;software delay starts quickly and slows down because LEDs are non-linear.
-098 00218        475     wait_s1:		LOAD		s2, #0x18
-099 003FF        476     wait_s2:		LOAD		s3, #0xff
-09A 0C301        477     wait_s3:		SUB		s3, #0x01
-09B 354ED        478     			JUMP		nz, wait_s3
-09C 0C201        479     			SUB		s2, #0x01
-09D 354EC        480     			JUMP		nz, wait_s2
-09E 0C101        481     			SUB		s1, #0x01
-09F 354EB        482     			JUMP		nz, wait_s1
-                 483     			COMPARE		s0, #0x00		;test for fully off
-E: instruction not supported on the this device: COMPARE sX, kk.
-0A0 350F8        484     			JUMP		z, stop_completely
-0A1 0C001        485     			SUB		s0, #0x01		;fade LEDs
-0A2 08401        486     			ADD		s4, #0x01		;slow fade rate as intensity decreases
-0A3 340E4        487     			JUMP		all_led_fade
+0E2 000FF        466     failed_led_sequence:	LOAD		s0, #0xff		;maximum intensity on all LEDs
+0E3 00400        467     			LOAD		s4, #0x00		;reset fade rate control
+0E4 00101        468     all_led_fade:		LOAD		s1, #pwm_channel0
+0E5 00001        469     all_led_fade_loop:	load		s0, #s1
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+0E6 00108        470     			load		s1, #pwm_channel7
+0E7 350EA        471     			JUMP		z, decay_leds
+0E8 08101        472     			ADD		s1, #0x01
+0E9 340E5        473     			JUMP		all_led_fade_loop
+0EA 10120        474     decay_leds:		LOAD		s1, s4			;software delay starts quickly and slows down because LEDs are non-linear.
+0EB 00218        475     wait_s1:		LOAD		s2, #0x18
+0EC 003FF        476     wait_s2:		LOAD		s3, #0xff
+0ED 0C301        477     wait_s3:		SUB		s3, #0x01
+0EE 354ED        478     			JUMP		nz, wait_s3
+0EF 0C201        479     			SUB		s2, #0x01
+0F0 354EC        480     			JUMP		nz, wait_s2
+0F1 0C101        481     			SUB		s1, #0x01
+0F2 354EB        482     			JUMP		nz, wait_s1
+0F3 00000        483     			load		s0, #0x00		;load for fully off
+0F4 350F8        484     			JUMP		z, stop_completely
+0F5 0C001        485     			SUB		s0, #0x01		;fade LEDs
+0F6 08401        486     			ADD		s4, #0x01		;slow fade rate as intensity decreases
+0F7 340E4        487     			JUMP		all_led_fade
                  488     ;
-0A4 340F8        489     stop_completely:	JUMP		stop_completely
+0F8 340F8        489     stop_completely:	JUMP		stop_completely
                  490     ;
                  491     ;**************************************************************************************
                  492     ; Read Byte from Link FIFO
                  493     ;**************************************************************************************
                  494     ;
-                 495     ; The routine first tests the FIFO buffer to see if data is present.
+                 495     ; The routine first loads the FIFO buffer to see if data is present.
                  496     ; If the FIFO is empty, the routine waits until there is a character to read.
                  497     ; the read value is returned in register s0.
                  498     ;
                  499     ;
-0A5 20001        500     read_link_fifo:		INPUT		s0, link_fifo_status_port	;test FIFO buffer
-                 501     			TEST		s0, #link_fifo_data_present	;wait if empty
-E: instruction not supported on the this device: TEST sX, kk.
-0A6 350F9        502     			JUMP		z, read_link_fifo
-0A7 20002        503     			INPUT		s0, link_fifo_read_port	;read data from FIFO
-0A8 24000        504     			RETURN
+0F9 20001        500     read_link_fifo:		INPUT		s0, link_fifo_status_port	;load FIFO buffer
+0FA 00001        501     			load		s0, #link_fifo_data_present	;wait if empty
+0FB 350F9        502     			JUMP		z, read_link_fifo
+0FC 20002        503     			INPUT		s0, link_fifo_read_port	;read data from FIFO
+0FD 24000        504     			RETURN
                  505     ;
                  506     ;
                  507     ;**************************************************************************************
@@ -612,68 +576,60 @@ E: instruction not supported on the this device: TEST sX, kk.
                  527     ; Consequently the code is written out in a linear fashion which consumes more program
                  528     ; space but which executes faster.
                  529     ;
-  000FE          530     isr:			STORE		s0, isr_preserve_s0	;preserve registers to be used
-E: instruction not supported on the this device: STORE sX, ss.
-                 531     			STORE		s1, isr_preserve_s1
-E: instruction not supported on the this device: STORE sX, ss.
-                 532     			STORE		s2, isr_preserve_s2
-E: instruction not supported on the this device: STORE sX, ss.
+0FE 10068        530     isr:			load		s0, isr_preserve_s0	;preserve registers to be used
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0FF 10170        531     			load		s1, isr_preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+100 10278        532     			load		s2, isr_preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  533     ;Determine the number of steps currently through the 1ms PWM cycle
-                 534     			FETCH		s1, pwm_duty_counter	;read 8-bit counter of steps
-E: instruction not supported on the this device: FETCH sX, ss.
-0A9 08101        535     			ADD		s1, #0x01		;increment counter (will roll over to zero)
-                 536     			STORE		s1, pwm_duty_counter	;update count value in memory for next interrupt.
-E: instruction not supported on the this device: STORE sX, ss.
-                 537     ;Read duty factor for each channel and compare it with the duty counter and set or
+101 10100        534     			load		s1, pwm_duty_counter	;read 8-bit counter of steps
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+102 08101        535     			ADD		s1, #0x01		;increment counter (will roll over to zero)
+103 10100        536     			load		s1, pwm_duty_counter	;update count value in memory for next interrupt.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 537     ;Read duty factor for each channel and load it with the duty counter and set or
                  538     ;reset a bit in register s2 accordingly.
-                 539     			FETCH		s0, pwm_channel7	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 540     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AA 28200        541     			SLA		s2			;shift carry into register s2
-                 542     			FETCH		s0, pwm_channel6	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 543     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AB 28200        544     			SLA		s2			;shift carry into register s2
-                 545     			FETCH		s0, pwm_channel5	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 546     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AC 28200        547     			SLA		s2			;shift carry into register s2
-                 548     			FETCH		s0, pwm_channel4	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 549     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AD 28200        550     			SLA		s2			;shift carry into register s2
-                 551     			FETCH		s0, pwm_channel3	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 552     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AE 28200        553     			SLA		s2			;shift carry into register s2
-                 554     			FETCH		s0, pwm_channel2	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 555     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0AF 28200        556     			SLA		s2			;shift carry into register s2
-                 557     			FETCH		s0, pwm_channel1	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 558     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0B0 28200        559     			SLA		s2			;shift carry into register s2
-                 560     			FETCH		s0, pwm_channel0	;read desired setting of pulse width
-E: instruction not supported on the this device: FETCH sX, ss.
-                 561     			COMPARE		s1, s0			;set carry flag if duty factor > duty counter
-E: instruction not supported on the this device: COMPARE sX, sY.
-0B1 28200        562     			SLA		s2			;shift carry into register s2
-0B2 22280        563     			OUTPUT		s2, led_port		;drive LEDs
-                 564     			FETCH		s0, isr_preserve_s0	;restore register values
-E: instruction not supported on the this device: FETCH sX, ss.
-                 565     			FETCH		s1, isr_preserve_s1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 566     			FETCH		s2, isr_preserve_s2
-E: instruction not supported on the this device: FETCH sX, ss.
-0B3 2C001        567     			RETURNI		enable
+104 10040        539     			load		s0, pwm_channel7	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+105 10100        540     			load		s1, s0			;set carry flag if duty factor > duty counter
+106 28200        541     			SLA		s2			;shift carry into register s2
+107 10038        542     			load		s0, pwm_channel6	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+108 10100        543     			load		s1, s0			;set carry flag if duty factor > duty counter
+109 28200        544     			SLA		s2			;shift carry into register s2
+10A 10030        545     			load		s0, pwm_channel5	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+10B 10100        546     			load		s1, s0			;set carry flag if duty factor > duty counter
+10C 28200        547     			SLA		s2			;shift carry into register s2
+10D 10028        548     			load		s0, pwm_channel4	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+10E 10100        549     			load		s1, s0			;set carry flag if duty factor > duty counter
+10F 28200        550     			SLA		s2			;shift carry into register s2
+110 10020        551     			load		s0, pwm_channel3	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+111 10100        552     			load		s1, s0			;set carry flag if duty factor > duty counter
+112 28200        553     			SLA		s2			;shift carry into register s2
+113 10018        554     			load		s0, pwm_channel2	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+114 10100        555     			load		s1, s0			;set carry flag if duty factor > duty counter
+115 28200        556     			SLA		s2			;shift carry into register s2
+116 10010        557     			load		s0, pwm_channel1	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+117 10100        558     			load		s1, s0			;set carry flag if duty factor > duty counter
+118 28200        559     			SLA		s2			;shift carry into register s2
+119 10008        560     			load		s0, pwm_channel0	;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11A 10100        561     			load		s1, s0			;set carry flag if duty factor > duty counter
+11B 28200        562     			SLA		s2			;shift carry into register s2
+11C 22280        563     			OUTPUT		s2, led_port		;drive LEDs
+11D 10068        564     			load		s0, isr_preserve_s0	;reload register values
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11E 10170        565     			load		s1, isr_preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11F 10278        566     			load		s2, isr_preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+120 2C001        567     			RETURNI		enable
                  568     ;
                  569     ;
                  570     ;**************************************************************************************

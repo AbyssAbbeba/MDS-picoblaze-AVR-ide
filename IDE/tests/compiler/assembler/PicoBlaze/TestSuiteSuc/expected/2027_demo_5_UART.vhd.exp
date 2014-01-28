@@ -1,0 +1,104 @@
+--
+-- Definition of a single port ROM for KCPSM program defined by 2027_demo_5_UART.asm.psm
+-- and assmbled using KCPSM assembler.
+--
+-- Standard IEEE libraries
+--
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+--
+-- The Unisim Library is used to define Xilinx primitives. It is also used during
+-- simulation. The source can be viewed at %XILINX%\vhdl\src\unisims\unisim_VCOMP.vhd
+--
+library unisim;
+use unisim.vcomponents.all;
+--
+--
+entity 2027_demo_5_UART.asm is
+    Port (      address : in std_logic_vector(7 downto 0);
+            instruction : out std_logic_vector(15 downto 0);
+                    clk : in std_logic);
+    end 2027_demo_5_UART.asm;
+--
+architecture low_level_definition of 2027_demo_5_UART.asm is
+--
+-- Attributes to define ROM contents during implementation synthesis.
+-- The information is repeated in the generic map for functional simulation
+--
+attribute INIT_00 : string;
+attribute INIT_01 : string;
+attribute INIT_02 : string;
+attribute INIT_03 : string;
+attribute INIT_04 : string;
+attribute INIT_05 : string;
+attribute INIT_06 : string;
+attribute INIT_07 : string;
+attribute INIT_08 : string;
+attribute INIT_09 : string;
+attribute INIT_0A : string;
+attribute INIT_0B : string;
+attribute INIT_0C : string;
+attribute INIT_0D : string;
+attribute INIT_0E : string;
+attribute INIT_0F : string;
+--
+-- Attributes to define ROM contents during implementation synthesis.
+--
+attribute INIT_00 of ram_256_x_16 : label is  "24010000500B0000000400000470000000200000240100005001000000040000";
+attribute INIT_01 of ram_256_x_16 : label is  "0004000004900000002000002401000050150000000400000428000000200000";
+attribute INIT_02 of ram_256_x_16 : label is  "00200000240100005029000000040000048000000020000024010000501F0000";
+attribute INIT_03 of ram_256_x_16 : label is  "543C0000543C000002C8000000FA000024010000503300000004000004680000";
+attribute INIT_04 of ram_256_x_16 : label is  "00000000000000000000000000000000404300005043000000040000543C0000";
+attribute INIT_05 of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_06 of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_07 of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_08 of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_09 of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0A of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0B of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0C of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0D of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0E of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+attribute INIT_0F of ram_256_x_16 : label is  "0000000000000000000000000000000000000000000000000000000000000000";
+--
+begin
+--
+  --Instantiate the Xilinx primitive for a block RAM
+  ram_256_x_16: RAMB4_S16
+  --translate_off
+  --INIT values repeated to define contents for functional simulation
+  generic map (INIT_00 => X"24010000500B0000000400000470000000200000240100005001000000040000",
+               INIT_01 => X"0004000004900000002000002401000050150000000400000428000000200000",
+               INIT_02 => X"00200000240100005029000000040000048000000020000024010000501F0000",
+               INIT_03 => X"543C0000543C000002C8000000FA000024010000503300000004000004680000",
+               INIT_04 => X"00000000000000000000000000000000404300005043000000040000543C0000",
+               INIT_05 => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_06 => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_07 => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_08 => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_09 => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0A => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0B => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0C => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0D => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0E => X"0000000000000000000000000000000000000000000000000000000000000000",
+               INIT_0F => X"0000000000000000000000000000000000000000000000000000000000000000",
+  --translate_on
+  port map(    DI => "0000000000000000",
+               EN => '1',
+               WE => '0',
+              RST => '0',
+              CLK => clk,
+             ADDR => address,
+               DO => instruction(15 downto 0));
+--
+end low_level_definition;
+--
+------------------------------------------------------------------------------------
+--
+-- END OF FILE 2027_demo_5_UART.asm.vhd
+--
+------------------------------------------------------------------------------------
+

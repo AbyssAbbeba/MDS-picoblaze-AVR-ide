@@ -472,38 +472,38 @@
                  472     ;
 00C 00000        473     			LOAD		s0, #0x00
 00D 00101        474     			LOAD		s1, #0x01
-                 475     			STORE		s0, bcd_digit0
-E: instruction not supported on the this device: STORE sX, ss.
-                 476     			STORE		s0, bcd_digit1
-E: instruction not supported on the this device: STORE sX, ss.
-                 477     			STORE		s0, bcd_digit2
-E: instruction not supported on the this device: STORE sX, ss.
-                 478     			STORE		s0, bcd_digit3
-E: instruction not supported on the this device: STORE sX, ss.
-                 479     			STORE		s0, bcd_digit4
-E: instruction not supported on the this device: STORE sX, ss.
-                 480     			STORE		s0, bcd_digit5
-E: instruction not supported on the this device: STORE sX, ss.
-                 481     			STORE		s0, bcd_digit6
-E: instruction not supported on the this device: STORE sX, ss.
-                 482     			STORE		s0, bcd_digit7
-E: instruction not supported on the this device: STORE sX, ss.
-                 483     			STORE		s1, bcd_digit8
-E: instruction not supported on the this device: STORE sX, ss.
+00E 10018        475     			load		s0, bcd_digit0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00F 10020        476     			load		s0, bcd_digit1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+010 10028        477     			load		s0, bcd_digit2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+011 10030        478     			load		s0, bcd_digit3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 10038        479     			load		s0, bcd_digit4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+013 10040        480     			load		s0, bcd_digit5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+014 10048        481     			load		s0, bcd_digit6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+015 10050        482     			load		s0, bcd_digit7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+016 10158        483     			load		s1, bcd_digit8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  484     ;
-00E 00004        485     			LOAD		s0, #0x04		;Start position for editing frequency is 1MHz digit
-                 486     			STORE		s0, cursor_position
-E: instruction not supported on the this device: STORE sX, ss.
-00F 00009        487     			LOAD		s0, #bcd_digit6
-                 488     			STORE		s0, edit_digit_pointer
-E: instruction not supported on the this device: STORE sX, ss.
+017 00004        485     			LOAD		s0, #0x04		;Start position for editing frequency is 1MHz digit
+018 10080        486     			load		s0, cursor_position
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+019 00009        487     			LOAD		s0, #bcd_digit6
+01A 10088        488     			load		s0, edit_digit_pointer
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  489     ;
                  490     ;
-010 3C001        491     			ENABLE		interrupt		;interrupts are used to detect rotary controller
-011 361C3        492     			CALL		delay_1ms
-012 00000        493     			LOAD		s0, #0x00		;clear the status of any spurious rotary events
-                 494     			STORE		s0, rotary_status	;   as a result of system turning on.
-E: instruction not supported on the this device: STORE sX, ss.
+01B 3C001        491     			ENABLE		interrupt		;interrupts are used to detect rotary controller
+01C 361C3        492     			CALL		delay_1ms
+01D 00000        493     			LOAD		s0, #0x00		;clear the status of any spurious rotary events
+01E 10000        494     			load		s0, rotary_status	;   as a result of system turning on.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  495     ;
                  496     ;**************************************************************************************
                  497     ; Main program
@@ -522,63 +522,54 @@ E: instruction not supported on the this device: STORE sX, ss.
                  510     ; editing mode.
                  511     ;
                  512     ;
-013 36084        513     move_mode:		CALL		compute_dds_words	;compute DDS control values
-014 360B4        514     			CALL		display_freq		;refresh display with cursor position shown
-015 00001        515     			LOAD		s0, #led0		;indicate move mode on LEDs
-016 22080        516     			OUTPUT		s0, led_port
-017 20000        517     move_wait:		INPUT		s0, rotary_port		;read rotary encoder
-                 518     			TEST		s0, #rotary_press	;test for press of button which changes mode
-E: instruction not supported on the this device: TEST sX, kk.
-018 35445        519     			JUMP		nz, edit_mode
-                 520     			FETCH		s0, rotary_status	;check for any rotation of rotary control
-E: instruction not supported on the this device: FETCH sX, ss.
-                 521     			TEST		s0, #rotary_event
-E: instruction not supported on the this device: TEST sX, kk.
-019 35023        522     			JUMP		z, move_wait
+01F 36084        513     move_mode:		CALL		compute_dds_words	;compute DDS control values
+020 360B4        514     			CALL		display_freq		;refresh display with cursor position shown
+021 00001        515     			LOAD		s0, #led0		;indicate move mode on LEDs
+022 22080        516     			OUTPUT		s0, led_port
+023 20000        517     move_wait:		INPUT		s0, rotary_port		;read rotary encoder
+024 00002        518     			load		s0, #rotary_press	;load for press of button which changes mode
+025 35445        519     			JUMP		nz, edit_mode
+026 10000        520     			load		s0, rotary_status	;check for any rotation of rotary control
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+027 00080        521     			load		s0, #rotary_event
+028 35023        522     			JUMP		z, move_wait
                  523     ;
-01A 0207F        524     			AND		s0, #0x7f		;clear flag now that action it is being processed
-                 525     			STORE		s0, rotary_status
-E: instruction not supported on the this device: STORE sX, ss.
-                 526     			FETCH		sa, cursor_position	;read current position
-E: instruction not supported on the this device: FETCH sX, ss.
-                 527     			FETCH		sb, edit_digit_pointer
-E: instruction not supported on the this device: FETCH sX, ss.
-                 528     			TEST		s0, #rotary_left	;determine direction to move cursor
-E: instruction not supported on the this device: TEST sX, kk.
-01B 35039        529     			JUMP		z, move_right
+029 0207F        524     			AND		s0, #0x7f		;clear flag now that action it is being processed
+02A 10000        525     			load		s0, rotary_status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02B 10A80        526     			load		sa, cursor_position	;read current position
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02C 10B88        527     			load		sb, edit_digit_pointer
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02D 00001        528     			load		s0, #rotary_left	;determine direction to move cursor
+02E 35039        529     			JUMP		z, move_right
                  530     ;
-  0002F          531     move_left:		COMPARE		sb, #bcd_digit8		;can not move left of 100MHz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-01C 3501F        532     			JUMP		z, move_mode
-01D 08B01        533     			ADD		sb, #0x01		;move to next higher BCD digit
-01E 0CA01        534     			SUB		sa, #0x01		;move cursor to match digit to be edited
-                 535     			COMPARE		sa, #0x09		;must skip over space separator
-E: instruction not supported on the this device: COMPARE sX, kk.
-01F 35037        536     			JUMP		z, skip_left
-                 537     			COMPARE		sa, #0x05		;must skip over decimal point
-E: instruction not supported on the this device: COMPARE sX, kk.
-020 35442        538     			JUMP		nz, edit_point_update
-021 0CA01        539     skip_left:		SUB		sa, #0x01		;move cursor further left
-022 34042        540     			JUMP		edit_point_update
+02F 00B0B        531     move_left:		load		sb, #bcd_digit8		;can not move left of 100MHz digit
+030 3501F        532     			JUMP		z, move_mode
+031 08B01        533     			ADD		sb, #0x01		;move to next higher BCD digit
+032 0CA01        534     			SUB		sa, #0x01		;move cursor to match digit to be edited
+033 00A09        535     			load		sa, #0x09		;must skip over space separator
+034 35037        536     			JUMP		z, skip_left
+035 00A05        537     			load		sa, #0x05		;must skip over decimal point
+036 35442        538     			JUMP		nz, edit_point_update
+037 0CA01        539     skip_left:		SUB		sa, #0x01		;move cursor further left
+038 34042        540     			JUMP		edit_point_update
                  541     ;
-  00039          542     move_right:		COMPARE		sb, #bcd_digit0		;can not move right of 1Hz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-023 3501F        543     			JUMP		z, move_mode
-024 0CB01        544     			SUB		sb, #0x01		;move to next lower BCD digit
-025 08A01        545     			ADD		sa, #0x01		;move cursor to match digit to be edited
-                 546     			COMPARE		sa, #0x09		;must skip over space separator
-E: instruction not supported on the this device: COMPARE sX, kk.
-026 35041        547     			JUMP		z, skip_right
-                 548     			COMPARE		sa, #0x05		;must skip over decimal point
-E: instruction not supported on the this device: COMPARE sX, kk.
-027 35442        549     			JUMP		nz, edit_point_update
-028 08A01        550     skip_right:		ADD		sa, #0x01		;move cursor further right
+039 00B03        542     move_right:		load		sb, #bcd_digit0		;can not move right of 1Hz digit
+03A 3501F        543     			JUMP		z, move_mode
+03B 0CB01        544     			SUB		sb, #0x01		;move to next lower BCD digit
+03C 08A01        545     			ADD		sa, #0x01		;move cursor to match digit to be edited
+03D 00A09        546     			load		sa, #0x09		;must skip over space separator
+03E 35041        547     			JUMP		z, skip_right
+03F 00A05        548     			load		sa, #0x05		;must skip over decimal point
+040 35442        549     			JUMP		nz, edit_point_update
+041 08A01        550     skip_right:		ADD		sa, #0x01		;move cursor further right
                  551     ;
-  00042          552     edit_point_update:	STORE		sa, cursor_position	;update edit value in memory
-E: instruction not supported on the this device: STORE sX, ss.
-                 553     			STORE		sb, edit_digit_pointer
-E: instruction not supported on the this device: STORE sX, ss.
-029 3401F        554     			JUMP		move_mode
+042 10A80        552     edit_point_update:	load		sa, cursor_position	;update edit value in memory
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+043 10B88        553     			load		sb, edit_digit_pointer
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+044 3401F        554     			JUMP		move_mode
                  555     ;
                  556     ;
                  557     ; The edit mode is reached by pressing the rotary control. Since this is a simple switch
@@ -593,112 +584,102 @@ E: instruction not supported on the this device: STORE sX, ss.
                  566     ; cursor moving mode.
                  567     ;
                  568     ;
-02A 3607D        569     edit_mode:		CALL		wait_switch_release	;wait for switch press to end
-02B 36084        570     edit_display:		CALL		compute_dds_words	;compute DDS control values
-02C 360B4        571     			CALL		display_freq		;refresh display with new values
-02D 00002        572     			LOAD		s0, #led1		;indicate edit mode on LEDs
-02E 22080        573     			OUTPUT		s0, led_port
-02F 20000        574     edit_wait:		INPUT		s0, rotary_port		;read rotary encoder
-                 575     			TEST		s0, #rotary_press	;test for press of button which changes mode
-E: instruction not supported on the this device: TEST sX, kk.
-030 3547B        576     			JUMP		nz, end_edit_mode
-                 577     			FETCH		s0, rotary_status	;check for any rotation of rotary control
-E: instruction not supported on the this device: FETCH sX, ss.
-                 578     			TEST		s0, #rotary_event
-E: instruction not supported on the this device: TEST sX, kk.
-031 3504A        579     			JUMP		z, edit_wait
+045 3607D        569     edit_mode:		CALL		wait_switch_release	;wait for switch press to end
+046 36084        570     edit_display:		CALL		compute_dds_words	;compute DDS control values
+047 360B4        571     			CALL		display_freq		;refresh display with new values
+048 00002        572     			LOAD		s0, #led1		;indicate edit mode on LEDs
+049 22080        573     			OUTPUT		s0, led_port
+04A 20000        574     edit_wait:		INPUT		s0, rotary_port		;read rotary encoder
+04B 00002        575     			load		s0, #rotary_press	;load for press of button which changes mode
+04C 3547B        576     			JUMP		nz, end_edit_mode
+04D 10000        577     			load		s0, rotary_status	;check for any rotation of rotary control
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+04E 00080        578     			load		s0, #rotary_event
+04F 3504A        579     			JUMP		z, edit_wait
                  580     ;
-032 0207F        581     			AND		s0, #0x7f		;clear flag now that action it is being processed
-                 582     			STORE		s0, rotary_status
-E: instruction not supported on the this device: STORE sX, ss.
-                 583     			FETCH		sb, edit_digit_pointer	;read pointer to BCD digit for initial change
-E: instruction not supported on the this device: FETCH sX, ss.
-                 584     			TEST		s0, #rotary_left	;determine direction to increment or decrement
-E: instruction not supported on the this device: TEST sX, kk.
-033 35068        585     			JUMP		z, inc_digit
+050 0207F        581     			AND		s0, #0x7f		;clear flag now that action it is being processed
+051 10000        582     			load		s0, rotary_status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+052 10B88        583     			load		sb, edit_digit_pointer	;read pointer to BCD digit for initial change
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+053 00001        584     			load		s0, #rotary_left	;determine direction to increment or decrement
+054 35068        585     			JUMP		z, inc_digit
                  586     ;
                  587     ; Decrement the value starting at the current position and borrowing from the left.
                  588     ; However the value needs to bottom out at all 0's from the editing position.
                  589     ;
                  590     ;
-  00055          591     dec_digit:		FETCH		sa, @sb			;read digit value at pointer position
-E: instruction not supported on the this device: FETCH sX, sY.
-034 0CA01        592     			SUB		sa, #0x01		;decrement digit
-                 593     			COMPARE		sa, #0xff		;test for borrow from next digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-035 3505B        594     			JUMP		z, dec_borrow
-                 595     			STORE		sa, @sb			;store decremented digit value
-E: instruction not supported on the this device: STORE sX, sY.
-036 34046        596     			JUMP		edit_display		;decrement task complete
-037 00A09        597     dec_borrow:		LOAD		sa, #0x09		;current digit rolls over to nine
-                 598     			STORE		sa, @sb			;store '9' digit value
-E: instruction not supported on the this device: STORE sX, sY.
-                 599     			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-038 35061        600     			JUMP		z, set_min_value
-039 08B01        601     			ADD		sb, #0x01		;increment pointer to next most significant digit
-03A 34055        602     			JUMP		dec_digit		;decrement next digit up.
+055 00A0B        591     dec_digit:		load		sa, #sb			;read digit value at pointer position
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+056 0CA01        592     			SUB		sa, #0x01		;decrement digit
+057 00AFF        593     			load		sa, #0xff		;load for borrow from next digit
+058 3505B        594     			JUMP		z, dec_borrow
+059 00A0B        595     			load		sa, #sb			;load decremented digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+05A 34046        596     			JUMP		edit_display		;decrement task complete
+05B 00A09        597     dec_borrow:		LOAD		sa, #0x09		;current digit rolls over to nine
+05C 00A0B        598     			load		sa, #sb			;load '9' digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+05D 00B0B        599     			load		sb, #bcd_digit8		;check if working on 100MHz digit
+05E 35061        600     			JUMP		z, set_min_value
+05F 08B01        601     			ADD		sb, #0x01		;increment pointer to next most significant digit
+060 34055        602     			JUMP		dec_digit		;decrement next digit up.
                  603     ;
-  00061          604     set_min_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 000...
-E: instruction not supported on the this device: FETCH sX, ss.
-03B 00A00        605     			LOAD		sa, #0x00
-  00063          606     fill_min:		STORE		sa, @sb
-E: instruction not supported on the this device: STORE sX, sY.
-                 607     			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-03C 35046        608     			JUMP		z, edit_display
-03D 08B01        609     			ADD		sb, #0x01		;fill next higher digit
-03E 34063        610     			JUMP		fill_min
+061 10B88        604     set_min_value:		load		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 000...
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+062 00A00        605     			LOAD		sa, #0x00
+063 00A0B        606     fill_min:		load		sa, #sb
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+064 00B0B        607     			load		sb, #bcd_digit8		;check if filled to 100MHz digit
+065 35046        608     			JUMP		z, edit_display
+066 08B01        609     			ADD		sb, #0x01		;fill next higher digit
+067 34063        610     			JUMP		fill_min
                  611     ;
                  612     ; Increment the value starting at the current position and carrying to the left.
                  613     ; However the value needs to saturate to all 9's from the editing position.
                  614     ;
-  00068          615     inc_digit:		FETCH		sa, @sb			;read digit value at pointer position
-E: instruction not supported on the this device: FETCH sX, sY.
-03F 08A01        616     			ADD		sa, #0x01		;increment digit
-                 617     			COMPARE		sa, #0x0a		;test for carry to next digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-040 3506E        618     			JUMP		z, inc_carry
-                 619     			STORE		sa, @sb			;store incremented digit value
-E: instruction not supported on the this device: STORE sX, sY.
-041 34046        620     			JUMP		edit_display		;increment task complete
-042 00A00        621     inc_carry:		LOAD		sa, #0x00		;current digit rolls over to zero
-                 622     			STORE		sa, @sb			;store zero digit value
-E: instruction not supported on the this device: STORE sX, sY.
-                 623     			COMPARE		sb, #bcd_digit8		;check if working on 100MHz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-043 35074        624     			JUMP		z, set_max_value
-044 08B01        625     			ADD		sb, #0x01		;increment pointer to next most significant digit
-045 34068        626     			JUMP		inc_digit		;increment next digit up.
+068 00A0B        615     inc_digit:		load		sa, #sb			;read digit value at pointer position
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+069 08A01        616     			ADD		sa, #0x01		;increment digit
+06A 00A0A        617     			load		sa, #0x0a		;load for carry to next digit
+06B 3506E        618     			JUMP		z, inc_carry
+06C 00A0B        619     			load		sa, #sb			;load incremented digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+06D 34046        620     			JUMP		edit_display		;increment task complete
+06E 00A00        621     inc_carry:		LOAD		sa, #0x00		;current digit rolls over to zero
+06F 00A0B        622     			load		sa, #sb			;load zero digit value
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+070 00B0B        623     			load		sb, #bcd_digit8		;check if working on 100MHz digit
+071 35074        624     			JUMP		z, set_max_value
+072 08B01        625     			ADD		sb, #0x01		;increment pointer to next most significant digit
+073 34068        626     			JUMP		inc_digit		;increment next digit up.
                  627     ;
-  00074          628     set_max_value:		FETCH		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 999...
-E: instruction not supported on the this device: FETCH sX, ss.
-046 00A09        629     			LOAD		sa, #0x09
-  00076          630     fill_max:		STORE		sa, @sb
-E: instruction not supported on the this device: STORE sX, sY.
-                 631     			COMPARE		sb, #bcd_digit8		;check if filled to 100MHz digit
-E: instruction not supported on the this device: COMPARE sX, kk.
-047 35046        632     			JUMP		z, edit_display
-048 08B01        633     			ADD		sb, #0x01		;fill next higher digit
-049 34076        634     			JUMP		fill_max
+074 10B88        628     set_max_value:		load		sb, edit_digit_pointer	;Must fill digits from insert to MS-Digit with 999...
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+075 00A09        629     			LOAD		sa, #0x09
+076 00A0B        630     fill_max:		load		sa, #sb
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+077 00B0B        631     			load		sb, #bcd_digit8		;check if filled to 100MHz digit
+078 35046        632     			JUMP		z, edit_display
+079 08B01        633     			ADD		sb, #0x01		;fill next higher digit
+07A 34076        634     			JUMP		fill_max
                  635     ;
-04A 3607D        636     end_edit_mode:		CALL		wait_switch_release	;wait for end of switch press
-04B 3401F        637     			JUMP		move_mode		;then go to move cursor mode
+07B 3607D        636     end_edit_mode:		CALL		wait_switch_release	;wait for end of switch press
+07C 3401F        637     			JUMP		move_mode		;then go to move cursor mode
                  638     ;
                  639     ;
                  640     ; Routine to poll the press switch with de-bounce delay and wait for it to be
                  641     ; released. Any rotation inputs detected by the interrupt
                  642     ; service routine are cleared before returning.
                  643     ;
-04C 361C8        644     wait_switch_release:	CALL		delay_20ms		;delay to aid switch de-bounce
-04D 20000        645     			INPUT		s0, rotary_port		;read rotary encoder
-                 646     			TEST		s0, #rotary_press	;test if button is still being pressed
-E: instruction not supported on the this device: TEST sX, kk.
-04E 3547D        647     			JUMP		nz, wait_switch_release
-04F 00000        648     			LOAD		s0, #0x00		;clear flag indicating any rotary events
-                 649     			STORE		s0, rotary_status
-E: instruction not supported on the this device: STORE sX, ss.
-050 24000        650     			RETURN
+07D 361C8        644     wait_switch_release:	CALL		delay_20ms		;delay to aid switch de-bounce
+07E 20000        645     			INPUT		s0, rotary_port		;read rotary encoder
+07F 00002        646     			load		s0, #rotary_press	;load if button is still being pressed
+080 3547D        647     			JUMP		nz, wait_switch_release
+081 00000        648     			LOAD		s0, #0x00		;clear flag indicating any rotary events
+082 10000        649     			load		s0, rotary_status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+083 24000        650     			RETURN
                  651     ;
                  652     ;**************************************************************************************
                  653     ; Compute DDS control words from currently display frequency value
@@ -809,58 +790,57 @@ E: instruction not supported on the this device: STORE sX, ss.
                  758     ;
                  759     ;
                  760     ;
-051 360E5        761     compute_dds_words:	CALL		bcd_to_integer		;convert BCD display value to 32-bit value
-052 36119        762     			CALL		scale_frequency		;80-bit product of 32-bit frequency x 48-bit scaling value
-                 763     			FETCH		sa, product9		;read the upper part of the 80-bit product into [sA,s9,s8,s7,s6,s5,s4]
-E: instruction not supported on the this device: FETCH sX, ss.
-                 764     			FETCH		s9, product8		; The least significant 24-bits of the 80-bit product will never
-E: instruction not supported on the this device: FETCH sX, ss.
-                 765     			FETCH		s8, product7		; be used for frequencies above 1Hz.
-E: instruction not supported on the this device: FETCH sX, ss.
-                 766     			FETCH		s7, product6		;The final 32-bit DDS control word will be formed in
-E: instruction not supported on the this device: FETCH sX, ss.
-                 767     			FETCH		s6, product5		; [sA,s9,s8,s7]
-E: instruction not supported on the this device: FETCH sX, ss.
-                 768     			FETCH		s5, product4
-E: instruction not supported on the this device: FETCH sX, ss.
-                 769     			FETCH		s4, product3
-E: instruction not supported on the this device: FETCH sX, ss.
-053 360A1        770     			CALL		shift80_left		;multiply DDS control word by 4 to achieve default value
-054 360A1        771     			CALL		shift80_left
-055 00B00        772     			LOAD		sb, #0x00		;default scaling factor is 2 (select counter bit0)
-  00090          773     normalise_loop:		TEST		sa, #0x18		;Test bits 27 and 28 of 32-bit DDS control word
-E: instruction not supported on the this device: TEST sX, kk.
-056 3549A        774     			JUMP		nz, store_dds_words	;DDS control word is normalised to above 50MHz output
-057 360A1        775     			CALL		shift80_left		;multiply DDS control word by 2
-058 08B01        776     			ADD		sb, #0x01		;Divide final value by 2 to compensate
-                 777     			COMPARE		sb, #0x1f		;Test for maximum division factor
-E: instruction not supported on the this device: COMPARE sX, kk.
-059 35490        778     			JUMP		nz, normalise_loop
-05A 00A08        779     			LOAD		sa, #0x08		;Set for minimum frequency
-05B 00900        780     			LOAD		s9, #0x00		; with phase accumulator set to generate 6.25MHz
-05C 00800        781     			LOAD		s8, #0x00
-05D 00700        782     			LOAD		s7, #0x00
-  0009A          783     store_dds_words:	STORE		s7, dds_control0	;store local copy of control word
-E: instruction not supported on the this device: STORE sX, ss.
-                 784     			STORE		s8, dds_control1	;store local copy of control word
-E: instruction not supported on the this device: STORE sX, ss.
-                 785     			STORE		s9, dds_control2	;store local copy of control word
-E: instruction not supported on the this device: STORE sX, ss.
-                 786     			STORE		sa, dds_control3	;store local copy of control word
-E: instruction not supported on the this device: STORE sX, ss.
-                 787     			STORE		sb, dds_scaling
-E: instruction not supported on the this device: STORE sX, ss.
-05E 360A9        788     			CALL		drive_dds_words		;output control words to DDS circuit
-05F 24000        789     			RETURN
+084 360E5        761     compute_dds_words:	CALL		bcd_to_integer		;convert BCD display value to 32-bit value
+085 36119        762     			CALL		scale_frequency		;80-bit product of 32-bit frequency x 48-bit scaling value
+086 10AD8        763     			load		sa, product9		;read the upper part of the 80-bit product into [sA,s9,s8,s7,s6,s5,s4]
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+087 109D0        764     			load		s9, product8		; The least significant 24-bits of the 80-bit product will never
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+088 108C8        765     			load		s8, product7		; be used for frequencies above 1Hz.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+089 107C0        766     			load		s7, product6		;The final 32-bit DDS control word will be formed in
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08A 106B8        767     			load		s6, product5		; [sA,s9,s8,s7]
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08B 105B0        768     			load		s5, product4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08C 104A8        769     			load		s4, product3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08D 360A1        770     			CALL		shift80_left		;multiply DDS control word by 4 to achieve default value
+08E 360A1        771     			CALL		shift80_left
+08F 00B00        772     			LOAD		sb, #0x00		;default scaling factor is 2 (select counter bit0)
+090 00A18        773     normalise_loop:		load		sa, #0x18		;load bits 27 and 28 of 32-bit DDS control word
+091 3549A        774     			JUMP		nz, load_dds_words	;DDS control word is normalised to above 50MHz output
+092 360A1        775     			CALL		shift80_left		;multiply DDS control word by 2
+093 08B01        776     			ADD		sb, #0x01		;Divide final value by 2 to compensate
+094 00B1F        777     			load		sb, #0x1f		;load for maximum division factor
+095 35490        778     			JUMP		nz, normalise_loop
+096 00A08        779     			LOAD		sa, #0x08		;Set for minimum frequency
+097 00900        780     			LOAD		s9, #0x00		; with phase accumulator set to generate 6.25MHz
+098 00800        781     			LOAD		s8, #0x00
+099 00700        782     			LOAD		s7, #0x00
+09A 107E0        783     load_dds_words:	load		s7, dds_control0	;load local copy of control word
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+09B 108E8        784     			load		s8, dds_control1	;load local copy of control word
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+09C 109F0        785     			load		s9, dds_control2	;load local copy of control word
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+09D 10AF8        786     			load		sa, dds_control3	;load local copy of control word
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+09E 10B00        787     			load		sb, dds_scaling
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x20, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x0.
+09F 360A9        788     			CALL		drive_dds_words		;output control words to DDS circuit
+0A0 24000        789     			RETURN
                  790     ;
-060 28406        791     shift80_left:		SL0		s4			;shift (most of the) 80-bit value in
-061 28500        792     			SLA		s5			;  [sA,s9,s8,s7,s6,s5,s4] left 1 place
-062 28600        793     			SLA		s6
-063 28700        794     			SLA		s7
-064 28800        795     			SLA		s8
-065 28900        796     			SLA		s9
-066 28A00        797     			SLA		sa
-067 24000        798     			RETURN
+0A1 28406        791     shift80_left:		SL0		s4			;shift (most of the) 80-bit value in
+0A2 28500        792     			SLA		s5			;  [sA,s9,s8,s7,s6,s5,s4] left 1 place
+0A3 28600        793     			SLA		s6
+0A4 28700        794     			SLA		s7
+0A5 28800        795     			SLA		s8
+0A6 28900        796     			SLA		s9
+0A7 28A00        797     			SLA		sa
+0A8 24000        798     			RETURN
                  799     ;
                  800     ;**************************************************************************************
                  801     ; Set DDS control words
@@ -872,29 +852,30 @@ E: instruction not supported on the this device: STORE sX, ss.
                  807     ; dds_control_word should be supplied in register set [sA,s9,s8,s7]
                  808     ; dds_scaling_word should be supplied in register s6.
                  809     ;
-  000A9          810     drive_dds_words:	FETCH		s7, dds_control0
-E: instruction not supported on the this device: FETCH sX, ss.
-                 811     			FETCH		s8, dds_control1
-E: instruction not supported on the this device: FETCH sX, ss.
-                 812     			FETCH		s9, dds_control2
-E: instruction not supported on the this device: FETCH sX, ss.
-                 813     			FETCH		sa, dds_control3
-E: instruction not supported on the this device: FETCH sX, ss.
-                 814     			FETCH		s6, dds_scaling
-E: instruction not supported on the this device: FETCH sX, ss.
-068 22702        815     			OUTPUT		s7, dds_control0_port
-069 22804        816     			OUTPUT		s8, dds_control1_port
-06A 22908        817     			OUTPUT		s9, dds_control2_port
-06B 22A10        818     			OUTPUT		sa, dds_control3_port
-06C 22620        819     			OUTPUT		s6, dds_scaling_port
-06D 24000        820     			RETURN
+0A9 107E0        810     drive_dds_words:	load		s7, dds_control0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AA 108E8        811     			load		s8, dds_control1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AB 109F0        812     			load		s9, dds_control2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AC 10AF8        813     			load		sa, dds_control3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0AD 10600        814     			load		s6, dds_scaling
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x20, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x0.
+0AE 22702        815     			OUTPUT		s7, dds_control0_port
+0AF 22804        816     			OUTPUT		s8, dds_control1_port
+0B0 22908        817     			OUTPUT		s9, dds_control2_port
+0B1 22A10        818     			OUTPUT		sa, dds_control3_port
+0B2 22620        819     			OUTPUT		s6, dds_scaling_port
+0B3 24000        820     			RETURN
                  821     ;
                  822     ;
                  823     ;**************************************************************************************
                  824     ; Display frequency on top line of the LCD and DDS data on the lower line
                  825     ;**************************************************************************************
                  826     ;
-                 827     ; The BCD value should be stored in scratch pad memory in 9 ascending locations
+                 827     ; The BCD value should be loadd in scratch pad memory in 9 ascending locations
                  828     ; called BCD_digit0 to BCD_digit8.
                  829     ;
                  830     ; The value is displayed in the format      xxx.xxx xxxMHz
@@ -904,78 +885,76 @@ E: instruction not supported on the this device: FETCH sX, ss.
                  834     ; registers used s0,s1,s2,s3,s4,s5,s6,s7
                  835     ;
                  836     ;
-06E 3615D        837     display_freq:		CALL		display_dds_data	;display DDS information on lower line
-06F 00512        838     			LOAD		s5, #0x12		;Line 1 position 2
-070 3622B        839     			CALL		lcd_cursor
-                 840     			FETCH		s5, bcd_digit8		;read 100MHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-                 841     			COMPARE		s5, #0x00		;test for blanking
-E: instruction not supported on the this device: COMPARE sX, kk.
-071 350BE        842     			JUMP		z, blank_100m_digit
-072 360DF        843     			CALL		display_digit		;display non zero digit
-                 844     			FETCH		s5, bcd_digit7		;read 10MHz digit and display
-E: instruction not supported on the this device: FETCH sX, ss.
-073 360DF        845     			CALL		display_digit
-074 340C5        846     			JUMP		disp_1m_digit
+0B4 3615D        837     display_freq:		CALL		display_dds_data	;display DDS information on lower line
+0B5 00512        838     			LOAD		s5, #0x12		;Line 1 position 2
+0B6 3622B        839     			CALL		lcd_cursor
+0B7 10558        840     			load		s5, bcd_digit8		;read 100MHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0B8 00500        841     			load		s5, #0x00		;load for blanking
+0B9 350BE        842     			JUMP		z, blank_100m_digit
+0BA 360DF        843     			CALL		display_digit		;display non zero digit
+0BB 10550        844     			load		s5, bcd_digit7		;read 10MHz digit and display
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0BC 360DF        845     			CALL		display_digit
+0BD 340C5        846     			JUMP		disp_1m_digit
                  847     ;
-075 360E2        848     blank_100m_digit:	CALL		display_space		;blank 100MHz digit
-                 849     			FETCH		s5, bcd_digit7		;read 10MHz digit
-E: instruction not supported on the this device: FETCH sX, ss.
-                 850     			COMPARE		s5, #0x00		;test for blanking
-E: instruction not supported on the this device: COMPARE sX, kk.
-076 350C4        851     			JUMP		z, blank_10m_digit
-077 360DF        852     			CALL		display_digit		;display non zero digit
-078 340C5        853     			JUMP		disp_1m_digit
+0BE 360E2        848     blank_100m_digit:	CALL		display_space		;blank 100MHz digit
+0BF 10550        849     			load		s5, bcd_digit7		;read 10MHz digit
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0C0 00500        850     			load		s5, #0x00		;load for blanking
+0C1 350C4        851     			JUMP		z, blank_10m_digit
+0C2 360DF        852     			CALL		display_digit		;display non zero digit
+0C3 340C5        853     			JUMP		disp_1m_digit
                  854     ;
-079 360E2        855     blank_10m_digit:	CALL		display_space		;blank 10MHz digit
+0C4 360E2        855     blank_10m_digit:	CALL		display_space		;blank 10MHz digit
                  856     ;
-  000C5          857     disp_1m_digit:		FETCH		s5, bcd_digit6		;read 1MHz digit and display
-E: instruction not supported on the this device: FETCH sX, ss.
-07A 360DF        858     			CALL		display_digit
-07B 0052E        859     			LOAD		s5, #character_stop	;display decimal point
-07C 361EB        860     			CALL		lcd_write_data
+0C5 10548        857     disp_1m_digit:		load		s5, bcd_digit6		;read 1MHz digit and display
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0C6 360DF        858     			CALL		display_digit
+0C7 0052E        859     			LOAD		s5, #character_stop	;display decimal point
+0C8 361EB        860     			CALL		lcd_write_data
                  861     ;
-07D 00208        862     			LOAD		s2, #bcd_digit5		;set pointer to 100KHz digit
-07E 360D8        863     			CALL		display_3_digits
-07F 360E2        864     			CALL		display_space
-080 00205        865     			LOAD		s2, #bcd_digit2		;set pointer to 100Hz digit
-081 360D8        866     			CALL		display_3_digits
-082 0054D        867     			LOAD		s5, #_character_m	;display 'MHz'
-083 361EB        868     			CALL		lcd_write_data
-084 00548        869     			LOAD		s5, #_character_h
-085 361EB        870     			CALL		lcd_write_data
-086 0057A        871     			LOAD		s5, #character_z
-087 361EB        872     			CALL		lcd_write_data
+0C9 00208        862     			LOAD		s2, #bcd_digit5		;set pointer to 100KHz digit
+0CA 360D8        863     			CALL		display_3_digits
+0CB 360E2        864     			CALL		display_space
+0CC 00205        865     			LOAD		s2, #bcd_digit2		;set pointer to 100Hz digit
+0CD 360D8        866     			CALL		display_3_digits
+0CE 0054D        867     			LOAD		s5, #_character_m	;display 'MHz'
+0CF 361EB        868     			CALL		lcd_write_data
+0D0 00548        869     			LOAD		s5, #_character_h
+0D1 361EB        870     			CALL		lcd_write_data
+0D2 0057A        871     			LOAD		s5, #character_z
+0D3 361EB        872     			CALL		lcd_write_data
                  873     ;
-                 874     			FETCH		s5, cursor_position	;reposition edit cursor on display
-E: instruction not supported on the this device: FETCH sX, ss.
-088 08510        875     			ADD		s5, #0x10		;on line 1
-089 3622B        876     			CALL		lcd_cursor
-08A 24000        877     			RETURN
+0D4 10580        874     			load		s5, cursor_position	;reposition edit cursor on display
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0D5 08510        875     			ADD		s5, #0x10		;on line 1
+0D6 3622B        876     			CALL		lcd_cursor
+0D7 24000        877     			RETURN
                  878     ;
-08B 00303        879     display_3_digits:	LOAD		s3, #0x03		;3 digits to display
-  000D9          880     _3digit_loop:		FETCH		s5, @s2
-E: instruction not supported on the this device: FETCH sX, sY.
-08C 360DF        881     			CALL		display_digit
-08D 0C201        882     			SUB		s2, #0x01		;decrement digit pointer
-08E 0C301        883     			SUB		s3, #0x01		;count digits displayed
-08F 354D9        884     			JUMP		nz, _3digit_loop
-090 24000        885     			RETURN
+0D8 00303        879     display_3_digits:	LOAD		s3, #0x03		;3 digits to display
+0D9 00502        880     _3digit_loop:		load		s5, #s2
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+0DA 360DF        881     			CALL		display_digit
+0DB 0C201        882     			SUB		s2, #0x01		;decrement digit pointer
+0DC 0C301        883     			SUB		s3, #0x01		;count digits displayed
+0DD 354D9        884     			JUMP		nz, _3digit_loop
+0DE 24000        885     			RETURN
                  886     ;
-091 08530        887     display_digit:		ADD		s5, #0x30		;convert BCD to ASCII character
-092 361EB        888     			CALL		lcd_write_data
-093 24000        889     			RETURN
+0DF 08530        887     display_digit:		ADD		s5, #0x30		;convert BCD to ASCII character
+0E0 361EB        888     			CALL		lcd_write_data
+0E1 24000        889     			RETURN
                  890     ;
-094 00520        891     display_space:		LOAD		s5, #character_space
-095 361EB        892     			CALL		lcd_write_data
-096 24000        893     			RETURN
+0E2 00520        891     display_space:		LOAD		s5, #character_space
+0E3 361EB        892     			CALL		lcd_write_data
+0E4 24000        893     			RETURN
                  894     ;
                  895     ;
                  896     ;**************************************************************************************
                  897     ; Convert 9 digit BCD frequency into 32-bit binary integer
                  898     ;**************************************************************************************
                  899     ;
-                 900     ;Both values are stored in scratch pad memory
+                 900     ;Both values are loadd in scratch pad memory
                  901     ;    BCD values in ascending locations BCD_digit0 to BCD_digit8
                  902     ;    Binary frequency in ascending locations frequency0 to frequency3
                  903     ;
@@ -987,73 +966,72 @@ E: instruction not supported on the this device: FETCH sX, sY.
                  909     ;
                  910     ;Registers used s0,s1,s2,s3,s4,s5,s6,s7,s8,s9,sA,sB
                  911     ;
-097 00209        912     bcd_to_integer:		LOAD		s2, #0x09		;9 digits to convert
-098 00000        913     			LOAD		s0, #0x00		;clear frequency value ready to accumulate result
-                 914     			STORE		s0, frequency0
-E: instruction not supported on the this device: STORE sX, ss.
-                 915     			STORE		s0, frequency1
-E: instruction not supported on the this device: STORE sX, ss.
-                 916     			STORE		s0, frequency2
-E: instruction not supported on the this device: STORE sX, ss.
-                 917     			STORE		s0, frequency3
-E: instruction not supported on the this device: STORE sX, ss.
-099 00B00        918     			LOAD		sb, #0x00		;initialise BCD digit weighting [sB,sA,s9,s8] to 1
-09A 00A00        919     			LOAD		sa, #0x00
-09B 00900        920     			LOAD		s9, #0x00
-09C 00801        921     			LOAD		s8, #0x01
-09D 00303        922     			LOAD		s3, #bcd_digit0		;locate LS-digit
-  000F0          923     next_bcd_to_int_digit:	FETCH		s1, @s3
-E: instruction not supported on the this device: FETCH sX, sY.
-  000F1          924     bcd_digit_convert:	COMPARE		s1, #0x00		;test for zero
-E: instruction not supported on the this device: COMPARE sX, kk.
-09E 35101        925     			JUMP		z, next_digit_value
-                 926     			FETCH		s0, frequency0		;add 32-bit digit weighting to memory value
-E: instruction not supported on the this device: FETCH sX, ss.
-09F 18040        927     			ADD		s0, s8
-                 928     			STORE		s0, frequency0
-E: instruction not supported on the this device: STORE sX, ss.
-                 929     			FETCH		s0, frequency1
-E: instruction not supported on the this device: FETCH sX, ss.
-0A0 1A048        930     			ADDCY		s0, s9
-                 931     			STORE		s0, frequency1
-E: instruction not supported on the this device: STORE sX, ss.
-                 932     			FETCH		s0, frequency2
-E: instruction not supported on the this device: FETCH sX, ss.
-0A1 1A050        933     			ADDCY		s0, sa
-                 934     			STORE		s0, frequency2
-E: instruction not supported on the this device: STORE sX, ss.
-                 935     			FETCH		s0, frequency3
-E: instruction not supported on the this device: FETCH sX, ss.
-0A2 1A058        936     			ADDCY		s0, sb
-                 937     			STORE		s0, frequency3
-E: instruction not supported on the this device: STORE sX, ss.
-0A3 0C101        938     			SUB		s1, #0x01		;decrement digit value
-0A4 340F1        939     			JUMP		bcd_digit_convert
+0E5 00209        912     bcd_to_integer:		LOAD		s2, #0x09		;9 digits to convert
+0E6 00000        913     			LOAD		s0, #0x00		;clear frequency value ready to accumulate result
+0E7 10060        914     			load		s0, frequency0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0E8 10068        915     			load		s0, frequency1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0E9 10070        916     			load		s0, frequency2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0EA 10078        917     			load		s0, frequency3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0EB 00B00        918     			LOAD		sb, #0x00		;initialise BCD digit weighting [sB,sA,s9,s8] to 1
+0EC 00A00        919     			LOAD		sa, #0x00
+0ED 00900        920     			LOAD		s9, #0x00
+0EE 00801        921     			LOAD		s8, #0x01
+0EF 00303        922     			LOAD		s3, #bcd_digit0		;locate LS-digit
+0F0 00103        923     next_bcd_to_int_digit:	load		s1, #s3
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+0F1 00100        924     bcd_digit_convert:	load		s1, #0x00		;load for zero
+0F2 35101        925     			JUMP		z, next_digit_value
+0F3 10060        926     			load		s0, frequency0		;add 32-bit digit weighting to memory value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0F4 18040        927     			ADD		s0, s8
+0F5 10060        928     			load		s0, frequency0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0F6 10068        929     			load		s0, frequency1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0F7 1A048        930     			ADDCY		s0, s9
+0F8 10068        931     			load		s0, frequency1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0F9 10070        932     			load		s0, frequency2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0FA 1A050        933     			ADDCY		s0, sa
+0FB 10070        934     			load		s0, frequency2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0FC 10078        935     			load		s0, frequency3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0FD 1A058        936     			ADDCY		s0, sb
+0FE 10078        937     			load		s0, frequency3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0FF 0C101        938     			SUB		s1, #0x01		;decrement digit value
+100 340F1        939     			JUMP		bcd_digit_convert
                  940     ;Increase weighting by 10x
-0A5 10758        941     next_digit_value:	LOAD		s7, sb			;copy existing weighting
-0A6 10650        942     			LOAD		s6, sa
-0A7 10548        943     			LOAD		s5, s9
-0A8 10440        944     			LOAD		s4, s8
-0A9 28806        945     			SL0		s8			;multiply weight by 4x (shift left 2 places)
-0AA 28900        946     			SLA		s9
-0AB 28A00        947     			SLA		sa
-0AC 28B00        948     			SLA		sb
-0AD 28806        949     			SL0		s8
-0AE 28900        950     			SLA		s9
-0AF 28A00        951     			SLA		sa
-0B0 28B00        952     			SLA		sb
-0B1 18820        953     			ADD		s8, s4			;add previous weight to form 5x multiplication
-0B2 1A928        954     			ADDCY		s9, s5
-0B3 1AA30        955     			ADDCY		sa, s6
-0B4 1AB38        956     			ADDCY		sb, s7
-0B5 28806        957     			SL0		s8			;multiply weight by 2x (shift left 1 places)
-0B6 28900        958     			SLA		s9
-0B7 28A00        959     			SLA		sa
-0B8 28B00        960     			SLA		sb			;weight value is now 10x previous value
-0B9 08301        961     			ADD		s3, #0x01		;move to next digit for conversion
-0BA 0C201        962     			SUB		s2, #0x01
-0BB 354F0        963     			JUMP		nz, next_bcd_to_int_digit
-0BC 24000        964     			RETURN
+101 10758        941     next_digit_value:	LOAD		s7, sb			;copy existing weighting
+102 10650        942     			LOAD		s6, sa
+103 10548        943     			LOAD		s5, s9
+104 10440        944     			LOAD		s4, s8
+105 28806        945     			SL0		s8			;multiply weight by 4x (shift left 2 places)
+106 28900        946     			SLA		s9
+107 28A00        947     			SLA		sa
+108 28B00        948     			SLA		sb
+109 28806        949     			SL0		s8
+10A 28900        950     			SLA		s9
+10B 28A00        951     			SLA		sa
+10C 28B00        952     			SLA		sb
+10D 18820        953     			ADD		s8, s4			;add previous weight to form 5x multiplication
+10E 1A928        954     			ADDCY		s9, s5
+10F 1AA30        955     			ADDCY		sa, s6
+110 1AB38        956     			ADDCY		sb, s7
+111 28806        957     			SL0		s8			;multiply weight by 2x (shift left 1 places)
+112 28900        958     			SLA		s9
+113 28A00        959     			SLA		sa
+114 28B00        960     			SLA		sb			;weight value is now 10x previous value
+115 08301        961     			ADD		s3, #0x01		;move to next digit for conversion
+116 0C201        962     			SUB		s2, #0x01
+117 354F0        963     			JUMP		nz, next_bcd_to_int_digit
+118 24000        964     			RETURN
                  965     ;
                  966     ;
                  967     ;**************************************************************************************
@@ -1063,10 +1041,10 @@ E: instruction not supported on the this device: STORE sX, ss.
                  971     ;Multiply the 32-bit frequency binary integer by the 48-bit scaling factor
                  972     ;to form a full precision 80-bit product.
                  973     ;
-                 974     ;The frequency binary integer is stored in scratch pad memory using ascending
+                 974     ;The frequency binary integer is loadd in scratch pad memory using ascending
                  975     ;locations frequency0 to frequency3
                  976     ;
-                 977     ;The product will be stored in scratch pad memory using ascending
+                 977     ;The product will be loadd in scratch pad memory using ascending
                  978     ;locations product0 to product9
                  979     ;
                  980     ;The scaling factor is provided directly as constants
@@ -1081,116 +1059,116 @@ E: instruction not supported on the this device: STORE sX, ss.
                  989     ;
                  990     ;Registers used s0,s1,s8,s9,sA,sB (s1,s8,s9,sA,sB clear on return)
                  991     ;
-0BD 00000        992     scale_frequency:	LOAD		s0, #0x00		;clear accumulator section of 'product'
-                 993     			STORE		s0, product9
-E: instruction not supported on the this device: STORE sX, ss.
-                 994     			STORE		s0, product8
-E: instruction not supported on the this device: STORE sX, ss.
-                 995     			STORE		s0, product7
-E: instruction not supported on the this device: STORE sX, ss.
-                 996     			STORE		s0, product6
-E: instruction not supported on the this device: STORE sX, ss.
-                 997     			STORE		s0, product5
-E: instruction not supported on the this device: STORE sX, ss.
-                 998     			STORE		s0, product4
-E: instruction not supported on the this device: STORE sX, ss.
-                 999     			FETCH		sb, frequency3		;read frequency integer value
-E: instruction not supported on the this device: FETCH sX, ss.
-                1000     			FETCH		sa, frequency2
-E: instruction not supported on the this device: FETCH sX, ss.
-                1001     			FETCH		s9, frequency1
-E: instruction not supported on the this device: FETCH sX, ss.
-                1002     			FETCH		s8, frequency0
-E: instruction not supported on the this device: FETCH sX, ss.
-0BE 00120       1003     			LOAD		s1, #0x20		;32-bit multiply
-0BF 28B0E       1004     scale_mult_bit:		SR0		sb			;shift right frequency integer
-0C0 28A08       1005     			SRA		sa
-0C1 28908       1006     			SRA		s9
-0C2 28808       1007     			SRA		s8
-0C3 35D3C       1008     			JUMP		nc, product_shift	;no add if bit is zero (note carry is zero)
-                1009     			FETCH		s0, product4		;addition of scaling factor to most significant bits of product
-E: instruction not supported on the this device: FETCH sX, ss.
-0C4 08062       1010     			ADD		s0, #scale_constant0
-                1011     			STORE		s0, product4
-E: instruction not supported on the this device: STORE sX, ss.
-                1012     			FETCH		s0, product5
-E: instruction not supported on the this device: FETCH sX, ss.
-0C5 0A084       1013     			ADDCY		s0, #scale_constant1
-                1014     			STORE		s0, product5
-E: instruction not supported on the this device: STORE sX, ss.
-                1015     			FETCH		s0, product6
-E: instruction not supported on the this device: FETCH sX, ss.
-0C6 0A011       1016     			ADDCY		s0, #scale_constant2
-                1017     			STORE		s0, product6
-E: instruction not supported on the this device: STORE sX, ss.
-                1018     			FETCH		s0, product7
-E: instruction not supported on the this device: FETCH sX, ss.
-0C7 0A077       1019     			ADDCY		s0, #scale_constant3
-                1020     			STORE		s0, product7
-E: instruction not supported on the this device: STORE sX, ss.
-                1021     			FETCH		s0, product8
-E: instruction not supported on the this device: FETCH sX, ss.
-0C8 0A0CC       1022     			ADDCY		s0, #scale_constant4
-                1023     			STORE		s0, product8
-E: instruction not supported on the this device: STORE sX, ss.
-                1024     			FETCH		s0, product9
-E: instruction not supported on the this device: FETCH sX, ss.
-0C9 0A0AB       1025     			ADDCY		s0, #scale_constant5
-                1026     			STORE		s0, product9		;carry holds any overflow of addition
-E: instruction not supported on the this device: STORE sX, ss.
-  0013C         1027     product_shift:		FETCH		s0, product9		;Divide product by 2 (shift right by 1)
-E: instruction not supported on the this device: FETCH sX, ss.
-0CA 28008       1028     			SRA		s0			;overflow of addition included in shift
-                1029     			STORE		s0, product9
-E: instruction not supported on the this device: STORE sX, ss.
-                1030     			FETCH		s0, product8
-E: instruction not supported on the this device: FETCH sX, ss.
-0CB 28008       1031     			SRA		s0
-                1032     			STORE		s0, product8
-E: instruction not supported on the this device: STORE sX, ss.
-                1033     			FETCH		s0, product7
-E: instruction not supported on the this device: FETCH sX, ss.
-0CC 28008       1034     			SRA		s0
-                1035     			STORE		s0, product7
-E: instruction not supported on the this device: STORE sX, ss.
-                1036     			FETCH		s0, product6
-E: instruction not supported on the this device: FETCH sX, ss.
-0CD 28008       1037     			SRA		s0
-                1038     			STORE		s0, product6
-E: instruction not supported on the this device: STORE sX, ss.
-                1039     			FETCH		s0, product5
-E: instruction not supported on the this device: FETCH sX, ss.
-0CE 28008       1040     			SRA		s0
-                1041     			STORE		s0, product5
-E: instruction not supported on the this device: STORE sX, ss.
-                1042     			FETCH		s0, product4
-E: instruction not supported on the this device: FETCH sX, ss.
-0CF 28008       1043     			SRA		s0
-                1044     			STORE		s0, product4
-E: instruction not supported on the this device: STORE sX, ss.
-                1045     			FETCH		s0, product3
-E: instruction not supported on the this device: FETCH sX, ss.
-0D0 28008       1046     			SRA		s0
-                1047     			STORE		s0, product3
-E: instruction not supported on the this device: STORE sX, ss.
-                1048     			FETCH		s0, product2
-E: instruction not supported on the this device: FETCH sX, ss.
-0D1 28008       1049     			SRA		s0
-                1050     			STORE		s0, product2
-E: instruction not supported on the this device: STORE sX, ss.
-                1051     			FETCH		s0, product1
-E: instruction not supported on the this device: FETCH sX, ss.
-0D2 28008       1052     			SRA		s0
-                1053     			STORE		s0, product1
-E: instruction not supported on the this device: STORE sX, ss.
-                1054     			FETCH		s0, product0
-E: instruction not supported on the this device: FETCH sX, ss.
-0D3 28008       1055     			SRA		s0
-                1056     			STORE		s0, product0
-E: instruction not supported on the this device: STORE sX, ss.
-0D4 0C101       1057     			SUB		s1, #0x01		;move to next bit
-0D5 35525       1058     			JUMP		nz, scale_mult_bit
-0D6 24000       1059     			RETURN
+119 00000        992     scale_frequency:	LOAD		s0, #0x00		;clear accumulator section of 'product'
+11A 100D8        993     			load		s0, product9
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11B 100D0        994     			load		s0, product8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11C 100C8        995     			load		s0, product7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11D 100C0        996     			load		s0, product6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11E 100B8        997     			load		s0, product5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11F 100B0        998     			load		s0, product4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+120 10B78        999     			load		sb, frequency3		;read frequency integer value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+121 10A70       1000     			load		sa, frequency2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+122 10968       1001     			load		s9, frequency1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+123 10860       1002     			load		s8, frequency0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+124 00120       1003     			LOAD		s1, #0x20		;32-bit multiply
+125 28B0E       1004     scale_mult_bit:		SR0		sb			;shift right frequency integer
+126 28A08       1005     			SRA		sa
+127 28908       1006     			SRA		s9
+128 28808       1007     			SRA		s8
+129 35D3C       1008     			JUMP		nc, product_shift	;no add if bit is zero (note carry is zero)
+12A 100B0       1009     			load		s0, product4		;addition of scaling factor to most significant bits of product
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12B 08062       1010     			ADD		s0, #scale_constant0
+12C 100B0       1011     			load		s0, product4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12D 100B8       1012     			load		s0, product5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12E 0A084       1013     			ADDCY		s0, #scale_constant1
+12F 100B8       1014     			load		s0, product5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+130 100C0       1015     			load		s0, product6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+131 0A011       1016     			ADDCY		s0, #scale_constant2
+132 100C0       1017     			load		s0, product6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+133 100C8       1018     			load		s0, product7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+134 0A077       1019     			ADDCY		s0, #scale_constant3
+135 100C8       1020     			load		s0, product7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+136 100D0       1021     			load		s0, product8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+137 0A0CC       1022     			ADDCY		s0, #scale_constant4
+138 100D0       1023     			load		s0, product8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+139 100D8       1024     			load		s0, product9
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+13A 0A0AB       1025     			ADDCY		s0, #scale_constant5
+13B 100D8       1026     			load		s0, product9		;carry holds any overflow of addition
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+13C 100D8       1027     product_shift:		load		s0, product9		;Divide product by 2 (shift right by 1)
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+13D 28008       1028     			SRA		s0			;overflow of addition included in shift
+13E 100D8       1029     			load		s0, product9
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+13F 100D0       1030     			load		s0, product8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+140 28008       1031     			SRA		s0
+141 100D0       1032     			load		s0, product8
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+142 100C8       1033     			load		s0, product7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+143 28008       1034     			SRA		s0
+144 100C8       1035     			load		s0, product7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+145 100C0       1036     			load		s0, product6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+146 28008       1037     			SRA		s0
+147 100C0       1038     			load		s0, product6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+148 100B8       1039     			load		s0, product5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+149 28008       1040     			SRA		s0
+14A 100B8       1041     			load		s0, product5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+14B 100B0       1042     			load		s0, product4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+14C 28008       1043     			SRA		s0
+14D 100B0       1044     			load		s0, product4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+14E 100A8       1045     			load		s0, product3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+14F 28008       1046     			SRA		s0
+150 100A8       1047     			load		s0, product3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+151 100A0       1048     			load		s0, product2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+152 28008       1049     			SRA		s0
+153 100A0       1050     			load		s0, product2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+154 10098       1051     			load		s0, product1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+155 28008       1052     			SRA		s0
+156 10098       1053     			load		s0, product1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+157 10090       1054     			load		s0, product0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+158 28008       1055     			SRA		s0
+159 10090       1056     			load		s0, product0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+15A 0C101       1057     			SUB		s1, #0x01		;move to next bit
+15B 35525       1058     			JUMP		nz, scale_mult_bit
+15C 24000       1059     			RETURN
                 1060     ;
                 1061     ;**************************************************************************************
                 1062     ; Display DDS control information on the lower line of the LCD display.
@@ -1198,23 +1176,24 @@ E: instruction not supported on the this device: STORE sX, ss.
                 1064     ;
                 1065     ;Display the 32-bit DDS control word and 8-bit DDS scaling word.
                 1066     ;
-0D7 00520       1067     display_dds_data:	LOAD		s5, #0x20		;Line 2 position 0
-0D8 3622B       1068     			CALL		lcd_cursor
-0D9 0054E       1069     			LOAD		s5, #_character_n
-0DA 361EB       1070     			CALL		lcd_write_data
-0DB 0053D       1071     			LOAD		s5, #character_equals
-0DC 361EB       1072     			CALL		lcd_write_data
-0DD 0071F       1073     			LOAD		s7, #dds_control3	;pointer to most significant byte in memory
-0DE 36184       1074     			CALL		display_hex_32_bit
-0DF 360E2       1075     			CALL		display_space
-0E0 00544       1076     			LOAD		s5, #_character_d
-0E1 361EB       1077     			CALL		lcd_write_data
-0E2 0053D       1078     			LOAD		s5, #character_equals
-0E3 361EB       1079     			CALL		lcd_write_data
-                1080     			FETCH		s0, dds_scaling
-E: instruction not supported on the this device: FETCH sX, ss.
-0E4 3617E       1081     			CALL		display_hex_byte
-0E5 24000       1082     			RETURN
+15D 00520       1067     display_dds_data:	LOAD		s5, #0x20		;Line 2 position 0
+15E 3622B       1068     			CALL		lcd_cursor
+15F 0054E       1069     			LOAD		s5, #_character_n
+160 361EB       1070     			CALL		lcd_write_data
+161 0053D       1071     			LOAD		s5, #character_equals
+162 361EB       1072     			CALL		lcd_write_data
+163 0071F       1073     			LOAD		s7, #dds_control3	;pointer to most significant byte in memory
+164 36184       1074     			CALL		display_hex_32_bit
+165 360E2       1075     			CALL		display_space
+166 00544       1076     			LOAD		s5, #_character_d
+167 361EB       1077     			CALL		lcd_write_data
+168 0053D       1078     			LOAD		s5, #character_equals
+169 361EB       1079     			CALL		lcd_write_data
+16A 10000       1080     			load		s0, dds_scaling
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x20, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x0.
+16B 3617E       1081     			CALL		display_hex_byte
+16C 24000       1082     			RETURN
                 1083     ;
                 1084     ;**************************************************************************************
                 1085     ; Routines to display hexadecimal values on LCD display
@@ -1234,28 +1213,28 @@ E: instruction not supported on the this device: FETCH sX, ss.
                 1099     ;
                 1100     ; Registers used s0, s2 and s3.
                 1101     ;
-0E6 10200       1102     hex_byte_to_ascii:	LOAD		s2, s0			;remember value supplied
-0E7 2800E       1103     			SR0		s0			;isolate upper nibble
-0E8 2800E       1104     			SR0		s0
-0E9 2800E       1105     			SR0		s0
-0EA 2800E       1106     			SR0		s0
-0EB 36179       1107     			CALL		hex_to_ascii		;convert
-0EC 10300       1108     			LOAD		s3, s0			;upper nibble value in s3
-0ED 10010       1109     			LOAD		s0, s2			;restore complete value
-0EE 0200F       1110     			AND		s0, #0x0f		;isolate lower nibble
-0EF 36179       1111     			CALL		hex_to_ascii		;convert
-0F0 10200       1112     			LOAD		s2, s0			;lower nibble value in s2
-0F1 24000       1113     			RETURN
+16D 10200       1102     hex_byte_to_ascii:	LOAD		s2, s0			;remember value supplied
+16E 2800E       1103     			SR0		s0			;isolate upper nibble
+16F 2800E       1104     			SR0		s0
+170 2800E       1105     			SR0		s0
+171 2800E       1106     			SR0		s0
+172 36179       1107     			CALL		hex_to_ascii		;convert
+173 10300       1108     			LOAD		s3, s0			;upper nibble value in s3
+174 10010       1109     			LOAD		s0, s2			;reload complete value
+175 0200F       1110     			AND		s0, #0x0f		;isolate lower nibble
+176 36179       1111     			CALL		hex_to_ascii		;convert
+177 10200       1112     			LOAD		s2, s0			;lower nibble value in s2
+178 24000       1113     			RETURN
                 1114     ;
                 1115     ; Convert hexadecimal value provided in register s0 into ASCII character
                 1116     ;
                 1117     ;Register used s0
                 1118     ;
-0F2 0C00A       1119     hex_to_ascii:		SUB		s0, #0x0a		;test if value is in range 0 to 9
-0F3 3597C       1120     			JUMP		c, number_char
-0F4 08007       1121     			ADD		s0, #0x07		;ASCII char A to F in range 41 to 46
-0F5 0803A       1122     number_char:		ADD		s0, #0x3a		;ASCII char 0 to 9 in range 30 to 40
-0F6 24000       1123     			RETURN
+179 0C00A       1119     hex_to_ascii:		SUB		s0, #0x0a		;load if value is in range 0 to 9
+17A 3597C       1120     			JUMP		c, number_char
+17B 08007       1121     			ADD		s0, #0x07		;ASCII char A to F in range 41 to 46
+17C 0803A       1122     number_char:		ADD		s0, #0x3a		;ASCII char 0 to 9 in range 30 to 40
+17D 24000       1123     			RETURN
                 1124     ;
                 1125     ;
                 1126     ; Display the two character HEX value of the register contents 's0' on the LCD
@@ -1263,29 +1242,29 @@ E: instruction not supported on the this device: FETCH sX, ss.
                 1128     ;
                 1129     ; Registers used s0, s1, s2, s3, s4, s5
                 1130     ;
-0F7 3616D       1131     display_hex_byte:	CALL		hex_byte_to_ascii
-0F8 10518       1132     			LOAD		s5, s3
-0F9 361EB       1133     			CALL		lcd_write_data
-0FA 10510       1134     			LOAD		s5, s2
-0FB 361EB       1135     			CALL		lcd_write_data
-0FC 24000       1136     			RETURN
+17E 3616D       1131     display_hex_byte:	CALL		hex_byte_to_ascii
+17F 10518       1132     			LOAD		s5, s3
+180 361EB       1133     			CALL		lcd_write_data
+181 10510       1134     			LOAD		s5, s2
+182 361EB       1135     			CALL		lcd_write_data
+183 24000       1136     			RETURN
                 1137     ;
                 1138     ;
                 1139     ;
-                1140     ; Display the 32-bit value stored in 4 ascending memory locations as an 8 character
+                1140     ; Display the 32-bit value loadd in 4 ascending memory locations as an 8 character
                 1141     ; HEX value at the current cursor position. Register s7 must contain the memory
                 1142     ; location of the most significant byte (which is also the highest address).
                 1143     ;
                 1144     ; Registers used s0, s1, s2, s3, s4, s5, s6, s7
                 1145     ;
-0FD 00604       1146     display_hex_32_bit:	LOAD		s6, #0x04		;4 bytes to display
-  00185         1147     disp32_loop:		FETCH		s0, @s7			;read byte
-E: instruction not supported on the this device: FETCH sX, sY.
-0FE 3617E       1148     			CALL		display_hex_byte	;display byte
-0FF 0C701       1149     			SUB		s7, #0x01		;decrement pointer
-100 0C601       1150     			SUB		s6, #0x01		;count bytes displayed
-101 25000       1151     			RETURN		z
-102 34185       1152     			JUMP		disp32_loop
+184 00604       1146     display_hex_32_bit:	LOAD		s6, #0x04		;4 bytes to display
+185 00007       1147     disp32_loop:		load		s0, #s7			;read byte
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+186 3617E       1148     			CALL		display_hex_byte	;display byte
+187 0C701       1149     			SUB		s7, #0x01		;decrement pointer
+188 0C601       1150     			SUB		s6, #0x01		;count bytes displayed
+189 25000       1151     			RETURN		z
+18A 34185       1152     			JUMP		disp32_loop
                 1153     ;
                 1154     ;
                 1155     ;**************************************************************************************
@@ -1295,56 +1274,56 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1159     ;
                 1160     ;Display 'Frequency' on LCD at current cursor position
                 1161     ;
-103 00546       1162     disp_frequency:		LOAD		s5, #_character_f
-104 361EB       1163     			CALL		lcd_write_data
-105 00572       1164     			LOAD		s5, #character_r
-106 361EB       1165     			CALL		lcd_write_data
-107 00565       1166     			LOAD		s5, #character_e
-108 361EB       1167     			CALL		lcd_write_data
-109 00571       1168     			LOAD		s5, #character_q
-10A 361EB       1169     			CALL		lcd_write_data
-10B 00575       1170     			LOAD		s5, #character_u
-10C 361EB       1171     			CALL		lcd_write_data
-10D 00565       1172     			LOAD		s5, #character_e
-10E 361EB       1173     			CALL		lcd_write_data
-10F 0056E       1174     			LOAD		s5, #character_n
-110 361EB       1175     			CALL		lcd_write_data
-111 00563       1176     			LOAD		s5, #character_c
-112 361EB       1177     			CALL		lcd_write_data
-113 00579       1178     			LOAD		s5, #character_y
-114 361EB       1179     			CALL		lcd_write_data
-115 24000       1180     			RETURN
+18B 00546       1162     disp_frequency:		LOAD		s5, #_character_f
+18C 361EB       1163     			CALL		lcd_write_data
+18D 00572       1164     			LOAD		s5, #character_r
+18E 361EB       1165     			CALL		lcd_write_data
+18F 00565       1166     			LOAD		s5, #character_e
+190 361EB       1167     			CALL		lcd_write_data
+191 00571       1168     			LOAD		s5, #character_q
+192 361EB       1169     			CALL		lcd_write_data
+193 00575       1170     			LOAD		s5, #character_u
+194 361EB       1171     			CALL		lcd_write_data
+195 00565       1172     			LOAD		s5, #character_e
+196 361EB       1173     			CALL		lcd_write_data
+197 0056E       1174     			LOAD		s5, #character_n
+198 361EB       1175     			CALL		lcd_write_data
+199 00563       1176     			LOAD		s5, #character_c
+19A 361EB       1177     			CALL		lcd_write_data
+19B 00579       1178     			LOAD		s5, #character_y
+19C 361EB       1179     			CALL		lcd_write_data
+19D 24000       1180     			RETURN
                 1181     ;
                 1182     ;Display 'Generator' on LCD at current cursor position
                 1183     ;
-116 00547       1184     disp_generator:		LOAD		s5, #_character_g
-117 361EB       1185     			CALL		lcd_write_data
-118 00565       1186     			LOAD		s5, #character_e
-119 361EB       1187     			CALL		lcd_write_data
-11A 0056E       1188     			LOAD		s5, #character_n
-11B 361EB       1189     			CALL		lcd_write_data
-11C 00565       1190     			LOAD		s5, #character_e
-11D 361EB       1191     			CALL		lcd_write_data
-11E 00572       1192     			LOAD		s5, #character_r
-11F 361EB       1193     			CALL		lcd_write_data
-120 00561       1194     			LOAD		s5, #character_a
-121 361EB       1195     			CALL		lcd_write_data
-122 00574       1196     			LOAD		s5, #character_t
-123 361EB       1197     			CALL		lcd_write_data
-124 0056F       1198     			LOAD		s5, #character_o
-125 361EB       1199     			CALL		lcd_write_data
-126 00572       1200     			LOAD		s5, #character_r
-127 361EB       1201     			CALL		lcd_write_data
-128 360E2       1202     			CALL		display_space
-129 00576       1203     			LOAD		s5, #character_v
-12A 361EB       1204     			CALL		lcd_write_data
-12B 00531       1205     			LOAD		s5, #character_1
-12C 361EB       1206     			CALL		lcd_write_data
-12D 0052E       1207     			LOAD		s5, #character_stop
-12E 361EB       1208     			CALL		lcd_write_data
-12F 00532       1209     			LOAD		s5, #character_2
-130 361EB       1210     			CALL		lcd_write_data
-131 24000       1211     			RETURN
+19E 00547       1184     disp_generator:		LOAD		s5, #_character_g
+19F 361EB       1185     			CALL		lcd_write_data
+1A0 00565       1186     			LOAD		s5, #character_e
+1A1 361EB       1187     			CALL		lcd_write_data
+1A2 0056E       1188     			LOAD		s5, #character_n
+1A3 361EB       1189     			CALL		lcd_write_data
+1A4 00565       1190     			LOAD		s5, #character_e
+1A5 361EB       1191     			CALL		lcd_write_data
+1A6 00572       1192     			LOAD		s5, #character_r
+1A7 361EB       1193     			CALL		lcd_write_data
+1A8 00561       1194     			LOAD		s5, #character_a
+1A9 361EB       1195     			CALL		lcd_write_data
+1AA 00574       1196     			LOAD		s5, #character_t
+1AB 361EB       1197     			CALL		lcd_write_data
+1AC 0056F       1198     			LOAD		s5, #character_o
+1AD 361EB       1199     			CALL		lcd_write_data
+1AE 00572       1200     			LOAD		s5, #character_r
+1AF 361EB       1201     			CALL		lcd_write_data
+1B0 360E2       1202     			CALL		display_space
+1B1 00576       1203     			LOAD		s5, #character_v
+1B2 361EB       1204     			CALL		lcd_write_data
+1B3 00531       1205     			LOAD		s5, #character_1
+1B4 361EB       1206     			CALL		lcd_write_data
+1B5 0052E       1207     			LOAD		s5, #character_stop
+1B6 361EB       1208     			CALL		lcd_write_data
+1B7 00532       1209     			LOAD		s5, #character_2
+1B8 361EB       1210     			CALL		lcd_write_data
+1B9 24000       1211     			RETURN
                 1212     ;
                 1213     ;
                 1214     ;
@@ -1365,31 +1344,31 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1229     ;
                 1230     ;Registers used s0
                 1231     ;
-132 0000B       1232     delay_1us:		LOAD		s0, #delay_1us_constant
-133 0C001       1233     wait_1us:		SUB		s0, #0x01
-134 355BB       1234     			JUMP		nz, wait_1us
-135 24000       1235     			RETURN
+1BA 0000B       1232     delay_1us:		LOAD		s0, #delay_1us_constant
+1BB 0C001       1233     wait_1us:		SUB		s0, #0x01
+1BC 355BB       1234     			JUMP		nz, wait_1us
+1BD 24000       1235     			RETURN
                 1236     ;
                 1237     ;Delay of 40us.
                 1238     ;
                 1239     ;Registers used s0, s1
                 1240     ;
-136 00128       1241     delay_40us:		LOAD		s1, #0x28		;40 x 1us = 40us
-137 361BA       1242     wait_40us:		CALL		delay_1us
-138 0C101       1243     			SUB		s1, #0x01
-139 355BF       1244     			JUMP		nz, wait_40us
-13A 24000       1245     			RETURN
+1BE 00128       1241     delay_40us:		LOAD		s1, #0x28		;40 x 1us = 40us
+1BF 361BA       1242     wait_40us:		CALL		delay_1us
+1C0 0C101       1243     			SUB		s1, #0x01
+1C1 355BF       1244     			JUMP		nz, wait_40us
+1C2 24000       1245     			RETURN
                 1246     ;
                 1247     ;
                 1248     ;Delay of 1ms.
                 1249     ;
                 1250     ;Registers used s0, s1, s2
                 1251     ;
-13B 00219       1252     delay_1ms:		LOAD		s2, #0x19		;25 x 40us = 1ms
-13C 361BE       1253     wait_1ms:		CALL		delay_40us
-13D 0C201       1254     			SUB		s2, #0x01
-13E 355C4       1255     			JUMP		nz, wait_1ms
-13F 24000       1256     			RETURN
+1C3 00219       1252     delay_1ms:		LOAD		s2, #0x19		;25 x 40us = 1ms
+1C4 361BE       1253     wait_1ms:		CALL		delay_40us
+1C5 0C201       1254     			SUB		s2, #0x01
+1C6 355C4       1255     			JUMP		nz, wait_1ms
+1C7 24000       1256     			RETURN
                 1257     ;
                 1258     ;Delay of 20ms.
                 1259     ;
@@ -1397,21 +1376,21 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1261     ;
                 1262     ;Registers used s0, s1, s2, s3
                 1263     ;
-140 00314       1264     delay_20ms:		LOAD		s3, #0x14		;20 x 1ms = 20ms
-141 361C3       1265     wait_20ms:		CALL		delay_1ms
-142 0C301       1266     			SUB		s3, #0x01
-143 355C9       1267     			JUMP		nz, wait_20ms
-144 24000       1268     			RETURN
+1C8 00314       1264     delay_20ms:		LOAD		s3, #0x14		;20 x 1ms = 20ms
+1C9 361C3       1265     wait_20ms:		CALL		delay_1ms
+1CA 0C301       1266     			SUB		s3, #0x01
+1CB 355C9       1267     			JUMP		nz, wait_20ms
+1CC 24000       1268     			RETURN
                 1269     ;
                 1270     ;Delay of approximately 1 second.
                 1271     ;
                 1272     ;Registers used s0, s1, s2, s3, s4
                 1273     ;
-145 00432       1274     delay_1s:		LOAD		s4, #0x32		;50 x 20ms = 1000ms
-146 361C8       1275     wait_1s:		CALL		delay_20ms
-147 0C401       1276     			SUB		s4, #0x01
-148 355CE       1277     			JUMP		nz, wait_1s
-149 24000       1278     			RETURN
+1CD 00432       1274     delay_1s:		LOAD		s4, #0x32		;50 x 20ms = 1000ms
+1CE 361C8       1275     wait_1s:		CALL		delay_20ms
+1CF 0C401       1276     			SUB		s4, #0x01
+1D0 355CE       1277     			JUMP		nz, wait_1s
+1D1 24000       1278     			RETURN
                 1279     ;
                 1280     ;
                 1281     ;
@@ -1433,12 +1412,12 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1297     ;
                 1298     ;Registers used s0, s4
                 1299     ;
-14A 06401       1300     lcd_pulse_e:		XOR		s4, #lcd_e		;E=1
-14B 22440       1301     			OUTPUT		s4, lcd_output_port
-14C 361BA       1302     			CALL		delay_1us
-14D 06401       1303     			XOR		s4, #lcd_e		;E=0
-14E 22440       1304     			OUTPUT		s4, lcd_output_port
-14F 24000       1305     			RETURN
+1D2 06401       1300     lcd_pulse_e:		XOR		s4, #lcd_e		;E=1
+1D3 22440       1301     			OUTPUT		s4, lcd_output_port
+1D4 361BA       1302     			CALL		delay_1us
+1D5 06401       1303     			XOR		s4, #lcd_e		;E=0
+1D6 22440       1304     			OUTPUT		s4, lcd_output_port
+1D7 24000       1305     			RETURN
                 1306     ;
                 1307     ;Write 4-bit instruction to LCD display.
                 1308     ;
@@ -1449,10 +1428,10 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1313     ;
                 1314     ;Registers used s4
                 1315     ;
-150 024F8       1316     lcd_write_inst4:	AND		s4, #0xf8		;Enable=1 RS=0 Instruction, RW=0 Write, E=0
-151 22440       1317     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
-152 361D2       1318     			CALL		lcd_pulse_e
-153 24000       1319     			RETURN
+1D8 024F8       1316     lcd_write_inst4:	AND		s4, #0xf8		;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+1D9 22440       1317     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+1DA 361D2       1318     			CALL		lcd_pulse_e
+1DB 24000       1319     			RETURN
                 1320     ;
                 1321     ;
                 1322     ;Write 8-bit instruction to LCD display.
@@ -1466,21 +1445,21 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1330     ;
                 1331     ;Registers used s0, s1, s4, s5
                 1332     ;
-154 10428       1333     lcd_write_inst8:	LOAD		s4, s5
-155 024F0       1334     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-156 04408       1335     			OR		s4, #lcd_drive		;Enable=1
-157 361D8       1336     			CALL		lcd_write_inst4		;write upper nibble
-158 361BA       1337     			CALL		delay_1us		;wait >1us
-159 10428       1338     			LOAD		s4, s5			;select lower nibble with
-15A 28407       1339     			SL1		s4			;Enable=1
-15B 28406       1340     			SL0		s4			;RS=0 Instruction
-15C 28406       1341     			SL0		s4			;RW=0 Write
-15D 28406       1342     			SL0		s4			;E=0
-15E 361D8       1343     			CALL		lcd_write_inst4		;write lower nibble
-15F 361BE       1344     			CALL		delay_40us		;wait >40us
-160 004F0       1345     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-161 22440       1346     			OUTPUT		s4, lcd_output_port	;Release master enable
-162 24000       1347     			RETURN
+1DC 10428       1333     lcd_write_inst8:	LOAD		s4, s5
+1DD 024F0       1334     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1DE 04408       1335     			OR		s4, #lcd_drive		;Enable=1
+1DF 361D8       1336     			CALL		lcd_write_inst4		;write upper nibble
+1E0 361BA       1337     			CALL		delay_1us		;wait >1us
+1E1 10428       1338     			LOAD		s4, s5			;select lower nibble with
+1E2 28407       1339     			SL1		s4			;Enable=1
+1E3 28406       1340     			SL0		s4			;RS=0 Instruction
+1E4 28406       1341     			SL0		s4			;RW=0 Write
+1E5 28406       1342     			SL0		s4			;E=0
+1E6 361D8       1343     			CALL		lcd_write_inst4		;write lower nibble
+1E7 361BE       1344     			CALL		delay_40us		;wait >40us
+1E8 004F0       1345     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1E9 22440       1346     			OUTPUT		s4, lcd_output_port	;Release master enable
+1EA 24000       1347     			RETURN
                 1348     ;
                 1349     ;
                 1350     ;
@@ -1495,23 +1474,23 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1359     ;
                 1360     ;Registers used s0, s1, s4, s5
                 1361     ;
-163 10428       1362     lcd_write_data:		LOAD		s4, s5
-164 024F0       1363     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-165 0440C       1364     			OR		s4, #0x0c		;Enable=1 RS=1 Data, RW=0 Write, E=0
-166 22440       1365     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
-167 361D2       1366     			CALL		lcd_pulse_e		;write upper nibble
-168 361BA       1367     			CALL		delay_1us		;wait >1us
-169 10428       1368     			LOAD		s4, s5			;select lower nibble with
-16A 28407       1369     			SL1		s4			;Enable=1
-16B 28407       1370     			SL1		s4			;RS=1 Data
-16C 28406       1371     			SL0		s4			;RW=0 Write
-16D 28406       1372     			SL0		s4			;E=0
-16E 22440       1373     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
-16F 361D2       1374     			CALL		lcd_pulse_e		;write lower nibble
-170 361BE       1375     			CALL		delay_40us		;wait >40us
-171 004F0       1376     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-172 22440       1377     			OUTPUT		s4, lcd_output_port	;Release master enable
-173 24000       1378     			RETURN
+1EB 10428       1362     lcd_write_data:		LOAD		s4, s5
+1EC 024F0       1363     			AND		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1ED 0440C       1364     			OR		s4, #0x0c		;Enable=1 RS=1 Data, RW=0 Write, E=0
+1EE 22440       1365     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+1EF 361D2       1366     			CALL		lcd_pulse_e		;write upper nibble
+1F0 361BA       1367     			CALL		delay_1us		;wait >1us
+1F1 10428       1368     			LOAD		s4, s5			;select lower nibble with
+1F2 28407       1369     			SL1		s4			;Enable=1
+1F3 28407       1370     			SL1		s4			;RS=1 Data
+1F4 28406       1371     			SL0		s4			;RW=0 Write
+1F5 28406       1372     			SL0		s4			;E=0
+1F6 22440       1373     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+1F7 361D2       1374     			CALL		lcd_pulse_e		;write lower nibble
+1F8 361BE       1375     			CALL		delay_40us		;wait >40us
+1F9 004F0       1376     			LOAD		s4, #0xf0		;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+1FA 22440       1377     			OUTPUT		s4, lcd_output_port	;Release master enable
+1FB 24000       1378     			RETURN
                 1379     ;
                 1380     ;
                 1381     ;
@@ -1532,31 +1511,31 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1396     ;
                 1397     ;Registers used s0, s1, s4, s5
                 1398     ;
-174 0040E       1399     lcd_read_data8:		LOAD		s4, #0x0e		;Enable=1 RS=1 Data, RW=1 Read, E=0
-175 22440       1400     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
-176 06401       1401     			XOR		s4, #lcd_e		;E=1
-177 22440       1402     			OUTPUT		s4, lcd_output_port
-178 361BA       1403     			CALL		delay_1us		;wait >260ns to access data
-179 20501       1404     			INPUT		s5, lcd_input_port	;read upper nibble
-17A 06401       1405     			XOR		s4, #lcd_e		;E=0
-17B 22440       1406     			OUTPUT		s4, lcd_output_port
-17C 361BA       1407     			CALL		delay_1us		;wait >1us
-17D 06401       1408     			XOR		s4, #lcd_e		;E=1
-17E 22440       1409     			OUTPUT		s4, lcd_output_port
-17F 361BA       1410     			CALL		delay_1us		;wait >260ns to access data
-180 20001       1411     			INPUT		s0, lcd_input_port	;read lower nibble
-181 06401       1412     			XOR		s4, #lcd_e		;E=0
-182 22440       1413     			OUTPUT		s4, lcd_output_port
-183 025F0       1414     			AND		s5, #0xf0		;merge upper and lower nibbles
-184 2800E       1415     			SR0		s0
-185 2800E       1416     			SR0		s0
-186 2800E       1417     			SR0		s0
-187 2800E       1418     			SR0		s0
-188 14500       1419     			OR		s5, s0
-189 00404       1420     			LOAD		s4, #0x04		;Enable=0 RS=1 Data, RW=0 Write, E=0
-18A 22440       1421     			OUTPUT		s4, lcd_output_port	;Stop reading 5V device and release master enable
-18B 361BE       1422     			CALL		delay_40us		;wait >40us
-18C 24000       1423     			RETURN
+1FC 0040E       1399     lcd_read_data8:		LOAD		s4, #0x0e		;Enable=1 RS=1 Data, RW=1 Read, E=0
+1FD 22440       1400     			OUTPUT		s4, lcd_output_port	;set up RS and RW >40ns before enable pulse
+1FE 06401       1401     			XOR		s4, #lcd_e		;E=1
+1FF 22440       1402     			OUTPUT		s4, lcd_output_port
+200 361BA       1403     			CALL		delay_1us		;wait >260ns to access data
+201 20501       1404     			INPUT		s5, lcd_input_port	;read upper nibble
+202 06401       1405     			XOR		s4, #lcd_e		;E=0
+203 22440       1406     			OUTPUT		s4, lcd_output_port
+204 361BA       1407     			CALL		delay_1us		;wait >1us
+205 06401       1408     			XOR		s4, #lcd_e		;E=1
+206 22440       1409     			OUTPUT		s4, lcd_output_port
+207 361BA       1410     			CALL		delay_1us		;wait >260ns to access data
+208 20001       1411     			INPUT		s0, lcd_input_port	;read lower nibble
+209 06401       1412     			XOR		s4, #lcd_e		;E=0
+20A 22440       1413     			OUTPUT		s4, lcd_output_port
+20B 025F0       1414     			AND		s5, #0xf0		;merge upper and lower nibbles
+20C 2800E       1415     			SR0		s0
+20D 2800E       1416     			SR0		s0
+20E 2800E       1417     			SR0		s0
+20F 2800E       1418     			SR0		s0
+210 14500       1419     			OR		s5, s0
+211 00404       1420     			LOAD		s4, #0x04		;Enable=0 RS=1 Data, RW=0 Write, E=0
+212 22440       1421     			OUTPUT		s4, lcd_output_port	;Stop reading 5V device and release master enable
+213 361BE       1422     			CALL		delay_40us		;wait >40us
+214 24000       1423     			RETURN
                 1424     ;
                 1425     ;
                 1426     ;Reset and initialise display to communicate using 4-bit data mode
@@ -1572,28 +1551,28 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1436     ;
                 1437     ;Registers used s0, s1, s2, s3, s4
                 1438     ;
-18D 361C8       1439     lcd_reset:		CALL		delay_20ms		;wait more that 15ms for display to be ready
-18E 00430       1440     			LOAD		s4, #0x30
-18F 361D8       1441     			CALL		lcd_write_inst4		;send '3'
-190 361C8       1442     			CALL		delay_20ms		;wait >4.1ms
-191 361D8       1443     			CALL		lcd_write_inst4		;send '3'
-192 361C3       1444     			CALL		delay_1ms		;wait >100us
-193 361D8       1445     			CALL		lcd_write_inst4		;send '3'
-194 361BE       1446     			CALL		delay_40us		;wait >40us
-195 00420       1447     			LOAD		s4, #0x20
-196 361D8       1448     			CALL		lcd_write_inst4		;send '2'
-197 361BE       1449     			CALL		delay_40us		;wait >40us
-198 00528       1450     			LOAD		s5, #0x28		;Function set
-199 361DC       1451     			CALL		lcd_write_inst8
-19A 00506       1452     			LOAD		s5, #0x06		;Entry mode
-19B 361DC       1453     			CALL		lcd_write_inst8
-19C 0050E       1454     			LOAD		s5, #0x0e		;Display control
-19D 361DC       1455     			CALL		lcd_write_inst8
-19E 00501       1456     lcd_clear:		LOAD		s5, #0x01		;Display clear
-19F 361DC       1457     			CALL		lcd_write_inst8
-1A0 361C3       1458     			CALL		delay_1ms		;wait >1.64ms for display to clear
-1A1 361C3       1459     			CALL		delay_1ms
-1A2 24000       1460     			RETURN
+215 361C8       1439     lcd_reset:		CALL		delay_20ms		;wait more that 15ms for display to be ready
+216 00430       1440     			LOAD		s4, #0x30
+217 361D8       1441     			CALL		lcd_write_inst4		;send '3'
+218 361C8       1442     			CALL		delay_20ms		;wait >4.1ms
+219 361D8       1443     			CALL		lcd_write_inst4		;send '3'
+21A 361C3       1444     			CALL		delay_1ms		;wait >100us
+21B 361D8       1445     			CALL		lcd_write_inst4		;send '3'
+21C 361BE       1446     			CALL		delay_40us		;wait >40us
+21D 00420       1447     			LOAD		s4, #0x20
+21E 361D8       1448     			CALL		lcd_write_inst4		;send '2'
+21F 361BE       1449     			CALL		delay_40us		;wait >40us
+220 00528       1450     			LOAD		s5, #0x28		;Function set
+221 361DC       1451     			CALL		lcd_write_inst8
+222 00506       1452     			LOAD		s5, #0x06		;Entry mode
+223 361DC       1453     			CALL		lcd_write_inst8
+224 0050E       1454     			LOAD		s5, #0x0e		;Display control
+225 361DC       1455     			CALL		lcd_write_inst8
+226 00501       1456     lcd_clear:		LOAD		s5, #0x01		;Display clear
+227 361DC       1457     			CALL		lcd_write_inst8
+228 361C3       1458     			CALL		delay_1ms		;wait >1.64ms for display to clear
+229 361C3       1459     			CALL		delay_1ms
+22A 24000       1460     			RETURN
                 1461     ;
                 1462     ;Position the cursor ready for characters to be written.
                 1463     ;The display is formed of 2 lines of 16 characters and each
@@ -1612,17 +1591,16 @@ E: instruction not supported on the this device: FETCH sX, sY.
                 1476     ;
                 1477     ;Registers used s0, s1, s2, s3, s4
                 1478     ;
-  0022B         1479     lcd_cursor:		TEST		s5, #0x10		;test for line 1
-E: instruction not supported on the this device: TEST sX, kk.
-1A3 35231       1480     			JUMP		z, set_line2
-1A4 0250F       1481     			AND		s5, #0x0f		;make address in range 80 to 8F for line 1
-1A5 04580       1482     			OR		s5, #0x80
-1A6 361DC       1483     			CALL		lcd_write_inst8		;instruction write to set cursor
-1A7 24000       1484     			RETURN
-1A8 0250F       1485     set_line2:		AND		s5, #0x0f		;make address in range C0 to CF for line 2
-1A9 045C0       1486     			OR		s5, #0xc0
-1AA 361DC       1487     			CALL		lcd_write_inst8		;instruction write to set cursor
-1AB 24000       1488     			RETURN
+22B 00510       1479     lcd_cursor:		load		s5, #0x10		;load for line 1
+22C 35231       1480     			JUMP		z, set_line2
+22D 0250F       1481     			AND		s5, #0x0f		;make address in range 80 to 8F for line 1
+22E 04580       1482     			OR		s5, #0x80
+22F 361DC       1483     			CALL		lcd_write_inst8		;instruction write to set cursor
+230 24000       1484     			RETURN
+231 0250F       1485     set_line2:		AND		s5, #0x0f		;make address in range C0 to CF for line 2
+232 045C0       1486     			OR		s5, #0xc0
+233 361DC       1487     			CALL		lcd_write_inst8		;instruction write to set cursor
+234 24000       1488     			RETURN
                 1489     ;
                 1490     ;This routine will shift the complete display one position to the left.
                 1491     ;The cursor position and LCD memory contents will not change.
@@ -1630,9 +1608,9 @@ E: instruction not supported on the this device: TEST sX, kk.
                 1493     ;
                 1494     ;Registers used s0, s1, s2, s3, s4, s5
                 1495     ;
-1AC 00518       1496     lcd_shift_left:		LOAD		s5, #0x18		;shift display left
-1AD 361DC       1497     			CALL		lcd_write_inst8
-1AE 24000       1498     			RETURN
+235 00518       1496     lcd_shift_left:		LOAD		s5, #0x18		;shift display left
+236 361DC       1497     			CALL		lcd_write_inst8
+237 24000       1498     			RETURN
                 1499     ;
                 1500     ;**************************************************************************************
                 1501     ;Interrupt Service Routine (ISR)
@@ -1645,15 +1623,15 @@ E: instruction not supported on the this device: TEST sX, kk.
                 1508     ;main body of the program.
                 1509     ;
                 1510     ;
-  00238         1511     isr:			STORE		s0, isr_preserve_s0	;preserve s0
-E: instruction not supported on the this device: STORE sX, ss.
-1AF 20000       1512     			INPUT		s0, rotary_port		;read rotary encoder
-1B0 04080       1513     			OR		s0, #rotary_event	;set flag
-                1514     			STORE		s0, rotary_status	;put result in SCM
-E: instruction not supported on the this device: STORE sX, ss.
-                1515     			FETCH		s0, isr_preserve_s0	;restore s0
-E: instruction not supported on the this device: FETCH sX, ss.
-1B1 2C001       1516     			RETURNI		enable
+238 10008       1511     isr:			load		s0, isr_preserve_s0	;preserve s0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+239 20000       1512     			INPUT		s0, rotary_port		;read rotary encoder
+23A 04080       1513     			OR		s0, #rotary_event	;set flag
+23B 10000       1514     			load		s0, rotary_status	;put result in SCM
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+23C 10008       1515     			load		s0, isr_preserve_s0	;reload s0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+23D 2C001       1516     			RETURNI		enable
                 1517     ;
                 1518     ;
                 1519     ;**************************************************************************************

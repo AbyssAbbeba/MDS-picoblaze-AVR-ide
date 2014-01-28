@@ -1,4 +1,4 @@
-; test case for directives
+; load case for directives
 device kcpsm1
 
 

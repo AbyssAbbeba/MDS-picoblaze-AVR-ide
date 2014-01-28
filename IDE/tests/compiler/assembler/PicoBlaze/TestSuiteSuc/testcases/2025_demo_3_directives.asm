@@ -4,7 +4,7 @@
 ; ------------------------------------------------------
 ; See manual for more info
 ; 
-
+        END
 ; Code with syntax errors
         nolist                        ; Disable code listing
 if 0        
@@ -14,7 +14,7 @@ if 0
 label?: SR0        B                  ; invalid label
 endif
         list    ; Enable code listing
-        END
+
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
      
@@ -45,7 +45,7 @@ NAMEREG         <symbol>,<expresion>
 ; Symbols defined with NAMEREG can be redefined with another value in your source code. 
 <symbol>        DATA    <expresion>     
 ; Symbols defined with the DATA directive are by compiler considered as data memory.
-; It must be used only with instructions FETCH and STORE.
+; It must be used only with instructions load and load.
 <symbol>        CODE    <expresion>     
 ; Symbols defined with the CODE directive are by compiler considered as program memory. 
 <symbol>        PORT    <expresion>     

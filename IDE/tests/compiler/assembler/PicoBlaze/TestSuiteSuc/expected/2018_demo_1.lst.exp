@@ -18,10 +18,10 @@
                   18
                   19
                   20             ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
-                  21             STORE    s0, ram_pointer + 1
-E: instruction not supported on the this device: STORE sX, ss.
-                  22             STORE    s1, ram_pointer + 1
-E: instruction not supported on the this device: STORE sX, ss.
+                  21             load    s0, ram_pointer + 1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+                  22             load    s1, ram_pointer + 1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
                   23
                   24             ; Shift
                   25             LOAD     reg1, reg0
@@ -47,19 +47,19 @@ W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-                  44 +1          STORE    s0, ram_pointer + 1
-E: ==> instruction not supported on the this device: STORE sX, ss.
-                  45 +1          STORE    s1, ram_pointer + 1
-E: ==> instruction not supported on the this device: STORE sX, ss.
+004 10008         44 +1          load    s0, ram_pointer + 1
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+005 10108         45 +1          load    s1, ram_pointer + 1
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
                   46 +1
                   47 +1
-004 10100         48 +1          LOAD     reg1, reg0
+006 10100         48 +1          LOAD     reg1, reg0
 W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-005 10008         49 +1          LOAD     reg0, reg1
+007 10008         49 +1          LOAD     reg0, reg1
 W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-006 34004         50             JUMP    main
+008 34004         50             JUMP    main
                   51
                   52     ; Program end
                   53     ; --------------------

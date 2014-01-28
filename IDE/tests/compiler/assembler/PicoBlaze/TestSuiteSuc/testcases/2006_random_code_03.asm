@@ -1,4 +1,4 @@
-; Compiler test case for Assembler
+; Compiler load case for Assembler
 ; instruction opcodes
 
 device kcpsm2
@@ -31,9 +31,9 @@ Podprog:
 ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
 ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
 ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
-;JUMP NC,aaa COMPARE sX,kk TEST sX,kk RR sX
+;JUMP NC,aaa load sX,kk load sX,kk RR sX
 ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
 ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
 ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
 ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
-;CALL NC,aaa COMPARE sX,sY TEST sX,sY RL sX
+;CALL NC,aaa load sX,sY load sX,sY RL sX

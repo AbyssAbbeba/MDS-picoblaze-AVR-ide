@@ -67,10 +67,10 @@ COMPUTE_TMP  . . . . . . . . . . . . LABEL  0x00194 USED     CONSTANT    1036_ex
 COPY_VAR_LOOP  . . . . . . . . . . . LABEL  0x001CE USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1155.1-1155.15
 CRC16_FAIL . . . . . . . . . . . . . LABEL  0x0022E USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1327.1-1327.12
 CRC16_LOOP . . . . . . . . . . . . . LABEL  0x0020F USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1288.1-1288.12
-CRC16_SHIFT  . . . . . . . . . . . . LABEL  0x00215 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1294.1-1294.13
+CRC16_SHILOAD  . . . . . . . . . . . LABEL  0x00215 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1294.1-1294.15
 CRC8_FAIL  . . . . . . . . . . . . . LABEL  0x0003E USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:410.1-410.11
 CRC8_LOOP  . . . . . . . . . . . . . LABEL  0x001FA USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1237.1-1237.11
-CRC8_SHIFT . . . . . . . . . . . . . LABEL  0x001FF USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1242.1-1242.12
+CRC8_SHILOAD . . . . . . . . . . . . LABEL  0x001FF USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1242.1-1242.14
 DELAY_1MS  . . . . . . . . . . . . . LABEL  0x00290 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1624.1-1624.11
 DELAY_1S . . . . . . . . . . . . . . LABEL  0x0029A USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1644.1-1644.10
 DELAY_1US  . . . . . . . . . . . . . LABEL  0x00287 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1604.1-1604.11
@@ -90,15 +90,18 @@ DS_WIRE_OUT_PORT . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1036_ex
 END_RSC_DATA_LOOP  . . . . . . . . . LABEL  0x0009A USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:582.1-582.19
 END_SERIAL . . . . . . . . . . . . . LABEL  0x00033 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:399.1-399.12
 FAMILY_CODE  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:127.1-127.45
-FETCH_C  . . . . . . . . . . . . . . LABEL  0x00176 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1006.1-1006.9
-FT_TYPE1 . . . . . . . . . . . . . . LABEL  0x00161 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:982.1-982.10
-FT_TYPE2 . . . . . . . . . . . . . . LABEL  0x0014D USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:947.1-947.10
-FT_TYPE3 . . . . . . . . . . . . . . LABEL  0x0017B USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1031.1-1031.10
 HEX_BYTE_TO_ASCII  . . . . . . . . . LABEL  0x002B1 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1728.1-1728.19
 HEX_TO_ASCII . . . . . . . . . . . . LABEL  0x002BD USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1745.1-1745.14
 ISR  . . . . . . . . . . . . . . . . LABEL  0x003FE USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:2209.1-2209.5
 KT_CA62C1D6  . . . . . . . . . . . . LABEL  0x0015C USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:962.1-962.13
+LOAD_C . . . . . . . . . . . . . . . LABEL  0x00176 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1006.1-1006.8
 LOAD_FIRST_SECRET_COMMAND  . . . . . LABEL  0x00040 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:440.1-440.27
+LOAD_TYPE1 . . . . . . . . . . . . . LABEL  0x00161 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:982.1-982.12
+LOAD_TYPE2 . . . . . . . . . . . . . LABEL  0x0014D USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:947.1-947.12
+LOAD_TYPE3 . . . . . . . . . . . . . LABEL  0x0017B USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1031.1-1031.12
+LOAD_W14_W15 . . . . . . . . . . . . LABEL  0x000EB USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:768.1-768.14
+LOAD_W9  . . . . . . . . . . . . . . LABEL  0x000CD USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:728.1-728.9
+LOAD_WT  . . . . . . . . . . . . . . LABEL  0x001C5 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1133.1-1133.9
 MAC_FAIL . . . . . . . . . . . . . . LABEL  0x0010E USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:817.1-817.10
 MAC_MATCH_BYTE . . . . . . . . . . . LABEL  0x000F8 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:792.1-792.16
 MAC_MATCH_VAR  . . . . . . . . . . . LABEL  0x000F7 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:791.1-791.15
@@ -126,14 +129,14 @@ READ_ROM_COMMAND . . . . . . . . . . LABEL  0x0001D USED     CONSTANT    1036_ex
 READ_ROM_CRC . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:134.1-134.45
 READ_ROM_LOOP  . . . . . . . . . . . LABEL  0x00020 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:380.1-380.15
 READ_SCRATCHPAD_COMMAND  . . . . . . LABEL  0x00079 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:549.1-549.25
-READ_SEND_TEST_CRC16 . . . . . . . . LABEL  0x0021C USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1309.1-1309.22
+READ_SEND_LOAD_CRC16 . . . . . . . . LABEL  0x0021C USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1309.1-1309.22
 READ_UPPER_CASE  . . . . . . . . . . LABEL  0x002E1 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1814.1-1814.17
 REPORT_MAC . . . . . . . . . . . . . LABEL  0x00109 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:812.1-812.12
 RM_POLL_240US  . . . . . . . . . . . LABEL  0x00243 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1403.1-1403.15
 RM_WAIT_500US  . . . . . . . . . . . LABEL  0x00237 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1386.1-1386.15
 RM_WAIT_60US . . . . . . . . . . . . LABEL  0x0023E USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1395.1-1395.14
-ROTATE_WORD_LEFT . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1201.1-1201.18
-ROTATE_WORD_LEFT_N_PLACES  . . . . . LABEL  0x001E7 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1193.1-1193.27
+ROTATE_WORD_LELOAD . . . . . . . . . LABEL  0x001EB USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1201.1-1201.20
+ROTATE_WORD_LELOAD_N_PLACES  . . . . LABEL  0x001E7 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1193.1-1193.29
 RSC_LOOP . . . . . . . . . . . . . . LABEL  0x00090 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:572.1-572.10
 RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:65.1-65.45
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1036_example_9.ind_spaces.full_inst.asm:67.1-67.45
@@ -211,9 +214,6 @@ SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1036_ex
 SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1036_example_9.ind_spaces.full_inst.asm:69.1-69.45
 SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1036_example_9.ind_spaces.full_inst.asm:70.1-70.45
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:62.1-62.45
-STORE_W14_W15  . . . . . . . . . . . LABEL  0x000EB USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:768.1-768.15
-STORE_W9 . . . . . . . . . . . . . . LABEL  0x000CD USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:728.1-728.10
-STORE_WT . . . . . . . . . . . . . . LABEL  0x001C5 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:1133.1-1133.10
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:64.1-64.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1036_example_9.ind_spaces.full_inst.asm:63.1-63.45
 UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    1036_example_9.ind_spaces.full_inst.asm:115.1-115.43

@@ -46,7 +46,7 @@ Start:              CALL      wait_1s             ; wait for 1s
 
 ;  Main 
 main_loop:          CALL      GetChar             ; get (wait for) new character
-                    COMPARE      chreg,#20           ; Space character received?
+                    load      chreg,#20           ; Space character received?
                     JUMP      NZ,main_loop        ; If not space, get another character
                     IN        chreg,Switch        ; If yes, read content of switches
                     CALL      SendChar            ; And send it via UART
@@ -59,11 +59,10 @@ main_loop:          CALL      GetChar             ; get (wait for) new character
 ; Basic UART text output procedures (CALLs)
 
 ;==============================================================================;
-; Send character stored in chreg via UART
+; Send character loadd in chreg via UART
 ; Registers used: Temp1, chreg
 ;==============================================================================;
 SendChar:           IN        Temp1, UART_stat    ; checking UART status
-                    TEST      Temp1, 4            ; test bit 2 (is Tx ready?)
                     JUMP      Z, SendChar         ; wait until Tx is ready
                     OUT       chreg, UART_data    ; Send the character
                     RET                           ; Return from procedure
@@ -73,7 +72,7 @@ SendChar:           IN        Temp1, UART_stat    ; checking UART status
 ; Registers used: Temp1, chreg
 ;==============================================================================;
 GetChar:            IN        Temp1, UART_stat    ; checking UART status
-                    TEST      Temp1, 8            ; test bit 3 (new Rx data?)
+
                     JUMP      Z, GetChar          ; wait for new Rx data
                     IN        chreg, UART_data    ; Read the character
                     RET                           ; Return from procedure
@@ -89,7 +88,7 @@ SendByte:           LOAD      Temp2, chreg        ; make a backup of chreg
                     SR0       chreg
                     SR0       chreg
                     SR0       chreg
-                    CMP      chreg, 10           ; if not greater than 9, than it is a number
+      ; if not greater than 9, than it is a number
                     JUMP      C, SendBNum1        ; C is set when Temp < 10 (Temp-10)
                     ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB1
@@ -97,8 +96,7 @@ SendBNum1:          ADD       chreg, #30          ; when number, add #30; number
 SendB1:             CALL      SendChar            ; Send Character
 
                     LOAD      chreg, Temp2        ; load the whole byte again
-                    AND       chreg, #0Fh          ; select second character
-                    CMP      chreg, 10           ; if not greater than 9, than number
+                    AND       chreg, #0Fh        ; if not greater than 9, than number
                     JUMP      C, SendBNum2        ; C is set when Temp < 10 (Temp-10 under 0)
                     ADD       chreg, #37          ; when letter, add #37; letter conversion
                     JUMP      SendB2
@@ -129,7 +127,7 @@ SendCRLF:           LOAD      chreg, #0D          ; CR character
 ;  100.00 MHz               20.00 ns
 ;
 ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
-;   1s @ (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
 ;
 ; ČEKACÍ SMYČKY
 ;==============================================================================;

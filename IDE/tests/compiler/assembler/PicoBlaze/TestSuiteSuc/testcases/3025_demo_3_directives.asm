@@ -4,17 +4,17 @@
 ; ------------------------------------------------------
 ; See manual for more info
 ; 
-
+        END
 ; Code with syntax errors
         nolist                        ; Disable code listing
-if 0        
+#if 0        
         LOAD       A, #55d, B         ; too many operands
         ADD        0FFh,, 04x4h       ; invalid operands
         ORG        (4 *** 5)          ; invalid expression
 label?: SR0        B                  ; invalid label
-endif
+#endif
         list    ; Enable code listing
-        END
+
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
      

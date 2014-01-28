@@ -1,0 +1,1321 @@
+                   1     ; KCPSM3 Program - Program to test line stores using the Spartan-3E Starter Kit.
+                   2     device kcpsm6
+                   3     ; Ken Chapman - Xilinx Ltd
+                   4     ;
+                   5     ; Version v1.00 - 26th June 2006
+                   6     ;
+                   7     ; PicoBlaze communicates via the UART to control the value applied to the inputs of
+                   8     ; line stores and enable them for a specified number of clock cycles. The outputs of
+                   9     ; all the line stores are then displayed.
+                  10     ;
+                  11     ;**************************************************************************************
+                  12     ; Port definitions
+                  13     ;**************************************************************************************
+                  14     ;
+                  15     ;
+                  16     ;
+  00080           17     led_port                EQU             0x80                    ;8 simple LEDs
+  00001           18     led0                    EQU             0x01                    ;     LED 0 - bit0
+  00002           19     led1                    EQU             0x02                    ;         1 - bit1
+  00004           20     led2                    EQU             0x04                    ;         2 - bit2
+  00008           21     led3                    EQU             0x08                    ;         3 - bit3
+  00010           22     led4                    EQU             0x10                    ;         4 - bit4
+  00020           23     led5                    EQU             0x20                    ;         5 - bit5
+  00040           24     led6                    EQU             0x40                    ;         6 - bit6
+  00080           25     led7                    EQU             0x80                    ;         7 - bit7
+                  26     ;
+                  27     ;
+                  28     ;UART ports
+                  29     ;
+  00000           30     status_port             EQU             0x00                    ;UART status input
+  00001           31     tx_half_full            EQU             0x01                    ;  Transmitter     half full - bit0
+  00002           32     tx_full                 EQU             0x02                    ;    FIFO               full - bit1
+  00004           33     rx_data_present         EQU             0x04                    ;  Receiver     data present - bit2
+  00008           34     rx_half_full            EQU             0x08                    ;    FIFO          half full - bit3
+  00010           35     rx_full                 EQU             0x10                    ;                   full - bit4
+                  36     ;
+  00001           37     uart_read_port          EQU             0x01                    ;UART Rx data input
+                  38     ;
+  00040           39     uart_write_port         EQU             0x40                    ;UART Tx data output
+                  40     ;
+                  41     ;
+                  42     ;The first line store input is 18-bits and requires 3 bytes
+                  43     ;to be written to a holding register. Then when required,
+                  44     ;the whole 18-bit value can be stored in the line store
+                  45     ;using a dummy write (data not used) to a forth port.
+                  46     ;
+                  47     ;
+  00001           48     line_store_input_l      EQU             0x01                    ;Line Store input bits [7:0]
+  00002           49     line_store_input_m      EQU             0x02                    ;Line Store input bits [15:8]
+  00004           50     line_store_input_h      EQU             0x04                    ;Line Store input bits [17:16]
+  00008           51     line_store_write_en     EQU             0x08                    ;Line Store clock enable (dummy write)
+                  52     ;
+                  53     ;
+                  54     ;
+                  55     ;The first line store 768x24 and requires 3 bytes to be read.
+                  56     ;
+  00002           57     line_store1_output_l    EQU             0x02                    ;Line Store output bits [7:0]
+  00003           58     line_store1_output_m    EQU             0x03                    ;Line Store output bits [15:8]
+  00004           59     line_store1_output_h    EQU             0x04                    ;Line Store output bits [23:16]
+                  60     ;
+                  61     ;
+                  62     ;The second line store 1024x18 and requires 3 bytes to be read.
+                  63     ;
+  00005           64     line_store2_output_l    EQU             0x05                    ;Line Store output bits [7:0]
+  00006           65     line_store2_output_m    EQU             0x06                    ;Line Store output bits [15:8]
+  00007           66     line_store2_output_h    EQU             0x07                    ;Line Store output bits [17:16]
+                  67     ;
+                  68     ;
+                  69     ;The third line store 1280x13 and requires 2 bytes to be read.
+                  70     ;
+  00008           71     line_store3_output_l    EQU             0x08                    ;Line Store output bits [7:0]
+  00009           72     line_store3_output_h    EQU             0x09                    ;Line Store output bits [12:8]
+                  73     ;
+                  74     ;
+                  75     ;The forth line store is 1280x72 so to make it more manageable it has been
+                  76     ;folded to make it 3 times longer and only 24-bits wide. This requires 3 bytes
+                  77     ;to be read at each 1280 delay tapping point.
+                  78     ;
+  0000A           79     line_store4a_output_l   EQU             0x0a                    ;Line Store output bits [7:0]   First tap
+  0000B           80     line_store4a_output_m   EQU             0x0b                    ;Line Store output bits [15:8]
+  0000C           81     line_store4a_output_h   EQU             0x0c                    ;Line Store output bits [23:16]
+                  82     ;
+  0000D           83     line_store4b_output_l   EQU             0x0d                    ;Line Store output bits [31:24] Second tap
+  0000E           84     line_store4b_output_m   EQU             0x0e                    ;Line Store output bits [39:32]
+  0000F           85     line_store4b_output_h   EQU             0x0f                    ;Line Store output bits [47:40]
+                  86     ;
+  00010           87     line_store4c_output_l   EQU             0x10                    ;Line Store output bits [55:48] Third tap
+  00011           88     line_store4c_output_m   EQU             0x11                    ;Line Store output bits [63:56]
+  00012           89     line_store4c_output_h   EQU             0x12                    ;Line Store output bits [71:64]
+                  90     ;
+                  91     ;
+                  92     ;The fifth line store 1536x12 and requires 2 bytes to be read.
+                  93     ;
+  00013           94     line_store5_output_l    EQU             0x13                    ;Line Store output bits [7:0]
+  00014           95     line_store5_output_h    EQU             0x14                    ;Line Store output bits [11:8]
+                  96     ;
+                  97     ;
+                  98     ;The sixth line store 1920x9 and requires 2 bytes to be read.
+                  99     ;
+  00015          100     line_store6_output_l    EQU             0x15                    ;Line Store output bits [7:0]
+  00016          101     line_store6_output_h    EQU             0x16                    ;Line Store output bit [8]
+                 102     ;
+                 103     ;
+                 104     ;The seventh line store is 1920x48 so to make it more manageable it has been
+                 105     ;folded to make it 2 times longer and only 24-bits wide. This requires 3 bytes
+                 106     ;to be read at each 1920 delay tapping point.
+                 107     ;
+  00017          108     line_store7a_output_l   EQU             0x17                    ;Line Store output bits [7:0]   First tap
+  00018          109     line_store7a_output_m   EQU             0x18                    ;Line Store output bits [15:8]
+  00019          110     line_store7a_output_h   EQU             0x19                    ;Line Store output bits [23:16]
+                 111     ;
+  0001A          112     line_store7b_output_l   EQU             0x1a                    ;Line Store output bits [31:24] Second tap
+  0001B          113     line_store7b_output_m   EQU             0x1b                    ;Line Store output bits [39:32]
+  0001C          114     line_store7b_output_h   EQU             0x1c                    ;Line Store output bits [47:40]
+                 115     ;
+                 116     ;
+                 117     ;**************************************************************************************
+                 118     ; Special Register usage
+                 119     ;**************************************************************************************
+                 120     ;
+  0000F          121     uart_data               REG             sf                      ;used to pass data to and from the UART
+                 122     ;
+                 123     ;
+                 124     ;
+                 125     ;**************************************************************************************
+                 126     ;Scratch Pad Memory Locations
+                 127     ;**************************************************************************************
+                 128     ;
+  00000          129     step_counter0           EQU             0x00                    ;decimal count of line store write operations
+  00001          130     step_counter1           EQU             0x01
+  00002          131     step_counter2           EQU             0x02
+  00003          132     step_counter3           EQU             0x03
+  00004          133     step_counter4           EQU             0x04
+                 134     ;
+  00005          135     test_data_in0           EQU             0x05                    ;24-bit data applied to line store input
+  00006          136     test_data_in1           EQU             0x06
+  00007          137     test_data_in2           EQU             0x07
+                 138     ;
+  00008          139     n_count0                EQU             0x08                    ;decimal count cycles to count in command
+  00009          140     n_count1                EQU             0x09
+  0000A          141     n_count2                EQU             0x0a
+  0000B          142     n_count3                EQU             0x0b
+                 143     ;
+                 144     ;
+  0000C          145     auto_inc                EQU             0x0c                    ;Determines if auto increment is active
+                 146     ;
+  0000D          147     fast_mode               EQU             0x0d                    ;Determines if fast mode is active
+                 148     ;
+                 149     ;UART character strings will be stored in scratch pad memory ending in carriage return.
+                 150     ;A string can be up to 16 characters with the start location defined by this constant.
+                 151     ;
+  00030          152     string_start            EQU             0x30
+                 153     ;
+                 154     ;
+                 155     ;
+                 156     ;**************************************************************************************
+                 157     ;Useful data constants
+                 158     ;**************************************************************************************
+                 159     ;
+                 160     ;
+                 161     ;
+                 162     ;
+                 163     ;ASCII table
+                 164     ;
+  00061          165     character_a             EQU             0x61
+  00062          166     character_b             EQU             0x62
+  00063          167     character_c             EQU             0x63
+  00064          168     character_d             EQU             0x64
+  00065          169     character_e             EQU             0x65
+  00066          170     character_f             EQU             0x66
+  00067          171     character_g             EQU             0x67
+  00068          172     character_h             EQU             0x68
+  00069          173     character_i             EQU             0x69
+  0006A          174     character_j             EQU             0x6a
+  0006B          175     character_k             EQU             0x6b
+  0006C          176     character_l             EQU             0x6c
+  0006D          177     character_m             EQU             0x6d
+  0006E          178     character_n             EQU             0x6e
+  0006F          179     character_o             EQU             0x6f
+  00070          180     character_p             EQU             0x70
+  00071          181     character_q             EQU             0x71
+  00072          182     character_r             EQU             0x72
+  00073          183     character_s             EQU             0x73
+  00074          184     character_t             EQU             0x74
+  00075          185     character_u             EQU             0x75
+  00076          186     character_v             EQU             0x76
+  00077          187     character_w             EQU             0x77
+  00078          188     character_x             EQU             0x78
+  00079          189     character_y             EQU             0x79
+  0007A          190     character_z             EQU             0x7a
+  00041          191     _character_a            EQU             0x41
+  00042          192     _character_b            EQU             0x42
+  00043          193     _character_c            EQU             0x43
+  00044          194     _character_d            EQU             0x44
+  00045          195     _character_e            EQU             0x45
+  00046          196     _character_f            EQU             0x46
+  00047          197     _character_g            EQU             0x47
+  00048          198     _character_h            EQU             0x48
+  00049          199     _character_i            EQU             0x49
+  0004A          200     _character_j            EQU             0x4a
+  0004B          201     _character_k            EQU             0x4b
+  0004C          202     _character_l            EQU             0x4c
+  0004D          203     _character_m            EQU             0x4d
+  0004E          204     _character_n            EQU             0x4e
+  0004F          205     _character_o            EQU             0x4f
+  00050          206     _character_p            EQU             0x50
+  00051          207     _character_q            EQU             0x51
+  00052          208     _character_r            EQU             0x52
+  00053          209     _character_s            EQU             0x53
+  00054          210     _character_t            EQU             0x54
+  00055          211     _character_u            EQU             0x55
+  00056          212     _character_v            EQU             0x56
+  00057          213     _character_w            EQU             0x57
+  00058          214     _character_x            EQU             0x58
+  00059          215     _character_y            EQU             0x59
+  0005A          216     _character_z            EQU             0x5a
+  00030          217     character_0             EQU             0x30
+  00031          218     character_1             EQU             0x31
+  00032          219     character_2             EQU             0x32
+  00033          220     character_3             EQU             0x33
+  00034          221     character_4             EQU             0x34
+  00035          222     character_5             EQU             0x35
+  00036          223     character_6             EQU             0x36
+  00037          224     character_7             EQU             0x37
+  00038          225     character_8             EQU             0x38
+  00039          226     character_9             EQU             0x39
+  0003A          227     character_colon         EQU             0x3a
+  0002E          228     character_stop          EQU             0x2e
+  0003B          229     character_semi_colon    EQU             0x3b
+  0002D          230     character_minus         EQU             0x2d
+  0002F          231     character_divide        EQU             0x2f                    ;'/'
+  0002B          232     character_plus          EQU             0x2b
+  0002C          233     character_comma         EQU             0x2c
+  0003C          234     character_less_than     EQU             0x3c
+  0003E          235     character_greater_than  EQU             0x3e
+  0003D          236     character_equals        EQU             0x3d
+  00020          237     character_space         EQU             0x20
+  0000D          238     character_cr            EQU             0x0d                    ;carriage return
+  0003F          239     character_question      EQU             0x3f                    ;'?'
+  00024          240     character_dollar        EQU             0x24
+  00021          241     character_exclaim       EQU             0x21                    ;'!'
+  00008          242     character_bs            EQU             0x08                    ;Back Space command character
+                 243     ;
+                 244     ;
+                 245     ;
+                 246     ;
+                 247     ;
+                 248     ;**************************************************************************************
+                 249     ;Initialise the system
+                 250     ;**************************************************************************************
+                 251     ;
+                 252     ;
+000 01001        253     cold_start:             LOAD            s0, #led0
+001 2D080        254                             OUTPUT          s0, led_port
+                 255     ;
+002 20226        256                             CALL            send_welcome            ;Write welcome message to UART
+                 257     ;
+003 01000        258                             LOAD            s0, #0x00               ;clear counter
+004 2F004        259                             STORE           s0, step_counter4
+005 2F003        260                             STORE           s0, step_counter3
+006 2F002        261                             STORE           s0, step_counter2
+007 2F001        262                             STORE           s0, step_counter1
+008 2F000        263                             STORE           s0, step_counter0
+                 264     ;
+009 2D001        265                             OUTPUT          s0, line_store_input_l  ;Clear input to line store
+00A 2D002        266                             OUTPUT          s0, line_store_input_m
+00B 2D004        267                             OUTPUT          s0, line_store_input_h
+00C 2F005        268                             STORE           s0, test_data_in0
+00D 2F006        269                             STORE           s0, test_data_in1
+00E 2F007        270                             STORE           s0, test_data_in2
+                 271     ;
+                 272     ;
+00F 0120F        273                             LOAD            s2, #0x0f               ;purge line stores with 4000 writes of zero
+010 011A0        274                             LOAD            s1, #0xa0
+011 2D008        275     purge_loop:             OUTPUT          s0, line_store_write_en ;dummy write to enable line store
+012 19101        276                             SUB             s1, #0x01
+013 3E011        277                             JUMP            nc, purge_loop
+014 19201        278                             SUB             s2, #0x01
+015 3E011        279                             JUMP            nc, purge_loop
+                 280     ;
+                 281     ;
+016 2F00D        282                             STORE           s0, fast_mode           ;turn off fast mode by default
+                 283     ;
+017 01001        284                             LOAD            s0, #0x01               ;default first value is 000001 hex
+018 2D001        285                             OUTPUT          s0, line_store_input_l
+019 2F005        286                             STORE           s0, test_data_in0
+                 287     ;
+01A 2F00C        288                             STORE           s0, auto_inc            ;turn auto increment on by default
+                 289     ;
+                 290     ;**************************************************************************************
+                 291     ; Main program
+                 292     ;**************************************************************************************
+                 293     ;
+                 294     ; Provides a prompt to which an input with one of the following formats is expected...
+                 295     ;
+                 296     ;     set hhhhhh     - Set value to be written into line store.
+                 297     ;                      'hhhhhh' is a 6 digit hex value.
+                 298     ;
+                 299     ;     cycle n        - drive line store with 'n' cycles and display results.
+                 300     ;                      'n' is a decimal number up to 9999.
+                 301     ;
+                 302     ;     reset          - Clears the counter and also purges all line store of all values.
+                 303     ;
+                 304     ;     auto on        - Turns on the auto increment of the set value so that each
+                 305     ;                      seccessive write of data will be different and useful for
+                 306     ;                      determining the delay length.
+                 307     ;
+                 308     ;     auto off       - Turns off the auto increment function so that all successive writes
+                 309     ;                      to the line stores will be identical.
+                 310     ;
+                 311     ;
+                 312     ;     fast on        - Turns on the fast execute mode in which the output to the
+                 313     ;                      display via the UART is turned off during multi-cycle operations.
+                 314     ;                      This results in much greater speed.
+                 315     ;
+                 316     ;     fast off       - Turns off fast execution mode allowing all data to be displayed.
+                 317     ;
+                 318     ; The input allows a degree of editing to be performed and upper and lower case letters
+                 319     ; to be used.
+                 320     ;
+01B 0B00C        321     warm_start:             FETCH           s0, auto_inc            ;use LED0 to display state of auto increment
+01C 0B10D        322                             FETCH           s1, fast_mode           ;use LED1 to display state of fast mode
+01D 1D100        323                             COMPARE         s1, #0x00
+01E 32020        324                             JUMP            z, set_leds
+01F 05002        325                             OR              s0, #led1
+020 2D080        326     set_leds:               OUTPUT          s0, led_port
+                 327     ;
+021 2025E        328                             CALL            send_prompt             ;Prompt 'KCPSM3>'
+022 201B1        329                             CALL            receive_string          ;obtain input string of up to 16 characters
+023 201D9        330                             CALL            upper_case_string       ;convert string to upper case
+                 331     ;
+024 01E30        332                             LOAD            se, #string_start       ;sE is memory pointer
+025 0A0E0        333                             FETCH           s0, @se                 ;test for carriage return
+026 1D00D        334                             COMPARE         s0, #character_cr
+027 3201B        335                             JUMP            z, warm_start
+028 1D053        336                             COMPARE         s0, #_character_s       ;test for 'S' of 'SET' command
+029 32045        337                             JUMP            z, set_command
+02A 1D043        338                             COMPARE         s0, #_character_c       ;test for 'C' of 'CYCLE' command
+02B 320B4        339                             JUMP            z, cycle_command
+02C 1D052        340                             COMPARE         s0, #_character_r       ;test for 'R' of 'RESET' command
+02D 32035        341                             JUMP            z, reset_command
+02E 1D041        342                             COMPARE         s0, #_character_a       ;test for 'A' of 'AUTO' command
+02F 3206E        343                             JUMP            z, auto_command
+030 1D046        344                             COMPARE         s0, #_character_f       ;test for 'F' of 'FAST' command
+031 32091        345                             JUMP            z, fast_command
+032 2021D        346     bad_command:            CALL            send_cr                 ;no valid command entered
+033 2027F        347                             CALL            send_error
+034 2201B        348                             JUMP            warm_start
+                 349     ;
+                 350     ;Processing potential 'RESET' command
+                 351     ;
+035 20112        352     reset_command:          CALL            read_next_char          ;test for 'E' of 'RESET' command
+036 1D045        353                             COMPARE         s0, #_character_e
+037 36032        354                             JUMP            nz, bad_command
+038 20112        355                             CALL            read_next_char          ;test for 'S' of 'RESET' command
+039 1D053        356                             COMPARE         s0, #_character_s
+03A 36032        357                             JUMP            nz, bad_command
+03B 20112        358                             CALL            read_next_char          ;test for 'E' of 'RESET' command
+03C 1D045        359                             COMPARE         s0, #_character_e
+03D 36032        360                             JUMP            nz, bad_command
+03E 20112        361                             CALL            read_next_char          ;test for 'T' of 'RESET' command
+03F 1D054        362                             COMPARE         s0, #_character_t
+040 36032        363                             JUMP            nz, bad_command
+041 20112        364                             CALL            read_next_char          ;test for a carriage return
+042 1D00D        365                             COMPARE         s0, #character_cr
+043 36032        366                             JUMP            nz, bad_command
+044 22000        367                             JUMP            cold_start
+                 368     ;
+                 369     ;Processing potential 'SET' command
+                 370     ;
+045 20112        371     set_command:            CALL            read_next_char          ;test for 'E' of 'SET' command
+046 1D045        372                             COMPARE         s0, #_character_e
+047 36032        373                             JUMP            nz, bad_command
+048 20112        374                             CALL            read_next_char          ;test for 'T' of 'SET' command
+049 1D054        375                             COMPARE         s0, #_character_t
+04A 36032        376                             JUMP            nz, bad_command
+04B 20112        377                             CALL            read_next_char          ;test for a space
+04C 1D020        378                             COMPARE         s0, #character_space
+04D 36032        379                             JUMP            nz, bad_command
+                 380     ;read value into register set [sC,sB,sA]
+04E 20112        381                             CALL            read_next_char          ;read two character hex value
+04F 00300        382                             LOAD            s3, s0
+050 20112        383                             CALL            read_next_char
+051 00200        384                             LOAD            s2, s0
+052 201E5        385                             CALL            ascii_byte_to_hex       ;convert to value in s0
+053 3A032        386                             JUMP            c, bad_command
+054 00C00        387                             LOAD            sc, s0                  ;remember value
+055 20112        388                             CALL            read_next_char          ;read two character hex value
+056 00300        389                             LOAD            s3, s0
+057 20112        390                             CALL            read_next_char
+058 00200        391                             LOAD            s2, s0
+059 201E5        392                             CALL            ascii_byte_to_hex       ;convert to value in s0
+05A 3A032        393                             JUMP            c, bad_command
+05B 00B00        394                             LOAD            sb, s0                  ;remember value
+05C 20112        395                             CALL            read_next_char          ;read two character hex value
+05D 00300        396                             LOAD            s3, s0
+05E 20112        397                             CALL            read_next_char
+05F 00200        398                             LOAD            s2, s0
+060 201E5        399                             CALL            ascii_byte_to_hex       ;convert to value in s0
+061 3A032        400                             JUMP            c, bad_command
+062 00A00        401                             LOAD            sa, s0                  ;remember value
+063 20112        402                             CALL            read_next_char          ;test for carriage return to end command
+064 1D00D        403                             COMPARE         s0, #character_cr
+065 36032        404                             JUMP            nz, bad_command
+066 2FA05        405                             STORE           sa, test_data_in0       ;store new line store input value
+067 2FB06        406                             STORE           sb, test_data_in1
+068 2FC07        407                             STORE           sc, test_data_in2
+069 2DA01        408                             OUTPUT          sa, line_store_input_l  ;Write data to register driving line store
+06A 2DB02        409                             OUTPUT          sb, line_store_input_m
+06B 2DC04        410                             OUTPUT          sc, line_store_input_h
+06C 20289        411                             CALL            send_ok
+06D 2201B        412                             JUMP            warm_start
+                 413     ;
+                 414     ;Processing potential 'AUTO' command
+                 415     ;
+06E 20112        416     auto_command:           CALL            read_next_char
+06F 1D055        417                             COMPARE         s0, #_character_u       ;test for 'U' of 'AUTO' command
+070 36032        418                             JUMP            nz, bad_command
+071 20112        419                             CALL            read_next_char
+072 1D054        420                             COMPARE         s0, #_character_t       ;test for 'T' of 'AUTO' command
+073 36032        421                             JUMP            nz, bad_command
+074 20112        422                             CALL            read_next_char
+075 1D04F        423                             COMPARE         s0, #_character_o       ;test for 'O' of 'AUTO' command
+076 36032        424                             JUMP            nz, bad_command
+077 20112        425                             CALL            read_next_char          ;test for a space
+078 1D020        426                             COMPARE         s0, #character_space
+079 36032        427                             JUMP            nz, bad_command
+07A 20112        428                             CALL            read_next_char
+07B 1D04F        429                             COMPARE         s0, #_character_o       ;test for 'O' of 'ON' or 'OFF'
+07C 36032        430                             JUMP            nz, bad_command
+07D 20112        431                             CALL            read_next_char
+07E 1D04E        432                             COMPARE         s0, #_character_n       ;test for 'N' of 'ON'
+07F 3208A        433                             JUMP            z, test_auto_on
+080 1D046        434                             COMPARE         s0, #_character_f       ;test for 'F' of 'OFF'
+081 36032        435                             JUMP            nz, bad_command
+082 20112        436                             CALL            read_next_char
+083 1D046        437                             COMPARE         s0, #_character_f       ;test for 'F' of 'OFF'
+084 36032        438                             JUMP            nz, bad_command
+085 20112        439                             CALL            read_next_char
+086 1D00D        440                             COMPARE         s0, #character_cr       ;test for carriage return
+087 36032        441                             JUMP            nz, bad_command
+088 01000        442                             LOAD            s0, #0x00               ;turn off auto increment
+089 2208E        443                             JUMP            update_auto
+08A 20112        444     test_auto_on:           CALL            read_next_char
+08B 1D00D        445                             COMPARE         s0, #character_cr       ;test for carriage return
+08C 36032        446                             JUMP            nz, bad_command
+08D 01001        447                             LOAD            s0, #0x01               ;turn on auto increment
+08E 2F00C        448     update_auto:            STORE           s0, auto_inc
+08F 20289        449                             CALL            send_ok
+090 2201B        450                             JUMP            warm_start
+                 451     ;
+                 452     ;Processing potential 'FAST' command
+                 453     ;
+091 20112        454     fast_command:           CALL            read_next_char
+092 1D041        455                             COMPARE         s0, #_character_a       ;test for 'A' of 'FAST' command
+093 36032        456                             JUMP            nz, bad_command
+094 20112        457                             CALL            read_next_char
+095 1D053        458                             COMPARE         s0, #_character_s       ;test for 'S' of 'FAST' command
+096 36032        459                             JUMP            nz, bad_command
+097 20112        460                             CALL            read_next_char
+098 1D054        461                             COMPARE         s0, #_character_t       ;test for 'T' of 'FAST' command
+099 36032        462                             JUMP            nz, bad_command
+09A 20112        463                             CALL            read_next_char          ;test for a space
+09B 1D020        464                             COMPARE         s0, #character_space
+09C 36032        465                             JUMP            nz, bad_command
+09D 20112        466                             CALL            read_next_char
+09E 1D04F        467                             COMPARE         s0, #_character_o       ;test for 'O' of 'ON' or 'OFF'
+09F 36032        468                             JUMP            nz, bad_command
+0A0 20112        469                             CALL            read_next_char
+0A1 1D04E        470                             COMPARE         s0, #_character_n       ;test for 'N' of 'ON'
+0A2 320AD        471                             JUMP            z, test_fast_on
+0A3 1D046        472                             COMPARE         s0, #_character_f       ;test for 'F' of 'OFF'
+0A4 36032        473                             JUMP            nz, bad_command
+0A5 20112        474                             CALL            read_next_char
+0A6 1D046        475                             COMPARE         s0, #_character_f       ;test for 'F' of 'OFF'
+0A7 36032        476                             JUMP            nz, bad_command
+0A8 20112        477                             CALL            read_next_char
+0A9 1D00D        478                             COMPARE         s0, #character_cr       ;test for carriage return
+0AA 36032        479                             JUMP            nz, bad_command
+0AB 01000        480                             LOAD            s0, #0x00               ;turn off fast mode
+0AC 220B1        481                             JUMP            update_fast
+0AD 20112        482     test_fast_on:           CALL            read_next_char
+0AE 1D00D        483                             COMPARE         s0, #character_cr       ;test for carriage return
+0AF 36032        484                             JUMP            nz, bad_command
+0B0 01001        485                             LOAD            s0, #0x01               ;turn on fast mode
+0B1 2F00D        486     update_fast:            STORE           s0, fast_mode
+0B2 20289        487                             CALL            send_ok
+0B3 2201B        488                             JUMP            warm_start
+                 489     ;
+                 490     ;Processing potential 'CYCLE' command
+                 491     ;
+0B4 20112        492     cycle_command:          CALL            read_next_char
+0B5 1D059        493                             COMPARE         s0, #_character_y       ;test for 'Y' of 'CYCLE' command
+0B6 36032        494                             JUMP            nz, bad_command
+0B7 20112        495                             CALL            read_next_char
+0B8 1D043        496                             COMPARE         s0, #_character_c       ;test for 'C' of 'CYCLE' command
+0B9 36032        497                             JUMP            nz, bad_command
+0BA 20112        498                             CALL            read_next_char
+0BB 1D04C        499                             COMPARE         s0, #_character_l       ;test for 'L' of 'CYCLE' command
+0BC 36032        500                             JUMP            nz, bad_command
+0BD 20112        501                             CALL            read_next_char
+0BE 1D045        502                             COMPARE         s0, #_character_e       ;test for 'E' of 'CYCLE' command
+0BF 36032        503                             JUMP            nz, bad_command
+0C0 20112        504                             CALL            read_next_char          ;test for a space
+0C1 1D020        505                             COMPARE         s0, #character_space
+0C2 36032        506                             JUMP            nz, bad_command
+0C3 20112        507                             CALL            read_next_char          ;determine decimal value of 'n' in [s9,s8,s7,s6]
+0C4 1D00D        508                             COMPARE         s0, #character_cr
+0C5 32032        509                             JUMP            z, bad_command          ;need at least 1 digit
+0C6 201FE        510                             CALL            ascii_to_decimal        ;convert to decimal and test
+0C7 3A032        511                             JUMP            c, bad_command
+0C8 00600        512                             LOAD            s6, s0
+0C9 01700        513                             LOAD            s7, #0x00
+0CA 01800        514                             LOAD            s8, #0x00
+0CB 01900        515                             LOAD            s9, #0x00
+0CC 20112        516                             CALL            read_next_char
+0CD 1D00D        517                             COMPARE         s0, #character_cr
+0CE 320E7        518                             JUMP            z, store_n
+0CF 201FE        519                             CALL            ascii_to_decimal
+0D0 3A032        520                             JUMP            c, bad_command
+0D1 00760        521                             LOAD            s7, s6
+0D2 00600        522                             LOAD            s6, s0
+0D3 20112        523                             CALL            read_next_char
+0D4 1D00D        524                             COMPARE         s0, #character_cr
+0D5 320E7        525                             JUMP            z, store_n
+0D6 201FE        526                             CALL            ascii_to_decimal
+0D7 3A032        527                             JUMP            c, bad_command
+0D8 00870        528                             LOAD            s8, s7
+0D9 00760        529                             LOAD            s7, s6
+0DA 00600        530                             LOAD            s6, s0
+0DB 20112        531                             CALL            read_next_char
+0DC 1D00D        532                             COMPARE         s0, #character_cr
+0DD 320E7        533                             JUMP            z, store_n
+0DE 201FE        534                             CALL            ascii_to_decimal
+0DF 3A032        535                             JUMP            c, bad_command
+0E0 00980        536                             LOAD            s9, s8
+0E1 00870        537                             LOAD            s8, s7
+0E2 00760        538                             LOAD            s7, s6
+0E3 00600        539                             LOAD            s6, s0
+0E4 20112        540                             CALL            read_next_char
+0E5 1D00D        541                             COMPARE         s0, #character_cr
+0E6 36032        542                             JUMP            nz, bad_command         ;only 4 digits supported so must be a CR next
+0E7 2F608        543     store_n:                STORE           s6, n_count0            ;store value of 'n'
+0E8 2F709        544                             STORE           s7, n_count1
+0E9 2F80A        545                             STORE           s8, n_count2
+0EA 2F90B        546                             STORE           s9, n_count3
+0EB 2021D        547                             CALL            send_cr
+0EC 0B608        548     n_loop:                 FETCH           s6, n_count0            ;Execute cycle command 'n' times
+0ED 0B709        549                             FETCH           s7, n_count1
+0EE 0B80A        550                             FETCH           s8, n_count2
+0EF 0B90B        551                             FETCH           s9, n_count3
+0F0 19601        552                             SUB             s6, #0x01               ;decrement counter
+0F1 3E0FC        553                             JUMP            nc, update_n
+0F2 01609        554                             LOAD            s6, #0x09
+0F3 19701        555                             SUB             s7, #0x01
+0F4 3E0FC        556                             JUMP            nc, update_n
+0F5 01709        557                             LOAD            s7, #0x09
+0F6 19801        558                             SUB             s8, #0x01
+0F7 3E0FC        559                             JUMP            nc, update_n
+0F8 01809        560                             LOAD            s8, #0x09
+0F9 19901        561                             SUB             s9, #0x01
+0FA 3E0FC        562                             JUMP            nc, update_n
+0FB 2210F        563                             JUMP            end_cycle               ;roll under to 9999 signifies end of command
+0FC 2F608        564     update_n:               STORE           s6, n_count0            ;updated stored value of 'n'
+0FD 2F709        565                             STORE           s7, n_count1
+0FE 2F80A        566                             STORE           s8, n_count2
+0FF 2F90B        567                             STORE           s9, n_count3
+100 0BE0D        568                             FETCH           se, fast_mode           ;determine display mode
+101 1DE00        569                             COMPARE         se, #0x00               ;display active if fast mode is off
+102 3210D        570                             JUMP            z, step_test
+103 01E01        571                             LOAD            se, #0x01               ;turn display off for fast mode on
+104 1D600        572                             COMPARE         s6, #0x00               ;but display last line of cycle command
+105 3610D        573                             JUMP            nz, step_test
+106 1D700        574                             COMPARE         s7, #0x00
+107 3610D        575                             JUMP            nz, step_test
+108 1D800        576                             COMPARE         s8, #0x00
+109 3610D        577                             JUMP            nz, step_test
+10A 1D900        578                             COMPARE         s9, #0x00
+10B 3610D        579                             JUMP            nz, step_test
+10C 01E00        580                             LOAD            se, #0x00
+10D 20115        581     step_test:              CALL            step_line_store         ;execute one test step of the line store
+10E 220EC        582                             JUMP            n_loop
+10F 20290        583     end_cycle:              CALL            send_index              ;display index card for data
+110 20289        584                             CALL            send_ok
+111 2201B        585                             JUMP            warm_start
+                 586     ;
+                 587     ;
+                 588     ;Read next character from scratch pad memory
+                 589     ;
+112 11E01        590     read_next_char:         ADD             se, #0x01
+113 0A0E0        591                             FETCH           s0, @se                 ;test for space
+114 25000        592                             RETURN
+                 593     ;
+                 594     ;
+                 595     ;
+                 596     ;**************************************************************************************
+                 597     ; Line Store step
+                 598     ;**************************************************************************************
+                 599     ;
+                 600     ; Performs one step of the line stores in which the following sequence is followed.
+                 601     ;
+                 602     ; 1) The cycle counter is incremented and then displayed.
+                 603     ; 2) Display the value about to be stored.
+                 604     ; 3) The current output from each line store is read and displayed.
+                 605     ;       This is representative of the value which would be captured on the next rising clock.
+                 606     ; 4) The clock enable to the line stores is activated storing the value held in the
+                 607     ;       line_store_input register.
+                 608     ; 5) Increment the value to be stored next time if function has been turned on.
+                 609     ;
+                 610     ; The display output is suppressed when register 'sE' is not zero.
+                 611     ;
+                 612     ;
+115 0B904        613     step_line_store:        FETCH           s9, step_counter4       ;increment step counter
+116 0B803        614                             FETCH           s8, step_counter3
+117 0B702        615                             FETCH           s7, step_counter2
+118 0B601        616                             FETCH           s6, step_counter1
+119 0B500        617                             FETCH           s5, step_counter0
+11A 11501        618                             ADD             s5, #0x01
+11B 1D50A        619                             COMPARE         s5, #0x0a
+11C 3612E        620                             JUMP            nz, store_step_count
+11D 01500        621                             LOAD            s5, #0x00
+11E 11601        622                             ADD             s6, #0x01
+11F 1D60A        623                             COMPARE         s6, #0x0a
+120 3612E        624                             JUMP            nz, store_step_count
+121 01600        625                             LOAD            s6, #0x00
+122 11701        626                             ADD             s7, #0x01
+123 1D70A        627                             COMPARE         s7, #0x0a
+124 3612E        628                             JUMP            nz, store_step_count
+125 01700        629                             LOAD            s7, #0x00
+126 11801        630                             ADD             s8, #0x01
+127 1D80A        631                             COMPARE         s8, #0x0a
+128 3612E        632                             JUMP            nz, store_step_count
+129 01800        633                             LOAD            s8, #0x00
+12A 11901        634                             ADD             s9, #0x01
+12B 1D90A        635                             COMPARE         s9, #0x0a
+12C 3612E        636                             JUMP            nz, store_step_count
+12D 01900        637                             LOAD            s9, #0x00
+12E 2F904        638     store_step_count:       STORE           s9, step_counter4
+12F 2F803        639                             STORE           s8, step_counter3
+130 2F702        640                             STORE           s7, step_counter2
+131 2F601        641                             STORE           s6, step_counter1
+132 2F500        642                             STORE           s5, step_counter0
+133 1DE00        643                             COMPARE         se, #0x00               ;suppress display
+134 36199        644                             JUMP            nz, skip_display
+135 00F90        645                             LOAD            uart_data, s9           ;display step counter
+136 11F30        646                             ADD             uart_data, #0x30
+137 201AB        647                             CALL            send_to_uart
+138 00F80        648                             LOAD            uart_data, s8
+139 11F30        649                             ADD             uart_data, #0x30
+13A 201AB        650                             CALL            send_to_uart
+13B 00F70        651                             LOAD            uart_data, s7
+13C 11F30        652                             ADD             uart_data, #0x30
+13D 201AB        653                             CALL            send_to_uart
+13E 00F60        654                             LOAD            uart_data, s6
+13F 11F30        655                             ADD             uart_data, #0x30
+140 201AB        656                             CALL            send_to_uart
+141 00F50        657                             LOAD            uart_data, s5
+142 11F30        658                             ADD             uart_data, #0x30
+143 201AB        659                             CALL            send_to_uart
+144 20220        660                             CALL            send_space
+145 20220        661                             CALL            send_space
+146 20220        662                             CALL            send_space
+147 0BA05        663                             FETCH           sa, test_data_in0       ;Read set value into [sC,sB,sA]
+148 0BB06        664                             FETCH           sb, test_data_in1
+149 0BC07        665                             FETCH           sc, test_data_in2
+14A 0B00C        666                             FETCH           s0, auto_inc
+14B 000C0        667                             LOAD            s0, sc                  ;display value being input to line store
+14C 20213        668                             CALL            send_hex_byte
+14D 000B0        669                             LOAD            s0, sb
+14E 20213        670                             CALL            send_hex_byte
+14F 000A0        671                             LOAD            s0, sa
+150 20213        672                             CALL            send_hex_byte
+151 20220        673                             CALL            send_space
+152 20220        674                             CALL            send_space
+153 09004        675                             INPUT           s0, line_store1_output_h ;read 24-bit line store 1 output and display
+154 20213        676                             CALL            send_hex_byte
+155 09003        677                             INPUT           s0, line_store1_output_m
+156 20213        678                             CALL            send_hex_byte
+157 09002        679                             INPUT           s0, line_store1_output_l
+158 20213        680                             CALL            send_hex_byte
+159 20220        681                             CALL            send_space
+15A 20220        682                             CALL            send_space
+15B 09007        683                             INPUT           s0, line_store2_output_h ;read 18-bit line store 2 output and display
+15C 20219        684                             CALL            send_nibble
+15D 09006        685                             INPUT           s0, line_store2_output_m
+15E 20213        686                             CALL            send_hex_byte
+15F 09005        687                             INPUT           s0, line_store2_output_l
+160 20213        688                             CALL            send_hex_byte
+161 20220        689                             CALL            send_space
+162 20220        690                             CALL            send_space
+163 09009        691                             INPUT           s0, line_store3_output_h ;read 13-bit line store 3 output and display
+164 20213        692                             CALL            send_hex_byte
+165 09008        693                             INPUT           s0, line_store3_output_l
+166 20213        694                             CALL            send_hex_byte
+167 20220        695                             CALL            send_space
+168 20220        696                             CALL            send_space
+169 0900C        697                             INPUT           s0, line_store4a_output_h ;read 24-bit line store 4 output 'A' and display
+16A 20213        698                             CALL            send_hex_byte
+16B 0900B        699                             INPUT           s0, line_store4a_output_m
+16C 20213        700                             CALL            send_hex_byte
+16D 0900A        701                             INPUT           s0, line_store4a_output_l
+16E 20213        702                             CALL            send_hex_byte
+16F 20220        703                             CALL            send_space
+170 0900F        704                             INPUT           s0, line_store4b_output_h ;read 24-bit line store 4 output 'B' and display
+171 20213        705                             CALL            send_hex_byte
+172 0900E        706                             INPUT           s0, line_store4b_output_m
+173 20213        707                             CALL            send_hex_byte
+174 0900D        708                             INPUT           s0, line_store4b_output_l
+175 20213        709                             CALL            send_hex_byte
+176 20220        710                             CALL            send_space
+177 09012        711                             INPUT           s0, line_store4c_output_h ;read 24-bit line store 4 output 'C' and display
+178 20213        712                             CALL            send_hex_byte
+179 09011        713                             INPUT           s0, line_store4c_output_m
+17A 20213        714                             CALL            send_hex_byte
+17B 09010        715                             INPUT           s0, line_store4c_output_l
+17C 20213        716                             CALL            send_hex_byte
+17D 20220        717                             CALL            send_space
+17E 20220        718                             CALL            send_space
+17F 09014        719                             INPUT           s0, line_store5_output_h ;read 12-bit line store 5 output and display
+180 20219        720                             CALL            send_nibble
+181 09013        721                             INPUT           s0, line_store5_output_l
+182 20213        722                             CALL            send_hex_byte
+183 20220        723                             CALL            send_space
+184 20220        724                             CALL            send_space
+185 09016        725                             INPUT           s0, line_store6_output_h ;read 9-bit line store 6 output and display
+186 20219        726                             CALL            send_nibble
+187 09015        727                             INPUT           s0, line_store6_output_l
+188 20213        728                             CALL            send_hex_byte
+189 20220        729                             CALL            send_space
+18A 20220        730                             CALL            send_space
+18B 09019        731                             INPUT           s0, line_store7a_output_h ;read 24-bit line store 7 output 'A' and display
+18C 20213        732                             CALL            send_hex_byte
+18D 09018        733                             INPUT           s0, line_store7a_output_m
+18E 20213        734                             CALL            send_hex_byte
+18F 09017        735                             INPUT           s0, line_store7a_output_l
+190 20213        736                             CALL            send_hex_byte
+191 20220        737                             CALL            send_space
+192 0901C        738                             INPUT           s0, line_store7b_output_h ;read 24-bit line store 7 output 'B' and display
+193 20213        739                             CALL            send_hex_byte
+194 0901B        740                             INPUT           s0, line_store7b_output_m
+195 20213        741                             CALL            send_hex_byte
+196 0901A        742                             INPUT           s0, line_store7b_output_l
+197 20213        743                             CALL            send_hex_byte
+198 2021D        744                             CALL            send_cr
+                 745     ;
+                 746     ;
+199 2D008        747     skip_display:           OUTPUT          s0, line_store_write_en ;dummy write to enable line stores
+19A 0B00C        748                             FETCH           s0, auto_inc            ;increment input value if auto is 'on'
+19B 10A00        749                             ADD             sa, s0
+19C 13B00        750                             ADDCY           sb, #0x00
+19D 13C00        751                             ADDCY           sc, #0x00
+19E 2FA05        752                             STORE           sa, test_data_in0       ;store new line store input value
+19F 2FB06        753                             STORE           sb, test_data_in1
+1A0 2FC07        754                             STORE           sc, test_data_in2
+1A1 2DA01        755                             OUTPUT          sa, line_store_input_l  ;Write data to register driving line store
+1A2 2DB02        756                             OUTPUT          sb, line_store_input_m
+1A3 2DC04        757                             OUTPUT          sc, line_store_input_h
+1A4 25000        758                             RETURN
+                 759     ;
+                 760     ;
+                 761     ;**************************************************************************************
+                 762     ; UART communication routines
+                 763     ;**************************************************************************************
+                 764     ;
+                 765     ; Read one character from the UART
+                 766     ;
+                 767     ; Character read will be returned in a register called 'UART_data'.
+                 768     ;
+                 769     ; The routine first tests the receiver FIFO buffer to see if data is present.
+                 770     ; If the FIFO is empty, the routine waits until there is a character to read.
+                 771     ; As this could take any amount of time the wait loop could include a call to a
+                 772     ; subroutine which performs a useful function.
+                 773     ;
+                 774     ;
+                 775     ; Registers used s0 and UART_data
+                 776     ;
+1A5 09000        777     read_from_uart:         INPUT           s0, status_port         ;test Rx_FIFO buffer
+1A6 0D004        778                             TEST            s0, #rx_data_present    ;wait if empty
+1A7 361A9        779                             JUMP            nz, read_character
+1A8 221A5        780                             JUMP            read_from_uart
+1A9 09F01        781     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+1AA 25000        782                             RETURN
+                 783     ;
+                 784     ;
+                 785     ;
+                 786     ; Transmit one character to the UART
+                 787     ;
+                 788     ; Character supplied in register called 'UART_data'.
+                 789     ;
+                 790     ; The routine first tests the transmit FIFO buffer to see if it is full.
+                 791     ; If the FIFO is full, then the routine waits until it there is space.
+                 792     ;
+                 793     ; Registers used s0
+                 794     ;
+1AB 09000        795     send_to_uart:           INPUT           s0, status_port         ;test Tx_FIFO buffer
+1AC 0D002        796                             TEST            s0, #tx_full            ;wait if full
+1AD 321AF        797                             JUMP            z, uart_write
+1AE 221AB        798                             JUMP            send_to_uart
+1AF 2DF40        799     uart_write:             OUTPUT          uart_data, uart_write_port
+1B0 25000        800                             RETURN
+                 801     ;
+                 802     ;
+                 803     ;**************************************************************************************
+                 804     ; Receive ASCII string from UART
+                 805     ;**************************************************************************************
+                 806     ;
+                 807     ;An ASCII string will be read from the UART and stored in scratch pad memory
+                 808     ;commencing at the location specified by a constant named 'string_start'.
+                 809     ;The string will have a maximum length of 16 characters including a
+                 810     ;carriage return (0D) denoting the end of the string.
+                 811     ;
+                 812     ;As each character is read, it is echoed to the UART transmitter.
+                 813     ;Some minor editing is supported using backspace (BS=08) which is used
+                 814     ;to adjust what is stored in scratch pad memory and adjust the display
+                 815     ;on the terminal screen using characters sent to the UART transmitter.
+                 816     ;
+                 817     ;A test is made for the receiver FIFO becoming full. A full status is treated as
+                 818     ;a potential error situation and will result in a 'Overflow Error' message being
+                 819     ;transmitted to the UART, the receiver FIFO being purged of all data and an
+                 820     ;empty string being stored (carriage return at first location).
+                 821     ;
+                 822     ;Registers used s0, s1, s2 and 'UART_data'.
+                 823     ;
+1B1 01130        824     receive_string:         LOAD            s1, #string_start       ;locate start of string
+1B2 00210        825                             LOAD            s2, s1                  ;compute 16 character address
+1B3 11210        826                             ADD             s2, #0x10
+1B4 09000        827     receive_full_test:      INPUT           s0, status_port         ;test Rx_FIFO buffer for full
+1B5 0D010        828                             TEST            s0, #rx_full
+1B6 361CA        829                             JUMP            nz, read_error
+1B7 201A5        830                             CALL            read_from_uart          ;obtain and echo character
+1B8 201AB        831                             CALL            send_to_uart
+1B9 2EF10        832                             STORE           uart_data, @s1          ;write to memory
+1BA 1DF0D        833                             COMPARE         uart_data, #character_cr ;test for end of string
+1BB 31000        834                             RETURN          z
+1BC 1DF08        835                             COMPARE         uart_data, #character_bs ;test for back space
+1BD 321C2        836                             JUMP            z, bs_edit
+1BE 11101        837                             ADD             s1, #0x01               ;increment memory pointer
+1BF 1C120        838                             COMPARE         s1, s2                  ;test for pointer exceeding 16 characters
+1C0 361B4        839                             JUMP            nz, receive_full_test   ;next character
+1C1 20223        840                             CALL            send_backspace          ;hold end of string position on terminal display
+1C2 19101        841     bs_edit:                SUB             s1, #0x01               ;memory pointer back one
+1C3 1D130        842                             COMPARE         s1, #string_start       ;test for under flow
+1C4 3A1C8        843                             JUMP            c, string_start_again
+1C5 20220        844                             CALL            send_space              ;clear character at current position
+1C6 20223        845                             CALL            send_backspace          ;position cursor
+1C7 221B4        846                             JUMP            receive_full_test       ;next character
+1C8 2026B        847     string_start_again:     CALL            send_greater_than       ;restore '>' at prompt
+1C9 221B1        848                             JUMP            receive_string          ;begin again
+                 849     ;Receiver buffer overflow condition
+1CA 2021D        850     read_error:             CALL            send_cr                 ;Transmit error message
+1CB 2FF30        851                             STORE           uart_data, string_start ;empty string in memory (start with CR)
+1CC 2026E        852                             CALL            send_overflow_error
+1CD 2021D        853                             CALL            send_cr
+1CE 09000        854     clear_uart_rx_loop:     INPUT           s0, status_port         ;test Rx_FIFO buffer for data
+1CF 0D004        855                             TEST            s0, #rx_data_present
+1D0 31000        856                             RETURN          z                       ;finish when buffer is empty
+1D1 09F01        857                             INPUT           uart_data, uart_read_port ;read from FIFO and ignore
+1D2 221CE        858                             JUMP            clear_uart_rx_loop
+                 859     ;
+                 860     ;
+                 861     ;**************************************************************************************
+                 862     ; Useful ASCII conversion and handling routines
+                 863     ;**************************************************************************************
+                 864     ;
+                 865     ;
+                 866     ;
+                 867     ; Convert character to upper case
+                 868     ;
+                 869     ; The character supplied in register s0.
+                 870     ; If the character is in the range 'a' to 'z', it is converted
+                 871     ; to the equivalent upper case character in the range 'A' to 'Z'.
+                 872     ; All other characters remain unchanged.
+                 873     ;
+                 874     ; Registers used s0.
+                 875     ;
+1D3 1D061        876     upper_case:             COMPARE         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+1D4 39000        877                             RETURN          c
+1D5 1D07B        878                             COMPARE         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+1D6 3D000        879                             RETURN          nc
+1D7 030DF        880                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+1D8 25000        881                             RETURN
+                 882     ;
+                 883     ;
+                 884     ;
+                 885     ; Convert string held in scratch pad memory to upper case.
+                 886     ;
+                 887     ; Registers used s0, s1
+                 888     ;
+1D9 01130        889     upper_case_string:      LOAD            s1, #string_start
+1DA 0A010        890     ucs_loop:               FETCH           s0, @s1
+1DB 1D00D        891                             COMPARE         s0, #character_cr
+1DC 31000        892                             RETURN          z
+1DD 201D3        893                             CALL            upper_case
+1DE 2E010        894                             STORE           s0, @s1
+1DF 11101        895                             ADD             s1, #0x01
+1E0 221DA        896                             JUMP            ucs_loop
+                 897     ;
+                 898     ;
+                 899     ; Convert character '0' to '9' to numerical value in range 0 to 9
+                 900     ;
+                 901     ; The character supplied in register s0. If the character is in the
+                 902     ; range '0' to '9', it is converted to the equivalent decimal value.
+                 903     ; Characters not in the range '0' to '9' are signified by the return
+                 904     ; with the CARRY flag set.
+                 905     ;
+                 906     ; Registers used s0.
+                 907     ;
+1E1 110C6        908     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
+1E2 39000        909                             RETURN          c                       ;carry flag is set
+1E3 190F6        910                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
+1E4 25000        911                             RETURN                                  ;carry is set if value not in range
+                 912     ;
+                 913     ;
+                 914     ;
+                 915     ; Convert the HEX ASCII characters contained in 's3' and 's2' into
+                 916     ; an equivalent hexadecimal value in register 's0'.
+                 917     ;     The upper nibble is represented by an ASCII character in register s3.
+                 918     ;     The lower nibble is represented by an ASCII character in register s2.
+                 919     ;
+                 920     ; Input characters must be in the range 00 to FF hexadecimal or the CARRY flag
+                 921     ; will be set on return.
+                 922     ;
+                 923     ; Registers used s0, s2 and s3.
+                 924     ;
+1E5 00030        925     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+1E6 201F2        926                             CALL            ascii_to_hex            ;convert to value
+1E7 39000        927                             RETURN          c                       ;reject if out of range
+1E8 00300        928                             LOAD            s3, s0                  ;remember value
+1E9 14306        929                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+1EA 14306        930                             SL0             s3
+1EB 14306        931                             SL0             s3
+1EC 14306        932                             SL0             s3
+1ED 00020        933                             LOAD            s0, s2                  ;Take lower nibble
+1EE 201F2        934                             CALL            ascii_to_hex            ;convert to value
+1EF 39000        935                             RETURN          c                       ;reject if out of range
+1F0 04030        936                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+1F1 25000        937                             RETURN
+                 938     ;
+                 939     ;
+                 940     ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                 941     ;
+                 942     ; If character is not valid for hex, then CARRY is set on return.
+                 943     ;
+                 944     ; Register used s0
+                 945     ;
+1F2 110B9        946     ascii_to_hex:           ADD             s0, #0xb9               ;test for above ASCII code 46 ('F')
+1F3 39000        947                             RETURN          c
+1F4 190E9        948                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+1F5 39000        949                             RETURN          c                       ;reject below ASCII code 30 ('0')
+1F6 19011        950                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+1F7 3E1FC        951                             JUMP            nc, ascii_letter
+1F8 11007        952                             ADD             s0, #0x07               ;test for above ASCII code 46 ('F')
+1F9 39000        953                             RETURN          c
+1FA 190F6        954                             SUB             s0, #0xf6               ;convert to range 00 to 09
+1FB 25000        955                             RETURN
+1FC 1100A        956     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+1FD 25000        957                             RETURN
+                 958     ;
+                 959     ;
+                 960     ;
+                 961     ;
+                 962     ; Routine to convert ASCII data in 's0' to an equivalent DECIMAL value.
+                 963     ;
+                 964     ; If character is not valid for decimal, then CARRY is set on return.
+                 965     ;
+                 966     ; Register used s0
+                 967     ;
+1FE 110C6        968     ascii_to_decimal:       ADD             s0, #0xc6               ;test for above ASCII code 39 ('9')
+1FF 39000        969                             RETURN          c
+200 190F6        970                             SUB             s0, #0xf6               ;normalise to 0 to 9
+201 25000        971                             RETURN                                  ;carry set for ASCII code below 30 ('0')
+                 972     ;
+                 973     ;
+                 974     ;
+                 975     ; Convert hexadecimal value provided in register s0 into ASCII characters
+                 976     ;
+                 977     ; The value provided must can be any value in the range 00 to FF and will be converted into
+                 978     ; two ASCII characters.
+                 979     ;     The upper nibble will be represented by an ASCII character returned in register s2.
+                 980     ;     The lower nibble will be represented by an ASCII character returned in register s1.
+                 981     ;
+                 982     ; The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                 983     ; added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                 984     ; hexadecimal requiring a further addition of 07 to the 30 already added.
+                 985     ;
+                 986     ; Registers used s0, s1 and s2.
+                 987     ;
+202 00100        988     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+203 1400E        989                             SR0             s0                      ;isolate upper nibble
+204 1400E        990                             SR0             s0
+205 1400E        991                             SR0             s0
+206 1400E        992                             SR0             s0
+207 2020E        993                             CALL            hex_to_ascii            ;convert
+208 00200        994                             LOAD            s2, s0                  ;upper nibble value in s2
+209 00010        995                             LOAD            s0, s1                  ;restore complete value
+20A 0300F        996                             AND             s0, #0x0f               ;isolate lower nibble
+20B 2020E        997                             CALL            hex_to_ascii            ;convert
+20C 00100        998                             LOAD            s1, s0                  ;lower nibble value in s1
+20D 25000        999                             RETURN
+                1000     ;
+                1001     ; Convert hexadecimal value provided in register s0 into ASCII character
+                1002     ;
+                1003     ;Register used s0
+                1004     ;
+20E 1900A       1005     hex_to_ascii:           SUB             s0, #0x0a               ;test if value is in range 0 to 9
+20F 3A211       1006                             JUMP            c, number_char
+210 11007       1007                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+211 1103A       1008     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+212 25000       1009                             RETURN
+                1010     ;
+                1011     ;
+                1012     ; Send the two character HEX value of the register contents 's0' to the UART
+                1013     ;
+                1014     ; Registers used s0, s1, s2
+                1015     ;
+213 20202       1016     send_hex_byte:          CALL            hex_byte_to_ascii
+214 00F20       1017                             LOAD            uart_data, s2
+215 201AB       1018                             CALL            send_to_uart
+216 00F10       1019                             LOAD            uart_data, s1
+217 201AB       1020                             CALL            send_to_uart
+218 25000       1021                             RETURN
+                1022     ;
+                1023     ;
+                1024     ;
+                1025     ; Send the single HEX value representing the lower 4-bits of the register 's0'
+                1026     ; to the UART
+                1027     ;
+                1028     ; Registers used s0, s1, s2
+                1029     ;
+219 2020E       1030     send_nibble:            CALL            hex_to_ascii
+21A 00F00       1031                             LOAD            uart_data, s0
+21B 201AB       1032                             CALL            send_to_uart
+21C 25000       1033                             RETURN
+                1034     ;
+                1035     ;
+                1036     ;
+                1037     ;**************************************************************************************
+                1038     ; Text messages
+                1039     ;**************************************************************************************
+                1040     ;
+                1041     ;
+                1042     ; Send Carriage Return to the UART
+                1043     ;
+21D 01F0D       1044     send_cr:                LOAD            uart_data, #character_cr
+21E 201AB       1045                             CALL            send_to_uart
+21F 25000       1046                             RETURN
+                1047     ;
+                1048     ; Send a space to the UART
+                1049     ;
+220 01F20       1050     send_space:             LOAD            uart_data, #character_space
+221 201AB       1051                             CALL            send_to_uart
+222 25000       1052                             RETURN
+                1053     ;
+                1054     ;
+                1055     ;
+                1056     ;Send a back space to the UART
+                1057     ;
+223 01F08       1058     send_backspace:         LOAD            uart_data, #character_bs
+224 201AB       1059                             CALL            send_to_uart
+225 25000       1060                             RETURN
+                1061     ;
+                1062     ;
+                1063     ; Send 'PicoBlaze Servo Control' string to the UART
+                1064     ;
+226 2021D       1065     send_welcome:           CALL            send_cr
+227 2021D       1066                             CALL            send_cr
+228 01F50       1067                             LOAD            uart_data, #_character_p
+229 201AB       1068                             CALL            send_to_uart
+22A 01F69       1069                             LOAD            uart_data, #character_i
+22B 201AB       1070                             CALL            send_to_uart
+22C 01F63       1071                             LOAD            uart_data, #character_c
+22D 201AB       1072                             CALL            send_to_uart
+22E 01F6F       1073                             LOAD            uart_data, #character_o
+22F 201AB       1074                             CALL            send_to_uart
+230 01F42       1075                             LOAD            uart_data, #_character_b
+231 201AB       1076                             CALL            send_to_uart
+232 01F6C       1077                             LOAD            uart_data, #character_l
+233 201AB       1078                             CALL            send_to_uart
+234 01F61       1079                             LOAD            uart_data, #character_a
+235 201AB       1080                             CALL            send_to_uart
+236 01F7A       1081                             LOAD            uart_data, #character_z
+237 201AB       1082                             CALL            send_to_uart
+238 01F65       1083                             LOAD            uart_data, #character_e
+239 201AB       1084                             CALL            send_to_uart
+23A 20220       1085                             CALL            send_space
+23B 01F4C       1086                             LOAD            uart_data, #_character_l
+23C 201AB       1087                             CALL            send_to_uart
+23D 01F69       1088                             LOAD            uart_data, #character_i
+23E 201AB       1089                             CALL            send_to_uart
+23F 01F6E       1090                             LOAD            uart_data, #character_n
+240 201AB       1091                             CALL            send_to_uart
+241 01F65       1092                             LOAD            uart_data, #character_e
+242 201AB       1093                             CALL            send_to_uart
+243 20220       1094                             CALL            send_space
+244 01F53       1095                             LOAD            uart_data, #_character_s
+245 201AB       1096                             CALL            send_to_uart
+246 01F74       1097                             LOAD            uart_data, #character_t
+247 201AB       1098                             CALL            send_to_uart
+248 01F6F       1099                             LOAD            uart_data, #character_o
+249 201AB       1100                             CALL            send_to_uart
+24A 01F72       1101                             LOAD            uart_data, #character_r
+24B 201AB       1102                             CALL            send_to_uart
+24C 01F65       1103                             LOAD            uart_data, #character_e
+24D 201AB       1104                             CALL            send_to_uart
+24E 20220       1105                             CALL            send_space
+24F 01F54       1106                             LOAD            uart_data, #_character_t
+250 201AB       1107                             CALL            send_to_uart
+251 01F65       1108                             LOAD            uart_data, #character_e
+252 201AB       1109                             CALL            send_to_uart
+253 01F73       1110                             LOAD            uart_data, #character_s
+254 201AB       1111                             CALL            send_to_uart
+255 01F74       1112                             LOAD            uart_data, #character_t
+256 201AB       1113                             CALL            send_to_uart
+257 01F65       1114                             LOAD            uart_data, #character_e
+258 201AB       1115                             CALL            send_to_uart
+259 01F72       1116                             LOAD            uart_data, #character_r
+25A 201AB       1117                             CALL            send_to_uart
+25B 2021D       1118                             CALL            send_cr
+25C 2021D       1119                             CALL            send_cr
+25D 25000       1120                             RETURN
+                1121     ;
+                1122     ;
+                1123     ;Send 'KCPSM3>' prompt to the UART
+                1124     ;
+25E 2021D       1125     send_prompt:            CALL            send_cr                 ;start new line
+25F 01F4B       1126                             LOAD            uart_data, #_character_k
+260 201AB       1127                             CALL            send_to_uart
+261 01F43       1128                             LOAD            uart_data, #_character_c
+262 201AB       1129                             CALL            send_to_uart
+263 01F50       1130                             LOAD            uart_data, #_character_p
+264 201AB       1131                             CALL            send_to_uart
+265 01F53       1132                             LOAD            uart_data, #_character_s
+266 201AB       1133                             CALL            send_to_uart
+267 01F4D       1134                             LOAD            uart_data, #_character_m
+268 201AB       1135                             CALL            send_to_uart
+269 01F33       1136                             LOAD            uart_data, #character_3
+26A 201AB       1137                             CALL            send_to_uart
+                1138     ;
+                1139     ;Send '>' character to the UART
+                1140     ;
+26B 01F3E       1141     send_greater_than:      LOAD            uart_data, #character_greater_than
+26C 201AB       1142                             CALL            send_to_uart
+26D 25000       1143                             RETURN
+                1144     ;
+                1145     ;
+                1146     ;Send 'Overflow Error' to the UART
+                1147     ;
+26E 01F4F       1148     send_overflow_error:    LOAD            uart_data, #_character_o
+26F 201AB       1149                             CALL            send_to_uart
+270 01F76       1150                             LOAD            uart_data, #character_v
+271 201AB       1151                             CALL            send_to_uart
+272 01F65       1152                             LOAD            uart_data, #character_e
+273 201AB       1153                             CALL            send_to_uart
+274 01F72       1154                             LOAD            uart_data, #character_r
+275 201AB       1155                             CALL            send_to_uart
+276 01F66       1156                             LOAD            uart_data, #character_f
+277 201AB       1157                             CALL            send_to_uart
+278 01F6C       1158                             LOAD            uart_data, #character_l
+279 201AB       1159                             CALL            send_to_uart
+27A 01F6F       1160                             LOAD            uart_data, #character_o
+27B 201AB       1161                             CALL            send_to_uart
+27C 01F77       1162                             LOAD            uart_data, #character_w
+27D 201AB       1163                             CALL            send_to_uart
+27E 20220       1164     send_space_error:       CALL            send_space
+                1165     ;
+                1166     ;Send 'Error' to the UART
+                1167     ;
+27F 01F45       1168     send_error:             LOAD            uart_data, #_character_e
+280 201AB       1169                             CALL            send_to_uart
+281 01F72       1170                             LOAD            uart_data, #character_r
+282 201AB       1171                             CALL            send_to_uart
+283 201AB       1172                             CALL            send_to_uart
+284 01F6F       1173                             LOAD            uart_data, #character_o
+285 201AB       1174                             CALL            send_to_uart
+286 01F72       1175                             LOAD            uart_data, #character_r
+287 201AB       1176                             CALL            send_to_uart
+288 2221D       1177                             JUMP            send_cr
+                1178     ;
+                1179     ;
+                1180     ;Send 'OK' to the UART
+                1181     ;
+289 2021D       1182     send_ok:                CALL            send_cr
+28A 2021D       1183                             CALL            send_cr
+28B 01F4F       1184                             LOAD            uart_data, #_character_o
+28C 201AB       1185                             CALL            send_to_uart
+28D 01F4B       1186                             LOAD            uart_data, #_character_k
+28E 201AB       1187                             CALL            send_to_uart
+28F 2221D       1188                             JUMP            send_cr
+                1189     ;
+                1190     ;
+                1191     ;Send index to data being displayed
+                1192     ;
+290 2021D       1193     send_index:             CALL            send_cr
+291 01F63       1194                             LOAD            uart_data, #character_c
+292 201AB       1195                             CALL            send_to_uart
+293 01F79       1196                             LOAD            uart_data, #character_y
+294 201AB       1197                             CALL            send_to_uart
+295 01F63       1198                             LOAD            uart_data, #character_c
+296 201AB       1199                             CALL            send_to_uart
+297 01F6C       1200                             LOAD            uart_data, #character_l
+298 201AB       1201                             CALL            send_to_uart
+299 01F65       1202                             LOAD            uart_data, #character_e
+29A 201AB       1203                             CALL            send_to_uart
+29B 20220       1204                             CALL            send_space
+29C 20220       1205                             CALL            send_space
+29D 20220       1206                             CALL            send_space
+29E 20220       1207                             CALL            send_space
+29F 01F69       1208                             LOAD            uart_data, #character_i
+2A0 201AB       1209                             CALL            send_to_uart
+2A1 01F6E       1210                             LOAD            uart_data, #character_n
+2A2 201AB       1211                             CALL            send_to_uart
+2A3 01F70       1212                             LOAD            uart_data, #character_p
+2A4 201AB       1213                             CALL            send_to_uart
+2A5 01F75       1214                             LOAD            uart_data, #character_u
+2A6 201AB       1215                             CALL            send_to_uart
+2A7 01F74       1216                             LOAD            uart_data, #character_t
+2A8 201AB       1217                             CALL            send_to_uart
+2A9 20220       1218                             CALL            send_space
+2AA 20220       1219                             CALL            send_space
+2AB 20220       1220                             CALL            send_space
+2AC 20220       1221                             CALL            send_space
+2AD 20220       1222                             CALL            send_space
+2AE 01F37       1223                             LOAD            uart_data, #character_7
+2AF 201AB       1224                             CALL            send_to_uart
+2B0 01F36       1225                             LOAD            uart_data, #character_6
+2B1 201AB       1226                             CALL            send_to_uart
+2B2 01F38       1227                             LOAD            uart_data, #character_8
+2B3 201AB       1228                             CALL            send_to_uart
+2B4 20220       1229                             CALL            send_space
+2B5 20220       1230                             CALL            send_space
+2B6 20220       1231                             CALL            send_space
+2B7 01F31       1232                             LOAD            uart_data, #character_1
+2B8 201AB       1233                             CALL            send_to_uart
+2B9 01F30       1234                             LOAD            uart_data, #character_0
+2BA 201AB       1235                             CALL            send_to_uart
+2BB 01F32       1236                             LOAD            uart_data, #character_2
+2BC 201AB       1237                             CALL            send_to_uart
+2BD 01F34       1238                             LOAD            uart_data, #character_4
+2BE 201AB       1239                             CALL            send_to_uart
+2BF 20220       1240                             CALL            send_space
+2C0 20220       1241                             CALL            send_space
+2C1 202EA       1242                             CALL            send_1280
+2C2 20220       1243                             CALL            send_space
+2C3 20220       1244                             CALL            send_space
+2C4 20220       1245                             CALL            send_space
+2C5 202EA       1246                             CALL            send_1280
+2C6 01F61       1247                             LOAD            uart_data, #character_a
+2C7 201AB       1248                             CALL            send_to_uart
+2C8 20220       1249                             CALL            send_space
+2C9 20220       1250                             CALL            send_space
+2CA 202EA       1251                             CALL            send_1280
+2CB 01F62       1252                             LOAD            uart_data, #character_b
+2CC 201AB       1253                             CALL            send_to_uart
+2CD 20220       1254                             CALL            send_space
+2CE 20220       1255                             CALL            send_space
+2CF 202EA       1256                             CALL            send_1280
+2D0 01F63       1257                             LOAD            uart_data, #character_c
+2D1 201AB       1258                             CALL            send_to_uart
+2D2 20220       1259                             CALL            send_space
+2D3 01F31       1260                             LOAD            uart_data, #character_1
+2D4 201AB       1261                             CALL            send_to_uart
+2D5 01F35       1262                             LOAD            uart_data, #character_5
+2D6 201AB       1263                             CALL            send_to_uart
+2D7 01F33       1264                             LOAD            uart_data, #character_3
+2D8 201AB       1265                             CALL            send_to_uart
+2D9 01F36       1266                             LOAD            uart_data, #character_6
+2DA 201AB       1267                             CALL            send_to_uart
+2DB 20220       1268                             CALL            send_space
+2DC 202F3       1269                             CALL            send_1920
+2DD 20220       1270                             CALL            send_space
+2DE 20220       1271                             CALL            send_space
+2DF 20220       1272                             CALL            send_space
+2E0 202F3       1273                             CALL            send_1920
+2E1 01F61       1274                             LOAD            uart_data, #character_a
+2E2 201AB       1275                             CALL            send_to_uart
+2E3 20220       1276                             CALL            send_space
+2E4 20220       1277                             CALL            send_space
+2E5 202F3       1278                             CALL            send_1920
+2E6 01F62       1279                             LOAD            uart_data, #character_b
+2E7 201AB       1280                             CALL            send_to_uart
+2E8 2021D       1281                             CALL            send_cr
+2E9 25000       1282                             RETURN
+                1283     ;
+2EA 01F31       1284     send_1280:              LOAD            uart_data, #character_1
+2EB 201AB       1285                             CALL            send_to_uart
+2EC 01F32       1286                             LOAD            uart_data, #character_2
+2ED 201AB       1287                             CALL            send_to_uart
+2EE 01F38       1288                             LOAD            uart_data, #character_8
+2EF 201AB       1289                             CALL            send_to_uart
+2F0 01F30       1290                             LOAD            uart_data, #character_0
+2F1 201AB       1291                             CALL            send_to_uart
+2F2 25000       1292                             RETURN
+                1293     ;
+2F3 01F31       1294     send_1920:              LOAD            uart_data, #character_1
+2F4 201AB       1295                             CALL            send_to_uart
+2F5 01F39       1296                             LOAD            uart_data, #character_9
+2F6 201AB       1297                             CALL            send_to_uart
+2F7 01F32       1298                             LOAD            uart_data, #character_2
+2F8 201AB       1299                             CALL            send_to_uart
+2F9 01F30       1300                             LOAD            uart_data, #character_0
+2FA 201AB       1301                             CALL            send_to_uart
+2FB 25000       1302                             RETURN
+                1303     ;
+                1304     ;**************************************************************************************
+                1305     ; Interrupt Service Routine (ISR)
+                1306     ;**************************************************************************************
+                1307     ;
+                1308     ; Interrupts are not used in this program.
+                1309     ;
+2FC 29001       1310     isr:                    RETURNI         enable
+                1311     ;
+                1312     ;
+                1313     ;**************************************************************************************
+                1314     ; Interrupt Vector
+                1315     ;**************************************************************************************
+                1316     ;
+  003FF         1317                             ORG             0x3ff
+3FF 222FC       1318                             JUMP            isr
+                1319     ;
+                1320     ;
+                1321
