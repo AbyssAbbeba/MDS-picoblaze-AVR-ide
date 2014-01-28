@@ -189,7 +189,7 @@ class CompilerOptions
             ///
             int m_messageLimit;
 
-            /// 
+            ///
             Verbosity m_verbosity;
 
             /// Do not compile the code, only check whether it's syntactically correct.
