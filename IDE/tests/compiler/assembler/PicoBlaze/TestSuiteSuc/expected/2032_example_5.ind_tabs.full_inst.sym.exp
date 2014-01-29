@@ -86,7 +86,7 @@ DELAY_20MS . . . . . . . . . . . . . LABEL  0x001C8 USED     CONSTANT    2032_ex
 DELAY_40US . . . . . . . . . . . . . LABEL  0x001BE USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1241.1-1241.12
 DISP32_LOOP  . . . . . . . . . . . . LABEL  0x00185 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1147.1-1147.13
 DISPLAY_3_DIGITS . . . . . . . . . . LABEL  0x000D8 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:879.1-879.18
-DISPLAY_DDS_DATA . . . . . . . . . . LABEL  0x0015D USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1067.1-1067.18
+DISPLAY_DDS_EQU  . . . . . . . . . . LABEL  0x0015D USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1067.1-1067.17
 DISPLAY_DIGIT  . . . . . . . . . . . LABEL  0x000DF USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:887.1-887.15
 DISPLAY_FREQ . . . . . . . . . . . . LABEL  0x000B4 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:837.1-837.14
 DISPLAY_HEX_32_BIT . . . . . . . . . LABEL  0x00184 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1146.1-1146.20
@@ -125,16 +125,16 @@ LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2032_ex
 LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:59.1-59.26
 LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:48.1-48.27
 LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x001D2 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1300.1-1300.13
-LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x001FC NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1399.1-1399.16
 LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:60.1-60.24
 LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:61.1-61.24
 LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:62.1-62.24
 LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:63.1-63.24
+LCD_READ_EQU8  . . . . . . . . . . . LABEL  0x001FC NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1399.1-1399.15
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x00215 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1439.1-1439.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:51.1-51.19
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:50.1-50.19
 LCD_SHIFT_LEFT . . . . . . . . . . . LABEL  0x00235 NOT USED CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1496.1-1496.16
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1362.1-1362.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1362.1-1362.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001D8 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1316.1-1316.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001DC USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:1333.1-1333.17
 LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2032_example_5.ind_tabs.full_inst.asm:26.1-26.17

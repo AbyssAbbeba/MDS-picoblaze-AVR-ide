@@ -17,23 +17,23 @@ device kcpsm2
 ;
 ;
 status_port             EQU             0x00                    ;UART and filter status input
-tx_data_present         EQU             0x01                    ;  Transmitter  data present - bit0
+tx_EQU_present         EQU             0x01                    ;  Transmitter  EQU present - bit0
 tx_half_full            EQU             0x02                    ;    FIFO          half full - bit1
 tx_full                 EQU             0x04                    ;                       full - bit2
-rx_data_present         EQU             0x08                    ;               data present - bit3
+rx_EQU_present         EQU             0x08                    ;               EQU present - bit3
 rx_half_full            EQU             0x10                    ;  Receiver        half full - bit4
 rx_full                 EQU             0x20                    ;    FIFO               full - bit5
 spare1                  EQU             0x40                    ;                  spare '0' - bit6
 sf_sts                  EQU             0x80                    ;            StrataFLASH STS - bit7
 ;
-uart_read_port          EQU             0x01                    ;UART Rx data input
+uart_read_port          EQU             0x01                    ;UART Rx EQU input
 ;
-uart_write_port         EQU             0x04                    ;UART Tx data output
+uart_write_port         EQU             0x04                    ;UART Tx EQU output
 ;
 ;
-sf_data_in_port         EQU             0x02                    ;Read data from StrataFLASH device
+sf_EQU_in_port         EQU             0x02                    ;Read EQU from StrataFLASH device
 ;
-sf_data_out_port        EQU             0x10                    ;Data to write into StrataFLASH device
+sf_EQU_out_port        EQU             0x10                    ;EQU to write into StrataFLASH device
 ;
 sf_addr_hi_port         EQU             0x80                    ;StrataFLASH address[23:16]
 sf_addr_mi_port         EQU             0x40                    ;StrataFLASH address[15:8]
@@ -50,11 +50,11 @@ sf_we                   EQU             0x04                    ;         active
 ; Special Register usage
 ;**************************************************************************************
 ;
-uart_data               REG             sf                      ;used to pass data to and from the UART
+uart_EQU               REG             sf                      ;used to pass EQU to and from the UART
 ;
 ;
 ;**************************************************************************************
-; Useful data constants
+; Useful EQU constants
 ;**************************************************************************************
 ;
 ;Constant to define a software delay of 1us. This must be adjusted to reflect the
@@ -168,12 +168,12 @@ isr_preserve_s0         EQU             0x00                    ;preserve regist
 ;
 ;
 ;load up to one line of an MCS file as bytes
-;A typical data line consists of:-
+;A typical EQU line consists of:-
 ;:     Start character which is not loadd
-;10    Number of data bytes included (16 in this case)
+;10    Number of EQU bytes included (16 in this case)
 ;aaaa  Lower 16-bits of the storage address
-;00    Record type (data in this case)
-;dddd...   Data bytes (typically 16 which is the maximum)
+;00    Record type (EQU in this case)
+;dddd...   EQU bytes (typically 16 which is the maximum)
 ;cc    Checksum
 ;CR/LF Line will end in carriage return and/or line feed which is not loadd.
 ;
@@ -181,7 +181,7 @@ isr_preserve_s0         EQU             0x00                    ;preserve regist
 ;This is located at the end of scratch pad memory.
 ;
 line_start              EQU             0x2b                    ;21 bytes until end of memory
-data_start              EQU             0x2f                    ;Start of data field if present
+EQU_start              EQU             0x2f                    ;Start of EQU field if present
 ;
 ;
 ;**************************************************************************************
@@ -205,7 +205,7 @@ warm_start:             CALL            send_menu               ;Menu and comman
 ;
 prompt:                 CALL            send_cr
                         CALL            send_cr
-                        LOAD            uart_data, #character_greater_than ;prompt for input
+                        LOAD            uart_EQU, #character_greater_than ;prompt for input
                         CALL            send_to_uart
                         CALL            read_upper_case
                         load         s0, #_character_e       ;load for commands and execute as required
@@ -225,7 +225,7 @@ prompt:                 CALL            send_cr
                         load         s0, #_character_s
                         JUMP            z, sf_status
                         CALL            send_cr                 ;no valid command input
-                        LOAD            uart_data, #character_question ;display ???
+                        LOAD            uart_EQU, #character_question ;display ???
                         CALL            send_to_uart
                         CALL            send_to_uart
                         CALL            send_to_uart
@@ -234,7 +234,7 @@ prompt:                 CALL            send_cr
 ;
 read_upper_case:        CALL            read_from_uart          ;read command character from UART
                         CALL            send_to_uart            ;echo character
-                        LOAD            s0, uart_data           ;convert to upper case
+                        LOAD            s0, uart_EQU           ;convert to upper case
                         CALL            upper_case
                         RETURN
 ;
@@ -289,14 +289,14 @@ blocks_erase:           CALL            send_cr
                         CALL            send_confirm            ;confirm command with a 'Y' which must be upper case
                         CALL            read_from_uart          ;read command character from UART
                         CALL            send_to_uart            ;echo input
-                        load         uart_data, #_character_y
+                        load         uart_EQU, #_character_y
                         JUMP            nz, abort_erase
                         CALL            send_cr
                         CALL            send_erase_in_progress
                         CALL            send_cr
                         LOAD            s8, #0x00               ;define lower address of each block = xx0000
                         LOAD            s7, #0x00
-blocks_erase_loop:      LOAD            uart_data, #character_fullstop ;progress dots
+blocks_erase_loop:      LOAD            uart_EQU, #character_fullstop ;progress dots
                         CALL            send_to_uart
                         CALL            sf_erase_block          ;erase block
                         SUB             s9, #0x02               ;decrement base address by 1 block
@@ -332,7 +332,7 @@ sf_erase_block:         LOAD            s1, #0x20               ;block erase com
 ;
 ;
 ;**************************************************************************************
-; Program Command - Program StrataFLASH memory with data defined in an MCS file
+; Program Command - Program StrataFLASH memory with EQU defined in an MCS file
 ;**************************************************************************************
 ;
 program_command:        CALL            send_cr
@@ -342,7 +342,7 @@ program_command:        CALL            send_cr
                         JUMP            prompt
 ;
 ;**************************************************************************************
-; Program StrataFLASH memory with data defined in an MCS file
+; Program StrataFLASH memory with EQU defined in an MCS file
 ;**************************************************************************************
 ;
 ;Reads the MCS file from the UART and programs the Strata FLASH device at the locations.
@@ -358,14 +358,14 @@ program_mcs:            CALL            read_mcs_line           ;read line from 
                         load         sb, #0x01               ;load for end record
                         RETURN          z                       ;end of programming
                         load         sb, #0x04               ;load for extended address record
-                        JUMP            z, program_mcs          ;no data with this record and upper address now correct
+                        JUMP            z, program_mcs          ;no EQU with this record and upper address now correct
 ;
-;Assume data record type 00 which is data so need to program specified number
+;Assume EQU record type 00 which is EQU so need to program specified number
 ;of bytes into memory at correct address.
 ;
-write_spm_data:         CALL            send_hex_3bytes         ;send address to indicate progress
+write_spm_EQU:         CALL            send_hex_3bytes         ;send address to indicate progress
                         CALL            send_cr
-                        load           sa, line_start          ;read number of data bytes to program
+                        load           sa, line_start          ;read number of EQU bytes to program
                         CALL            sf_buffer_write         ;write bytes to memory
                         JUMP            program_mcs
 ;
@@ -389,16 +389,16 @@ write_spm_data:         CALL            send_hex_3bytes         ;send address to
 ;
 read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
 wait_mcs_line_start:    CALL            read_from_uart          ;read character
-                        load         uart_data, #character_colon ;load for start character
+                        load         uart_EQU, #character_colon ;load for start character
                         JUMP            nz, wait_mcs_line_start
 read_mcs_byte:          CALL            read_from_uart          ;read character
-                        load         uart_data, #character_cr ;load for end of line
+                        load         uart_EQU, #character_cr ;load for end of line
                         RETURN          z
-                        load         uart_data, #character_lf ;load for end of line
+                        load         uart_EQU, #character_lf ;load for end of line
                         RETURN          z
-                        LOAD            s3, uart_data           ;upper nibble character
+                        LOAD            s3, uart_EQU           ;upper nibble character
                         CALL            read_from_uart          ;read character
-                        LOAD            s2, uart_data           ;lower nibble character
+                        LOAD            s2, uart_EQU           ;lower nibble character
                         CALL            ascii_byte_to_hex       ;convert to true hex value
                         load           s0, #se                 ;write to SPM
                         ADD             se, #0x01               ;increment pointer
@@ -409,7 +409,7 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;Determine the current address for the line of an MCS file in scratch pad memory
 ;**************************************************************************************
 ;
-;Checks the existing line data loadd in scratch pad memory starting at location
+;Checks the existing line EQU loadd in scratch pad memory starting at location
 ;'line_start' and determines the current address.
 ;
 ;The address is in the register set [s9,s8,s7] before and after this routine is
@@ -420,15 +420,15 @@ read_mcs_byte:          CALL            read_from_uart          ;read character
 ;A record type of 00 will update [s8,s7].
 ;
 ;On return, the register sB will contain the record type and
-;register sC will indicate the number of data bytes loadd.
+;register sC will indicate the number of EQU bytes loadd.
 ;
 mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
                         load           sc, #sd                 ;read number of bytes on line
                         ADD             sd, #0x03               ;move to record type
                         load           sb, #sd                 ;read record type
-                        load         sb, #0x00               ;load for data record
+                        load         sb, #0x00               ;load for EQU record
                         JUMP            z, new_low_address
-                        load         sb, #0x04               ;load for data record
+                        load         sb, #0x04               ;load for EQU record
                         RETURN          nz
                         ADD             sd, #0x02               ;read upper 8-bits
                         load           s9, #sd
@@ -453,7 +453,7 @@ new_low_address:        SUB             sd, #0x01               ;read lower 8-bi
 ;   Write a value specifying the number of bytes to be written LESS ONE.
 ;      In this program the number of bytes will be specified in register sA
 ;      and this value needs to be decremented before writing to the memory.
-;   Write the correct number of actual data bytes with appropriate addresses.
+;   Write the correct number of actual EQU bytes with appropriate addresses.
 ;      Ideally the addresses do not cross the boundary of 32 locations
 ;      such that LSBs are always in the range 00000 to 11111 binary.
 ;      Crossing the boundary is OK but will take longer to program.
@@ -469,7 +469,7 @@ new_low_address:        SUB             sd, #0x01               ;read lower 8-bi
 ; On return, this will be increased by the number of locations written.
 ;
 ; Scratch pad memory locations starting at location defined by constant
-; 'data_start' should contain the data bytes to be written.
+; 'EQU_start' should contain the EQU bytes to be written.
 ;
 ; The act of writing the buffer to the memory array may take up to 654us to complete.
 ; The time taken to program is recorded by register pair [sE,sD]. Each count
@@ -486,8 +486,8 @@ sf_buffer_write:        LOAD            s1, #0xe8               ;command for buf
                         LOAD            s1, sa                  ;Specify number of bytes to write
                         SUB             s1, #0x01               ;one less than actual number!
                         CALL            sf_byte_write
-                        LOAD            s3, #data_start         ;point to data in scratch pad memory
-write_buffer_loop:      load           s1, #s3                 ;load data
+                        LOAD            s3, #EQU_start         ;point to EQU in scratch pad memory
+write_buffer_loop:      load           s1, #s3                 ;load EQU
                         CALL            sf_byte_write           ;write to buffer
                         ADD             s7, #0x01               ;increment address
                         ADDCY           s8, #0x00
@@ -515,9 +515,9 @@ write_command:          CALL            send_address            ;obtain 24-bit a
                         CALL            obtain_8bits
                         JUMP            c, write_command        ;bad input address
                         LOAD            s7, s0
-get_data:               CALL            send_data               ;obtain 8-bit data 00 to FF into s0
+get_EQU:               CALL            send_EQU               ;obtain 8-bit EQU 00 to FF into s0
                         CALL            obtain_8bits
-                        JUMP            c, get_data             ;bad input data
+                        JUMP            c, get_EQU             ;bad input EQU
                         CALL            sf_single_byte_write
                         CALL            send_cr
                         CALL            send_ok
@@ -529,11 +529,11 @@ get_data:               CALL            send_data               ;obtain 8-bit da
 ;**************************************************************************************
 ;
 ; To write a single byte to StrataFLASH memory the address must be set and the
-; single-word/byte program command (40 hex) sent to the memory. Then the data byte can
+; single-word/byte program command (40 hex) sent to the memory. Then the EQU byte can
 ; be written to the memory using the same address.
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
-; Register s0 should contain the byte data to be written to the memory.
+; Register s0 should contain the byte EQU to be written to the memory.
 ;
 ; The act of writing the memory array may take up to 175us to complete. This routine
 ; waits for the memory to be ready before restoring the normal read array mode and
@@ -546,7 +546,7 @@ get_data:               CALL            send_data               ;obtain 8-bit da
 ;
 sf_single_byte_write:   LOAD            s1, #0x40               ;command for single byte program
                         CALL            sf_byte_write
-                        LOAD            s1, s0                  ;write data to be programmed
+                        LOAD            s1, s0                  ;write EQU to be programmed
                         CALL            sf_byte_write
                         CALL            wait_sf_ready           ;wait for program to complete
                         RETURN
@@ -615,7 +615,7 @@ send_sf_byte:           CALL            send_space
 ;
 sf_information:         CALL            send_cr                 ;send 'ID=' to terminal
                         CALL            send_id
-                        LOAD            uart_data, #character_equals
+                        LOAD            uart_EQU, #character_equals
                         CALL            send_to_uart
                         CALL            send_space
                         LOAD            s9, #0x00               ;define base address 000000
@@ -671,11 +671,11 @@ sf_status:              LOAD            s9, #0x00               ;define base add
 ;**************************************************************************************
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
-; Register s0 will return the byte data retrieved from the memory.
+; Register s0 will return the byte EQU retrieved from the memory.
 ;
 ; To read a byte, the address needs to be set up on the address lines
 ; and the controls set as follows
-;    SF_read = 1 - disable Spartan data outputs and enable StrataFlash outputs (OE=0)
+;    SF_read = 1 - disable Spartan EQU outputs and enable StrataFlash outputs (OE=0)
 ;      SF_ce = 0 - enable StrataFLASH memory
 ;      SF_we = 1 - Write enable off
 ;
@@ -692,13 +692,13 @@ sf_byte_read:           OUTPUT          s9, sf_addr_hi_port     ;set 24-bit addr
                         OUTPUT          s1, sf_control_port
                         LOAD            s1, #0x06               ;>75ns delay
                         LOAD            s1, #0x06               ;but do something useful!
-                        INPUT           s0, sf_data_in_port     ;read data byte
+                        INPUT           s0, sf_EQU_in_port     ;read EQU byte
                         OUTPUT          s1, sf_control_port     ;clear controls
                         RETURN
 ;
 ;
 ;**************************************************************************************
-; Write data or command byte to StrataFlash Memory
+; Write EQU or command byte to StrataFlash Memory
 ;**************************************************************************************
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
@@ -706,7 +706,7 @@ sf_byte_read:           OUTPUT          s9, sf_addr_hi_port     ;set 24-bit addr
 ;
 ; To write a byte, the address needs to be set up on the address lines
 ; and the controls set as follows
-;    SF_read = 0 - enable Spartan data outputs and disable StrataFlash outputs (OE=1)
+;    SF_read = 0 - enable Spartan EQU outputs and disable StrataFlash outputs (OE=1)
 ;      SF_ce = 0 - enable StrataFLASH memory
 ;      SF_we = 0 - Write enable on
 ;
@@ -719,7 +719,7 @@ sf_byte_read:           OUTPUT          s9, sf_addr_hi_port     ;set 24-bit addr
 sf_byte_write:          OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
                         OUTPUT          s8, sf_addr_mi_port
                         OUTPUT          s7, sf_addr_lo_port
-                        OUTPUT          s1, sf_data_out_port    ;set data byte to be written
+                        OUTPUT          s1, sf_EQU_out_port    ;set EQU byte to be written
                         LOAD            s1, #0x00               ;set controls
                         OUTPUT          s1, sf_control_port
                         LOAD            s1, #0x06               ;>60ns delay
@@ -862,9 +862,9 @@ wait_1s:                CALL            delay_20ms
 ;
 ;Read one character from the UART
 ;
-;Character read will be returned in a register called 'UART_data'.
+;Character read will be returned in a register called 'UART_EQU'.
 ;
-;The routine first loads the receiver FIFO buffer to see if data is present.
+;The routine first loads the receiver FIFO buffer to see if EQU is present.
 ;If the FIFO is empty, the routine waits until there is a character to read.
 ;As this could take any amount of time the wait loop could include a call to a
 ;subroutine which performs a useful function.
@@ -884,24 +884,24 @@ wait_1s:                CALL            delay_20ms
 ;think that an XON needs to be transmitted.
 ;
 ;
-;Registers used s0 and UART_data
+;Registers used s0 and UART_EQU
 ;
 read_from_uart:         DISABLE         interrupt
 wait_rx_character:      INPUT           s0, status_port         ;load Rx_FIFO buffer
-                        load            s0, #rx_data_present
+                        load            s0, #rx_EQU_present
                         JUMP            nz, read_character
                         JUMP            wait_rx_character
-read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
-                        load         uart_data, #character_xoff ;load for XOFF
+read_character:         INPUT           uart_EQU, uart_read_port ;read from FIFO
+                        load         uart_EQU, #character_xoff ;load for XOFF
                         JUMP            z, wait_xon
                         ENABLE          interrupt               ;normal finish
                         RETURN
 wait_xon:               INPUT           s0, status_port         ;load Rx_FIFO buffer
-                        load            s0, #rx_data_present
+                        load            s0, #rx_EQU_present
                         JUMP            nz, read_xon
                         JUMP            wait_xon
-read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
-                        load         uart_data, #character_xon ;load for XON
+read_xon:               INPUT           uart_EQU, uart_read_port ;read from FIFO
+                        load         uart_EQU, #character_xon ;load for XON
                         JUMP            z, wait_rx_character    ;now wait for normal character
                         JUMP            wait_xon                ;continue to wait for XON
 ;
@@ -909,21 +909,21 @@ read_xon:               INPUT           uart_data, uart_read_port ;read from FIF
 ;
 ;Transmit one character to the UART
 ;
-;Character supplied in register called 'UART_data'.
+;Character supplied in register called 'UART_EQU'.
 ;
 ;The routine first loads the transmit FIFO buffer is empty.
-;If the FIFO currently has any data, the routine waits until it is empty.
+;If the FIFO currently has any EQU, the routine waits until it is empty.
 ;Ultimately this means that only one character is sent at a time which
 ;could be important if the PC at the other end of the link transmits
-;an XOFF and needs the flow of data to terminate as soon as possible.
+;an XOFF and needs the flow of EQU to terminate as soon as possible.
 ;
 ;Registers used s0
 ;
 send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
-                        load            s0, #tx_data_present
+                        load            s0, #tx_EQU_present
                         JUMP            z, uart_write
                         JUMP            send_to_uart
-uart_write:             OUTPUT          uart_data, uart_write_port
+uart_write:             OUTPUT          uart_EQU, uart_write_port
                         RETURN
 ;
 ;
@@ -1053,9 +1053,9 @@ number_char:            ADD             s0, #0x3a               ;ASCII char 0 to
 ;Registers used s0, s1, s2
 ;
 send_hex_byte:          CALL            hex_byte_to_ascii
-                        LOAD            uart_data, s2
+                        LOAD            uart_EQU, s2
                         CALL            send_to_uart
-                        LOAD            uart_data, s1
+                        LOAD            uart_EQU, s1
                         CALL            send_to_uart
                         RETURN
 ;
@@ -1099,7 +1099,7 @@ ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibb
                         RETURN
 ;
 ;
-;Routine to convert ASCII data in 's0' to an equivalent HEX value.
+;Routine to convert ASCII EQU in 's0' to an equivalent HEX value.
 ;
 ;If character is not valid for hex, then CARRY is set on return.
 ;
@@ -1119,7 +1119,7 @@ ascii_letter:           ADD             s0, #0x0a               ;convert to rang
                         RETURN
 ;
 ;
-;Read two hex characters from UART and convert to single byte data
+;Read two hex characters from UART and convert to single byte EQU
 ;
 obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
                         LOAD            s3, s0
@@ -1135,13 +1135,13 @@ obtain_8bits:           CALL            read_upper_case         ;obtain one byte
 ;
 ;Send Carriage Return to the UART
 ;
-send_cr:                LOAD            uart_data, #character_cr
+send_cr:                LOAD            uart_EQU, #character_cr
                         CALL            send_to_uart
                         RETURN
 ;
 ;Send a space to the UART
 ;
-send_space:             LOAD            uart_data, #character_space
+send_space:             LOAD            uart_EQU, #character_space
                         CALL            send_to_uart
                         RETURN
 ;
@@ -1150,73 +1150,73 @@ send_space:             LOAD            uart_data, #character_space
 ;
 send_welcome:           CALL            send_cr
                         CALL            send_cr
-                        LOAD            uart_data, #_character_p
+                        LOAD            uart_EQU, #_character_p
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_c
+                        LOAD            uart_EQU, #character_c
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_b
+                        LOAD            uart_EQU, #_character_b
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_l
+                        LOAD            uart_EQU, #character_l
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_z
+                        LOAD            uart_EQU, #character_z
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
-                        CALL            send_to_uart
-                        CALL            send_space
-                        LOAD            uart_data, #_character_n
-                        CALL            send_to_uart
-                        LOAD            uart_data, #_character_o
-                        CALL            send_to_uart
-                        LOAD            uart_data, #_character_r
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #_character_f
+                        LOAD            uart_EQU, #_character_n
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_l
+                        LOAD            uart_EQU, #_character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_a
-                        CALL            send_to_uart
-                        LOAD            uart_data, #_character_s
-                        CALL            send_to_uart
-                        LOAD            uart_data, #_character_h
+                        LOAD            uart_EQU, #_character_r
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #_character_p
+                        LOAD            uart_EQU, #_character_f
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #_character_l
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #_character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_g
+                        LOAD            uart_EQU, #_character_s
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_a
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_m
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_m
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_e
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #_character_h
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #character_v
+                        LOAD            uart_EQU, #_character_p
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_1
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_fullstop
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_0
+                        LOAD            uart_EQU, #character_g
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_0
+                        LOAD            uart_EQU, #character_r
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_a
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_m
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_m
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_e
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_r
+                        CALL            send_to_uart
+                        CALL            send_space
+                        LOAD            uart_EQU, #character_v
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_1
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_fullstop
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_0
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_0
                         CALL            send_to_uart
                         CALL            send_cr
                         CALL            send_cr
@@ -1226,42 +1226,42 @@ send_welcome:           CALL            send_cr
 ;
 ;Send 'Waiting_MCS_file' string to the UART
 ;
-send_waiting_mcs_file:  LOAD            uart_data, #_character_w
+send_waiting_mcs_file:  LOAD            uart_EQU, #_character_w
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_n
+                        LOAD            uart_EQU, #character_n
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_g
+                        LOAD            uart_EQU, #character_g
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #character_f
+                        LOAD            uart_EQU, #character_f
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
 send_mcs_file:          CALL            send_space
-                        LOAD            uart_data, #_character_m
+                        LOAD            uart_EQU, #_character_m
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_c
+                        LOAD            uart_EQU, #_character_c
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_s
+                        LOAD            uart_EQU, #_character_s
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #_character_f
+                        LOAD            uart_EQU, #_character_f
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_l
+                        LOAD            uart_EQU, #character_l
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         CALL            send_cr
                         RETURN
@@ -1270,24 +1270,24 @@ send_mcs_file:          CALL            send_space
 ;Send 'Erase in progress' string to the UART
 ;
 send_erase_in_progress: CALL            send_erase
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_n
+                        LOAD            uart_EQU, #character_n
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #_character_p
+                        LOAD            uart_EQU, #_character_p
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_g
+                        LOAD            uart_EQU, #character_g
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_s
                         CALL            send_to_uart
                         CALL            send_to_uart
                         CALL            send_cr
@@ -1296,15 +1296,15 @@ send_erase_in_progress: CALL            send_erase
 ;
 ;Send 'Erase ' string to the UART
 ;
-send_erase:             LOAD            uart_data, #_character_e
+send_erase:             LOAD            uart_EQU, #_character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_s
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         CALL            send_space
                         RETURN
@@ -1313,9 +1313,9 @@ send_erase:             LOAD            uart_data, #_character_e
 ;Send carriage return, 'OK' and carriage return to the UART
 ;
 send_ok:                CALL            send_cr
-                        LOAD            uart_data, #_character_o
+                        LOAD            uart_EQU, #_character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_k
+                        LOAD            uart_EQU, #_character_k
                         CALL            send_to_uart
                         CALL            send_cr
                         RETURN
@@ -1325,149 +1325,149 @@ send_ok:                CALL            send_cr
 ;Send menu to the UART
 ;
 send_menu:              CALL            send_cr
-                        LOAD            uart_data, #_character_e
+                        LOAD            uart_EQU, #_character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
                         CALL            send_erase
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_l
+                        LOAD            uart_EQU, #character_l
                         CALL            send_to_uart
                         CALL            send_to_uart
                         CALL            send_cr
-                        LOAD            uart_data, #_character_b
+                        LOAD            uart_EQU, #_character_b
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
                         CALL            send_erase
-                        LOAD            uart_data, #character_b
+                        LOAD            uart_EQU, #character_b
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_l
+                        LOAD            uart_EQU, #character_l
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_c
+                        LOAD            uart_EQU, #character_c
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_k
+                        LOAD            uart_EQU, #character_k
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_s
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #character_1
+                        LOAD            uart_EQU, #character_1
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_3
+                        LOAD            uart_EQU, #character_3
                         CALL            send_to_uart
                         CALL            send_cr
-                        LOAD            uart_data, #_character_p
+                        LOAD            uart_EQU, #_character_p
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_p
+                        LOAD            uart_EQU, #_character_p
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_g
+                        LOAD            uart_EQU, #character_g
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_m
+                        LOAD            uart_EQU, #character_m
                         CALL            send_to_uart
                         CALL            send_mcs_file
-                        LOAD            uart_data, #_character_w
+                        LOAD            uart_EQU, #_character_w
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_w
+                        LOAD            uart_EQU, #_character_w
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         CALL            send_space
                         CALL            send_byte
                         CALL            send_cr
-                        LOAD            uart_data, #_character_r
+                        LOAD            uart_EQU, #_character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_r
+                        LOAD            uart_EQU, #_character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_d
+                        LOAD            uart_EQU, #character_d
                         CALL            send_to_uart
                         CALL            send_space
-                        LOAD            uart_data, #character_2
+                        LOAD            uart_EQU, #character_2
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_5
+                        LOAD            uart_EQU, #character_5
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_6
+                        LOAD            uart_EQU, #character_6
                         CALL            send_to_uart
                         CALL            send_space
                         CALL            send_byte
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_s
                         CALL            send_to_uart
                         CALL            send_cr
-                        LOAD            uart_data, #_character_i
+                        LOAD            uart_EQU, #_character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_d
+                        LOAD            uart_EQU, #_character_d
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_v
+                        LOAD            uart_EQU, #character_v
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_c
+                        LOAD            uart_EQU, #character_c
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         CALL            send_space
                         CALL            send_id
                         CALL            send_cr
-                        LOAD            uart_data, #_character_h
+                        LOAD            uart_EQU, #_character_h
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_h
+                        LOAD            uart_EQU, #_character_h
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_l
+                        LOAD            uart_EQU, #character_l
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_p
+                        LOAD            uart_EQU, #character_p
                         CALL            send_to_uart
                         CALL            send_cr
-                        LOAD            uart_data, #_character_s
+                        LOAD            uart_EQU, #_character_s
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_minus
+                        LOAD            uart_EQU, #character_minus
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_s
+                        LOAD            uart_EQU, #_character_s
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_u
+                        LOAD            uart_EQU, #character_u
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_s
                         CALL            send_to_uart
                         CALL            send_cr
                         RETURN
@@ -1475,22 +1475,22 @@ send_menu:              CALL            send_cr
 ;
 ;Send 'ID' to the UART
 ;
-send_id:                LOAD            uart_data, #_character_i
+send_id:                LOAD            uart_EQU, #_character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_d
+                        LOAD            uart_EQU, #_character_d
                         CALL            send_to_uart
                         RETURN
 ;
 ;
 ;Send 'byte' to the UART
 ;
-send_byte:              LOAD            uart_data, #character_b
+send_byte:              LOAD            uart_EQU, #character_b
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_y
+                        LOAD            uart_EQU, #character_y
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_e
+                        LOAD            uart_EQU, #character_e
                         CALL            send_to_uart
                         RETURN
 ;
@@ -1498,31 +1498,31 @@ send_byte:              LOAD            uart_data, #character_b
 ;Send 'Confirm Erase (Y/n) ' to the UART
 ;
 send_confirm:           CALL            send_cr
-                        LOAD            uart_data, #_character_c
+                        LOAD            uart_EQU, #_character_c
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_n
+                        LOAD            uart_EQU, #character_n
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_f
+                        LOAD            uart_EQU, #character_f
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_i
+                        LOAD            uart_EQU, #character_i
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_m
+                        LOAD            uart_EQU, #character_m
                         CALL            send_to_uart
                         CALL            send_space
                         CALL            send_erase
-                        LOAD            uart_data, #character_open
+                        LOAD            uart_EQU, #character_open
                         CALL            send_to_uart
-                        LOAD            uart_data, #_character_y
+                        LOAD            uart_EQU, #_character_y
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_divide
+                        LOAD            uart_EQU, #character_divide
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_n
+                        LOAD            uart_EQU, #character_n
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_close
+                        LOAD            uart_EQU, #character_close
                         CALL            send_to_uart
                         CALL            send_space
                         RETURN
@@ -1531,15 +1531,15 @@ send_confirm:           CALL            send_cr
 ;Send 'Abort' to the UART
 ;
 send_abort:             CALL            send_cr
-                        LOAD            uart_data, #_character_a
+                        LOAD            uart_EQU, #_character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_b
+                        LOAD            uart_EQU, #character_b
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_o
+                        LOAD            uart_EQU, #character_o
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_r
+                        LOAD            uart_EQU, #character_r
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
                         CALL            send_cr
                         RETURN
@@ -1547,33 +1547,33 @@ send_abort:             CALL            send_cr
 ;Send 'address=' to the UART
 ;
 send_address:           CALL            send_cr
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_d
-                        CALL            send_to_uart
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_r
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_e
-                        CALL            send_to_uart
-                        LOAD            uart_data, #character_s
+                        LOAD            uart_EQU, #character_d
                         CALL            send_to_uart
                         CALL            send_to_uart
-send_equals:            LOAD            uart_data, #character_equals
+                        LOAD            uart_EQU, #character_r
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_e
+                        CALL            send_to_uart
+                        LOAD            uart_EQU, #character_s
+                        CALL            send_to_uart
+                        CALL            send_to_uart
+send_equals:            LOAD            uart_EQU, #character_equals
                         CALL            send_to_uart
                         RETURN
 ;
 ;
-;Send 'data=' to the UART
+;Send 'EQU=' to the UART
 ;
-send_data:              CALL            send_cr
-                        LOAD            uart_data, #character_d
+send_EQU:              CALL            send_cr
+                        LOAD            uart_EQU, #character_d
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_t
+                        LOAD            uart_EQU, #character_t
                         CALL            send_to_uart
-                        LOAD            uart_data, #character_a
+                        LOAD            uart_EQU, #character_a
                         CALL            send_to_uart
                         JUMP            send_equals
 ;

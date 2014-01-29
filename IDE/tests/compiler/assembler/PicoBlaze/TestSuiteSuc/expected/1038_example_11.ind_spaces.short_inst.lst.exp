@@ -34,16 +34,16 @@
   00000           34     status_port             EQU     0x00                    ;UART status input
   00001           35     tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
   00002           36     tx_full                 EQU     0x02                    ;    FIFO               full - bit1
-  00004           37     rx_data_present         EQU     0x04                    ;  Receiver     data present - bit2
+  00004           37     rx_EQU_present         EQU     0x04                    ;  Receiver     EQU present - bit2
   00008           38     rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
   00010           39     rx_full                 EQU     0x10                    ;                   full - bit4
   00020           40     spare1                  EQU     0x20                    ;                  spare '0' - bit5
   00040           41     spare2                  EQU     0x40                    ;                  spare '0' - bit6
   00080           42     spare3                  EQU     0x80                    ;                  spare '0' - bit7
                   43     ;
-  00001           44     uart_read_port          EQU     0x01                    ;UART Rx data input
+  00001           44     uart_read_port          EQU     0x01                    ;UART Rx EQU input
                   45     ;
-  00020           46     uart_write_port         EQU     0x20                    ;UART Tx data output
+  00020           46     uart_write_port         EQU     0x20                    ;UART Tx EQU output
                   47     ;
                   48     ;
                   49     ;
@@ -51,7 +51,7 @@
                   51     ; Special Register usage
                   52     ;**************************************************************************************
                   53     ;
-  0000F           54     uart_data               REG     sf                      ;used to pass data to and from the UART
+  0000F           54     uart_EQU               REG     sf                      ;used to pass EQU to and from the UART
                   55     ;
                   56     ;
                   57     ;
@@ -89,7 +89,7 @@
                   89     ;
                   90     ;
                   91     ;**************************************************************************************
-                  92     ;Useful data constants
+                  92     ;Useful EQU constants
                   93     ;**************************************************************************************
                   94     ;
                   95     ;
@@ -508,28 +508,28 @@ E: instruction not supported on the this device: STORE sX, ss.
                  436     ;
                  437     ; Read one character from the UART
                  438     ;
-                 439     ; Character read will be returned in a register called 'UART_data'.
+                 439     ; Character read will be returned in a register called 'UART_EQU'.
                  440     ;
-                 441     ; The routine first loads the receiver FIFO buffer to see if data is present.
+                 441     ; The routine first loads the receiver FIFO buffer to see if EQU is present.
                  442     ; If the FIFO is empty, the routine waits until there is a character to read.
                  443     ; As this could take any amount of time the wait loop could include a call to a
                  444     ; subroutine which performs a useful function.
                  445     ;
                  446     ;
-                 447     ; Registers used s0 and UART_data
+                 447     ; Registers used s0 and UART_EQU
                  448     ;
 09C 0A000        449     read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
-09D 00004        450                             load    s0, #rx_data_present    ;wait if empty
+09D 00004        450                             load    s0, #rx_EQU_present    ;wait if empty
 09E 095B9        451                             JUMP    nz, read_character
 09F 081B5        452                             JUMP    read_from_uart
-0A0 0AF01        453     read_character:         IN      uart_data, uart_read_port ;read from FIFO
+0A0 0AF01        453     read_character:         IN      uart_EQU, uart_read_port ;read from FIFO
 0A1 08080        454                             RET
                  455     ;
                  456     ;
                  457     ;
                  458     ; Transmit one character to the UART
                  459     ;
-                 460     ; Character supplied in register called 'UART_data'.
+                 460     ; Character supplied in register called 'UART_EQU'.
                  461     ;
                  462     ; The routine first loads the transmit FIFO buffer to see if it is full.
                  463     ; If the FIFO is full, then the routine waits until it there is space.
@@ -540,7 +540,7 @@ E: instruction not supported on the this device: STORE sX, ss.
 0A3 00002        468                             load    s0, #tx_full            ;wait if full
 0A4 091BF        469                             JUMP    z, uart_write
 0A5 081BB        470                             JUMP    send_to_uart
-0A6 0EF20        471     uart_write:             OUT     uart_data, uart_write_port
+0A6 0EF20        471     uart_write:             OUT     uart_EQU, uart_write_port
 0A7 08080        472                             RET
                  473     ;
                  474     ;
@@ -552,13 +552,13 @@ E: instruction not supported on the this device: STORE sX, ss.
                  480     ;
                  481     ; Send Carriage Return to the UART
                  482     ;
-0A8 00F0D        483     send_cr:                LD      uart_data, #character_cr
+0A8 00F0D        483     send_cr:                LD      uart_EQU, #character_cr
 0A9 083BB        484                             CALL    send_to_uart
 0AA 08080        485                             RET
                  486     ;
                  487     ; Send a space to the UART
                  488     ;
-0AB 00F20        489     send_space:             LD      uart_data, #character_space
+0AB 00F20        489     send_space:             LD      uart_EQU, #character_space
 0AC 083BB        490                             CALL    send_to_uart
 0AD 08080        491                             RET
                  492     ;
@@ -568,52 +568,52 @@ E: instruction not supported on the this device: STORE sX, ss.
                  496     ;
 0AE 083C1        497     send_welcome:           CALL    send_cr
 0AF 083C1        498                             CALL    send_cr
-0B0 00F50        499                             LD      uart_data, #_character_p
+0B0 00F50        499                             LD      uart_EQU, #_character_p
 0B1 083BB        500                             CALL    send_to_uart
-0B2 00F69        501                             LD      uart_data, #character_i
+0B2 00F69        501                             LD      uart_EQU, #character_i
 0B3 083BB        502                             CALL    send_to_uart
-0B4 00F63        503                             LD      uart_data, #character_c
+0B4 00F63        503                             LD      uart_EQU, #character_c
 0B5 083BB        504                             CALL    send_to_uart
-0B6 00F6F        505                             LD      uart_data, #character_o
+0B6 00F6F        505                             LD      uart_EQU, #character_o
 0B7 083BB        506                             CALL    send_to_uart
-0B8 00F42        507                             LD      uart_data, #_character_b
+0B8 00F42        507                             LD      uart_EQU, #_character_b
 0B9 083BB        508                             CALL    send_to_uart
-0BA 00F6C        509                             LD      uart_data, #character_l
+0BA 00F6C        509                             LD      uart_EQU, #character_l
 0BB 083BB        510                             CALL    send_to_uart
-0BC 00F61        511                             LD      uart_data, #character_a
+0BC 00F61        511                             LD      uart_EQU, #character_a
 0BD 083BB        512                             CALL    send_to_uart
-0BE 00F7A        513                             LD      uart_data, #character_z
+0BE 00F7A        513                             LD      uart_EQU, #character_z
 0BF 083BB        514                             CALL    send_to_uart
-0C0 00F65        515                             LD      uart_data, #character_e
+0C0 00F65        515                             LD      uart_EQU, #character_e
 0C1 083BB        516                             CALL    send_to_uart
 0C2 083C4        517                             CALL    send_space
-0C3 00F41        518                             LD      uart_data, #_character_a
+0C3 00F41        518                             LD      uart_EQU, #_character_a
 0C4 083BB        519                             CALL    send_to_uart
-0C5 00F75        520                             LD      uart_data, #character_u
+0C5 00F75        520                             LD      uart_EQU, #character_u
 0C6 083BB        521                             CALL    send_to_uart
-0C7 00F74        522                             LD      uart_data, #character_t
+0C7 00F74        522                             LD      uart_EQU, #character_t
 0C8 083BB        523                             CALL    send_to_uart
-0C9 00F6F        524                             LD      uart_data, #character_o
+0C9 00F6F        524                             LD      uart_EQU, #character_o
 0CA 083BB        525                             CALL    send_to_uart
 0CB 083C4        526                             CALL    send_space
-0CC 00F50        527                             LD      uart_data, #_character_p
+0CC 00F50        527                             LD      uart_EQU, #_character_p
 0CD 083BB        528                             CALL    send_to_uart
-0CE 00F57        529                             LD      uart_data, #_character_w
+0CE 00F57        529                             LD      uart_EQU, #_character_w
 0CF 083BB        530                             CALL    send_to_uart
-0D0 00F4D        531                             LD      uart_data, #_character_m
+0D0 00F4D        531                             LD      uart_EQU, #_character_m
 0D1 083BB        532                             CALL    send_to_uart
 0D2 083C4        533                             CALL    send_space
-0D3 00F41        534                             LD      uart_data, #_character_a
+0D3 00F41        534                             LD      uart_EQU, #_character_a
 0D4 083BB        535                             CALL    send_to_uart
-0D5 00F63        536                             LD      uart_data, #character_c
+0D5 00F63        536                             LD      uart_EQU, #character_c
 0D6 083BB        537                             CALL    send_to_uart
-0D7 00F74        538                             LD      uart_data, #character_t
+0D7 00F74        538                             LD      uart_EQU, #character_t
 0D8 083BB        539                             CALL    send_to_uart
-0D9 00F69        540                             LD      uart_data, #character_i
+0D9 00F69        540                             LD      uart_EQU, #character_i
 0DA 083BB        541                             CALL    send_to_uart
-0DB 00F76        542                             LD      uart_data, #character_v
+0DB 00F76        542                             LD      uart_EQU, #character_v
 0DC 083BB        543                             CALL    send_to_uart
-0DD 00F65        544                             LD      uart_data, #character_e
+0DD 00F65        544                             LD      uart_EQU, #character_e
 0DE 083BB        545                             CALL    send_to_uart
 0DF 083C1        546                             CALL    send_cr
 0E0 083C1        547                             CALL    send_cr
@@ -623,9 +623,9 @@ E: instruction not supported on the this device: STORE sX, ss.
                  551     ;Send 'OK' to the UART
                  552     ;
 0E2 083C1        553     send_ok:                CALL    send_cr
-0E3 00F4F        554                             LD      uart_data, #_character_o
+0E3 00F4F        554                             LD      uart_EQU, #_character_o
 0E4 083BB        555                             CALL    send_to_uart
-0E5 00F4B        556                             LD      uart_data, #_character_k
+0E5 00F4B        556                             LD      uart_EQU, #_character_k
 0E6 083BB        557                             CALL    send_to_uart
 0E7 081C1        558                             JUMP    send_cr
                  559     ;
@@ -698,32 +698,52 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 0FF 0D200        614                             SLA     s2                      ;shiload carry into register s2
 100 0C050        615                             load      s0, pwm_channel4        ;read desired setting of pulse width
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x100.
 101 0C100        616                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+E: attempting to use unavailable space in program memory at address: 0x101.
 102 0D200        617                             SLA     s2                      ;shiload carry into register s2
+E: attempting to use unavailable space in program memory at address: 0x102.
 103 0C040        618                             load      s0, pwm_channel3        ;read desired setting of pulse width
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x103.
 104 0C100        619                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+E: attempting to use unavailable space in program memory at address: 0x104.
 105 0D200        620                             SLA     s2                      ;shiload carry into register s2
+E: attempting to use unavailable space in program memory at address: 0x105.
 106 0C030        621                             load      s0, pwm_channel2        ;read desired setting of pulse width
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x106.
 107 0C100        622                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+E: attempting to use unavailable space in program memory at address: 0x107.
 108 0D200        623                             SLA     s2                      ;shiload carry into register s2
+E: attempting to use unavailable space in program memory at address: 0x108.
 109 0C020        624                             load      s0, pwm_channel1        ;read desired setting of pulse width
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x109.
 10A 0C100        625                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+E: attempting to use unavailable space in program memory at address: 0x10a.
 10B 0D200        626                             SLA     s2                      ;shiload carry into register s2
+E: attempting to use unavailable space in program memory at address: 0x10b.
 10C 0C010        627                             load      s0, pwm_channel0        ;read desired setting of pulse width
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x10c.
 10D 0C100        628                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+E: attempting to use unavailable space in program memory at address: 0x10d.
 10E 0D200        629                             SLA     s2                      ;shiload carry into register s2
+E: attempting to use unavailable space in program memory at address: 0x10e.
 10F 0E280        630                             OUT     s2, led_port            ;drive LEDs
+E: attempting to use unavailable space in program memory at address: 0x10f.
 110 0C0D0        631                             load      s0, isr_preserve_s0     ;reload register values
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x110.
 111 0C1E0        632                             load      s1, isr_preserve_s1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x111.
 112 0C2F0        633                             load      s2, isr_preserve_s2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x112.
 113 080F0        634                             RETIE
+E: attempting to use unavailable space in program memory at address: 0x113.
                  635     ;
                  636     ;
                  637     ;**************************************************************************************
@@ -733,6 +753,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
   003FF          641                             ORG     0x3ff
 3FF 08101        642                             JUMP    isr
 W: value out of range: 0x101, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1.
+E: attempting to use unavailable space in program memory at address: 0x3ff.
                  643     ;
                  644     ;
                  645

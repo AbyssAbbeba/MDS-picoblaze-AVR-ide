@@ -29,27 +29,27 @@ rotary_press            EQU             0x02                    ;     Centre pre
 ;The master enable signal is not used by the LCD display itself
 ;but may be required to confirm that LCD communication is active.
 ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
-;is used because it shares the same data pins and conflicts must be avoided.
+;is used because it shares the same EQU pins and conflicts must be avoided.
 ;
-lcd_output_port         EQU             0x40                    ;LCD character module output data and control
+lcd_output_port         EQU             0x40                    ;LCD character module output EQU and control
 lcd_e                   EQU             0x01                    ;   active High Enable        E - bit0
 lcd_rw                  EQU             0x02                    ;   Read=1 Write=0           RW - bit1
-lcd_rs                  EQU             0x04                    ;   Instruction=0 Data=1     RS - bit2
+lcd_rs                  EQU             0x04                    ;   Instruction=0 EQU=1     RS - bit2
 lcd_drive               EQU             0x08                    ;   Master enable (active High) - bit3
-lcd_db4                 EQU             0x10                    ;   4-bit              Data DB4 - bit4
-lcd_db5                 EQU             0x20                    ;   interface          Data DB5 - bit5
-lcd_db6                 EQU             0x40                    ;                      Data DB6 - bit6
-lcd_db7                 EQU             0x80                    ;                      Data DB7 - bit7
+lcd_db4                 EQU             0x10                    ;   4-bit              EQU DB4 - bit4
+lcd_db5                 EQU             0x20                    ;   interface          EQU DB5 - bit5
+lcd_db6                 EQU             0x40                    ;                      EQU DB6 - bit6
+lcd_db7                 EQU             0x80                    ;                      EQU DB7 - bit7
 ;
-lcd_input_port          EQU             0x02                    ;LCD character module input data
+lcd_input_port          EQU             0x02                    ;LCD character module input EQU
 lcd_read_spare0         EQU             0x01                    ;    Spare bits               - bit0
 lcd_read_spare1         EQU             0x02                    ;    are zero                 - bit1
 lcd_read_spare2         EQU             0x04                    ;                             - bit2
 lcd_read_spare3         EQU             0x08                    ;                             - bit3
-lcd_read_db4            EQU             0x10                    ;    4-bit           Data DB4 - bit4
-lcd_read_db5            EQU             0x20                    ;    interface       Data DB5 - bit5
-lcd_read_db6            EQU             0x40                    ;                    Data DB6 - bit6
-lcd_read_db7            EQU             0x80                    ;                    Data DB7 - bit7
+lcd_read_db4            EQU             0x10                    ;    4-bit           EQU DB4 - bit4
+lcd_read_db5            EQU             0x20                    ;    interface       EQU DB5 - bit5
+lcd_read_db6            EQU             0x40                    ;                    EQU DB6 - bit6
+lcd_read_db7            EQU             0x80                    ;                    EQU DB7 - bit7
 bit7                    EQU             0x80                    ;
 bit6                    EQU             0x40                    ;
 bit5                    EQU             0x20                    ;
@@ -308,7 +308,7 @@ blink1:                 load           s3, ms100
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         load           s5, temp
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s3, #0x00
                         load           s3, ms100
 wait1:                  load           s3, ms100
@@ -317,7 +317,7 @@ wait1:                  load           s3, ms100
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         LOAD            s5, #0x20
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, temp
                         ADD             s5, #0xff
                         load           s5, temp
@@ -339,7 +339,7 @@ blink2:                 load           s3, ms100
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         load           s5, temp
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s3, #0x00
                         load           s3, ms100
 wait2:                  load           s3, ms100
@@ -348,7 +348,7 @@ wait2:                  load           s3, ms100
                         LOAD            s5, #0x2f
                         CALL            lcd_cursor
                         LOAD            s5, #0x20
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, temp
                         ADD             s5, #0xff
                         load           s5, temp
@@ -410,10 +410,10 @@ loop:
                         JUMP            nz, space7
 dsp_hh:                 load           s5, hourh
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, hourl
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_2
 space7:                 CALL            disp_space
                         CALL            disp_space
@@ -429,10 +429,10 @@ mode_2:
                         JUMP            nz, space6
 dsp_mm:                 load           s5, minh
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, minl
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_3
 space6:                 CALL            disp_space
                         CALL            disp_space
@@ -448,10 +448,10 @@ mode_3:
                         JUMP            nz, space5
 dsp_ss:                 load           s5, sech
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, secl
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_4
 space5:                 CALL            disp_space
                         CALL            disp_space
@@ -463,68 +463,68 @@ mode_4:
                         load         s3, #0x00
                         JUMP            nz, mon
                         LOAD            s5, #_character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_u
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_n
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 mon:                    load           s3, week
                         load         s3, #0x01
                         JUMP            nz, tue
                         LOAD            s5, #_character_m
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_o
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_n
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 tue:                    load           s3, week
                         load         s3, #0x02
                         JUMP            nz, wed
                         LOAD            s5, #_character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_u
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 wed:                    load           s3, week
                         load         s3, #0x03
                         JUMP            nz, thu
                         LOAD            s5, #_character_w
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_d
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 thu:                    load           s3, week
                         load         s3, #0x04
                         JUMP            nz, fri
                         LOAD            s5, #_character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_h
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_u
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 fri:                    load           s3, week
                         load         s3, #0x05
                         JUMP            nz, sat
                         LOAD            s5, #_character_f
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 sat:                    LOAD            s5, #_character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            load_bit0
 load_bit0:
 rotary_press1:
@@ -541,10 +541,10 @@ skip1:
                         JUMP            nz, space4
 dsp_mon:                load           s5, monh
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, monl
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_5
 space4:                 CALL            disp_space
                         CALL            disp_space
@@ -560,10 +560,10 @@ mode_5:
                         JUMP            nz, space3
 dsp_dd:                 load           s5, dayh
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, dayl
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_6
 space3:                 CALL            disp_space
                         CALL            disp_space
@@ -579,16 +579,16 @@ mode_6:
                         JUMP            nz, space2
 dsp_yy:                 load           s5, year1
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, year2
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, year3
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         load           s5, year4
                         ADD             s5, #0x30
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         JUMP            mode_end
 space2:                 CALL            disp_space
                         CALL            disp_space
@@ -672,20 +672,20 @@ m7_end:                 ADD             s0, #0x07
                         LOAD            s5, #0x20
                         CALL            lcd_cursor
                         load           s5, disp_flag
-                        CALL            lcd_write_data
-                        CALL            lcd_write_data
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
+                        CALL            lcd_write_EQU
+                        CALL            lcd_write_EQU
                         JUMP            modeupdate
 setup:
 ;;;SET
                         LOAD            s5, #0x20
                         CALL            lcd_cursor
                         LOAD            s5, #0x53               ;;;;;;;;;;;;;;;;;;;;;;;    S
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x45               ;;;;;;;;;;;;;;;;;;;;;;;    E
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x54               ;;;;;;;;;;;;;;;;;;;;;;;    T
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
 modeupdate:             load           s0, mode
                         load           s0, blink_flag
 nochange:
@@ -767,64 +767,64 @@ h_end:                  ADD             s0, #0x0a
 disp_msg1:
                         CALL            disp_space
                         LOAD            s5, #_character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_c
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_l
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_o
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_c
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_k
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_b
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_d
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         RETURN
 ;
 ;
 ;
 disp_msg2:              LOAD            s5, #_character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_3
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #_character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_k
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_3
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         RETURN
 disp_msg3:              CALL            disp_space
                         CALL            disp_space
@@ -832,17 +832,17 @@ disp_msg3:              CALL            disp_space
                         CALL            disp_space
                         CALL            disp_space
                         LOAD            s5, #_character_x
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_l
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_n
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_x
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         CALL            disp_space
                         CALL            disp_space
@@ -850,129 +850,129 @@ disp_msg3:              CALL            disp_space
                         CALL            disp_space
                         RETURN
 disp_msg4:              LOAD            s5, #_character_p
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_c
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_o
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #_character_b
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_l
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_z
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         RETURN
 disp_msg5:              LOAD            s5, #_character_p
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #0x26
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_u
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_n
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_h
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         RETURN
 disp_msg6:              CALL            disp_space
                         LOAD            s5, #_character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_n
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_c
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_o
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_d
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_o
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_s
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_e
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         RETURN
 disp_msg7:              LOAD            s5, #_character_h
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_p
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_p
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_y
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         CALL            disp_space
                         LOAD            s5, #_character_b
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_i
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_r
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_t
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_h
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_d
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_a
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #character_y
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x21
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         RETURN
 ;
 ;Display a space on LCD at current cursor position
 ;
 ;
 disp_space:             LOAD            s5, #character_space
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         RETURN
 ;
 ;
@@ -1049,7 +1049,7 @@ wait_1s:                CALL            delay_20ms
 ;**************************************************************************************
 ;
 ;LCD module is a 16 character by 2 line display but all displays are very similar
-;The 4-wire data interface will be used (DB4 to DB7).
+;The 4-wire EQU interface will be used (DB4 to DB7).
 ;
 ;The LCD modules are relatively slow and software delay loops are used to slow down
 ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
@@ -1113,10 +1113,10 @@ lcd_write_inst8:        LOAD            s4, s5
 ;
 ;
 ;
-;Write 8-bit data to LCD display.
+;Write 8-bit EQU to LCD display.
 ;
-;The 8-bit data should be provided in register s5.
-;Data bytes are written using the following sequence
+;The 8-bit EQU should be provided in register s5.
+;EQU bytes are written using the following sequence
 ; Upper nibble
 ; wait >1us
 ; Lower nibble
@@ -1124,15 +1124,15 @@ lcd_write_inst8:        LOAD            s4, s5
 ;
 ;Registers used s0, s1, s4, s5
 ;
-lcd_write_data:         LOAD            s4, s5
+lcd_write_EQU:         LOAD            s4, s5
                         AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-                        OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+                        OR              s4, #0x0c               ;Enable=1 RS=1 EQU, RW=0 Write, E=0
                         OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
                         CALL            lcd_pulse_e             ;write upper nibble
                         CALL            delay_1us               ;wait >1us
                         LOAD            s4, s5                  ;select lower nibble with
                         SL1             s4                      ;Enable=1
-                        SL1             s4                      ;RS=1 Data
+                        SL1             s4                      ;RS=1 EQU
                         SL0             s4                      ;RW=0 Write
                         SL0             s4                      ;E=0
                         OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
@@ -1145,15 +1145,15 @@ lcd_write_data:         LOAD            s4, s5
 ;
 ;
 ;
-;Read 8-bit data from LCD display.
+;Read 8-bit EQU from LCD display.
 ;
-;The 8-bit data will be read from the current LCD memory address
+;The 8-bit EQU will be read from the current LCD memory address
 ;and will be returned in register s5.
 ;It is advisable to set the LCD address (cursor position) before
-;using the data read for the first time otherwise the display may
-;generate invalid data on the first read.
+;using the EQU read for the first time otherwise the display may
+;generate invalid EQU on the first read.
 ;
-;Data bytes are read using the following sequence
+;EQU bytes are read using the following sequence
 ; Upper nibble
 ; wait >1us
 ; Lower nibble
@@ -1161,18 +1161,18 @@ lcd_write_data:         LOAD            s4, s5
 ;
 ;Registers used s0, s1, s4, s5
 ;
-;LCD_read_data8: LOAD s4, 0E                         ;Enable=1 RS=1 Data, RW=1 Read, E=0
+;LCD_read_EQU8: LOAD s4, 0E                         ;Enable=1 RS=1 EQU, RW=1 Read, E=0
 ;                OUTPUT s4, LCD_output_port          ;set up RS and RW >40ns before enable pulse
 ;                XOR s4, LCD_E                       ;E=1
 ;                OUTPUT s4, LCD_output_port
-;                CALL delay_1us                      ;wait >260ns to access data
+;                CALL delay_1us                      ;wait >260ns to access EQU
 ;                INPUT s5, LCD_input_port            ;read upper nibble
 ;                XOR s4, LCD_E                       ;E=0
 ;                OUTPUT s4, LCD_output_port
 ;                CALL delay_1us                      ;wait >1us
 ;                XOR s4, LCD_E                       ;E=1
 ;                OUTPUT s4, LCD_output_port
-;                CALL delay_1us                      ;wait >260ns to access data
+;                CALL delay_1us                      ;wait >260ns to access EQU
 ;                INPUT s0, LCD_input_port            ;read lower nibble
 ;                XOR s4, LCD_E                       ;E=0
 ;                OUTPUT s4, LCD_output_port
@@ -1182,13 +1182,13 @@ lcd_write_data:         LOAD            s4, s5
 ;                SR0 s0
 ;                SR0 s0
 ;                OR s5, s0
-;                LOAD s4, 04                         ;Enable=0 RS=1 Data, RW=0 Write, E=0
+;                LOAD s4, 04                         ;Enable=0 RS=1 EQU, RW=0 Write, E=0
 ;                OUTPUT s4, LCD_output_port          ;Stop reading 5V device and release master enable
 ;                CALL delay_40us                     ;wait >40us
 ;                RETURN
 ;
 ;
-;Reset and initialise display to communicate using 4-bit data mode
+;Reset and initialise display to communicate using 4-bit EQU mode
 ;Includes routine to clear the display.
 ;
 ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
@@ -1225,27 +1225,27 @@ lcd_clear:              LOAD            s5, #0x01               ;Display clear
                         LOAD            s5, #0x13
                         CALL            lcd_cursor
                         LOAD            s5, #0x3a               ;;;;;;;;;;;;;;;;;;;;;;;    :
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x16
                         CALL            lcd_cursor
                         LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x20
                         CALL            lcd_cursor
                         LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x28
                         CALL            lcd_cursor
                         LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     /
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         LOAD            s5, #0x2b
                         CALL            lcd_cursor
                         LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     -
-                        CALL            lcd_write_data
+                        CALL            lcd_write_EQU
                         RETURN
 ;
 ;Position the cursor ready for characters to be written.

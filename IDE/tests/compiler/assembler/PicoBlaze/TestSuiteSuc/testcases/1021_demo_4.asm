@@ -15,24 +15,24 @@ device kcpsm1
 ; Press Start simulation and Animate to run the program
 ;
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-RX_DATA                 EQU             4
+RX_EQU                 EQU             4
         
 ; Asign names to registers
-        NAMEREG         s0,temp1              ; temporary data register
-        NAMEREG         s1,temp2              ; temporary data register
-        NAMEREG         s2,temp3              ; temporary data register
+        NAMEREG         s0,temp1              ; temporary EQU register
+        NAMEREG         s1,temp2              ; temporary EQU register
+        NAMEREG         s2,temp3              ; temporary EQU register
         ; OR
-        RXdata         REG    s3             ; RX data
-        TXdata            REG     s4          ; TX data
-        LED_reg          REG       s5         ; Leds data register
+        RXEQU         REG    s3             ; RX EQU
+        TXEQU            REG     s4          ; TX EQU
+        LED_reg          REG       s5         ; Leds EQU register
 ; PORT_IDs
-        TX_id       PORT        0x01          ;  data register port ID
-        RX_id       PORT        0x02          ;  data register port ID
+        TX_id       PORT        0x01          ;  EQU register port ID
+        RX_id       PORT        0x02          ;  EQU register port ID
         UART_stat   PORT        0x04          ; status register port ID
         LED_id      PORT        0x08          ; Led register
 ; UART Status register:
 ;  [2] Tx ready
-;  [3] new Rx data
+;  [3] new Rx EQU
 ;  [4] Rx buffer overflow
         
 ;  Macro definition
@@ -43,8 +43,8 @@ UART_ready_wait     MACRO
          ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM
-; UART status checking MACRO (NEW RX data?)
-UART_new_data_wait  MACRO
+; UART status checking MACRO (NEW RX EQU?)
+UART_new_EQU_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
@@ -55,16 +55,16 @@ UART_new_data_wait  MACRO
 ;==============================================================================;
 Sendchar            MACRO       char                 ; One parameter
                     UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-                    LOAD        TXdata, char
-                    OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                    LOAD        TXEQU, char
+                    OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                     ENDM
 ;==============================================================================;
 ; Reads a single character from UART (waits on receive when none is prepared)
 ; Registers used: Temp1, chreg
 ;==============================================================================;
 GetChar             MACRO
-                    UART_new_data_wait              ; Wait for new data
-                    INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+                    UART_new_EQU_wait              ; Wait for new EQU
+                    INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
                     ENDM
 ;==============================================================================;
 ; Send 0D and 0A character pair via UART
@@ -171,7 +171,7 @@ Start:
 ; ---------------------------------------- Main loop
 
 main_loop:          GetChar                       ; Receive via UART, get status of switches for example
-                    RX_resolve  RX_data           ; Resolve received byte
+                    RX_resolve  RX_EQU           ; Resolve received byte
                     JUMP        main_loop
 
 

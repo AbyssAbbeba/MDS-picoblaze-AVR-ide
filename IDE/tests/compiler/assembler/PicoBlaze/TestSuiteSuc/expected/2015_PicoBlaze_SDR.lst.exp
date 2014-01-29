@@ -17,23 +17,23 @@
                   17     ; Start
                   18     ;##############################################################################;
                   19     ; Přiřazení jmen registrům
-  00000           20     	NAMEREG		s0,temp1              ; temporary data register
-  00001           21     	NAMEREG		s1,temp2              ; temporary data register
-  00002           22     	NAMEREG		s2,temp3              ; temporary data register
-  00003           23     	NAMEREG		s3,RXdata             ; temporary data register
-  00004           24     	NAMEREG		s4,TXdata             ; temporary data register
+  00000           20     	NAMEREG		s0,temp1              ; temporary EQU register
+  00001           21     	NAMEREG		s1,temp2              ; temporary EQU register
+  00002           22     	NAMEREG		s2,temp3              ; temporary EQU register
+  00003           23     	NAMEREG		s3,RXEQU             ; temporary EQU register
+  00004           24     	NAMEREG		s4,TXEQU             ; temporary EQU register
                   25
                   26     ; PORT_IDs
-  00001           27     	CONSTANT	TX_data_01, 01          ;  data register port ID
-  00002           28     	CONSTANT	TX_data_02, 02          ;  data register port ID
-  00004           29     	CONSTANT	TX_data_03, 04          ;  data register port ID
-  00008           30     	CONSTANT	TX_data_04, 08          ;  data register port ID
-  0000C           31     	CONSTANT	Read_data, 12           ;  data register port ID
+  00001           27     	CONSTANT	TX_EQU_01, 01          ;  EQU register port ID
+  00002           28     	CONSTANT	TX_EQU_02, 02          ;  EQU register port ID
+  00004           29     	CONSTANT	TX_EQU_03, 04          ;  EQU register port ID
+  00008           30     	CONSTANT	TX_EQU_04, 08          ;  EQU register port ID
+  0000C           31     	CONSTANT	Read_EQU, 12           ;  EQU register port ID
                   32
   00004           33     CHREG                   equ             4
   00004           34     SWITCH                   equ             4
   00004           35     UART_STAT                   equ             4
-  00004           36     UART_DATA                   equ             4
+  00004           36     UART_EQU                   equ             4
                   37
                   38     	
                   39     ; Inicializace
@@ -68,7 +68,7 @@ W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; wh
 009 10020         66                         load      Temp1, 4            ; load bit 2 (is Tx ready?)
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 00A 35008         67                         JUMP      Z, SendChar         ; wait until Tx is ready
-00B 22404         68                         OUT       chreg, UART_data    ; Send the character
+00B 22404         68                         OUT       chreg, UART_EQU    ; Send the character
 W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00C 24000         69                         RET                           ; Return from procedure
                   70
@@ -77,10 +77,10 @@ W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; w
                   73     ; Registers used: Temp1, chreg
                   74     ;==============================================================================;
 00D 20004         75     GetChar:            IN        Temp1, UART_stat    ; checking UART status
-00E 10040         76                         load      Temp1, 8            ; load bit 3 (new Rx data?)
+00E 10040         76                         load      Temp1, 8            ; load bit 3 (new Rx EQU?)
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-00F 3500D         77                         JUMP      Z, GetChar          ; wait for new Rx data
-010 20404         78                         IN        chreg, UART_data    ; Read the character
+00F 3500D         77                         JUMP      Z, GetChar          ; wait for new Rx EQU
+010 20404         78                         IN        chreg, UART_EQU    ; Read the character
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 011 24000         79                         RET                           ; Return from procedure
                   80

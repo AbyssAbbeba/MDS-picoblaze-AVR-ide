@@ -4,7 +4,7 @@
                    4     device kcpsm2
                    5
                    6
-  00000            7     NAMEREG         s0, ram_data
+  00000            7     NAMEREG         s0, ram_EQU
   00001            8     NAMEREG         s1, ram_address
                    9
   00028           10     CONSTANT        ram_locations, 40               ; there are 64 locations
@@ -12,7 +12,7 @@
                   12
                   13
   00000           14     Start:
-000 10000         15             LOAD            ram_data, initial_value         ; load initial value
+000 10000         15             LOAD            ram_EQU, initial_value         ; load initial value
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 001 10140         16             LOAD            ram_address, ram_locations
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -22,7 +22,7 @@ W: value out of range: 0x28, allowed range is [0x0,0x1f] (trimmed to 5 bits) whi
 002 1C108         19             SUB             ram_address, 01
 W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                   20             ; decrement address
-003 00001         21             load           ram_data, #ram_address
+003 00001         21             load           ram_EQU, #ram_address
 W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
                   22
                   23
@@ -49,7 +49,7 @@ W: reusing already reserved space in register file memory at address: 0x0.
                   43     ; read switches into register s0
   00001           44     NAMEREG                 s1, LED_output
 W: reusing already reserved space in register file memory at address: 0x1.
-                  45     ; load LED output data in register s1
+                  45     ; load LED output EQU in register s1
                   46     ; Load 7-segment LED patterns into scratchpad RAM
 005 10100         47             LOAD            LED_output, LED_0
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

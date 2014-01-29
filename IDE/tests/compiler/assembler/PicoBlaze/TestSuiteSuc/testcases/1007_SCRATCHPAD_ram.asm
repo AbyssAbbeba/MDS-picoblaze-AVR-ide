@@ -4,7 +4,7 @@
 device kcpsm1
 
 
-NAMEREG         s0, ram_data
+NAMEREG         s0, ram_EQU
 NAMEREG         s1, ram_address
 
 CONSTANT        ram_locations, 40               ; there are 64 locations
@@ -12,7 +12,7 @@ CONSTANT        initial_value, 00               ; initialize to zero
 
 
 Start:
-        LOAD            ram_data, initial_value         ; load initial value
+        LOAD            ram_EQU, initial_value         ; load initial value
         LOAD            ram_address, ram_locations
         ; fill from top to bottom
 ram_fill:
@@ -42,7 +42,7 @@ CONSTANT                LED_F, 8Eh
 NAMEREG                 s0, switch_value
 ; read switches into register s0
 NAMEREG                 s1, LED_output
-; load LED output data in register s1
+; load LED output EQU in register s1
 ; Load 7-segment LED patterns into scratchpad RAM
         LOAD            LED_output, LED_0
 

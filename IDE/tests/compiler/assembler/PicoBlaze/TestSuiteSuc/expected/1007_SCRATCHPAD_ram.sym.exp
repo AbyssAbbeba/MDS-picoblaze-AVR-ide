@@ -9,7 +9,7 @@ MY_SUBROUTINE  . . . . . . . . . . . LABEL  0x0000C NOT USED CONSTANT    1007_SC
 POP_S0 . . . . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:89.1-89.8
 PUSH_S0  . . . . . . . . . . . . . . LABEL  0x0000F USED     CONSTANT    1007_SCRATCHPAD_ram.asm:83.1-83.9
 RAM_ADDRESS  . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:8.1-8.32
-RAM_DATA . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:7.1-7.29
+RAM_EQU  . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:7.1-7.28
 RAM_FILL . . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:18.1-18.10
 RAM_LOCATIONS  . . . . . . . . . . . NUMBER 0x00028 USED     CONSTANT    1007_SCRATCHPAD_ram.asm:10.1-10.34
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT

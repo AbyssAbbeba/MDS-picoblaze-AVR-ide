@@ -174,7 +174,7 @@ sub128:                 LD      s8, #pstate             ; get state byte
 ; SBox( s )
 sbox:
                         OUT     s8, sbox_rom            ; set index
-                        IN      s8, sbox_rom            ; get data
+                        IN      s8, sbox_rom            ; get EQU
                         RET
 
 ; soft version of SBOX, very slow
