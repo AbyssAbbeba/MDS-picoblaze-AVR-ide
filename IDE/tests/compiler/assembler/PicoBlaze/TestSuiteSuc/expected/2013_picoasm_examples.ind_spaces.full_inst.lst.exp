@@ -102,7 +102,7 @@
                  102     ;Send character.
 02A 3400A        103                             JUMP            start
                  104
-                 105     ; Routine to transmit data via RS-232
+                 105     ; Routine to transmit EQU via RS-232
                  106     ; First check UART status.
 02B 20000        107     xmit:                   INPUT           s0, 00                  ;read uart status.
 02C 02050        108                             AND             s0, #80                 ;Buffer full mask.

@@ -17,7 +17,7 @@ ram_pointer      SET     00h      ; Assign name to register 3
 shift   MACRO    reg0, reg1
 
 
-        ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
+        ; Save registers to EQU memory (Scratch-pad ram with range 00h to 3Fh)
         load    s0, ram_pointer + 1
         load    s1, ram_pointer + 1
         

@@ -29,27 +29,27 @@
                   29     ;The master enable signal is not used by the LCD display itself
                   30     ;but may be required to confirm that LCD communication is active.
                   31     ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
-                  32     ;is used because it shares the same data pins and conflicts must be avoided.
+                  32     ;is used because it shares the same EQU pins and conflicts must be avoided.
                   33     ;
-  00040           34     lcd_output_port         EQU             0x40                    ;LCD character module output data and control
+  00040           34     lcd_output_port         EQU             0x40                    ;LCD character module output EQU and control
   00001           35     lcd_e                   EQU             0x01                    ;   active High Enable        E - bit0
   00002           36     lcd_rw                  EQU             0x02                    ;   Read=1 Write=0           RW - bit1
-  00004           37     lcd_rs                  EQU             0x04                    ;   Instruction=0 Data=1     RS - bit2
+  00004           37     lcd_rs                  EQU             0x04                    ;   Instruction=0 EQU=1     RS - bit2
   00008           38     lcd_drive               EQU             0x08                    ;   Master enable (active High) - bit3
-  00010           39     lcd_db4                 EQU             0x10                    ;   4-bit              Data DB4 - bit4
-  00020           40     lcd_db5                 EQU             0x20                    ;   interface          Data DB5 - bit5
-  00040           41     lcd_db6                 EQU             0x40                    ;                      Data DB6 - bit6
-  00080           42     lcd_db7                 EQU             0x80                    ;                      Data DB7 - bit7
+  00010           39     lcd_db4                 EQU             0x10                    ;   4-bit              EQU DB4 - bit4
+  00020           40     lcd_db5                 EQU             0x20                    ;   interface          EQU DB5 - bit5
+  00040           41     lcd_db6                 EQU             0x40                    ;                      EQU DB6 - bit6
+  00080           42     lcd_db7                 EQU             0x80                    ;                      EQU DB7 - bit7
                   43     ;
-  00002           44     lcd_input_port          EQU             0x02                    ;LCD character module input data
+  00002           44     lcd_input_port          EQU             0x02                    ;LCD character module input EQU
   00001           45     lcd_read_spare0         EQU             0x01                    ;    Spare bits               - bit0
   00002           46     lcd_read_spare1         EQU             0x02                    ;    are zero                 - bit1
   00004           47     lcd_read_spare2         EQU             0x04                    ;                             - bit2
   00008           48     lcd_read_spare3         EQU             0x08                    ;                             - bit3
-  00010           49     lcd_read_db4            EQU             0x10                    ;    4-bit           Data DB4 - bit4
-  00020           50     lcd_read_db5            EQU             0x20                    ;    interface       Data DB5 - bit5
-  00040           51     lcd_read_db6            EQU             0x40                    ;                    Data DB6 - bit6
-  00080           52     lcd_read_db7            EQU             0x80                    ;                    Data DB7 - bit7
+  00010           49     lcd_read_db4            EQU             0x10                    ;    4-bit           EQU DB4 - bit4
+  00020           50     lcd_read_db5            EQU             0x20                    ;    interface       EQU DB5 - bit5
+  00040           51     lcd_read_db6            EQU             0x40                    ;                    EQU DB6 - bit6
+  00080           52     lcd_read_db7            EQU             0x80                    ;                    EQU DB7 - bit7
   00080           53     bit7                    EQU             0x80                    ;
   00040           54     bit6                    EQU             0x40                    ;
   00020           55     bit5                    EQU             0x20                    ;
@@ -401,7 +401,7 @@ W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 050 0C560        310                             load           s5, temp
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
-051 083D4        311                             CALL            lcd_write_data
+051 083D4        311                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 052 00300        312                             LOAD            s3, #0x00
 053 0C330        313                             load           s3, ms100
@@ -416,7 +416,7 @@ W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 058 08313        318                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 059 00520        319                             LOAD            s5, #0x20
-05A 083D4        320                             CALL            lcd_write_data
+05A 083D4        320                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 05B 0C560        321                             load           s5, temp
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -456,7 +456,7 @@ W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 06F 0C560        341                             load           s5, temp
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
-070 083D4        342                             CALL            lcd_write_data
+070 083D4        342                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 071 00300        343                             LOAD            s3, #0x00
 072 0C330        344                             load           s3, ms100
@@ -471,7 +471,7 @@ W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 077 08313        349                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 078 00520        350                             LOAD            s5, #0x20
-079 083D4        351                             CALL            lcd_write_data
+079 083D4        351                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 07A 0C560        352                             load           s5, temp
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -595,12 +595,12 @@ W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 0B3 0C5A0        411     dsp_hh:                 load           s5, hourh
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0B4 04530        412                             ADD             s5, #0x30
-0B5 083D4        413                             CALL            lcd_write_data
+0B5 083D4        413                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0B6 0C590        414                             load           s5, hourl
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0B7 04530        415                             ADD             s5, #0x30
-0B8 083D4        416                             CALL            lcd_write_data
+0B8 083D4        416                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0B9 081BC        417                             JUMP            mode_2
 0BA 083A0        418     space7:                 CALL            disp_space
@@ -624,12 +624,12 @@ W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 0C4 0C580        430     dsp_mm:                 load           s5, minh
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0C5 04530        431                             ADD             s5, #0x30
-0C6 083D4        432                             CALL            lcd_write_data
+0C6 083D4        432                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0C7 0C570        433                             load           s5, minl
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0C8 04530        434                             ADD             s5, #0x30
-0C9 083D4        435                             CALL            lcd_write_data
+0C9 083D4        435                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0CA 081CD        436                             JUMP            mode_3
 0CB 083A0        437     space6:                 CALL            disp_space
@@ -653,12 +653,12 @@ W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 0D5 0C560        449     dsp_ss:                 load           s5, sech
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0D6 04530        450                             ADD             s5, #0x30
-0D7 083D4        451                             CALL            lcd_write_data
+0D7 083D4        451                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0D8 0C550        452                             load           s5, secl
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 0D9 04530        453                             ADD             s5, #0x30
-0DA 083D4        454                             CALL            lcd_write_data
+0DA 083D4        454                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0DB 081DE        455                             JUMP            mode_4
 0DC 083A0        456     space5:                 CALL            disp_space
@@ -675,13 +675,13 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 0E1 00300        463                             load         s3, #0x00
 0E2 095EA        464                             JUMP            nz, mon
 0E3 00553        465                             LOAD            s5, #_character_s
-0E4 083D4        466                             CALL            lcd_write_data
+0E4 083D4        466                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0E5 00575        467                             LOAD            s5, #character_u
-0E6 083D4        468                             CALL            lcd_write_data
+0E6 083D4        468                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0E7 0056E        469                             LOAD            s5, #character_n
-0E8 083D4        470                             CALL            lcd_write_data
+0E8 083D4        470                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0E9 08123        471                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
@@ -690,13 +690,13 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 0EB 00301        473                             load         s3, #0x01
 0EC 095F4        474                             JUMP            nz, tue
 0ED 0054D        475                             LOAD            s5, #_character_m
-0EE 083D4        476                             CALL            lcd_write_data
+0EE 083D4        476                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0EF 0056F        477                             LOAD            s5, #character_o
-0F0 083D4        478                             CALL            lcd_write_data
+0F0 083D4        478                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0F1 0056E        479                             LOAD            s5, #character_n
-0F2 083D4        480                             CALL            lcd_write_data
+0F2 083D4        480                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0F3 08123        481                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
@@ -705,13 +705,13 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 0F5 00302        483                             load         s3, #0x02
 0F6 095FE        484                             JUMP            nz, wed
 0F7 00554        485                             LOAD            s5, #_character_t
-0F8 083D4        486                             CALL            lcd_write_data
+0F8 083D4        486                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0F9 00575        487                             LOAD            s5, #character_u
-0FA 083D4        488                             CALL            lcd_write_data
+0FA 083D4        488                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0FB 00565        489                             LOAD            s5, #character_e
-0FC 083D4        490                             CALL            lcd_write_data
+0FC 083D4        490                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
 0FD 08123        491                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
@@ -720,405 +720,622 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 0FF 00303        493                             load         s3, #0x03
 100 09508        494                             JUMP            nz, thu
 W: value out of range: 0x108, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8.
+E: attempting to use unavailable space in program memory at address: 0x100.
 101 00557        495                             LOAD            s5, #_character_w
-102 083D4        496                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x101.
+102 083D4        496                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x102.
 103 00565        497                             LOAD            s5, #character_e
-104 083D4        498                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x103.
+104 083D4        498                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x104.
 105 00564        499                             LOAD            s5, #character_d
-106 083D4        500                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x105.
+106 083D4        500                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x106.
 107 08123        501                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+E: attempting to use unavailable space in program memory at address: 0x107.
 108 0C3B0        502     thu:                    load           s3, week
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x108.
 109 00304        503                             load         s3, #0x04
+E: attempting to use unavailable space in program memory at address: 0x109.
 10A 09512        504                             JUMP            nz, fri
 W: value out of range: 0x112, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x12.
+E: attempting to use unavailable space in program memory at address: 0x10a.
 10B 00554        505                             LOAD            s5, #_character_t
-10C 083D4        506                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x10b.
+10C 083D4        506                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x10c.
 10D 00568        507                             LOAD            s5, #character_h
-10E 083D4        508                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x10d.
+10E 083D4        508                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x10e.
 10F 00575        509                             LOAD            s5, #character_u
-110 083D4        510                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x10f.
+110 083D4        510                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x110.
 111 08123        511                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+E: attempting to use unavailable space in program memory at address: 0x111.
 112 0C3B0        512     fri:                    load           s3, week
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x112.
 113 00305        513                             load         s3, #0x05
+E: attempting to use unavailable space in program memory at address: 0x113.
 114 0951C        514                             JUMP            nz, sat
 W: value out of range: 0x11c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1c.
+E: attempting to use unavailable space in program memory at address: 0x114.
 115 00546        515                             LOAD            s5, #_character_f
-116 083D4        516                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x115.
+116 083D4        516                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x116.
 117 00572        517                             LOAD            s5, #character_r
-118 083D4        518                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x117.
+118 083D4        518                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x118.
 119 00569        519                             LOAD            s5, #character_i
-11A 083D4        520                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x119.
+11A 083D4        520                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x11a.
 11B 08123        521                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+E: attempting to use unavailable space in program memory at address: 0x11b.
 11C 00553        522     sat:                    LOAD            s5, #_character_s
-11D 083D4        523                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x11c.
+11D 083D4        523                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x11d.
 11E 00561        524                             LOAD            s5, #character_a
-11F 083D4        525                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x11e.
+11F 083D4        525                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x11f.
 120 00574        526                             LOAD            s5, #character_t
-121 083D4        527                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x120.
+121 083D4        527                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x121.
 122 08123        528                             JUMP            load_bit0
 W: value out of range: 0x123, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x23.
+E: attempting to use unavailable space in program memory at address: 0x122.
   00123          529     load_bit0:
   00123          530     rotary_press1:
   00123          531     rotary_press2:
   00123          532     skip1:
                  533     ;;;DISP month
 123 00526        534                             LOAD            s5, #0x26
+E: attempting to use unavailable space in program memory at address: 0x123.
 124 08313        535                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x124.
 125 0C330        536                             load           s3, mode
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x125.
 126 00304        537                             load         s3, #0x04
+E: attempting to use unavailable space in program memory at address: 0x126.
 127 0952B        538                             JUMP            nz, dsp_mon
 W: value out of range: 0x12b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2b.
+E: attempting to use unavailable space in program memory at address: 0x127.
 128 0C310        539                             load           s3, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+E: attempting to use unavailable space in program memory at address: 0x128.
 129 00301        540                             load            s3, #0x01
+E: attempting to use unavailable space in program memory at address: 0x129.
 12A 09532        541                             JUMP            nz, space4
 W: value out of range: 0x132, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x32.
+E: attempting to use unavailable space in program memory at address: 0x12a.
 12B 0C5B0        542     dsp_mon:                load           s5, monh
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
+E: attempting to use unavailable space in program memory at address: 0x12b.
 12C 04530        543                             ADD             s5, #0x30
-12D 083D4        544                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x12c.
+12D 083D4        544                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x12d.
 12E 0C5C0        545                             load           s5, monl
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1c, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xc.
+E: attempting to use unavailable space in program memory at address: 0x12e.
 12F 04530        546                             ADD             s5, #0x30
-130 083D4        547                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x12f.
+130 083D4        547                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x130.
 131 08134        548                             JUMP            mode_5
 W: value out of range: 0x134, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x34.
+E: attempting to use unavailable space in program memory at address: 0x131.
 132 083A0        549     space4:                 CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x132.
 133 083A0        550                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x133.
   00134          551     mode_5:
                  552     ;;;DISP day
 134 00529        553                             LOAD            s5, #0x29
+E: attempting to use unavailable space in program memory at address: 0x134.
 135 08313        554                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x135.
 136 0C330        555                             load           s3, mode
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x136.
 137 00305        556                             load         s3, #0x05
+E: attempting to use unavailable space in program memory at address: 0x137.
 138 0953C        557                             JUMP            nz, dsp_dd
 W: value out of range: 0x13c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3c.
+E: attempting to use unavailable space in program memory at address: 0x138.
 139 0C310        558                             load           s3, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+E: attempting to use unavailable space in program memory at address: 0x139.
 13A 00301        559                             load            s3, #0x01
+E: attempting to use unavailable space in program memory at address: 0x13a.
 13B 09543        560                             JUMP            nz, space3
 W: value out of range: 0x143, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x43.
+E: attempting to use unavailable space in program memory at address: 0x13b.
 13C 0C5D0        561     dsp_dd:                 load           s5, dayh
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1d, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xd.
+E: attempting to use unavailable space in program memory at address: 0x13c.
 13D 04530        562                             ADD             s5, #0x30
-13E 083D4        563                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x13d.
+13E 083D4        563                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x13e.
 13F 0C5E0        564                             load           s5, dayl
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+E: attempting to use unavailable space in program memory at address: 0x13f.
 140 04530        565                             ADD             s5, #0x30
-141 083D4        566                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x140.
+141 083D4        566                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x141.
 142 08145        567                             JUMP            mode_6
 W: value out of range: 0x145, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
+E: attempting to use unavailable space in program memory at address: 0x142.
 143 083A0        568     space3:                 CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x143.
 144 083A0        569                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x144.
   00145          570     mode_6:
                  571     ;;;DISP year
 145 0052C        572                             LOAD            s5, #0x2c
+E: attempting to use unavailable space in program memory at address: 0x145.
 146 08313        573                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x146.
 147 0C330        574                             load           s3, mode
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x147.
 148 00306        575                             load         s3, #0x06
+E: attempting to use unavailable space in program memory at address: 0x148.
 149 0954D        576                             JUMP            nz, dsp_yy
 W: value out of range: 0x14d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4d.
+E: attempting to use unavailable space in program memory at address: 0x149.
 14A 0C310        577                             load           s3, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+E: attempting to use unavailable space in program memory at address: 0x14a.
 14B 00301        578                             load            s3, #0x01
+E: attempting to use unavailable space in program memory at address: 0x14b.
 14C 0955A        579                             JUMP            nz, space2
 W: value out of range: 0x15a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5a.
+E: attempting to use unavailable space in program memory at address: 0x14c.
 14D 0C5C0        580     dsp_yy:                 load           s5, year1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x14d.
 14E 04530        581                             ADD             s5, #0x30
-14F 083D4        582                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x14e.
+14F 083D4        582                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x14f.
 150 0C5D0        583                             load           s5, year2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x150.
 151 04530        584                             ADD             s5, #0x30
-152 083D4        585                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x151.
+152 083D4        585                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x152.
 153 0C5E0        586                             load           s5, year3
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x153.
 154 04530        587                             ADD             s5, #0x30
-155 083D4        588                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x154.
+155 083D4        588                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x155.
 156 0C5F0        589                             load           s5, year4
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x156.
 157 04530        590                             ADD             s5, #0x30
-158 083D4        591                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x157.
+158 083D4        591                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x158.
 159 0815E        592                             JUMP            mode_end
 W: value out of range: 0x15e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x5e.
+E: attempting to use unavailable space in program memory at address: 0x159.
 15A 083A0        593     space2:                 CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x15a.
 15B 083A0        594                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x15b.
 15C 083A0        595                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x15c.
 15D 083A0        596                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x15d.
   0015E          597     mode_end:
 15E 0C050        598                             load           s0, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x15e.
 15F 00127        599                             LOAD            s1, #dmax
+E: attempting to use unavailable space in program memory at address: 0x15f.
 160 0C104        600                             ADD             s1, s0
+E: attempting to use unavailable space in program memory at address: 0x160.
 161 0C210        601                             load           s2, s1                 ;;28
+E: attempting to use unavailable space in program memory at address: 0x161.
 162 00002        602                             load         s0, #0x02               ;;Y
+E: attempting to use unavailable space in program memory at address: 0x162.
 163 09568        603                             JUMP            nz, no_feb
 W: value out of range: 0x168, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x68.
+E: attempting to use unavailable space in program memory at address: 0x163.
 164 0C140        604                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+E: attempting to use unavailable space in program memory at address: 0x164.
 165 01103        605                             AND             s1, #0x03
+E: attempting to use unavailable space in program memory at address: 0x165.
 166 09568        606                             JUMP            nz, no_feb
 W: value out of range: 0x168, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x68.
+E: attempting to use unavailable space in program memory at address: 0x166.
 167 04201        607                             ADD             s2, #0x01
+E: attempting to use unavailable space in program memory at address: 0x167.
   00168          608     no_runnian:
 168 0C270        609     no_feb:                 load           s2, dmax
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x27, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
+E: attempting to use unavailable space in program memory at address: 0x168.
 169 0C160        610                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x169.
 16A 0C210        611                             load         s2, s1
+E: attempting to use unavailable space in program memory at address: 0x16a.
 16B 09D6D        612                             JUMP            nc, under
 W: value out of range: 0x16d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6d.
+E: attempting to use unavailable space in program memory at address: 0x16b.
 16C 0C260        613                             load           s2, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x16c.
   0016D          614     under:
 16D 0C1F0        615                             load           s1, day_up
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+E: attempting to use unavailable space in program memory at address: 0x16d.
 16E 0C111        616                             AND             s1, s1
+E: attempting to use unavailable space in program memory at address: 0x16e.
 16F 09188        617                             JUMP            z, no_day_up
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+E: attempting to use unavailable space in program memory at address: 0x16f.
 170 0C160        618                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x170.
 171 04101        619                             ADD             s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x171.
 172 0C160        620                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x172.
 173 0C270        621                             load           s2, dmax
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x27, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
+E: attempting to use unavailable space in program memory at address: 0x173.
 174 04201        622                             ADD             s2, #0x01
+E: attempting to use unavailable space in program memory at address: 0x174.
 175 0C120        623                             load         s1, s2
+E: attempting to use unavailable space in program memory at address: 0x175.
 176 09588        624                             JUMP            nz, no_mon_up
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+E: attempting to use unavailable space in program memory at address: 0x176.
 177 00101        625                             LOAD            s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x177.
 178 0C160        626                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x178.
 179 0C150        627                             load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x179.
 17A 04101        628                             ADD             s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x17a.
 17B 0C150        629                             load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x17b.
 17C 0010D        630                             load         s1, #0x0d
+E: attempting to use unavailable space in program memory at address: 0x17c.
 17D 09588        631                             JUMP            nz, no_year_up
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+E: attempting to use unavailable space in program memory at address: 0x17d.
 17E 00101        632                             LOAD            s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x17e.
 17F 0C150        633                             load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x17f.
 180 0C140        634                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+E: attempting to use unavailable space in program memory at address: 0x180.
 181 04101        635                             ADD             s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x181.
 182 0C140        636                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+E: attempting to use unavailable space in program memory at address: 0x182.
 183 00164        637                             load         s1, #0x64
+E: attempting to use unavailable space in program memory at address: 0x183.
 184 09588        638                             JUMP            nz, no_year_up
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+E: attempting to use unavailable space in program memory at address: 0x184.
 185 00100        639                             LOAD            s1, #0x00
+E: attempting to use unavailable space in program memory at address: 0x185.
 186 0C140        640                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+E: attempting to use unavailable space in program memory at address: 0x186.
 187 08188        641                             JUMP            no_year_up
 W: value out of range: 0x188, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x88.
+E: attempting to use unavailable space in program memory at address: 0x187.
   00188          642     no_mon_up:
   00188          643     no_day_up:
   00188          644     no_year_up:
 188 00000        645                             LOAD            s0, #0x00
+E: attempting to use unavailable space in program memory at address: 0x188.
 189 0C0F0        646                             load           s0, day_up
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
+E: attempting to use unavailable space in program memory at address: 0x189.
 18A 000EC        647                             LOAD            s0, #0xdec
 W: value out of range: 0xdec, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xec.
+E: attempting to use unavailable space in program memory at address: 0x18a.
 18B 0C250        648                             load           s2, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x18b.
 18C 0C024        649                             ADD             s0, s2
+E: attempting to use unavailable space in program memory at address: 0x18c.
 18D 0C100        650                             load           s1, s0                 ;;;K
+E: attempting to use unavailable space in program memory at address: 0x18d.
 18E 0C040        651                             load           s0, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+E: attempting to use unavailable space in program memory at address: 0x18e.
 18F 0C104        652                             ADD             s1, s0                  ;;;;;;;K+Y
+E: attempting to use unavailable space in program memory at address: 0x18f.
 190 00203        653                             load         s2, #0x03
+E: attempting to use unavailable space in program memory at address: 0x190.
 191 09993        654                             JUMP            c, rn
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x191.
 192 04001        655                             ADD             s0, #0x01               ;;;;100+Y  >2(3..12)
+E: attempting to use unavailable space in program memory at address: 0x192.
 193 04063        656     rn:                     ADD             s0, #0x63               ;;;;;99+Y   1,2
+E: attempting to use unavailable space in program memory at address: 0x193.
 194 0D00E        657                             SR0             s0
+E: attempting to use unavailable space in program memory at address: 0x194.
 195 0D00E        658                             SR0             s0                      ;;;/4
+E: attempting to use unavailable space in program memory at address: 0x195.
 196 0C014        659                             ADD             s0, s1
+E: attempting to use unavailable space in program memory at address: 0x196.
 197 04006        660                             ADD             s0, #0x06
+E: attempting to use unavailable space in program memory at address: 0x197.
 198 0C260        661                             load           s2, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x198.
 199 0C024        662                             ADD             s0, s2
+E: attempting to use unavailable space in program memory at address: 0x199.
 19A 040F9        663     mod7:                   ADD             s0, #0xf9
+E: attempting to use unavailable space in program memory at address: 0x19a.
 19B 09D9D        664                             JUMP            nc, m7_end
 W: value out of range: 0x19d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9d.
+E: attempting to use unavailable space in program memory at address: 0x19b.
 19C 0819A        665                             JUMP            mod7
 W: value out of range: 0x19a, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9a.
+E: attempting to use unavailable space in program memory at address: 0x19c.
 19D 04007        666     m7_end:                 ADD             s0, #0x07
+E: attempting to use unavailable space in program memory at address: 0x19d.
 19E 0C0B0        667                             load           s0, week
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x19e.
 19F 0C030        668                             load           s0, mode
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x19f.
 1A0 010FF        669                             AND             s0, #0xff
+E: attempting to use unavailable space in program memory at address: 0x1a0.
 1A1 095A9        670                             JUMP            nz, setup
 W: value out of range: 0x1a9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa9.
+E: attempting to use unavailable space in program memory at address: 0x1a1.
                  671     ;;;RUN
 1A2 00520        672                             LOAD            s5, #0x20
+E: attempting to use unavailable space in program memory at address: 0x1a2.
 1A3 08313        673                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x1a3.
 1A4 0C580        674                             load           s5, disp_flag
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
-1A5 083D4        675                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1a4.
+1A5 083D4        675                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
-1A6 083D4        676                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1a5.
+1A6 083D4        676                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
-1A7 083D4        677                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1a6.
+1A7 083D4        677                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1a7.
 1A8 081B1        678                             JUMP            modeupdate
 W: value out of range: 0x1b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
+E: attempting to use unavailable space in program memory at address: 0x1a8.
   001A9          679     setup:
                  680     ;;;SET
 1A9 00520        681                             LOAD            s5, #0x20
+E: attempting to use unavailable space in program memory at address: 0x1a9.
 1AA 08313        682                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x1aa.
 1AB 00553        683                             LOAD            s5, #0x53               ;;;;;;;;;;;;;;;;;;;;;;;    S
-1AC 083D4        684                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ab.
+1AC 083D4        684                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1ac.
 1AD 00545        685                             LOAD            s5, #0x45               ;;;;;;;;;;;;;;;;;;;;;;;    E
-1AE 083D4        686                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ad.
+1AE 083D4        686                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1ae.
 1AF 00554        687                             LOAD            s5, #0x54               ;;;;;;;;;;;;;;;;;;;;;;;    T
-1B0 083D4        688                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1af.
+1B0 083D4        688                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1b0.
 1B1 0C030        689     modeupdate:             load           s0, mode
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x1b1.
 1B2 0C090        690                             load           s0, blink_flag
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x19, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+E: attempting to use unavailable space in program memory at address: 0x1b2.
   001B3          691     nochange:
 1B3 0A000        692                             INPUT           s0, 0x00
+E: attempting to use unavailable space in program memory at address: 0x1b3.
 1B4 0C1A0        693                             load           s1, disp_flag2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+E: attempting to use unavailable space in program memory at address: 0x1b4.
 1B5 0C103        694                             XOR             s1, s0
+E: attempting to use unavailable space in program memory at address: 0x1b5.
 1B6 09541        695                             JUMP            nz, restart
+E: attempting to use unavailable space in program memory at address: 0x1b6.
 1B7 0C0A0        696                             load           s0, disp_flag2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x1a, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+E: attempting to use unavailable space in program memory at address: 0x1b7.
 1B8 0C050        697                             load           s0, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+E: attempting to use unavailable space in program memory at address: 0x1b8.
 1B9 00005        698                             load         s0, #0x05
+E: attempting to use unavailable space in program memory at address: 0x1b9.
 1BA 095C1        699                             JUMP            nz, chk_sf
 W: value out of range: 0x1c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
+E: attempting to use unavailable space in program memory at address: 0x1ba.
 1BB 0C060        700                             load           s0, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+E: attempting to use unavailable space in program memory at address: 0x1bb.
 1BC 00011        701                             load         s0, #0x11
+E: attempting to use unavailable space in program memory at address: 0x1bc.
 1BD 095C1        702                             JUMP            nz, chk_sf
 W: value out of range: 0x1c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
+E: attempting to use unavailable space in program memory at address: 0x1bd.
 1BE 0C020        703                             load           s0, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+E: attempting to use unavailable space in program memory at address: 0x1be.
 1BF 00000        704                             load         s0, #0x00
+E: attempting to use unavailable space in program memory at address: 0x1bf.
 1C0 091C5        705                             JUMP            z, msg7
 W: value out of range: 0x1c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
+E: attempting to use unavailable space in program memory at address: 0x1c0.
 1C1 00FFF        706     chk_sf:                 load         sf, #0xff
+E: attempting to use unavailable space in program memory at address: 0x1c1.
 1C2 095CF        707                             JUMP            nz, no_bd
 W: value out of range: 0x1cf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcf.
+E: attempting to use unavailable space in program memory at address: 0x1c2.
 1C3 083E5        708                             CALL            lcd_reset
 W: value out of range: 0x2e5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe5.
+E: attempting to use unavailable space in program memory at address: 0x1c3.
 1C4 081CF        709                             JUMP            no_bd
 W: value out of range: 0x1cf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcf.
+E: attempting to use unavailable space in program memory at address: 0x1c4.
 1C5 00510        710     msg7:                   LOAD            s5, #0x10
+E: attempting to use unavailable space in program memory at address: 0x1c5.
 1C6 08313        711                             CALL            lcd_cursor
 W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
+E: attempting to use unavailable space in program memory at address: 0x1c6.
 1C7 08382        712                             CALL            disp_msg7               ;
 W: value out of range: 0x282, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
+E: attempting to use unavailable space in program memory at address: 0x1c7.
 1C8 0C030        713                             load           s0, ms100
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+E: attempting to use unavailable space in program memory at address: 0x1c8.
 1C9 00032        714                             load         s0, #0x32
+E: attempting to use unavailable space in program memory at address: 0x1c9.
 1CA 099CD        715                             JUMP            c, wait
 W: value out of range: 0x1cd, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcd.
+E: attempting to use unavailable space in program memory at address: 0x1ca.
 1CB 00F00        716                             LOAD            sf, #0x00
+E: attempting to use unavailable space in program memory at address: 0x1cb.
 1CC 08141        717                             JUMP            restart
+E: attempting to use unavailable space in program memory at address: 0x1cc.
 1CD 00FFF        718     wait:                   LOAD            sf, #0xff
+E: attempting to use unavailable space in program memory at address: 0x1cd.
 1CE 08191        719                             JUMP            loop
+E: attempting to use unavailable space in program memory at address: 0x1ce.
 1CF 00F00        720     no_bd:                  LOAD            sf, #0x00
+E: attempting to use unavailable space in program memory at address: 0x1cf.
 1D0 0CF30        721                             load           sf, ms100
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+E: attempting to use unavailable space in program memory at address: 0x1d0.
 1D1 08191        722                             JUMP            loop
+E: attempting to use unavailable space in program memory at address: 0x1d1.
                  723     ;;;;;;;;;s0---BINARY, s1---BCD_H, s0---BCD_L
 1D2 00100        724     b2bcd:                  LOAD            s1, #0x00               ;
+E: attempting to use unavailable space in program memory at address: 0x1d2.
 1D3 040F6        725     bcd_lp:                 ADD             s0, #0xf6
+E: attempting to use unavailable space in program memory at address: 0x1d3.
 1D4 09DD7        726                             JUMP            nc, h_end
 W: value out of range: 0x1d7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd7.
+E: attempting to use unavailable space in program memory at address: 0x1d4.
 1D5 04101        727                             ADD             s1, #0x01               ;
+E: attempting to use unavailable space in program memory at address: 0x1d5.
 1D6 081D3        728                             JUMP            bcd_lp
 W: value out of range: 0x1d3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd3.
+E: attempting to use unavailable space in program memory at address: 0x1d6.
 1D7 0400A        729     h_end:                  ADD             s0, #0x0a
+E: attempting to use unavailable space in program memory at address: 0x1d7.
 1D8 08080        730                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x1d8.
                  731     ;
                  732     ;     normal_mode: INPUT s0, switch_port               ;Read switches and buttons and directly drive LEDs
                  733     ;                  OUTPUT s0, LED_port
@@ -1158,323 +1375,525 @@ W: value out of range: 0x1d3, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
   001D9          767     disp_msg1:
 1D9 083A0        768                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x1d9.
 1DA 00541        769                             LOAD            s5, #_character_a
-1DB 083D4        770                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1da.
+1DB 083D4        770                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1db.
 1DC 083A0        771                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x1dc.
 1DD 00543        772                             LOAD            s5, #_character_c
-1DE 083D4        773                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1dd.
+1DE 083D4        773                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1de.
 1DF 0056C        774                             LOAD            s5, #character_l
-1E0 083D4        775                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1df.
+1E0 083D4        775                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1e0.
 1E1 0056F        776                             LOAD            s5, #character_o
-1E2 083D4        777                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1e1.
+1E2 083D4        777                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1e2.
 1E3 00563        778                             LOAD            s5, #character_c
-1E4 083D4        779                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1e3.
+1E4 083D4        779                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1e4.
 1E5 0056B        780                             LOAD            s5, #character_k
-1E6 083D4        781                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1e5.
+1E6 083D4        781                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1e6.
 1E7 083A0        782                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x1e7.
 1E8 00542        783                             LOAD            s5, #_character_b
-1E9 083D4        784                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1e8.
+1E9 083D4        784                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1e9.
 1EA 00561        785                             LOAD            s5, #character_a
-1EB 083D4        786                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ea.
+1EB 083D4        786                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1eb.
 1EC 00573        787                             LOAD            s5, #character_s
-1ED 083D4        788                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ec.
+1ED 083D4        788                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1ed.
 1EE 00565        789                             LOAD            s5, #character_e
-1EF 083D4        790                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ee.
+1EF 083D4        790                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1ef.
 1F0 00564        791                             LOAD            s5, #character_d
-1F1 083D4        792                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1f0.
+1F1 083D4        792                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1f1.
 1F2 083A0        793                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x1f2.
 1F3 08080        794                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x1f3.
                  795     ;
                  796     ;
                  797     ;
 1F4 00553        798     disp_msg2:              LOAD            s5, #_character_s
-1F5 083D4        799                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1f4.
+1F5 083D4        799                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1f5.
 1F6 00533        800                             LOAD            s5, #character_3
-1F7 083D4        801                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1f6.
+1F7 083D4        801                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1f7.
 1F8 00545        802                             LOAD            s5, #_character_e
-1F9 083D4        803                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1f8.
+1F9 083D4        803                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1f9.
 1FA 083A0        804                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x1fa.
 1FB 00553        805                             LOAD            s5, #_character_s
-1FC 083D4        806                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1fb.
+1FC 083D4        806                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1fc.
 1FD 00574        807                             LOAD            s5, #character_t
-1FE 083D4        808                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1fd.
+1FE 083D4        808                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x1fe.
 1FF 00561        809                             LOAD            s5, #character_a
-200 083D4        810                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x1ff.
+200 083D4        810                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x200.
 201 00572        811                             LOAD            s5, #character_r
-202 083D4        812                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x201.
+202 083D4        812                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x202.
 203 00574        813                             LOAD            s5, #character_t
-204 083D4        814                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x203.
+204 083D4        814                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x204.
 205 00565        815                             LOAD            s5, #character_e
-206 083D4        816                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x205.
+206 083D4        816                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x206.
 207 00572        817                             LOAD            s5, #character_r
-208 083D4        818                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x207.
+208 083D4        818                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x208.
 209 083A0        819                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x209.
 20A 0054B        820                             LOAD            s5, #_character_k
-20B 083D4        821                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x20a.
+20B 083D4        821                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x20b.
 20C 00569        822                             LOAD            s5, #character_i
-20D 083D4        823                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x20c.
+20D 083D4        823                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x20d.
 20E 00574        824                             LOAD            s5, #character_t
-20F 083D4        825                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x20e.
+20F 083D4        825                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x20f.
 210 00533        826                             LOAD            s5, #character_3
-211 083D4        827                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x210.
+211 083D4        827                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x211.
 212 08080        828                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x212.
 213 083A0        829     disp_msg3:              CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x213.
 214 083A0        830                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x214.
 215 083A0        831                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x215.
 216 083A0        832                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x216.
 217 083A0        833                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x217.
 218 00558        834                             LOAD            s5, #_character_x
-219 083D4        835                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x218.
+219 083D4        835                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x219.
 21A 00569        836                             LOAD            s5, #character_i
-21B 083D4        837                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x21a.
+21B 083D4        837                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x21b.
 21C 0056C        838                             LOAD            s5, #character_l
-21D 083D4        839                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x21c.
+21D 083D4        839                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x21d.
 21E 00569        840                             LOAD            s5, #character_i
-21F 083D4        841                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x21e.
+21F 083D4        841                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x21f.
 220 0056E        842                             LOAD            s5, #character_n
-221 083D4        843                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x220.
+221 083D4        843                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x221.
 222 00578        844                             LOAD            s5, #character_x
-223 083D4        845                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x222.
+223 083D4        845                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x223.
 224 083A0        846                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x224.
 225 083A0        847                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x225.
 226 083A0        848                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x226.
 227 083A0        849                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x227.
 228 083A0        850                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x228.
 229 08080        851                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x229.
 22A 00550        852     disp_msg4:              LOAD            s5, #_character_p
-22B 083D4        853                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x22a.
+22B 083D4        853                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x22b.
 22C 00569        854                             LOAD            s5, #character_i
-22D 083D4        855                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x22c.
+22D 083D4        855                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x22d.
 22E 00563        856                             LOAD            s5, #character_c
-22F 083D4        857                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x22e.
+22F 083D4        857                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x22f.
 230 0056F        858                             LOAD            s5, #character_o
-231 083D4        859                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x230.
+231 083D4        859                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x231.
 232 00542        860                             LOAD            s5, #_character_b
-233 083D4        861                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x232.
+233 083D4        861                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x233.
 234 0056C        862                             LOAD            s5, #character_l
-235 083D4        863                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x234.
+235 083D4        863                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x235.
 236 00561        864                             LOAD            s5, #character_a
-237 083D4        865                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x236.
+237 083D4        865                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x237.
 238 0057A        866                             LOAD            s5, #character_z
-239 083D4        867                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x238.
+239 083D4        867                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x239.
 23A 00565        868                             LOAD            s5, #character_e
-23B 083D4        869                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x23a.
+23B 083D4        869                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x23b.
 23C 083A0        870                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x23c.
 23D 00554        871                             LOAD            s5, #_character_t
-23E 083D4        872                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x23d.
+23E 083D4        872                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x23e.
 23F 00565        873                             LOAD            s5, #character_e
-240 083D4        874                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x23f.
+240 083D4        874                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x240.
 241 00573        875                             LOAD            s5, #character_s
-242 083D4        876                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x241.
+242 083D4        876                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x242.
 243 00574        877                             LOAD            s5, #character_t
-244 083D4        878                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x243.
+244 083D4        878                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x244.
 245 083A0        879                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x245.
 246 08080        880                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x246.
 247 00550        881     disp_msg5:              LOAD            s5, #_character_p
-248 083D4        882                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x247.
+248 083D4        882                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x248.
 249 00572        883                             LOAD            s5, #character_r
-24A 083D4        884                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x249.
+24A 083D4        884                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x24a.
 24B 00565        885                             LOAD            s5, #character_e
-24C 083D4        886                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x24b.
+24C 083D4        886                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x24c.
 24D 00573        887                             LOAD            s5, #character_s
-24E 083D4        888                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x24d.
+24E 083D4        888                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x24e.
 24F 00573        889                             LOAD            s5, #character_s
-250 083D4        890                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x24f.
+250 083D4        890                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x250.
 251 083A0        891                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x251.
 252 00526        892                             LOAD            s5, #0x26
-253 083D4        893                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x252.
+253 083D4        893                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x253.
 254 083A0        894                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x254.
 255 00554        895                             LOAD            s5, #_character_t
-256 083D4        896                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x255.
+256 083D4        896                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x256.
 257 00575        897                             LOAD            s5, #character_u
-258 083D4        898                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x257.
+258 083D4        898                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x258.
 259 00572        899                             LOAD            s5, #character_r
-25A 083D4        900                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x259.
+25A 083D4        900                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x25a.
 25B 0056E        901                             LOAD            s5, #character_n
-25C 083D4        902                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x25b.
+25C 083D4        902                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x25c.
 25D 083A0        903                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x25d.
 25E 00574        904                             LOAD            s5, #character_t
-25F 083D4        905                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x25e.
+25F 083D4        905                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x25f.
 260 00568        906                             LOAD            s5, #character_h
-261 083D4        907                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x260.
+261 083D4        907                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x261.
 262 00565        908                             LOAD            s5, #character_e
-263 083D4        909                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x262.
+263 083D4        909                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x263.
 264 08080        910                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x264.
 265 083A0        911     disp_msg6:              CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x265.
 266 00545        912                             LOAD            s5, #_character_e
-267 083D4        913                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x266.
+267 083D4        913                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x267.
 268 0056E        914                             LOAD            s5, #character_n
-269 083D4        915                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x268.
+269 083D4        915                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x269.
 26A 00563        916                             LOAD            s5, #character_c
-26B 083D4        917                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x26a.
+26B 083D4        917                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x26b.
 26C 0056F        918                             LOAD            s5, #character_o
-26D 083D4        919                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x26c.
+26D 083D4        919                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x26d.
 26E 00564        920                             LOAD            s5, #character_d
-26F 083D4        921                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x26e.
+26F 083D4        921                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x26f.
 270 00565        922                             LOAD            s5, #character_e
-271 083D4        923                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x270.
+271 083D4        923                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x271.
 272 00572        924                             LOAD            s5, #character_r
-273 083D4        925                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x272.
+273 083D4        925                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x273.
 274 083A0        926                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x274.
 275 00574        927                             LOAD            s5, #character_t
-276 083D4        928                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x275.
+276 083D4        928                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x276.
 277 0056F        929                             LOAD            s5, #character_o
-278 083D4        930                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x277.
+278 083D4        930                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x278.
 279 083A0        931                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x279.
 27A 00553        932                             LOAD            s5, #_character_s
-27B 083D4        933                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x27a.
+27B 083D4        933                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x27b.
 27C 00565        934                             LOAD            s5, #character_e
-27D 083D4        935                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x27c.
+27D 083D4        935                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x27d.
 27E 00574        936                             LOAD            s5, #character_t
-27F 083D4        937                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x27e.
+27F 083D4        937                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x27f.
 280 083A0        938                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x280.
 281 08080        939                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x281.
 282 00548        940     disp_msg7:              LOAD            s5, #_character_h
-283 083D4        941                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x282.
+283 083D4        941                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x283.
 284 00561        942                             LOAD            s5, #character_a
-285 083D4        943                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x284.
+285 083D4        943                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x285.
 286 00570        944                             LOAD            s5, #character_p
-287 083D4        945                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x286.
+287 083D4        945                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x287.
 288 00570        946                             LOAD            s5, #character_p
-289 083D4        947                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x288.
+289 083D4        947                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x289.
 28A 00579        948                             LOAD            s5, #character_y
-28B 083D4        949                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x28a.
+28B 083D4        949                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x28b.
 28C 083A0        950                             CALL            disp_space
 W: value out of range: 0x2a0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa0.
+E: attempting to use unavailable space in program memory at address: 0x28c.
 28D 00542        951                             LOAD            s5, #_character_b
-28E 083D4        952                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x28d.
+28E 083D4        952                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x28e.
 28F 00569        953                             LOAD            s5, #character_i
-290 083D4        954                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x28f.
+290 083D4        954                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x290.
 291 00572        955                             LOAD            s5, #character_r
-292 083D4        956                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x291.
+292 083D4        956                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x292.
 293 00574        957                             LOAD            s5, #character_t
-294 083D4        958                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x293.
+294 083D4        958                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x294.
 295 00568        959                             LOAD            s5, #character_h
-296 083D4        960                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x295.
+296 083D4        960                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x296.
 297 00564        961                             LOAD            s5, #character_d
-298 083D4        962                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x297.
+298 083D4        962                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x298.
 299 00561        963                             LOAD            s5, #character_a
-29A 083D4        964                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x299.
+29A 083D4        964                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x29a.
 29B 00579        965                             LOAD            s5, #character_y
-29C 083D4        966                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x29b.
+29C 083D4        966                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x29c.
 29D 00521        967                             LOAD            s5, #0x21
-29E 083D4        968                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x29d.
+29E 083D4        968                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x29e.
 29F 08080        969                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x29f.
                  970     ;
                  971     ;Display a space on LCD at current cursor position
                  972     ;
                  973     ;
 2A0 00520        974     disp_space:             LOAD            s5, #character_space
-2A1 083D4        975                             CALL            lcd_write_data
+E: attempting to use unavailable space in program memory at address: 0x2a0.
+2A1 083D4        975                             CALL            lcd_write_EQU
 W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+E: attempting to use unavailable space in program memory at address: 0x2a1.
 2A2 08080        976                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2a2.
                  977     ;
                  978     ;
                  979     ;
@@ -1496,22 +1915,31 @@ W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  995     ;Registers used s0
                  996     ;
 2A3 0000B        997     delay_1us:              LOAD            s0, #delay_1us_constant
+E: attempting to use unavailable space in program memory at address: 0x2a3.
 2A4 06001        998     wait_1us:               SUB             s0, #0x01
+E: attempting to use unavailable space in program memory at address: 0x2a4.
 2A5 095A4        999                             JUMP            nz, wait_1us
 W: value out of range: 0x2a4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa4.
+E: attempting to use unavailable space in program memory at address: 0x2a5.
 2A6 08080       1000                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2a6.
                 1001     ;
                 1002     ;Delay of 40us.
                 1003     ;
                 1004     ;Registers used s0, s1
                 1005     ;
 2A7 00128       1006     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+E: attempting to use unavailable space in program memory at address: 0x2a7.
 2A8 083A3       1007     wait_40us:              CALL            delay_1us
 W: value out of range: 0x2a3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa3.
+E: attempting to use unavailable space in program memory at address: 0x2a8.
 2A9 06101       1008                             SUB             s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x2a9.
 2AA 095A8       1009                             JUMP            nz, wait_40us
 W: value out of range: 0x2a8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa8.
+E: attempting to use unavailable space in program memory at address: 0x2aa.
 2AB 08080       1010                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2ab.
                 1011     ;
                 1012     ;
                 1013     ;Delay of 1ms.
@@ -1519,12 +1947,17 @@ W: value out of range: 0x2a8, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1015     ;Registers used s0, s1, s2
                 1016     ;
 2AC 00219       1017     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+E: attempting to use unavailable space in program memory at address: 0x2ac.
 2AD 083A7       1018     wait_1ms:               CALL            delay_40us
 W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa7.
+E: attempting to use unavailable space in program memory at address: 0x2ad.
 2AE 06201       1019                             SUB             s2, #0x01
+E: attempting to use unavailable space in program memory at address: 0x2ae.
 2AF 095AD       1020                             JUMP            nz, wait_1ms
 W: value out of range: 0x2ad, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xad.
+E: attempting to use unavailable space in program memory at address: 0x2af.
 2B0 08080       1021                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2b0.
                 1022     ;
                 1023     ;Delay of 20ms.
                 1024     ;
@@ -1533,24 +1966,34 @@ W: value out of range: 0x2ad, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1027     ;Registers used s0, s1, s2, s3
                 1028     ;
 2B1 00314       1029     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+E: attempting to use unavailable space in program memory at address: 0x2b1.
 2B2 083AC       1030     wait_20ms:              CALL            delay_1ms
 W: value out of range: 0x2ac, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xac.
+E: attempting to use unavailable space in program memory at address: 0x2b2.
 2B3 06301       1031                             SUB             s3, #0x01
+E: attempting to use unavailable space in program memory at address: 0x2b3.
 2B4 095B2       1032                             JUMP            nz, wait_20ms
 W: value out of range: 0x2b2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb2.
+E: attempting to use unavailable space in program memory at address: 0x2b4.
 2B5 08080       1033                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2b5.
                 1034     ;
                 1035     ;Delay of approximately 1 second.
                 1036     ;
                 1037     ;Registers used s0, s1, s2, s3, s4
                 1038     ;
 2B6 00432       1039     delay_1s:               LOAD            s4, #0x32               ;50 x 20ms = 1000ms
+E: attempting to use unavailable space in program memory at address: 0x2b6.
 2B7 083B1       1040     wait_1s:                CALL            delay_20ms
 W: value out of range: 0x2b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
+E: attempting to use unavailable space in program memory at address: 0x2b7.
 2B8 06401       1041                             SUB             s4, #0x01
+E: attempting to use unavailable space in program memory at address: 0x2b8.
 2B9 095B7       1042                             JUMP            nz, wait_1s
 W: value out of range: 0x2b7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb7.
+E: attempting to use unavailable space in program memory at address: 0x2b9.
 2BA 08080       1043                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2ba.
                 1044     ;
                 1045     ;
                 1046     ;
@@ -1559,7 +2002,7 @@ W: value out of range: 0x2b7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1049     ;**************************************************************************************
                 1050     ;
                 1051     ;LCD module is a 16 character by 2 line display but all displays are very similar
-                1052     ;The 4-wire data interface will be used (DB4 to DB7).
+                1052     ;The 4-wire EQU interface will be used (DB4 to DB7).
                 1053     ;
                 1054     ;The LCD modules are relatively slow and soloadware delay loops are used to slow down
                 1055     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
@@ -1573,9 +2016,11 @@ W: value out of range: 0x2b7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1063     ;Registers used s0, s4
                 1064     ;
 2BB 03401       1065     lcd_pulse_e:            XOR             s4, #lcd_e              ;E=1
+E: attempting to use unavailable space in program memory at address: 0x2bb.
 2BC 0E440       1066                             OUTPUT          s4, lcd_output_port
+E: attempting to use unavailable space in program memory at address: 0x2bc.
 2BD 083A3       1067                             CALL            delay_1us
-W: value out of range: 0x2a3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa3.
+W: maximum number of messages reached, suppressing compiler message generation.
 2BE 03401       1068                             XOR             s4, #lcd_e              ;E=0
 2BF 0E440       1069                             OUTPUT          s4, lcd_output_port
 2C0 08080       1070                             RETURN
@@ -1592,7 +2037,6 @@ W: value out of range: 0x2a3, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 2C1 014F8       1081     lcd_write_inst4:        AND             s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
 2C2 0E440       1082                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
 2C3 083BB       1083                             CALL            lcd_pulse_e
-W: value out of range: 0x2bb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbb.
 2C4 08080       1084                             RETURN
                 1085     ;
                 1086     ;
@@ -1611,28 +2055,24 @@ W: value out of range: 0x2bb, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 2C6 014F0       1099                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
 2C7 02408       1100                             OR              s4, #lcd_drive          ;Enable=1
 2C8 083C1       1101                             CALL            lcd_write_inst4         ;write upper nibble
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2C9 083A3       1102                             CALL            delay_1us               ;wait >1us
-W: value out of range: 0x2a3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa3.
 2CA 0C450       1103                             LOAD            s4, s5                  ;select lower nibble with
 2CB 0D407       1104                             SL1             s4                      ;Enable=1
 2CC 0D406       1105                             SL0             s4                      ;RS=0 Instruction
 2CD 0D406       1106                             SL0             s4                      ;RW=0 Write
 2CE 0D406       1107                             SL0             s4                      ;E=0
 2CF 083C1       1108                             CALL            lcd_write_inst4         ;write lower nibble
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2D0 083A7       1109                             CALL            delay_40us              ;wait >40us
-W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa7.
 2D1 004F0       1110                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
 2D2 0E440       1111                             OUTPUT          s4, lcd_output_port     ;Release master enable
 2D3 08080       1112                             RETURN
                 1113     ;
                 1114     ;
                 1115     ;
-                1116     ;Write 8-bit data to LCD display.
+                1116     ;Write 8-bit EQU to LCD display.
                 1117     ;
-                1118     ;The 8-bit data should be provided in register s5.
-                1119     ;Data bytes are written using the following sequence
+                1118     ;The 8-bit EQU should be provided in register s5.
+                1119     ;EQU bytes are written using the following sequence
                 1120     ; Upper nibble
                 1121     ; wait >1us
                 1122     ; Lower nibble
@@ -1640,24 +2080,20 @@ W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1124     ;
                 1125     ;Registers used s0, s1, s4, s5
                 1126     ;
-2D4 0C450       1127     lcd_write_data:         LOAD            s4, s5
+2D4 0C450       1127     lcd_write_EQU:         LOAD            s4, s5
 2D5 014F0       1128                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-2D6 0240C       1129                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+2D6 0240C       1129                             OR              s4, #0x0c               ;Enable=1 RS=1 EQU, RW=0 Write, E=0
 2D7 0E440       1130                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
 2D8 083BB       1131                             CALL            lcd_pulse_e             ;write upper nibble
-W: value out of range: 0x2bb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbb.
 2D9 083A3       1132                             CALL            delay_1us               ;wait >1us
-W: value out of range: 0x2a3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa3.
 2DA 0C450       1133                             LOAD            s4, s5                  ;select lower nibble with
 2DB 0D407       1134                             SL1             s4                      ;Enable=1
-2DC 0D407       1135                             SL1             s4                      ;RS=1 Data
+2DC 0D407       1135                             SL1             s4                      ;RS=1 EQU
 2DD 0D406       1136                             SL0             s4                      ;RW=0 Write
 2DE 0D406       1137                             SL0             s4                      ;E=0
 2DF 0E440       1138                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
 2E0 083BB       1139                             CALL            lcd_pulse_e             ;write lower nibble
-W: value out of range: 0x2bb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xbb.
 2E1 083A7       1140                             CALL            delay_40us              ;wait >40us
-W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa7.
 2E2 004F0       1141                             LOAD            s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
 2E3 0E440       1142                             OUTPUT          s4, lcd_output_port     ;Release master enable
 2E4 08080       1143                             RETURN
@@ -1665,15 +2101,15 @@ W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1145     ;
                 1146     ;
                 1147     ;
-                1148     ;Read 8-bit data from LCD display.
+                1148     ;Read 8-bit EQU from LCD display.
                 1149     ;
-                1150     ;The 8-bit data will be read from the current LCD memory address
+                1150     ;The 8-bit EQU will be read from the current LCD memory address
                 1151     ;and will be returned in register s5.
                 1152     ;It is advisable to set the LCD address (cursor position) before
-                1153     ;using the data read for the first time otherwise the display may
-                1154     ;generate invalid data on the first read.
+                1153     ;using the EQU read for the first time otherwise the display may
+                1154     ;generate invalid EQU on the first read.
                 1155     ;
-                1156     ;Data bytes are read using the following sequence
+                1156     ;EQU bytes are read using the following sequence
                 1157     ; Upper nibble
                 1158     ; wait >1us
                 1159     ; Lower nibble
@@ -1681,18 +2117,18 @@ W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1161     ;
                 1162     ;Registers used s0, s1, s4, s5
                 1163     ;
-                1164     ;LCD_read_data8: LOAD s4, 0E                         ;Enable=1 RS=1 Data, RW=1 Read, E=0
+                1164     ;LCD_read_EQU8: LOAD s4, 0E                         ;Enable=1 RS=1 EQU, RW=1 Read, E=0
                 1165     ;                OUTPUT s4, LCD_output_port          ;set up RS and RW >40ns before enable pulse
                 1166     ;                XOR s4, LCD_E                       ;E=1
                 1167     ;                OUTPUT s4, LCD_output_port
-                1168     ;                CALL delay_1us                      ;wait >260ns to access data
+                1168     ;                CALL delay_1us                      ;wait >260ns to access EQU
                 1169     ;                INPUT s5, LCD_input_port            ;read upper nibble
                 1170     ;                XOR s4, LCD_E                       ;E=0
                 1171     ;                OUTPUT s4, LCD_output_port
                 1172     ;                CALL delay_1us                      ;wait >1us
                 1173     ;                XOR s4, LCD_E                       ;E=1
                 1174     ;                OUTPUT s4, LCD_output_port
-                1175     ;                CALL delay_1us                      ;wait >260ns to access data
+                1175     ;                CALL delay_1us                      ;wait >260ns to access EQU
                 1176     ;                INPUT s0, LCD_input_port            ;read lower nibble
                 1177     ;                XOR s4, LCD_E                       ;E=0
                 1178     ;                OUTPUT s4, LCD_output_port
@@ -1702,13 +2138,13 @@ W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1182     ;                SR0 s0
                 1183     ;                SR0 s0
                 1184     ;                OR s5, s0
-                1185     ;                LOAD s4, 04                         ;Enable=0 RS=1 Data, RW=0 Write, E=0
+                1185     ;                LOAD s4, 04                         ;Enable=0 RS=1 EQU, RW=0 Write, E=0
                 1186     ;                OUTPUT s4, LCD_output_port          ;Stop reading 5V device and release master enable
                 1187     ;                CALL delay_40us                     ;wait >40us
                 1188     ;                RETURN
                 1189     ;
                 1190     ;
-                1191     ;Reset and initialise display to communicate using 4-bit data mode
+                1191     ;Reset and initialise display to communicate using 4-bit EQU mode
                 1192     ;Includes routine to clear the display.
                 1193     ;
                 1194     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
@@ -1722,77 +2158,50 @@ W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1202     ;Registers used s0, s1, s2, s3, s4
                 1203     ;
 2E5 083B1       1204     lcd_reset:              CALL            delay_20ms              ;wait more that 15ms for display to be ready
-W: value out of range: 0x2b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
 2E6 00430       1205                             LOAD            s4, #0x30
 2E7 083C1       1206                             CALL            lcd_write_inst4         ;send '3'
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2E8 083B1       1207                             CALL            delay_20ms              ;wait >4.1ms
-W: value out of range: 0x2b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
 2E9 083C1       1208                             CALL            lcd_write_inst4         ;send '3'
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2EA 083AC       1209                             CALL            delay_1ms               ;wait >100us
-W: value out of range: 0x2ac, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xac.
 2EB 083C1       1210                             CALL            lcd_write_inst4         ;send '3'
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2EC 083A7       1211                             CALL            delay_40us              ;wait >40us
-W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa7.
 2ED 00420       1212                             LOAD            s4, #0x20
 2EE 083C1       1213                             CALL            lcd_write_inst4         ;send '2'
-W: value out of range: 0x2c1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc1.
 2EF 083A7       1214                             CALL            delay_40us              ;wait >40us
-W: value out of range: 0x2a7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa7.
 2F0 00528       1215                             LOAD            s5, #0x28               ;Function set
 2F1 083C5       1216                             CALL            lcd_write_inst8
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 2F2 00506       1217                             LOAD            s5, #0x06               ;Entry mode
 2F3 083C5       1218                             CALL            lcd_write_inst8
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 2F4 0050C       1219                             LOAD            s5, #0x0c               ;Display control
 2F5 083C5       1220                             CALL            lcd_write_inst8
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 2F6 00501       1221     lcd_clear:              LOAD            s5, #0x01               ;Display clear
 2F7 083C5       1222                             CALL            lcd_write_inst8
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 2F8 083AC       1223                             CALL            delay_1ms               ;wait >1.64ms for display to clear
-W: value out of range: 0x2ac, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xac.
 2F9 083AC       1224                             CALL            delay_1ms
-W: value out of range: 0x2ac, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xac.
 2FA 00513       1225                             LOAD            s5, #0x13
 2FB 08313       1226                             CALL            lcd_cursor
-W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 2FC 0053A       1227                             LOAD            s5, #0x3a               ;;;;;;;;;;;;;;;;;;;;;;;    :
-2FD 083D4       1228                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+2FD 083D4       1228                             CALL            lcd_write_EQU
 2FE 00516       1229                             LOAD            s5, #0x16
 2FF 08313       1230                             CALL            lcd_cursor
-W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 300 0052D       1231                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-301 083D4       1232                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+301 083D4       1232                             CALL            lcd_write_EQU
 302 00520       1233                             LOAD            s5, #0x20
 303 08313       1234                             CALL            lcd_cursor
-W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 304 0052D       1235                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-305 083D4       1236                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+305 083D4       1236                             CALL            lcd_write_EQU
 306 0052D       1237                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-307 083D4       1238                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+307 083D4       1238                             CALL            lcd_write_EQU
 308 0052D       1239                             LOAD            s5, #0x2d               ;;;;;;;;;;;;;;;;;;;;;;     -
-309 083D4       1240                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+309 083D4       1240                             CALL            lcd_write_EQU
 30A 00528       1241                             LOAD            s5, #0x28
 30B 08313       1242                             CALL            lcd_cursor
-W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 30C 0052F       1243                             LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     /
-30D 083D4       1244                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+30D 083D4       1244                             CALL            lcd_write_EQU
 30E 0052B       1245                             LOAD            s5, #0x2b
 30F 08313       1246                             CALL            lcd_cursor
-W: value out of range: 0x313, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x13.
 310 0052F       1247                             LOAD            s5, #0x2f               ;;;;;;;;;;;;;;;;;;;;;;     -
-311 083D4       1248                             CALL            lcd_write_data
-W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xd4.
+311 083D4       1248                             CALL            lcd_write_EQU
 312 08080       1249                             RETURN
                 1250     ;
                 1251     ;Position the cursor ready for characters to be written.
@@ -1814,16 +2223,13 @@ W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1267     ;
 313 00510       1268     lcd_cursor:             load            s5, #0x10               ;load for line 1
 314 09119       1269                             JUMP            z, set_line2
-W: value out of range: 0x319, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x19.
 315 0150F       1270                             AND             s5, #0x0f               ;make address in range 80 to 8F for line 1
 316 02580       1271                             OR              s5, #0x80
 317 083C5       1272                             CALL            lcd_write_inst8         ;instruction write to set cursor
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 318 08080       1273                             RETURN
 319 0150F       1274     set_line2:              AND             s5, #0x0f               ;make address in range C0 to CF for line 2
 31A 025C0       1275                             OR              s5, #0xc0
 31B 083C5       1276                             CALL            lcd_write_inst8         ;instruction write to set cursor
-W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc5.
 31C 08080       1277                             RETURN
                 1278     ;
                 1279     ;This routine will shiload the complete display one position to the leload.
@@ -1843,21 +2249,16 @@ W: value out of range: 0x2c5, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 31E 0C120       1293                             load           s1, isr_s1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 31F 0C250       1294                             load           s2, isr_s2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 320 0A101       1295                             INPUT           s1, rotary_port
 321 00000       1296                             LOAD            s0, #0x00
 322 00102       1297                             load            s1, #rotary_press
 323 09131       1298                             JUMP            z, no_press
-W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 324 0C070       1299                             load           s0, pressed
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 325 00000       1300                             load         s0, #0x00
 326 09531       1301                             JUMP            nz, no_press
-W: value out of range: 0x331, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 327 0C220       1302                             load           s2, led_pattern
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 328 04201       1303                             ADD             s2, #0x01
@@ -1868,24 +2269,20 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 32B 04201       1306                             ADD             s2, #0x01
 32C 00207       1307                             load         s2, #0x07
 32D 0952F       1308                             JUMP            nz, mode_save
-W: value out of range: 0x32f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2f.
 32E 01200       1309                             AND             s2, #0x00
 32F 0C230       1310     mode_save:              load           s2, mode                ;;;;;0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 330 000FF       1311                             LOAD            s0, #0xff
 331 0C070       1312     no_press:               load           s0, pressed
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 332 00140       1313                             load            s1, #0x40               ;;;rotary INT ?
 333 091B3       1314                             JUMP            z, t2_5m_int            ;;NOT rotary INT,JUMP away
-W: value out of range: 0x3b3, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb3.
 334 00040       1315     clr_int2:               LOAD            s0, #0x40               ;;;;;CLR_INT1
 335 0E020       1316                             OUTPUT          s0, 0x20
 336 0C020       1317                             load           s0, led_pattern
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 337 00101       1318                             load            s1, #rotary_leload
 338 09174       1319                             JUMP            z, its_right
-W: value out of range: 0x374, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x74.
 339 040FF       1320                             ADD             s0, #0xff
 33A 0C020       1321                             load           s0, led_pattern
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -1894,106 +2291,74 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 33C 00000       1324                             load         s0, #0x00
 33D 091B1       1325                             JUMP            z, clr_int1             ;
-W: value out of range: 0x3b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
 33E 00001       1326                             load         s0, #0x01
 33F 09547       1327                             JUMP            nz, mode2n
-W: value out of range: 0x347, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x47.
 340 0C110       1328                             load           s1, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 341 041FF       1329                             ADD             s1, #0xff
 342 001FF       1330                             load         s1, #0xff               ;;;24
 343 09545       1331                             JUMP            nz, save_hhn
-W: value out of range: 0x345, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x45.
 344 00117       1332                             LOAD            s1, #0x17
 345 0C110       1333     save_hhn:               load           s1, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 346 081EE       1334                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 347 00002       1335     mode2n:                 load         s0, #0x02
 348 09550       1336                             JUMP            nz, mode3n
-W: value out of range: 0x350, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x50.
 349 0C120       1337                             load           s1, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 34A 041FF       1338                             ADD             s1, #0xff
 34B 001FF       1339                             load         s1, #0xff               ;;;3C;;60
 34C 0954E       1340                             JUMP            nz, save_mmn
-W: value out of range: 0x34e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x4e.
 34D 0013B       1341                             LOAD            s1, #0x3b
 34E 0C120       1342     save_mmn:               load           s1, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 34F 081EE       1343                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 350 00003       1344     mode3n:                 load         s0, #0x03
 351 09559       1345                             JUMP            nz, mode4n
-W: value out of range: 0x359, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x59.
 352 0C130       1346                             load           s1, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 353 041FF       1347                             ADD             s1, #0xff
 354 001FF       1348                             load         s1, #0xff               ;;;60
 355 09557       1349                             JUMP            nz, save_ssn
-W: value out of range: 0x357, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x57.
 356 0013B       1350                             LOAD            s1, #0x3b
 357 0C130       1351     save_ssn:               load           s1, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 358 081EE       1352                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 359 00004       1353     mode4n:                 load         s0, #0x04
 35A 09562       1354                             JUMP            nz, mode5n
-W: value out of range: 0x362, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x62.
 35B 0C150       1355                             load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 35C 041FF       1356                             ADD             s1, #0xff
 35D 00100       1357                             load         s1, #0x00               ;;;12
 35E 09560       1358                             JUMP            nz, save_monn
-W: value out of range: 0x360, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x60.
 35F 0010C       1359                             LOAD            s1, #0x0c
 360 0C150       1360     save_monn:              load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 361 081EE       1361                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 362 00005       1362     mode5n:                 load         s0, #0x05
 363 0956B       1363                             JUMP            nz, mode6n
-W: value out of range: 0x36b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6b.
 364 0C160       1364                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 365 041FF       1365                             ADD             s1, #0xff
 366 00100       1366                             load         s1, #0x00               ;;;12
 367 09569       1367                             JUMP            nz, save_dayn
-W: value out of range: 0x369, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x69.
 368 0C170       1368                             load           s1, dmax
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x27, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 369 0C160       1369     save_dayn:              load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 36A 081EE       1370                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 36B 00006       1371     mode6n:                 load         s0, #0x06
 36C 09573       1372                             JUMP            nz, mode7n
-W: value out of range: 0x373, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x73.
 36D 0C140       1373                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 36E 041FF       1374                             ADD             s1, #0xff
 36F 001FF       1375                             load         s1, #0xff               ;;;12
 370 09572       1376                             JUMP            nz, save_yearn
-W: value out of range: 0x372, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x72.
 371 00163       1377                             LOAD            s1, #0x63
 372 0C140       1378     save_yearn:             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
   00373         1379     mode7n:
 373 081EE       1380                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 374 04001       1381     its_right:              ADD             s0, #0x01
 375 0C020       1382                             load           s0, led_pattern
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -2002,113 +2367,80 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 377 00000       1385                             load         s0, #0x00
 378 091B1       1386                             JUMP            z, clr_int1             ;
-W: value out of range: 0x3b1, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb1.
 379 00001       1387                             load         s0, #0x01
 37A 09582       1388                             JUMP            nz, mode2p
-W: value out of range: 0x382, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x82.
 37B 0C110       1389                             load           s1, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 37C 04101       1390                             ADD             s1, #0x01
 37D 00118       1391                             load         s1, #0x18               ;;;24
 37E 09580       1392                             JUMP            nz, save_hhp
-W: value out of range: 0x380, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x80.
 37F 00100       1393                             LOAD            s1, #0x00
 380 0C110       1394     save_hhp:               load           s1, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 381 081EE       1395                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 382 00002       1396     mode2p:                 load         s0, #0x02
 383 0958B       1397                             JUMP            nz, mode3p
-W: value out of range: 0x38b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8b.
 384 0C120       1398                             load           s1, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 385 04101       1399                             ADD             s1, #0x01
 386 0013C       1400                             load         s1, #0x3c               ;;;3C;;60
 387 09589       1401                             JUMP            nz, save_mmp
-W: value out of range: 0x389, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x89.
 388 00100       1402                             LOAD            s1, #0x00
 389 0C120       1403     save_mmp:               load           s1, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 38A 081EE       1404                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 38B 00003       1405     mode3p:                 load         s0, #0x03
 38C 09594       1406                             JUMP            nz, mode4p
-W: value out of range: 0x394, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x94.
 38D 0C130       1407                             load           s1, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 38E 04101       1408                             ADD             s1, #0x01
 38F 0013C       1409                             load         s1, #0x3c               ;;;60
 390 09592       1410                             JUMP            nz, save_ssp
-W: value out of range: 0x392, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x92.
 391 00100       1411                             LOAD            s1, #0x00
 392 0C130       1412     save_ssp:               load           s1, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 393 081EE       1413                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 394 00004       1414     mode4p:                 load         s0, #0x04
 395 0959D       1415                             JUMP            nz, mode5p
-W: value out of range: 0x39d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9d.
 396 0C150       1416                             load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 397 04101       1417                             ADD             s1, #0x01
 398 0010D       1418                             load         s1, #0x0d               ;;;12
 399 0959B       1419                             JUMP            nz, save_monp
-W: value out of range: 0x39b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x9b.
 39A 00101       1420                             LOAD            s1, #0x01
 39B 0C150       1421     save_monp:              load           s1, monb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x25, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 39C 081EE       1422                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 39D 00005       1423     mode5p:                 load         s0, #0x05
 39E 095A8       1424                             JUMP            nz, mode6p
-W: value out of range: 0x3a8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa8.
 39F 0C160       1425                             load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 3A0 04101       1426                             ADD             s1, #0x01
 3A1 0C270       1427                             load           s2, dmax
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x27, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
 3A2 04201       1428                             ADD             s2, #0x01
 3A3 0C120       1429                             load         s1, s2
 3A4 095A6       1430                             JUMP            nz, save_dayp
-W: value out of range: 0x3a6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xa6.
 3A5 00101       1431                             LOAD            s1, #0x01
 3A6 0C160       1432     save_dayp:              load           s1, dayb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x26, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
 3A7 081EE       1433                             JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3A8 00006       1434     mode6p:                 load         s0, #0x06
 3A9 095B0       1435                             JUMP            nz, mode7p
-W: value out of range: 0x3b0, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb0.
 3AA 0C140       1436                             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 3AB 04101       1437                             ADD             s1, #0x01
 3AC 00164       1438                             load         s1, #0x64               ;;;12
 3AD 095AF       1439                             JUMP            nz, save_yearp
-W: value out of range: 0x3af, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xaf.
 3AE 00100       1440                             LOAD            s1, #0x00
 3AF 0C140       1441     save_yearp:             load           s1, yearb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x24, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
 3B0 081EE       1442     mode7p:                 JUMP            real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3B1 00040       1443     clr_int1:               LOAD            s0, #0x40               ;;;;;CLR_INT1
 3B2 0E020       1444                             OUTPUT          s0, 0x20
                 1445     ;;;TIMER interrupt process;;;;mode:::0-normal;1-hour;2-min;3-sec;4-day,5-mon,6-year
 3B3 00180       1446     t2_5m_int:              load            s1, #0x80
 3B4 091F9       1447                             JUMP            z, end_isr
-W: value out of range: 0x3f9, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf9.
 3B5 00080       1448                             LOAD            s0, #0x80               ;;;;;;;;;;clr_int2
 3B6 0E020       1449                             OUTPUT          s0, 0x20
 3B7 0C040       1450                             load           s0, ms1
@@ -2118,7 +2450,6 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 3BA 00064       1453                             load         s0, #0x64
 3BB 095EE       1454                             JUMP            nz, real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3BC 01000       1455                             AND             s0, #0x00               ;;;;;;;;;;;;;CLR ms1
 3BD 0C040       1456                             load           s0, ms1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
@@ -2129,111 +2460,81 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 3C1 0C110       1460                             load           s1, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3C2 04101       1461                             ADD             s1, #0x01
 3C3 0C110       1462                             load           s1, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3C4 00101       1463                             load         s1, #0x01               ;
 3C5 095C8       1464                             JUMP            nz, load_2
-W: value out of range: 0x3c8, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc8.
 3C6 0002D       1465                             LOAD            s0, #0x2d               ;;;------
 3C7 081CF       1466                             JUMP            load_4
-W: value out of range: 0x3cf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcf.
 3C8 00102       1467     load_2:                  load         s1, #0x02               ;
 3C9 095CC       1468                             JUMP            nz, load_3
-W: value out of range: 0x3cc, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcc.
 3CA 00060       1469                             LOAD            s0, #0x60               ;;;\\\\\\
 3CB 081CF       1470                             JUMP            load_4
-W: value out of range: 0x3cf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcf.
 3CC 00103       1471     load_3:                  load         s1, #0x03               ;
 3CD 095CF       1472                             JUMP            nz, load_4
-W: value out of range: 0x3cf, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcf.
 3CE 0007C       1473                             LOAD            s0, #0x7c               ;;;||||
 3CF 0C080       1474     load_4:                  load           s0, disp_flag
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 3D0 00104       1475                             load         s1, #0x04
 3D1 095EE       1476                             JUMP            nz, real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3D2 0002F       1477                             LOAD            s0, #0x2f               ;;;////
                 1478     ;;load s0,disp_flag
                 1479     ;;ADD s0,01
 3D3 0C080       1480                             load           s0, disp_flag
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x18, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
 3D4 01100       1481                             AND             s1, #0x00               ;;;;;;;;;;;;;CLR ms500
 3D5 0C110       1482                             load           s1, ms500
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3D6 0C030       1483                             load           s0, secb                ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;CLOCK PROCESS START
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 3D7 04001       1484                             ADD             s0, #0x01
 3D8 0C030       1485                             load           s0, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 3D9 0003C       1486                             load         s0, #0x3c               ;;;60
 3DA 095EE       1487                             JUMP            nz, real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3DB 01000       1488                             AND             s0, #0x00
 3DC 0C030       1489                             load           s0, secb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x23, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 3DD 0C020       1490                             load           s0, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 3DE 04001       1491                             ADD             s0, #0x01
 3DF 0C020       1492                             load           s0, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 3E0 0003C       1493                             load         s0, #0x3c
 3E1 095EE       1494                             JUMP            nz, real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3E2 01000       1495                             AND             s0, #0x00
 3E3 0C020       1496                             load           s0, minb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x22, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
                 1497     ;;;24 Hours
 3E4 0C010       1498                             load           s0, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3E5 04001       1499                             ADD             s0, #0x01
 3E6 0C010       1500                             load           s0, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3E7 00018       1501                             load         s0, #0x18
 3E8 095EE       1502                             JUMP            nz, real_time_end
-W: value out of range: 0x3ee, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xee.
 3E9 01000       1503                             AND             s0, #0x00
 3EA 0C010       1504                             load           s0, hourb
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x21, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
 3EB 0C0F0       1505     day_p:                  load           s0, day_up
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 3EC 00001       1506                             LOAD            s0, #0x01
 3ED 0C0F0       1507                             load           s0, day_up
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x1f, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xf.
 3EE 0C000       1508     real_time_end:          load           s0, ms2                 ;;;;;;;;2.5ms counter
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 3EF 04001       1509                             ADD             s0, #0x01
 3F0 00028       1510                             load         s0, #0x28               ;;;;;;counter to 100ms
 3F1 095F6       1511                             JUMP            nz, load_ms2
-W: value out of range: 0x3f6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf6.
 3F2 0C130       1512                             load           s1, ms100
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 3F3 04101       1513                             ADD             s1, #0x01
 3F4 0C130       1514     sav_ms100:              load           s1, ms100
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
 3F5 00000       1515                             LOAD            s0, #0x00
 3F6 0C000       1516     load_ms2:              load           s0, ms2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
 3F7 0C020       1517                             load           s0, led_pattern
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 3F8 0E080       1518                             OUTPUT          s0, led_port
@@ -2241,10 +2542,8 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 3FA 0C120       1520                             load           s1, isr_s1              ;reload s1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
 3FB 0C250       1521                             load           s2, isr_s2              ;reload s2
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
 3FC 080F0       1522                             RETURNI         enable
                 1523     ;**************************************************************************************
                 1524     ;Interrupt Vector
@@ -2252,7 +2551,6 @@ W: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
                 1526     ;
   003FF         1527                             ORG             0x3ff
 3FF 0811D       1528                             JUMP            isr
-W: value out of range: 0x31d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1d.
                 1529     ;First Screen:
                 1530     ;1234567890123456
                 1531     ; Clock Based

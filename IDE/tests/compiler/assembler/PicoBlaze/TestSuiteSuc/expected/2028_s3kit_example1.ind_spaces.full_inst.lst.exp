@@ -65,11 +65,11 @@
   00001           65     link_fifo_reset         EQU             0x01                    ;     reset - bit0
                   66     ;
   00001           67     link_fifo_status_port   EQU             0x01                    ;FIFO status input
-  00001           68     link_fifo_data_present  EQU             0x01                    ;      half full - bit0
+  00001           68     link_fifo_EQU_present  EQU             0x01                    ;      half full - bit0
   00002           69     link_fifo_half_full     EQU             0x02                    ;           full - bit1
-  00004           70     link_fifo_full          EQU             0x04                    ;   data present - bit2
+  00004           70     link_fifo_full          EQU             0x04                    ;   EQU present - bit2
                   71     ;
-  00002           72     link_fifo_read_port     EQU             0x02                    ;read FIFO data
+  00002           72     link_fifo_read_port     EQU             0x02                    ;read FIFO EQU
                   73     ;
                   74     ;
                   75     ;
@@ -110,7 +110,7 @@
                  110     ;
                  111     ;
                  112     ;**************************************************************************************
-                 113     ;Useful data constants
+                 113     ;Useful EQU constants
                  114     ;**************************************************************************************
                  115     ;
                  116     ;
@@ -541,15 +541,15 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  494     ; Read Byte from Link FIFO
                  495     ;**************************************************************************************
                  496     ;
-                 497     ; The routine first loads the FIFO buffer to see if data is present.
+                 497     ; The routine first loads the FIFO buffer to see if EQU is present.
                  498     ; If the FIFO is empty, the routine waits until there is a character to read.
                  499     ; the read value is returned in register s0.
                  500     ;
                  501     ;
 0F9 20001        502     read_link_fifo:         INPUT           s0, link_fifo_status_port ;load FIFO buffer
-0FA 00001        503                             load            s0, #link_fifo_data_present ;wait if empty
+0FA 00001        503                             load            s0, #link_fifo_EQU_present ;wait if empty
 0FB 350F9        504                             JUMP            z, read_link_fifo
-0FC 20002        505                             INPUT           s0, link_fifo_read_port ;read data from FIFO
+0FC 20002        505                             INPUT           s0, link_fifo_read_port ;read EQU from FIFO
 0FD 24000        506                             RETURN
                  507     ;
                  508     ;

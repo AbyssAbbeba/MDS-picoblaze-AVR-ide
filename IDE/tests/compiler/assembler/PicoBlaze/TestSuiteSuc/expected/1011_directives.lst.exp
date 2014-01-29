@@ -4,15 +4,25 @@
                    4
                    5
   00000            6     s10     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x0.
   00001            7     s11     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x1.
   00002            8     s12     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x2.
   00003            9     s13     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x3.
   00004           10     s14     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x4.
   00005           11     s15     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x5.
   00006           12     s16     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x6.
   00007           13     s17     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x7.
   00008           14     s18     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x8.
   00009           15     s19     AUTOSPR
+E: attempting to use unavailable space in scratch pad memory at address: 0x9.
                   16
   00244           17     a1      EQU     580
   3FFFF           18     a2      EQU     0xFFFFFF
@@ -107,28 +117,18 @@ W: reusing already reserved space in register file memory at address: 0xb.
   0000C           94     f12     REG     12
 W: reusing already reserved space in register file memory at address: 0xc.
                   95
-  00001           96     g1      DATA     1
-W: reusing already reserved space in scratch pad memory at address: 0x1.
-  00002           97     g2      DATA     2
-W: reusing already reserved space in scratch pad memory at address: 0x2.
-  00003           98     g3      DATA     3
-W: reusing already reserved space in scratch pad memory at address: 0x3.
-  00004           99     g4      DATA     4
-W: reusing already reserved space in scratch pad memory at address: 0x4.
-  00005          100     g5      DATA     5
-W: reusing already reserved space in scratch pad memory at address: 0x5.
-  00006          101     g6      DATA     6
-W: reusing already reserved space in scratch pad memory at address: 0x6.
-  00007          102     g7      DATA     7
-W: reusing already reserved space in scratch pad memory at address: 0x7.
-  00008          103     g8      DATA     8
-W: reusing already reserved space in scratch pad memory at address: 0x8.
-  00009          104     g9      DATA     9
-W: reusing already reserved space in scratch pad memory at address: 0x9.
-  00011          105     g10     DATA     11h
-  0000A          106     g11     DATA     Ah
-  00004          107     g12     DATA     0x04
-W: reusing already reserved space in scratch pad memory at address: 0x4.
+  00001           96     g1      EQU     1
+  00002           97     g2      EQU     2
+  00003           98     g3      EQU     3
+  00004           99     g4      EQU     4
+  00005          100     g5      EQU     5
+  00006          101     g6      EQU     6
+  00007          102     g7      EQU     7
+  00008          103     g8      EQU     8
+  00009          104     g9      EQU     9
+  00011          105     g10     EQU     11h
+  0000A          106     g11     EQU     Ah
+  00004          107     g12     EQU     0x04
                  108
   00244          109     h1      CODE     580
   3FFFF          110     h2      CODE     0xFFFFFF

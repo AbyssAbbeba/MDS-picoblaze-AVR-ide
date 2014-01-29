@@ -9,19 +9,19 @@ device kcpsm1
 ; Start of code
 ;##############################################################################;
 ; Register name assignment
-temp1               EQU       s0                  ; temporary data register
-temp2               EQU       s1                  ; temporary data register
-temp3               EQU       s2                  ; temporary data register
+temp1               EQU       s0                  ; temporary EQU register
+temp2               EQU       s1                  ; temporary EQU register
+temp3               EQU       s2                  ; temporary EQU register
 chreg               EQU       s3                  ; character register
 RxDat               EQU       s4                  ; received character register
 addr                EQU       s5                  ; address register
 
 ; Peripherals
-UART_data           EQU        01h                 ; UART data register port ID
+UART_EQU           EQU        01h                 ; UART EQU register port ID
 UART_stat           EQU        02h                 ; UART control register port ID
 ; UART Status register:
 ;  [2] Tx ready
-;  [3] new Rx data
+;  [3] new Rx EQU
 ;  [4] Rx buffer overflow
 
 BCD_01              EQU        04h                 ; 7 segment, upper two segments
@@ -66,7 +66,7 @@ main_loop:          CALL      GetChar             ; get (wait for) new character
 SendChar:           IN        Temp1, UART_stat    ; checking UART status
                     load      Temp1, 4            ; load bit 2 (is Tx ready?)
                     JUMP      Z, SendChar         ; wait until Tx is ready
-                    OUT       chreg, UART_data    ; Send the character
+                    OUT       chreg, UART_EQU    ; Send the character
                     RET                           ; Return from procedure
 
 ;==============================================================================;
@@ -74,9 +74,9 @@ SendChar:           IN        Temp1, UART_stat    ; checking UART status
 ; Registers used: Temp1, chreg
 ;==============================================================================;
 GetChar:            IN        Temp1, UART_stat    ; checking UART status
-                    load      Temp1, 8            ; load bit 3 (new Rx data?)
-                    JUMP      Z, GetChar          ; wait for new Rx data
-                    IN        chreg, UART_data    ; Read the character
+                    load      Temp1, 8            ; load bit 3 (new Rx EQU?)
+                    JUMP      Z, GetChar          ; wait for new Rx EQU
+                    IN        chreg, UART_EQU    ; Read the character
                     RET                           ; Return from procedure
 
 ;==============================================================================;

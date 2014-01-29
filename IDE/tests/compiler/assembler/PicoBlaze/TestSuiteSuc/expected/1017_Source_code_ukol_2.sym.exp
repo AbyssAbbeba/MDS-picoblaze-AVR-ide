@@ -35,7 +35,7 @@ SWITCH . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1017_So
 TEMP1  . . . . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1017_Source_code_ukol_2.asm:13.1-13.33
 TEMP2  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1017_Source_code_ukol_2.asm:14.1-14.33
 TEMP3  . . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1017_Source_code_ukol_2.asm:15.1-15.33
-UART_DATA  . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1017_Source_code_ukol_2.asm:21.1-21.35
+UART_EQU . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1017_Source_code_ukol_2.asm:21.1-21.34
 UART_STAT  . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1017_Source_code_ukol_2.asm:22.1-22.35
 WAIT_100MS . . . . . . . . . . . . . LABEL  0x00032 NOT USED CONSTANT    1017_Source_code_ukol_2.asm:147.1-147.12
 WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00035 USED     CONSTANT    1017_Source_code_ukol_2.asm:150.1-150.14

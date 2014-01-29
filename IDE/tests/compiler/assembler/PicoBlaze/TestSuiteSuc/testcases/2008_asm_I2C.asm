@@ -2,7 +2,7 @@ device kcpsm2
 
 ; -------------------------------------------------------------------------------
 ; SPI routines
-; data to move in s1, s1&s2, s1&s2&s3
+; EQU to move in s1, s1&s2, s1&s2&s3
 ; uses s0, sF
 ; sE: bit in the command reg of the SPI_LE pin
 ; sD: address of the command register

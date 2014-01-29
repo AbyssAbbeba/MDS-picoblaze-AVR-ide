@@ -114,11 +114,11 @@ LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1030_ex
 LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:89.1-89.37
 LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:78.1-78.37
 LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x002E5 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1693.1-1693.13
-LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x0030F NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:1792.1-1792.16
 LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:94.1-94.37
 LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:95.1-95.37
 LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:96.1-96.37
 LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:97.1-97.37
+LCD_READ_EQU8  . . . . . . . . . . . LABEL  0x0030F NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:1792.1-1792.15
 LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:90.1-90.37
 LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:91.1-91.37
 LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:92.1-92.37
@@ -126,7 +126,7 @@ LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1030_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x00328 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1832.1-1832.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:81.1-81.37
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:80.1-80.37
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x002FE USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1755.1-1755.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x002FE USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1755.1-1755.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x002EB USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1709.1-1709.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x002EF USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1726.1-1726.17
 LINK_FIFO_WRITE_PORT . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:141.1-141.37
@@ -141,7 +141,7 @@ READ_COMMAND . . . . . . . . . . . . LABEL  0x00046 USED     CONSTANT    1030_ex
 READ_FROM_UART . . . . . . . . . . . LABEL  0x0011D USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1043.1-1043.16
 READ_SF_SERIAL_NUMBER  . . . . . . . LABEL  0x000F2 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:904.1-904.23
 READ_SN_LOOP . . . . . . . . . . . . LABEL  0x000F8 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:910.1-910.14
-RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:57.1-57.37
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:57.1-57.36
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:59.1-59.37
 RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:58.1-58.37
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -208,8 +208,8 @@ SF_BYTE_READ . . . . . . . . . . . . LABEL  0x00101 USED     CONSTANT    1030_ex
 SF_BYTE_WRITE  . . . . . . . . . . . LABEL  0x0010B USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:973.1-973.15
 SF_CE  . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:118.1-118.37
 SF_CONTROL_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:116.1-116.37
-SF_DATA_IN_PORT  . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:108.1-108.37
-SF_DATA_OUT_PORT . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:110.1-110.37
+SF_EQU_IN_PORT . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:108.1-108.36
+SF_EQU_OUT_PORT  . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:110.1-110.36
 SF_ERASE_BLOCK . . . . . . . . . . . LABEL  0x000E4 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:850.1-850.16
 SF_INIT  . . . . . . . . . . . . . . LABEL  0x000E1 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:825.1-825.9
 SF_READ  . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:117.1-117.37
@@ -221,7 +221,7 @@ STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    1030_ex
 STRATAFLASH_STS  . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:62.1-62.37
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:56.1-56.37
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1030_example3.ind_spaces.short_inst.asm:55.1-55.37
-UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:148.1-148.35
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:148.1-148.34
 UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:64.1-64.37
 UART_WRITE . . . . . . . . . . . . . LABEL  0x00127 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:1065.1-1065.12
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    1030_example3.ind_spaces.short_inst.asm:66.1-66.37

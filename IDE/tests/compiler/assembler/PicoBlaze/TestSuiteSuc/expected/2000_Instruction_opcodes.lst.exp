@@ -14,10 +14,10 @@
   00009           14     loadsymb10    REG        9h
   0000A           15     loadsymb11    REG        Ah
   0000B           16     loadsymb12    REG        Bh
-  0000C           17     loadsymb13    DATA        Ch
-  00005           18     loadsymb14    DATA        0x05
-  00002           19     loadsymb15    DATA        2
-  00003           20     loadsymb16    DATA        3d
+  0000C           17     loadsymb13    EQU        Ch
+  00005           18     loadsymb14    EQU        0x05
+  00002           19     loadsymb15    EQU        2
+  00003           20     loadsymb16    EQU        3d
   00002           21     loadsymb17    CODE        0h + 2h
   00002           22     loadsymb18    CODE        2h
   00002           23     loadsymb19    CODE        2h
@@ -87,11 +87,11 @@ W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while
 028 37C2D         82             CALL      NC,Podprog
                   83
 029 10860         84             load     loadsymb9,loadsymb13
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: data.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02A 10950         85             load     loadsymb10,10
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02B 10A60         86             load     loadsymb11,loadsymb13
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: data.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02C 10B28         87             load     loadsymb12,5
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                   88

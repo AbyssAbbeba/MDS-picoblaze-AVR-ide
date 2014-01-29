@@ -79,11 +79,11 @@ LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1042_ex
 LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:60.1-60.45
 LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:49.1-49.45
 LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x000B3 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:502.1-502.13
-LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x000DD NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:601.1-601.16
 LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:65.1-65.45
 LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:66.1-66.45
 LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:67.1-67.45
 LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:68.1-68.45
+LCD_READ_EQU8  . . . . . . . . . . . LABEL  0x000DD NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:601.1-601.15
 LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:61.1-61.45
 LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:62.1-62.45
 LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:63.1-63.45
@@ -93,7 +93,7 @@ LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1042_ex
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:51.1-51.45
 LCD_SHILOAD_DELAY  . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:238.1-238.19
 LCD_SHILOAD_LELOAD . . . . . . . . . LABEL  0x00116 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:698.1-698.20
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x000CC USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:564.1-564.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x000CC USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:564.1-564.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x000B9 USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:518.1-518.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x000BD USED     CONSTANT    1042_example_15.ind_spaces.full_inst.asm:535.1-535.17
 LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1042_example_15.ind_spaces.full_inst.asm:16.1-16.45

@@ -3,17 +3,6 @@ device kcpsm1
 
 
 
-s10     AUTOSPR
-s11     AUTOSPR
-s12     AUTOSPR
-s13     AUTOSPR
-s14     AUTOSPR
-s15     AUTOSPR
-s16     AUTOSPR
-s17     AUTOSPR
-s18     AUTOSPR
-s19     AUTOSPR
-
 a1      EQU     580
 a2      EQU     0xFFFFFF
 a3      EQU     0
@@ -93,18 +82,18 @@ f10     REG     10
 f11     REG     11
 f12     REG     12
 
-g1      DATA     1
-g2      DATA     2
-g3      DATA     3
-g4      DATA     4
-g5      DATA     5
-g6      DATA     6
-g7      DATA     7
-g8      DATA     8
-g9      DATA     9
-g10     DATA     11h
-g11     DATA     Ah
-g12     DATA     0x04
+g1      EQU     1
+g2      EQU     2
+g3      EQU     3
+g4      EQU     4
+g5      EQU     5
+g6      EQU     6
+g7      EQU     7
+g8      EQU     8
+g9      EQU     9
+g10     EQU     11h
+g11     EQU     Ah
+g12     EQU     0x04
 
 h1      CODE     580
 h2      CODE     0xFFFFFF

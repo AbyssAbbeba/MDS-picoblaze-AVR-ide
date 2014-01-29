@@ -129,11 +129,11 @@ LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1031_ex
 LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:70.1-70.45
 LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:59.1-59.45
 LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x001BA USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:885.1-885.13
-LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x001E4 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:984.1-984.16
 LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:75.1-75.45
 LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:76.1-76.45
 LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:77.1-77.45
 LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:78.1-78.45
+LCD_READ_EQU8  . . . . . . . . . . . LABEL  0x001E4 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:984.1-984.15
 LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:71.1-71.45
 LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:72.1-72.45
 LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:73.1-73.45
@@ -141,7 +141,7 @@ LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1031_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x001FD USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:1024.1-1024.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:62.1-62.45
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1031_example_4.ind_spaces.full_inst.asm:61.1-61.45
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001D3 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:947.1-947.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x001D3 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:947.1-947.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001C0 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:901.1-901.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001C4 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:918.1-918.17
 LED_PORT . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    1031_example_4.ind_spaces.full_inst.asm:42.1-42.45

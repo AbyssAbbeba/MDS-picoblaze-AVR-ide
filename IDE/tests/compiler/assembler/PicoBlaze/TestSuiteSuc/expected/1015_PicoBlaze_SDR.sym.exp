@@ -1,8 +1,8 @@
 CHREG  . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:33.1-33.42
 GETCHAR  . . . . . . . . . . . . . . LABEL  0x0000C USED     CONSTANT    1015_PicoBlaze_SDR.asm:74.1-74.9
 MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    1015_PicoBlaze_SDR.asm:48.1-48.11
-READ_DATA  . . . . . . . . . . . . . NUMBER 0x0000C NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:31.2-31.24
-RXDATA . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:23.2-23.20
+READ_EQU . . . . . . . . . . . . . . NUMBER 0x0000C NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:31.2-31.23
+RXEQU  . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:23.2-23.19
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
 S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
 S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
@@ -31,12 +31,12 @@ SWITCH . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_Pi
 TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    1015_PicoBlaze_SDR.asm:20.2-20.19
 TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    1015_PicoBlaze_SDR.asm:21.2-21.19
 TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    1015_PicoBlaze_SDR.asm:22.2-22.19
-TXDATA . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:24.2-24.20
-TX_DATA_01 . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:27.2-27.25
-TX_DATA_02 . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:28.2-28.25
-TX_DATA_03 . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:29.2-29.25
-TX_DATA_04 . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:30.2-30.25
-UART_DATA  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:36.1-36.46
+TXEQU  . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:24.2-24.19
+TX_EQU_01  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:27.2-27.24
+TX_EQU_02  . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:28.2-28.24
+TX_EQU_03  . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:29.2-29.24
+TX_EQU_04  . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:30.2-30.24
+UART_EQU . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:36.1-36.45
 UART_STAT  . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    1015_PicoBlaze_SDR.asm:35.1-35.46
 WAIT_100MS . . . . . . . . . . . . . LABEL  0x00031 NOT USED CONSTANT    1015_PicoBlaze_SDR.asm:145.1-145.12
 WAIT_100MS_I . . . . . . . . . . . . LABEL  0x00034 USED     CONSTANT    1015_PicoBlaze_SDR.asm:148.1-148.14
