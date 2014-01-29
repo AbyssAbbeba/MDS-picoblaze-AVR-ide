@@ -93,7 +93,7 @@ READ_FROM_UART . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    2039_ex
 READ_NEXT_CHAR . . . . . . . . . . . LABEL  0x00054 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:322.1-322.16
 RECEIVE_FULL_LOAD  . . . . . . . . . LABEL  0x00066 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:394.1-394.19
 RECEIVE_STRING . . . . . . . . . . . LABEL  0x00063 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:391.1-391.16
-RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:40.1-40.45
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:40.1-40.44
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:42.1-42.45
 RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2039_example_12.ind_spaces.full_inst.asm:41.1-41.45
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -152,7 +152,7 @@ STRING_START . . . . . . . . . . . . NUMBER 0x00030 USED     CONSTANT    2039_ex
 STRING_START_AGAIN . . . . . . . . . LABEL  0x0007A USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:414.1-414.20
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:39.1-39.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2039_example_12.ind_spaces.full_inst.asm:38.1-38.45
-UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:57.1-57.43
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:57.1-57.42
 UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:47.1-47.45
 UART_WRITE . . . . . . . . . . . . . LABEL  0x00061 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:366.1-366.12
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    2039_example_12.ind_spaces.full_inst.asm:49.1-49.45

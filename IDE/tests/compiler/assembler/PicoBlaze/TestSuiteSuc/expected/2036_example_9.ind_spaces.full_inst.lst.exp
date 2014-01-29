@@ -62,16 +62,16 @@
   00040           62     status_port             EQU             0x40                    ;UART status input
   00001           63     tx_half_full            EQU             0x01                    ;  Transmitter     half full - bit0
   00002           64     tx_full                 EQU             0x02                    ;    FIFO               full - bit1
-  00004           65     rx_data_present         EQU             0x04                    ;  Receiver     data present - bit2
+  00004           65     rx_EQU_present         EQU             0x04                    ;  Receiver     EQU present - bit2
   00008           66     rx_half_full            EQU             0x08                    ;    FIFO          half full - bit3
   00010           67     rx_full                 EQU             0x10                    ;                   full - bit4
   00020           68     spare1                  EQU             0x20                    ;                  spare '0' - bit5
   00040           69     spare2                  EQU             0x40                    ;                  spare '0' - bit6
   00080           70     spare3                  EQU             0x80                    ;                  spare '0' - bit7
                   71     ;
-  00080           72     uart_read_port          EQU             0x80                    ;UART Rx data input
+  00080           72     uart_read_port          EQU             0x80                    ;UART Rx EQU input
                   73     ;
-  00004           74     uart_write_port         EQU             0x04                    ;UART Tx data output
+  00004           74     uart_write_port         EQU             0x04                    ;UART Tx EQU output
                   75     ;
                   76     ;
   000C0           77     ds_wire_in_port         EQU             0xc0                    ;Read signal from DS2432 device
@@ -112,7 +112,7 @@
                  112     ; Special Register usage
                  113     ;**************************************************************************************
                  114     ;
-  0000F          115     uart_data               REG             sf                      ;used to pass data to and from the UART
+  0000F          115     uart_EQU               REG             sf                      ;used to pass EQU to and from the UART
                  116     ;
                  117     ;
                  118     ;**************************************************************************************
@@ -166,9 +166,9 @@
   0001B          166     var_e3                  EQU             0x1b
                  167     ;
                  168     ;
-                 169     ; Copy of data in the scratchpad memory of the DS2432.
+                 169     ; Copy of EQU in the scratchpad memory of the DS2432.
                  170     ; This is only updated by the read scratchpad memory command.
-                 171     ; '0' indicates the data in the least significant location.
+                 171     ; '0' indicates the EQU in the least significant location.
                  172     ;
   0001C          173     scratchpad0             EQU             0x1c
   0001D          174     scratchpad1             EQU             0x1d
@@ -182,7 +182,7 @@
                  182     ;
                  183     ;
                  184     ;**************************************************************************************
-                 185     ; Useful data constants
+                 185     ; Useful EQU constants
                  186     ;**************************************************************************************
                  187     ;
                  188     ; Constant to define a software delay of 1us. This must be adjusted to reflect the
@@ -331,7 +331,7 @@
                  331     ;
 00A 362EC        332     ds2432_prompt:          CALL            send_cr                 ;prompt for user input
 00B 362EC        333                             CALL            send_cr
-00C 00F3E        334                             LOAD            uart_data, #character_greater_than ;prompt for input
+00C 00F3E        334                             LOAD            uart_EQU, #character_greater_than ;prompt for input
 00D 362A5        335                             CALL            send_to_uart
 00E 362E1        336                             CALL            read_upper_case
 00F 00031        337                             load         s0, #character_1        ;load for commands and execute as required
@@ -343,7 +343,7 @@
 015 00034        343                             load         s0, #character_4
 016 3509D        344                             JUMP            z, read_auth_page_command
 017 362EC        345                             CALL            send_cr                 ;no valid command input
-018 00F3F        346                             LOAD            uart_data, #character_question ;display ???
+018 00F3F        346                             LOAD            uart_EQU, #character_question ;display ???
 019 362A5        347                             CALL            send_to_uart
 01A 362A5        348                             CALL            send_to_uart
 01B 362A5        349                             CALL            send_to_uart
@@ -368,7 +368,7 @@
                  368     ;  serial_number0 to serial_number5
                  369     ;     6 bytes to hold 48-bit serial number (LS-byte first).
                  370     ;  read_ROM_CRC
-                 371     ;     8-bit CRC value for the above data.
+                 371     ;     8-bit CRC value for the above EQU.
                  372     ;
                  373     ;
                  374     ; The routine also displays the values read and performs a verification of the
@@ -454,7 +454,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 049 362EC        449                             CALL            send_cr
 04A 36391        450                             CALL            send_secret
 04B 362EF        451                             CALL            send_space
-04C 3626F        452                             CALL            read_byte_slow          ;read data into s3
+04C 3626F        452                             CALL            read_byte_slow          ;read EQU into s3
 04D 003AA        453                             load         s3, #0xaa               ;load response
 04E 35051        454                             JUMP            z, secret_pass
 04F 363B4        455                             CALL            send_fail
@@ -467,14 +467,14 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  462     ; DS2432 Write Scratchpad Memory Command.
                  463     ;**************************************************************************************
                  464     ;
-                 465     ; The write scratchpad memory command (0F hex) allows 8-bytes of data to be written
+                 465     ; The write scratchpad memory command (0F hex) allows 8-bytes of EQU to be written
                  466     ; together with a target address for final storage in the main memory map. The
                  467     ; DS2432 scratch pad is also used to define a 3 byte 'challenge' used in the
                  468     ; SHA-1 algorithm.
                  469     ;
                  470     ; The DS2432 provides an initial confirmation of the write by returning a 16-bit CRC
                  471     ; value which KCPSM3 loads. The CRC is computed based on the command, address and
-                 472     ; data transmitted (11 bytes). PicoBlaze also computes the CRC and and loads this
+                 472     ; EQU transmitted (11 bytes). PicoBlaze also computes the CRC and and loads this
                  473     ; against the value received from the DS2432.
                  474     ;
                  475     ; This routine prompts the user to enter the 16-bit target address is to be loaded
@@ -487,7 +487,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  482     ; regardless of the address provided. The CRC still reflects the transmitted address.
                  483     ;
                  484     ; After providing a valid address, the routine then prompts the user to enter
-                 485     ; 8 bytes of data which are written to the DS2432.
+                 485     ; 8 bytes of EQU which are written to the DS2432.
                  486     ;
                  487     ;
                  488     ;
@@ -510,22 +510,22 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 063 3620E        505                             CALL            compute_crc16           ;compute CRC for value in 's3'
 064 00500        506                             load         s5, #0x00               ;check address less than 0090 hex
 065 35403        507                             JUMP            nz, warm_start          ;DS2432 aborts command and so do we!
-066 00490        508                             load         s4, #0x90               ;no need to read data bytes.
+066 00490        508                             load         s4, #0x90               ;no need to read EQU bytes.
 067 35C03        509                             JUMP            nc, warm_start
 068 00400        510                             LOAD            s4, #0x00               ;initialise byte counter
-069 363C8        511     wsc_data_loop:          CALL            send_data               ;obtain a byte of data
-06A 10F20        512                             LOAD            uart_data, s4           ;display which byte requested
-06B 08F30        513                             ADD             uart_data, #character_0 ;convert to ASCII
+069 363C8        511     wsc_EQU_loop:          CALL            send_EQU               ;obtain a byte of EQU
+06A 10F20        512                             LOAD            uart_EQU, s4           ;display which byte requested
+06B 08F30        513                             ADD             uart_EQU, #character_0 ;convert to ASCII
 06C 362A5        514                             CALL            send_to_uart
 06D 363C5        515                             CALL            send_equals
 06E 362E6        516                             CALL            obtain_8bits
-06F 35869        517                             JUMP            c, wsc_data_loop        ;bad input data
+06F 35869        517                             JUMP            c, wsc_EQU_loop        ;bad input EQU
 070 10300        518                             LOAD            s3, s0                  ;transmit byte
 071 3624E        519                             CALL            write_byte_slow
 072 3620E        520                             CALL            compute_crc16           ;compute CRC for value in 's3'
 073 08401        521                             ADD             s4, #0x01               ;count bytes
 074 00408        522                             load         s4, #0x08
-075 35469        523                             JUMP            nz, wsc_data_loop
+075 35469        523                             JUMP            nz, wsc_EQU_loop
 076 362EC        524                             CALL            send_cr
 077 3621C        525                             CALL            read_send_load_crc16    ;read, display and load CRC value
 078 34003        526                             JUMP            warm_start
@@ -536,16 +536,16 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  531     ; DS2432 Read Scratchpad Memory Command.
                  532     ;**************************************************************************************
                  533     ;
-                 534     ; The read scratchpad memory command (AA hex) allows the 8-bytes of data previously
+                 534     ; The read scratchpad memory command (AA hex) allows the 8-bytes of EQU previously
                  535     ; to be written into the scratchpad memory to be read back for verification together with
                  536     ; the target address, a transfer status register (E/S) and a 16-bit CRC value.
                  537     ;
-                 538     ; The 16-bit CRC is formed of the command byte, address TA1 and TA2, E/S byte and 8 data
+                 538     ; The 16-bit CRC is formed of the command byte, address TA1 and TA2, E/S byte and 8 EQU
                  539     ; bytes as transmitted (12 bytes). These may not be the same as the values provided
                  540     ; during a previous write to scratchpad memory. PicoBlaze also computes the CRC and
                  541     ; and loads this against the value received from the DS2432.
                  542     ;
-                 543     ; The 8 bytes of data are also copied to PicoBlaze memory at locations defined by the
+                 543     ; The 8 bytes of EQU are also copied to PicoBlaze memory at locations defined by the
                  544     ; constants 'scratchpad0' to 'scratchpad7'. Three bytes are used as a 'challenge'
                  545     ; by the SHA-1 algorithm.
                  546     ;
@@ -571,21 +571,21 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 08A 3620E        566                             CALL            compute_crc16           ;compute CRC for value in 's3'
 08B 10018        567                             LOAD            s0, s3                  ;display value
 08C 362C2        568                             CALL            send_hex_byte
-08D 363C8        569                             CALL            send_data               ;display 'Data='
+08D 363C8        569                             CALL            send_EQU               ;display 'EQU='
 08E 363C5        570                             CALL            send_equals
 08F 0041C        571                             LOAD            s4, #scratchpad0        ;pointer to memory and byte counter
 090 362EF        572     rsc_loop:               CALL            send_space
-091 3626F        573                             CALL            read_byte_slow          ;read data byte
+091 3626F        573                             CALL            read_byte_slow          ;read EQU byte
 092 3620E        574                             CALL            compute_crc16           ;compute CRC for value in 's3'
 093 00304        575                             load           s3, #s4                 ;load value in memory
 W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
 094 10018        576                             LOAD            s0, s3                  ;display value
 095 362C2        577                             CALL            send_hex_byte
 096 00423        578                             load         s4, #scratchpad7        ;count bytes
-097 3509A        579                             JUMP            z, end_rsc_data_loop
+097 3509A        579                             JUMP            z, end_rsc_EQU_loop
 098 08401        580                             ADD             s4, #0x01
 099 34090        581                             JUMP            rsc_loop
-09A 362EC        582     end_rsc_data_loop:      CALL            send_cr
+09A 362EC        582     end_rsc_EQU_loop:      CALL            send_cr
 09B 3621C        583                             CALL            read_send_load_crc16    ;read, display and load CRC value
 09C 34003        584                             JUMP            warm_start
                  585     ;
@@ -622,21 +622,21 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  616     ; The table is loadd in the external 'Wt' buffer and must first be initialised with the
                  617     ; 16 'M' words (32-bit words each requiring 4 bytes). This is achieved by shifting in
                  618     ; each word in sequence. Storing each word most significant byte first is a natural
-                 619     ; fit with the reading of the page data from the DS2432 and the way each 'M' word
+                 619     ; fit with the reading of the page EQU from the DS2432 and the way each 'M' word
                  620     ; is organised. Notice how this causes least significant bytes to be swapped with most
                  621     ; significant bytes!
                  622     ;
                  623     ;          [31:24]      [23:16]      [15:8]       [7:0]
                  624     ;
                  625     ;   M0 = [secret0    , secret1    , secret2    , secret3    ]
-                 626     ;   M1 = [page_data0 , page_data1 , page_data2 , page_data3 ]
-                 627     ;   M2 = [page_data4 , page_data5 , page_data6 , page_data7 ]
-                 628     ;   M3 = [page_data8 , page_data9 , page_data10, page_data11]
-                 629     ;   M4 = [page_data12, page_data13, page_data14, page_data15]
-                 630     ;   M5 = [page_data16, page_data17, page_data18, page_data19]
-                 631     ;   M6 = [page_data20, page_data21, page_data22, page_data23]
-                 632     ;   M7 = [page_data24, page_data25, page_data26, page_data27]
-                 633     ;   M8 = [page_data28, page_data29, page_data30, page_data31]
+                 626     ;   M1 = [page_EQU0 , page_EQU1 , page_EQU2 , page_EQU3 ]
+                 627     ;   M2 = [page_EQU4 , page_EQU5 , page_EQU6 , page_EQU7 ]
+                 628     ;   M3 = [page_EQU8 , page_EQU9 , page_EQU10, page_EQU11]
+                 629     ;   M4 = [page_EQU12, page_EQU13, page_EQU14, page_EQU15]
+                 630     ;   M5 = [page_EQU16, page_EQU17, page_EQU18, page_EQU19]
+                 631     ;   M6 = [page_EQU20, page_EQU21, page_EQU22, page_EQU23]
+                 632     ;   M7 = [page_EQU24, page_EQU25, page_EQU26, page_EQU27]
+                 633     ;   M8 = [page_EQU28, page_EQU29, page_EQU30, page_EQU31]
                  634     ;   M9 = [   FF      ,    FF      ,    FF      ,    FF      ]
                  635     ;  M10 = [   40      ,    33      , serial_num0, serial_num1]
                  636     ;  M11 = [serial_num2, serial_num3, serial_num4, serial_num5]
@@ -694,7 +694,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 0AF 3624E        688                             CALL            write_byte_slow
 0B0 3620E        689                             CALL            compute_crc16           ;compute CRC for value in 's3'
                  690     ;
-                 691     ;Read 32-bytes of data associated with page 0
+                 691     ;Read 32-bytes of EQU associated with page 0
                  692     ;load these as M1 through to M8
                  693     ;
 0B1 362EC        694     rapc_line_loop:         CALL            send_cr
@@ -704,8 +704,8 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 0B5 362C2        698                             CALL            send_hex_byte
 0B6 362EF        699                             CALL            send_space
 0B7 362EF        700                             CALL            send_space
-0B8 362EF        701     rapc_data_loop:         CALL            send_space
-0B9 3626F        702                             CALL            read_byte_slow          ;read data into s3
+0B8 362EF        701     rapc_EQU_loop:         CALL            send_space
+0B9 3626F        702                             CALL            read_byte_slow          ;read EQU into s3
 0BA 3620E        703                             CALL            compute_crc16           ;compute CRC for value in 's3'
 0BB 22310        704                             OUTPUT          s3, w_word_write_port   ;load as 'M' word
 0BC 10018        705                             LOAD            s0, s3                  ;display byte
@@ -713,14 +713,14 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 0BE 08401        707                             ADD             s4, #0x01               ;increment address
 0BF 0A500        708                             ADDCY           s5, #0x00
 0C0 00407        709                             load            s4, #0x07               ;load for 8-byte boundary
-0C1 354B8        710                             JUMP            nz, rapc_data_loop
+0C1 354B8        710                             JUMP            nz, rapc_EQU_loop
 0C2 00420        711                             load         s4, #0x20               ;load for last address
 0C3 354B1        712                             JUMP            nz, rapc_line_loop
 0C4 362EC        713                             CALL            send_cr
                  714     ;
                  715     ;Read one byte that should be value FF hex
                  716     ;
-0C5 3626F        717                             CALL            read_byte_slow          ;read data into s3
+0C5 3626F        717                             CALL            read_byte_slow          ;read EQU into s3
 0C6 3620E        718                             CALL            compute_crc16           ;compute CRC for value in 's3'
 0C7 10018        719                             LOAD            s0, s3                  ;display byte
 0C8 362C2        720                             CALL            send_hex_byte
@@ -838,7 +838,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  824     ;Read one byte that should be value AA hex.
                  825     ;  Would actually read AA hex continuously until master reset
                  826     ;
-110 3626F        827                             CALL            read_byte_slow          ;read data into s3
+110 3626F        827                             CALL            read_byte_slow          ;read EQU into s3
 111 10018        828                             LOAD            s0, s3                  ;display byte
 112 362C2        829                             CALL            send_hex_byte
 113 362EC        830                             CALL            send_cr
@@ -1143,7 +1143,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1089     ;
                 1090     ;Iterations 0 to 15
                 1091     ;  Wt = rotate_left_1_place(Wt-3 xor Wt-8 xor Wt-14 xor Wt-16)
-                1092     ; This requires all data values to be read first. Then XORed and rotated before
+                1092     ; This requires all EQU values to be read first. Then XORed and rotated before
                 1093     ; shifting the new Wt word into the buffer.
                 1094     ;
                 1095     ;
@@ -1274,7 +1274,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1210     ;**************************************************************************************
                 1211     ;
                 1212     ; The DS2432 computes an 8-bit CRC using the polynomial X8 + X5 + X4 + 1.
-                1213     ; See the DS2432 data sheet for full details.
+                1213     ; See the DS2432 EQU sheet for full details.
                 1214     ;
                 1215     ; load input value of value 00 00 00 01 B8 1C 02
                 1216     ; should produce CRC=A2.
@@ -1330,7 +1330,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1259     ;**************************************************************************************
                 1260     ;
                 1261     ; The DS2432 computes a 16-bit CRC using the polynomial X16 + X15 + X2 + 1.
-                1262     ; See the DS2432 data sheet for full details.
+                1262     ; See the DS2432 EQU sheet for full details.
                 1263     ;
                 1264     ; Note that the value formed in the CRC shift register MUST BE INVERTED to give the
                 1265     ; same value as that sent from the DS2432 during scratchpad write, scratchpad read
@@ -1552,7 +1552,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1481     ;**************************************************************************************
                 1482     ;
                 1483     ; To write a '1' to the DS_wire the signal must be Low for 1 to 15us to instigate the
-                1484     ; write of the data. This design generates an 8us active Low pulse for this purpose.
+                1484     ; write of the EQU. This design generates an 8us active Low pulse for this purpose.
                 1485     ;
                 1486     ; Then the output must be High for 53 to 114us to provide the '1' for the DS2432 to
                 1487     ; read and then provide recovery time. This design implements a 72us delay such that
@@ -1600,7 +1600,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1529     ;
                 1530     ;
                 1531     ;**************************************************************************************
-                1532     ; Read a data bit sent from the DS2432 in regular speed mode.
+                1532     ; Read a EQU bit sent from the DS2432 in regular speed mode.
                 1533     ;**************************************************************************************
                 1534     ;
                 1535     ; To read a bit, PicoBlaze must initiate the processed with an active Low pulse of
@@ -1626,7 +1626,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1555     ; A further delay of 68us is then allowed for the DS2432 to stop transmitting and
                 1556     ; to recover. This also mean that the entire read process (slot time) is 80us.
                 1557     ;
-                1558     ; The received data bit is SHIFTED into the MSB of register 's3'. In this way
+                1558     ; The received EQU bit is SHIFTED into the MSB of register 's3'. In this way
                 1559     ; the reception of 8-bits will shift the first bit into the LSB position of 's3'.
                 1560     ;
                 1561     ; Registers used s0,s1,s3
@@ -1725,28 +1725,28 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1654     ;
                 1655     ; Read one character from the UART
                 1656     ;
-                1657     ; Character read will be returned in a register called 'UART_data'.
+                1657     ; Character read will be returned in a register called 'UART_EQU'.
                 1658     ;
-                1659     ; The routine first loads the receiver FIFO buffer to see if data is present.
+                1659     ; The routine first loads the receiver FIFO buffer to see if EQU is present.
                 1660     ; If the FIFO is empty, the routine waits until there is a character to read.
                 1661     ; As this could take any amount of time the wait loop could include a call to a
                 1662     ; subroutine which performs a useful function.
                 1663     ;
                 1664     ;
-                1665     ; Registers used s0 and UART_data
+                1665     ; Registers used s0 and UART_EQU
                 1666     ;
 29F 20040       1667     read_from_uart:         INPUT           s0, status_port         ;load Rx_FIFO buffer
-2A0 00004       1668                             load            s0, #rx_data_present    ;wait if empty
+2A0 00004       1668                             load            s0, #rx_EQU_present    ;wait if empty
 2A1 356A3       1669                             JUMP            nz, read_character
 2A2 3429F       1670                             JUMP            read_from_uart
-2A3 20F80       1671     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
+2A3 20F80       1671     read_character:         INPUT           uart_EQU, uart_read_port ;read from FIFO
 2A4 24000       1672                             RETURN
                 1673     ;
                 1674     ;
                 1675     ;
                 1676     ; Transmit one character to the UART
                 1677     ;
-                1678     ; Character supplied in register called 'UART_data'.
+                1678     ; Character supplied in register called 'UART_EQU'.
                 1679     ;
                 1680     ; The routine first loads the transmit FIFO buffer to see if it is full.
                 1681     ; If the FIFO is full, then the routine waits until it there is space.
@@ -1757,7 +1757,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 2A6 00002       1686                             load            s0, #tx_full            ;wait if full
 2A7 352A9       1687                             JUMP            z, uart_write
 2A8 342A5       1688                             JUMP            send_to_uart
-2A9 22F04       1689     uart_write:             OUTPUT          uart_data, uart_write_port
+2A9 22F04       1689     uart_write:             OUTPUT          uart_EQU, uart_write_port
 2AA 24000       1690                             RETURN
                 1691     ;
                 1692     ;
@@ -1825,9 +1825,9 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1754     ; Registers used s0, s1, s2
                 1755     ;
 2C2 362B1       1756     send_hex_byte:          CALL            hex_byte_to_ascii
-2C3 10F10       1757                             LOAD            uart_data, s2
+2C3 10F10       1757                             LOAD            uart_EQU, s2
 2C4 362A5       1758                             CALL            send_to_uart
-2C5 10F08       1759                             LOAD            uart_data, s1
+2C5 10F08       1759                             LOAD            uart_EQU, s1
 2C6 362A5       1760                             CALL            send_to_uart
 2C7 24000       1761                             RETURN
                 1762     ;
@@ -1858,7 +1858,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 2D4 24000       1787                             RETURN
                 1788     ;
                 1789     ;
-                1790     ; Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                1790     ; Routine to convert ASCII EQU in 's0' to an equivalent HEX value.
                 1791     ;
                 1792     ; If character is not valid for hex, then CARRY is set on return.
                 1793     ;
@@ -1884,12 +1884,12 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1813     ;
 2E1 3629F       1814     read_upper_case:        CALL            read_from_uart          ;read command character from UART
 2E2 362A5       1815                             CALL            send_to_uart            ;echo character
-2E3 10078       1816                             LOAD            s0, uart_data           ;convert to upper case
+2E3 10078       1816                             LOAD            s0, uart_EQU           ;convert to upper case
 2E4 362AB       1817                             CALL            upper_case
 2E5 24000       1818                             RETURN
                 1819     ;
                 1820     ;
-                1821     ; Read two hex characters from UART and convert to single byte data
+                1821     ; Read two hex characters from UART and convert to single byte EQU
                 1822     ;
 2E6 362E1       1823     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
 2E7 10300       1824                             LOAD            s3, s0
@@ -1905,67 +1905,67 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1834     ;
                 1835     ; Send Carriage Return to the UART
                 1836     ;
-2EC 00F0D       1837     send_cr:                LOAD            uart_data, #character_cr
+2EC 00F0D       1837     send_cr:                LOAD            uart_EQU, #character_cr
 2ED 362A5       1838                             CALL            send_to_uart
 2EE 24000       1839                             RETURN
                 1840     ;
                 1841     ; Send a space to the UART
                 1842     ;
-2EF 00F20       1843     send_space:             LOAD            uart_data, #character_space
+2EF 00F20       1843     send_space:             LOAD            uart_EQU, #character_space
 2F0 362A5       1844                             CALL            send_to_uart
 2F1 24000       1845                             RETURN
                 1846     ;
                 1847     ;
                 1848     ; Send a minus sign to the UART
                 1849     ;
-2F2 00F2D       1850     send_minus:             LOAD            uart_data, #character_minus
+2F2 00F2D       1850     send_minus:             LOAD            uart_EQU, #character_minus
 2F3 362A5       1851                             CALL            send_to_uart
 2F4 24000       1852                             RETURN
                 1853     ;
                 1854     ;
                 1855     ; Send the letter 't' to the UART
                 1856     ;
-2F5 00F74       1857     send_t:                 LOAD            uart_data, #character_t
+2F5 00F74       1857     send_t:                 LOAD            uart_EQU, #character_t
 2F6 362A5       1858                             CALL            send_to_uart
 2F7 24000       1859                             RETURN
                 1860     ;
                 1861     ; Send the letter 'e' to the UART
                 1862     ;
-2F8 00F65       1863     send_e:                 LOAD            uart_data, #character_e
+2F8 00F65       1863     send_e:                 LOAD            uart_EQU, #character_e
 2F9 362A5       1864                             CALL            send_to_uart
 2FA 24000       1865                             RETURN
                 1866     ;
                 1867     ; Send the letter 'a' to the UART
                 1868     ;
-2FB 00F61       1869     send_a:                 LOAD            uart_data, #character_a
+2FB 00F61       1869     send_a:                 LOAD            uart_EQU, #character_a
 2FC 362A5       1870                             CALL            send_to_uart
 2FD 24000       1871                             RETURN
                 1872     ;
                 1873     ;
                 1874     ; Send the letter 'd' to the UART
                 1875     ;
-2FE 00F64       1876     send_d:                 LOAD            uart_data, #character_d
+2FE 00F64       1876     send_d:                 LOAD            uart_EQU, #character_d
 2FF 362A5       1877                             CALL            send_to_uart
 300 24000       1878                             RETURN
                 1879     ;
                 1880     ;
                 1881     ; Send the letter 'r' to the UART
                 1882     ;
-301 00F72       1883     send_r:                 LOAD            uart_data, #character_r
+301 00F72       1883     send_r:                 LOAD            uart_EQU, #character_r
 302 362A5       1884                             CALL            send_to_uart
 303 24000       1885                             RETURN
                 1886     ;
                 1887     ;
                 1888     ; Send the letter 's' to the UART
                 1889     ;
-304 00F73       1890     send_s:                 LOAD            uart_data, #character_s
+304 00F73       1890     send_s:                 LOAD            uart_EQU, #character_s
 305 362A5       1891                             CALL            send_to_uart
 306 24000       1892                             RETURN
                 1893     ;
                 1894     ;
                 1895     ; Send the letter 'c' to the UART
                 1896     ;
-307 00F63       1897     send_c:                 LOAD            uart_data, #character_c
+307 00F63       1897     send_c:                 LOAD            uart_EQU, #character_c
 308 362A5       1898                             CALL            send_to_uart
 309 24000       1899                             RETURN
                 1900     ;
@@ -1974,58 +1974,58 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1903     ;
 30A 362EC       1904     send_welcome:           CALL            send_cr
 30B 362EC       1905                             CALL            send_cr
-30C 00F50       1906                             LOAD            uart_data, #_character_p
+30C 00F50       1906                             LOAD            uart_EQU, #_character_p
 30D 362A5       1907                             CALL            send_to_uart
-30E 00F69       1908                             LOAD            uart_data, #character_i
+30E 00F69       1908                             LOAD            uart_EQU, #character_i
 30F 362A5       1909                             CALL            send_to_uart
 310 36307       1910                             CALL            send_c
-311 00F6F       1911                             LOAD            uart_data, #character_o
+311 00F6F       1911                             LOAD            uart_EQU, #character_o
 312 362A5       1912                             CALL            send_to_uart
-313 00F42       1913                             LOAD            uart_data, #_character_b
+313 00F42       1913                             LOAD            uart_EQU, #_character_b
 314 362A5       1914                             CALL            send_to_uart
-315 00F6C       1915                             LOAD            uart_data, #character_l
+315 00F6C       1915                             LOAD            uart_EQU, #character_l
 316 362A5       1916                             CALL            send_to_uart
 317 362FB       1917                             CALL            send_a
-318 00F7A       1918                             LOAD            uart_data, #character_z
+318 00F7A       1918                             LOAD            uart_EQU, #character_z
 319 362A5       1919                             CALL            send_to_uart
 31A 362F8       1920                             CALL            send_e
 31B 362EF       1921                             CALL            send_space
-31C 00F53       1922                             LOAD            uart_data, #_character_s
+31C 00F53       1922                             LOAD            uart_EQU, #_character_s
 31D 362A5       1923                             CALL            send_to_uart
-31E 00F48       1924                             LOAD            uart_data, #_character_h
+31E 00F48       1924                             LOAD            uart_EQU, #_character_h
 31F 362A5       1925                             CALL            send_to_uart
-320 00F41       1926                             LOAD            uart_data, #_character_a
+320 00F41       1926                             LOAD            uart_EQU, #_character_a
 321 362A5       1927                             CALL            send_to_uart
 322 362F2       1928                             CALL            send_minus
-323 00F31       1929                             LOAD            uart_data, #character_1
+323 00F31       1929                             LOAD            uart_EQU, #character_1
 324 362A5       1930                             CALL            send_to_uart
 325 362EF       1931                             CALL            send_space
-326 00F41       1932                             LOAD            uart_data, #_character_a
+326 00F41       1932                             LOAD            uart_EQU, #_character_a
 327 362A5       1933                             CALL            send_to_uart
-328 00F6C       1934                             LOAD            uart_data, #character_l
+328 00F6C       1934                             LOAD            uart_EQU, #character_l
 329 362A5       1935                             CALL            send_to_uart
-32A 00F67       1936                             LOAD            uart_data, #character_g
+32A 00F67       1936                             LOAD            uart_EQU, #character_g
 32B 362A5       1937                             CALL            send_to_uart
-32C 00F6F       1938                             LOAD            uart_data, #character_o
+32C 00F6F       1938                             LOAD            uart_EQU, #character_o
 32D 362A5       1939                             CALL            send_to_uart
 32E 36301       1940                             CALL            send_r
-32F 00F69       1941                             LOAD            uart_data, #character_i
+32F 00F69       1941                             LOAD            uart_EQU, #character_i
 330 362A5       1942                             CALL            send_to_uart
 331 362F5       1943                             CALL            send_t
-332 00F68       1944                             LOAD            uart_data, #character_h
+332 00F68       1944                             LOAD            uart_EQU, #character_h
 333 362A5       1945                             CALL            send_to_uart
-334 00F6D       1946                             LOAD            uart_data, #character_m
+334 00F6D       1946                             LOAD            uart_EQU, #character_m
 335 362A5       1947                             CALL            send_to_uart
 336 362EF       1948                             CALL            send_space
-337 00F76       1949                             LOAD            uart_data, #character_v
+337 00F76       1949                             LOAD            uart_EQU, #character_v
 338 362A5       1950                             CALL            send_to_uart
-339 00F31       1951                             LOAD            uart_data, #character_1
+339 00F31       1951                             LOAD            uart_EQU, #character_1
 33A 362A5       1952                             CALL            send_to_uart
-33B 00F2E       1953                             LOAD            uart_data, #character_fullstop
+33B 00F2E       1953                             LOAD            uart_EQU, #character_fullstop
 33C 362A5       1954                             CALL            send_to_uart
-33D 00F30       1955                             LOAD            uart_data, #character_0
+33D 00F30       1955                             LOAD            uart_EQU, #character_0
 33E 362A5       1956                             CALL            send_to_uart
-33F 00F30       1957                             LOAD            uart_data, #character_0
+33F 00F30       1957                             LOAD            uart_EQU, #character_0
 340 362A5       1958                             CALL            send_to_uart
 341 362EC       1959                             CALL            send_cr
 342 362EC       1960                             CALL            send_cr
@@ -2040,33 +2040,33 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1969     ;
 344 362EC       1970     send_ds2432_menu:       CALL            send_cr
 345 362EC       1971                             CALL            send_cr
-346 00F31       1972                             LOAD            uart_data, #character_1
+346 00F31       1972                             LOAD            uart_EQU, #character_1
 347 362A5       1973                             CALL            send_to_uart
 348 362F2       1974                             CALL            send_minus
 349 363A5       1975                             CALL            send_write
 34A 362EF       1976                             CALL            send_space
 34B 36384       1977                             CALL            send_scratchpad
 34C 362EC       1978                             CALL            send_cr
-34D 00F32       1979                             LOAD            uart_data, #character_2
+34D 00F32       1979                             LOAD            uart_EQU, #character_2
 34E 362A5       1980                             CALL            send_to_uart
 34F 362F2       1981                             CALL            send_minus
 350 3639F       1982                             CALL            send_read
 351 362EF       1983                             CALL            send_space
 352 36384       1984                             CALL            send_scratchpad
 353 362EC       1985                             CALL            send_cr
-354 00F33       1986                             LOAD            uart_data, #character_3
+354 00F33       1986                             LOAD            uart_EQU, #character_3
 355 362A5       1987                             CALL            send_to_uart
 356 362F2       1988                             CALL            send_minus
-357 00F4C       1989                             LOAD            uart_data, #_character_l
+357 00F4C       1989                             LOAD            uart_EQU, #_character_l
 358 362A5       1990                             CALL            send_to_uart
-359 00F6F       1991                             LOAD            uart_data, #character_o
+359 00F6F       1991                             LOAD            uart_EQU, #character_o
 35A 362A5       1992                             CALL            send_to_uart
 35B 362FB       1993                             CALL            send_a
 35C 362FE       1994                             CALL            send_d
 35D 362EF       1995                             CALL            send_space
-35E 00F66       1996                             LOAD            uart_data, #character_f
+35E 00F66       1996                             LOAD            uart_EQU, #character_f
 35F 362A5       1997                             CALL            send_to_uart
-360 00F69       1998                             LOAD            uart_data, #character_i
+360 00F69       1998                             LOAD            uart_EQU, #character_i
 361 362A5       1999                             CALL            send_to_uart
 362 36301       2000                             CALL            send_r
 363 36304       2001                             CALL            send_s
@@ -2074,23 +2074,23 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 365 362EF       2003                             CALL            send_space
 366 36391       2004                             CALL            send_secret
 367 362EC       2005                             CALL            send_cr
-368 00F34       2006                             LOAD            uart_data, #character_4
+368 00F34       2006                             LOAD            uart_EQU, #character_4
 369 362A5       2007                             CALL            send_to_uart
 36A 362F2       2008                             CALL            send_minus
 36B 3639F       2009                             CALL            send_read
 36C 362EF       2010                             CALL            send_space
-36D 00F61       2011                             LOAD            uart_data, #character_a
+36D 00F61       2011                             LOAD            uart_EQU, #character_a
 36E 362A5       2012                             CALL            send_to_uart
-36F 00F75       2013                             LOAD            uart_data, #character_u
+36F 00F75       2013                             LOAD            uart_EQU, #character_u
 370 362A5       2014                             CALL            send_to_uart
 371 362F5       2015                             CALL            send_t
-372 00F68       2016                             LOAD            uart_data, #character_h
+372 00F68       2016                             LOAD            uart_EQU, #character_h
 373 362A5       2017                             CALL            send_to_uart
 374 362EF       2018                             CALL            send_space
-375 00F50       2019                             LOAD            uart_data, #_character_p
+375 00F50       2019                             LOAD            uart_EQU, #_character_p
 376 362A5       2020                             CALL            send_to_uart
 377 362FB       2021                             CALL            send_a
-378 00F67       2022                             LOAD            uart_data, #character_g
+378 00F67       2022                             LOAD            uart_EQU, #character_g
 379 362A5       2023                             CALL            send_to_uart
 37A 362F8       2024                             CALL            send_e
 37B 362EC       2025                             CALL            send_cr
@@ -2101,9 +2101,9 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2030     ; Send carriage return, 'OK' and carriage return to the UART
                 2031     ;
 37D 362EC       2032     send_ok:                CALL            send_cr
-37E 00F4F       2033                             LOAD            uart_data, #_character_o
+37E 00F4F       2033                             LOAD            uart_EQU, #_character_o
 37F 362A5       2034                             CALL            send_to_uart
-380 00F4B       2035                             LOAD            uart_data, #_character_k
+380 00F4B       2035                             LOAD            uart_EQU, #_character_k
 381 362A5       2036                             CALL            send_to_uart
 382 362EC       2037                             CALL            send_cr
 383 24000       2038                             RETURN
@@ -2117,9 +2117,9 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 387 362FB       2046                             CALL            send_a
 388 362F5       2047                             CALL            send_t
 389 36307       2048                             CALL            send_c
-38A 00F68       2049                             LOAD            uart_data, #character_h
+38A 00F68       2049                             LOAD            uart_EQU, #character_h
 38B 362A5       2050                             CALL            send_to_uart
-38C 00F70       2051                             LOAD            uart_data, #character_p
+38C 00F70       2051                             LOAD            uart_EQU, #character_p
 38D 362A5       2052                             CALL            send_to_uart
 38E 362FB       2053                             CALL            send_a
 38F 362FE       2054                             CALL            send_d
@@ -2139,9 +2139,9 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2068     ;
                 2069     ; Send 'Byte' to the UART
                 2070     ;
-398 00F42       2071     send_byte:              LOAD            uart_data, #_character_b
+398 00F42       2071     send_byte:              LOAD            uart_EQU, #_character_b
 399 362A5       2072                             CALL            send_to_uart
-39A 00F79       2073                             LOAD            uart_data, #character_y
+39A 00F79       2073                             LOAD            uart_EQU, #character_y
 39B 362A5       2074                             CALL            send_to_uart
 39C 362F5       2075                             CALL            send_t
 39D 362F8       2076                             CALL            send_e
@@ -2150,7 +2150,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2079     ;
                 2080     ; Send 'Read' to the UART
                 2081     ;
-39F 00F52       2082     send_read:              LOAD            uart_data, #_character_r
+39F 00F52       2082     send_read:              LOAD            uart_EQU, #_character_r
 3A0 362A5       2083                             CALL            send_to_uart
 3A1 362F8       2084                             CALL            send_e
 3A2 362FB       2085                             CALL            send_a
@@ -2160,10 +2160,10 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2089     ;
                 2090     ; Send 'Write' to the UART
                 2091     ;
-3A5 00F57       2092     send_write:             LOAD            uart_data, #_character_w
+3A5 00F57       2092     send_write:             LOAD            uart_EQU, #_character_w
 3A6 362A5       2093                             CALL            send_to_uart
 3A7 36301       2094                             CALL            send_r
-3A8 00F69       2095                             LOAD            uart_data, #character_i
+3A8 00F69       2095                             LOAD            uart_EQU, #character_i
 3A9 362A5       2096                             CALL            send_to_uart
 3AA 362F5       2097                             CALL            send_t
 3AB 362F8       2098                             CALL            send_e
@@ -2172,7 +2172,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2101     ;
                 2102     ; Send 'Pass' to the UART
                 2103     ;
-3AD 00F50       2104     send_pass:              LOAD            uart_data, #_character_p
+3AD 00F50       2104     send_pass:              LOAD            uart_EQU, #_character_p
 3AE 362A5       2105                             CALL            send_to_uart
 3AF 362FB       2106                             CALL            send_a
 3B0 36304       2107                             CALL            send_s
@@ -2183,12 +2183,12 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2112     ;
                 2113     ; Send 'Fail' to the UART
                 2114     ;
-3B4 00F46       2115     send_fail:              LOAD            uart_data, #_character_f
+3B4 00F46       2115     send_fail:              LOAD            uart_EQU, #_character_f
 3B5 362A5       2116                             CALL            send_to_uart
 3B6 362FB       2117                             CALL            send_a
-3B7 00F69       2118                             LOAD            uart_data, #character_i
+3B7 00F69       2118                             LOAD            uart_EQU, #character_i
 3B8 362A5       2119                             CALL            send_to_uart
-3B9 00F6C       2120                             LOAD            uart_data, #character_l
+3B9 00F6C       2120                             LOAD            uart_EQU, #character_l
 3BA 362A5       2121                             CALL            send_to_uart
 3BB 362EC       2122                             CALL            send_cr
 3BC 24000       2123                             RETURN
@@ -2204,14 +2204,14 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 3C2 362F8       2133                             CALL            send_e
 3C3 36304       2134                             CALL            send_s
 3C4 36304       2135                             CALL            send_s
-3C5 00F3D       2136     send_equals:            LOAD            uart_data, #character_equals
+3C5 00F3D       2136     send_equals:            LOAD            uart_EQU, #character_equals
 3C6 362A5       2137                             CALL            send_to_uart
 3C7 24000       2138                             RETURN
                 2139     ;
                 2140     ;
-                2141     ; Send 'data' to the UART
+                2141     ; Send 'EQU' to the UART
                 2142     ;
-3C8 362EC       2143     send_data:              CALL            send_cr
+3C8 362EC       2143     send_EQU:              CALL            send_cr
 3C9 362FE       2144                             CALL            send_d
 3CA 362FB       2145                             CALL            send_a
 3CB 362F5       2146                             CALL            send_t
@@ -2222,11 +2222,11 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2151     ; Send 'E/S=' to the UART
                 2152     ;
 3CE 362EC       2153     send_es:                CALL            send_cr
-3CF 00F45       2154                             LOAD            uart_data, #_character_e
+3CF 00F45       2154                             LOAD            uart_EQU, #_character_e
 3D0 362A5       2155                             CALL            send_to_uart
-3D1 00F2F       2156                             LOAD            uart_data, #character_divide
+3D1 00F2F       2156                             LOAD            uart_EQU, #character_divide
 3D2 362A5       2157                             CALL            send_to_uart
-3D3 00F53       2158                             LOAD            uart_data, #_character_s
+3D3 00F53       2158                             LOAD            uart_EQU, #_character_s
 3D4 362A5       2159                             CALL            send_to_uart
 3D5 343C5       2160                             JUMP            send_equals
                 2161     ;
@@ -2234,7 +2234,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2163     ; Send 'code=' to the UART
                 2164     ;
 3D6 36307       2165     send_code:              CALL            send_c
-3D7 00F6F       2166                             LOAD            uart_data, #character_o
+3D7 00F6F       2166                             LOAD            uart_EQU, #character_o
 3D8 362A5       2167                             CALL            send_to_uart
 3D9 362FE       2168                             CALL            send_d
 3DA 362F8       2169                             CALL            send_e
@@ -2244,9 +2244,9 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2173     ; Send 's/n=' to the UART
                 2174     ;
 3DC 36304       2175     send_sn:                CALL            send_s
-3DD 00F2F       2176                             LOAD            uart_data, #character_divide
+3DD 00F2F       2176                             LOAD            uart_EQU, #character_divide
 3DE 362A5       2177                             CALL            send_to_uart
-3DF 00F6E       2178                             LOAD            uart_data, #character_n
+3DF 00F6E       2178                             LOAD            uart_EQU, #character_n
 3E0 362A5       2179                             CALL            send_to_uart
 3E1 343C5       2180                             JUMP            send_equals
                 2181     ;
@@ -2254,7 +2254,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2183     ; Send 'crc=' to the UART
                 2184     ;
 3E2 36307       2185     send_crc:               CALL            send_c
-3E3 00F72       2186                             LOAD            uart_data, #character_r
+3E3 00F72       2186                             LOAD            uart_EQU, #character_r
 3E4 362A5       2187                             CALL            send_to_uart
 3E5 36307       2188                             CALL            send_c
 3E6 343C5       2189                             JUMP            send_equals
@@ -2263,7 +2263,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 2192     ;
                 2193     ; Send 'mac=' to the UART
                 2194     ;
-3E7 00F6D       2195     send_mac:               LOAD            uart_data, #character_m
+3E7 00F6D       2195     send_mac:               LOAD            uart_EQU, #character_m
 3E8 362A5       2196                             CALL            send_to_uart
 3E9 362FB       2197                             CALL            send_a
 3EA 36307       2198                             CALL            send_c

@@ -51,7 +51,7 @@ LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    2028_s3
 LED_READ_PORT  . . . . . . . . . . . NUMBER 0x00000 NOT USED CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:53.1-53.45
 LED_TO_DUTY  . . . . . . . . . . . . LABEL  0x000A8 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:370.1-370.13
 LINK_FIFO_CONTROL_PORT . . . . . . . NUMBER 0x00020 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:64.1-64.45
-LINK_FIFO_DATA_PRESENT . . . . . . . NUMBER 0x00001 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:68.1-68.45
+LINK_FIFO_EQU_PRESENT  . . . . . . . NUMBER 0x00001 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:68.1-68.44
 LINK_FIFO_FULL . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:70.1-70.45
 LINK_FIFO_HALF_FULL  . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:69.1-69.45
 LINK_FIFO_READ_PORT  . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2028_s3kit_example1.ind_spaces.full_inst.asm:72.1-72.45

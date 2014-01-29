@@ -87,7 +87,7 @@ DS_WIRE  . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2036_ex
 DS_WIRE_INIT . . . . . . . . . . . . LABEL  0x00230 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1348.1-1348.14
 DS_WIRE_IN_PORT  . . . . . . . . . . NUMBER 0x000C0 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:77.1-77.45
 DS_WIRE_OUT_PORT . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:78.1-78.45
-END_RSC_DATA_LOOP  . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:582.1-582.19
+END_RSC_EQU_LOOP . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:582.1-582.18
 END_SERIAL . . . . . . . . . . . . . LABEL  0x00033 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:399.1-399.12
 FAMILY_CODE  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:127.1-127.45
 FT_TYPE1 . . . . . . . . . . . . . . LABEL  0x00161 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:982.1-982.10
@@ -112,7 +112,7 @@ NEXT_SHA1_ITERATION  . . . . . . . . LABEL  0x0013E USED     CONSTANT    2036_ex
 NEXT_SLOW_BIT  . . . . . . . . . . . LABEL  0x00254 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1444.1-1444.15
 NUMBER_CHAR  . . . . . . . . . . . . LABEL  0x002C0 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1748.1-1748.13
 OBTAIN_8BITS . . . . . . . . . . . . LABEL  0x002E6 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1823.1-1823.14
-RAPC_DATA_LOOP . . . . . . . . . . . LABEL  0x000B8 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:701.1-701.16
+RAPC_EQU_LOOP  . . . . . . . . . . . LABEL  0x000B8 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:701.1-701.15
 RAPC_LINE_LOOP . . . . . . . . . . . LABEL  0x000B1 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:694.1-694.16
 RBS_LOOP . . . . . . . . . . . . . . LABEL  0x00270 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1523.1-1523.10
 RBS_WAIT_4US . . . . . . . . . . . . LABEL  0x00277 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1568.1-1568.14
@@ -138,7 +138,7 @@ RM_WAIT_60US . . . . . . . . . . . . LABEL  0x0023E USED     CONSTANT    2036_ex
 ROTATE_WORD_LEFT . . . . . . . . . . LABEL  0x001EB USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1201.1-1201.18
 ROTATE_WORD_LEFT_N_PLACES  . . . . . LABEL  0x001E7 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1193.1-1193.27
 RSC_LOOP . . . . . . . . . . . . . . LABEL  0x00090 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:572.1-572.10
-RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:65.1-65.45
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:65.1-65.44
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2036_example_9.ind_spaces.full_inst.asm:67.1-67.45
 RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2036_example_9.ind_spaces.full_inst.asm:66.1-66.45
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -197,9 +197,9 @@ SEND_CODE  . . . . . . . . . . . . . LABEL  0x003D6 USED     CONSTANT    2036_ex
 SEND_CR  . . . . . . . . . . . . . . LABEL  0x002EC USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1837.1-1837.9
 SEND_CRC . . . . . . . . . . . . . . LABEL  0x003E2 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2185.1-2185.10
 SEND_D . . . . . . . . . . . . . . . LABEL  0x002FE USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1876.1-1876.8
-SEND_DATA  . . . . . . . . . . . . . LABEL  0x003C8 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2143.1-2143.11
 SEND_DS2432_MENU . . . . . . . . . . LABEL  0x00344 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1970.1-1970.18
 SEND_E . . . . . . . . . . . . . . . LABEL  0x002F8 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1863.1-1863.8
+SEND_EQU . . . . . . . . . . . . . . LABEL  0x003C8 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2143.1-2143.10
 SEND_EQUALS  . . . . . . . . . . . . LABEL  0x003C5 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2136.1-2136.13
 SEND_ES  . . . . . . . . . . . . . . LABEL  0x003CE USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2153.1-2153.9
 SEND_FAIL  . . . . . . . . . . . . . LABEL  0x003B4 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:2115.1-2115.11
@@ -232,7 +232,7 @@ SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2036_ex
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:62.1-62.45
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:64.1-64.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2036_example_9.ind_spaces.full_inst.asm:63.1-63.45
-UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:115.1-115.43
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:115.1-115.42
 UART_READ_PORT . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:72.1-72.45
 UART_WRITE . . . . . . . . . . . . . LABEL  0x002A9 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1689.1-1689.12
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:74.1-74.45
@@ -274,7 +274,7 @@ WRITE_HIGH_SLOW  . . . . . . . . . . LABEL  0x00262 USED     CONSTANT    2036_ex
 WRITE_LOW_SLOW . . . . . . . . . . . LABEL  0x00257 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:1464.1-1464.16
 WRITE_SCRATCHPAD_COMMAND . . . . . . LABEL  0x00053 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:489.1-489.26
 WSC_ADDR_LOOP  . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:493.1-493.15
-WSC_DATA_LOOP  . . . . . . . . . . . LABEL  0x00069 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:511.1-511.15
+WSC_EQU_LOOP . . . . . . . . . . . . LABEL  0x00069 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:511.1-511.14
 WT_MINUS14_BYTE0_READ_PORT . . . . . NUMBER 0x00034 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:100.1-100.45
 WT_MINUS14_BYTE1_READ_PORT . . . . . NUMBER 0x00035 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:101.1-101.45
 WT_MINUS14_BYTE2_READ_PORT . . . . . NUMBER 0x00036 USED     CONSTANT    2036_example_9.ind_spaces.full_inst.asm:102.1-102.45

@@ -2,10 +2,10 @@ LOADSYMB1  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 2000_In
 LOADSYMB10 . . . . . . . . . . . . . REG.   0x00009 USED     CONSTANT    2000_Instruction_opcodes.asm:14.1-14.28
 LOADSYMB11 . . . . . . . . . . . . . REG.   0x0000A USED     CONSTANT    2000_Instruction_opcodes.asm:15.1-15.28
 LOADSYMB12 . . . . . . . . . . . . . REG.   0x0000B USED     CONSTANT    2000_Instruction_opcodes.asm:16.1-16.28
-LOADSYMB13 . . . . . . . . . . . . . DATA   0x0000C USED     CONSTANT    2000_Instruction_opcodes.asm:17.1-17.29
-LOADSYMB14 . . . . . . . . . . . . . DATA   0x00005 NOT USED CONSTANT    2000_Instruction_opcodes.asm:18.1-18.31
-LOADSYMB15 . . . . . . . . . . . . . DATA   0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:19.1-19.28
-LOADSYMB16 . . . . . . . . . . . . . DATA   0x00003 NOT USED CONSTANT    2000_Instruction_opcodes.asm:20.1-20.29
+LOADSYMB13 . . . . . . . . . . . . . NUMBER 0x0000C USED     CONSTANT    2000_Instruction_opcodes.asm:17.1-17.28
+LOADSYMB14 . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    2000_Instruction_opcodes.asm:18.1-18.30
+LOADSYMB15 . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:19.1-19.27
+LOADSYMB16 . . . . . . . . . . . . . NUMBER 0x00003 NOT USED CONSTANT    2000_Instruction_opcodes.asm:20.1-20.28
 LOADSYMB17 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:21.1-21.34
 LOADSYMB18 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:22.1-22.29
 LOADSYMB19 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    2000_Instruction_opcodes.asm:23.1-23.29

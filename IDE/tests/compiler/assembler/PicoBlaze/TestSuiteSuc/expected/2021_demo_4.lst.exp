@@ -15,24 +15,24 @@
                   15     ; Press Start simulation and Animate to run the program
                   16     ;
                   17     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-  00004           18     RX_DATA                 EQU             4
+  00004           18     RX_EQU                 EQU             4
                   19
                   20     ; Asign names to registers
-  00000           21             NAMEREG         s0,temp1              ; temporary data register
-  00001           22             NAMEREG         s1,temp2              ; temporary data register
-  00002           23             NAMEREG         s2,temp3              ; temporary data register
+  00000           21             NAMEREG         s0,temp1              ; temporary EQU register
+  00001           22             NAMEREG         s1,temp2              ; temporary EQU register
+  00002           23             NAMEREG         s2,temp3              ; temporary EQU register
                   24             ; OR
-  00003           25             RXdata         REG    s3             ; RX data
-  00004           26             TXdata            REG     s4          ; TX data
-  00005           27             LED_reg          REG       s5         ; Leds data register
+  00003           25             RXEQU         REG    s3             ; RX EQU
+  00004           26             TXEQU            REG     s4          ; TX EQU
+  00005           27             LED_reg          REG       s5         ; Leds EQU register
                   28     ; PORT_IDs
-  00001           29             TX_id       PORT        0x01          ;  data register port ID
-  00002           30             RX_id       PORT        0x02          ;  data register port ID
+  00001           29             TX_id       PORT        0x01          ;  EQU register port ID
+  00002           30             RX_id       PORT        0x02          ;  EQU register port ID
   00004           31             UART_stat   PORT        0x04          ; status register port ID
   00008           32             LED_id      PORT        0x08          ; Led register
                   33     ; UART Status register:
                   34     ;  [2] Tx ready
-                  35     ;  [3] new Rx data
+                  35     ;  [3] new Rx EQU
                   36     ;  [4] Rx buffer overflow
                   37
                   38     ;  Macro definition
@@ -43,8 +43,8 @@
                   43                         load        Temp1, 4            ; load bit 2 (is Tx ready?)
                   44                         JUMP        Z, ($ - 2)
                   45                         ENDM
-                  46     ; UART status checking MACRO (NEW RX data?)
-                  47     UART_new_data_wait  MACRO
+                  46     ; UART status checking MACRO (NEW RX EQU?)
+                  47     UART_new_EQU_wait  MACRO
                   48                         INPUT       Temp1, UART_stat    ; checking UART status
                   49                         load        Temp1, 8            ; load bit 2 (is Tx ready?)
                   50                         JUMP        Z, ($ - 2)
@@ -55,16 +55,16 @@
                   55     ;==============================================================================;
                   56     Sendchar            MACRO       char                 ; One parameter
                   57                         UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-                  58                         LOAD        TXdata, char
-                  59                         OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                  58                         LOAD        TXEQU, char
+                  59                         OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                   60                         ENDM
                   61     ;==============================================================================;
                   62     ; Reads a single character from UART (waits on receive when none is prepared)
                   63     ; Registers used: Temp1, chreg
                   64     ;==============================================================================;
                   65     GetChar             MACRO
-                  66                         UART_new_data_wait              ; Wait for new data
-                  67                         INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+                  66                         UART_new_EQU_wait              ; Wait for new EQU
+                  67                         INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   68                         ENDM
                   69     ;==============================================================================;
@@ -168,10 +168,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 002 35000        160 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-003 10448        161 +1                      LOAD        TXdata, char
+003 10448        161 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x49, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x9.
-004 22401        162 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+004 22401        162 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  163                         SendChar  'N'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x4e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xe.
@@ -183,10 +183,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 007 35005        167 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-008 10470        168 +1                      LOAD        TXdata, char
+008 10470        168 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x4e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xe.
-009 22401        169 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+009 22401        169 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  170                         SendChar  'T'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
@@ -198,10 +198,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 00C 3500A        174 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-00D 104A0        175 +1                      LOAD        TXdata, char
+00D 104A0        175 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
-00E 22401        176 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+00E 22401        176 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  177                         SendChar  'E'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x45, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x5.
@@ -213,10 +213,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 011 3500F        181 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-012 10428        182 +1                      LOAD        TXdata, char
+012 10428        182 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x45, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x5.
-013 22401        183 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+013 22401        183 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  184                         SendChar  'R'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
@@ -228,10 +228,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 016 35014        188 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-017 10490        189 +1                      LOAD        TXdata, char
+017 10490        189 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
-018 22401        190 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+018 22401        190 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  191                         SendChar  'R'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
@@ -243,10 +243,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 01B 35019        195 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-01C 10490        196 +1                      LOAD        TXdata, char
+01C 10490        196 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
-01D 22401        197 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+01D 22401        197 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  198                         SendChar  'U'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x55, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
@@ -258,10 +258,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 020 3501E        202 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-021 104A8        203 +1                      LOAD        TXdata, char
+021 104A8        203 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x55, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
-022 22401        204 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+022 22401        204 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  205                         SendChar  'P'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
@@ -273,10 +273,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 025 35023        209 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-026 10480        210 +1                      LOAD        TXdata, char
+026 10480        210 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
-027 22401        211 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+027 22401        211 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  212                         SendChar  'T'
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
@@ -288,10 +288,10 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02A 35028        216 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-02B 104A0        217 +1                      LOAD        TXdata, char
+02B 104A0        217 +1                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 W: ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
-02C 22401        218 +1                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+02C 22401        218 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  219                         SendCRLF
                  220 +1                      SendChar  0x0D          ; CR character
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
@@ -303,9 +303,9 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02F 3502D        224 +3                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-030 10468        225 +2                      LOAD        TXdata, char
+030 10468        225 +2                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-031 22401        226 +2                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+031 22401        226 +2                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  227 +1                      SendChar  0x0A          ; CR character
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
                  228 +2                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
@@ -316,9 +316,9 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 034 35032        231 +3                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-035 10450        232 +2                      LOAD        TXdata, char
+035 10450        232 +2                      LOAD        TXEQU, char
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-036 22401        233 +2                      OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+036 22401        233 +2                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
 037 2C001        234                         RETURNI enable
                  235     ; Start of main program
   00038          236     Start:
@@ -341,7 +341,7 @@ W: ==> instruction `SUB sX, sY' requires operand #2 to be of type(s): register; 
                  250     ; ---------------------------------------- Main loop
                  251
   00041          252     main_loop:          GetChar                       ; Receive via UART, get status of switches for example
-                 253 +1                      UART_new_data_wait              ; Wait for new data
+                 253 +1                      UART_new_EQU_wait              ; Wait for new EQU
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 041 20004        254 +2                      INPUT       Temp1, UART_stat    ; checking UART status
@@ -349,9 +349,9 @@ W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while 
 W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 043 35041        256 +2                      JUMP        Z, ($ - 2)
 W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-044 20402        257 +1                      INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+044 20402        257 +1                      INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
 W: ==> instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-                 258                         RX_resolve  RX_data           ; Resolve received byte
+                 258                         RX_resolve  RX_EQU           ; Resolve received byte
 045 34041        259                         JUMP        main_loop
                  260
                  261

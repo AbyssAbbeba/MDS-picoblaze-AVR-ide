@@ -11,7 +11,7 @@ BSDA_IN EQU     5
 ; -------\            /----\                                         /-------
 ;         \  SCL     /      \                                       /
 ;          \--------/        \-------------------------------------/
-; | Start    |      Data bit     |                             |  Stop     |
+; | Start    |      EQU bit     |                             |  Stop     |
 
 init_i2c:               OUTPUT          sf, bsda_z              ; SDA = Z
                         OUTPUT          sf, bscl_z              ; SCL = Z
@@ -29,8 +29,8 @@ readwrite4_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s1                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s1                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
                         CALL            i2c_repstart            ; Send repeated start, control byte and ack
@@ -39,19 +39,19 @@ readwrite4_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        CALL            i2c_recv                ; Read 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read 8 bits of EQU and send ack
                         CALL            i2c_mack
                         INPUT           s2, #sc
 
-                        CALL            i2c_recv                ; Read next 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
                         CALL            i2c_mack
                         INPUT           s3, #sc
 
-                        CALL            i2c_recv                ; Read 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read 8 bits of EQU and send ack
                         CALL            i2c_mack
                         INPUT           s4, #sc
 
-                        CALL            i2c_recv                ; Read next 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
                         CALL            i2c_mnack
                         INPUT           s5, #sc
 
@@ -67,16 +67,16 @@ write3_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s1                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s1                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s2                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s2                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s3                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s3                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
                         JUMP            i2c_stop                ; Send stop
@@ -92,11 +92,11 @@ read2_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        CALL            i2c_recv                ; Read 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read 8 bits of EQU and send ack
                         CALL            i2c_mack
                         INPUT           s2, #sc
 
-                        CALL            i2c_recv                ; Read next 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
                         CALL            i2c_mnack
                         INPUT           s3, #sc
 
@@ -112,12 +112,12 @@ write2_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s1                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s1                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s2                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s2                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
                         JUMP            i2c_stop                ; Send stop
@@ -135,7 +135,7 @@ read1_i2c:
 
                         CALL            i2c_start               ; Send start, control byte and ack
 
-                        CALL            i2c_recv                ; Read 8 bits of data and send ack
+                        CALL            i2c_recv                ; Read 8 bits of EQU and send ack
                         CALL            i2c_mnack
                         INPUT           s2, #sc
 
@@ -152,20 +152,20 @@ write1_i2c:
                         CALL            i2c_xmit                ; Send address and ack
                         CALL            i2c_sack
 
-                        INPUT           sc, #s1                 ; Load data for TX
-                        CALL            i2c_xmit                ; Send data and ack
+                        INPUT           sc, #s1                 ; Load EQU for TX
+                        CALL            i2c_xmit                ; Send EQU and ack
                         CALL            i2c_sack
 
                         JUMP            i2c_stop                ; Send stop
 
 ; -------------------------------------------------------------------------------
-; Transmit 8 bits of I2C data
+; Transmit 8 bits of I2C EQU
 ; -------------------------------------------------------------------------------
 i2c_xmit:
                         INPUT           sd, 8                   ; Load I2C bit counter
 i2c_tx:
                         CALL            delay
-                        SL0             sc                      ; Move data bit -> carry
+                        SL0             sc                      ; Move EQU bit -> carry
                         JUMP            c, i2c_tx1              ; Jump if bit high
 i2c_tx0:
                         OUTPUT          sf, bsda_0              ; SDA = 0
@@ -187,7 +187,7 @@ i2c_tx2:
                         JUMP            delay
 
 ; -------------------------------------------------------------------------------
-; Read 8 bits of I2C data
+; Read 8 bits of I2C EQU
 ; -------------------------------------------------------------------------------
 i2c_recv:
                         INPUT           sd, 8                   ; Load I2C bit counter
@@ -210,7 +210,7 @@ i2c_rx:
                         RETURN
 
 ; -------------------------------------------------------------------------------
-; Ack by master, keep data 0
+; Ack by master, keep EQU 0
 ; -------------------------------------------------------------------------------
 i2c_mack:
                         CALL            delay
@@ -226,7 +226,7 @@ i2c_mack:
                         RETURN
 
 ; -------------------------------------------------------------------------------
-; NAck by master, release data
+; NAck by master, release EQU
 ; -------------------------------------------------------------------------------
 i2c_mnack:
                         CALL            delay
@@ -242,7 +242,7 @@ i2c_mnack:
                         RETURN
 
 ; -------------------------------------------------------------------------------
-; Ack by slave, release data
+; Ack by slave, release EQU
 ; -------------------------------------------------------------------------------
 i2c_sack:
                         CALL            delay

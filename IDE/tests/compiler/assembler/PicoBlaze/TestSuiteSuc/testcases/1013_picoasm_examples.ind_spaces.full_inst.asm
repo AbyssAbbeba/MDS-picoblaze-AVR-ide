@@ -102,7 +102,7 @@ start:                  LOAD            s1, #45                 ;ASCII "E".
 ;Send character.
                         JUMP            start
 
-; Routine to transmit data via RS-232
+; Routine to transmit EQU via RS-232
 ; First check UART status.
 xmit:                   INPUT           s0, 00                  ;read uart status.
                         AND             s0, #80                 ;Buffer full mask.

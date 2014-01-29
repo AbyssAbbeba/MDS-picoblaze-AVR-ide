@@ -9,19 +9,19 @@
                    9     ; Start of code
                   10     ;##############################################################################;
                   11     ; Register name assignment
-  00000           12     temp1               EQU       s0                  ; temporary data register
-  00001           13     temp2               EQU       s1                  ; temporary data register
-  00002           14     temp3               EQU       s2                  ; temporary data register
+  00000           12     temp1               EQU       s0                  ; temporary EQU register
+  00001           13     temp2               EQU       s1                  ; temporary EQU register
+  00002           14     temp3               EQU       s2                  ; temporary EQU register
   00003           15     chreg               EQU       s3                  ; character register
   00004           16     RxDat               EQU       s4                  ; received character register
   00005           17     addr                EQU       s5                  ; address register
                   18
                   19     ; Peripherals
-  00001           20     UART_data           EQU        01h                 ; UART data register port ID
+  00001           20     UART_EQU           EQU        01h                 ; UART EQU register port ID
   00002           21     UART_stat           EQU        02h                 ; UART control register port ID
                   22     ; UART Status register:
                   23     ;  [2] Tx ready
-                  24     ;  [3] new Rx data
+                  24     ;  [3] new Rx EQU
                   25     ;  [4] Rx buffer overflow
                   26
   00004           27     BCD_01              EQU        04h                 ; 7 segment, upper two segments
@@ -73,7 +73,7 @@ W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; wh
 W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 00B 35009         68                         JUMP      Z, SendChar         ; wait until Tx is ready
-00C 22301         69                         OUT       chreg, UART_data    ; Send the character
+00C 22301         69                         OUT       chreg, UART_EQU    ; Send the character
 W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00D 24000         70                         RET                           ; Return from procedure
                   71
@@ -83,11 +83,11 @@ W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; w
                   75     ;==============================================================================;
 00E 20002         76     GetChar:            IN        Temp1, UART_stat    ; checking UART status
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-00F 10040         77                         load      Temp1, 8            ; load bit 3 (new Rx data?)
+00F 10040         77                         load      Temp1, 8            ; load bit 3 (new Rx EQU?)
 W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-010 3500E         78                         JUMP      Z, GetChar          ; wait for new Rx data
-011 20301         79                         IN        chreg, UART_data    ; Read the character
+010 3500E         78                         JUMP      Z, GetChar          ; wait for new Rx EQU
+011 20301         79                         IN        chreg, UART_EQU    ; Read the character
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 012 24000         80                         RET                           ; Return from procedure
                   81

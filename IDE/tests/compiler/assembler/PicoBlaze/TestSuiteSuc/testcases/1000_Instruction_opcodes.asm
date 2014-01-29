@@ -14,10 +14,10 @@ loadsymb9    REG        8h
 loadsymb10    REG        9h
 loadsymb11    REG        Ah
 loadsymb12    REG        Bh
-loadsymb13    DATA        Ch
-loadsymb14    DATA        0x05
-loadsymb15    DATA        2
-loadsymb16    DATA        3d
+loadsymb13    EQU        Ch
+loadsymb14    EQU        0x05
+loadsymb15    EQU        2
+loadsymb16    EQU        3d
 loadsymb17    CODE        0h + 2h
 loadsymb18    CODE        2h
 loadsymb19    CODE        2h

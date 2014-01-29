@@ -120,7 +120,7 @@ READ_SPI_FLASH_STATUS  . . . . . . . LABEL  0x0011F USED     CONSTANT    2041_ex
 READ_UPPER_CASE  . . . . . . . . . . LABEL  0x0001D USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:237.1-237.17
 READ_XON . . . . . . . . . . . . . . LABEL  0x001BD USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:1040.1-1040.10
 RESET_SPI_FLASH_WREN . . . . . . . . LABEL  0x00134 NOT USED CONSTANT    2041_example_14.ind_spaces.full_inst.asm:773.1-773.22
-RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:29.1-29.45
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:29.1-29.44
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2041_example_14.ind_spaces.full_inst.asm:31.1-31.45
 RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:30.1-30.45
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -199,10 +199,10 @@ SPI_SDO  . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2041_ex
 SPI_SPARE_CONTROL  . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2041_example_14.ind_spaces.full_inst.asm:41.1-41.45
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:25.1-25.45
 SWAP_BITS  . . . . . . . . . . . . . LABEL  0x0008E USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:412.1-412.11
-TX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:26.1-26.45
+TX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:26.1-26.44
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2041_example_14.ind_spaces.full_inst.asm:28.1-28.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2041_example_14.ind_spaces.full_inst.asm:27.1-27.45
-UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:60.1-60.43
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:60.1-60.42
 UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:33.1-33.45
 UART_WRITE . . . . . . . . . . . . . LABEL  0x001C5 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:1063.1-1063.12
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    2041_example_14.ind_spaces.full_inst.asm:35.1-35.45

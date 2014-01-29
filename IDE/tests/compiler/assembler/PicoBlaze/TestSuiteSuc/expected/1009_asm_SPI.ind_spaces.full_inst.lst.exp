@@ -11,7 +11,7 @@
                   11     ; -------\            /----\                                         /-------
                   12     ;         \  SCL     /      \                                       /
                   13     ;          \--------/        \-------------------------------------/
-                  14     ; | Start    |      Data bit     |                             |  Stop     |
+                  14     ; | Start    |      EQU bit     |                             |  Stop     |
                   15
 000 0EF05         16     init_i2c:               OUTPUT          sf, bsda_z              ; SDA = Z
 001 0EF05         17                             OUTPUT          sf, bscl_z              ; SCL = Z
@@ -30,9 +30,9 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 006 08357         29                             CALL            i2c_xmit                ; Send address and ack
 007 0838E         30                             CALL            i2c_sack
                   31
-008 0AC01         32                             INPUT           sc, s1                 ; Load data for TX
+008 0AC01         32                             INPUT           sc, s1                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-009 08357         33                             CALL            i2c_xmit                ; Send data and ack
+009 08357         33                             CALL            i2c_xmit                ; Send EQU and ack
 00A 0838E         34                             CALL            i2c_sack
                   35
 00B 08398         36                             CALL            i2c_repstart            ; Send repeated start, control byte and ack
@@ -42,22 +42,22 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 00E 08357         39                             CALL            i2c_xmit                ; Send address and ack
 00F 0838E         40                             CALL            i2c_sack
                   41
-010 08368         42                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+010 08368         42                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
 011 08378         43                             CALL            i2c_mack
 012 0A20C         44                             INPUT           s2, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   45
-013 08368         46                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+013 08368         46                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
 014 08378         47                             CALL            i2c_mack
 015 0A30C         48                             INPUT           s3, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   49
-016 08368         50                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+016 08368         50                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
 017 08378         51                             CALL            i2c_mack
 018 0A40C         52                             INPUT           s4, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   53
-019 08368         54                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+019 08368         54                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
 01A 08383         55                             CALL            i2c_mnack
 01B 0A50C         56                             INPUT           s5, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
@@ -75,19 +75,19 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 020 08357         67                             CALL            i2c_xmit                ; Send address and ack
 021 0838E         68                             CALL            i2c_sack
                   69
-022 0AC01         70                             INPUT           sc, s1                 ; Load data for TX
+022 0AC01         70                             INPUT           sc, s1                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-023 08357         71                             CALL            i2c_xmit                ; Send data and ack
+023 08357         71                             CALL            i2c_xmit                ; Send EQU and ack
 024 0838E         72                             CALL            i2c_sack
                   73
-025 0AC02         74                             INPUT           sc, s2                 ; Load data for TX
+025 0AC02         74                             INPUT           sc, s2                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-026 08357         75                             CALL            i2c_xmit                ; Send data and ack
+026 08357         75                             CALL            i2c_xmit                ; Send EQU and ack
 027 0838E         76                             CALL            i2c_sack
                   77
-028 0AC03         78                             INPUT           sc, s3                 ; Load data for TX
+028 0AC03         78                             INPUT           sc, s3                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-029 08357         79                             CALL            i2c_xmit                ; Send data and ack
+029 08357         79                             CALL            i2c_xmit                ; Send EQU and ack
 02A 0838E         80                             CALL            i2c_sack
                   81
 02B 081A0         82                             JUMP            i2c_stop                ; Send stop
@@ -104,12 +104,12 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 02F 08357         92                             CALL            i2c_xmit                ; Send address and ack
 030 0838E         93                             CALL            i2c_sack
                   94
-031 08368         95                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+031 08368         95                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
 032 08378         96                             CALL            i2c_mack
 033 0A20C         97                             INPUT           s2, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
                   98
-034 08368         99                             CALL            i2c_recv                ; Read next 8 bits of data and send ack
+034 08368         99                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
 035 08383        100                             CALL            i2c_mnack
 036 0A30C        101                             INPUT           s3, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
@@ -127,14 +127,14 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 03B 08357        112                             CALL            i2c_xmit                ; Send address and ack
 03C 0838E        113                             CALL            i2c_sack
                  114
-03D 0AC01        115                             INPUT           sc, s1                 ; Load data for TX
+03D 0AC01        115                             INPUT           sc, s1                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-03E 08357        116                             CALL            i2c_xmit                ; Send data and ack
+03E 08357        116                             CALL            i2c_xmit                ; Send EQU and ack
 03F 0838E        117                             CALL            i2c_sack
                  118
-040 0AC02        119                             INPUT           sc, s2                 ; Load data for TX
+040 0AC02        119                             INPUT           sc, s2                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-041 08357        120                             CALL            i2c_xmit                ; Send data and ack
+041 08357        120                             CALL            i2c_xmit                ; Send EQU and ack
 042 0838E        121                             CALL            i2c_sack
                  122
 043 081A0        123                             JUMP            i2c_stop                ; Send stop
@@ -153,7 +153,7 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
                  135
 049 0839A        136                             CALL            i2c_start               ; Send start, control byte and ack
                  137
-04A 08368        138                             CALL            i2c_recv                ; Read 8 bits of data and send ack
+04A 08368        138                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
 04B 08383        139                             CALL            i2c_mnack
 04C 0A20C        140                             INPUT           s2, sc
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
@@ -172,21 +172,21 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 051 08357        152                             CALL            i2c_xmit                ; Send address and ack
 052 0838E        153                             CALL            i2c_sack
                  154
-053 0AC01        155                             INPUT           sc, s1                 ; Load data for TX
+053 0AC01        155                             INPUT           sc, s1                 ; Load EQU for TX
 W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
-054 08357        156                             CALL            i2c_xmit                ; Send data and ack
+054 08357        156                             CALL            i2c_xmit                ; Send EQU and ack
 055 0838E        157                             CALL            i2c_sack
                  158
 056 081A0        159                             JUMP            i2c_stop                ; Send stop
                  160
                  161     ; -------------------------------------------------------------------------------
-                 162     ; Transmit 8 bits of I2C data
+                 162     ; Transmit 8 bits of I2C EQU
                  163     ; -------------------------------------------------------------------------------
   00057          164     i2c_xmit:
 057 0AD08        165                             INPUT           sd, 8                   ; Load I2C bit counter
   00058          166     i2c_tx:
 058 08303        167                             CALL            delay
-059 0DC06        168                             SL0             sc                      ; Move data bit -> carry
+059 0DC06        168                             SL0             sc                      ; Move EQU bit -> carry
 05A 0995E        169                             JUMP            c, i2c_tx1              ; Jump if bit high
   0005B          170     i2c_tx0:
 05B 0EF05        171                             OUTPUT          sf, bsda_0              ; SDA = 0
@@ -208,7 +208,7 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 067 08103        187                             JUMP            delay
                  188
                  189     ; -------------------------------------------------------------------------------
-                 190     ; Read 8 bits of I2C data
+                 190     ; Read 8 bits of I2C EQU
                  191     ; -------------------------------------------------------------------------------
   00068          192     i2c_recv:
 068 0AD08        193                             INPUT           sd, 8                   ; Load I2C bit counter
@@ -231,7 +231,7 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 077 08080        210                             RETURN
                  211
                  212     ; -------------------------------------------------------------------------------
-                 213     ; Ack by master, keep data 0
+                 213     ; Ack by master, keep EQU 0
                  214     ; -------------------------------------------------------------------------------
   00078          215     i2c_mack:
 078 08303        216                             CALL            delay
@@ -247,7 +247,7 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 082 08080        226                             RETURN
                  227
                  228     ; -------------------------------------------------------------------------------
-                 229     ; NAck by master, release data
+                 229     ; NAck by master, release EQU
                  230     ; -------------------------------------------------------------------------------
   00083          231     i2c_mnack:
 083 08303        232                             CALL            delay
@@ -263,7 +263,7 @@ W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or p
 08D 08080        242                             RETURN
                  243
                  244     ; -------------------------------------------------------------------------------
-                 245     ; Ack by slave, release data
+                 245     ; Ack by slave, release EQU
                  246     ; -------------------------------------------------------------------------------
   0008E          247     i2c_sack:
 08E 08303        248                             CALL            delay

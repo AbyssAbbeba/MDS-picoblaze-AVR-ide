@@ -4,7 +4,7 @@ INTERRUPT  . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    2027_de
 LED_ID . . . . . . . . . . . . . . . PORT   0x00008 NOT USED CONSTANT    2027_demo_5_UART.asm:34.9-34.37
 LED_REG  . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    2027_demo_5_UART.asm:28.9-28.30
 MAIN_LOOP  . . . . . . . . . . . . . LABEL  0x00043 USED     CONSTANT    2027_demo_5_UART.asm:166.1-166.11
-RX_DATA  . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    2027_demo_5_UART.asm:26.9-26.38
+RX_EQU . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    2027_demo_5_UART.asm:26.9-26.37
 RX_ID  . . . . . . . . . . . . . . . PORT   0x00002 USED     CONSTANT    2027_demo_5_UART.asm:32.9-32.37
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
 S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
@@ -42,6 +42,6 @@ START  . . . . . . . . . . . . . . . LABEL  0x00039 USED     CONSTANT    2027_de
 TEMP1  . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    2027_demo_5_UART.asm:22.9-22.33
 TEMP2  . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    2027_demo_5_UART.asm:23.9-23.33
 TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    2027_demo_5_UART.asm:24.9-24.33
-TXDATA . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    2027_demo_5_UART.asm:27.9-27.30
+TXEQU  . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    2027_demo_5_UART.asm:27.9-27.29
 TX_ID  . . . . . . . . . . . . . . . PORT   0x00001 USED     CONSTANT    2027_demo_5_UART.asm:31.9-31.37
 UART_STAT  . . . . . . . . . . . . . PORT   0x00004 USED     CONSTANT    2027_demo_5_UART.asm:33.9-33.37

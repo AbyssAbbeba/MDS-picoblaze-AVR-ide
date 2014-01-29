@@ -43,8 +43,8 @@ VARIABLE        <symbol>,<expresion>
 NAMEREG         <symbol>,<expresion>
 ; Directive NAMEREG is similar to REG, but with diferent syntax.
 ; Symbols defined with NAMEREG can be redefined with another value in your source code. 
-<symbol>        DATA    <expresion>     
-; Symbols defined with the DATA directive are by compiler considered as data memory.
+<symbol>        EQU    <expresion>
+; Symbols defined with the EQU directive are by compiler considered as EQU memory.
 ; It must be used only with instructions load and load.
 <symbol>        CODE    <expresion>     
 ; Symbols defined with the CODE directive are by compiler considered as program memory. 
@@ -66,8 +66,8 @@ NAMEREG         <symbol>,<expresion>
 ADDRESS         <expresion>
 ; When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the
 ; expression and changes the address counter. The MDS assembler maintains a location counter for each
-; segment. The location counter contains the offset of the instruction or data being assembled and is
-; incremented after each line by the number of bytes of data or code in that line.
+; segment. The location counter contains the offset of the instruction or EQU being assembled and is
+; incremented after each line by the number of bytes of EQU or code in that line.
 
 REPT <expresion> ; expresion determines number of repetion
 <repeated code>

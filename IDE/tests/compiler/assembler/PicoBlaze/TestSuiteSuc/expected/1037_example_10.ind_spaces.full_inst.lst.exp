@@ -17,23 +17,23 @@
                   17     ;
                   18     ;
   00000           19     status_port             EQU             0x00                    ;UART and filter status input
-  00001           20     tx_data_present         EQU             0x01                    ;  Transmitter  data present - bit0
+  00001           20     tx_EQU_present         EQU             0x01                    ;  Transmitter  EQU present - bit0
   00002           21     tx_half_full            EQU             0x02                    ;    FIFO          half full - bit1
   00004           22     tx_full                 EQU             0x04                    ;                       full - bit2
-  00008           23     rx_data_present         EQU             0x08                    ;               data present - bit3
+  00008           23     rx_EQU_present         EQU             0x08                    ;               EQU present - bit3
   00010           24     rx_half_full            EQU             0x10                    ;  Receiver        half full - bit4
   00020           25     rx_full                 EQU             0x20                    ;    FIFO               full - bit5
   00040           26     spare1                  EQU             0x40                    ;                  spare '0' - bit6
   00080           27     sf_sts                  EQU             0x80                    ;            StrataFLASH STS - bit7
                   28     ;
-  00001           29     uart_read_port          EQU             0x01                    ;UART Rx data input
+  00001           29     uart_read_port          EQU             0x01                    ;UART Rx EQU input
                   30     ;
-  00004           31     uart_write_port         EQU             0x04                    ;UART Tx data output
+  00004           31     uart_write_port         EQU             0x04                    ;UART Tx EQU output
                   32     ;
                   33     ;
-  00002           34     sf_data_in_port         EQU             0x02                    ;Read data from StrataFLASH device
+  00002           34     sf_EQU_in_port         EQU             0x02                    ;Read EQU from StrataFLASH device
                   35     ;
-  00010           36     sf_data_out_port        EQU             0x10                    ;Data to write into StrataFLASH device
+  00010           36     sf_EQU_out_port        EQU             0x10                    ;EQU to write into StrataFLASH device
                   37     ;
   00080           38     sf_addr_hi_port         EQU             0x80                    ;StrataFLASH address[23:16]
   00040           39     sf_addr_mi_port         EQU             0x40                    ;StrataFLASH address[15:8]
@@ -50,11 +50,11 @@
                   50     ; Special Register usage
                   51     ;**************************************************************************************
                   52     ;
-  0000F           53     uart_data               REG             sf                      ;used to pass data to and from the UART
+  0000F           53     uart_EQU               REG             sf                      ;used to pass EQU to and from the UART
                   54     ;
                   55     ;
                   56     ;**************************************************************************************
-                  57     ; Useful data constants
+                  57     ; Useful EQU constants
                   58     ;**************************************************************************************
                   59     ;
                   60     ;Constant to define a soloadware delay of 1us. This must be adjusted to reflect the
@@ -168,12 +168,12 @@
                  168     ;
                  169     ;
                  170     ;load up to one line of an MCS file as bytes
-                 171     ;A typical data line consists of:-
+                 171     ;A typical EQU line consists of:-
                  172     ;:     Start character which is not loadd
-                 173     ;10    Number of data bytes included (16 in this case)
+                 173     ;10    Number of EQU bytes included (16 in this case)
                  174     ;aaaa  Lower 16-bits of the storage address
-                 175     ;00    Record type (data in this case)
-                 176     ;dddd...   Data bytes (typically 16 which is the maximum)
+                 175     ;00    Record type (EQU in this case)
+                 176     ;dddd...   EQU bytes (typically 16 which is the maximum)
                  177     ;cc    Checksum
                  178     ;CR/LF Line will end in carriage return and/or line feed which is not loadd.
                  179     ;
@@ -181,7 +181,7 @@
                  181     ;This is located at the end of scratch pad memory.
                  182     ;
   0002B          183     line_start              EQU             0x2b                    ;21 bytes until end of memory
-  0002F          184     data_start              EQU             0x2f                    ;Start of data field if present
+  0002F          184     EQU_start              EQU             0x2f                    ;Start of EQU field if present
                  185     ;
                  186     ;
                  187     ;**************************************************************************************
@@ -212,7 +212,7 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
 008 08393        207                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-009 00F3E        208                             LOAD            uart_data, #character_greater_than ;prompt for input
+009 00F3E        208                             LOAD            uart_EQU, #character_greater_than ;prompt for input
 00A 08331        209                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 00B 08322        210                             CALL            read_upper_case
@@ -234,7 +234,7 @@ W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 01B 091D5        226                             JUMP            z, sf_status
 01C 08393        227                             CALL            send_cr                 ;no valid command input
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-01D 00F3F        228                             LOAD            uart_data, #character_question ;display ???
+01D 00F3F        228                             LOAD            uart_EQU, #character_question ;display ???
 01E 08331        229                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 01F 08331        230                             CALL            send_to_uart
@@ -248,7 +248,7 @@ W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
 023 08331        236                             CALL            send_to_uart            ;echo character
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-024 0C0F0        237                             LOAD            s0, uart_data           ;convert to upper case
+024 0C0F0        237                             LOAD            s0, uart_EQU           ;convert to upper case
 025 0833E        238                             CALL            upper_case
 W: value out of range: 0x13e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x3e.
 026 08080        239                             RETURN
@@ -308,7 +308,7 @@ W: value out of range: 0x2d4, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
 030 08331        291                             CALL            send_to_uart            ;echo input
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-031 00F59        292                             load         uart_data, #_character_y
+031 00F59        292                             load         uart_EQU, #_character_y
 032 0953F        293                             JUMP            nz, abort_erase
 033 08393        294                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
@@ -318,7 +318,7 @@ W: value out of range: 0x209, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
 036 00800        297                             LOAD            s8, #0x00               ;define lower address of each block = xx0000
 037 00700        298                             LOAD            s7, #0x00
-038 00F2E        299     blocks_erase_loop:      LOAD            uart_data, #character_fullstop ;progress dots
+038 00F2E        299     blocks_erase_loop:      LOAD            uart_EQU, #character_fullstop ;progress dots
 039 08331        300                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 03A 08341        301                             CALL            sf_erase_block          ;erase block
@@ -357,7 +357,7 @@ W: value out of range: 0x2f1, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  332     ;
                  333     ;
                  334     ;**************************************************************************************
-                 335     ; Program Command - Program StrataFLASH memory with data defined in an MCS file
+                 335     ; Program Command - Program StrataFLASH memory with EQU defined in an MCS file
                  336     ;**************************************************************************************
                  337     ;
 047 08393        338     program_command:        CALL            send_cr
@@ -370,7 +370,7 @@ W: value out of range: 0x22c, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 04B 08107        342                             JUMP            prompt
                  343     ;
                  344     ;**************************************************************************************
-                 345     ; Program StrataFLASH memory with data defined in an MCS file
+                 345     ; Program StrataFLASH memory with EQU defined in an MCS file
                  346     ;**************************************************************************************
                  347     ;
                  348     ;Reads the MCS file from the UART and programs the Strata FLASH device at the locations.
@@ -386,16 +386,16 @@ W: value out of range: 0x22c, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 04E 00B01        358                             load         sb, #0x01               ;load for end record
 04F 09080        359                             RETURN          z                       ;end of programming
 050 00B04        360                             load         sb, #0x04               ;load for extended address record
-051 0914C        361                             JUMP            z, program_mcs          ;no data with this record and upper address now correct
+051 0914C        361                             JUMP            z, program_mcs          ;no EQU with this record and upper address now correct
                  362     ;
-                 363     ;Assume data record type 00 which is data so need to program specified number
+                 363     ;Assume EQU record type 00 which is EQU so need to program specified number
                  364     ;of bytes into memory at correct address.
                  365     ;
-052 0836D        366     write_spm_data:         CALL            send_hex_3bytes         ;send address to indicate progress
+052 0836D        366     write_spm_EQU:         CALL            send_hex_3bytes         ;send address to indicate progress
 W: value out of range: 0x16d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x6d.
 053 08393        367                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-054 0CAB0        368                             load           sa, line_start          ;read number of data bytes to program
+054 0CAB0        368                             load           sa, line_start          ;read number of EQU bytes to program
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x2b, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xb.
 055 08377        369                             CALL            sf_buffer_write         ;write bytes to memory
@@ -422,18 +422,18 @@ W: value out of range: 0x2b, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
 057 00E2B        390     read_mcs_line:          LOAD            se, #line_start         ;initialise SPM memory pointer
 058 0831F        391     wait_mcs_line_start:    CALL            read_from_uart          ;read character
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
-059 00F3A        392                             load         uart_data, #character_colon ;load for start character
+059 00F3A        392                             load         uart_EQU, #character_colon ;load for start character
 05A 09558        393                             JUMP            nz, wait_mcs_line_start
 05B 0831F        394     read_mcs_byte:          CALL            read_from_uart          ;read character
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
-05C 00F0D        395                             load         uart_data, #character_cr ;load for end of line
+05C 00F0D        395                             load         uart_EQU, #character_cr ;load for end of line
 05D 09080        396                             RETURN          z
-05E 00F0A        397                             load         uart_data, #character_lf ;load for end of line
+05E 00F0A        397                             load         uart_EQU, #character_lf ;load for end of line
 05F 09080        398                             RETURN          z
-060 0C3F0        399                             LOAD            s3, uart_data           ;upper nibble character
+060 0C3F0        399                             LOAD            s3, uart_EQU           ;upper nibble character
 061 0831F        400                             CALL            read_from_uart          ;read character
 W: value out of range: 0x11f, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1f.
-062 0C2F0        401                             LOAD            s2, uart_data           ;lower nibble character
+062 0C2F0        401                             LOAD            s2, uart_EQU           ;lower nibble character
 063 08374        402                             CALL            ascii_byte_to_hex       ;convert to true hex value
 W: value out of range: 0x174, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x74.
 064 0000E        403                             load           s0, #se                 ;write to SPM
@@ -446,7 +446,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  409     ;Determine the current address for the line of an MCS file in scratch pad memory
                  410     ;**************************************************************************************
                  411     ;
-                 412     ;Checks the existing line data loadd in scratch pad memory starting at location
+                 412     ;Checks the existing line EQU loadd in scratch pad memory starting at location
                  413     ;'line_start' and determines the current address.
                  414     ;
                  415     ;The address is in the register set [s9,s8,s7] before and aloader this routine is
@@ -457,15 +457,15 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  420     ;A record type of 00 will update [s8,s7].
                  421     ;
                  422     ;On return, the register sB will contain the record type and
-                 423     ;register sC will indicate the number of data bytes loadd.
+                 423     ;register sC will indicate the number of EQU bytes loadd.
                  424     ;
 067 00D2B        425     mcs_address:            LOAD            sd, #line_start         ;initialise SPM memory pointer
 068 0CCD0        426                             load           sc, sd                 ;read number of bytes on line
 069 04D03        427                             ADD             sd, #0x03               ;move to record type
 06A 0CBD0        428                             load           sb, sd                 ;read record type
-06B 00B00        429                             load         sb, #0x00               ;load for data record
+06B 00B00        429                             load         sb, #0x00               ;load for EQU record
 06C 09172        430                             JUMP            z, new_low_address
-06D 00B04        431                             load         sb, #0x04               ;load for data record
+06D 00B04        431                             load         sb, #0x04               ;load for EQU record
 06E 09480        432                             RETURN          nz
 06F 04D02        433                             ADD             sd, #0x02               ;read upper 8-bits
 070 0C9D0        434                             load           s9, sd
@@ -490,7 +490,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  453     ;   Write a value specifying the number of bytes to be written LESS ONE.
                  454     ;      In this program the number of bytes will be specified in register sA
                  455     ;      and this value needs to be decremented before writing to the memory.
-                 456     ;   Write the correct number of actual data bytes with appropriate addresses.
+                 456     ;   Write the correct number of actual EQU bytes with appropriate addresses.
                  457     ;      Ideally the addresses do not cross the boundary of 32 locations
                  458     ;      such that LSBs are always in the range 00000 to 11111 binary.
                  459     ;      Crossing the boundary is OK but will take longer to program.
@@ -506,7 +506,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  469     ; On return, this will be increased by the number of locations written.
                  470     ;
                  471     ; Scratch pad memory locations starting at location defined by constant
-                 472     ; 'data_start' should contain the data bytes to be written.
+                 472     ; 'EQU_start' should contain the EQU bytes to be written.
                  473     ;
                  474     ; The act of writing the buffer to the memory array may take up to 654us to complete.
                  475     ; The time taken to program is recorded by register pair [sE,sD]. Each count
@@ -523,8 +523,8 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 07C 0C1A0        486                             LOAD            s1, sa                  ;Specify number of bytes to write
 07D 06101        487                             SUB             s1, #0x01               ;one less than actual number!
 07E 083EA        488                             CALL            sf_byte_write
-07F 0032F        489                             LOAD            s3, #data_start         ;point to data in scratch pad memory
-080 0C130        490     write_buffer_loop:      load           s1, s3                 ;load data
+07F 0032F        489                             LOAD            s3, #EQU_start         ;point to EQU in scratch pad memory
+080 0C130        490     write_buffer_loop:      load           s1, s3                 ;load EQU
 081 083EA        491                             CALL            sf_byte_write           ;write to buffer
 082 04701        492                             ADD             s7, #0x01               ;increment address
 083 05800        493                             ADDCY           s8, #0x00
@@ -556,11 +556,11 @@ W: value out of range: 0x18d, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x18d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8d.
 094 0998C        516                             JUMP            c, write_command        ;bad input address
 095 0C700        517                             LOAD            s7, s0
-096 0830E        518     get_data:               CALL            send_data               ;obtain 8-bit data 00 to FF into s0
+096 0830E        518     get_EQU:               CALL            send_EQU               ;obtain 8-bit EQU 00 to FF into s0
 W: value out of range: 0x30e, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xe.
 097 0838D        519                             CALL            obtain_8bits
 W: value out of range: 0x18d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8d.
-098 09996        520                             JUMP            c, get_data             ;bad input data
+098 09996        520                             JUMP            c, get_EQU             ;bad input EQU
 099 0839D        521                             CALL            sf_single_byte_write
 09A 08393        522                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
@@ -574,11 +574,11 @@ W: value out of range: 0x22c, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  529     ;**************************************************************************************
                  530     ;
                  531     ; To write a single byte to StrataFLASH memory the address must be set and the
-                 532     ; single-word/byte program command (40 hex) sent to the memory. Then the data byte can
+                 532     ; single-word/byte program command (40 hex) sent to the memory. Then the EQU byte can
                  533     ; be written to the memory using the same address.
                  534     ;
                  535     ; The 24-bit address should be supplied in register set [s9,s8,s7].
-                 536     ; Register s0 should contain the byte data to be written to the memory.
+                 536     ; Register s0 should contain the byte EQU to be written to the memory.
                  537     ;
                  538     ; The act of writing the memory array may take up to 175us to complete. This routine
                  539     ; waits for the memory to be ready before restoring the normal read array mode and
@@ -591,7 +591,7 @@ W: value out of range: 0x22c, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  546     ;
 09D 00140        547     sf_single_byte_write:   LOAD            s1, #0x40               ;command for single byte program
 09E 083EA        548                             CALL            sf_byte_write
-09F 0C100        549                             LOAD            s1, s0                  ;write data to be programmed
+09F 0C100        549                             LOAD            s1, s0                  ;write EQU to be programmed
 0A0 083EA        550                             CALL            sf_byte_write
 0A1 083F7        551                             CALL            wait_sf_ready           ;wait for program to complete
 0A2 08080        552                             RETURN
@@ -674,7 +674,7 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
 0C3 083C6        617                             CALL            send_id
 W: value out of range: 0x2c6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc6.
-0C4 00F3D        618                             LOAD            uart_data, #character_equals
+0C4 00F3D        618                             LOAD            uart_EQU, #character_equals
 0C5 08331        619                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
 0C6 08396        620                             CALL            send_space
@@ -739,11 +739,11 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  671     ;**************************************************************************************
                  672     ;
                  673     ; The 24-bit address should be supplied in register set [s9,s8,s7].
-                 674     ; Register s0 will return the byte data retrieved from the memory.
+                 674     ; Register s0 will return the byte EQU retrieved from the memory.
                  675     ;
                  676     ; To read a byte, the address needs to be set up on the address lines
                  677     ; and the controls set as follows
-                 678     ;    SF_read = 1 - disable Spartan data outputs and enable StrataFlash outputs (OE=0)
+                 678     ;    SF_read = 1 - disable Spartan EQU outputs and enable StrataFlash outputs (OE=0)
                  679     ;      SF_ce = 0 - enable StrataFLASH memory
                  680     ;      SF_we = 1 - Write enable off
                  681     ;
@@ -760,13 +760,13 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 0E4 0E108        692                             OUTPUT          s1, sf_control_port
 0E5 00106        693                             LOAD            s1, #0x06               ;>75ns delay
 0E6 00106        694                             LOAD            s1, #0x06               ;but do something useful!
-0E7 0A002        695                             INPUT           s0, sf_data_in_port     ;read data byte
+0E7 0A002        695                             INPUT           s0, sf_EQU_in_port     ;read EQU byte
 0E8 0E108        696                             OUTPUT          s1, sf_control_port     ;clear controls
 0E9 08080        697                             RETURN
                  698     ;
                  699     ;
                  700     ;**************************************************************************************
-                 701     ; Write data or command byte to StrataFlash Memory
+                 701     ; Write EQU or command byte to StrataFlash Memory
                  702     ;**************************************************************************************
                  703     ;
                  704     ; The 24-bit address should be supplied in register set [s9,s8,s7].
@@ -774,7 +774,7 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  706     ;
                  707     ; To write a byte, the address needs to be set up on the address lines
                  708     ; and the controls set as follows
-                 709     ;    SF_read = 0 - enable Spartan data outputs and disable StrataFlash outputs (OE=1)
+                 709     ;    SF_read = 0 - enable Spartan EQU outputs and disable StrataFlash outputs (OE=1)
                  710     ;      SF_ce = 0 - enable StrataFLASH memory
                  711     ;      SF_we = 0 - Write enable on
                  712     ;
@@ -787,7 +787,7 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
 0EA 0E980        719     sf_byte_write:          OUTPUT          s9, sf_addr_hi_port     ;set 24-bit address
 0EB 0E840        720                             OUTPUT          s8, sf_addr_mi_port
 0EC 0E720        721                             OUTPUT          s7, sf_addr_lo_port
-0ED 0E110        722                             OUTPUT          s1, sf_data_out_port    ;set data byte to be written
+0ED 0E110        722                             OUTPUT          s1, sf_EQU_out_port    ;set EQU byte to be written
 0EE 00100        723                             LOAD            s1, #0x00               ;set controls
 0EF 0E108        724                             OUTPUT          s1, sf_control_port
 0F0 00106        725                             LOAD            s1, #0x06               ;>60ns delay
@@ -854,15 +854,22 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  786     ;
 100 08393        787     send_counter_timer:     CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x100.
 101 0C0E0        788                             LOAD            s0, se
+E: attempting to use unavailable space in program memory at address: 0x101.
 102 08367        789                             CALL            send_hex_byte
 W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+E: attempting to use unavailable space in program memory at address: 0x102.
 103 0C0D0        790                             LOAD            s0, sd
+E: attempting to use unavailable space in program memory at address: 0x103.
 104 08367        791                             CALL            send_hex_byte
 W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+E: attempting to use unavailable space in program memory at address: 0x104.
 105 08393        792                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x105.
 106 08080        793                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x106.
                  794     ;
                  795     ;
                  796     ;**************************************************************************************
@@ -880,22 +887,31 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  808     ;Registers used s0
                  809     ;
 107 0000B        810     delay_1us:              LOAD            s0, #delay_1us_constant
+E: attempting to use unavailable space in program memory at address: 0x107.
 108 06001        811     wait_1us:               SUB             s0, #0x01
+E: attempting to use unavailable space in program memory at address: 0x108.
 109 09508        812                             JUMP            nz, wait_1us
 W: value out of range: 0x108, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8.
+E: attempting to use unavailable space in program memory at address: 0x109.
 10A 08080        813                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x10a.
                  814     ;
                  815     ;Delay of 40us.
                  816     ;
                  817     ;Registers used s0, s1
                  818     ;
 10B 00128        819     delay_40us:             LOAD            s1, #0x28               ;40 x 1us = 40us
+E: attempting to use unavailable space in program memory at address: 0x10b.
 10C 08307        820     wait_40us:              CALL            delay_1us
 W: value out of range: 0x107, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x7.
+E: attempting to use unavailable space in program memory at address: 0x10c.
 10D 06101        821                             SUB             s1, #0x01
+E: attempting to use unavailable space in program memory at address: 0x10d.
 10E 0950C        822                             JUMP            nz, wait_40us
 W: value out of range: 0x10c, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc.
+E: attempting to use unavailable space in program memory at address: 0x10e.
 10F 08080        823                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x10f.
                  824     ;
                  825     ;
                  826     ;Delay of 1ms.
@@ -903,12 +919,17 @@ W: value out of range: 0x10c, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  828     ;Registers used s0, s1, s2
                  829     ;
 110 00219        830     delay_1ms:              LOAD            s2, #0x19               ;25 x 40us = 1ms
+E: attempting to use unavailable space in program memory at address: 0x110.
 111 0830B        831     wait_1ms:               CALL            delay_40us
 W: value out of range: 0x10b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+E: attempting to use unavailable space in program memory at address: 0x111.
 112 06201        832                             SUB             s2, #0x01
+E: attempting to use unavailable space in program memory at address: 0x112.
 113 09511        833                             JUMP            nz, wait_1ms
 W: value out of range: 0x111, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x11.
+E: attempting to use unavailable space in program memory at address: 0x113.
 114 08080        834                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x114.
                  835     ;
                  836     ;Delay of 20ms.
                  837     ;
@@ -917,24 +938,34 @@ W: value out of range: 0x111, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  840     ;Registers used s0, s1, s2, s3
                  841     ;
 115 00314        842     delay_20ms:             LOAD            s3, #0x14               ;20 x 1ms = 20ms
+E: attempting to use unavailable space in program memory at address: 0x115.
 116 08310        843     wait_20ms:              CALL            delay_1ms
 W: value out of range: 0x110, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x10.
+E: attempting to use unavailable space in program memory at address: 0x116.
 117 06301        844                             SUB             s3, #0x01
+E: attempting to use unavailable space in program memory at address: 0x117.
 118 09516        845                             JUMP            nz, wait_20ms
 W: value out of range: 0x116, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x16.
+E: attempting to use unavailable space in program memory at address: 0x118.
 119 08080        846                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x119.
                  847     ;
                  848     ;Delay of approximately 1 second.
                  849     ;
                  850     ;Registers used s0, s1, s2, s3, s4
                  851     ;
 11A 00414        852     delay_1s:               LOAD            s4, #0x14               ;50 x 20ms = 1000ms
+E: attempting to use unavailable space in program memory at address: 0x11a.
 11B 08315        853     wait_1s:                CALL            delay_20ms
 W: value out of range: 0x115, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x15.
+E: attempting to use unavailable space in program memory at address: 0x11b.
 11C 06401        854                             SUB             s4, #0x01
+E: attempting to use unavailable space in program memory at address: 0x11c.
 11D 0951B        855                             JUMP            nz, wait_1s
 W: value out of range: 0x11b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x1b.
+E: attempting to use unavailable space in program memory at address: 0x11d.
 11E 08080        856                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x11e.
                  857     ;
                  858     ;
                  859     ;**************************************************************************************
@@ -943,9 +974,9 @@ W: value out of range: 0x11b, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  862     ;
                  863     ;Read one character from the UART
                  864     ;
-                 865     ;Character read will be returned in a register called 'UART_data'.
+                 865     ;Character read will be returned in a register called 'UART_EQU'.
                  866     ;
-                 867     ;The routine first loads the receiver FIFO buffer to see if data is present.
+                 867     ;The routine first loads the receiver FIFO buffer to see if EQU is present.
                  868     ;If the FIFO is empty, the routine waits until there is a character to read.
                  869     ;As this could take any amount of time the wait loop could include a call to a
                  870     ;subroutine which performs a useful function.
@@ -965,56 +996,80 @@ W: value out of range: 0x11b, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  884     ;think that an XON needs to be transmitted.
                  885     ;
                  886     ;
-                 887     ;Registers used s0 and UART_data
+                 887     ;Registers used s0 and UART_EQU
                  888     ;
 11F 08010        889     read_from_uart:         DISABLE         interrupt
+E: attempting to use unavailable space in program memory at address: 0x11f.
 120 0A000        890     wait_rx_character:      INPUT           s0, status_port         ;load Rx_FIFO buffer
-121 00008        891                             load            s0, #rx_data_present
+E: attempting to use unavailable space in program memory at address: 0x120.
+121 00008        891                             load            s0, #rx_EQU_present
+E: attempting to use unavailable space in program memory at address: 0x121.
 122 09524        892                             JUMP            nz, read_character
 W: value out of range: 0x124, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x24.
+E: attempting to use unavailable space in program memory at address: 0x122.
 123 08120        893                             JUMP            wait_rx_character
 W: value out of range: 0x120, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
-124 0AF01        894     read_character:         INPUT           uart_data, uart_read_port ;read from FIFO
-125 00F13        895                             load         uart_data, #character_xoff ;load for XOFF
+E: attempting to use unavailable space in program memory at address: 0x123.
+124 0AF01        894     read_character:         INPUT           uart_EQU, uart_read_port ;read from FIFO
+E: attempting to use unavailable space in program memory at address: 0x124.
+125 00F13        895                             load         uart_EQU, #character_xoff ;load for XOFF
+E: attempting to use unavailable space in program memory at address: 0x125.
 126 09129        896                             JUMP            z, wait_xon
 W: value out of range: 0x129, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x29.
+E: attempting to use unavailable space in program memory at address: 0x126.
 127 08030        897                             ENABLE          interrupt               ;normal finish
+E: attempting to use unavailable space in program memory at address: 0x127.
 128 08080        898                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x128.
 129 0A000        899     wait_xon:               INPUT           s0, status_port         ;load Rx_FIFO buffer
-12A 00008        900                             load            s0, #rx_data_present
+E: attempting to use unavailable space in program memory at address: 0x129.
+12A 00008        900                             load            s0, #rx_EQU_present
+E: attempting to use unavailable space in program memory at address: 0x12a.
 12B 0952D        901                             JUMP            nz, read_xon
 W: value out of range: 0x12d, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x2d.
+E: attempting to use unavailable space in program memory at address: 0x12b.
 12C 08129        902                             JUMP            wait_xon
 W: value out of range: 0x129, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x29.
-12D 0AF01        903     read_xon:               INPUT           uart_data, uart_read_port ;read from FIFO
-12E 00F11        904                             load         uart_data, #character_xon ;load for XON
+E: attempting to use unavailable space in program memory at address: 0x12c.
+12D 0AF01        903     read_xon:               INPUT           uart_EQU, uart_read_port ;read from FIFO
+E: attempting to use unavailable space in program memory at address: 0x12d.
+12E 00F11        904                             load         uart_EQU, #character_xon ;load for XON
+E: attempting to use unavailable space in program memory at address: 0x12e.
 12F 09120        905                             JUMP            z, wait_rx_character    ;now wait for normal character
 W: value out of range: 0x120, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
+E: attempting to use unavailable space in program memory at address: 0x12f.
 130 08129        906                             JUMP            wait_xon                ;continue to wait for XON
 W: value out of range: 0x129, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x29.
+E: attempting to use unavailable space in program memory at address: 0x130.
                  907     ;
                  908     ;
                  909     ;
                  910     ;Transmit one character to the UART
                  911     ;
-                 912     ;Character supplied in register called 'UART_data'.
+                 912     ;Character supplied in register called 'UART_EQU'.
                  913     ;
                  914     ;The routine first loads the transmit FIFO buffer is empty.
-                 915     ;If the FIFO currently has any data, the routine waits until it is empty.
+                 915     ;If the FIFO currently has any EQU, the routine waits until it is empty.
                  916     ;Ultimately this means that only one character is sent at a time which
                  917     ;could be important if the PC at the other end of the link transmits
-                 918     ;an XOFF and needs the flow of data to terminate as soon as possible.
+                 918     ;an XOFF and needs the flow of EQU to terminate as soon as possible.
                  919     ;
                  920     ;Registers used s0
                  921     ;
 131 0A000        922     send_to_uart:           INPUT           s0, status_port         ;load Tx_FIFO buffer
-132 00001        923                             load            s0, #tx_data_present
+E: attempting to use unavailable space in program memory at address: 0x131.
+132 00001        923                             load            s0, #tx_EQU_present
+E: attempting to use unavailable space in program memory at address: 0x132.
 133 09135        924                             JUMP            z, uart_write
 W: value out of range: 0x135, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x35.
+E: attempting to use unavailable space in program memory at address: 0x133.
 134 08131        925                             JUMP            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-135 0EF04        926     uart_write:             OUTPUT          uart_data, uart_write_port
+E: attempting to use unavailable space in program memory at address: 0x134.
+135 0EF04        926     uart_write:             OUTPUT          uart_EQU, uart_write_port
+E: attempting to use unavailable space in program memory at address: 0x135.
 136 08080        927                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x136.
                  928     ;
                  929     ;
                  930     ;**************************************************************************************
@@ -1034,13 +1089,20 @@ W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  944     ;Registers used s0 and s1.
                  945     ;
 137 00130        946     decimal_to_ascii:       LOAD            s1, #0x30               ;load 'tens' counter with ASCII for '0'
+E: attempting to use unavailable space in program memory at address: 0x137.
 138 04101        947     load_for_ten:           ADD             s1, #0x01               ;increment 'tens' value
+E: attempting to use unavailable space in program memory at address: 0x138.
 139 0600A        948                             SUB             s0, #0x0a               ;try to subtract 10 from the supplied value
+E: attempting to use unavailable space in program memory at address: 0x139.
 13A 09D38        949                             JUMP            nc, load_for_ten        ;repeat if subtraction was possible without underflow.
 W: value out of range: 0x138, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x38.
+E: attempting to use unavailable space in program memory at address: 0x13a.
 13B 06101        950                             SUB             s1, #0x01               ;'tens' value one less ten due to underflow
+E: attempting to use unavailable space in program memory at address: 0x13b.
 13C 0403A        951                             ADD             s0, #0x3a               ;reload units value (the remainder) and convert to ASCII
+E: attempting to use unavailable space in program memory at address: 0x13c.
 13D 08080        952                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x13d.
                  953     ;
                  954     ;
                  955     ;
@@ -1054,11 +1116,17 @@ W: value out of range: 0x138, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  963     ;Registers used s0.
                  964     ;
 13E 00061        965     upper_case:             load         s0, #0x61               ;eliminate character codes below 'a' (61 hex)
+E: attempting to use unavailable space in program memory at address: 0x13e.
 13F 09880        966                             RETURN          c
+E: attempting to use unavailable space in program memory at address: 0x13f.
 140 0007B        967                             load         s0, #0x7b               ;eliminate character codes above 'z' (7A hex)
+E: attempting to use unavailable space in program memory at address: 0x140.
 141 09C80        968                             RETURN          nc
+E: attempting to use unavailable space in program memory at address: 0x141.
 142 010DF        969                             AND             s0, #0xdf               ;mask bit5 to convert to upper case
+E: attempting to use unavailable space in program memory at address: 0x142.
 143 08080        970                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x143.
                  971     ;
                  972     ;
                  973     ;Convert character '0' to '9' to numerical value in range 0 to 9
@@ -1071,9 +1139,13 @@ W: value out of range: 0x138, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  980     ;Registers used s0.
                  981     ;
 144 040C6        982     _1char_to_value:        ADD             s0, #0xc6               ;reject character codes above '9' (39 hex)
+E: attempting to use unavailable space in program memory at address: 0x144.
 145 09880        983                             RETURN          c                       ;carry flag is set
+E: attempting to use unavailable space in program memory at address: 0x145.
 146 060F6        984                             SUB             s0, #0xf6               ;reject character codes below '0' (30 hex)
+E: attempting to use unavailable space in program memory at address: 0x146.
 147 08080        985                             RETURN                                  ;carry is set if value not in range
+E: attempting to use unavailable space in program memory at address: 0x147.
                  986     ;
                  987     ;
                  988     ;Determine the numerical value of a two character decimal string held in
@@ -1087,21 +1159,35 @@ W: value out of range: 0x138, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                  996     ;Registers used s0, s1 and s2.
                  997     ;
 148 0C010        998     _2char_to_value:        load           s0, s1                 ;read 'tens' character
+E: attempting to use unavailable space in program memory at address: 0x148.
 149 08344        999                             CALL            _1char_to_value         ;convert to numerical value
 W: value out of range: 0x144, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
+E: attempting to use unavailable space in program memory at address: 0x149.
 14A 09880       1000                             RETURN          c                       ;bad character - CARRY set
+E: attempting to use unavailable space in program memory at address: 0x14a.
 14B 0C200       1001                             LOAD            s2, s0
+E: attempting to use unavailable space in program memory at address: 0x14b.
 14C 0D206       1002                             SL0             s2                      ;multiply 'tens' value by 10 (0A hex)
+E: attempting to use unavailable space in program memory at address: 0x14c.
 14D 0D206       1003                             SL0             s2
+E: attempting to use unavailable space in program memory at address: 0x14d.
 14E 0C204       1004                             ADD             s2, s0
+E: attempting to use unavailable space in program memory at address: 0x14e.
 14F 0D206       1005                             SL0             s2
+E: attempting to use unavailable space in program memory at address: 0x14f.
 150 04101       1006                             ADD             s1, #0x01               ;read 'units' character
+E: attempting to use unavailable space in program memory at address: 0x150.
 151 0C010       1007                             load           s0, s1
+E: attempting to use unavailable space in program memory at address: 0x151.
 152 08344       1008                             CALL            _1char_to_value         ;convert to numerical value
 W: value out of range: 0x144, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
+E: attempting to use unavailable space in program memory at address: 0x152.
 153 09880       1009                             RETURN          c                       ;bad character - CARRY set
+E: attempting to use unavailable space in program memory at address: 0x153.
 154 0C204       1010                             ADD             s2, s0                  ;add units to result and clear CARRY flag
+E: attempting to use unavailable space in program memory at address: 0x154.
 155 08080       1011                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x155.
                 1012     ;
                 1013     ;
                 1014     ;Convert hexadecimal value provided in register s0 into ASCII characters
@@ -1118,30 +1204,47 @@ W: value out of range: 0x144, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1025     ;Registers used s0, s1 and s2.
                 1026     ;
 156 0C100       1027     hex_byte_to_ascii:      LOAD            s1, s0                  ;remember value supplied
+E: attempting to use unavailable space in program memory at address: 0x156.
 157 0D00E       1028                             SR0             s0                      ;isolate upper nibble
+E: attempting to use unavailable space in program memory at address: 0x157.
 158 0D00E       1029                             SR0             s0
+E: attempting to use unavailable space in program memory at address: 0x158.
 159 0D00E       1030                             SR0             s0
+E: attempting to use unavailable space in program memory at address: 0x159.
 15A 0D00E       1031                             SR0             s0
+E: attempting to use unavailable space in program memory at address: 0x15a.
 15B 08362       1032                             CALL            hex_to_ascii            ;convert
 W: value out of range: 0x162, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x62.
+E: attempting to use unavailable space in program memory at address: 0x15b.
 15C 0C200       1033                             LOAD            s2, s0                  ;upper nibble value in s2
+E: attempting to use unavailable space in program memory at address: 0x15c.
 15D 0C010       1034                             LOAD            s0, s1                  ;reload complete value
+E: attempting to use unavailable space in program memory at address: 0x15d.
 15E 0100F       1035                             AND             s0, #0x0f               ;isolate lower nibble
+E: attempting to use unavailable space in program memory at address: 0x15e.
 15F 08362       1036                             CALL            hex_to_ascii            ;convert
 W: value out of range: 0x162, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x62.
+E: attempting to use unavailable space in program memory at address: 0x15f.
 160 0C100       1037                             LOAD            s1, s0                  ;lower nibble value in s1
+E: attempting to use unavailable space in program memory at address: 0x160.
 161 08080       1038                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x161.
                 1039     ;
                 1040     ;Convert hexadecimal value provided in register s0 into ASCII character
                 1041     ;
                 1042     ;Register used s0
                 1043     ;
 162 0600A       1044     hex_to_ascii:           SUB             s0, #0x0a               ;load if value is in range 0 to 9
+E: attempting to use unavailable space in program memory at address: 0x162.
 163 09965       1045                             JUMP            c, number_char
 W: value out of range: 0x165, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x65.
+E: attempting to use unavailable space in program memory at address: 0x163.
 164 04007       1046                             ADD             s0, #0x07               ;ASCII char A to F in range 41 to 46
+E: attempting to use unavailable space in program memory at address: 0x164.
 165 0403A       1047     number_char:            ADD             s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+E: attempting to use unavailable space in program memory at address: 0x165.
 166 08080       1048                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x166.
                 1049     ;
                 1050     ;
                 1051     ;Send the two character HEX value of the register contents 's0' to the UART
@@ -1150,13 +1253,19 @@ W: value out of range: 0x165, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1054     ;
 167 08356       1055     send_hex_byte:          CALL            hex_byte_to_ascii
 W: value out of range: 0x156, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x56.
-168 0CF20       1056                             LOAD            uart_data, s2
+E: attempting to use unavailable space in program memory at address: 0x167.
+168 0CF20       1056                             LOAD            uart_EQU, s2
+E: attempting to use unavailable space in program memory at address: 0x168.
 169 08331       1057                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-16A 0CF10       1058                             LOAD            uart_data, s1
+E: attempting to use unavailable space in program memory at address: 0x169.
+16A 0CF10       1058                             LOAD            uart_EQU, s1
+E: attempting to use unavailable space in program memory at address: 0x16a.
 16B 08331       1059                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x16b.
 16C 08080       1060                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x16c.
                 1061     ;
                 1062     ;
                 1063     ;
@@ -1165,15 +1274,22 @@ W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1066     ;Registers used s0, s1, s2
                 1067     ;
 16D 0C090       1068     send_hex_3bytes:        LOAD            s0, s9
+E: attempting to use unavailable space in program memory at address: 0x16d.
 16E 08367       1069                             CALL            send_hex_byte
 W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+E: attempting to use unavailable space in program memory at address: 0x16e.
 16F 0C080       1070                             LOAD            s0, s8
+E: attempting to use unavailable space in program memory at address: 0x16f.
 170 08367       1071                             CALL            send_hex_byte
 W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+E: attempting to use unavailable space in program memory at address: 0x170.
 171 0C070       1072                             LOAD            s0, s7
+E: attempting to use unavailable space in program memory at address: 0x171.
 172 08367       1073                             CALL            send_hex_byte
 W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x67.
+E: attempting to use unavailable space in program memory at address: 0x172.
 173 08080       1074                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x173.
                 1075     ;
                 1076     ;
                 1077     ;Convert the HEX ASCII characters contained in 's3' and 's2' into
@@ -1187,52 +1303,83 @@ W: value out of range: 0x167, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1085     ;Registers used s0, s2 and s3.
                 1086     ;
 174 0C030       1087     ascii_byte_to_hex:      LOAD            s0, s3                  ;Take upper nibble
+E: attempting to use unavailable space in program memory at address: 0x174.
 175 08381       1088                             CALL            ascii_to_hex            ;convert to value
 W: value out of range: 0x181, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x81.
+E: attempting to use unavailable space in program memory at address: 0x175.
 176 09880       1089                             RETURN          c                       ;reject if out of range
+E: attempting to use unavailable space in program memory at address: 0x176.
 177 0C300       1090                             LOAD            s3, s0                  ;remember value
+E: attempting to use unavailable space in program memory at address: 0x177.
 178 0D306       1091                             SL0             s3                      ;multiply value by 16 to put in upper nibble
+E: attempting to use unavailable space in program memory at address: 0x178.
 179 0D306       1092                             SL0             s3
+E: attempting to use unavailable space in program memory at address: 0x179.
 17A 0D306       1093                             SL0             s3
+E: attempting to use unavailable space in program memory at address: 0x17a.
 17B 0D306       1094                             SL0             s3
+E: attempting to use unavailable space in program memory at address: 0x17b.
 17C 0C020       1095                             LOAD            s0, s2                  ;Take lower nibble
+E: attempting to use unavailable space in program memory at address: 0x17c.
 17D 08381       1096                             CALL            ascii_to_hex            ;convert to value
 W: value out of range: 0x181, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x81.
+E: attempting to use unavailable space in program memory at address: 0x17d.
 17E 09880       1097                             RETURN          c                       ;reject if out of range
+E: attempting to use unavailable space in program memory at address: 0x17e.
 17F 0C032       1098                             OR              s0, s3                  ;merge in the upper nibble with CARRY reset
+E: attempting to use unavailable space in program memory at address: 0x17f.
 180 08080       1099                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x180.
                 1100     ;
                 1101     ;
-                1102     ;Routine to convert ASCII data in 's0' to an equivalent HEX value.
+                1102     ;Routine to convert ASCII EQU in 's0' to an equivalent HEX value.
                 1103     ;
                 1104     ;If character is not valid for hex, then CARRY is set on return.
                 1105     ;
                 1106     ;Register used s0
                 1107     ;
 181 040B9       1108     ascii_to_hex:           ADD             s0, #0xb9               ;load for above ASCII code 46 ('F')
+E: attempting to use unavailable space in program memory at address: 0x181.
 182 09880       1109                             RETURN          c
+E: attempting to use unavailable space in program memory at address: 0x182.
 183 060E9       1110                             SUB             s0, #0xe9               ;normalise 0 to 9 with A-F in 11 to 16 hex
+E: attempting to use unavailable space in program memory at address: 0x183.
 184 09880       1111                             RETURN          c                       ;reject below ASCII code 30 ('0')
+E: attempting to use unavailable space in program memory at address: 0x184.
 185 06011       1112                             SUB             s0, #0x11               ;isolate A-F down to 00 to 05 hex
+E: attempting to use unavailable space in program memory at address: 0x185.
 186 09D8B       1113                             JUMP            nc, ascii_letter
 W: value out of range: 0x18b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x8b.
+E: attempting to use unavailable space in program memory at address: 0x186.
 187 04007       1114                             ADD             s0, #0x07               ;load for above ASCII code 46 ('F')
+E: attempting to use unavailable space in program memory at address: 0x187.
 188 09880       1115                             RETURN          c
+E: attempting to use unavailable space in program memory at address: 0x188.
 189 060F6       1116                             SUB             s0, #0xf6               ;convert to range 00 to 09
+E: attempting to use unavailable space in program memory at address: 0x189.
 18A 08080       1117                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x18a.
 18B 0400A       1118     ascii_letter:           ADD             s0, #0x0a               ;convert to range 0A to 0F
+E: attempting to use unavailable space in program memory at address: 0x18b.
 18C 08080       1119                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x18c.
                 1120     ;
                 1121     ;
-                1122     ;Read two hex characters from UART and convert to single byte data
+                1122     ;Read two hex characters from UART and convert to single byte EQU
                 1123     ;
 18D 08322       1124     obtain_8bits:           CALL            read_upper_case         ;obtain one byte from UART
+E: attempting to use unavailable space in program memory at address: 0x18d.
 18E 0C300       1125                             LOAD            s3, s0
+E: attempting to use unavailable space in program memory at address: 0x18e.
 18F 08322       1126                             CALL            read_upper_case
+E: attempting to use unavailable space in program memory at address: 0x18f.
 190 0C200       1127                             LOAD            s2, s0
+E: attempting to use unavailable space in program memory at address: 0x190.
 191 08374       1128                             CALL            ascii_byte_to_hex
 W: value out of range: 0x174, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x74.
+E: attempting to use unavailable space in program memory at address: 0x191.
 192 08080       1129                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x192.
                 1130     ;
                 1131     ;**************************************************************************************
                 1132     ;Text messages
@@ -1241,276 +1388,436 @@ W: value out of range: 0x174, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1135     ;
                 1136     ;Send Carriage Return to the UART
                 1137     ;
-193 00F0D       1138     send_cr:                LOAD            uart_data, #character_cr
+193 00F0D       1138     send_cr:                LOAD            uart_EQU, #character_cr
+E: attempting to use unavailable space in program memory at address: 0x193.
 194 08331       1139                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x194.
 195 08080       1140                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x195.
                 1141     ;
                 1142     ;Send a space to the UART
                 1143     ;
-196 00F20       1144     send_space:             LOAD            uart_data, #character_space
+196 00F20       1144     send_space:             LOAD            uart_EQU, #character_space
+E: attempting to use unavailable space in program memory at address: 0x196.
 197 08331       1145                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x197.
 198 08080       1146                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x198.
                 1147     ;
                 1148     ;
                 1149     ;Send 'PicoBlaze NOR FLASH Programmer' string to the UART
                 1150     ;
 199 08393       1151     send_welcome:           CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x199.
 19A 08393       1152                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-19B 00F50       1153                             LOAD            uart_data, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x19a.
+19B 00F50       1153                             LOAD            uart_EQU, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x19b.
 19C 08331       1154                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-19D 00F69       1155                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x19c.
+19D 00F69       1155                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x19d.
 19E 08331       1156                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-19F 00F63       1157                             LOAD            uart_data, #character_c
+E: attempting to use unavailable space in program memory at address: 0x19e.
+19F 00F63       1157                             LOAD            uart_EQU, #character_c
+E: attempting to use unavailable space in program memory at address: 0x19f.
 1A0 08331       1158                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1A1 00F6F       1159                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1a0.
+1A1 00F6F       1159                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1a1.
 1A2 08331       1160                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1A3 00F42       1161                             LOAD            uart_data, #_character_b
+E: attempting to use unavailable space in program memory at address: 0x1a2.
+1A3 00F42       1161                             LOAD            uart_EQU, #_character_b
+E: attempting to use unavailable space in program memory at address: 0x1a3.
 1A4 08331       1162                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1A5 00F6C       1163                             LOAD            uart_data, #character_l
+E: attempting to use unavailable space in program memory at address: 0x1a4.
+1A5 00F6C       1163                             LOAD            uart_EQU, #character_l
+E: attempting to use unavailable space in program memory at address: 0x1a5.
 1A6 08331       1164                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1A7 00F61       1165                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1a6.
+1A7 00F61       1165                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1a7.
 1A8 08331       1166                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1A9 00F7A       1167                             LOAD            uart_data, #character_z
+E: attempting to use unavailable space in program memory at address: 0x1a8.
+1A9 00F7A       1167                             LOAD            uart_EQU, #character_z
+E: attempting to use unavailable space in program memory at address: 0x1a9.
 1AA 08331       1168                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1AB 00F65       1169                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x1aa.
+1AB 00F65       1169                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x1ab.
 1AC 08331       1170                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1ac.
 1AD 08396       1171                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1AE 00F4E       1172                             LOAD            uart_data, #_character_n
+E: attempting to use unavailable space in program memory at address: 0x1ad.
+1AE 00F4E       1172                             LOAD            uart_EQU, #_character_n
+E: attempting to use unavailable space in program memory at address: 0x1ae.
 1AF 08331       1173                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1B0 00F4F       1174                             LOAD            uart_data, #_character_o
+E: attempting to use unavailable space in program memory at address: 0x1af.
+1B0 00F4F       1174                             LOAD            uart_EQU, #_character_o
+E: attempting to use unavailable space in program memory at address: 0x1b0.
 1B1 08331       1175                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1B2 00F52       1176                             LOAD            uart_data, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x1b1.
+1B2 00F52       1176                             LOAD            uart_EQU, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x1b2.
 1B3 08331       1177                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1b3.
 1B4 08396       1178                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1B5 00F46       1179                             LOAD            uart_data, #_character_f
+E: attempting to use unavailable space in program memory at address: 0x1b4.
+1B5 00F46       1179                             LOAD            uart_EQU, #_character_f
+E: attempting to use unavailable space in program memory at address: 0x1b5.
 1B6 08331       1180                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1B7 00F4C       1181                             LOAD            uart_data, #_character_l
+E: attempting to use unavailable space in program memory at address: 0x1b6.
+1B7 00F4C       1181                             LOAD            uart_EQU, #_character_l
+E: attempting to use unavailable space in program memory at address: 0x1b7.
 1B8 08331       1182                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1B9 00F41       1183                             LOAD            uart_data, #_character_a
+E: attempting to use unavailable space in program memory at address: 0x1b8.
+1B9 00F41       1183                             LOAD            uart_EQU, #_character_a
+E: attempting to use unavailable space in program memory at address: 0x1b9.
 1BA 08331       1184                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1BB 00F53       1185                             LOAD            uart_data, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x1ba.
+1BB 00F53       1185                             LOAD            uart_EQU, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x1bb.
 1BC 08331       1186                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1BD 00F48       1187                             LOAD            uart_data, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x1bc.
+1BD 00F48       1187                             LOAD            uart_EQU, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x1bd.
 1BE 08331       1188                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1be.
 1BF 08396       1189                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1C0 00F50       1190                             LOAD            uart_data, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x1bf.
+1C0 00F50       1190                             LOAD            uart_EQU, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x1c0.
 1C1 08331       1191                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1C2 00F72       1192                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1c1.
+1C2 00F72       1192                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1c2.
 1C3 08331       1193                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1C4 00F6F       1194                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1c3.
+1C4 00F6F       1194                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1c4.
 1C5 08331       1195                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1C6 00F67       1196                             LOAD            uart_data, #character_g
+E: attempting to use unavailable space in program memory at address: 0x1c5.
+1C6 00F67       1196                             LOAD            uart_EQU, #character_g
+E: attempting to use unavailable space in program memory at address: 0x1c6.
 1C7 08331       1197                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1C8 00F72       1198                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1c7.
+1C8 00F72       1198                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1c8.
 1C9 08331       1199                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1CA 00F61       1200                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1c9.
+1CA 00F61       1200                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1ca.
 1CB 08331       1201                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1CC 00F6D       1202                             LOAD            uart_data, #character_m
+E: attempting to use unavailable space in program memory at address: 0x1cb.
+1CC 00F6D       1202                             LOAD            uart_EQU, #character_m
+E: attempting to use unavailable space in program memory at address: 0x1cc.
 1CD 08331       1203                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1CE 00F6D       1204                             LOAD            uart_data, #character_m
+E: attempting to use unavailable space in program memory at address: 0x1cd.
+1CE 00F6D       1204                             LOAD            uart_EQU, #character_m
+E: attempting to use unavailable space in program memory at address: 0x1ce.
 1CF 08331       1205                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1D0 00F65       1206                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x1cf.
+1D0 00F65       1206                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x1d0.
 1D1 08331       1207                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1D2 00F72       1208                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1d1.
+1D2 00F72       1208                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1d2.
 1D3 08331       1209                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1d3.
 1D4 08396       1210                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1D5 00F76       1211                             LOAD            uart_data, #character_v
+E: attempting to use unavailable space in program memory at address: 0x1d4.
+1D5 00F76       1211                             LOAD            uart_EQU, #character_v
+E: attempting to use unavailable space in program memory at address: 0x1d5.
 1D6 08331       1212                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1D7 00F31       1213                             LOAD            uart_data, #character_1
+E: attempting to use unavailable space in program memory at address: 0x1d6.
+1D7 00F31       1213                             LOAD            uart_EQU, #character_1
+E: attempting to use unavailable space in program memory at address: 0x1d7.
 1D8 08331       1214                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1D9 00F2E       1215                             LOAD            uart_data, #character_fullstop
+E: attempting to use unavailable space in program memory at address: 0x1d8.
+1D9 00F2E       1215                             LOAD            uart_EQU, #character_fullstop
+E: attempting to use unavailable space in program memory at address: 0x1d9.
 1DA 08331       1216                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1DB 00F30       1217                             LOAD            uart_data, #character_0
+E: attempting to use unavailable space in program memory at address: 0x1da.
+1DB 00F30       1217                             LOAD            uart_EQU, #character_0
+E: attempting to use unavailable space in program memory at address: 0x1db.
 1DC 08331       1218                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1DD 00F30       1219                             LOAD            uart_data, #character_0
+E: attempting to use unavailable space in program memory at address: 0x1dc.
+1DD 00F30       1219                             LOAD            uart_EQU, #character_0
+E: attempting to use unavailable space in program memory at address: 0x1dd.
 1DE 08331       1220                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1de.
 1DF 08393       1221                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x1df.
 1E0 08393       1222                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x1e0.
 1E1 08080       1223                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x1e1.
                 1224     ;
                 1225     ;
                 1226     ;
                 1227     ;Send 'Waiting_MCS_file' string to the UART
                 1228     ;
-1E2 00F57       1229     send_waiting_mcs_file:  LOAD            uart_data, #_character_w
+1E2 00F57       1229     send_waiting_mcs_file:  LOAD            uart_EQU, #_character_w
+E: attempting to use unavailable space in program memory at address: 0x1e2.
 1E3 08331       1230                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1E4 00F61       1231                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1e3.
+1E4 00F61       1231                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x1e4.
 1E5 08331       1232                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1E6 00F69       1233                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x1e5.
+1E6 00F69       1233                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x1e6.
 1E7 08331       1234                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1E8 00F74       1235                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x1e7.
+1E8 00F74       1235                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x1e8.
 1E9 08331       1236                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1EA 00F69       1237                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x1e9.
+1EA 00F69       1237                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x1ea.
 1EB 08331       1238                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1EC 00F6E       1239                             LOAD            uart_data, #character_n
+E: attempting to use unavailable space in program memory at address: 0x1eb.
+1EC 00F6E       1239                             LOAD            uart_EQU, #character_n
+E: attempting to use unavailable space in program memory at address: 0x1ec.
 1ED 08331       1240                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1EE 00F67       1241                             LOAD            uart_data, #character_g
+E: attempting to use unavailable space in program memory at address: 0x1ed.
+1EE 00F67       1241                             LOAD            uart_EQU, #character_g
+E: attempting to use unavailable space in program memory at address: 0x1ee.
 1EF 08331       1242                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1ef.
 1F0 08396       1243                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1F1 00F66       1244                             LOAD            uart_data, #character_f
+E: attempting to use unavailable space in program memory at address: 0x1f0.
+1F1 00F66       1244                             LOAD            uart_EQU, #character_f
+E: attempting to use unavailable space in program memory at address: 0x1f1.
 1F2 08331       1245                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1F3 00F6F       1246                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1f2.
+1F3 00F6F       1246                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x1f3.
 1F4 08331       1247                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1F5 00F72       1248                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1f4.
+1F5 00F72       1248                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x1f5.
 1F6 08331       1249                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1f6.
 1F7 08396       1250     send_mcs_file:          CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1F8 00F4D       1251                             LOAD            uart_data, #_character_m
+E: attempting to use unavailable space in program memory at address: 0x1f7.
+1F8 00F4D       1251                             LOAD            uart_EQU, #_character_m
+E: attempting to use unavailable space in program memory at address: 0x1f8.
 1F9 08331       1252                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1FA 00F43       1253                             LOAD            uart_data, #_character_c
+E: attempting to use unavailable space in program memory at address: 0x1f9.
+1FA 00F43       1253                             LOAD            uart_EQU, #_character_c
+E: attempting to use unavailable space in program memory at address: 0x1fa.
 1FB 08331       1254                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-1FC 00F53       1255                             LOAD            uart_data, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x1fb.
+1FC 00F53       1255                             LOAD            uart_EQU, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x1fc.
 1FD 08331       1256                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x1fd.
 1FE 08396       1257                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-1FF 00F46       1258                             LOAD            uart_data, #_character_f
+E: attempting to use unavailable space in program memory at address: 0x1fe.
+1FF 00F46       1258                             LOAD            uart_EQU, #_character_f
+E: attempting to use unavailable space in program memory at address: 0x1ff.
 200 08331       1259                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-201 00F69       1260                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x200.
+201 00F69       1260                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x201.
 202 08331       1261                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-203 00F6C       1262                             LOAD            uart_data, #character_l
+E: attempting to use unavailable space in program memory at address: 0x202.
+203 00F6C       1262                             LOAD            uart_EQU, #character_l
+E: attempting to use unavailable space in program memory at address: 0x203.
 204 08331       1263                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-205 00F65       1264                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x204.
+205 00F65       1264                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x205.
 206 08331       1265                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x206.
 207 08393       1266                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x207.
 208 08080       1267                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x208.
                 1268     ;
                 1269     ;
                 1270     ;Send 'Erase in progress' string to the UART
                 1271     ;
 209 08320       1272     send_erase_in_progress: CALL            send_erase
 W: value out of range: 0x220, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
-20A 00F69       1273                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x209.
+20A 00F69       1273                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x20a.
 20B 08331       1274                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-20C 00F6E       1275                             LOAD            uart_data, #character_n
+E: attempting to use unavailable space in program memory at address: 0x20b.
+20C 00F6E       1275                             LOAD            uart_EQU, #character_n
+E: attempting to use unavailable space in program memory at address: 0x20c.
 20D 08331       1276                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x20d.
 20E 08396       1277                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-20F 00F50       1278                             LOAD            uart_data, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x20e.
+20F 00F50       1278                             LOAD            uart_EQU, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x20f.
 210 08331       1279                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-211 00F72       1280                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x210.
+211 00F72       1280                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x211.
 212 08331       1281                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-213 00F6F       1282                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x212.
+213 00F6F       1282                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x213.
 214 08331       1283                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-215 00F67       1284                             LOAD            uart_data, #character_g
+E: attempting to use unavailable space in program memory at address: 0x214.
+215 00F67       1284                             LOAD            uart_EQU, #character_g
+E: attempting to use unavailable space in program memory at address: 0x215.
 216 08331       1285                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-217 00F72       1286                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x216.
+217 00F72       1286                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x217.
 218 08331       1287                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-219 00F65       1288                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x218.
+219 00F65       1288                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x219.
 21A 08331       1289                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-21B 00F73       1290                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x21a.
+21B 00F73       1290                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x21b.
 21C 08331       1291                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x21c.
 21D 08331       1292                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x21d.
 21E 08393       1293                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x21e.
 21F 08080       1294                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x21f.
                 1295     ;
                 1296     ;
                 1297     ;Send 'Erase ' string to the UART
                 1298     ;
-220 00F45       1299     send_erase:             LOAD            uart_data, #_character_e
+220 00F45       1299     send_erase:             LOAD            uart_EQU, #_character_e
+E: attempting to use unavailable space in program memory at address: 0x220.
 221 08331       1300                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-222 00F72       1301                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x221.
+222 00F72       1301                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x222.
 223 08331       1302                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-224 00F61       1303                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x223.
+224 00F61       1303                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x224.
 225 08331       1304                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-226 00F73       1305                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x225.
+226 00F73       1305                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x226.
 227 08331       1306                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-228 00F65       1307                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x227.
+228 00F65       1307                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x228.
 229 08331       1308                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x229.
 22A 08396       1309                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x22a.
 22B 08080       1310                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x22b.
                 1311     ;
                 1312     ;
                 1313     ;Send carriage return, 'OK' and carriage return to the UART
                 1314     ;
 22C 08393       1315     send_ok:                CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-22D 00F4F       1316                             LOAD            uart_data, #_character_o
+E: attempting to use unavailable space in program memory at address: 0x22c.
+22D 00F4F       1316                             LOAD            uart_EQU, #_character_o
+E: attempting to use unavailable space in program memory at address: 0x22d.
 22E 08331       1317                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-22F 00F4B       1318                             LOAD            uart_data, #_character_k
+E: attempting to use unavailable space in program memory at address: 0x22e.
+22F 00F4B       1318                             LOAD            uart_EQU, #_character_k
+E: attempting to use unavailable space in program memory at address: 0x22f.
 230 08331       1319                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x230.
 231 08393       1320                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x231.
 232 08080       1321                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x232.
                 1322     ;
                 1323     ;
                 1324     ;
@@ -1518,383 +1825,612 @@ W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
                 1326     ;
 233 08393       1327     send_menu:              CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-234 00F45       1328                             LOAD            uart_data, #_character_e
+E: attempting to use unavailable space in program memory at address: 0x233.
+234 00F45       1328                             LOAD            uart_EQU, #_character_e
+E: attempting to use unavailable space in program memory at address: 0x234.
 235 08331       1329                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-236 00F2D       1330                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x235.
+236 00F2D       1330                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x236.
 237 08331       1331                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x237.
 238 08320       1332                             CALL            send_erase
 W: value out of range: 0x220, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
-239 00F61       1333                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x238.
+239 00F61       1333                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x239.
 23A 08331       1334                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-23B 00F6C       1335                             LOAD            uart_data, #character_l
+E: attempting to use unavailable space in program memory at address: 0x23a.
+23B 00F6C       1335                             LOAD            uart_EQU, #character_l
+E: attempting to use unavailable space in program memory at address: 0x23b.
 23C 08331       1336                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x23c.
 23D 08331       1337                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x23d.
 23E 08393       1338                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-23F 00F42       1339                             LOAD            uart_data, #_character_b
+E: attempting to use unavailable space in program memory at address: 0x23e.
+23F 00F42       1339                             LOAD            uart_EQU, #_character_b
+E: attempting to use unavailable space in program memory at address: 0x23f.
 240 08331       1340                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-241 00F2D       1341                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x240.
+241 00F2D       1341                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x241.
 242 08331       1342                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x242.
 243 08320       1343                             CALL            send_erase
 W: value out of range: 0x220, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
-244 00F62       1344                             LOAD            uart_data, #character_b
+E: attempting to use unavailable space in program memory at address: 0x243.
+244 00F62       1344                             LOAD            uart_EQU, #character_b
+E: attempting to use unavailable space in program memory at address: 0x244.
 245 08331       1345                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-246 00F6C       1346                             LOAD            uart_data, #character_l
+E: attempting to use unavailable space in program memory at address: 0x245.
+246 00F6C       1346                             LOAD            uart_EQU, #character_l
+E: attempting to use unavailable space in program memory at address: 0x246.
 247 08331       1347                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-248 00F6F       1348                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x247.
+248 00F6F       1348                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x248.
 249 08331       1349                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-24A 00F63       1350                             LOAD            uart_data, #character_c
+E: attempting to use unavailable space in program memory at address: 0x249.
+24A 00F63       1350                             LOAD            uart_EQU, #character_c
+E: attempting to use unavailable space in program memory at address: 0x24a.
 24B 08331       1351                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-24C 00F6B       1352                             LOAD            uart_data, #character_k
+E: attempting to use unavailable space in program memory at address: 0x24b.
+24C 00F6B       1352                             LOAD            uart_EQU, #character_k
+E: attempting to use unavailable space in program memory at address: 0x24c.
 24D 08331       1353                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-24E 00F73       1354                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x24d.
+24E 00F73       1354                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x24e.
 24F 08331       1355                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x24f.
 250 08396       1356                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-251 00F31       1357                             LOAD            uart_data, #character_1
+E: attempting to use unavailable space in program memory at address: 0x250.
+251 00F31       1357                             LOAD            uart_EQU, #character_1
+E: attempting to use unavailable space in program memory at address: 0x251.
 252 08331       1358                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-253 00F2D       1359                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x252.
+253 00F2D       1359                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x253.
 254 08331       1360                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-255 00F33       1361                             LOAD            uart_data, #character_3
+E: attempting to use unavailable space in program memory at address: 0x254.
+255 00F33       1361                             LOAD            uart_EQU, #character_3
+E: attempting to use unavailable space in program memory at address: 0x255.
 256 08331       1362                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x256.
 257 08393       1363                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-258 00F50       1364                             LOAD            uart_data, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x257.
+258 00F50       1364                             LOAD            uart_EQU, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x258.
 259 08331       1365                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-25A 00F2D       1366                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x259.
+25A 00F2D       1366                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x25a.
 25B 08331       1367                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-25C 00F50       1368                             LOAD            uart_data, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x25b.
+25C 00F50       1368                             LOAD            uart_EQU, #_character_p
+E: attempting to use unavailable space in program memory at address: 0x25c.
 25D 08331       1369                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-25E 00F72       1370                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x25d.
+25E 00F72       1370                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x25e.
 25F 08331       1371                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-260 00F6F       1372                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x25f.
+260 00F6F       1372                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x260.
 261 08331       1373                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-262 00F67       1374                             LOAD            uart_data, #character_g
+E: attempting to use unavailable space in program memory at address: 0x261.
+262 00F67       1374                             LOAD            uart_EQU, #character_g
+E: attempting to use unavailable space in program memory at address: 0x262.
 263 08331       1375                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-264 00F72       1376                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x263.
+264 00F72       1376                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x264.
 265 08331       1377                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-266 00F61       1378                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x265.
+266 00F61       1378                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x266.
 267 08331       1379                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-268 00F6D       1380                             LOAD            uart_data, #character_m
+E: attempting to use unavailable space in program memory at address: 0x267.
+268 00F6D       1380                             LOAD            uart_EQU, #character_m
+E: attempting to use unavailable space in program memory at address: 0x268.
 269 08331       1381                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x269.
 26A 083F7       1382                             CALL            send_mcs_file
 W: value out of range: 0x1f7, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf7.
-26B 00F57       1383                             LOAD            uart_data, #_character_w
+E: attempting to use unavailable space in program memory at address: 0x26a.
+26B 00F57       1383                             LOAD            uart_EQU, #_character_w
+E: attempting to use unavailable space in program memory at address: 0x26b.
 26C 08331       1384                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-26D 00F2D       1385                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x26c.
+26D 00F2D       1385                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x26d.
 26E 08331       1386                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-26F 00F57       1387                             LOAD            uart_data, #_character_w
+E: attempting to use unavailable space in program memory at address: 0x26e.
+26F 00F57       1387                             LOAD            uart_EQU, #_character_w
+E: attempting to use unavailable space in program memory at address: 0x26f.
 270 08331       1388                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-271 00F72       1389                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x270.
+271 00F72       1389                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x271.
 272 08331       1390                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-273 00F69       1391                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x272.
+273 00F69       1391                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x273.
 274 08331       1392                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-275 00F74       1393                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x274.
+275 00F74       1393                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x275.
 276 08331       1394                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-277 00F65       1395                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x276.
+277 00F65       1395                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x277.
 278 08331       1396                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x278.
 279 08396       1397                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x279.
 27A 083CB       1398                             CALL            send_byte
 W: value out of range: 0x2cb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcb.
+E: attempting to use unavailable space in program memory at address: 0x27a.
 27B 08393       1399                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-27C 00F52       1400                             LOAD            uart_data, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x27b.
+27C 00F52       1400                             LOAD            uart_EQU, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x27c.
 27D 08331       1401                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-27E 00F2D       1402                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x27d.
+27E 00F2D       1402                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x27e.
 27F 08331       1403                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-280 00F52       1404                             LOAD            uart_data, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x27f.
+280 00F52       1404                             LOAD            uart_EQU, #_character_r
+E: attempting to use unavailable space in program memory at address: 0x280.
 281 08331       1405                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-282 00F65       1406                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x281.
+282 00F65       1406                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x282.
 283 08331       1407                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-284 00F61       1408                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x283.
+284 00F61       1408                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x284.
 285 08331       1409                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-286 00F64       1410                             LOAD            uart_data, #character_d
+E: attempting to use unavailable space in program memory at address: 0x285.
+286 00F64       1410                             LOAD            uart_EQU, #character_d
+E: attempting to use unavailable space in program memory at address: 0x286.
 287 08331       1411                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x287.
 288 08396       1412                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
-289 00F32       1413                             LOAD            uart_data, #character_2
+E: attempting to use unavailable space in program memory at address: 0x288.
+289 00F32       1413                             LOAD            uart_EQU, #character_2
+E: attempting to use unavailable space in program memory at address: 0x289.
 28A 08331       1414                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-28B 00F35       1415                             LOAD            uart_data, #character_5
+E: attempting to use unavailable space in program memory at address: 0x28a.
+28B 00F35       1415                             LOAD            uart_EQU, #character_5
+E: attempting to use unavailable space in program memory at address: 0x28b.
 28C 08331       1416                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-28D 00F36       1417                             LOAD            uart_data, #character_6
+E: attempting to use unavailable space in program memory at address: 0x28c.
+28D 00F36       1417                             LOAD            uart_EQU, #character_6
+E: attempting to use unavailable space in program memory at address: 0x28d.
 28E 08331       1418                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x28e.
 28F 08396       1419                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x28f.
 290 083CB       1420                             CALL            send_byte
 W: value out of range: 0x2cb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xcb.
-291 00F73       1421                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x290.
+291 00F73       1421                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x291.
 292 08331       1422                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x292.
 293 08393       1423                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-294 00F49       1424                             LOAD            uart_data, #_character_i
+E: attempting to use unavailable space in program memory at address: 0x293.
+294 00F49       1424                             LOAD            uart_EQU, #_character_i
+E: attempting to use unavailable space in program memory at address: 0x294.
 295 08331       1425                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-296 00F2D       1426                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x295.
+296 00F2D       1426                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x296.
 297 08331       1427                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-298 00F44       1428                             LOAD            uart_data, #_character_d
+E: attempting to use unavailable space in program memory at address: 0x297.
+298 00F44       1428                             LOAD            uart_EQU, #_character_d
+E: attempting to use unavailable space in program memory at address: 0x298.
 299 08331       1429                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-29A 00F65       1430                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x299.
+29A 00F65       1430                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x29a.
 29B 08331       1431                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-29C 00F76       1432                             LOAD            uart_data, #character_v
+E: attempting to use unavailable space in program memory at address: 0x29b.
+29C 00F76       1432                             LOAD            uart_EQU, #character_v
+E: attempting to use unavailable space in program memory at address: 0x29c.
 29D 08331       1433                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-29E 00F69       1434                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x29d.
+29E 00F69       1434                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x29e.
 29F 08331       1435                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2A0 00F63       1436                             LOAD            uart_data, #character_c
+E: attempting to use unavailable space in program memory at address: 0x29f.
+2A0 00F63       1436                             LOAD            uart_EQU, #character_c
+E: attempting to use unavailable space in program memory at address: 0x2a0.
 2A1 08331       1437                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2A2 00F65       1438                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2a1.
+2A2 00F65       1438                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2a2.
 2A3 08331       1439                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2a3.
 2A4 08396       1440                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x2a4.
 2A5 083C6       1441                             CALL            send_id
 W: value out of range: 0x2c6, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc6.
+E: attempting to use unavailable space in program memory at address: 0x2a5.
 2A6 08393       1442                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-2A7 00F48       1443                             LOAD            uart_data, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x2a6.
+2A7 00F48       1443                             LOAD            uart_EQU, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x2a7.
 2A8 08331       1444                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2A9 00F2D       1445                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x2a8.
+2A9 00F2D       1445                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x2a9.
 2AA 08331       1446                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2AB 00F48       1447                             LOAD            uart_data, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x2aa.
+2AB 00F48       1447                             LOAD            uart_EQU, #_character_h
+E: attempting to use unavailable space in program memory at address: 0x2ab.
 2AC 08331       1448                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2AD 00F65       1449                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2ac.
+2AD 00F65       1449                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2ad.
 2AE 08331       1450                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2AF 00F6C       1451                             LOAD            uart_data, #character_l
+E: attempting to use unavailable space in program memory at address: 0x2ae.
+2AF 00F6C       1451                             LOAD            uart_EQU, #character_l
+E: attempting to use unavailable space in program memory at address: 0x2af.
 2B0 08331       1452                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2B1 00F70       1453                             LOAD            uart_data, #character_p
+E: attempting to use unavailable space in program memory at address: 0x2b0.
+2B1 00F70       1453                             LOAD            uart_EQU, #character_p
+E: attempting to use unavailable space in program memory at address: 0x2b1.
 2B2 08331       1454                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2b2.
 2B3 08393       1455                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-2B4 00F53       1456                             LOAD            uart_data, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x2b3.
+2B4 00F53       1456                             LOAD            uart_EQU, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x2b4.
 2B5 08331       1457                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2B6 00F2D       1458                             LOAD            uart_data, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x2b5.
+2B6 00F2D       1458                             LOAD            uart_EQU, #character_minus
+E: attempting to use unavailable space in program memory at address: 0x2b6.
 2B7 08331       1459                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2B8 00F53       1460                             LOAD            uart_data, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x2b7.
+2B8 00F53       1460                             LOAD            uart_EQU, #_character_s
+E: attempting to use unavailable space in program memory at address: 0x2b8.
 2B9 08331       1461                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2BA 00F74       1462                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2b9.
+2BA 00F74       1462                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2ba.
 2BB 08331       1463                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2BC 00F61       1464                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x2bb.
+2BC 00F61       1464                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x2bc.
 2BD 08331       1465                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2BE 00F74       1466                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2bd.
+2BE 00F74       1466                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2be.
 2BF 08331       1467                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2C0 00F75       1468                             LOAD            uart_data, #character_u
+E: attempting to use unavailable space in program memory at address: 0x2bf.
+2C0 00F75       1468                             LOAD            uart_EQU, #character_u
+E: attempting to use unavailable space in program memory at address: 0x2c0.
 2C1 08331       1469                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2C2 00F73       1470                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x2c1.
+2C2 00F73       1470                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x2c2.
 2C3 08331       1471                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2c3.
 2C4 08393       1472                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x2c4.
 2C5 08080       1473                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2c5.
                 1474     ;
                 1475     ;
                 1476     ;Send 'ID' to the UART
                 1477     ;
-2C6 00F49       1478     send_id:                LOAD            uart_data, #_character_i
+2C6 00F49       1478     send_id:                LOAD            uart_EQU, #_character_i
+E: attempting to use unavailable space in program memory at address: 0x2c6.
 2C7 08331       1479                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2C8 00F44       1480                             LOAD            uart_data, #_character_d
+E: attempting to use unavailable space in program memory at address: 0x2c7.
+2C8 00F44       1480                             LOAD            uart_EQU, #_character_d
+E: attempting to use unavailable space in program memory at address: 0x2c8.
 2C9 08331       1481                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2c9.
 2CA 08080       1482                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2ca.
                 1483     ;
                 1484     ;
                 1485     ;Send 'byte' to the UART
                 1486     ;
-2CB 00F62       1487     send_byte:              LOAD            uart_data, #character_b
+2CB 00F62       1487     send_byte:              LOAD            uart_EQU, #character_b
+E: attempting to use unavailable space in program memory at address: 0x2cb.
 2CC 08331       1488                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2CD 00F79       1489                             LOAD            uart_data, #character_y
+E: attempting to use unavailable space in program memory at address: 0x2cc.
+2CD 00F79       1489                             LOAD            uart_EQU, #character_y
+E: attempting to use unavailable space in program memory at address: 0x2cd.
 2CE 08331       1490                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2CF 00F74       1491                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2ce.
+2CF 00F74       1491                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2cf.
 2D0 08331       1492                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2D1 00F65       1493                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2d0.
+2D1 00F65       1493                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x2d1.
 2D2 08331       1494                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2d2.
 2D3 08080       1495                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2d3.
                 1496     ;
                 1497     ;
                 1498     ;Send 'Confirm Erase (Y/n) ' to the UART
                 1499     ;
 2D4 08393       1500     send_confirm:           CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-2D5 00F43       1501                             LOAD            uart_data, #_character_c
+E: attempting to use unavailable space in program memory at address: 0x2d4.
+2D5 00F43       1501                             LOAD            uart_EQU, #_character_c
+E: attempting to use unavailable space in program memory at address: 0x2d5.
 2D6 08331       1502                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2D7 00F6F       1503                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x2d6.
+2D7 00F6F       1503                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x2d7.
 2D8 08331       1504                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2D9 00F6E       1505                             LOAD            uart_data, #character_n
+E: attempting to use unavailable space in program memory at address: 0x2d8.
+2D9 00F6E       1505                             LOAD            uart_EQU, #character_n
+E: attempting to use unavailable space in program memory at address: 0x2d9.
 2DA 08331       1506                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2DB 00F66       1507                             LOAD            uart_data, #character_f
+E: attempting to use unavailable space in program memory at address: 0x2da.
+2DB 00F66       1507                             LOAD            uart_EQU, #character_f
+E: attempting to use unavailable space in program memory at address: 0x2db.
 2DC 08331       1508                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2DD 00F69       1509                             LOAD            uart_data, #character_i
+E: attempting to use unavailable space in program memory at address: 0x2dc.
+2DD 00F69       1509                             LOAD            uart_EQU, #character_i
+E: attempting to use unavailable space in program memory at address: 0x2dd.
 2DE 08331       1510                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2DF 00F72       1511                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x2de.
+2DF 00F72       1511                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x2df.
 2E0 08331       1512                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2E1 00F6D       1513                             LOAD            uart_data, #character_m
+E: attempting to use unavailable space in program memory at address: 0x2e0.
+2E1 00F6D       1513                             LOAD            uart_EQU, #character_m
+E: attempting to use unavailable space in program memory at address: 0x2e1.
 2E2 08331       1514                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2e2.
 2E3 08396       1515                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x2e3.
 2E4 08320       1516                             CALL            send_erase
 W: value out of range: 0x220, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x20.
-2E5 00F28       1517                             LOAD            uart_data, #character_open
+E: attempting to use unavailable space in program memory at address: 0x2e4.
+2E5 00F28       1517                             LOAD            uart_EQU, #character_open
+E: attempting to use unavailable space in program memory at address: 0x2e5.
 2E6 08331       1518                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2E7 00F59       1519                             LOAD            uart_data, #_character_y
+E: attempting to use unavailable space in program memory at address: 0x2e6.
+2E7 00F59       1519                             LOAD            uart_EQU, #_character_y
+E: attempting to use unavailable space in program memory at address: 0x2e7.
 2E8 08331       1520                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2E9 00F2F       1521                             LOAD            uart_data, #character_divide
+E: attempting to use unavailable space in program memory at address: 0x2e8.
+2E9 00F2F       1521                             LOAD            uart_EQU, #character_divide
+E: attempting to use unavailable space in program memory at address: 0x2e9.
 2EA 08331       1522                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2EB 00F6E       1523                             LOAD            uart_data, #character_n
+E: attempting to use unavailable space in program memory at address: 0x2ea.
+2EB 00F6E       1523                             LOAD            uart_EQU, #character_n
+E: attempting to use unavailable space in program memory at address: 0x2eb.
 2EC 08331       1524                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2ED 00F29       1525                             LOAD            uart_data, #character_close
+E: attempting to use unavailable space in program memory at address: 0x2ec.
+2ED 00F29       1525                             LOAD            uart_EQU, #character_close
+E: attempting to use unavailable space in program memory at address: 0x2ed.
 2EE 08331       1526                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2ee.
 2EF 08396       1527                             CALL            send_space
 W: value out of range: 0x196, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x96.
+E: attempting to use unavailable space in program memory at address: 0x2ef.
 2F0 08080       1528                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2f0.
                 1529     ;
                 1530     ;
                 1531     ;Send 'Abort' to the UART
                 1532     ;
 2F1 08393       1533     send_abort:             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-2F2 00F41       1534                             LOAD            uart_data, #_character_a
+E: attempting to use unavailable space in program memory at address: 0x2f1.
+2F2 00F41       1534                             LOAD            uart_EQU, #_character_a
+E: attempting to use unavailable space in program memory at address: 0x2f2.
 2F3 08331       1535                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2F4 00F62       1536                             LOAD            uart_data, #character_b
+E: attempting to use unavailable space in program memory at address: 0x2f3.
+2F4 00F62       1536                             LOAD            uart_EQU, #character_b
+E: attempting to use unavailable space in program memory at address: 0x2f4.
 2F5 08331       1537                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2F6 00F6F       1538                             LOAD            uart_data, #character_o
+E: attempting to use unavailable space in program memory at address: 0x2f5.
+2F6 00F6F       1538                             LOAD            uart_EQU, #character_o
+E: attempting to use unavailable space in program memory at address: 0x2f6.
 2F7 08331       1539                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2F8 00F72       1540                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x2f7.
+2F8 00F72       1540                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x2f8.
 2F9 08331       1541                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-2FA 00F74       1542                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2f9.
+2FA 00F74       1542                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x2fa.
 2FB 08331       1543                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x2fb.
 2FC 08393       1544                             CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
+E: attempting to use unavailable space in program memory at address: 0x2fc.
 2FD 08080       1545                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x2fd.
                 1546     ;
                 1547     ;Send 'address=' to the UART
                 1548     ;
 2FE 08393       1549     send_address:           CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-2FF 00F61       1550                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x2fe.
+2FF 00F61       1550                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x2ff.
 300 08331       1551                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-301 00F64       1552                             LOAD            uart_data, #character_d
+E: attempting to use unavailable space in program memory at address: 0x300.
+301 00F64       1552                             LOAD            uart_EQU, #character_d
+E: attempting to use unavailable space in program memory at address: 0x301.
 302 08331       1553                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x302.
 303 08331       1554                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-304 00F72       1555                             LOAD            uart_data, #character_r
+E: attempting to use unavailable space in program memory at address: 0x303.
+304 00F72       1555                             LOAD            uart_EQU, #character_r
+E: attempting to use unavailable space in program memory at address: 0x304.
 305 08331       1556                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-306 00F65       1557                             LOAD            uart_data, #character_e
+E: attempting to use unavailable space in program memory at address: 0x305.
+306 00F65       1557                             LOAD            uart_EQU, #character_e
+E: attempting to use unavailable space in program memory at address: 0x306.
 307 08331       1558                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-308 00F73       1559                             LOAD            uart_data, #character_s
+E: attempting to use unavailable space in program memory at address: 0x307.
+308 00F73       1559                             LOAD            uart_EQU, #character_s
+E: attempting to use unavailable space in program memory at address: 0x308.
 309 08331       1560                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x309.
 30A 08331       1561                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-30B 00F3D       1562     send_equals:            LOAD            uart_data, #character_equals
+E: attempting to use unavailable space in program memory at address: 0x30a.
+30B 00F3D       1562     send_equals:            LOAD            uart_EQU, #character_equals
+E: attempting to use unavailable space in program memory at address: 0x30b.
 30C 08331       1563                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x30c.
 30D 08080       1564                             RETURN
+E: attempting to use unavailable space in program memory at address: 0x30d.
                 1565     ;
                 1566     ;
-                1567     ;Send 'data=' to the UART
+                1567     ;Send 'EQU=' to the UART
                 1568     ;
-30E 08393       1569     send_data:              CALL            send_cr
+30E 08393       1569     send_EQU:              CALL            send_cr
 W: value out of range: 0x193, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x93.
-30F 00F64       1570                             LOAD            uart_data, #character_d
+E: attempting to use unavailable space in program memory at address: 0x30e.
+30F 00F64       1570                             LOAD            uart_EQU, #character_d
+E: attempting to use unavailable space in program memory at address: 0x30f.
 310 08331       1571                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-311 00F61       1572                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x310.
+311 00F61       1572                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x311.
 312 08331       1573                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-313 00F74       1574                             LOAD            uart_data, #character_t
+E: attempting to use unavailable space in program memory at address: 0x312.
+313 00F74       1574                             LOAD            uart_EQU, #character_t
+E: attempting to use unavailable space in program memory at address: 0x313.
 314 08331       1575                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
-315 00F61       1576                             LOAD            uart_data, #character_a
+E: attempting to use unavailable space in program memory at address: 0x314.
+315 00F61       1576                             LOAD            uart_EQU, #character_a
+E: attempting to use unavailable space in program memory at address: 0x315.
 316 08331       1577                             CALL            send_to_uart
 W: value out of range: 0x131, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x31.
+E: attempting to use unavailable space in program memory at address: 0x316.
 317 0810B       1578                             JUMP            send_equals
 W: value out of range: 0x30b, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb.
+E: attempting to use unavailable space in program memory at address: 0x317.
                 1579     ;
                 1580     ;
                 1581     ;**************************************************************************************
@@ -1914,18 +2450,28 @@ W: value out of range: 0x30b, allowed range is [0x0,0xff] (trimmed to 8 bits) wh
   003F5         1595                             ORG             0x3f5                   ;place at end of memory to keep separate
 3F5 0C000       1596     isr:                    load           s0, isr_preserve_s0     ;preserve register contents
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x3f5.
 3F6 0A000       1597                             INPUT           s0, status_port         ;load 'half_full' status of receiver buffer.
+E: attempting to use unavailable space in program memory at address: 0x3f6.
 3F7 00010       1598                             load            s0, #rx_half_full
+E: attempting to use unavailable space in program memory at address: 0x3f7.
 3F8 091FB       1599                             JUMP            z, isr_send_xon
 W: value out of range: 0x3fb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfb.
+E: attempting to use unavailable space in program memory at address: 0x3f8.
 3F9 00013       1600                             LOAD            s0, #character_xoff
+E: attempting to use unavailable space in program memory at address: 0x3f9.
 3FA 081FC       1601                             JUMP            isr_send_character
 W: value out of range: 0x3fc, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xfc.
+E: attempting to use unavailable space in program memory at address: 0x3fa.
 3FB 00011       1602     isr_send_xon:           LOAD            s0, #character_xon
+E: attempting to use unavailable space in program memory at address: 0x3fb.
 3FC 0E004       1603     isr_send_character:     OUTPUT          s0, uart_write_port
+E: attempting to use unavailable space in program memory at address: 0x3fc.
 3FD 0C000       1604                             load           s0, isr_preserve_s0     ;reload register contents
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+E: attempting to use unavailable space in program memory at address: 0x3fd.
 3FE 080F0       1605                             RETURNI         enable
+E: attempting to use unavailable space in program memory at address: 0x3fe.
                 1606     ;
                 1607     ;
                 1608     ;**************************************************************************************
@@ -1935,6 +2481,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
   003FF         1612                             ORG             0x3ff
 3FF 081F5       1613                             JUMP            isr
 W: value out of range: 0x3f5, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xf5.
+E: attempting to use unavailable space in program memory at address: 0x3ff.
                 1614     ;
                 1615     ;
                 1616

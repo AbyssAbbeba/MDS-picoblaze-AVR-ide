@@ -34,16 +34,16 @@ simple_io12             EQU     0x08                    ;          IO12 - bit3
 status_port             EQU     0x00                    ;UART status input
 tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
 tx_full                 EQU     0x02                    ;    FIFO               full - bit1
-rx_data_present         EQU     0x04                    ;  Receiver     data present - bit2
+rx_EQU_present         EQU     0x04                    ;  Receiver     EQU present - bit2
 rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
 rx_full                 EQU     0x10                    ;                   full - bit4
 spare1                  EQU     0x20                    ;                  spare '0' - bit5
 spare2                  EQU     0x40                    ;                  spare '0' - bit6
 spare3                  EQU     0x80                    ;                  spare '0' - bit7
 ;
-uart_read_port          EQU     0x01                    ;UART Rx data input
+uart_read_port          EQU     0x01                    ;UART Rx EQU input
 ;
-uart_write_port         EQU     0x20                    ;UART Tx data output
+uart_write_port         EQU     0x20                    ;UART Tx EQU output
 ;
 ;
 ;
@@ -51,7 +51,7 @@ uart_write_port         EQU     0x20                    ;UART Tx data output
 ; Special Register usage
 ;**************************************************************************************
 ;
-uart_data               REG     sf                      ;used to pass data to and from the UART
+uart_EQU               REG     sf                      ;used to pass EQU to and from the UART
 ;
 ;
 ;
@@ -89,7 +89,7 @@ led7_sequence           EQU     0x17
 ;
 ;
 ;**************************************************************************************
-;Useful data constants
+;Useful EQU constants
 ;**************************************************************************************
 ;
 ;
@@ -436,28 +436,28 @@ go_down_loop:           SUB     s0, #0x01
 ;
 ; Read one character from the UART
 ;
-; Character read will be returned in a register called 'UART_data'.
+; Character read will be returned in a register called 'UART_EQU'.
 ;
-; The routine first loads the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if EQU is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
 ;
 ;
-; Registers used s0 and UART_data
+; Registers used s0 and UART_EQU
 ;
 read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
-                        load    s0, #rx_data_present    ;wait if empty
+                        load    s0, #rx_EQU_present    ;wait if empty
                         JUMP    nz, read_character
                         JUMP    read_from_uart
-read_character:         IN      uart_data, uart_read_port ;read from FIFO
+read_character:         IN      uart_EQU, uart_read_port ;read from FIFO
                         RET
 ;
 ;
 ;
 ; Transmit one character to the UART
 ;
-; Character supplied in register called 'UART_data'.
+; Character supplied in register called 'UART_EQU'.
 ;
 ; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
@@ -468,7 +468,7 @@ send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
                         load    s0, #tx_full            ;wait if full
                         JUMP    z, uart_write
                         JUMP    send_to_uart
-uart_write:             OUT     uart_data, uart_write_port
+uart_write:             OUT     uart_EQU, uart_write_port
                         RET
 ;
 ;
@@ -480,13 +480,13 @@ uart_write:             OUT     uart_data, uart_write_port
 ;
 ; Send Carriage Return to the UART
 ;
-send_cr:                LD      uart_data, #character_cr
+send_cr:                LD      uart_EQU, #character_cr
                         CALL    send_to_uart
                         RET
 ;
 ; Send a space to the UART
 ;
-send_space:             LD      uart_data, #character_space
+send_space:             LD      uart_EQU, #character_space
                         CALL    send_to_uart
                         RET
 ;
@@ -496,52 +496,52 @@ send_space:             LD      uart_data, #character_space
 ;
 send_welcome:           CALL    send_cr
                         CALL    send_cr
-                        LD      uart_data, #_character_p
+                        LD      uart_EQU, #_character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_c
+                        LD      uart_EQU, #character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #_character_b
+                        LD      uart_EQU, #_character_b
                         CALL    send_to_uart
-                        LD      uart_data, #character_l
+                        LD      uart_EQU, #character_l
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_z
+                        LD      uart_EQU, #character_z
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
-                        CALL    send_to_uart
-                        CALL    send_space
-                        LD      uart_data, #_character_a
-                        CALL    send_to_uart
-                        LD      uart_data, #character_u
-                        CALL    send_to_uart
-                        LD      uart_data, #character_t
-                        CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_p
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #_character_w
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
-                        LD      uart_data, #_character_m
+                        LD      uart_EQU, #character_t
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_a
+                        LD      uart_EQU, #_character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_c
+                        LD      uart_EQU, #_character_w
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #_character_m
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        CALL    send_space
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_v
+                        LD      uart_EQU, #character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_t
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_i
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_v
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
                         CALL    send_cr
                         CALL    send_cr
@@ -551,9 +551,9 @@ send_welcome:           CALL    send_cr
 ;Send 'OK' to the UART
 ;
 send_ok:                CALL    send_cr
-                        LD      uart_data, #_character_o
+                        LD      uart_EQU, #_character_o
                         CALL    send_to_uart
-                        LD      uart_data, #_character_k
+                        LD      uart_EQU, #_character_k
                         CALL    send_to_uart
                         JUMP    send_cr
 ;

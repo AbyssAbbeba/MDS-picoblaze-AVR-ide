@@ -10,19 +10,19 @@
                   10     ; Start of code
                   11     ;##############################################################################;
                   12     ; Register name assignment
-  00000           13     temp1               EQU       s0                  ; temporary data register
-  00001           14     temp2               EQU       s1                  ; temporary data register
-  00002           15     temp3               EQU       s2                  ; temporary data register
+  00000           13     temp1               EQU       s0                  ; temporary EQU register
+  00001           14     temp2               EQU       s1                  ; temporary EQU register
+  00002           15     temp3               EQU       s2                  ; temporary EQU register
   00003           16     chreg               EQU       s3                  ; character register
   00004           17     RxDat               EQU       s4                  ; received character register
   00005           18     addr                EQU       s5                  ; address register
                   19
                   20     ; Peripherals
-  00001           21     UART_data           EQU        01h                 ; UART data register port ID
+  00001           21     UART_EQU           EQU        01h                 ; UART EQU register port ID
   00002           22     UART_stat           EQU        02h                 ; UART control register port ID
                   23     ; UART Status register:
                   24     ;  [2] Tx ready
-                  25     ;  [3] new Rx data
+                  25     ;  [3] new Rx EQU
                   26     ;  [4] Rx buffer overflow
                   27
   00004           28     BCD_01              EQU        04h                 ; 7 segment, upper two segments
@@ -75,7 +75,7 @@ W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; w
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   69     ; load bit 2 (is Tx ready?)
 00A 09109         70                         JUMP      Z, SendChar         ; wait until Tx is ready
-00B 0E301         71                         OUT       chreg, UART_data    ; Send the character
+00B 0E301         71                         OUT       chreg, UART_EQU    ; Send the character
 W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00C 08080         72                         RET                           ; Return from procedure
                   73
@@ -83,10 +83,10 @@ W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; w
                   75     ; Reads a single character from UART (waits on receive when none is prepared)
                   76     ; Registers used: Temp1, chreg
                   77     ;==============================================================================;
-00D 0A002         78     GetChar:            IN        Temp1, UART_stat    ; checking UART status           ; load bit 3 (new Rx data?)
+00D 0A002         78     GetChar:            IN        Temp1, UART_stat    ; checking UART status           ; load bit 3 (new Rx EQU?)
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-00E 0910D         79                         JUMP      Z, GetChar          ; wait for new Rx data
-00F 0A301         80                         IN        chreg, UART_data    ; Read the character
+00E 0910D         79                         JUMP      Z, GetChar          ; wait for new Rx EQU
+00F 0A301         80                         IN        chreg, UART_EQU    ; Read the character
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 010 08080         81                         RET                           ; Return from procedure
                   82

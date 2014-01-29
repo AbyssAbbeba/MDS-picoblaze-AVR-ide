@@ -17,7 +17,7 @@
                   17     shift   MACRO    reg0, reg1
                   18
                   19
-                  20             ; Save registers to DATA memory (Scratch-pad ram with range 00h to 3Fh)
+                  20             ; Save registers to EQU memory (Scratch-pad ram with range 00h to 3Fh)
                   21             load    s0, ram_pointer + 1
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
                   22             load    s1, ram_pointer + 1
