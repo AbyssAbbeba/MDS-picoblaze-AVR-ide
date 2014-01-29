@@ -45,6 +45,7 @@
 #include <cstdint>
 #include <fstream>
 #include <cstring>
+#include <iostream>
 
 AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
@@ -291,6 +292,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize 
     }
     catch ( const DataFileException & e )
     {
+        std::cerr << e.toString() << std::endl;
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to save file " ).toStdString()
