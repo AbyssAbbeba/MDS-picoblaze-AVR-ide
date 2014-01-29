@@ -613,9 +613,8 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                  558     ; Interrupt Vector
                  559     ;**************************************************************************************
                  560     ;
-  003FF          561     			ORG		0x3ff
-3FF 081E2        562     			JUMP		isr
-E: attempting to use unavailable space in program memory at address: 0x3ff.
+  000FF          561     			ORG		0xff
+0FF 081E2        562     			JUMP		isr
                  563     ;
                  564     ;
                  565

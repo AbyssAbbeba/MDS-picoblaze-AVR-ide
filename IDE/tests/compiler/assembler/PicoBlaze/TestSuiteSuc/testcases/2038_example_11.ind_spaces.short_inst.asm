@@ -189,7 +189,7 @@ character_bs            EQU     0x08                    ;Back Space command char
 ;
 cold_start:             LD      s0, #0x00
                         LD      s1, #pwm_channel0
-clear_loop:             ST      s0, #s1
+clear_loop:             
                         load     s1, #pwm_channel11
                         JUMP    z, enable_int
                         ADD     s1, #0x01
@@ -204,15 +204,15 @@ enable_int:             ENA                             ;interrupts used to driv
 ; Initialise LED pattern sequence
 ;
                         LD      s0, #0x01               ;trigger to start wave pattern
-                        ST      s0, led0_sequence
+                        load      s0, led0_sequence
                         LD      s0, #0x00
-                        ST      s0, led1_sequence
-                        ST      s0, led2_sequence
-                        ST      s0, led3_sequence
-                        ST      s0, led4_sequence
-                        ST      s0, led5_sequence
-                        ST      s0, led6_sequence
-                        ST      s0, led7_sequence
+                        load      s0, led1_sequence
+                        load      s0, led2_sequence
+                        load      s0, led3_sequence
+                        load      s0, led4_sequence
+                        load      s0, led5_sequence
+                        load      s0, led6_sequence
+                        load      s0, led7_sequence
 ;
 ;**************************************************************************************
 ; Main program
@@ -239,7 +239,7 @@ delay_s0_loop:          SUB     s0, #0x01
 ;
 ;Pattern generation
 ;
-                        FT      s0, led0_sequence       ;read sequence for LED0
+                        load      s0, led0_sequence       ;read sequence for LED0
                         load     s0, #0x00
                         JUMP    z, load_led0_start
                         SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
@@ -247,19 +247,19 @@ delay_s0_loop:          SUB     s0, #0x01
                         ADD     s0, #0x20
 inc_led0:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led0
-load_led0_start:        FT      s1, led1_sequence       ;start LED0 if LED1 = 4
+load_led0_start:        load      s1, led1_sequence       ;start LED0 if LED1 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led0
-update_led0:            ST      s0, led0_sequence
+update_led0:            load      s0, led0_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel0
+                        load      s1, pwm_channel0
 ;
-                        FT      s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+                        load      s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
                         load     s1, #0x0b
                         JUMP    nz, normal_led1
                         LD      s0, #0x04
                         JUMP    update_led1
-normal_led1:            FT      s0, led1_sequence       ;read sequence for LED1
+normal_led1:            load      s0, led1_sequence       ;read sequence for LED1
                         load     s0, #0x00
                         JUMP    z, load_led1_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -267,17 +267,17 @@ normal_led1:            FT      s0, led1_sequence       ;read sequence for LED1
                         ADD     s0, #0x10
 inc_led1:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led1
-load_led1_start:        FT      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+load_led1_start:        load      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
                         load     s1, #0x0b
                         JUMP    z, inc_led1
-                        FT      s1, led2_sequence       ;start LED1 if LED2 = 4
+                        load      s1, led2_sequence       ;start LED1 if LED2 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led1
-update_led1:            ST      s0, led1_sequence
+update_led1:            load      s0, led1_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel1
+                        load      s1, pwm_channel1
 ;
-                        FT      s0, led2_sequence       ;read sequence for LED2
+                        load      s0, led2_sequence       ;read sequence for LED2
                         load     s0, #0x00
                         JUMP    z, load_led2_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -285,18 +285,18 @@ update_led1:            ST      s0, led1_sequence
                         ADD     s0, #0x10
 inc_led2:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led2
-load_led2_start:        FT      s1, led1_sequence       ;start LED2 if LED1 = 4
+load_led2_start:        load      s1, led1_sequence       ;start LED2 if LED1 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led2
-                        FT      s1, led3_sequence       ;start LED2 if LED3 = 4
+                        load      s1, led3_sequence       ;start LED2 if LED3 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led2
-update_led2:            ST      s0, led2_sequence
+update_led2:            load      s0, led2_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel2
+                        load      s1, pwm_channel2
 ;
 ;
-                        FT      s0, led3_sequence       ;read sequence for LED3
+                        load      s0, led3_sequence       ;read sequence for LED3
                         load     s0, #0x00
                         JUMP    z, load_led3_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -304,17 +304,17 @@ update_led2:            ST      s0, led2_sequence
                         ADD     s0, #0x10
 inc_led3:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led3
-load_led3_start:        FT      s1, led2_sequence       ;start LED3 if LED2 = 4
+load_led3_start:        load      s1, led2_sequence       ;start LED3 if LED2 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led3
-                        FT      s1, led4_sequence       ;start LED3 if LED4 = 4
+                        load      s1, led4_sequence       ;start LED3 if LED4 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led3
-update_led3:            ST      s0, led3_sequence
+update_led3:            load      s0, led3_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel3
+                        load      s1, pwm_channel3
 ;
-                        FT      s0, led4_sequence       ;read sequence for LED4
+                        load      s0, led4_sequence       ;read sequence for LED4
                         load     s0, #0x00
                         JUMP    z, load_led4_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -322,17 +322,17 @@ update_led3:            ST      s0, led3_sequence
                         ADD     s0, #0x10
 inc_led4:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led4
-load_led4_start:        FT      s1, led3_sequence       ;start LED4 if LED3 = 4
+load_led4_start:        load      s1, led3_sequence       ;start LED4 if LED3 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led4
-                        FT      s1, led5_sequence       ;start LED4 if LED5 = 4
+                        load      s1, led5_sequence       ;start LED4 if LED5 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led4
-update_led4:            ST      s0, led4_sequence
+update_led4:            load      s0, led4_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel4
+                        load      s1, pwm_channel4
 ;
-                        FT      s0, led5_sequence       ;read sequence for LED5
+                        load      s0, led5_sequence       ;read sequence for LED5
                         load     s0, #0x00
                         JUMP    z, load_led5_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -340,22 +340,22 @@ update_led4:            ST      s0, led4_sequence
                         ADD     s0, #0x10
 inc_led5:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led5
-load_led5_start:        FT      s1, led4_sequence       ;start LED5 if LED4 = 4
+load_led5_start:        load      s1, led4_sequence       ;start LED5 if LED4 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led5
-                        FT      s1, led6_sequence       ;start LED5 if LED6 = 4
+                        load      s1, led6_sequence       ;start LED5 if LED6 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led5
-update_led5:            ST      s0, led5_sequence
+update_led5:            load      s0, led5_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel5
+                        load      s1, pwm_channel5
 ;
-                        FT      s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
+                        load      s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
                         load     s1, #0x0b
                         JUMP    nz, normal_led6
                         LD      s0, #0x04
                         JUMP    update_led6
-normal_led6:            FT      s0, led6_sequence       ;read sequence for LED6
+normal_led6:            load      s0, led6_sequence       ;read sequence for LED6
                         load     s0, #0x00
                         JUMP    z, load_led6_start
                         SUB     s0, #0x10               ;reset count if maximum
@@ -363,14 +363,14 @@ normal_led6:            FT      s0, led6_sequence       ;read sequence for LED6
                         ADD     s0, #0x10
 inc_led6:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led6
-load_led6_start:        FT      s1, led5_sequence       ;start LED6 if LED5 = 4
+load_led6_start:        load      s1, led5_sequence       ;start LED6 if LED5 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led6
-update_led6:            ST      s0, led6_sequence
+update_led6:            load      s0, led6_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel6
+                        load      s1, pwm_channel6
 ;
-                        FT      s0, led7_sequence       ;read sequence for LED7
+                        load      s0, led7_sequence       ;read sequence for LED7
                         load     s0, #0x00
                         JUMP    z, load_led7_start
                         SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
@@ -378,12 +378,12 @@ update_led6:            ST      s0, led6_sequence
                         ADD     s0, #0x20
 inc_led7:               ADD     s0, #0x01               ;increment counter
                         JUMP    update_led7
-load_led7_start:        FT      s1, led6_sequence       ;start LED7 if LED6 = 4
+load_led7_start:        load      s1, led6_sequence       ;start LED7 if LED6 = 4
                         load     s1, #0x04
                         JUMP    z, inc_led7
-update_led7:            ST      s0, led7_sequence
+update_led7:            load      s0, led7_sequence
                         CALL    led_to_duty
-                        ST      s1, pwm_channel7
+                        load      s1, pwm_channel7
                         JUMP    warm_start
 ;
 ;
@@ -581,56 +581,56 @@ send_ok:                CALL    send_cr
 ; Consequently the code is written out in a linear fashion which consumes more program
 ; space but which executes faster.
 ;
-isr:                    ST      s0, isr_preserve_s0     ;preserve registers to be used
-                        ST      s1, isr_preserve_s1
-                        ST      s2, isr_preserve_s2
+isr:                    load      s0, isr_preserve_s0     ;preserve registers to be used
+                        load      s1, isr_preserve_s1
+                        load      s2, isr_preserve_s2
 ;Determine the number of steps currently through the 1ms PWM cycle
-                        FT      s1, pwm_duty_counter    ;read 8-bit counter of steps
+                        load      s1, pwm_duty_counter    ;read 8-bit counter of steps
                         ADD     s1, #0x01               ;increment counter (will roll over to zero)
-                        ST      s1, pwm_duty_counter    ;update count value in memory for next interrupt.
+                        load      s1, pwm_duty_counter    ;update count value in memory for next interrupt.
 ;Read duty factor for each channel and load it with the duty counter and set or
 ;reset a bit in register s2 accordingly.
-                        FT      s0, pwm_channel11       ;read desired setting of pulse width
+                        load      s0, pwm_channel11       ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel10       ;read desired setting of pulse width
+                        load      s0, pwm_channel10       ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel9        ;read desired setting of pulse width
+                        load      s0, pwm_channel9        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel8        ;read desired setting of pulse width
+                        load      s0, pwm_channel8        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         OUT     s2, simple_port         ;drive pins on connector J4
-                        FT      s0, pwm_channel7        ;read desired setting of pulse width
+                        load      s0, pwm_channel7        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel6        ;read desired setting of pulse width
+                        load      s0, pwm_channel6        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel5        ;read desired setting of pulse width
+                        load      s0, pwm_channel5        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel4        ;read desired setting of pulse width
+                        load      s0, pwm_channel4        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel3        ;read desired setting of pulse width
+                        load      s0, pwm_channel3        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel2        ;read desired setting of pulse width
+                        load      s0, pwm_channel2        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel1        ;read desired setting of pulse width
+                        load      s0, pwm_channel1        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
-                        FT      s0, pwm_channel0        ;read desired setting of pulse width
+                        load      s0, pwm_channel0        ;read desired setting of pulse width
                         load     s1, s0                  ;set carry flag if duty factor > duty counter
                         SLA     s2                      ;shift carry into register s2
                         OUT     s2, led_port            ;drive LEDs
-                        FT      s0, isr_preserve_s0     ;reload register values
-                        FT      s1, isr_preserve_s1
-                        FT      s2, isr_preserve_s2
+                        load      s0, isr_preserve_s0     ;reload register values
+                        load      s1, isr_preserve_s1
+                        load      s2, isr_preserve_s2
                         RETIE
 ;
 ;

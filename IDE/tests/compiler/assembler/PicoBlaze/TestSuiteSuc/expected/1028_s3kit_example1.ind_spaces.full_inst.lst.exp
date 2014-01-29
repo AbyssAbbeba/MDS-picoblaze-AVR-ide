@@ -545,9 +545,8 @@ W: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) whic
                  531     ; Interrupt Vector
                  532     ;**************************************************************************************
                  533     ;
-  003FF          534                             ORG             0x3ff
-3FF 081D4        535                             JUMP            isr
-E: attempting to use unavailable space in program memory at address: 0x3ff.
+  000FF          534                             ORG             0xff
+0FF 081D4        535                             JUMP            isr
                  536     ;
                  537     ;
                  538

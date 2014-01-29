@@ -1,0 +1,206 @@
+CHARACTER_0  . . . . . . . . . . . . NUMBER 0x00030 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:152.1-152.37
+CHARACTER_1  . . . . . . . . . . . . NUMBER 0x00031 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:153.1-153.37
+CHARACTER_2  . . . . . . . . . . . . NUMBER 0x00032 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:154.1-154.37
+CHARACTER_3  . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:155.1-155.37
+CHARACTER_4  . . . . . . . . . . . . NUMBER 0x00034 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:156.1-156.37
+CHARACTER_5  . . . . . . . . . . . . NUMBER 0x00035 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:157.1-157.37
+CHARACTER_6  . . . . . . . . . . . . NUMBER 0x00036 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:158.1-158.37
+CHARACTER_7  . . . . . . . . . . . . NUMBER 0x00037 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:159.1-159.37
+CHARACTER_8  . . . . . . . . . . . . NUMBER 0x00038 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:160.1-160.37
+CHARACTER_9  . . . . . . . . . . . . NUMBER 0x00039 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:161.1-161.37
+CHARACTER_A  . . . . . . . . . . . . NUMBER 0x00061 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:100.1-100.37
+CHARACTER_B  . . . . . . . . . . . . NUMBER 0x00062 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:101.1-101.37
+CHARACTER_BS . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:177.1-177.37
+CHARACTER_C  . . . . . . . . . . . . NUMBER 0x00063 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:102.1-102.37
+CHARACTER_COLON  . . . . . . . . . . NUMBER 0x0003A NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:162.1-162.37
+CHARACTER_COMMA  . . . . . . . . . . NUMBER 0x0002C NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:168.1-168.37
+CHARACTER_CR . . . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:173.1-173.37
+CHARACTER_D  . . . . . . . . . . . . NUMBER 0x00064 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:103.1-103.37
+CHARACTER_DIVIDE . . . . . . . . . . NUMBER 0x0002F NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:166.1-166.37
+CHARACTER_DOLLAR . . . . . . . . . . NUMBER 0x00024 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:175.1-175.37
+CHARACTER_E  . . . . . . . . . . . . NUMBER 0x00065 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:104.1-104.37
+CHARACTER_EQUALS . . . . . . . . . . NUMBER 0x0003D NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:171.1-171.37
+CHARACTER_EXCLAIM  . . . . . . . . . NUMBER 0x00021 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:176.1-176.37
+CHARACTER_F  . . . . . . . . . . . . NUMBER 0x00066 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:105.1-105.37
+CHARACTER_G  . . . . . . . . . . . . NUMBER 0x00067 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:106.1-106.37
+CHARACTER_GREATER_THAN . . . . . . . NUMBER 0x0003E NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:170.1-170.37
+CHARACTER_H  . . . . . . . . . . . . NUMBER 0x00068 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:107.1-107.37
+CHARACTER_I  . . . . . . . . . . . . NUMBER 0x00069 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:108.1-108.37
+CHARACTER_J  . . . . . . . . . . . . NUMBER 0x0006A NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:109.1-109.37
+CHARACTER_K  . . . . . . . . . . . . NUMBER 0x0006B NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:110.1-110.37
+CHARACTER_L  . . . . . . . . . . . . NUMBER 0x0006C USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:111.1-111.37
+CHARACTER_LESS_THAN  . . . . . . . . NUMBER 0x0003C NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:169.1-169.37
+CHARACTER_M  . . . . . . . . . . . . NUMBER 0x0006D NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:112.1-112.37
+CHARACTER_MINUS  . . . . . . . . . . NUMBER 0x0002D NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:165.1-165.37
+CHARACTER_N  . . . . . . . . . . . . NUMBER 0x0006E NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:113.1-113.37
+CHARACTER_O  . . . . . . . . . . . . NUMBER 0x0006F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:114.1-114.37
+CHARACTER_P  . . . . . . . . . . . . NUMBER 0x00070 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:115.1-115.37
+CHARACTER_PLUS . . . . . . . . . . . NUMBER 0x0002B NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:167.1-167.37
+CHARACTER_Q  . . . . . . . . . . . . NUMBER 0x00071 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:116.1-116.37
+CHARACTER_QUESTION . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:174.1-174.37
+CHARACTER_R  . . . . . . . . . . . . NUMBER 0x00072 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:117.1-117.37
+CHARACTER_S  . . . . . . . . . . . . NUMBER 0x00073 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:118.1-118.37
+CHARACTER_SEMI_COLON . . . . . . . . NUMBER 0x0003B NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:164.1-164.37
+CHARACTER_SPACE  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:172.1-172.37
+CHARACTER_STOP . . . . . . . . . . . NUMBER 0x0002E NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:163.1-163.37
+CHARACTER_T  . . . . . . . . . . . . NUMBER 0x00074 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:119.1-119.37
+CHARACTER_U  . . . . . . . . . . . . NUMBER 0x00075 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:120.1-120.37
+CHARACTER_V  . . . . . . . . . . . . NUMBER 0x00076 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:121.1-121.37
+CHARACTER_W  . . . . . . . . . . . . NUMBER 0x00077 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:122.1-122.37
+CHARACTER_X  . . . . . . . . . . . . NUMBER 0x00078 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:123.1-123.37
+CHARACTER_Y  . . . . . . . . . . . . NUMBER 0x00079 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:124.1-124.37
+CHARACTER_Z  . . . . . . . . . . . . NUMBER 0x0007A USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:125.1-125.37
+CLEAR_LOOP . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:192.1-192.12
+COLD_START . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:190.1-190.12
+DELAY_S0_LOOP  . . . . . . . . . . . LABEL  0x00016 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:233.1-233.15
+DELAY_S1_LOOP  . . . . . . . . . . . LABEL  0x00015 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:232.1-232.15
+DELAY_S2_LOOP  . . . . . . . . . . . LABEL  0x00014 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:231.1-231.15
+ENABLE_INT . . . . . . . . . . . . . LABEL  0x00006 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:198.1-198.12
+GO_DOWN  . . . . . . . . . . . . . . LABEL  0x000AF USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:427.1-427.9
+GO_DOWN_LOOP . . . . . . . . . . . . LABEL  0x000B0 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:428.1-428.14
+GO_UP_LOOP . . . . . . . . . . . . . LABEL  0x000AA USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:422.1-422.12
+INC_LED0 . . . . . . . . . . . . . . LABEL  0x00022 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:248.1-248.10
+INC_LED1 . . . . . . . . . . . . . . LABEL  0x00035 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:268.1-268.10
+INC_LED2 . . . . . . . . . . . . . . LABEL  0x00046 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:286.1-286.10
+INC_LED3 . . . . . . . . . . . . . . LABEL  0x00057 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:305.1-305.10
+INC_LED4 . . . . . . . . . . . . . . LABEL  0x00068 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:323.1-323.10
+INC_LED5 . . . . . . . . . . . . . . LABEL  0x00079 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:341.1-341.10
+INC_LED6 . . . . . . . . . . . . . . LABEL  0x0008F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:364.1-364.10
+INC_LED7 . . . . . . . . . . . . . . LABEL  0x0009D USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:379.1-379.10
+ISR  . . . . . . . . . . . . . . . . LABEL  0x00100 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:584.1-584.5
+ISR_PRESERVE_S0  . . . . . . . . . . NUMBER 0x0000D USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:75.1-75.37
+ISR_PRESERVE_S1  . . . . . . . . . . NUMBER 0x0000E USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:76.1-76.37
+ISR_PRESERVE_S2  . . . . . . . . . . NUMBER 0x0000F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:77.1-77.37
+LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:16.1-16.37
+LED0_SEQUENCE  . . . . . . . . . . . NUMBER 0x00010 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:80.1-80.37
+LED1 . . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:17.1-17.37
+LED1_SEQUENCE  . . . . . . . . . . . NUMBER 0x00011 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:81.1-81.37
+LED2 . . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:18.1-18.37
+LED2_SEQUENCE  . . . . . . . . . . . NUMBER 0x00012 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:82.1-82.37
+LED3 . . . . . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:19.1-19.37
+LED3_SEQUENCE  . . . . . . . . . . . NUMBER 0x00013 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:83.1-83.37
+LED4 . . . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:20.1-20.37
+LED4_SEQUENCE  . . . . . . . . . . . NUMBER 0x00014 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:84.1-84.37
+LED5 . . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:21.1-21.37
+LED5_SEQUENCE  . . . . . . . . . . . NUMBER 0x00015 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:85.1-85.37
+LED6 . . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:22.1-22.37
+LED6_SEQUENCE  . . . . . . . . . . . NUMBER 0x00016 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:86.1-86.37
+LED7 . . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:23.1-23.37
+LED7_SEQUENCE  . . . . . . . . . . . NUMBER 0x00017 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:87.1-87.37
+LED_PORT . . . . . . . . . . . . . . NUMBER 0x00080 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:15.1-15.37
+LED_TO_DUTY  . . . . . . . . . . . . LABEL  0x000A6 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:418.1-418.13
+LOAD_LED0_START  . . . . . . . . . . LABEL  0x00024 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:250.1-250.17
+LOAD_LED1_START  . . . . . . . . . . LABEL  0x00037 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:270.1-270.17
+LOAD_LED2_START  . . . . . . . . . . LABEL  0x00048 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:288.1-288.17
+LOAD_LED3_START  . . . . . . . . . . LABEL  0x00059 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:307.1-307.17
+LOAD_LED4_START  . . . . . . . . . . LABEL  0x0006A USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:325.1-325.17
+LOAD_LED5_START  . . . . . . . . . . LABEL  0x0007B USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:343.1-343.17
+LOAD_LED6_START  . . . . . . . . . . LABEL  0x00091 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:366.1-366.17
+LOAD_LED7_START  . . . . . . . . . . LABEL  0x0009F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:381.1-381.17
+NORMAL_LED1  . . . . . . . . . . . . LABEL  0x0002F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:262.1-262.13
+NORMAL_LED6  . . . . . . . . . . . . LABEL  0x00089 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:358.1-358.13
+PWM_CHANNEL0 . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:63.1-63.37
+PWM_CHANNEL1 . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:64.1-64.37
+PWM_CHANNEL10  . . . . . . . . . . . NUMBER 0x0000B USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:73.1-73.37
+PWM_CHANNEL11  . . . . . . . . . . . NUMBER 0x0000C USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:74.1-74.37
+PWM_CHANNEL2 . . . . . . . . . . . . NUMBER 0x00003 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:65.1-65.37
+PWM_CHANNEL3 . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:66.1-66.37
+PWM_CHANNEL4 . . . . . . . . . . . . NUMBER 0x00005 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:67.1-67.37
+PWM_CHANNEL5 . . . . . . . . . . . . NUMBER 0x00006 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:68.1-68.37
+PWM_CHANNEL6 . . . . . . . . . . . . NUMBER 0x00007 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:69.1-69.37
+PWM_CHANNEL7 . . . . . . . . . . . . NUMBER 0x00008 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:70.1-70.37
+PWM_CHANNEL8 . . . . . . . . . . . . NUMBER 0x00009 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:71.1-71.37
+PWM_CHANNEL9 . . . . . . . . . . . . NUMBER 0x0000A USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:72.1-72.37
+PWM_DUTY_COUNTER . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:62.1-62.37
+READ_CHARACTER . . . . . . . . . . . LABEL  0x000B8 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:453.1-453.16
+READ_FROM_UART . . . . . . . . . . . LABEL  0x000B4 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:449.1-449.16
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:37.1-37.36
+RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:39.1-39.37
+RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:38.1-38.37
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S10  . . . . . . . . . . . . . . . . REG.   0x00010 NOT USED CONSTANT    IMPLICIT
+S11  . . . . . . . . . . . . . . . . REG.   0x00011 NOT USED CONSTANT    IMPLICIT
+S12  . . . . . . . . . . . . . . . . REG.   0x00012 NOT USED CONSTANT    IMPLICIT
+S13  . . . . . . . . . . . . . . . . REG.   0x00013 NOT USED CONSTANT    IMPLICIT
+S14  . . . . . . . . . . . . . . . . REG.   0x00014 NOT USED CONSTANT    IMPLICIT
+S15  . . . . . . . . . . . . . . . . REG.   0x00015 NOT USED CONSTANT    IMPLICIT
+S16  . . . . . . . . . . . . . . . . REG.   0x00016 NOT USED CONSTANT    IMPLICIT
+S17  . . . . . . . . . . . . . . . . REG.   0x00017 NOT USED CONSTANT    IMPLICIT
+S18  . . . . . . . . . . . . . . . . REG.   0x00018 NOT USED CONSTANT    IMPLICIT
+S19  . . . . . . . . . . . . . . . . REG.   0x00019 NOT USED CONSTANT    IMPLICIT
+S1A  . . . . . . . . . . . . . . . . REG.   0x0001A NOT USED CONSTANT    IMPLICIT
+S1B  . . . . . . . . . . . . . . . . REG.   0x0001B NOT USED CONSTANT    IMPLICIT
+S1C  . . . . . . . . . . . . . . . . REG.   0x0001C NOT USED CONSTANT    IMPLICIT
+S1D  . . . . . . . . . . . . . . . . REG.   0x0001D NOT USED CONSTANT    IMPLICIT
+S1E  . . . . . . . . . . . . . . . . REG.   0x0001E NOT USED CONSTANT    IMPLICIT
+S1F  . . . . . . . . . . . . . . . . REG.   0x0001F NOT USED CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SEND_CR  . . . . . . . . . . . . . . LABEL  0x000C0 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:483.1-483.9
+SEND_OK  . . . . . . . . . . . . . . LABEL  0x000FA USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:553.1-553.9
+SEND_SPACE . . . . . . . . . . . . . LABEL  0x000C3 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:489.1-489.12
+SEND_TO_UART . . . . . . . . . . . . LABEL  0x000BA USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:467.1-467.14
+SEND_WELCOME . . . . . . . . . . . . LABEL  0x000C6 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:497.1-497.14
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    IMPLICIT
+SIMPLE_IO10  . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:28.1-28.37
+SIMPLE_IO11  . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:29.1-29.37
+SIMPLE_IO12  . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:30.1-30.37
+SIMPLE_IO9 . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:27.1-27.37
+SIMPLE_PORT  . . . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:26.1-26.37
+SPARE1 . . . . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:40.1-40.37
+SPARE2 . . . . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:41.1-41.37
+SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:42.1-42.37
+STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:34.1-34.37
+TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:36.1-36.37
+TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:35.1-35.37
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:54.1-54.34
+UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:44.1-44.37
+UART_WRITE . . . . . . . . . . . . . LABEL  0x000BE USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:471.1-471.12
+UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00020 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:46.1-46.37
+UPDATE_LED0  . . . . . . . . . . . . LABEL  0x00027 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:253.1-253.13
+UPDATE_LED1  . . . . . . . . . . . . LABEL  0x0003D USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:276.1-276.13
+UPDATE_LED2  . . . . . . . . . . . . LABEL  0x0004E USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:294.1-294.13
+UPDATE_LED3  . . . . . . . . . . . . LABEL  0x0005F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:313.1-313.13
+UPDATE_LED4  . . . . . . . . . . . . LABEL  0x00070 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:331.1-331.13
+UPDATE_LED5  . . . . . . . . . . . . LABEL  0x00081 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:349.1-349.13
+UPDATE_LED6  . . . . . . . . . . . . LABEL  0x00094 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:369.1-369.13
+UPDATE_LED7  . . . . . . . . . . . . LABEL  0x000A2 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:384.1-384.13
+WARM_START . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:230.1-230.12
+_CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:126.1-126.37
+_CHARACTER_B . . . . . . . . . . . . NUMBER 0x00042 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:127.1-127.37
+_CHARACTER_C . . . . . . . . . . . . NUMBER 0x00043 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:128.1-128.37
+_CHARACTER_D . . . . . . . . . . . . NUMBER 0x00044 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:129.1-129.37
+_CHARACTER_E . . . . . . . . . . . . NUMBER 0x00045 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:130.1-130.37
+_CHARACTER_F . . . . . . . . . . . . NUMBER 0x00046 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:131.1-131.37
+_CHARACTER_G . . . . . . . . . . . . NUMBER 0x00047 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:132.1-132.37
+_CHARACTER_H . . . . . . . . . . . . NUMBER 0x00048 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:133.1-133.37
+_CHARACTER_I . . . . . . . . . . . . NUMBER 0x00049 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:134.1-134.37
+_CHARACTER_J . . . . . . . . . . . . NUMBER 0x0004A NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:135.1-135.37
+_CHARACTER_K . . . . . . . . . . . . NUMBER 0x0004B USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:136.1-136.37
+_CHARACTER_L . . . . . . . . . . . . NUMBER 0x0004C NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:137.1-137.37
+_CHARACTER_M . . . . . . . . . . . . NUMBER 0x0004D USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:138.1-138.37
+_CHARACTER_N . . . . . . . . . . . . NUMBER 0x0004E NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:139.1-139.37
+_CHARACTER_O . . . . . . . . . . . . NUMBER 0x0004F USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:140.1-140.37
+_CHARACTER_P . . . . . . . . . . . . NUMBER 0x00050 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:141.1-141.37
+_CHARACTER_Q . . . . . . . . . . . . NUMBER 0x00051 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:142.1-142.37
+_CHARACTER_R . . . . . . . . . . . . NUMBER 0x00052 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:143.1-143.37
+_CHARACTER_S . . . . . . . . . . . . NUMBER 0x00053 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:144.1-144.37
+_CHARACTER_T . . . . . . . . . . . . NUMBER 0x00054 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:145.1-145.37
+_CHARACTER_U . . . . . . . . . . . . NUMBER 0x00055 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:146.1-146.37
+_CHARACTER_V . . . . . . . . . . . . NUMBER 0x00056 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:147.1-147.37
+_CHARACTER_W . . . . . . . . . . . . NUMBER 0x00057 USED     CONSTANT    2038_example_11.ind_spaces.short_inst.asm:148.1-148.37
+_CHARACTER_X . . . . . . . . . . . . NUMBER 0x00058 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:149.1-149.37
+_CHARACTER_Y . . . . . . . . . . . . NUMBER 0x00059 NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:150.1-150.37
+_CHARACTER_Z . . . . . . . . . . . . NUMBER 0x0005A NOT USED CONSTANT    2038_example_11.ind_spaces.short_inst.asm:151.1-151.37
