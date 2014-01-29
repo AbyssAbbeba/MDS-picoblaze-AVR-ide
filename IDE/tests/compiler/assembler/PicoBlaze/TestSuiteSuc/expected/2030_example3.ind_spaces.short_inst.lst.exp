@@ -1,0 +1,2189 @@
+                   1     ; KCPSM3 Program - Security control and design authentication.
+                   2     ;
+                   3     ; This program is provided for use with the reference design
+                   4     ; 'low_cost_design_authentication_for_spartan_3e.vhd' implemented on the Spartan-3E Starter
+                   5     ; Kit. The program provides design authentication control over the 'real' application as well
+                   6     ; as providing features to enable evaluation of the design authentication method.
+                   7     ;
+                   8     ; Ken Chapman - Xilinx Ltd
+                   9     device kcpsm2
+                  10     ; Version v1.00 - 1st November 2006
+                  11     ;
+                  12     ; This code communicates with the StrataFLASH memory to implement a design authentication
+                  13     ; algorithm which then enables the main application design in various ways. To facilitate
+                  14     ; evaluation of design authentication this design also interacts with the LCD display
+                  15     ; and PC (via UART based RS232 link) to indicate authentication status and allow control
+                  16     ; over the authentication validity of the design. Therefore this program includes:-
+                  17     ;
+                  18     ; 1) Code required to check authorisation which would be included in a production design.
+                  19     ; 2) Code required to program the authentication value into FLASH memory which would
+                  20     ;    typically only be implemented in a special design used at a secure programming
+                  21     ;    facility as part of the production programming procedure.
+                  22     ; 3) Code to allow you to see what is happening at all stages which is code that should
+                  23     ;    never be included in a real production design as it reveals secrets that should remain
+                  24     ;    hidden in order to make the task of breaking the security as difficult as possible.
+                  25     ;
+                  26     ; IMPORTANT - Feel free to use this code as a reference for your own security scheme but
+                  27     ;             never use this code unmodified.
+                  28     ;
+                  29     ;
+                  30     ;**************************************************************************************
+                  31     ; NOTICE:
+                  32     ;
+                  33     ; Copyright Xilinx, Inc. 2006.   This code may be contain portions patented by other
+                  34     ; third parties.  By providing this core as one possible implementation of a standard,
+                  35     ; Xilinx is making no representation that the provided implementation of this standard
+                  36     ; is free from any claims of infringement by any third party.  Xilinx expressly
+                  37     ; disclaims any warranty with respect to the adequacy of the implementation, including
+                  38     ; but not limited to any warranty or representation that the implementation is free
+                  39     ; from claims of any third party.  Furthermore, Xilinx is providing this core as a
+                  40     ; courtesy to you and suggests that you contact all third parties to obtain the
+                  41     ; necessary rights to use this implementation.
+                  42     ;
+                  43     ;
+                  44     ;**************************************************************************************
+                  45     ; Port definitions
+                  46     ;**************************************************************************************
+                  47     ;
+                  48     ;
+                  49     ; UART ports
+                  50     ;
+                  51     ; Connection to PC to allow display of progress information and to operate simple
+                  52     ; menu of commands.
+                  53     ;
+  00000           54     status_port             EQU     0x00                    ;UART and memory status
+  00001           55     tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
+  00002           56     tx_full                 EQU     0x02                    ;    FIFO            tx_full - bit1
+  00004           57     rx_EQU_present         EQU     0x04                    ;  Receiver     EQU present - bit2
+  00008           58     rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
+  00010           59     rx_full                 EQU     0x10                    ;                    rx_full - bit4
+  00020           60     spare1                  EQU     0x20                    ;                  spare '0' - bit5
+  00040           61     spare2                  EQU     0x40                    ;                  spare '0' - bit6
+  00080           62     strataflash_sts         EQU     0x80                    ;  StrataFLASH           loadS - bit7
+                  63     ;
+  00001           64     uart_read_port          EQU     0x01                    ;UART Rx EQU input
+                  65     ;
+  00008           66     uart_write_port         EQU     0x08                    ;UART Tx EQU output
+                  67     ;
+                  68     ;
+                  69     ; LCD Display
+                  70     ;
+                  71     ;The master enable signal is not used by the LCD display itself
+                  72     ;but is used to prevent any contention with the StrataFLASH memory that
+                  73     ;is connected to the same EQU pins. In this design the StrataFLASH memory is
+                  74     ;used in 8-bit mode so not contention should exist but this master enable
+                  75     ;facilty is then available for anyone wanting to modify the design for use
+                  76     ;with a 16-bit interface.
+                  77     ;
+  00020           78     lcd_output_port         EQU     0x20                    ;LCD character module output EQU and control
+  00001           79     lcd_e                   EQU     0x01                    ;   active High Enable        E - bit0
+  00002           80     lcd_rw                  EQU     0x02                    ;   Read=1 Write=0           RW - bit1
+  00004           81     lcd_rs                  EQU     0x04                    ;   Instruction=0 EQU=1     RS - bit2
+  00008           82     lcd_drive               EQU     0x08                    ;   Master enable (active High) - bit3
+  00010           83     lcd_db4                 EQU     0x10                    ;   4-bit              EQU DB4 - bit4
+  00020           84     lcd_db5                 EQU     0x20                    ;   interface          EQU DB5 - bit5
+  00040           85     lcd_db6                 EQU     0x40                    ;                      EQU DB6 - bit6
+  00080           86     lcd_db7                 EQU     0x80                    ;                      EQU DB7 - bit7
+                  87     ;
+                  88     ;
+  00003           89     lcd_input_port          EQU     0x03                    ;LCD character module input EQU
+  00001           90     lcd_read_spare0         EQU     0x01                    ;    Spare bits               - bit0
+  00002           91     lcd_read_spare1         EQU     0x02                    ;    are zero                 - bit1
+  00004           92     lcd_read_spare2         EQU     0x04                    ;                             - bit2
+  00008           93     lcd_read_spare3         EQU     0x08                    ;                             - bit3
+  00010           94     lcd_read_db4            EQU     0x10                    ;    4-bit           EQU DB4 - bit4
+  00020           95     lcd_read_db5            EQU     0x20                    ;    interface       EQU DB5 - bit5
+  00040           96     lcd_read_db6            EQU     0x40                    ;                    EQU DB6 - bit6
+  00080           97     lcd_read_db7            EQU     0x80                    ;                    EQU DB7 - bit7
+                  98     ;
+                  99     ;
+                 100     ;
+                 101     ; StrataFLASH memory ports
+                 102     ;
+                 103     ; The FLASH memory is used to hold the authentication value as well as provide the
+                 104     ; unique serial number from which the authentication algorithm computes the value.
+                 105     ; In practice, the FLASH will also hold the configuration image for the Spartan device.
+                 106     ;
+                 107     ;
+  00002          108     sf_EQU_in_port         EQU     0x02                    ;Read EQU from StrataFLASH device
+                 109     ;
+  00080          110     sf_EQU_out_port        EQU     0x80                    ;EQU to write into StrataFLASH device
+                 111     ;
+  00083          112     sf_addr_hi_port         EQU     0x83                    ;StrataFLASH address[21:16] (6 LSB's)
+  00082          113     sf_addr_mi_port         EQU     0x82                    ;StrataFLASH address[15:8]
+  00081          114     sf_addr_lo_port         EQU     0x81                    ;StrataFLASH address[7:0]
+                 115     ;
+  00040          116     sf_control_port         EQU     0x40                    ;StrataFLASH control
+  00001          117     sf_read                 EQU     0x01                    ;         active High read - bit0
+  00002          118     sf_ce                   EQU     0x02                    ; active Low device enable - bit1
+  00004          119     sf_we                   EQU     0x04                    ;         active Low write - bit2
+                 120     ;
+                 121     ;
+                 122     ; Design Authentication enable/disable signals.
+                 123     ;
+                 124     ; Hardware controls over the 'real' application.
+                 125     ;
+  00010          126     authentication_control_port EQU 0x10                    ;Design disable control port
+  00001          127     security_disable_interrupts EQU 0x01                    ;   active High disable of interrupt generation - bit0
+  00002          128     security_disable_outputs EQU    0x02                    ;            active High disable of output pins - bit1
+                 129     ;
+                 130     ; Pseudo Random number generator
+                 131     ;
+  00004          132     random_value_port       EQU     0x04                    ;read LFSR counter value
+                 133     ;
+                 134     ;
+                 135     ; Link FIFO buffer
+                 136     ;
+                 137     ; Provides a connection to the 'real' application such that 'soft tokens' in the
+                 138     ; form of short messages to be passed to the 'real' application to enable or disable
+                 139     ; it depending on the authentication status.
+                 140     ;
+  00004          141     link_fifo_write_port    EQU     0x04                    ;write EQU to FIFO
+                 142     ;
+                 143     ;
+                 144     ;**************************************************************************************
+                 145     ; Special Register usage
+                 146     ;**************************************************************************************
+                 147     ;
+  0000F          148     uart_EQU               REG     sf                      ;used to pass EQU to and from the UART
+                 149     ;
+                 150     ;
+                 151     ;
+                 152     ;**************************************************************************************
+                 153     ;Scratch Pad Memory Locations
+                 154     ;**************************************************************************************
+                 155     ;
+  00000          156     isr_preserve_s0         EQU     0x00                    ;preserve register contents during Interrupt Service Routine
+                 157     ;
+                 158     ;
+  00010          159     serial_number0          EQU     0x10                    ;64-bit serial number of StrataFlash
+  00011          160     serial_number1          EQU     0x11                    ;LS-Byte first
+  00012          161     serial_number2          EQU     0x12
+  00013          162     serial_number3          EQU     0x13
+  00014          163     serial_number4          EQU     0x14
+  00015          164     serial_number5          EQU     0x15
+  00016          165     serial_number6          EQU     0x16
+  00017          166     serial_number7          EQU     0x17
+                 167     ;
+                 168     ;
+  00018          169     computed_crc0           EQU     0x18                    ;computed 16-bit CRC based on the
+  00019          170     computed_crc1           EQU     0x19                    ;  StrataFlash unique serial number (LS-Byte first)
+                 171     ;
+                 172     ;
+  0001A          173     authentication_crc0     EQU     0x1a                    ;16-bit CRC value read from authentication
+  0001B          174     authentication_crc1     EQU     0x1b                    ;  area of StrataFLASH memory (LS-Byte first)
+                 175     ;
+                 176     ;
+  0001C          177     authentication_status   EQU     0x1c                    ;Status of design authentication
+                 178     ;
+                 179     ;
+                 180     ;**************************************************************************************
+                 181     ;Useful EQU constants
+                 182     ;**************************************************************************************
+                 183     ;
+                 184     ;
+                 185     ;
+                 186     ;Constant to define a software delay of 1us. This must be adjusted to reflect the
+                 187     ;clock applied to KCPSM3. Every instruction executes in 2 clock cycles making the
+                 188     ;calculation highly predictable. The '6' in the following equation even allows for
+                 189     ;'CALL delay_1us' instruction in the initiating code.
+                 190     ;
+                 191     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                 192     ;
+                 193     ;Example: For a 50MHz clock the constant value is (10-6)/4 = 11  (0B Hex).
+                 194     ;For clock rates below 10MHz the value of 1 must be used and the operation will
+                 195     ;become lower than intended.
+                 196     ;
+  0000B          197     delay_1us_constant      EQU     0x0b
+                 198     ;
+                 199     ;
+                 200     ;
+                 201     ;
+                 202     ;ASCII table
+                 203     ;
+  00061          204     character_a             EQU     0x61
+  00062          205     character_b             EQU     0x62
+  00063          206     character_c             EQU     0x63
+  00064          207     character_d             EQU     0x64
+  00065          208     character_e             EQU     0x65
+  00066          209     character_f             EQU     0x66
+  00067          210     character_g             EQU     0x67
+  00068          211     character_h             EQU     0x68
+  00069          212     character_i             EQU     0x69
+  0006A          213     character_j             EQU     0x6a
+  0006B          214     character_k             EQU     0x6b
+  0006C          215     character_l             EQU     0x6c
+  0006D          216     character_m             EQU     0x6d
+  0006E          217     character_n             EQU     0x6e
+  0006F          218     character_o             EQU     0x6f
+  00070          219     character_p             EQU     0x70
+  00071          220     character_q             EQU     0x71
+  00072          221     character_r             EQU     0x72
+  00073          222     character_s             EQU     0x73
+  00074          223     character_t             EQU     0x74
+  00075          224     character_u             EQU     0x75
+  00076          225     character_v             EQU     0x76
+  00077          226     character_w             EQU     0x77
+  00078          227     character_x             EQU     0x78
+  00079          228     character_y             EQU     0x79
+  0007A          229     character_z             EQU     0x7a
+  00041          230     _character_a            EQU     0x41
+  00042          231     _character_b            EQU     0x42
+  00043          232     _character_c            EQU     0x43
+  00044          233     _character_d            EQU     0x44
+  00045          234     _character_e            EQU     0x45
+  00046          235     _character_f            EQU     0x46
+  00047          236     _character_g            EQU     0x47
+  00048          237     _character_h            EQU     0x48
+  00049          238     _character_i            EQU     0x49
+  0004A          239     _character_j            EQU     0x4a
+  0004B          240     _character_k            EQU     0x4b
+  0004C          241     _character_l            EQU     0x4c
+  0004D          242     _character_m            EQU     0x4d
+  0004E          243     _character_n            EQU     0x4e
+  0004F          244     _character_o            EQU     0x4f
+  00050          245     _character_p            EQU     0x50
+  00051          246     _character_q            EQU     0x51
+  00052          247     _character_r            EQU     0x52
+  00053          248     _character_s            EQU     0x53
+  00054          249     _character_t            EQU     0x54
+  00055          250     _character_u            EQU     0x55
+  00056          251     _character_v            EQU     0x56
+  00057          252     _character_w            EQU     0x57
+  00058          253     _character_x            EQU     0x58
+  00059          254     _character_y            EQU     0x59
+  0005A          255     _character_z            EQU     0x5a
+  00030          256     character_0             EQU     0x30
+  00031          257     character_1             EQU     0x31
+  00032          258     character_2             EQU     0x32
+  00033          259     character_3             EQU     0x33
+  00034          260     character_4             EQU     0x34
+  00035          261     character_5             EQU     0x35
+  00036          262     character_6             EQU     0x36
+  00037          263     character_7             EQU     0x37
+  00038          264     character_8             EQU     0x38
+  00039          265     character_9             EQU     0x39
+  0003A          266     character_colon         EQU     0x3a
+  0002E          267     character_fullstop      EQU     0x2e
+  0003B          268     character_semi_colon    EQU     0x3b
+  0002D          269     character_minus         EQU     0x2d
+  0002F          270     character_divide        EQU     0x2f                    ;'/'
+  0002B          271     character_plus          EQU     0x2b
+  0002C          272     character_comma         EQU     0x2c
+  0003C          273     character_less_than     EQU     0x3c
+  0003E          274     character_greater_than  EQU     0x3e
+  0003D          275     character_equals        EQU     0x3d
+  00020          276     character_space         EQU     0x20
+  0000D          277     character_cr            EQU     0x0d                    ;carriage return
+  0003F          278     character_question      EQU     0x3f                    ;'?'
+  00024          279     character_dollar        EQU     0x24
+  00021          280     character_exclaim       EQU     0x21                    ;'!'
+  00008          281     character_bs            EQU     0x08                    ;Back Space command character
+                 282     ;
+                 283     ;
+                 284     ;
+                 285     ;
+                 286     ;
+                 287     ;**************************************************************************************
+                 288     ;Initialise the system
+                 289     ;**************************************************************************************
+                 290     ;
+000 360DF        291     cold_start:             CALL    sf_init                 ;initialise StrataFLASH controls
+001 00000        292                             LD      s0, #0x00               ;Start with application enabled in hardware
+002 22010        293                             OUT     s0, authentication_control_port
+003 00050        294                             LD      s0, #_character_p       ;start with design enabled by software (see ISR)
+004 100E0        295                             load      s0, authentication_status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+005 36359        296                             CALL    delay_1s                ;delay to allow system to settle
+006 36326        297                             CALL    lcd_reset               ;Initialise the LCD
+                 298     ;
+007 3C001        299                             ENA                             ;interrupts to provide software enable to application
+                 300     ;
+                 301     ;**************************************************************************************
+                 302     ; Main program
+                 303     ;**************************************************************************************
+                 304     ;
+                 305     ; The main program follows a logical sequence of events describing the power on and
+                 306     ; authentication process of a design. This process will is either successfully authorises
+                 307     ; the 'real' application to operate or fail to authenticate and disable the 'real'
+                 308     ; application in a similar way to a production design. The only difference that it keeps
+                 309     ; you informed about what it is doing on both the LCD display and PC terminal via the UART.
+                 310     ; A real production design should keep all details hidden.
+                 311     ;
+                 312     ; Following the authentication check and control over the 'real' application a simple menu
+                 313     ; is provided on the PC terminal to allow you to read, write and erase the authentication
+                 314     ; area of the StrataFLASH memory and therefore evaluate the design authentication security
+                 315     ; of this reference design.
+                 316     ;
+                 317     ;
+                 318     ;
+                 319     ; Write welcome message to LCD display
+                 320     ;
+008 00512        321     warm_start:             LD      s5, #0x12               ;Line 1 position 2
+009 3633C        322                             CALL    lcd_cursor
+00A 36362        323                             CALL    disp_picoblaze          ;Display 'PicoBlaze'
+00B 00525        324                             LD      s5, #0x25               ;Line 2 position 5
+00C 3633C        325                             CALL    lcd_cursor
+00D 36375        326                             CALL    disp_security           ;Display 'Security'
+                 327     ;
+                 328     ; Write welcome message to PC via UART
+                 329     ;
+00E 36162        330                             CALL    send_welcome
+                 331     ;
+                 332     ;
+                 333     ; Display 'Copyright Ken Chapman 2006' via the UART.
+                 334     ;
+                 335     ; This message is significant because it demonstrates that the design now has a 'watermark'.
+                 336     ; The ASCII codes for this string are part of the PicoBlaze program loadd in a Block
+                 337     ; Memory and therefore are also part of the configuration bit stream. If someone tries to
+                 338     ; change or delete this copyright message the hardware design will detect the change to the
+                 339     ; Block memory contents and also inhibit the design.
+                 340     ;
+00F 361B2        341                             CALL    send_copyright
+                 342     ;
+                 343     ;
+                 344     ;
+                 345     ; Delay of 10 seconds before performing any security checks.
+                 346     ;
+                 347     ; This allows the design to work for a short time which could be important for
+                 348     ; production loading.
+                 349     ;
+                 350     ; Having a significant time delay (days or weeks) before security checks means that someone
+                 351     ; attempting to clone the product may not be aware that there is any form of design security
+                 352     ; at all until products are in the field are failing. A time delay also impedes the ability to
+                 353     ; attempt to break the security and confirm if an attempt is or is not successful.
+                 354     ;
+010 0050A        355                             LD      s5, #0x0a               ;delay of 10 seconds.
+011 3635E        356                             CALL    delay_ns
+                 357     ;
+                 358     ;
+                 359     ;
+                 360     ; Read serial number of the StrataFLASH memory.
+                 361     ; The whole principle of low cost design security is based on this unique number. Clearly this
+                 362     ; number is not a secret, but what we then go on to do with it should normally be kept secret.
+                 363     ;
+012 360F0        364                             CALL    read_sf_serial_number   ;read serial number from FLASH memory
+013 36065        365                             CALL    send_serial_number      ;send value to UART for display on PC
+014 36070        366                             CALL    disp_serial_number      ;display serial number on LCD display.
+015 36152        367                             CALL    send_cr
+                 368     ;
+                 369     ;
+                 370     ;
+016 0050A        371                             LD      s5, #0x0a               ;delay of 10 seconds to read messages.
+017 3635E        372                             CALL    delay_ns
+                 373     ;
+                 374     ;
+                 375     ;
+                 376     ; Compute the 16-bit CRC for the serial number as an authentication value for the design.
+                 377     ; The CRC value is formed in register pair [sE,sD]. To complicate the authentication value
+                 378     ; the initial contents of the registers are seeded with a 'secret' number.
+                 379     ; Hint 1 - The CRC computation could be implemented in hardware where it is less visible.
+                 380     ; Hint 2 - There are more secure algorithms such as SHA-1 which could be used to generate
+                 381     ;          authentication values that are extremely difficult to decode.
+                 382     ;
+                 383     ;
+018 00E15        384                             LD      se, #0x15               ;seed CRC register with an initial value provided by my daughter when asked :-)
+019 00D8E        385                             LD      sd, #0x8e
+01A 3607F        386                             CALL    compute_seeded_crc      ;compute CRC for serial number and configuration memory
+                 387     ;
+                 388     ; load CRC value in scratch pad memory and display computed CRC value on the PC via UART.
+                 389     ;
+01B 10DC0        390                             load      sd, computed_crc0       ;load CRC value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01C 10EC8        391                             load      se, computed_crc1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01D 36250        392                             CALL    send_computed_crc       ;display computed CRC value on PC via UART
+01E 10070        393                             LD      s0, se
+01F 3613E        394                             CALL    send_hex_byte
+020 10068        395                             LD      s0, sd
+021 3613E        396                             CALL    send_hex_byte
+022 36152        397                             CALL    send_cr
+                 398     ;
+                 399     ;
+                 400     ;
+                 401     ; Read the authenticated CRC value loadd in StrataFLASH memory.
+                 402     ; 16-bit value is hidden in 256 bytes of random numbers to make it more difficult
+                 403     ; for an attacker to identify.
+                 404     ; Read value is loadd in scratch pad memory and displayed on the PC via UART.
+                 405     ;
+023 36092        406                             CALL    read_authentication     ;read StrataFLASH memory into [sB,sA]
+024 10AD0        407                             load      sa, authentication_crc0 ;load CRC value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+025 10BD8        408                             load      sb, authentication_crc1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+026 36246        409                             CALL    send_flash_crc          ;display CRC value from FLASH on PC via UART
+027 10058        410                             LD      s0, sb
+028 3613E        411                             CALL    send_hex_byte
+029 10050        412                             LD      s0, sa
+02A 3613E        413                             CALL    send_hex_byte
+02B 36152        414                             CALL    send_cr
+                 415     ;
+                 416     ;
+                 417     ; load the computed CRC value with the authentication value loadd in StrataFLASH
+                 418     ; and determine if the design is authenticated. Then decide course of action.
+                 419     ;
+02C 36337        420                             CALL    lcd_clear               ;clear LCD display
+02D 363A7        421                             CALL    disp_authentication     ;prepare LCD display for result of authentication
+02E 36230        422                             CALL    send_authentication     ;prepare PC display for result of authentication
+                 423     ;
+02F 10A68        424                             load     sa, sd                  ;Perform comparison of CRC values
+030 35436        425                             JUMP    nz, auth_failure
+031 10B70        426                             load     sb, se
+032 35436        427                             JUMP    nz, auth_failure
+                 428     ;
+                 429     ;
+                 430     ; Authentication Successful Process
+                 431     ;
+                 432     ; In this mode the design continues to operate and for evaluation
+                 433     ; purposes this design transfers control to the simple menu immediately.
+                 434     ;
+033 363C6        435     auth_passed:            CALL    disp_passed             ;display successful authentication on LCD display
+034 3629B        436                             CALL    send_passed             ;display successful authentication on PC via UART
+035 3403C        437                             JUMP    menu
+                 438     ;
+                 439     ; Authentication Failure Process
+                 440     ;
+                 441     ; When the authentication fails two hardware based disable methods are demonstrated. Then
+                 442     ; the failed status is remembered for future software token messages to demonstrate software
+                 443     ; based disabling of the 'real' application. Finally the simple menu of options is presented
+                 444     ; to allow evaluation to continue.
+                 445     ;
+                 446     ;
+036 363D4        447     auth_failure:           CALL    disp_failed             ;display failure to authenticate on LCD display
+037 3628D        448                             CALL    send_failed             ;display failure to authenticate on PC via UART
+038 36152        449                             CALL    send_cr
+039 36056        450                             CALL    disable_app_hardware    ;sequence hardware disable signals
+03A 00046        451                             LD      s0, #_character_f       ;change authentication status to 'F' for failed.
+03B 100E0        452                             load      s0, authentication_status ; so that application software disable is demonstrated
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 453     ;
+                 454     ;
+                 455     ;
+                 456     ; Menu of options for authentication processing
+                 457     ;
+03C 362BA        458     menu:                   CALL    send_menu               ;display menu and prompt
+03D 3611B        459                             CALL    read_from_uart          ;read character from PC
+03E 36127        460                             CALL    upper_case              ;convert to upper case
+03F 00F52        461                             load     uart_EQU, #_character_r
+040 35046        462                             JUMP    z, read_command
+041 00F45        463                             load     uart_EQU, #_character_e
+042 3504B        464                             JUMP    z, erase_command
+043 00F41        465                             load     uart_EQU, #_character_a
+044 3504F        466                             JUMP    z, authorise_command
+045 3403C        467                             JUMP    menu                    ;repeat menu for invalid selection
+                 468     ;
+                 469     ;
+                 470     ;
+046 36152        471     read_command:           CALL    send_cr
+047 360AC        472                             CALL    send_auth_page
+048 36152        473                             CALL    send_cr
+049 36152        474                             CALL    send_cr
+04A 3403C        475                             JUMP    menu
+                 476     ;
+                 477     ;
+                 478     ;
+04B 3626D        479     erase_command:          CALL    send_erase_in_progress
+04C 360DC        480                             CALL    erase_authentication
+04D 36287        481                             CALL    send_ok
+04E 3403C        482                             JUMP    menu
+                 483     ;
+                 484     ;
+                 485     ;
+04F 362A8        486     authorise_command:      CALL    send_writing            ;Send 'Writing Authorisation' message
+050 36152        487                             CALL    send_cr
+051 10DC0        488                             load      sd, computed_crc0       ;load computed CRC value
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+052 10EC8        489                             load      se, computed_crc1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+053 360BC        490                             CALL    write_authentication    ;write computed CRC to FLASH with random EQU
+054 36287        491                             CALL    send_ok
+055 3403C        492                             JUMP    menu
+                 493     ;
+                 494     ;
+                 495     ;**************************************************************************************
+                 496     ; Drive failure signals to the application.
+                 497     ;**************************************************************************************
+                 498     ;
+                 499     ; When the design fails to authorise, these controls cause the application to behave in
+                 500     ; a strange way!
+                 501     ;
+                 502     ;
+                 503     ; Disable interrupts to application PicoBlaze to stop PWM generation completely for 5 seconds
+                 504     ;
+056 00001        505     disable_app_hardware:   LD      s0, #security_disable_interrupts
+057 22010        506                             OUT     s0, authentication_control_port
+058 00505        507                             LD      s5, #0x05
+059 3635E        508                             CALL    delay_ns
+                 509     ;
+                 510     ; Enable application for 5 seconds
+                 511     ;
+05A 00000        512                             LD      s0, #0x00
+05B 22010        513                             OUT     s0, authentication_control_port
+05C 00505        514                             LD      s5, #0x05
+05D 3635E        515                             CALL    delay_ns
+                 516     ;
+                 517     ; Disable and/or scramble outputs connected to application PicoBlaze for 5 seconds
+                 518     ;
+05E 00002        519                             LD      s0, #security_disable_outputs
+05F 22010        520                             OUT     s0, authentication_control_port
+060 00505        521                             LD      s5, #0x05
+061 3635E        522                             CALL    delay_ns
+                 523     ;
+                 524     ;
+                 525     ; Enable application in hardware so that software disable function can then be
+                 526     ; demonstrated until the design is reconfigured and authentication load repeated.
+                 527     ;
+062 00000        528                             LD      s0, #0x00
+063 22010        529                             OUT     s0, authentication_control_port
+064 24000        530                             RET
+                 531     ;
+                 532     ;
+                 533     ;
+                 534     ;**************************************************************************************
+                 535     ; Send the 64-bit serial number loadd in scratch pad memory to the UART
+                 536     ;**************************************************************************************
+                 537     ;
+                 538     ; The serial number should previously have been copied into the 8 ascending scratch pad
+                 539     ; memory locations called 'serial_number0' through to 'serial_number7'.
+                 540     ;
+                 541     ; The serial number is displayed MS-Byte first.
+                 542     ;
+                 543     ; Registers used s0,s1,s2,s3
+                 544     ;
+065 361F0        545     send_serial_number:     CALL    send_flash_serial_number ;display text message
+066 00317        546                             LD      s3, #serial_number7     ;pointer to scratch pad memory
+067 00003        547     send_sn_loop:           load      s0, #s3                 ;read serial number byte
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+068 3613E        548                             CALL    send_hex_byte           ;display byte
+069 36155        549                             CALL    send_space              ;display byte
+06A 00310        550                             load     s3, #serial_number0     ;check for 8 bytes sent to UART
+06B 3506E        551                             JUMP    z, end_send_sn
+06C 0C301        552                             SUB     s3, #0x01               ;increment memory pointer
+06D 34067        553                             JUMP    send_sn_loop
+                 554     ;
+06E 36152        555     end_send_sn:            CALL    send_cr
+06F 24000        556                             RET
+                 557     ;
+                 558     ;
+                 559     ;
+                 560     ;**************************************************************************************
+                 561     ; Display the 64-bit serial number loadd in scratch pad memory on the LCD display
+                 562     ;**************************************************************************************
+                 563     ;
+                 564     ; The serial number should previously have been copied into the 8 ascending scratch pad
+                 565     ; memory locations called 'serial_number0' through to 'serial_number7'.
+                 566     ;
+                 567     ; The serial number is displayed MS-Byte first.
+                 568     ;
+                 569     ; Registers used s0,s1,s2,s3,s4,s5,s6
+                 570     ;
+070 36337        571     disp_serial_number:     CALL    lcd_clear               ;clear LCD display
+071 00510        572                             LD      s5, #0x10               ;Line 1 position 0
+072 3633C        573                             CALL    lcd_cursor
+073 36386        574                             CALL    disp_flash_serial_no    ;display text message
+074 00520        575                             LD      s5, #0x20               ;Line 2 position 0
+075 3633C        576                             CALL    lcd_cursor
+076 00617        577                             LD      s6, #serial_number7     ;pointer to scratch pad memory
+077 00006        578     disp_sn_loop:           load      s0, #s6                 ;read serial number byte
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+078 3614B        579                             CALL    disp_hex_byte           ;display byte
+079 00610        580                             load     s6, #serial_number0     ;check for 8 bytes sent to UART
+07A 3507D        581                             JUMP    z, end_disp_sn
+07B 0C601        582                             SUB     s6, #0x01               ;increment memory pointer
+07C 34077        583                             JUMP    disp_sn_loop
+                 584     ;
+07D 36152        585     end_disp_sn:            CALL    send_cr
+07E 24000        586                             RET
+                 587     ;
+                 588     ;
+                 589     ;**************************************************************************************
+                 590     ; Compute a 16-bit CRC value for the StrataFLASH 64-bit serial number.
+                 591     ;**************************************************************************************
+                 592     ;
+                 593     ; This routing performs a 16-bit CRC calculation for the 64-bit unique serial number
+                 594     ; of the StrataFLASH memory which forms the authentication value for the design.
+                 595     ;
+                 596     ; The 16-bit CRC value returned in register pair [sE,sD] will be reflective of the unique
+                 597     ; serial number. This will be used as the authentication value for the design which is
+                 598     ; loadd at known locations in the FLASH memory.
+                 599     ;
+                 600     ; A direct copy of the FLASH contents will not authorise a design to operate because the
+                 601     ; authentication value will not match the CRC value generated from the different serial number.
+                 602     ;
+                 603     ; To complicate the CRC value generation the CRC register can be seeded with a value rather
+                 604     ; than starting with a clear register.
+                 605     ;
+                 606     ;
+                 607     ; Registers used s0,s1,s2,s3
+                 608     ;
+07F 00410        609     compute_seeded_crc:     LD      s4, #serial_number0     ;pointer to scratch pad memory holding serial number
+080 36084        610                             CALL    compute_crc16           ;compute CRC for value in 's3'
+081 00417        611                             load     s4, #serial_number7     ;check for 8 bytes processed
+082 24000        612                             RET
+083 08401        613                             ADD     s4, #0x01               ;increment memory pointer
+                 614
+                 615     ;
+                 616     ;
+                 617     ;**************************************************************************************
+                 618     ; Compute 16-bit CRC using the polynomial X16 + X15 + X2 + 1.
+                 619     ;**************************************************************************************
+                 620     ;
+                 621     ;
+                 622     ; This routine computes a 16-bit CRC in the register pair [sE,sD] and these
+                 623     ; registers must not be disturbed between calls of this routine.
+                 624     ;
+                 625     ; This routine has been written such that the CRC can be computed one
+                 626     ; byte at a time. The byte to be processed should be provided in register 's3'
+                 627     ; and the contents of this register are preserved.
+                 628     ;
+                 629     ; Before starting a CRC computation either clear or pre-load (seed) the register pair
+                 630     ; [sE,sD] and do not disturb the value of the register pair between calling this routine.
+                 631     ;
+                 632     ; Registers used s0,s1,s3,sD,sE
+                 633     ;    s3 is preserved.
+                 634     ;    sD and sE should not be disturbed between calls if CRC value is required.
+                 635     ;
+                 636     ;
+                 637     ;
+084 00108        638     compute_crc16:          LD      s1, #0x08               ;8-bits to shift
+085 10068        639     crc16_loop:             LD      s0, sd                  ;copy current CRC value
+086 16018        640                             XOR     s0, s3                  ;Need to know LSB XOR next input bit
+087 00001        641                             load    s0, #0x01               ;load result of XOR in LSB
+088 35C8B        642                             JUMP    nc, crc16_shift
+089 06D02        643                             XOR     sd, #0x02               ;compliment bit 1 of CRC
+08A 06E40        644                             XOR     se, #0x40               ;compliment bit 14 of CRC
+08B 2800E        645     crc16_shift:            SR0     s0                      ;Carry gets LSB XOR next input bit
+08C 28E08        646                             SRA     se                      ;shift Carry into MSB to form new CRC value
+08D 28D08        647                             SRA     sd
+08E 2830C        648                             RR      s3                      ;shift input value
+08F 0C101        649                             SUB     s1, #0x01               ;count bits
+090 35485        650                             JUMP    nz, crc16_loop          ;next bit
+091 24000        651                             RET
+                 652     ;
+                 653     ;
+                 654     ;**************************************************************************************
+                 655     ; Read 256 bytes of StrataFLASH memory including the authentication value.
+                 656     ;**************************************************************************************
+                 657     ;
+                 658     ; This routine reads the authentication value from the StrataFLASH memory. In this
+                 659     ; design the authentication value is only 2 bytes which once read will be returned
+                 660     ; in the register pair [sB,sA].
+                 661     ;
+                 662     ; To make the authentication value more difficult to identify, it is hidden in 256 bytes
+                 663     ; of pseudo random values which will also appear different in each FLASH device inspected.
+                 664     ; This routine deliberately reads all 256 bytes that are loadd and abstracts the required
+                 665     ; 2 bytes of information from them otherwise it would be easy to observe which addresses
+                 666     ; of the block were being accessed.
+                 667     ;
+                 668     ; Another way that an attacker may deduce which address locations are important would be to
+                 669     ; observe the time between read accesses and note when there is any difference. In this case
+                 670     ; the attacker is attempting to detect when PicoBlaze takes slightly longer to execute the
+                 671     ; instructions which load the important bytes in scratch pad memory. So to avoid this
+                 672     ; detection this routine inserts an additional random delay between reads to mask any code
+                 673     ; execution differences.
+                 674     ;
+                 675     ; The 256 bytes are loadd at addresses 060000 to 0600FF hex (the first block above the
+                 676     ; XC3S500E configuration image which occupies 000000 to 04547F hex). The 2 bytes forming the
+                 677     ; actual authentication value are loadd as 4-bit nibbles in 4 different locations in this range.
+                 678     ;
+                 679     ;
+                 680     ;                             High Order Nibble           Low Order Nibble
+                 681     ;                               (NNNNxxxx)                  (xxxxNNNN)
+                 682     ;
+                 683     ; LS-Byte in 'sA'              Addr=060010                 Addr=06007F
+                 684     ; MS-Byte in 'sB'              Addr=060025                 Addr=0600FA
+                 685     ;
+                 686     ;
+092 00906        687     read_authentication:    LD      s9, #0x06               ;start address in FLASH
+093 00800        688                             LD      s8, #0x00
+094 00700        689                             LD      s7, #0x00
+095 360FF        690     auth_read_loop:         CALL    sf_byte_read            ;read byte from FLASH into s0
+096 00710        691                             load     s7, #0x10               ;check for bytes/nibbles that contain real information
+097 3549A        692                             JUMP    nz, auth_check2
+098 10A00        693                             LD      sa, s0                  ;isolate upper order nibble for LS-Byte
+099 02AF0        694                             AND     sa, #0xf0
+09A 00725        695     auth_check2:            load     s7, #0x25
+09B 3549E        696                             JUMP    nz, auth_check3
+09C 10B00        697                             LD      sb, s0                  ;isolate upper order nibble for MS-Byte
+09D 02BF0        698                             AND     sb, #0xf0
+09E 0077F        699     auth_check3:            load     s7, #0x7f
+09F 354A2        700                             JUMP    nz, auth_check4
+0A0 0200F        701                             AND     s0, #0x0f               ;isolate lower order nibble for LS-Byte
+0A1 14A00        702                             OR      sa, s0                  ;  and merge with upper order nibble
+0A2 007FA        703     auth_check4:            load     s7, #0xfa
+0A3 354A6        704                             JUMP    nz, next_auth_read
+0A4 0200F        705                             AND     s0, #0x0f               ;isolate lower order nibble for MS-Byte
+0A5 14B00        706                             OR      sb, s0                  ;  and merge with upper order nibble
+0A6 08701        707     next_auth_read:         ADD     s7, #0x01               ;increment address
+0A7 24000        708                             RET                             ;complete after 256 reads
+0A8 20004        709                             IN      s0, random_value_port   ;random delay between reads
+0A9 0C001        710     auth_read_delay:        SUB     s0, #0x01
+0AA 354A9        711                             JUMP    nz, auth_read_delay
+0AB 34095        712                             JUMP    auth_read_loop
+                 713     ;
+                 714     ;
+                 715     ;**************************************************************************************
+                 716     ; Read 256 bytes (page) of StrataFLASH memory containing the authentication value.
+                 717     ;**************************************************************************************
+                 718     ;
+                 719     ; This routine reads the StrataFLASH memory and displays the contents on the PC display
+                 720     ; via the UART. The display will be 256 bytes from address range 060000 to 0600FF displayed
+                 721     ; as 16 lines of 16 bytes with each line commencing with the address of the first byte.
+                 722     ;
+0AC 00906        723     send_auth_page:         LD      s9, #0x06               ;start address in FLASH
+0AD 00800        724                             LD      s8, #0x00
+0AE 00700        725                             LD      s7, #0x00
+0AF 36152        726     auth_line_loop:         CALL    send_cr
+0B0 36144        727                             CALL    send_hex_3bytes         ;display address
+0B1 36155        728                             CALL    send_space
+0B2 36155        729     auth_byte_loop:         CALL    send_space
+0B3 360FF        730                             CALL    sf_byte_read            ;read byte into s0
+0B4 3613E        731                             CALL    send_hex_byte           ;display byte
+0B5 08701        732                             ADD     s7, #0x01               ;increment FLASH address
+0B6 0070F        733                             load    s7, #0x0f               ;load for 16 byte boundary
+0B7 354B2        734                             JUMP    nz, auth_byte_loop
+0B8 007FF        735                             load    s7, #0xff               ;load for roll over of 256 bytes
+0B9 354AF        736                             JUMP    nz, auth_line_loop
+0BA 36152        737                             CALL    send_cr
+0BB 24000        738                             RET
+                 739     ;
+                 740     ;
+                 741     ;
+                 742     ;
+                 743     ;**************************************************************************************
+                 744     ; Write 256 bytes of StrataFLASH memory including the authentication value.
+                 745     ;**************************************************************************************
+                 746     ;
+                 747     ; This routine writes the authentication value to the StrataFLASH memory. This routine
+                 748     ; would normally be part of a production programming mechanism and not part of the
+                 749     ; final design which only reads and confirms authentication. This routine does not
+                 750     ; require and special measures to confuse an attacker if it is only used in a secure
+                 751     ; production environment.
+                 752     ;
+                 753     ; The 2 bytes forming the actual authentication value are loadd as 4-bit nibbles in
+                 754     ; 4 different locations in the address range 600000 to 6000FF hex (256 bytes) with
+                 755     ; all remaining locations filled with pseudo random values.
+                 756     ;
+                 757     ; The authentication value to be loadd in StrataFLASH memory should be provided in
+                 758     ; the register pair [sE,sD] and will be loadd in the following locations.
+                 759     ;
+                 760     ;                             High Order Nibble           Low Order Nibble
+                 761     ;                               (NNNNxxxx)                  (xxxxNNNN)
+                 762     ;
+                 763     ; LS-Byte in 'sD'              Addr=060010                 Addr=06007F
+                 764     ; MS-Byte in 'sE'              Addr=060025                 Addr=0600FA
+                 765     ;
+                 766     ;
+0BC 00906        767     write_authentication:   LD      s9, #0x06               ;start address in FLASH
+0BD 00800        768                             LD      s8, #0x00
+0BE 00700        769                             LD      s7, #0x00
+0BF 20004        770     auth_write_loop:        IN      s0, random_value_port   ;Obtain random value
+0C0 00710        771                             load     s7, #0x10               ;check for bytes/nibbles that need to be real information
+0C1 354C6        772                             JUMP    nz, auth_write_check2
+0C2 10168        773                             LD      s1, sd                  ;merge upper order nibble for LS-Byte with random
+0C3 021F0        774                             AND     s1, #0xf0
+0C4 0200F        775                             AND     s0, #0x0f
+0C5 14008        776                             OR      s0, s1
+0C6 00725        777     auth_write_check2:      load     s7, #0x25
+0C7 354CC        778                             JUMP    nz, auth_write_check3
+0C8 10170        779                             LD      s1, se                  ;merge upper order nibble for MS-Byte with random
+0C9 021F0        780                             AND     s1, #0xf0
+0CA 0200F        781                             AND     s0, #0x0f
+0CB 14008        782                             OR      s0, s1
+0CC 0077F        783     auth_write_check3:      load     s7, #0x7f
+0CD 354D2        784                             JUMP    nz, auth_write_check4
+0CE 10168        785                             LD      s1, sd                  ;merge lower order nibble for LS-Byte with random
+0CF 0210F        786                             AND     s1, #0x0f
+0D0 020F0        787                             AND     s0, #0xf0
+0D1 14008        788                             OR      s0, s1
+0D2 007FA        789     auth_write_check4:      load     s7, #0xfa
+0D3 354D8        790                             JUMP    nz, write_auth
+0D4 10170        791                             LD      s1, se                  ;merge lower order nibble for MS-Byte with random
+0D5 0210F        792                             AND     s1, #0x0f
+0D6 020F0        793                             AND     s0, #0xf0
+0D7 14008        794                             OR      s0, s1
+0D8 360EA        795     write_auth:             CALL    sf_single_byte_write    ;write byte to FLASH
+0D9 08701        796                             ADD     s7, #0x01               ;increment address
+0DA 24000        797                             RET                             ;complete after 256 writes
+0DB 340BF        798                             JUMP    auth_write_loop
+                 799     ;
+                 800     ;
+                 801     ;**************************************************************************************
+                 802     ; Erase authentication value from StrataFLASH memory.
+                 803     ;**************************************************************************************
+                 804     ;
+                 805     ; Erase block 3 of the StrataFLASH memory which covers the address range 060000 to 07FFFF.
+                 806     ; This erases the area containing the authentication value and random values which helps
+                 807     ; to hide it.
+                 808     ;
+0DC 00906        809     erase_authentication:   LD      s9, #0x06               ;set address to 06xxxx hex which defines block 3 (060000 to 07FFFF)
+0DD 360E2        810                             CALL    sf_erase_block
+0DE 24000        811                             RET
+                 812     ;
+                 813     ;
+                 814     ;**************************************************************************************
+                 815     ; Initialise the StrataFlash Memory control signals.
+                 816     ;**************************************************************************************
+                 817     ;
+                 818     ; SF_read = 0   - Output enable off
+                 819     ; SF_ce = 1     - Deselect StrataFLASH memory
+                 820     ; SF_we = 1     - Write enable off
+                 821     ;
+                 822     ; Register used s0
+                 823     ;
+0DF 00006        824     sf_init:                LD      s0, #0x06
+0E0 22040        825                             OUT     s0, sf_control_port
+0E1 24000        826                             RET
+                 827     ;
+                 828     ;
+                 829     ;
+                 830     ;**************************************************************************************
+                 831     ; StrataFLASH Block Erase
+                 832     ;**************************************************************************************
+                 833     ;
+                 834     ; This routine will erase one 128k-byte block of the StrataFLASH memory.
+                 835     ; The block to be erased is specified by the contents of register 's9'.
+                 836     ;
+                 837     ; s9=06 erases Block 3 (address range 060000 to 07FFFF)
+                 838     ;
+                 839     ;
+                 840     ; To erase a block the 24-bit address must be set and then the block erase command
+                 841     ; (20 hex) written to the memory followed by the write confirm command (D0 hex).
+                 842     ;
+                 843     ; The act of erasing a block may take up to 1 second to complete. This routine
+                 844     ; waits for the memory to be ready before restoring the normal read array mode and
+                 845     ; returning.
+                 846     ;
+                 847     ; Registers used s0,s1,s7,s8,s9
+                 848     ;
+0E2 00800        849     sf_erase_block:         LD      s8, #0x00               ;define lower address of block = xx0000
+0E3 00700        850                             LD      s7, #0x00
+0E4 00120        851                             LD      s1, #0x20               ;block erase command
+0E5 36109        852                             CALL    sf_byte_write
+0E6 001D0        853                             LD      s1, #0xd0               ;write confirm command
+0E7 36109        854                             CALL    sf_byte_write
+0E8 36116        855                             CALL    wait_sf_ready           ;wait for erase to complete
+0E9 24000        856                             RET
+                 857     ;
+                 858     ;
+                 859     ;**************************************************************************************
+                 860     ; Write a single byte to StrataFlash Memory
+                 861     ;**************************************************************************************
+                 862     ;
+                 863     ; To write a single byte to StrataFLASH memory the address must be set and the
+                 864     ; single-word/byte program command (40 hex) sent to the memory. Then the EQU byte can
+                 865     ; be written to the memory using the same address.
+                 866     ;
+                 867     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 868     ; Register s0 should contain the byte EQU to be written to the memory.
+                 869     ;
+                 870     ; The act of writing the memory array may take up to 175us to complete. This routine
+                 871     ; waits for the memory to be ready before restoring the normal read array mode and
+                 872     ; returning.
+                 873     ;
+                 874     ; Registers used s0,s1,s7,s8,s9   (s7,s8,s9 not changed)
+                 875     ;
+                 876     ; Registers used s0,s1,s7,s8,s9
+                 877     ;
+0EA 00140        878     sf_single_byte_write:   LD      s1, #0x40               ;command for single byte program
+0EB 36109        879                             CALL    sf_byte_write
+0EC 10100        880                             LD      s1, s0                  ;write EQU to be programmed
+0ED 36109        881                             CALL    sf_byte_write
+0EE 36116        882                             CALL    wait_sf_ready           ;wait for program to complete
+0EF 24000        883                             RET
+                 884     ;
+                 885     ;
+                 886     ;
+                 887     ;**************************************************************************************
+                 888     ; Read the unique 64-bit serial number of the StrataFLASH FLASH memory
+                 889     ;**************************************************************************************
+                 890     ;
+                 891     ; To read the device information the Read device information command (90)
+                 892     ; must be written to the memory. The information is read back from address 000102
+                 893     ; to 000109 (note these are byte access addresses).
+                 894     ;
+                 895     ; The serial number is copied to 8 ascending scratch pad memory locations called
+                 896     ; 'serial_number0' through to 'serial_number7' for future use.
+                 897     ;
+                 898     ; After reading the device information the read array command is written to the
+                 899     ; device to put it back to normal read mode.
+                 900     ;
+                 901     ; Registers used s0,s1,s2,s7,s8,s9
+                 902     ;
+0F0 00900        903     read_sf_serial_number:  LD      s9, #0x00               ;StrataFLASH address to read serial number = 000102
+0F1 00801        904                             LD      s8, #0x01
+0F2 00702        905                             LD      s7, #0x02
+0F3 00210        906                             LD      s2, #serial_number0     ;pointer to scratch pad memory
+0F4 00190        907                             LD      s1, #0x90               ;command to read device information
+0F5 36109        908                             CALL    sf_byte_write
+0F6 360FF        909     read_sn_loop:           CALL    sf_byte_read            ;read serial number value
+0F7 00002        910                             load      s0, #s2
+W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+0F8 00217        911                             load     s2, #serial_number7     ;check for 8 bytes copied
+0F9 350FD        912                             JUMP    z, end_read_sn
+0FA 08701        913                             ADD     s7, #0x01               ;increment StrataFLASH address
+0FB 08201        914                             ADD     s2, #0x01               ;increment memory pointer
+0FC 340F6        915                             JUMP    read_sn_loop
+                 916     ;
+0FD 36113        917     end_read_sn:            CALL    set_sf_read_array_mode  ;reload normal read array mode
+0FE 24000        918                             RET
+                 919     ;
+                 920     ;
+                 921     ;
+                 922     ;**************************************************************************************
+                 923     ; Read a byte from StrataFlash Memory
+                 924     ;**************************************************************************************
+                 925     ;
+                 926     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 927     ; Register s0 will return the byte EQU retrieved from the memory.
+                 928     ;
+                 929     ; To read a byte, the address needs to be set up on the address lines
+                 930     ; and the controls set as follows
+                 931     ;    SF_read = 1 - disable Spartan EQU outputs and enable StrataFlash outputs (OE=0)
+                 932     ;      SF_ce = 0 - enable StrataFLASH memory
+                 933     ;      SF_we = 1 - Write enable off
+                 934     ;
+                 935     ; The access time of the memory is 75ns. This is equivalent to 3.75 clock cycles at
+                 936     ; 50MHz. Since each KCPSM3 instruction takes 2 clock cycles to execute, two instructions
+                 937     ; provides adequate delay for the memory to be accessed.
+                 938     ;
+                 939     ; Registers used s0,s1,s7,s8,s9
+                 940     ;
+0FF 22983        941     sf_byte_read:           OUT     s9, sf_addr_hi_port     ;set 24-bit address
+100 22882        942                             OUT     s8, sf_addr_mi_port
+101 22781        943                             OUT     s7, sf_addr_lo_port
+102 00105        944                             LD      s1, #0x05               ;set controls
+103 22140        945                             OUT     s1, sf_control_port
+104 00106        946                             LD      s1, #0x06               ;>75ns delay
+105 00106        947                             LD      s1, #0x06               ;but do something useful!
+106 20002        948                             IN      s0, sf_EQU_in_port     ;read EQU byte
+107 22140        949                             OUT     s1, sf_control_port     ;clear controls
+108 24000        950                             RET
+                 951     ;
+                 952     ;
+                 953     ;**************************************************************************************
+                 954     ; Write EQU or command byte to StrataFlash Memory
+                 955     ;**************************************************************************************
+                 956     ;
+                 957     ; The 24-bit address should be supplied in register set [s9,s8,s7].
+                 958     ; Register s1 should contain the byte to be written to the memory.
+                 959     ;
+                 960     ; To write a byte, the address needs to be set up on the address lines
+                 961     ; and the controls set as follows
+                 962     ;    SF_read = 0 - enable Spartan EQU outputs and disable StrataFlash outputs (OE=1)
+                 963     ;      SF_ce = 0 - enable StrataFLASH memory
+                 964     ;      SF_we = 0 - Write enable on
+                 965     ;
+                 966     ; The setup time of the memory is 60ns. This is equivalent to 3 clock cycles at
+                 967     ; 50MHz. Since each KCPSM3 instruction takes 2 clock cycles to execute, two instructions
+                 968     ; provides adequate delay for the memory.
+                 969     ;
+                 970     ; Registers used s1,s7,s8,s9
+                 971     ;
+109 22983        972     sf_byte_write:          OUT     s9, sf_addr_hi_port     ;set 24-bit address
+10A 22882        973                             OUT     s8, sf_addr_mi_port
+10B 22781        974                             OUT     s7, sf_addr_lo_port
+10C 22180        975                             OUT     s1, sf_EQU_out_port    ;set EQU byte to be written
+10D 00100        976                             LD      s1, #0x00               ;set controls
+10E 22140        977                             OUT     s1, sf_control_port
+10F 00106        978                             LD      s1, #0x06               ;>60ns delay
+110 00106        979                             LD      s1, #0x06               ;but do something useful!
+111 22140        980                             OUT     s1, sf_control_port     ;clear controls
+112 24000        981                             RET
+                 982     ;
+                 983     ;
+                 984     ;**************************************************************************************
+                 985     ; Set 'Read Array' mode on StrataFLASH
+                 986     ;**************************************************************************************
+                 987     ;
+                 988     ; The read array mode is the default mode of the memory and allows the contents
+                 989     ; of the memory to be read based on the supplied address.
+                 990     ;
+                 991     ; Read array is the default mode of the device, but it must also be placed back
+                 992     ; into this mode after programming, erasing or reading the status register.
+                 993     ;
+                 994     ; The read array command (FF hex) is written to the Strata flash memory.
+                 995     ;
+                 996     ; Registers used s1,s7,s8,s9
+                 997     ;
+113 001FF        998     set_sf_read_array_mode: LD      s1, #0xff               ;command to read array
+114 36109        999                             CALL    sf_byte_write
+115 24000       1000                             RET
+                1001     ;
+                1002     ;
+                1003     ;**************************************************************************************
+                1004     ; Wait for StrataFLASH to be ready
+                1005     ;**************************************************************************************
+                1006     ;
+                1007     ; This routine will typically be used after instigating a program or erase
+                1008     ; command. It continuously reads the StrataFLASH status register and loads the
+                1009     ; information provided by bit7 which indicates if the memory is busy(0) or ready(1).
+                1010     ; The routine waits for the ready condition before sending a read array command
+                1011     ; which puts the memory back to normal read mode.
+                1012     ;
+                1013     ;
+                1014     ; Registers used s0,s1,s7,s8,s9   (s7,s8,s9 not changed)
+                1015     ;
+                1016     ;
+116 360FF       1017     wait_sf_ready:          CALL    sf_byte_read            ;read status register into s0
+117 00080       1018                             load    s0, #0x80               ;load ready/busy flag
+118 35116       1019                             JUMP    z, wait_sf_ready
+119 36113       1020                             CALL    set_sf_read_array_mode  ;reload normal read array mode
+11A 24000       1021                             RET
+                1022     ;
+                1023     ;
+                1024     ;
+                1025     ;
+                1026     ;**************************************************************************************
+                1027     ; UART communication routines
+                1028     ;**************************************************************************************
+                1029     ;
+                1030     ; Read one character from the UART
+                1031     ;
+                1032     ; Character read will be returned in a register called 'UART_EQU'.
+                1033     ;
+                1034     ; The routine first loads the receiver FIFO buffer to see if EQU is present.
+                1035     ; If the FIFO is empty, the routine waits until there is a character to read.
+                1036     ; As this could take any amount of time the wait loop could include a call to a
+                1037     ; subroutine which performs a useful function.
+                1038     ;
+                1039     ;
+                1040     ; Registers used s0 and UART_EQU
+                1041     ;
+11B 20000       1042     read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
+11C 00004       1043                             load    s0, #rx_EQU_present    ;wait if empty
+11D 3551F       1044                             JUMP    nz, read_character
+11E 3411B       1045                             JUMP    read_from_uart
+11F 20F01       1046     read_character:         IN      uart_EQU, uart_read_port ;read from FIFO
+120 24000       1047                             RET
+                1048     ;
+                1049     ;
+                1050     ;
+                1051     ; Transmit one character to the UART
+                1052     ;
+                1053     ; Character supplied in register called 'UART_EQU'.
+                1054     ;
+                1055     ; The routine first loads the transmit FIFO buffer to see if it is full.
+                1056     ; If the FIFO is full, then the routine waits until it there is space.
+                1057     ;
+                1058     ; Registers used s0
+                1059     ;
+121 20000       1060     send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
+122 00002       1061                             load    s0, #tx_full            ;wait if full
+123 35125       1062                             JUMP    z, uart_write
+124 34121       1063                             JUMP    send_to_uart
+125 22F08       1064     uart_write:             OUT     uart_EQU, uart_write_port
+126 24000       1065                             RET
+                1066     ;
+                1067     ;
+                1068     ;
+                1069     ;**************************************************************************************
+                1070     ;Useful ASCII conversion and handling routines
+                1071     ;**************************************************************************************
+                1072     ;
+                1073     ;
+                1074     ;
+                1075     ;Convert character to upper case
+                1076     ;
+                1077     ;The character supplied in register UART_EQU.
+                1078     ;If the character is in the range 'a' to 'z', it is converted
+                1079     ;to the equivalent upper case character in the range 'A' to 'Z'.
+                1080     ;All other characters remain unchanged.
+                1081     ;
+                1082     ;Registers used s0.
+                1083     ;
+127 00F61       1084     upper_case:             load     uart_EQU, #0x61        ;eliminate character codes below 'a' (61 hex)
+128 24000       1085                             RET
+129 00F7B       1086                             load     uart_EQU, #0x7b        ;eliminate character codes above 'z' (7A hex)
+12A 24000       1087                             RET
+12B 02FDF       1088                             AND     uart_EQU, #0xdf        ;mask bit5 to convert to upper case
+12C 24000       1089                             RET
+                1090     ;
+                1091     ;
+                1092     ;Convert hexadecimal value provided in register s0 into ASCII characters
+                1093     ;
+                1094     ;The value provided must can be any value in the range 00 to FF and will be converted into
+                1095     ;two ASCII characters.
+                1096     ;     The upper nibble will be represented by an ASCII character returned in register s2.
+                1097     ;     The lower nibble will be represented by an ASCII character returned in register s1.
+                1098     ;
+                1099     ;The ASCII representations of '0' to '9' are 30 to 39 hexadecimal which is simply 30 hex
+                1100     ;added to the actual decimal value. The ASCII representations of 'A' to 'F' are 41 to 46
+                1101     ;hexadecimal requiring a further addition of 07 to the 30 already added.
+                1102     ;
+                1103     ;Registers used s0, s1 and s2.
+                1104     ;
+12D 10100       1105     hex_byte_to_ascii:      LD      s1, s0                  ;remember value supplied
+12E 2800E       1106                             SR0     s0                      ;isolate upper nibble
+12F 2800E       1107                             SR0     s0
+130 2800E       1108                             SR0     s0
+131 2800E       1109                             SR0     s0
+132 36139       1110                             CALL    hex_to_ascii            ;convert
+133 10200       1111                             LD      s2, s0                  ;upper nibble value in s2
+134 10008       1112                             LD      s0, s1                  ;reload complete value
+135 0200F       1113                             AND     s0, #0x0f               ;isolate lower nibble
+136 36139       1114                             CALL    hex_to_ascii            ;convert
+137 10100       1115                             LD      s1, s0                  ;lower nibble value in s1
+138 24000       1116                             RET
+                1117     ;
+                1118     ;Convert hexadecimal value provided in register s0 into ASCII character
+                1119     ;
+                1120     ;Register used s0
+                1121     ;
+139 0C00A       1122     hex_to_ascii:           SUB     s0, #0x0a               ;load if value is in range 0 to 9
+13A 3593C       1123                             JUMP    c, number_char
+13B 08007       1124                             ADD     s0, #0x07               ;ASCII char A to F in range 41 to 46
+13C 0803A       1125     number_char:            ADD     s0, #0x3a               ;ASCII char 0 to 9 in range 30 to 40
+13D 24000       1126                             RET
+                1127     ;
+                1128     ;
+                1129     ;Send the two character HEX value of the register contents 's0' to the UART
+                1130     ;
+                1131     ;Registers used s0, s1, s2
+                1132     ;
+13E 3612D       1133     send_hex_byte:          CALL    hex_byte_to_ascii
+13F 10F10       1134                             LD      uart_EQU, s2
+140 36121       1135                             CALL    send_to_uart
+141 10F08       1136                             LD      uart_EQU, s1
+142 36121       1137                             CALL    send_to_uart
+143 24000       1138                             RET
+                1139     ;
+                1140     ;
+                1141     ;Send the six character HEX value of the register contents [s9,s8,s7] to the UART
+                1142     ;
+                1143     ;Registers used s0, s1, s2
+                1144     ;
+144 10048       1145     send_hex_3bytes:        LD      s0, s9
+145 3613E       1146                             CALL    send_hex_byte
+146 10040       1147                             LD      s0, s8
+147 3613E       1148                             CALL    send_hex_byte
+148 10038       1149                             LD      s0, s7
+149 3613E       1150                             CALL    send_hex_byte
+14A 24000       1151                             RET
+                1152     ;
+                1153     ;
+                1154     ;Display the two character HEX value of the register contents 's0' on the LCD display
+                1155     ;
+                1156     ;Registers used s0,s1,s2,s3,s4,s5
+                1157     ;
+14B 3612D       1158     disp_hex_byte:          CALL    hex_byte_to_ascii
+14C 10308       1159                             LD      s3, s1                  ;remember least significant digit
+14D 10510       1160                             LD      s5, s2
+14E 362FC       1161                             CALL    lcd_write_EQU          ;display most significant digit
+14F 10518       1162                             LD      s5, s3
+150 362FC       1163                             CALL    lcd_write_EQU          ;display least significant digit
+151 24000       1164                             RET
+                1165     ;
+                1166     ;
+                1167     ;
+                1168     ;**************************************************************************************
+                1169     ; UART Text messages
+                1170     ;**************************************************************************************
+                1171     ;
+                1172     ;
+                1173     ;Send Carriage Return to the UART
+                1174     ;
+152 00F0D       1175     send_cr:                LD      uart_EQU, #character_cr
+153 36121       1176                             CALL    send_to_uart
+154 24000       1177                             RET
+                1178     ;
+                1179     ;Send a space to the UART
+                1180     ;
+155 00F20       1181     send_space:             LD      uart_EQU, #character_space
+156 36121       1182                             CALL    send_to_uart
+157 24000       1183                             RET
+                1184     ;
+                1185     ;
+                1186     ;Send an equals sign to the UART with a space each side
+                1187     ;
+158 36155       1188     send_equals:            CALL    send_space
+159 00F3D       1189                             LD      uart_EQU, #character_equals
+15A 36121       1190                             CALL    send_to_uart
+15B 36155       1191                             CALL    send_space
+15C 24000       1192                             RET
+                1193     ;
+                1194     ;
+                1195     ;
+                1196     ;Send an minus sign (dash) to the UART with a space each side
+                1197     ;
+15D 36155       1198     send_dash:              CALL    send_space
+15E 00F2D       1199                             LD      uart_EQU, #character_minus
+15F 36121       1200                             CALL    send_to_uart
+160 36155       1201                             CALL    send_space
+161 24000       1202                             RET
+                1203     ;
+                1204     ;
+                1205     ;Send 'PicoBlaze Low Cost Design Security v1.00' string to the UART
+                1206     ;
+162 36152       1207     send_welcome:           CALL    send_cr
+163 36152       1208                             CALL    send_cr
+164 00F50       1209                             LD      uart_EQU, #_character_p
+165 36121       1210                             CALL    send_to_uart
+166 00F69       1211                             LD      uart_EQU, #character_i
+167 36121       1212                             CALL    send_to_uart
+168 00F63       1213                             LD      uart_EQU, #character_c
+169 36121       1214                             CALL    send_to_uart
+16A 00F6F       1215                             LD      uart_EQU, #character_o
+16B 36121       1216                             CALL    send_to_uart
+16C 00F42       1217                             LD      uart_EQU, #_character_b
+16D 36121       1218                             CALL    send_to_uart
+16E 00F6C       1219                             LD      uart_EQU, #character_l
+16F 36121       1220                             CALL    send_to_uart
+170 00F61       1221                             LD      uart_EQU, #character_a
+171 36121       1222                             CALL    send_to_uart
+172 00F7A       1223                             LD      uart_EQU, #character_z
+173 36121       1224                             CALL    send_to_uart
+174 00F65       1225                             LD      uart_EQU, #character_e
+175 36121       1226                             CALL    send_to_uart
+176 36155       1227                             CALL    send_space
+177 00F4C       1228                             LD      uart_EQU, #_character_l
+178 36121       1229                             CALL    send_to_uart
+179 00F6F       1230                             LD      uart_EQU, #character_o
+17A 36121       1231                             CALL    send_to_uart
+17B 00F77       1232                             LD      uart_EQU, #character_w
+17C 36121       1233                             CALL    send_to_uart
+17D 36155       1234                             CALL    send_space
+17E 00F43       1235                             LD      uart_EQU, #_character_c
+17F 36121       1236                             CALL    send_to_uart
+180 00F6F       1237                             LD      uart_EQU, #character_o
+181 36121       1238                             CALL    send_to_uart
+182 00F73       1239                             LD      uart_EQU, #character_s
+183 36121       1240                             CALL    send_to_uart
+184 00F74       1241                             LD      uart_EQU, #character_t
+185 36121       1242                             CALL    send_to_uart
+186 36155       1243                             CALL    send_space
+187 00F44       1244                             LD      uart_EQU, #_character_d
+188 36121       1245                             CALL    send_to_uart
+189 00F65       1246                             LD      uart_EQU, #character_e
+18A 36121       1247                             CALL    send_to_uart
+18B 00F73       1248                             LD      uart_EQU, #character_s
+18C 36121       1249                             CALL    send_to_uart
+18D 00F69       1250                             LD      uart_EQU, #character_i
+18E 36121       1251                             CALL    send_to_uart
+18F 00F67       1252                             LD      uart_EQU, #character_g
+190 36121       1253                             CALL    send_to_uart
+191 00F6E       1254                             LD      uart_EQU, #character_n
+192 36121       1255                             CALL    send_to_uart
+193 36155       1256                             CALL    send_space
+194 00F53       1257                             LD      uart_EQU, #_character_s
+195 36121       1258                             CALL    send_to_uart
+196 00F65       1259                             LD      uart_EQU, #character_e
+197 36121       1260                             CALL    send_to_uart
+198 00F63       1261                             LD      uart_EQU, #character_c
+199 36121       1262                             CALL    send_to_uart
+19A 00F75       1263                             LD      uart_EQU, #character_u
+19B 36121       1264                             CALL    send_to_uart
+19C 00F72       1265                             LD      uart_EQU, #character_r
+19D 36121       1266                             CALL    send_to_uart
+19E 00F69       1267                             LD      uart_EQU, #character_i
+19F 36121       1268                             CALL    send_to_uart
+1A0 00F74       1269                             LD      uart_EQU, #character_t
+1A1 36121       1270                             CALL    send_to_uart
+1A2 00F79       1271                             LD      uart_EQU, #character_y
+1A3 36121       1272                             CALL    send_to_uart
+1A4 36155       1273                             CALL    send_space
+1A5 00F76       1274                             LD      uart_EQU, #character_v
+1A6 36121       1275                             CALL    send_to_uart
+1A7 00F31       1276                             LD      uart_EQU, #character_1
+1A8 36121       1277                             CALL    send_to_uart
+1A9 00F2E       1278                             LD      uart_EQU, #character_fullstop
+1AA 36121       1279                             CALL    send_to_uart
+1AB 00F30       1280                             LD      uart_EQU, #character_0
+1AC 36121       1281                             CALL    send_to_uart
+1AD 00F30       1282                             LD      uart_EQU, #character_0
+1AE 36121       1283                             CALL    send_to_uart
+1AF 36152       1284                             CALL    send_cr
+1B0 36152       1285                             CALL    send_cr
+1B1 24000       1286                             RET
+                1287     ;
+                1288     ;
+                1289     ;
+                1290     ;Send 'Copyright Ken Chapman 2006' string to the UART
+                1291     ;
+                1292     ;This message is significant because it demonstrates that the design
+                1293     ;now has a 'watermark'. The ASCII codes for this string will be
+                1294     ;loadd in the design configuration bit stream somewhere as well as
+                1295     ;being played out by the UART. If someone tries to change or delete
+                1296     ;this message the contents of the BRAM will change and the hardware
+                1297     ;check of the BRAM contents will fail to match the expected value and
+                1298     ;the design will again be disabled.
+                1299     ;
+1B2 00F43       1300     send_copyright:         LD      uart_EQU, #_character_c
+1B3 36121       1301                             CALL    send_to_uart
+1B4 00F6F       1302                             LD      uart_EQU, #character_o
+1B5 36121       1303                             CALL    send_to_uart
+1B6 00F70       1304                             LD      uart_EQU, #character_p
+1B7 36121       1305                             CALL    send_to_uart
+1B8 00F79       1306                             LD      uart_EQU, #character_y
+1B9 36121       1307                             CALL    send_to_uart
+1BA 00F72       1308                             LD      uart_EQU, #character_r
+1BB 36121       1309                             CALL    send_to_uart
+1BC 00F69       1310                             LD      uart_EQU, #character_i
+1BD 36121       1311                             CALL    send_to_uart
+1BE 00F67       1312                             LD      uart_EQU, #character_g
+1BF 36121       1313                             CALL    send_to_uart
+1C0 00F68       1314                             LD      uart_EQU, #character_h
+1C1 36121       1315                             CALL    send_to_uart
+1C2 00F74       1316                             LD      uart_EQU, #character_t
+1C3 36121       1317                             CALL    send_to_uart
+1C4 36155       1318                             CALL    send_space
+1C5 00F4B       1319                             LD      uart_EQU, #_character_k
+1C6 36121       1320                             CALL    send_to_uart
+1C7 00F65       1321                             LD      uart_EQU, #character_e
+1C8 36121       1322                             CALL    send_to_uart
+1C9 00F6E       1323                             LD      uart_EQU, #character_n
+1CA 36121       1324                             CALL    send_to_uart
+1CB 36155       1325                             CALL    send_space
+1CC 00F43       1326                             LD      uart_EQU, #_character_c
+1CD 36121       1327                             CALL    send_to_uart
+1CE 00F68       1328                             LD      uart_EQU, #character_h
+1CF 36121       1329                             CALL    send_to_uart
+1D0 00F61       1330                             LD      uart_EQU, #character_a
+1D1 36121       1331                             CALL    send_to_uart
+1D2 00F70       1332                             LD      uart_EQU, #character_p
+1D3 36121       1333                             CALL    send_to_uart
+1D4 00F6D       1334                             LD      uart_EQU, #character_m
+1D5 36121       1335                             CALL    send_to_uart
+1D6 00F61       1336                             LD      uart_EQU, #character_a
+1D7 36121       1337                             CALL    send_to_uart
+1D8 00F6E       1338                             LD      uart_EQU, #character_n
+1D9 36121       1339                             CALL    send_to_uart
+1DA 36155       1340                             CALL    send_space
+1DB 00F32       1341                             LD      uart_EQU, #character_2
+1DC 36121       1342                             CALL    send_to_uart
+1DD 00F30       1343                             LD      uart_EQU, #character_0
+1DE 36121       1344                             CALL    send_to_uart
+1DF 36121       1345                             CALL    send_to_uart
+1E0 00F36       1346                             LD      uart_EQU, #character_6
+1E1 36121       1347                             CALL    send_to_uart
+1E2 36152       1348                             CALL    send_cr
+1E3 36152       1349                             CALL    send_cr
+1E4 24000       1350                             RET
+                1351     ;
+                1352     ;
+                1353     ;
+                1354     ;Send 'FLASH ' string to the UART
+                1355     ;
+1E5 00F46       1356     send_flash:             LD      uart_EQU, #_character_f
+1E6 36121       1357                             CALL    send_to_uart
+1E7 00F4C       1358                             LD      uart_EQU, #_character_l
+1E8 36121       1359                             CALL    send_to_uart
+1E9 00F41       1360                             LD      uart_EQU, #_character_a
+1EA 36121       1361                             CALL    send_to_uart
+1EB 00F53       1362                             LD      uart_EQU, #_character_s
+1EC 36121       1363                             CALL    send_to_uart
+1ED 00F48       1364                             LD      uart_EQU, #_character_h
+1EE 36121       1365                             CALL    send_to_uart
+1EF 24000       1366                             RET
+                1367     ;
+                1368     ;
+                1369     ;
+                1370     ;Send 'FLASH Serial Number = ' string to the UART
+                1371     ;
+1F0 361E5       1372     send_flash_serial_number: CALL  send_flash
+1F1 36155       1373                             CALL    send_space
+1F2 00F53       1374                             LD      uart_EQU, #_character_s
+1F3 36121       1375                             CALL    send_to_uart
+1F4 00F65       1376                             LD      uart_EQU, #character_e
+1F5 36121       1377                             CALL    send_to_uart
+1F6 00F72       1378                             LD      uart_EQU, #character_r
+1F7 36121       1379                             CALL    send_to_uart
+1F8 00F69       1380                             LD      uart_EQU, #character_i
+1F9 36121       1381                             CALL    send_to_uart
+1FA 00F61       1382                             LD      uart_EQU, #character_a
+1FB 36121       1383                             CALL    send_to_uart
+1FC 00F6C       1384                             LD      uart_EQU, #character_l
+1FD 36121       1385                             CALL    send_to_uart
+1FE 36155       1386                             CALL    send_space
+1FF 00F4E       1387                             LD      uart_EQU, #_character_n
+200 36121       1388                             CALL    send_to_uart
+201 00F75       1389                             LD      uart_EQU, #character_u
+202 36121       1390                             CALL    send_to_uart
+203 00F6D       1391                             LD      uart_EQU, #character_m
+204 36121       1392                             CALL    send_to_uart
+205 00F62       1393                             LD      uart_EQU, #character_b
+206 36121       1394                             CALL    send_to_uart
+207 00F65       1395                             LD      uart_EQU, #character_e
+208 36121       1396                             CALL    send_to_uart
+209 00F72       1397                             LD      uart_EQU, #character_r
+20A 36121       1398                             CALL    send_to_uart
+20B 36158       1399                             CALL    send_equals
+20C 24000       1400                             RET
+                1401     ;
+                1402     ;
+                1403     ;Send 'Auth' string to the UART
+                1404     ;
+20D 00F41       1405     send_auth:              LD      uart_EQU, #_character_a
+20E 36121       1406                             CALL    send_to_uart
+20F 00F75       1407                             LD      uart_EQU, #character_u
+210 36121       1408                             CALL    send_to_uart
+211 00F74       1409                             LD      uart_EQU, #character_t
+212 36121       1410                             CALL    send_to_uart
+213 00F68       1411                             LD      uart_EQU, #character_h
+214 36121       1412                             CALL    send_to_uart
+215 24000       1413                             RET
+                1414     ;
+                1415     ;Send 'Authoris' to the UART
+                1416     ;
+216 3620D       1417     send_authoris:          CALL    send_auth
+217 00F6F       1418                             LD      uart_EQU, #character_o
+218 36121       1419                             CALL    send_to_uart
+219 00F72       1420                             LD      uart_EQU, #character_r
+21A 36121       1421                             CALL    send_to_uart
+21B 00F69       1422                             LD      uart_EQU, #character_i
+21C 36121       1423                             CALL    send_to_uart
+21D 00F73       1424                             LD      uart_EQU, #character_s
+21E 36121       1425                             CALL    send_to_uart
+21F 24000       1426                             RET
+                1427     ;
+                1428     ;Send 'Authorisation' to the UART
+                1429     ;
+220 36216       1430     send_authorisation:     CALL    send_authoris
+221 00F61       1431                             LD      uart_EQU, #character_a
+222 36121       1432                             CALL    send_to_uart
+223 00F74       1433                             LD      uart_EQU, #character_t
+224 36121       1434                             CALL    send_to_uart
+225 00F69       1435                             LD      uart_EQU, #character_i
+226 36121       1436                             CALL    send_to_uart
+227 00F6F       1437                             LD      uart_EQU, #character_o
+228 36121       1438                             CALL    send_to_uart
+229 00F6E       1439                             LD      uart_EQU, #character_n
+22A 36121       1440                             CALL    send_to_uart
+22B 24000       1441                             RET
+                1442     ;
+                1443     ;Send 'Authorise' to the UART
+                1444     ;
+22C 36216       1445     send_authorise:         CALL    send_authoris
+22D 00F65       1446                             LD      uart_EQU, #character_e
+22E 36121       1447                             CALL    send_to_uart
+22F 24000       1448                             RET
+                1449     ;
+                1450     ;Send 'Authentication' string to the UART
+                1451     ;
+230 3620D       1452     send_authentication:    CALL    send_auth
+231 00F65       1453                             LD      uart_EQU, #character_e
+232 36121       1454                             CALL    send_to_uart
+233 00F6E       1455                             LD      uart_EQU, #character_n
+234 36121       1456                             CALL    send_to_uart
+235 00F74       1457                             LD      uart_EQU, #character_t
+236 36121       1458                             CALL    send_to_uart
+237 00F69       1459                             LD      uart_EQU, #character_i
+238 36121       1460                             CALL    send_to_uart
+239 00F63       1461                             LD      uart_EQU, #character_c
+23A 36121       1462                             CALL    send_to_uart
+23B 00F61       1463                             LD      uart_EQU, #character_a
+23C 36121       1464                             CALL    send_to_uart
+23D 00F74       1465                             LD      uart_EQU, #character_t
+23E 36121       1466                             CALL    send_to_uart
+23F 00F69       1467                             LD      uart_EQU, #character_i
+240 36121       1468                             CALL    send_to_uart
+241 00F6F       1469                             LD      uart_EQU, #character_o
+242 36121       1470                             CALL    send_to_uart
+243 00F6E       1471                             LD      uart_EQU, #character_n
+244 36121       1472                             CALL    send_to_uart
+245 24000       1473                             RET
+                1474     ;
+                1475     ;
+                1476     ;Send 'FLASH CRC = ' string to the UART
+                1477     ;
+246 361E5       1478     send_flash_crc:         CALL    send_flash
+                1479     ;
+                1480     ;
+                1481     ;Send ' CRC = ' string to the UART
+                1482     ;
+247 36155       1483     send_crc:               CALL    send_space
+248 00F43       1484                             LD      uart_EQU, #_character_c
+249 36121       1485                             CALL    send_to_uart
+24A 00F52       1486                             LD      uart_EQU, #_character_r
+24B 36121       1487                             CALL    send_to_uart
+24C 00F43       1488                             LD      uart_EQU, #_character_c
+24D 36121       1489                             CALL    send_to_uart
+24E 36158       1490                             CALL    send_equals
+24F 24000       1491                             RET
+                1492     ;
+                1493     ;
+                1494     ;
+                1495     ;Send 'Computed CRC = ' string to the UART
+                1496     ;
+250 00F43       1497     send_computed_crc:      LD      uart_EQU, #_character_c
+251 36121       1498                             CALL    send_to_uart
+252 00F6F       1499                             LD      uart_EQU, #character_o
+253 36121       1500                             CALL    send_to_uart
+254 00F6D       1501                             LD      uart_EQU, #character_m
+255 36121       1502                             CALL    send_to_uart
+256 00F70       1503                             LD      uart_EQU, #character_p
+257 36121       1504                             CALL    send_to_uart
+258 00F75       1505                             LD      uart_EQU, #character_u
+259 36121       1506                             CALL    send_to_uart
+25A 00F74       1507                             LD      uart_EQU, #character_t
+25B 36121       1508                             CALL    send_to_uart
+25C 00F65       1509                             LD      uart_EQU, #character_e
+25D 36121       1510                             CALL    send_to_uart
+25E 00F64       1511                             LD      uart_EQU, #character_d
+25F 36121       1512                             CALL    send_to_uart
+260 34247       1513                             JUMP    send_crc
+                1514     ;
+                1515     ;
+                1516     ;Send 'Erase ' string to the UART
+                1517     ;
+261 00F45       1518     send_erase:             LD      uart_EQU, #_character_e
+262 36121       1519                             CALL    send_to_uart
+263 00F72       1520                             LD      uart_EQU, #character_r
+264 36121       1521                             CALL    send_to_uart
+265 00F61       1522                             LD      uart_EQU, #character_a
+266 36121       1523                             CALL    send_to_uart
+267 00F73       1524                             LD      uart_EQU, #character_s
+268 36121       1525                             CALL    send_to_uart
+269 00F65       1526                             LD      uart_EQU, #character_e
+26A 36121       1527                             CALL    send_to_uart
+26B 36155       1528                             CALL    send_space
+26C 24000       1529                             RET
+                1530     ;
+                1531     ;
+                1532     ;Send 'Erase Authorisation in progress' string to the UART
+                1533     ;
+26D 36152       1534     send_erase_in_progress: CALL    send_cr
+26E 36261       1535                             CALL    send_erase
+26F 36220       1536                             CALL    send_authorisation
+270 36155       1537                             CALL    send_space
+271 00F69       1538                             LD      uart_EQU, #character_i
+272 36121       1539                             CALL    send_to_uart
+273 00F6E       1540                             LD      uart_EQU, #character_n
+274 36121       1541                             CALL    send_to_uart
+275 36155       1542                             CALL    send_space
+276 00F50       1543                             LD      uart_EQU, #_character_p
+277 36121       1544                             CALL    send_to_uart
+278 00F72       1545                             LD      uart_EQU, #character_r
+279 36121       1546                             CALL    send_to_uart
+27A 00F6F       1547                             LD      uart_EQU, #character_o
+27B 36121       1548                             CALL    send_to_uart
+27C 00F67       1549                             LD      uart_EQU, #character_g
+27D 36121       1550                             CALL    send_to_uart
+27E 00F72       1551                             LD      uart_EQU, #character_r
+27F 36121       1552                             CALL    send_to_uart
+280 00F65       1553                             LD      uart_EQU, #character_e
+281 36121       1554                             CALL    send_to_uart
+282 00F73       1555                             LD      uart_EQU, #character_s
+283 36121       1556                             CALL    send_to_uart
+284 36121       1557                             CALL    send_to_uart
+285 36152       1558                             CALL    send_cr
+286 24000       1559                             RET
+                1560     ;
+                1561     ;
+                1562     ;Send 'OK' to the UART
+                1563     ;
+287 00F4F       1564     send_ok:                LD      uart_EQU, #_character_o
+288 36121       1565                             CALL    send_to_uart
+289 00F4B       1566                             LD      uart_EQU, #_character_k
+28A 36121       1567                             CALL    send_to_uart
+28B 36152       1568                             CALL    send_cr
+28C 24000       1569                             RET
+                1570     ;
+                1571     ;
+                1572     ;Send ' FAILED' to the UART
+                1573     ;
+28D 36155       1574     send_failed:            CALL    send_space
+28E 00F46       1575                             LD      uart_EQU, #_character_f
+28F 36121       1576                             CALL    send_to_uart
+290 00F41       1577                             LD      uart_EQU, #_character_a
+291 36121       1578                             CALL    send_to_uart
+292 00F49       1579                             LD      uart_EQU, #_character_i
+293 36121       1580                             CALL    send_to_uart
+294 00F4C       1581                             LD      uart_EQU, #_character_l
+295 36121       1582                             CALL    send_to_uart
+296 00F45       1583                             LD      uart_EQU, #_character_e
+297 36121       1584                             CALL    send_to_uart
+298 00F44       1585                             LD      uart_EQU, #_character_d
+299 36121       1586                             CALL    send_to_uart
+29A 24000       1587                             RET
+                1588     ;
+                1589     ;
+                1590     ;Send ' PASSED' to the UART
+                1591     ;
+29B 36155       1592     send_passed:            CALL    send_space
+29C 00F50       1593                             LD      uart_EQU, #_character_p
+29D 36121       1594                             CALL    send_to_uart
+29E 00F41       1595                             LD      uart_EQU, #_character_a
+29F 36121       1596                             CALL    send_to_uart
+2A0 00F53       1597                             LD      uart_EQU, #_character_s
+2A1 36121       1598                             CALL    send_to_uart
+2A2 36121       1599                             CALL    send_to_uart
+2A3 00F45       1600                             LD      uart_EQU, #_character_e
+2A4 36121       1601                             CALL    send_to_uart
+2A5 00F44       1602                             LD      uart_EQU, #_character_d
+2A6 36121       1603                             CALL    send_to_uart
+2A7 24000       1604                             RET
+                1605     ;
+                1606     ;
+                1607     ;
+                1608     ;Send 'Writing Authorisation' to the UART
+                1609     ;
+2A8 36152       1610     send_writing:           CALL    send_cr
+2A9 00F57       1611                             LD      uart_EQU, #_character_w
+2AA 36121       1612                             CALL    send_to_uart
+2AB 00F72       1613                             LD      uart_EQU, #character_r
+2AC 36121       1614                             CALL    send_to_uart
+2AD 00F69       1615                             LD      uart_EQU, #character_i
+2AE 36121       1616                             CALL    send_to_uart
+2AF 00F74       1617                             LD      uart_EQU, #character_t
+2B0 36121       1618                             CALL    send_to_uart
+2B1 00F69       1619                             LD      uart_EQU, #character_i
+2B2 36121       1620                             CALL    send_to_uart
+2B3 00F6E       1621                             LD      uart_EQU, #character_n
+2B4 36121       1622                             CALL    send_to_uart
+2B5 00F67       1623                             LD      uart_EQU, #character_g
+2B6 36121       1624                             CALL    send_to_uart
+2B7 36155       1625                             CALL    send_space
+2B8 36220       1626                             CALL    send_authorisation
+2B9 24000       1627                             RET
+                1628     ;
+                1629     ;Send simple menu of options to the UART
+                1630     ;
+                1631     ;
+2BA 36152       1632     send_menu:              CALL    send_cr
+2BB 36152       1633                             CALL    send_cr
+2BC 00F4D       1634                             LD      uart_EQU, #_character_m
+2BD 36121       1635                             CALL    send_to_uart
+2BE 00F65       1636                             LD      uart_EQU, #character_e
+2BF 36121       1637                             CALL    send_to_uart
+2C0 00F6E       1638                             LD      uart_EQU, #character_n
+2C1 36121       1639                             CALL    send_to_uart
+2C2 00F75       1640                             LD      uart_EQU, #character_u
+2C3 36121       1641                             CALL    send_to_uart
+2C4 36152       1642                             CALL    send_cr
+2C5 36152       1643                             CALL    send_cr
+2C6 00F52       1644                             LD      uart_EQU, #_character_r
+2C7 36121       1645                             CALL    send_to_uart
+2C8 3615D       1646                             CALL    send_dash
+2C9 00F52       1647                             LD      uart_EQU, #_character_r
+2CA 36121       1648                             CALL    send_to_uart
+2CB 00F65       1649                             LD      uart_EQU, #character_e
+2CC 36121       1650                             CALL    send_to_uart
+2CD 00F61       1651                             LD      uart_EQU, #character_a
+2CE 36121       1652                             CALL    send_to_uart
+2CF 00F64       1653                             LD      uart_EQU, #character_d
+2D0 36121       1654                             CALL    send_to_uart
+2D1 36155       1655                             CALL    send_space
+2D2 36220       1656                             CALL    send_authorisation
+2D3 36152       1657                             CALL    send_cr
+2D4 00F45       1658                             LD      uart_EQU, #_character_e
+2D5 36121       1659                             CALL    send_to_uart
+2D6 3615D       1660                             CALL    send_dash
+2D7 36261       1661                             CALL    send_erase
+2D8 36220       1662                             CALL    send_authorisation
+2D9 36152       1663                             CALL    send_cr
+2DA 00F41       1664                             LD      uart_EQU, #_character_a
+2DB 36121       1665                             CALL    send_to_uart
+2DC 3615D       1666                             CALL    send_dash
+2DD 3622C       1667                             CALL    send_authorise
+2DE 36152       1668                             CALL    send_cr
+2DF 36152       1669                             CALL    send_cr
+2E0 00F3E       1670                             LD      uart_EQU, #character_greater_than ;prompt for input
+2E1 36121       1671                             CALL    send_to_uart
+2E2 24000       1672                             RET
+                1673     ;
+                1674     ;**************************************************************************************
+                1675     ;LCD Character Module Routines
+                1676     ;**************************************************************************************
+                1677     ;
+                1678     ;LCD module is a 16 character by 2 line display but all displays are very similar
+                1679     ;The 4-wire EQU interface will be used (DB4 to DB7).
+                1680     ;
+                1681     ;The LCD modules are relatively slow and software delay loops are used to slow down
+                1682     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
+                1683     ;a different section (see above in this case).
+                1684     ;
+                1685     ;
+                1686     ;Pulse LCD enable signal 'E' high for greater than 230ns (1us is used).
+                1687     ;
+                1688     ;Register s4 should define the current state of the LCD output port.
+                1689     ;
+                1690     ;Registers used s0, s4
+                1691     ;
+2E3 06401       1692     lcd_pulse_e:            XOR     s4, #lcd_e              ;E=1
+2E4 22420       1693                             OUT     s4, lcd_output_port
+2E5 36346       1694                             CALL    delay_1us
+2E6 06401       1695                             XOR     s4, #lcd_e              ;E=0
+2E7 22420       1696                             OUT     s4, lcd_output_port
+2E8 24000       1697                             RET
+                1698     ;
+                1699     ;Write 4-bit instruction to LCD display.
+                1700     ;
+                1701     ;The 4-bit instruction should be provided in the upper 4-bits of register s4.
+                1702     ;Note that this routine does not release the master enable but as it is only
+                1703     ;used during initialisation and as part of the 8-bit instruction write it
+                1704     ;should be acceptable.
+                1705     ;
+                1706     ;Registers used s4
+                1707     ;
+2E9 024F8       1708     lcd_write_inst4:        AND     s4, #0xf8               ;Enable=1 RS=0 Instruction, RW=0 Write, E=0
+2EA 22420       1709                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+2EB 362E3       1710                             CALL    lcd_pulse_e
+2EC 24000       1711                             RET
+                1712     ;
+                1713     ;
+                1714     ;Write 8-bit instruction to LCD display.
+                1715     ;
+                1716     ;The 8-bit instruction should be provided in register s5.
+                1717     ;Instructions are written using the following sequence
+                1718     ; Upper nibble
+                1719     ; wait >1us
+                1720     ; Lower nibble
+                1721     ; wait >40us
+                1722     ;
+                1723     ;Registers used s0, s1, s4, s5
+                1724     ;
+2ED 10428       1725     lcd_write_inst8:        LD      s4, s5
+2EE 024F0       1726                             AND     s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2EF 04408       1727                             OR      s4, #lcd_drive          ;Enable=1
+2F0 362E9       1728                             CALL    lcd_write_inst4         ;write upper nibble
+2F1 36346       1729                             CALL    delay_1us               ;wait >1us
+2F2 10428       1730                             LD      s4, s5                  ;select lower nibble with
+2F3 28407       1731                             SL1     s4                      ;Enable=1
+2F4 28406       1732                             SL0     s4                      ;RS=0 Instruction
+2F5 28406       1733                             SL0     s4                      ;RW=0 Write
+2F6 28406       1734                             SL0     s4                      ;E=0
+2F7 362E9       1735                             CALL    lcd_write_inst4         ;write lower nibble
+2F8 3634A       1736                             CALL    delay_40us              ;wait >40us
+2F9 004F0       1737                             LD      s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2FA 22420       1738                             OUT     s4, lcd_output_port     ;Release master enable
+2FB 24000       1739                             RET
+                1740     ;
+                1741     ;
+                1742     ;
+                1743     ;Write 8-bit EQU to LCD display.
+                1744     ;
+                1745     ;The 8-bit EQU should be provided in register s5.
+                1746     ;EQU bytes are written using the following sequence
+                1747     ; Upper nibble
+                1748     ; wait >1us
+                1749     ; Lower nibble
+                1750     ; wait >40us
+                1751     ;
+                1752     ;Registers used s0, s1, s4, s5
+                1753     ;
+2FC 10428       1754     lcd_write_EQU:         LD      s4, s5
+2FD 024F0       1755                             AND     s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+2FE 0440C       1756                             OR      s4, #0x0c               ;Enable=1 RS=1 EQU, RW=0 Write, E=0
+2FF 22420       1757                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+300 362E3       1758                             CALL    lcd_pulse_e             ;write upper nibble
+301 36346       1759                             CALL    delay_1us               ;wait >1us
+302 10428       1760                             LD      s4, s5                  ;select lower nibble with
+303 28407       1761                             SL1     s4                      ;Enable=1
+304 28407       1762                             SL1     s4                      ;RS=1 EQU
+305 28406       1763                             SL0     s4                      ;RW=0 Write
+306 28406       1764                             SL0     s4                      ;E=0
+307 22420       1765                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+308 362E3       1766                             CALL    lcd_pulse_e             ;write lower nibble
+309 3634A       1767                             CALL    delay_40us              ;wait >40us
+30A 004F0       1768                             LD      s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
+30B 22420       1769                             OUT     s4, lcd_output_port     ;Release master enable
+30C 24000       1770                             RET
+                1771     ;
+                1772     ;
+                1773     ;
+                1774     ;
+                1775     ;Read 8-bit EQU from LCD display.
+                1776     ;
+                1777     ;The 8-bit EQU will be read from the current LCD memory address
+                1778     ;and will be returned in register s5.
+                1779     ;It is advisable to set the LCD address (cursor position) before
+                1780     ;using the EQU read for the first time otherwise the display may
+                1781     ;generate invalid EQU on the first read.
+                1782     ;
+                1783     ;EQU bytes are read using the following sequence
+                1784     ; Upper nibble
+                1785     ; wait >1us
+                1786     ; Lower nibble
+                1787     ; wait >40us
+                1788     ;
+                1789     ;Registers used s0, s1, s4, s5
+                1790     ;
+30D 0040E       1791     lcd_read_EQU8:         LD      s4, #0x0e               ;Enable=1 RS=1 EQU, RW=1 Read, E=0
+30E 22420       1792                             OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
+30F 06401       1793                             XOR     s4, #lcd_e              ;E=1
+310 22420       1794                             OUT     s4, lcd_output_port
+311 36346       1795                             CALL    delay_1us               ;wait >260ns to access EQU
+312 20503       1796                             IN      s5, lcd_input_port      ;read upper nibble
+313 06401       1797                             XOR     s4, #lcd_e              ;E=0
+314 22420       1798                             OUT     s4, lcd_output_port
+315 36346       1799                             CALL    delay_1us               ;wait >1us
+316 06401       1800                             XOR     s4, #lcd_e              ;E=1
+317 22420       1801                             OUT     s4, lcd_output_port
+318 36346       1802                             CALL    delay_1us               ;wait >260ns to access EQU
+319 20003       1803                             IN      s0, lcd_input_port      ;read lower nibble
+31A 06401       1804                             XOR     s4, #lcd_e              ;E=0
+31B 22420       1805                             OUT     s4, lcd_output_port
+31C 025F0       1806                             AND     s5, #0xf0               ;merge upper and lower nibbles
+31D 2800E       1807                             SR0     s0
+31E 2800E       1808                             SR0     s0
+31F 2800E       1809                             SR0     s0
+320 2800E       1810                             SR0     s0
+321 14500       1811                             OR      s5, s0
+322 00404       1812                             LD      s4, #0x04               ;Enable=0 RS=1 EQU, RW=0 Write, E=0
+323 22420       1813                             OUT     s4, lcd_output_port     ;Stop reading 5V device and release master enable
+324 3634A       1814                             CALL    delay_40us              ;wait >40us
+325 24000       1815                             RET
+                1816     ;
+                1817     ;
+                1818     ;Reset and initialise display to communicate using 4-bit EQU mode
+                1819     ;Includes routine to clear the display.
+                1820     ;
+                1821     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
+                1822     ;following by the 8-bit instructions to set up the display.
+                1823     ;
+                1824     ;  28 = '001' Function set, '0' 4-bit mode, '1' 2-line, '0' 5x7 dot matrix, 'xx'
+                1825     ;  06 = '000001' Entry mode, '1' increment, '0' no display shift
+                1826     ;  0C = '00001' Display control, '1' display on, '0' cursor off, '0' cursor blink off
+                1827     ;  01 = '00000001' Display clear
+                1828     ;
+                1829     ;Registers used s0, s1, s2, s3, s4
+                1830     ;
+326 36354       1831     lcd_reset:              CALL    delay_20ms              ;wait more that 15ms for display to be ready
+327 00430       1832                             LD      s4, #0x30
+328 362E9       1833                             CALL    lcd_write_inst4         ;send '3'
+329 36354       1834                             CALL    delay_20ms              ;wait >4.1ms
+32A 362E9       1835                             CALL    lcd_write_inst4         ;send '3'
+32B 3634F       1836                             CALL    delay_1ms               ;wait >100us
+32C 362E9       1837                             CALL    lcd_write_inst4         ;send '3'
+32D 3634A       1838                             CALL    delay_40us              ;wait >40us
+32E 00420       1839                             LD      s4, #0x20
+32F 362E9       1840                             CALL    lcd_write_inst4         ;send '2'
+330 3634A       1841                             CALL    delay_40us              ;wait >40us
+331 00528       1842                             LD      s5, #0x28               ;Function set
+332 362ED       1843                             CALL    lcd_write_inst8
+333 00506       1844                             LD      s5, #0x06               ;Entry mode
+334 362ED       1845                             CALL    lcd_write_inst8
+335 0050C       1846                             LD      s5, #0x0c               ;Display control
+336 362ED       1847                             CALL    lcd_write_inst8
+337 00501       1848     lcd_clear:              LD      s5, #0x01               ;Display clear
+338 362ED       1849                             CALL    lcd_write_inst8
+339 3634F       1850                             CALL    delay_1ms               ;wait >1.64ms for display to clear
+33A 3634F       1851                             CALL    delay_1ms
+33B 24000       1852                             RET
+                1853     ;
+                1854     ;Position the cursor ready for characters to be written.
+                1855     ;The display is formed of 2 lines of 16 characters and each
+                1856     ;position has a corresponding address as indicated below.
+                1857     ;
+                1858     ;                   Character position
+                1859     ;           0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+                1860     ;
+                1861     ; Line 1 - 80 81 82 83 84 85 86 87 88 89 8A 8B 8C 8D 8E 8F
+                1862     ; Line 2 - C0 C1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF
+                1863     ;
+                1864     ;This routine will set the cursor position using the value provided
+                1865     ;in register s5. The upper nibble will define the line and the lower
+                1866     ;nibble the character position on the line.
+                1867     ; Example s5 = 2B will position the cursor on line 2 position 11
+                1868     ;
+                1869     ;Registers used s0, s1, s2, s3, s4
+                1870     ;
+33C 00510       1871     lcd_cursor:             load    s5, #0x10               ;load for line 1
+33D 35342       1872                             JUMP    z, set_line2
+33E 0250F       1873                             AND     s5, #0x0f               ;make address in range 80 to 8F for line 1
+33F 04580       1874                             OR      s5, #0x80
+340 362ED       1875                             CALL    lcd_write_inst8         ;instruction write to set cursor
+341 24000       1876                             RET
+342 0250F       1877     set_line2:              AND     s5, #0x0f               ;make address in range C0 to CF for line 2
+343 045C0       1878                             OR      s5, #0xc0
+344 362ED       1879                             CALL    lcd_write_inst8         ;instruction write to set cursor
+345 24000       1880                             RET
+                1881     ;
+                1882     ;**************************************************************************************
+                1883     ;Software delay routines
+                1884     ;**************************************************************************************
+                1885     ;
+                1886     ;
+                1887     ;
+                1888     ;Delay of 1us.
+                1889     ;
+                1890     ;Constant value defines reflects the clock applied to KCPSM3. Every instruction
+                1891     ;executes in 2 clock cycles making the calculation highly predictable. The '6' in
+                1892     ;the following equation even allows for 'CALL delay_1us' instruction in the initiating code.
+                1893     ;
+                1894     ; delay_1us_constant =  (clock_rate - 6)/4       Where 'clock_rate' is in MHz
+                1895     ;
+                1896     ;Registers used s0
+                1897     ;
+346 0000B       1898     delay_1us:              LD      s0, #delay_1us_constant
+347 0C001       1899     wait_1us:               SUB     s0, #0x01
+348 35747       1900                             JUMP    nz, wait_1us
+349 24000       1901                             RET
+                1902     ;
+                1903     ;Delay of 40us.
+                1904     ;
+                1905     ;Registers used s0, s1
+                1906     ;
+34A 00128       1907     delay_40us:             LD      s1, #0x28               ;40 x 1us = 40us
+34B 36346       1908     wait_40us:              CALL    delay_1us
+34C 0C101       1909                             SUB     s1, #0x01
+34D 3574B       1910                             JUMP    nz, wait_40us
+34E 24000       1911                             RET
+                1912     ;
+                1913     ;
+                1914     ;Delay of 1ms.
+                1915     ;
+                1916     ;Registers used s0, s1, s2
+                1917     ;
+34F 00219       1918     delay_1ms:              LD      s2, #0x19               ;25 x 40us = 1ms
+350 3634A       1919     wait_1ms:               CALL    delay_40us
+351 0C201       1920                             SUB     s2, #0x01
+352 35750       1921                             JUMP    nz, wait_1ms
+353 24000       1922                             RET
+                1923     ;
+                1924     ;Delay of 20ms.
+                1925     ;
+                1926     ;Delay of 20ms used during initialisation.
+                1927     ;
+                1928     ;Registers used s0, s1, s2, s3
+                1929     ;
+354 00314       1930     delay_20ms:             LD      s3, #0x14               ;20 x 1ms = 20ms
+355 3634F       1931     wait_20ms:              CALL    delay_1ms
+356 0C301       1932                             SUB     s3, #0x01
+357 35755       1933                             JUMP    nz, wait_20ms
+358 24000       1934                             RET
+                1935     ;
+                1936     ;Delay of approximately 1 second.
+                1937     ;
+                1938     ;Registers used s0, s1, s2, s3, s4
+                1939     ;
+359 00432       1940     delay_1s:               LD      s4, #0x32               ;50 x 20ms = 1000ms
+35A 36354       1941     wait_1s:                CALL    delay_20ms
+35B 0C401       1942                             SUB     s4, #0x01
+35C 3575A       1943                             JUMP    nz, wait_1s
+35D 24000       1944                             RET
+                1945     ;
+                1946     ;
+                1947     ;Delay of approximately N seconds where 'N' is provided in register s5.
+                1948     ;
+                1949     ;Registers used s0, s1, s2, s3, s4, s5
+                1950     ;
+35E 36359       1951     delay_ns:               CALL    delay_1s
+35F 0C501       1952                             SUB     s5, #0x01
+360 3575E       1953                             JUMP    nz, delay_ns
+361 24000       1954                             RET
+                1955     ;
+                1956     ;
+                1957     ;
+                1958     ;**************************************************************************************
+                1959     ;LCD text messages
+                1960     ;**************************************************************************************
+                1961     ;
+                1962     ;
+                1963     ;
+                1964     ;Display 'PicoBlaze' on LCD at current cursor position
+                1965     ;
+                1966     ;
+362 00550       1967     disp_picoblaze:         LD      s5, #_character_p
+363 362FC       1968                             CALL    lcd_write_EQU
+364 00569       1969                             LD      s5, #character_i
+365 362FC       1970                             CALL    lcd_write_EQU
+366 00563       1971                             LD      s5, #character_c
+367 362FC       1972                             CALL    lcd_write_EQU
+368 0056F       1973                             LD      s5, #character_o
+369 362FC       1974                             CALL    lcd_write_EQU
+36A 00542       1975                             LD      s5, #_character_b
+36B 362FC       1976                             CALL    lcd_write_EQU
+36C 0056C       1977                             LD      s5, #character_l
+36D 362FC       1978                             CALL    lcd_write_EQU
+36E 00561       1979                             LD      s5, #character_a
+36F 362FC       1980                             CALL    lcd_write_EQU
+370 0057A       1981                             LD      s5, #character_z
+371 362FC       1982                             CALL    lcd_write_EQU
+372 00565       1983                             LD      s5, #character_e
+373 362FC       1984                             CALL    lcd_write_EQU
+374 24000       1985                             RET
+                1986     ;
+                1987     ;
+                1988     ;Display 'Security' on LCD at current cursor position
+                1989     ;
+                1990     ;
+375 00553       1991     disp_security:          LD      s5, #_character_s
+376 362FC       1992                             CALL    lcd_write_EQU
+377 00565       1993                             LD      s5, #character_e
+378 362FC       1994                             CALL    lcd_write_EQU
+379 00563       1995                             LD      s5, #character_c
+37A 362FC       1996                             CALL    lcd_write_EQU
+37B 00575       1997                             LD      s5, #character_u
+37C 362FC       1998                             CALL    lcd_write_EQU
+37D 00572       1999                             LD      s5, #character_r
+37E 362FC       2000                             CALL    lcd_write_EQU
+37F 00569       2001                             LD      s5, #character_i
+380 362FC       2002                             CALL    lcd_write_EQU
+381 00574       2003                             LD      s5, #character_t
+382 362FC       2004                             CALL    lcd_write_EQU
+383 00579       2005                             LD      s5, #character_y
+384 362FC       2006                             CALL    lcd_write_EQU
+385 24000       2007                             RET
+                2008     ;
+                2009     ;
+                2010     ;Display 'FLASH Serial No.' on LCD at current cursor position
+                2011     ;
+                2012     ;
+386 00546       2013     disp_flash_serial_no:   LD      s5, #_character_f
+387 362FC       2014                             CALL    lcd_write_EQU
+388 0054C       2015                             LD      s5, #_character_l
+389 362FC       2016                             CALL    lcd_write_EQU
+38A 00541       2017                             LD      s5, #_character_a
+38B 362FC       2018                             CALL    lcd_write_EQU
+38C 00553       2019                             LD      s5, #_character_s
+38D 362FC       2020                             CALL    lcd_write_EQU
+38E 00548       2021                             LD      s5, #_character_h
+38F 362FC       2022                             CALL    lcd_write_EQU
+390 00520       2023                             LD      s5, #character_space
+391 362FC       2024                             CALL    lcd_write_EQU
+392 00553       2025                             LD      s5, #_character_s
+393 362FC       2026                             CALL    lcd_write_EQU
+394 00565       2027                             LD      s5, #character_e
+395 362FC       2028                             CALL    lcd_write_EQU
+396 00572       2029                             LD      s5, #character_r
+397 362FC       2030                             CALL    lcd_write_EQU
+398 00569       2031                             LD      s5, #character_i
+399 362FC       2032                             CALL    lcd_write_EQU
+39A 00561       2033                             LD      s5, #character_a
+39B 362FC       2034                             CALL    lcd_write_EQU
+39C 0056C       2035                             LD      s5, #character_l
+39D 362FC       2036                             CALL    lcd_write_EQU
+39E 00520       2037                             LD      s5, #character_space
+39F 362FC       2038                             CALL    lcd_write_EQU
+3A0 0054E       2039                             LD      s5, #_character_n
+3A1 362FC       2040                             CALL    lcd_write_EQU
+3A2 0056F       2041                             LD      s5, #character_o
+3A3 362FC       2042                             CALL    lcd_write_EQU
+3A4 0052E       2043                             LD      s5, #character_fullstop
+3A5 362FC       2044                             CALL    lcd_write_EQU
+3A6 24000       2045                             RET
+                2046     ;
+                2047     ;
+                2048     ;
+                2049     ;Display 'Authentication' on top line of the LCD
+                2050     ;
+                2051     ;
+3A7 00511       2052     disp_authentication:    LD      s5, #0x11               ;Line 1 position 1
+3A8 3633C       2053                             CALL    lcd_cursor
+3A9 00541       2054                             LD      s5, #_character_a
+3AA 362FC       2055                             CALL    lcd_write_EQU
+3AB 00575       2056                             LD      s5, #character_u
+3AC 362FC       2057                             CALL    lcd_write_EQU
+3AD 00574       2058                             LD      s5, #character_t
+3AE 362FC       2059                             CALL    lcd_write_EQU
+3AF 00568       2060                             LD      s5, #character_h
+3B0 362FC       2061                             CALL    lcd_write_EQU
+3B1 00565       2062                             LD      s5, #character_e
+3B2 362FC       2063                             CALL    lcd_write_EQU
+3B3 0056E       2064                             LD      s5, #character_n
+3B4 362FC       2065                             CALL    lcd_write_EQU
+3B5 00574       2066                             LD      s5, #character_t
+3B6 362FC       2067                             CALL    lcd_write_EQU
+3B7 00569       2068                             LD      s5, #character_i
+3B8 362FC       2069                             CALL    lcd_write_EQU
+3B9 00563       2070                             LD      s5, #character_c
+3BA 362FC       2071                             CALL    lcd_write_EQU
+3BB 00561       2072                             LD      s5, #character_a
+3BC 362FC       2073                             CALL    lcd_write_EQU
+3BD 00574       2074                             LD      s5, #character_t
+3BE 362FC       2075                             CALL    lcd_write_EQU
+3BF 00569       2076                             LD      s5, #character_i
+3C0 362FC       2077                             CALL    lcd_write_EQU
+3C1 0056F       2078                             LD      s5, #character_o
+3C2 362FC       2079                             CALL    lcd_write_EQU
+3C3 0056E       2080                             LD      s5, #character_n
+3C4 362FC       2081                             CALL    lcd_write_EQU
+3C5 24000       2082                             RET
+                2083     ;
+                2084     ;
+                2085     ;
+                2086     ;
+                2087     ;Display 'Passed' on lower line of the LCD
+                2088     ;
+                2089     ;
+3C6 00525       2090     disp_passed:            LD      s5, #0x25               ;Line 2 position 5
+3C7 3633C       2091                             CALL    lcd_cursor
+3C8 00550       2092                             LD      s5, #_character_p
+3C9 362FC       2093                             CALL    lcd_write_EQU
+3CA 00561       2094                             LD      s5, #character_a
+3CB 362FC       2095                             CALL    lcd_write_EQU
+3CC 00573       2096                             LD      s5, #character_s
+3CD 362FC       2097                             CALL    lcd_write_EQU
+3CE 362FC       2098                             CALL    lcd_write_EQU
+3CF 00565       2099                             LD      s5, #character_e
+3D0 362FC       2100                             CALL    lcd_write_EQU
+3D1 00564       2101                             LD      s5, #character_d
+3D2 362FC       2102                             CALL    lcd_write_EQU
+3D3 24000       2103                             RET
+                2104     ;
+                2105     ;
+                2106     ;
+                2107     ;
+                2108     ;
+                2109     ;Display 'Failed' on lower line of the LCD
+                2110     ;
+                2111     ;
+3D4 00525       2112     disp_failed:            LD      s5, #0x25               ;Line 2 position 5
+3D5 3633C       2113                             CALL    lcd_cursor
+3D6 00546       2114                             LD      s5, #_character_f
+3D7 362FC       2115                             CALL    lcd_write_EQU
+3D8 00561       2116                             LD      s5, #character_a
+3D9 362FC       2117                             CALL    lcd_write_EQU
+3DA 00569       2118                             LD      s5, #character_i
+3DB 362FC       2119                             CALL    lcd_write_EQU
+3DC 0056C       2120                             LD      s5, #character_l
+3DD 362FC       2121                             CALL    lcd_write_EQU
+3DE 00565       2122                             LD      s5, #character_e
+3DF 362FC       2123                             CALL    lcd_write_EQU
+3E0 00564       2124                             LD      s5, #character_d
+3E1 362FC       2125                             CALL    lcd_write_EQU
+3E2 24000       2126                             RET
+                2127     ;
+                2128     ;
+                2129     ;**************************************************************************************
+                2130     ; Interrupt Service Routine (ISR)
+                2131     ;**************************************************************************************
+                2132     ;
+                2133     ; Interrupts occur when the application processor is requesting a design authorisation
+                2134     ; message. Therefore an interrupt results in a message being sent to the Link FIFO
+                2135     ; depending on the authentication status.
+                2136     ;
+3E3 10000       2137     isr:                    load      s0, isr_preserve_s0     ;save register contents
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                2138     ;
+3E4 100E0       2139                             load      s0, authentication_status ;read authentication status
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+3E5 00050       2140                             load     s0, #_character_p       ;load for pass 'P' or fail 'F'
+3E6 353F0       2141                             JUMP    z, pass_token
+                2142     ;
+3E7 00046       2143                             LD      s0, #_character_f       ;send FAIL to link FIFO
+3E8 22004       2144                             OUT     s0, link_fifo_write_port
+3E9 00041       2145                             LD      s0, #_character_a
+3EA 22004       2146                             OUT     s0, link_fifo_write_port
+3EB 00049       2147                             LD      s0, #_character_i
+3EC 22004       2148                             OUT     s0, link_fifo_write_port
+3ED 0004C       2149                             LD      s0, #_character_l
+3EE 22004       2150                             OUT     s0, link_fifo_write_port
+3EF 343F6       2151                             JUMP    end_isr
+                2152     ;
+3F0 22004       2153     pass_token:             OUT     s0, link_fifo_write_port ;send PASS to link FIFO
+3F1 00041       2154                             LD      s0, #_character_a
+3F2 22004       2155                             OUT     s0, link_fifo_write_port
+3F3 00053       2156                             LD      s0, #_character_s
+3F4 22004       2157                             OUT     s0, link_fifo_write_port
+3F5 22004       2158                             OUT     s0, link_fifo_write_port
+                2159     ;
+3F6 10000       2160     end_isr:                load      s0, isr_preserve_s0     ;reload register contents
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+3F7 2C001       2161                             RETIE
+                2162     ;
+                2163     ;
+                2164     ;**************************************************************************************
+                2165     ; Interrupt Vector
+                2166     ;**************************************************************************************
+                2167     ;
+  003FF         2168                             ORG     0x3ff
+3FF 343E3       2169                             JUMP    isr
+                2170     ;
+                2171     ;
+                2172     ;**************************************************************************************
+                2173     ; End of Program
+                2174     ;**************************************************************************************
+                2175

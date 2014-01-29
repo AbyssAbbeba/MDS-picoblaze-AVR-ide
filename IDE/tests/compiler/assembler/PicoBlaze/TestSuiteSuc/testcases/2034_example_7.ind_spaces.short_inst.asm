@@ -135,15 +135,15 @@ cold_start:             CALL    spi_init                ;initialise SPI bus port
                         CALL    init_sine_wave          ;initialise sine wave synthesis values
                         CALL    delay_1s                ;bus settling delay
                         LD      s0, #0x00               ;clear all internal D/A values
-                        ST      s0, chan_a_lsb
-                        ST      s0, chan_a_msb
-                        ST      s0, chan_b_lsb
-                        ST      s0, chan_b_msb
-                        ST      s0, chan_c_lsb
-                        ST      s0, chan_c_msb
-                        ST      s0, chan_d_lsb
-                        ST      s0, chan_d_msb
-                        ST      s0, triangle_up_down    ;initial slope is up
+                        load      s0, chan_a_lsb
+                        load      s0, chan_a_msb
+                        load      s0, chan_b_lsb
+                        load      s0, chan_b_msb
+                        load      s0, chan_c_lsb
+                        load      s0, chan_c_msb
+                        load      s0, chan_d_lsb
+                        load      s0, chan_d_msb
+                        load      s0, triangle_up_down    ;initial slope is up
                         CALL    dac_reset               ;reset D/A converter on all channels
                         ENA                             ;Interrupts define 8KHz sample rate
 ;
@@ -185,8 +185,8 @@ wait_int:               load     sf, #0xff
                         SRA     s6
                         SR0     s7
                         SRA     s6
-                        ST      s7, chan_a_msb          ;load value for D/A output
-                        ST      s6, chan_a_lsb
+                        load      s7, chan_a_msb          ;load value for D/A output
+                        load      s6, chan_a_lsb
 ;
 ;
 ;
@@ -198,9 +198,9 @@ wait_int:               load     sf, #0xff
 ;decrease by 204 each sample so that over the first 20 samples it rises from
 ;0 to 4080 and then over the next 20 samples it reduces back to zero.
 ;
-                        FT      s0, chan_b_lsb          ;load current value into [s1,s0]
-                        FT      s1, chan_b_msb
-                        FT      s2, triangle_up_down    ;read current slope direction
+                        load      s0, chan_b_lsb          ;load current value into [s1,s0]
+                        load      s1, chan_b_msb
+                        load      s2, triangle_up_down    ;read current slope direction
                         load     s2, #0x00               ;determine current direction
                         JUMP    nz, slope_down
                         ADD     s0, #0xcc               ;add 204 (00CC hex) to current value
@@ -210,7 +210,7 @@ wait_int:               load     sf, #0xff
                         load     s0, #0xf0
                         JUMP    nz, load_channel_b
                         LD      s2, #0x01               ;change to slope down next time
-                        ST      s2, triangle_up_down
+                        load      s2, triangle_up_down
                         JUMP    load_channel_b
 slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex) from current value
                         SUBCY   s1, #0x00
@@ -219,9 +219,9 @@ slope_down:             SUB     s0, #0xcc               ;subtract 204 (00CC hex)
                         load     s0, #0x00
                         JUMP    nz, load_channel_b
                         LD      s2, #0x00               ;change to slope up next time
-                        ST      s2, triangle_up_down
-load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A output
-                        ST      s1, chan_b_msb
+                        load      s2, triangle_up_down
+load_channel_b:        load      s0, chan_b_lsb          ;load value for D/A output
+                        load      s1, chan_b_msb
 ;
 ;
 ;Channel C is a square wave of 2KHz.
@@ -238,7 +238,7 @@ load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A outpu
 ;   The 12-bit value is therefore 4096 x 2.0 / 2.5 = 3277 (CCD hex)
 ;
 ;
-                        FT      s2, square_count        ;read sample counter
+                        load      s2, square_count        ;read sample counter
                         load    s2, #0x02               ;bit 1 has correct frequency
                         JUMP    nz, square_high
                         LD      s1, #0x03               ;Set low level
@@ -246,10 +246,10 @@ load_channel_b:        ST      s0, chan_b_lsb          ;load value for D/A outpu
                         JUMP    load_channel_c
 square_high:            LD      s1, #0x0c               ;Set high level
                         LD      s0, #0xcd
-load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A output
-                        ST      s1, chan_c_msb
+load_channel_c:        load      s0, chan_c_lsb          ;load value for D/A output
+                        load      s1, chan_c_msb
                         ADD     s2, #0x01               ;increment sampel count
-                        ST      s2, square_count        ;load new sample count
+                        load      s2, square_count        ;load new sample count
 ;
 ;Sine wave for channel D
 ;
@@ -264,19 +264,19 @@ load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A outpu
                         SR0     s9
                         SRA     s8
                         ADD     s9, #0x08               ;Scale signed number to mid-rail of unsigned output
-                        ST      s9, chan_d_msb          ;load value for D/A output
-                        ST      s8, chan_d_lsb
+                        load      s9, chan_d_msb          ;load value for D/A output
+                        load      s8, chan_d_lsb
 ;
 ;
 ;Drive LEDs with simple binary count of the samples to indicate
 ;that the design is active.
 ;
-                        FT      s0, sample_count_lsb    ;read sample counter
-                        FT      s1, sample_count_msb
+                        load      s0, sample_count_lsb    ;read sample counter
+                        load      s1, sample_count_msb
                         ADD     s0, #0x01               ;increment counter
                         ADDCY   s1, #0x00
-                        ST      s0, sample_count_lsb    ;load new value
-                        ST      s1, sample_count_msb
+                        load      s0, sample_count_lsb    ;load new value
+                        load      s1, sample_count_msb
                         OUT     s1, led_port            ;upper bits are 31.25Hz and lower
 ;
                         JUMP    warm_start              ;wait for next interrupt
@@ -289,16 +289,16 @@ load_channel_c:        ST      s0, chan_c_lsb          ;load value for D/A outpu
 ;the eight DTMF frequences. Please see design documentation for more details.
 ;
 init_sine_wave:         LD      s0, #0x24               ;initial value 9216 (2400 hex)
-                        ST      s0, sine_y_msb
+                        load      s0, sine_y_msb
                         LD      s0, #0x00
-                        ST      s0, sine_y_lsb
+                        load      s0, sine_y_lsb
                         LD      s0, #0x00               ;initial delayed value 0 (0000 hex)
-                        ST      s0, sine_y1_msb
-                        ST      s0, sine_y1_lsb
+                        load      s0, sine_y1_msb
+                        load      s0, sine_y1_lsb
                         LD      s0, #0xd2               ;Coefficient for 770Hz is UFIX_16_15 value 53913/32768 = 1.64529
-                        ST      s0, sine_k_msb
+                        load      s0, sine_k_msb
                         LD      s0, #0x99
-                        ST      s0, sine_k_lsb
+                        load      s0, sine_k_lsb
                         RET
 ;
 ;
@@ -311,12 +311,12 @@ init_sine_wave:         LD      s0, #0x24               ;initial value 9216 (240
 ;
 ;Obtain current values from wscratch pad memory
 ;
-calc_next_sine:         FT      sf, sine_y_msb          ;[sF,sE] is Y
-                        FT      se, sine_y_lsb
-                        FT      sd, sine_y1_msb         ;[sD,sC] is Y1
-                        FT      sc, sine_y1_lsb
-                        FT      sb, sine_k_msb          ;[sB,sA] is K
-                        FT      sa, sine_k_lsb
+calc_next_sine:         load      sf, sine_y_msb          ;[sF,sE] is Y
+                        load      se, sine_y_lsb
+                        load      sd, sine_y1_msb         ;[sD,sC] is Y1
+                        load      sc, sine_y1_lsb
+                        load      sb, sine_k_msb          ;[sB,sA] is K
+                        load      sa, sine_k_lsb
 ;
 ;16-bit signed by 16-bit unsigned multiplication. [s9,s8]=[sB,sA]x[sF,sE]
 ;
@@ -346,10 +346,10 @@ no_mult_add:            SUB     s0, #0x01               ;load for 16 cycles
 ;
 ;Update scratch pad memory with new sample values
 ;
-                        ST      sf, sine_y1_msb         ;delayed sample gets previous output
-                        ST      se, sine_y1_lsb
-                        ST      s9, sine_y_msb          ;new current sample
-                        ST      s8, sine_y_lsb
+                        load      sf, sine_y1_msb         ;delayed sample gets previous output
+                        load      se, sine_y1_lsb
+                        load      s9, sine_y_msb          ;new current sample
+                        load      s8, sine_y_lsb
                         RET
 ;
 ;
@@ -358,30 +358,30 @@ no_mult_add:            SUB     s0, #0x01               ;load for 16 cycles
 ;**************************************************************************************
 ;
 ;These routines will work with two output ports and one input port which should be
-;defined as follows using CONSTANT directives.
+;defined as follows using CONloadANT directives.
 ;   (replace 'pp' with appropriate port address in each case)
-;In the list of CONSTANT directives, only the ones marked with a * are really required
+;In the list of CONloadANT directives, only the ones marked with a * are really required
 ;for the D/A Converter system. The other directives are to control (disable) or
 ;communicate with the other SPI components on the same SPI bus of the Spartan-3E Starter Kit.
 ;
 ;
 ;
-;CONSTANT SPI_control_port, pp       ;SPI clock and chip selects     *
-;CONSTANT SPI_sck, 01                ;                  SCK - bit0   *
-;CONSTANT SPI_rom_cs, 02             ;    serial rom select - bit1
-;CONSTANT SPI_spare_control, 04      ;                spare - bit2
-;CONSTANT SPI_amp_cs, 08             ;     amplifier select - bit3
-;CONSTANT SPI_adc_conv, 10           ;          A/D convert - bit4
-;CONSTANT SPI_dac_cs, 20             ;           D/A select - bit5   *
-;CONSTANT SPI_amp_shdn, 40           ;       amplifier SHDN - bit6
-;CONSTANT SPI_dac_clr, 80            ;            D/A clear - bit7   *
+;CONloadANT SPI_control_port, pp       ;SPI clock and chip selects     *
+;CONloadANT SPI_sck, 01                ;                  SCK - bit0   *
+;CONloadANT SPI_rom_cs, 02             ;    serial rom select - bit1
+;CONloadANT SPI_spare_control, 04      ;                spare - bit2
+;CONloadANT SPI_amp_cs, 08             ;     amplifier select - bit3
+;CONloadANT SPI_adc_conv, 10           ;          A/D convert - bit4
+;CONloadANT SPI_dac_cs, 20             ;           D/A select - bit5   *
+;CONloadANT SPI_amp_shdn, 40           ;       amplifier SHDN - bit6
+;CONloadANT SPI_dac_clr, 80            ;            D/A clear - bit7   *
 ;
-;CONSTANT SPI_output_port, pp        ;SPI EQU output                *
-;CONSTANT SPI_sdo, 80                ;   SDO - bit7                  *
+;CONloadANT SPI_output_port, pp        ;SPI EQU output                *
+;CONloadANT SPI_sdo, 80                ;   SDO - bit7                  *
 ;
-;CONSTANT SPI_input_port, pp         ;SPI EQU input                 *
-;CONSTANT SPI_sdi, 80                ;             SDI - bit7        *
-;CONSTANT SPI_amp_sdi, 40            ;   amplifier SDI - bit6
+;CONloadANT SPI_input_port, pp         ;SPI EQU input                 *
+;CONloadANT SPI_sdi, 80                ;             SDI - bit7        *
+;CONloadANT SPI_amp_sdi, 40            ;   amplifier SDI - bit6
 ;
 ;
 ;
@@ -625,29 +625,29 @@ wait_1s:                CALL    delay_20ms
 ;Set channel A
 ;
 isr:                    LD      sc, #0x00               ;channel A
-                        FT      sb, chan_a_msb          ;12-bit value
-                        FT      sa, chan_a_lsb
+                        load      sb, chan_a_msb          ;12-bit value
+                        load      sa, chan_a_lsb
                         CALL    set_dac
 ;
 ;Set channel B
 ;
                         LD      sc, #0x01               ;channel B
-                        FT      sb, chan_b_msb          ;12-bit value
-                        FT      sa, chan_b_lsb
+                        load      sb, chan_b_msb          ;12-bit value
+                        load      sa, chan_b_lsb
                         CALL    set_dac
 ;
 ;Set channel C
 ;
                         LD      sc, #0x02               ;channel C
-                        FT      sb, chan_c_msb          ;12-bit value
-                        FT      sa, chan_c_lsb
+                        load      sb, chan_c_msb          ;12-bit value
+                        load      sa, chan_c_lsb
                         CALL    set_dac
 ;
 ;Set channel A
 ;
                         LD      sc, #0x03               ;channel D
-                        FT      sb, chan_d_msb          ;12-bit value
-                        FT      sa, chan_d_lsb
+                        load      sb, chan_d_msb          ;12-bit value
+                        load      sa, chan_d_lsb
                         CALL    set_dac
 ;
                         LD      sf, #0x00               ;clear flag

@@ -1,0 +1,309 @@
+                   1     device kcpsm2
+                   2
+  00005            3     BSDA_Z  EQU     5
+  00005            4     BSCL_Z  EQU     5
+  00005            5     BSDA_0  EQU     5
+  00005            6     BSCL_0  EQU     5
+  00005            7     BSDA_IN EQU     5
+                   8     ; ---\              /--------\                                            /--
+                   9     ;     \  SDA       /          \                                          /
+                  10     ;      \----------/ \--------/ \----------------------------------------/
+                  11     ; -------\            /----\                                         /-------
+                  12     ;         \  SCL     /      \                                       /
+                  13     ;          \--------/        \-------------------------------------/
+                  14     ; | Start    |      EQU bit     |                             |  Stop     |
+                  15
+000 22F05         16     init_i2c:               OUTPUT          sf, bsda_z              ; SDA = Z
+001 22F05         17                             OUTPUT          sf, bscl_z              ; SCL = Z
+002 34003         18                             JUMP            delay
+                  19
+  00003           20     delay:
+                  21     ; -------------------------------------------------------------------------------
+                  22     ; Routine to set up for and read four bytes from I2C device
+                  23     ; -------------------------------------------------------------------------------
+                  24
+  00003           25     readwrite4_i2c:
+003 3609A         26                             CALL            i2c_start               ; Send Start, control byte and ack
+004 20C00         27                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+005 28C06         28                             SL0             sc                      ; add write flag
+006 36057         29                             CALL            i2c_xmit                ; Send address and ack
+007 3608E         30                             CALL            i2c_sack
+                  31
+008 20C01         32                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+009 36057         33                             CALL            i2c_xmit                ; Send EQU and ack
+00A 3608E         34                             CALL            i2c_sack
+                  35
+00B 36098         36                             CALL            i2c_repstart            ; Send repeated start, control byte and ack
+00C 20C00         37                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+00D 28C07         38                             SL1             sc                      ; add read flag
+00E 36057         39                             CALL            i2c_xmit                ; Send address and ack
+00F 3608E         40                             CALL            i2c_sack
+                  41
+010 36068         42                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+011 36078         43                             CALL            i2c_mack
+012 2020C         44                             INPUT           s2, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  45
+013 36068         46                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+014 36078         47                             CALL            i2c_mack
+015 2030C         48                             INPUT           s3, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  49
+016 36068         50                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+017 36078         51                             CALL            i2c_mack
+018 2040C         52                             INPUT           s4, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  53
+019 36068         54                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+01A 36083         55                             CALL            i2c_mnack
+01B 2050C         56                             INPUT           s5, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  57
+01C 340A0         58                             JUMP            i2c_stop                ; Send Stop
+                  59
+                  60     ; -------------------------------------------------------------------------------
+                  61     ; Routine to set up for and write two bytes to I2C device
+                  62     ; -------------------------------------------------------------------------------
+  0001D           63     write3_i2c:
+01D 3609A         64                             CALL            i2c_start               ; Send Start, control byte and ack
+01E 20C00         65                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+01F 28C06         66                             SL0             sc                      ; add write flag
+020 36057         67                             CALL            i2c_xmit                ; Send address and ack
+021 3608E         68                             CALL            i2c_sack
+                  69
+022 20C01         70                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+023 36057         71                             CALL            i2c_xmit                ; Send EQU and ack
+024 3608E         72                             CALL            i2c_sack
+                  73
+025 20C02         74                             INPUT           sc, s2                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+026 36057         75                             CALL            i2c_xmit                ; Send EQU and ack
+027 3608E         76                             CALL            i2c_sack
+                  77
+028 20C03         78                             INPUT           sc, s3                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+029 36057         79                             CALL            i2c_xmit                ; Send EQU and ack
+02A 3608E         80                             CALL            i2c_sack
+                  81
+02B 340A0         82                             JUMP            i2c_stop                ; Send stop
+                  83
+                  84     ; -------------------------------------------------------------------------------
+                  85     ; Routine to set up for and read two bytes from I2C device
+                  86     ; -------------------------------------------------------------------------------
+                  87
+  0002C           88     read2_i2c:
+02C 3609A         89                             CALL            i2c_start               ; Send start, control byte and ack
+02D 20C00         90                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+02E 28C07         91                             SL1             sc                      ; add read flag
+02F 36057         92                             CALL            i2c_xmit                ; Send address and ack
+030 3608E         93                             CALL            i2c_sack
+                  94
+031 36068         95                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+032 36078         96                             CALL            i2c_mack
+033 2020C         97                             INPUT           s2, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  98
+034 36068         99                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+035 36083        100                             CALL            i2c_mnack
+036 2030C        101                             INPUT           s3, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 102
+037 340A0        103                             JUMP            i2c_stop                ; Send Stop
+                 104
+                 105     ; -------------------------------------------------------------------------------
+                 106     ; Routine to set up for and write two bytes to I2C device
+                 107     ; -------------------------------------------------------------------------------
+  00038          108     write2_i2c:
+038 3609A        109                             CALL            i2c_start               ; Send Start, control byte and ack
+039 20C00        110                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+03A 28C06        111                             SL0             sc                      ; add write flag
+03B 36057        112                             CALL            i2c_xmit                ; Send address and ack
+03C 3608E        113                             CALL            i2c_sack
+                 114
+03D 20C01        115                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+03E 36057        116                             CALL            i2c_xmit                ; Send EQU and ack
+03F 3608E        117                             CALL            i2c_sack
+                 118
+040 20C02        119                             INPUT           sc, s2                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+041 36057        120                             CALL            i2c_xmit                ; Send EQU and ack
+042 3608E        121                             CALL            i2c_sack
+                 122
+043 340A0        123                             JUMP            i2c_stop                ; Send stop
+                 124
+                 125     ; -------------------------------------------------------------------------------
+                 126     ; Routine to set up for and read one byte of I2C device
+                 127     ; -------------------------------------------------------------------------------
+  00044          128     read1_i2c:
+                 129
+044 3609A        130                             CALL            i2c_start               ; Send start, control byte and ack
+045 20C00        131                             INPUT           sc, s0                 ; Load address for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+046 28C07        132                             SL1             sc                      ; add read flag
+047 36057        133                             CALL            i2c_xmit                ; Send address and ack
+048 3608E        134                             CALL            i2c_sack
+                 135
+049 3609A        136                             CALL            i2c_start               ; Send start, control byte and ack
+                 137
+04A 36068        138                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+04B 36083        139                             CALL            i2c_mnack
+04C 2020C        140                             INPUT           s2, sc
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 141
+04D 340A0        142                             JUMP            i2c_stop                ; Send Stop
+                 143
+                 144     ; -------------------------------------------------------------------------------
+                 145     ; Routine to set up for and write one byte to I2C device
+                 146     ; -------------------------------------------------------------------------------
+  0004E          147     write1_i2c:
+                 148
+04E 3609A        149                             CALL            i2c_start               ; Send Start, control byte and ack
+04F 20C00        150                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+050 28C06        151                             SL0             sc                      ; add write flag
+051 36057        152                             CALL            i2c_xmit                ; Send address and ack
+052 3608E        153                             CALL            i2c_sack
+                 154
+053 20C01        155                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+054 36057        156                             CALL            i2c_xmit                ; Send EQU and ack
+055 3608E        157                             CALL            i2c_sack
+                 158
+056 340A0        159                             JUMP            i2c_stop                ; Send stop
+                 160
+                 161     ; -------------------------------------------------------------------------------
+                 162     ; Transmit 8 bits of I2C EQU
+                 163     ; -------------------------------------------------------------------------------
+  00057          164     i2c_xmit:
+057 20D08        165                             INPUT           sd, 8                   ; Load I2C bit counter
+  00058          166     i2c_tx:
+058 36003        167                             CALL            delay
+059 28C06        168                             SL0             sc                      ; Move EQU bit -> carry
+05A 3585E        169                             JUMP            c, i2c_tx1              ; Jump if bit high
+  0005B          170     i2c_tx0:
+05B 22F05        171                             OUTPUT          sf, bsda_0              ; SDA = 0
+05C 36003        172                             CALL            delay
+05D 34060        173                             JUMP            i2c_tx2                 ; Jump over next instructions
+  0005E          174     i2c_tx1:
+05E 22F05        175                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+05F 36003        176                             CALL            delay
+  00060          177     i2c_tx2:
+                 178
+060 22F05        179                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+061 36003        180                             CALL            delay
+062 36003        181                             CALL            delay
+063 36003        182                             CALL            delay
+064 22F05        183                             OUTPUT          sf, bscl_0              ; SCL = 0
+                 184
+065 0CD01        185                             SUB             sd, #1                  ; Decrement I2C bit counter
+066 35458        186                             JUMP            nz, i2c_tx              ; Loop until 8 bits are sent
+067 34003        187                             JUMP            delay
+                 188
+                 189     ; -------------------------------------------------------------------------------
+                 190     ; Read 8 bits of I2C EQU
+                 191     ; -------------------------------------------------------------------------------
+  00068          192     i2c_recv:
+068 20D08        193                             INPUT           sd, 8                   ; Load I2C bit counter
+069 36003        194                             CALL            delay
+06A 22F05        195                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+                 196
+  0006B          197     i2c_rx:
+06B 36003        198                             CALL            delay
+06C 22F05        199                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+06D 36003        200                             CALL            delay
+06E 36003        201                             CALL            delay
+06F 20F05        202                             INPUT           sf, bsda_in
+070 36003        203                             CALL            delay
+071 28F0E        204                             SR0             sf                      ; LSBit -> carry bit
+072 28C00        205                             SLA             sc                      ; Carry shifted into LSBit
+073 22F05        206                             OUTPUT          sf, bscl_0              ; SCL = 0
+074 36003        207                             CALL            delay
+075 0CD01        208                             SUB             sd, #1                  ; Decrement I2C bit counter
+076 3546B        209                             JUMP            nz, i2c_rx              ; Loop until 8 bits are read
+077 24000        210                             RETURN
+                 211
+                 212     ; -------------------------------------------------------------------------------
+                 213     ; Ack by master, keep EQU 0
+                 214     ; -------------------------------------------------------------------------------
+  00078          215     i2c_mack:
+078 36003        216                             CALL            delay
+079 22F05        217                             OUTPUT          sf, bsda_0              ; SDA = 0
+07A 36003        218                             CALL            delay
+07B 22F05        219                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+07C 36003        220                             CALL            delay
+07D 36003        221                             CALL            delay
+07E 36003        222                             CALL            delay
+07F 22F05        223                             OUTPUT          sf, bscl_0              ; SCL = 0
+080 36003        224                             CALL            delay
+081 22F05        225                             OUTPUT          sf, bsda_0              ; SDA = 0
+082 24000        226                             RETURN
+                 227
+                 228     ; -------------------------------------------------------------------------------
+                 229     ; NAck by master, release EQU
+                 230     ; -------------------------------------------------------------------------------
+  00083          231     i2c_mnack:
+083 36003        232                             CALL            delay
+084 22F05        233                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+085 36003        234                             CALL            delay
+086 22F05        235                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+087 36003        236                             CALL            delay
+088 36003        237                             CALL            delay
+089 36003        238                             CALL            delay
+08A 22F05        239                             OUTPUT          sf, bscl_0              ; SCL = 0
+08B 36003        240                             CALL            delay
+08C 22F05        241                             OUTPUT          sf, bsda_0              ; SDA = 0
+08D 24000        242                             RETURN
+                 243
+                 244     ; -------------------------------------------------------------------------------
+                 245     ; Ack by slave, release EQU
+                 246     ; -------------------------------------------------------------------------------
+  0008E          247     i2c_sack:
+08E 36003        248                             CALL            delay
+08F 22F05        249                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+090 36003        250                             CALL            delay
+091 22F05        251                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+092 36003        252                             CALL            delay
+093 36003        253                             CALL            delay
+094 36003        254                             CALL            delay
+095 22F05        255                             OUTPUT          sf, bscl_0              ; SCL = 0
+096 36003        256                             CALL            delay
+097 24000        257                             RETURN
+                 258
+                 259     ; -------------------------------------------------------------------------------
+                 260     ; Set up start condition for I2C
+                 261     ; -------------------------------------------------------------------------------
+                 262
+                 263     ; SCL and SDA set to inputs, signals go high due to pull-up resistors
+                 264
+  00098          265     i2c_repstart:
+098 36003        266                             CALL            delay
+099 22F05        267                             OUTPUT          sf, bscl_z              ; SCL = Z
+  0009A          268     i2c_start:
+09A 36003        269                             CALL            delay
+09B 22F05        270                             OUTPUT          sf, bsda_0              ; SDA = 0
+09C 36003        271                             CALL            delay
+09D 22F05        272                             OUTPUT          sf, bscl_0              ; SCL = 0
+09E 36003        273                             CALL            delay
+09F 24000        274                             RETURN
+                 275
+                 276     ; -------------------------------------------------------------------------------
+                 277     ; Send I2C stop command
+                 278     ; -------------------------------------------------------------------------------
+  000A0          279     i2c_stop:
+0A0 36003        280                             CALL            delay
+0A1 22F05        281                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+0A2 36003        282                             CALL            delay
+0A3 22F05        283                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+0A4 36003        284                             CALL            delay
+0A5 24000        285                             RETURN
+                 286
+                 287     ; -----------I2C Subroutines end-------------------------------------------------
+                 288

@@ -139,10 +139,7 @@ wait_100ms_i:       SUB       Temp1, #1
 ; Main program >>>
                    
 ; Vectors
-        ADDRESS 0x3FF                             ; interrupt vector
-        JUMP    INTERRUPT
-        ADDRESS 0x000                             ; RESET vector
-        JUMP    Start
+
 
 ;-------------------------------------------------------------------------
 ; Interrupt routine

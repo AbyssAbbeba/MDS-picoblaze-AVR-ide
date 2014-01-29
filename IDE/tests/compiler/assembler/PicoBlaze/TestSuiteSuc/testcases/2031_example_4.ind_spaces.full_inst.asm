@@ -1163,7 +1163,7 @@ counters_read:          LOAD            s0, #0x00               ;end reset pulse
 ;
 ;Reload registers and end ISR
 ;
-reload_reg:            FETCH           sf, preserve_sf         ;reload registers
+reload_reg:         ;reload registers
                         load           se, preserve_se
                         load           sd, preserve_sd
                         load           sc, preserve_sc
