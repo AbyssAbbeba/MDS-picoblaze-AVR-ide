@@ -284,7 +284,11 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
             }
         }
 
-        CU_ASSERT_TRUE(entryFoundInSymExpFile);
+        if ( false == entryFoundInSymExpFile )
+        {
+            CU_FAIL("Table of symbols is different than expected.");
+            break;
+        }
     }
 
     if ( 0 != ( symExpFileVec[0].size() + symExpFileVec[1].size() ) )
