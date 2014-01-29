@@ -17,23 +17,23 @@
                   17     ; Start
                   18     ;##############################################################################;
                   19     ; Přiřazení jmen registrům
-  00000           20     	NAMEREG		s0,temp1              ; temporary data register
-  00001           21     	NAMEREG		s1,temp2              ; temporary data register
-  00002           22     	NAMEREG		s2,temp3              ; temporary data register
-  00003           23     	NAMEREG		s3,RXdata             ; temporary data register
-  00004           24     	NAMEREG		s4,TXdata             ; temporary data register
+  00000           20     	NAMEREG		s0,temp1              ; temporary EQU register
+  00001           21     	NAMEREG		s1,temp2              ; temporary EQU register
+  00002           22     	NAMEREG		s2,temp3              ; temporary EQU register
+  00003           23     	NAMEREG		s3,RXEQU             ; temporary EQU register
+  00004           24     	NAMEREG		s4,TXEQU             ; temporary EQU register
                   25
                   26     ; PORT_IDs
-  00001           27     	CONSTANT	TX_data_01, 01          ;  data register port ID
-  00002           28     	CONSTANT	TX_data_02, 02          ;  data register port ID
-  00004           29     	CONSTANT	TX_data_03, 04          ;  data register port ID
-  00008           30     	CONSTANT	TX_data_04, 08          ;  data register port ID
-  0000C           31     	CONSTANT	Read_data, 12           ;  data register port ID
+  00001           27     	CONSTANT	TX_EQU_01, 01          ;  EQU register port ID
+  00002           28     	CONSTANT	TX_EQU_02, 02          ;  EQU register port ID
+  00004           29     	CONSTANT	TX_EQU_03, 04          ;  EQU register port ID
+  00008           30     	CONSTANT	TX_EQU_04, 08          ;  EQU register port ID
+  0000C           31     	CONSTANT	Read_EQU, 12           ;  EQU register port ID
                   32
   00004           33     CHREG                   equ             4
   00004           34     SWITCH                   equ             4
   00004           35     UART_STAT                   equ             4
-  00004           36     UART_DATA                   equ             4
+  00004           36     UART_EQU                   equ             4
                   37
                   38     	
                   39     ; Inicializace
@@ -66,7 +66,7 @@ W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; wh
                   64     ;==============================================================================;
 008 0A004         65     SendChar:           IN        Temp1, UART_stat    ; checking UART status
 009 09108         66                         JUMP      Z, SendChar         ; wait until Tx is ready
-00A 0E404         67                         OUT       chreg, UART_data    ; Send the character
+00A 0E404         67                         OUT       chreg, UART_EQU    ; Send the character
 W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00B 08080         68                         RET                           ; Return from procedure
                   69
@@ -76,8 +76,8 @@ W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; w
                   73     ;==============================================================================;
 00C 0A004         74     GetChar:            IN        Temp1, UART_stat    ; checking UART status
                   75
-00D 0910C         76                         JUMP      Z, GetChar          ; wait for new Rx data
-00E 0A404         77                         IN        chreg, UART_data    ; Read the character
+00D 0910C         76                         JUMP      Z, GetChar          ; wait for new Rx EQU
+00E 0A404         77                         IN        chreg, UART_EQU    ; Read the character
 W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00F 08080         78                         RET                           ; Return from procedure
                   79

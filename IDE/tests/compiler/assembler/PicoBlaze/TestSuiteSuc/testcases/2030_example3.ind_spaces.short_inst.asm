@@ -54,47 +54,47 @@ device kcpsm2
 status_port             EQU     0x00                    ;UART and memory status
 tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
 tx_full                 EQU     0x02                    ;    FIFO            tx_full - bit1
-rx_data_present         EQU     0x04                    ;  Receiver     data present - bit2
+rx_EQU_present         EQU     0x04                    ;  Receiver     EQU present - bit2
 rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
 rx_full                 EQU     0x10                    ;                    rx_full - bit4
 spare1                  EQU     0x20                    ;                  spare '0' - bit5
 spare2                  EQU     0x40                    ;                  spare '0' - bit6
 strataflash_sts         EQU     0x80                    ;  StrataFLASH           STS - bit7
 ;
-uart_read_port          EQU     0x01                    ;UART Rx data input
+uart_read_port          EQU     0x01                    ;UART Rx EQU input
 ;
-uart_write_port         EQU     0x08                    ;UART Tx data output
+uart_write_port         EQU     0x08                    ;UART Tx EQU output
 ;
 ;
 ; LCD Display
 ;
 ;The master enable signal is not used by the LCD display itself
 ;but is used to prevent any contention with the StrataFLASH memory that
-;is connected to the same data pins. In this design the StrataFLASH memory is
+;is connected to the same EQU pins. In this design the StrataFLASH memory is
 ;used in 8-bit mode so not contention should exist but this master enable
 ;facilty is then available for anyone wanting to modify the design for use
 ;with a 16-bit interface.
 ;
-lcd_output_port         EQU     0x20                    ;LCD character module output data and control
+lcd_output_port         EQU     0x20                    ;LCD character module output EQU and control
 lcd_e                   EQU     0x01                    ;   active High Enable        E - bit0
 lcd_rw                  EQU     0x02                    ;   Read=1 Write=0           RW - bit1
-lcd_rs                  EQU     0x04                    ;   Instruction=0 Data=1     RS - bit2
+lcd_rs                  EQU     0x04                    ;   Instruction=0 EQU=1     RS - bit2
 lcd_drive               EQU     0x08                    ;   Master enable (active High) - bit3
-lcd_db4                 EQU     0x10                    ;   4-bit              Data DB4 - bit4
-lcd_db5                 EQU     0x20                    ;   interface          Data DB5 - bit5
-lcd_db6                 EQU     0x40                    ;                      Data DB6 - bit6
-lcd_db7                 EQU     0x80                    ;                      Data DB7 - bit7
+lcd_db4                 EQU     0x10                    ;   4-bit              EQU DB4 - bit4
+lcd_db5                 EQU     0x20                    ;   interface          EQU DB5 - bit5
+lcd_db6                 EQU     0x40                    ;                      EQU DB6 - bit6
+lcd_db7                 EQU     0x80                    ;                      EQU DB7 - bit7
 ;
 ;
-lcd_input_port          EQU     0x03                    ;LCD character module input data
+lcd_input_port          EQU     0x03                    ;LCD character module input EQU
 lcd_read_spare0         EQU     0x01                    ;    Spare bits               - bit0
 lcd_read_spare1         EQU     0x02                    ;    are zero                 - bit1
 lcd_read_spare2         EQU     0x04                    ;                             - bit2
 lcd_read_spare3         EQU     0x08                    ;                             - bit3
-lcd_read_db4            EQU     0x10                    ;    4-bit           Data DB4 - bit4
-lcd_read_db5            EQU     0x20                    ;    interface       Data DB5 - bit5
-lcd_read_db6            EQU     0x40                    ;                    Data DB6 - bit6
-lcd_read_db7            EQU     0x80                    ;                    Data DB7 - bit7
+lcd_read_db4            EQU     0x10                    ;    4-bit           EQU DB4 - bit4
+lcd_read_db5            EQU     0x20                    ;    interface       EQU DB5 - bit5
+lcd_read_db6            EQU     0x40                    ;                    EQU DB6 - bit6
+lcd_read_db7            EQU     0x80                    ;                    EQU DB7 - bit7
 ;
 ;
 ;
@@ -105,9 +105,9 @@ lcd_read_db7            EQU     0x80                    ;                    Dat
 ; In practice, the FLASH will also hold the configuration image for the Spartan device.
 ;
 ;
-sf_data_in_port         EQU     0x02                    ;Read data from StrataFLASH device
+sf_EQU_in_port         EQU     0x02                    ;Read EQU from StrataFLASH device
 ;
-sf_data_out_port        EQU     0x80                    ;Data to write into StrataFLASH device
+sf_EQU_out_port        EQU     0x80                    ;EQU to write into StrataFLASH device
 ;
 sf_addr_hi_port         EQU     0x83                    ;StrataFLASH address[21:16] (6 LSB's)
 sf_addr_mi_port         EQU     0x82                    ;StrataFLASH address[15:8]
@@ -138,14 +138,14 @@ random_value_port       EQU     0x04                    ;read LFSR counter value
 ; form of short messages to be passed to the 'real' application to enable or disable
 ; it depending on the authentication status.
 ;
-link_fifo_write_port    EQU     0x04                    ;write data to FIFO
+link_fifo_write_port    EQU     0x04                    ;write EQU to FIFO
 ;
 ;
 ;**************************************************************************************
 ; Special Register usage
 ;**************************************************************************************
 ;
-uart_data               REG     sf                      ;used to pass data to and from the UART
+uart_EQU               REG     sf                      ;used to pass EQU to and from the UART
 ;
 ;
 ;
@@ -178,7 +178,7 @@ authentication_status   EQU     0x1c                    ;Status of design authen
 ;
 ;
 ;**************************************************************************************
-;Useful data constants
+;Useful EQU constants
 ;**************************************************************************************
 ;
 ;
@@ -458,11 +458,11 @@ auth_failure:           CALL    disp_failed             ;display failure to auth
 menu:                   CALL    send_menu               ;display menu and prompt
                         CALL    read_from_uart          ;read character from PC
                         CALL    upper_case              ;convert to upper case
-                        load     uart_data, #_character_r
+                        load     uart_EQU, #_character_r
                         JUMP    z, read_command
-                        load     uart_data, #_character_e
+                        load     uart_EQU, #_character_e
                         JUMP    z, erase_command
-                        load     uart_data, #_character_a
+                        load     uart_EQU, #_character_a
                         JUMP    z, authorise_command
                         JUMP    menu                    ;repeat menu for invalid selection
 ;
@@ -487,7 +487,7 @@ authorise_command:      CALL    send_writing            ;Send 'Writing Authorisa
                         CALL    send_cr
                         FT      sd, computed_crc0       ;load computed CRC value
                         FT      se, computed_crc1
-                        CALL    write_authentication    ;write computed CRC to FLASH with random data
+                        CALL    write_authentication    ;write computed CRC to FLASH with random EQU
                         CALL    send_ok
                         JUMP    menu
 ;
@@ -862,11 +862,11 @@ sf_erase_block:         LD      s8, #0x00               ;define lower address of
 ;**************************************************************************************
 ;
 ; To write a single byte to StrataFLASH memory the address must be set and the
-; single-word/byte program command (40 hex) sent to the memory. Then the data byte can
+; single-word/byte program command (40 hex) sent to the memory. Then the EQU byte can
 ; be written to the memory using the same address.
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
-; Register s0 should contain the byte data to be written to the memory.
+; Register s0 should contain the byte EQU to be written to the memory.
 ;
 ; The act of writing the memory array may take up to 175us to complete. This routine
 ; waits for the memory to be ready before restoring the normal read array mode and
@@ -878,7 +878,7 @@ sf_erase_block:         LD      s8, #0x00               ;define lower address of
 ;
 sf_single_byte_write:   LD      s1, #0x40               ;command for single byte program
                         CALL    sf_byte_write
-                        LD      s1, s0                  ;write data to be programmed
+                        LD      s1, s0                  ;write EQU to be programmed
                         CALL    sf_byte_write
                         CALL    wait_sf_ready           ;wait for program to complete
                         RET
@@ -925,11 +925,11 @@ end_read_sn:            CALL    set_sf_read_array_mode  ;reload normal read arra
 ;**************************************************************************************
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
-; Register s0 will return the byte data retrieved from the memory.
+; Register s0 will return the byte EQU retrieved from the memory.
 ;
 ; To read a byte, the address needs to be set up on the address lines
 ; and the controls set as follows
-;    SF_read = 1 - disable Spartan data outputs and enable StrataFlash outputs (OE=0)
+;    SF_read = 1 - disable Spartan EQU outputs and enable StrataFlash outputs (OE=0)
 ;      SF_ce = 0 - enable StrataFLASH memory
 ;      SF_we = 1 - Write enable off
 ;
@@ -946,13 +946,13 @@ sf_byte_read:           OUT     s9, sf_addr_hi_port     ;set 24-bit address
                         OUT     s1, sf_control_port
                         LD      s1, #0x06               ;>75ns delay
                         LD      s1, #0x06               ;but do something useful!
-                        IN      s0, sf_data_in_port     ;read data byte
+                        IN      s0, sf_EQU_in_port     ;read EQU byte
                         OUT     s1, sf_control_port     ;clear controls
                         RET
 ;
 ;
 ;**************************************************************************************
-; Write data or command byte to StrataFlash Memory
+; Write EQU or command byte to StrataFlash Memory
 ;**************************************************************************************
 ;
 ; The 24-bit address should be supplied in register set [s9,s8,s7].
@@ -960,7 +960,7 @@ sf_byte_read:           OUT     s9, sf_addr_hi_port     ;set 24-bit address
 ;
 ; To write a byte, the address needs to be set up on the address lines
 ; and the controls set as follows
-;    SF_read = 0 - enable Spartan data outputs and disable StrataFlash outputs (OE=1)
+;    SF_read = 0 - enable Spartan EQU outputs and disable StrataFlash outputs (OE=1)
 ;      SF_ce = 0 - enable StrataFLASH memory
 ;      SF_we = 0 - Write enable on
 ;
@@ -973,7 +973,7 @@ sf_byte_read:           OUT     s9, sf_addr_hi_port     ;set 24-bit address
 sf_byte_write:          OUT     s9, sf_addr_hi_port     ;set 24-bit address
                         OUT     s8, sf_addr_mi_port
                         OUT     s7, sf_addr_lo_port
-                        OUT     s1, sf_data_out_port    ;set data byte to be written
+                        OUT     s1, sf_EQU_out_port    ;set EQU byte to be written
                         LD      s1, #0x00               ;set controls
                         OUT     s1, sf_control_port
                         LD      s1, #0x06               ;>60ns delay
@@ -1030,28 +1030,28 @@ wait_sf_ready:          CALL    sf_byte_read            ;read status register in
 ;
 ; Read one character from the UART
 ;
-; Character read will be returned in a register called 'UART_data'.
+; Character read will be returned in a register called 'UART_EQU'.
 ;
-; The routine first loads the receiver FIFO buffer to see if data is present.
+; The routine first loads the receiver FIFO buffer to see if EQU is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; As this could take any amount of time the wait loop could include a call to a
 ; subroutine which performs a useful function.
 ;
 ;
-; Registers used s0 and UART_data
+; Registers used s0 and UART_EQU
 ;
 read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
-                        load    s0, #rx_data_present    ;wait if empty
+                        load    s0, #rx_EQU_present    ;wait if empty
                         JUMP    nz, read_character
                         JUMP    read_from_uart
-read_character:         IN      uart_data, uart_read_port ;read from FIFO
+read_character:         IN      uart_EQU, uart_read_port ;read from FIFO
                         RET
 ;
 ;
 ;
 ; Transmit one character to the UART
 ;
-; Character supplied in register called 'UART_data'.
+; Character supplied in register called 'UART_EQU'.
 ;
 ; The routine first loads the transmit FIFO buffer to see if it is full.
 ; If the FIFO is full, then the routine waits until it there is space.
@@ -1062,7 +1062,7 @@ send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
                         load    s0, #tx_full            ;wait if full
                         JUMP    z, uart_write
                         JUMP    send_to_uart
-uart_write:             OUT     uart_data, uart_write_port
+uart_write:             OUT     uart_EQU, uart_write_port
                         RET
 ;
 ;
@@ -1075,18 +1075,18 @@ uart_write:             OUT     uart_data, uart_write_port
 ;
 ;Convert character to upper case
 ;
-;The character supplied in register UART_data.
+;The character supplied in register UART_EQU.
 ;If the character is in the range 'a' to 'z', it is converted
 ;to the equivalent upper case character in the range 'A' to 'Z'.
 ;All other characters remain unchanged.
 ;
 ;Registers used s0.
 ;
-upper_case:             load     uart_data, #0x61        ;eliminate character codes below 'a' (61 hex)
+upper_case:             load     uart_EQU, #0x61        ;eliminate character codes below 'a' (61 hex)
                         RET
-                        load     uart_data, #0x7b        ;eliminate character codes above 'z' (7A hex)
+                        load     uart_EQU, #0x7b        ;eliminate character codes above 'z' (7A hex)
                         RET
-                        AND     uart_data, #0xdf        ;mask bit5 to convert to upper case
+                        AND     uart_EQU, #0xdf        ;mask bit5 to convert to upper case
                         RET
 ;
 ;
@@ -1132,9 +1132,9 @@ number_char:            ADD     s0, #0x3a               ;ASCII char 0 to 9 in ra
 ;Registers used s0, s1, s2
 ;
 send_hex_byte:          CALL    hex_byte_to_ascii
-                        LD      uart_data, s2
+                        LD      uart_EQU, s2
                         CALL    send_to_uart
-                        LD      uart_data, s1
+                        LD      uart_EQU, s1
                         CALL    send_to_uart
                         RET
 ;
@@ -1159,9 +1159,9 @@ send_hex_3bytes:        LD      s0, s9
 disp_hex_byte:          CALL    hex_byte_to_ascii
                         LD      s3, s1                  ;remember least significant digit
                         LD      s5, s2
-                        CALL    lcd_write_data          ;display most significant digit
+                        CALL    lcd_write_EQU          ;display most significant digit
                         LD      s5, s3
-                        CALL    lcd_write_data          ;display least significant digit
+                        CALL    lcd_write_EQU          ;display least significant digit
                         RET
 ;
 ;
@@ -1173,13 +1173,13 @@ disp_hex_byte:          CALL    hex_byte_to_ascii
 ;
 ;Send Carriage Return to the UART
 ;
-send_cr:                LD      uart_data, #character_cr
+send_cr:                LD      uart_EQU, #character_cr
                         CALL    send_to_uart
                         RET
 ;
 ;Send a space to the UART
 ;
-send_space:             LD      uart_data, #character_space
+send_space:             LD      uart_EQU, #character_space
                         CALL    send_to_uart
                         RET
 ;
@@ -1187,7 +1187,7 @@ send_space:             LD      uart_data, #character_space
 ;Send an equals sign to the UART with a space each side
 ;
 send_equals:            CALL    send_space
-                        LD      uart_data, #character_equals
+                        LD      uart_EQU, #character_equals
                         CALL    send_to_uart
                         CALL    send_space
                         RET
@@ -1197,7 +1197,7 @@ send_equals:            CALL    send_space
 ;Send an minus sign (dash) to the UART with a space each side
 ;
 send_dash:              CALL    send_space
-                        LD      uart_data, #character_minus
+                        LD      uart_EQU, #character_minus
                         CALL    send_to_uart
                         CALL    send_space
                         RET
@@ -1207,80 +1207,80 @@ send_dash:              CALL    send_space
 ;
 send_welcome:           CALL    send_cr
                         CALL    send_cr
-                        LD      uart_data, #_character_p
+                        LD      uart_EQU, #_character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_c
+                        LD      uart_EQU, #character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #_character_b
+                        LD      uart_EQU, #_character_b
                         CALL    send_to_uart
-                        LD      uart_data, #character_l
+                        LD      uart_EQU, #character_l
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_z
+                        LD      uart_EQU, #character_z
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
-                        CALL    send_to_uart
-                        CALL    send_space
-                        LD      uart_data, #_character_l
-                        CALL    send_to_uart
-                        LD      uart_data, #character_o
-                        CALL    send_to_uart
-                        LD      uart_data, #character_w
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_c
+                        LD      uart_EQU, #_character_l
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_s
-                        CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_w
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_d
+                        LD      uart_EQU, #_character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_s
+                        LD      uart_EQU, #character_s
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
-                        CALL    send_to_uart
-                        LD      uart_data, #character_g
-                        CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_s
+                        LD      uart_EQU, #_character_d
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_c
+                        LD      uart_EQU, #character_s
                         CALL    send_to_uart
-                        LD      uart_data, #character_u
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_g
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
-                        CALL    send_to_uart
-                        LD      uart_data, #character_t
-                        CALL    send_to_uart
-                        LD      uart_data, #character_y
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #character_v
+                        LD      uart_EQU, #_character_s
                         CALL    send_to_uart
-                        LD      uart_data, #character_1
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_fullstop
+                        LD      uart_EQU, #character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_0
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
-                        LD      uart_data, #character_0
+                        LD      uart_EQU, #character_r
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_i
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_t
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_y
+                        CALL    send_to_uart
+                        CALL    send_space
+                        LD      uart_EQU, #character_v
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_1
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_fullstop
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_0
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_0
                         CALL    send_to_uart
                         CALL    send_cr
                         CALL    send_cr
@@ -1298,53 +1298,53 @@ send_welcome:           CALL    send_cr
 ;check of the BRAM contents will fail to match the expected value and
 ;the design will again be disabled.
 ;
-send_copyright:         LD      uart_data, #_character_c
+send_copyright:         LD      uart_EQU, #_character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_p
+                        LD      uart_EQU, #character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_y
+                        LD      uart_EQU, #character_y
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_g
+                        LD      uart_EQU, #character_g
                         CALL    send_to_uart
-                        LD      uart_data, #character_h
+                        LD      uart_EQU, #character_h
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
-                        CALL    send_to_uart
-                        CALL    send_space
-                        LD      uart_data, #_character_k
-                        CALL    send_to_uart
-                        LD      uart_data, #character_e
-                        CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_c
+                        LD      uart_EQU, #_character_k
                         CALL    send_to_uart
-                        LD      uart_data, #character_h
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
-                        CALL    send_to_uart
-                        LD      uart_data, #character_p
-                        CALL    send_to_uart
-                        LD      uart_data, #character_m
-                        CALL    send_to_uart
-                        LD      uart_data, #character_a
-                        CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #character_2
+                        LD      uart_EQU, #_character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_0
+                        LD      uart_EQU, #character_h
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_a
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_p
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_m
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_a
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_n
+                        CALL    send_to_uart
+                        CALL    send_space
+                        LD      uart_EQU, #character_2
+                        CALL    send_to_uart
+                        LD      uart_EQU, #character_0
                         CALL    send_to_uart
                         CALL    send_to_uart
-                        LD      uart_data, #character_6
+                        LD      uart_EQU, #character_6
                         CALL    send_to_uart
                         CALL    send_cr
                         CALL    send_cr
@@ -1354,15 +1354,15 @@ send_copyright:         LD      uart_data, #_character_c
 ;
 ;Send 'FLASH ' string to the UART
 ;
-send_flash:             LD      uart_data, #_character_f
+send_flash:             LD      uart_EQU, #_character_f
                         CALL    send_to_uart
-                        LD      uart_data, #_character_l
+                        LD      uart_EQU, #_character_l
                         CALL    send_to_uart
-                        LD      uart_data, #_character_a
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #_character_s
+                        LD      uart_EQU, #_character_s
                         CALL    send_to_uart
-                        LD      uart_data, #_character_h
+                        LD      uart_EQU, #_character_h
                         CALL    send_to_uart
                         RET
 ;
@@ -1372,30 +1372,30 @@ send_flash:             LD      uart_data, #_character_f
 ;
 send_flash_serial_number: CALL  send_flash
                         CALL    send_space
-                        LD      uart_data, #_character_s
+                        LD      uart_EQU, #_character_s
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_l
+                        LD      uart_EQU, #character_l
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_n
+                        LD      uart_EQU, #_character_n
                         CALL    send_to_uart
-                        LD      uart_data, #character_u
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
-                        LD      uart_data, #character_m
+                        LD      uart_EQU, #character_m
                         CALL    send_to_uart
-                        LD      uart_data, #character_b
+                        LD      uart_EQU, #character_b
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
                         CALL    send_equals
                         RET
@@ -1403,73 +1403,73 @@ send_flash_serial_number: CALL  send_flash
 ;
 ;Send 'Auth' string to the UART
 ;
-send_auth:              LD      uart_data, #_character_a
+send_auth:              LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_u
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_h
+                        LD      uart_EQU, #character_h
                         CALL    send_to_uart
                         RET
 ;
 ;Send 'Authoris' to the UART
 ;
 send_authoris:          CALL    send_auth
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_s
+                        LD      uart_EQU, #character_s
                         CALL    send_to_uart
                         RET
 ;
 ;Send 'Authorisation' to the UART
 ;
 send_authorisation:     CALL    send_authoris
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
                         RET
 ;
 ;Send 'Authorise' to the UART
 ;
 send_authorise:         CALL    send_authoris
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
                         RET
 ;
 ;Send 'Authentication' string to the UART
 ;
 send_authentication:    CALL    send_auth
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_c
+                        LD      uart_EQU, #character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
                         RET
 ;
@@ -1482,11 +1482,11 @@ send_flash_crc:         CALL    send_flash
 ;Send ' CRC = ' string to the UART
 ;
 send_crc:               CALL    send_space
-                        LD      uart_data, #_character_c
+                        LD      uart_EQU, #_character_c
                         CALL    send_to_uart
-                        LD      uart_data, #_character_r
+                        LD      uart_EQU, #_character_r
                         CALL    send_to_uart
-                        LD      uart_data, #_character_c
+                        LD      uart_EQU, #_character_c
                         CALL    send_to_uart
                         CALL    send_equals
                         RET
@@ -1495,36 +1495,36 @@ send_crc:               CALL    send_space
 ;
 ;Send 'Computed CRC = ' string to the UART
 ;
-send_computed_crc:      LD      uart_data, #_character_c
+send_computed_crc:      LD      uart_EQU, #_character_c
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_m
+                        LD      uart_EQU, #character_m
                         CALL    send_to_uart
-                        LD      uart_data, #character_p
+                        LD      uart_EQU, #character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_u
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_d
+                        LD      uart_EQU, #character_d
                         CALL    send_to_uart
                         JUMP    send_crc
 ;
 ;
 ;Send 'Erase ' string to the UART
 ;
-send_erase:             LD      uart_data, #_character_e
+send_erase:             LD      uart_EQU, #_character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_s
+                        LD      uart_EQU, #character_s
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
                         CALL    send_space
                         RET
@@ -1536,24 +1536,24 @@ send_erase_in_progress: CALL    send_cr
                         CALL    send_erase
                         CALL    send_authorisation
                         CALL    send_space
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
                         CALL    send_space
-                        LD      uart_data, #_character_p
+                        LD      uart_EQU, #_character_p
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_o
+                        LD      uart_EQU, #character_o
                         CALL    send_to_uart
-                        LD      uart_data, #character_g
+                        LD      uart_EQU, #character_g
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_s
+                        LD      uart_EQU, #character_s
                         CALL    send_to_uart
                         CALL    send_to_uart
                         CALL    send_cr
@@ -1562,9 +1562,9 @@ send_erase_in_progress: CALL    send_cr
 ;
 ;Send 'OK' to the UART
 ;
-send_ok:                LD      uart_data, #_character_o
+send_ok:                LD      uart_EQU, #_character_o
                         CALL    send_to_uart
-                        LD      uart_data, #_character_k
+                        LD      uart_EQU, #_character_k
                         CALL    send_to_uart
                         CALL    send_cr
                         RET
@@ -1573,17 +1573,17 @@ send_ok:                LD      uart_data, #_character_o
 ;Send ' FAILED' to the UART
 ;
 send_failed:            CALL    send_space
-                        LD      uart_data, #_character_f
+                        LD      uart_EQU, #_character_f
                         CALL    send_to_uart
-                        LD      uart_data, #_character_a
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #_character_i
+                        LD      uart_EQU, #_character_i
                         CALL    send_to_uart
-                        LD      uart_data, #_character_l
+                        LD      uart_EQU, #_character_l
                         CALL    send_to_uart
-                        LD      uart_data, #_character_e
+                        LD      uart_EQU, #_character_e
                         CALL    send_to_uart
-                        LD      uart_data, #_character_d
+                        LD      uart_EQU, #_character_d
                         CALL    send_to_uart
                         RET
 ;
@@ -1591,16 +1591,16 @@ send_failed:            CALL    send_space
 ;Send ' PASSED' to the UART
 ;
 send_passed:            CALL    send_space
-                        LD      uart_data, #_character_p
+                        LD      uart_EQU, #_character_p
                         CALL    send_to_uart
-                        LD      uart_data, #_character_a
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
-                        LD      uart_data, #_character_s
+                        LD      uart_EQU, #_character_s
                         CALL    send_to_uart
                         CALL    send_to_uart
-                        LD      uart_data, #_character_e
+                        LD      uart_EQU, #_character_e
                         CALL    send_to_uart
-                        LD      uart_data, #_character_d
+                        LD      uart_EQU, #_character_d
                         CALL    send_to_uart
                         RET
 ;
@@ -1609,19 +1609,19 @@ send_passed:            CALL    send_space
 ;Send 'Writing Authorisation' to the UART
 ;
 send_writing:           CALL    send_cr
-                        LD      uart_data, #_character_w
+                        LD      uart_EQU, #_character_w
                         CALL    send_to_uart
-                        LD      uart_data, #character_r
+                        LD      uart_EQU, #character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_t
+                        LD      uart_EQU, #character_t
                         CALL    send_to_uart
-                        LD      uart_data, #character_i
+                        LD      uart_EQU, #character_i
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
-                        LD      uart_data, #character_g
+                        LD      uart_EQU, #character_g
                         CALL    send_to_uart
                         CALL    send_space
                         CALL    send_authorisation
@@ -1632,43 +1632,43 @@ send_writing:           CALL    send_cr
 ;
 send_menu:              CALL    send_cr
                         CALL    send_cr
-                        LD      uart_data, #_character_m
+                        LD      uart_EQU, #_character_m
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_n
+                        LD      uart_EQU, #character_n
                         CALL    send_to_uart
-                        LD      uart_data, #character_u
+                        LD      uart_EQU, #character_u
                         CALL    send_to_uart
                         CALL    send_cr
                         CALL    send_cr
-                        LD      uart_data, #_character_r
+                        LD      uart_EQU, #_character_r
                         CALL    send_to_uart
                         CALL    send_dash
-                        LD      uart_data, #_character_r
+                        LD      uart_EQU, #_character_r
                         CALL    send_to_uart
-                        LD      uart_data, #character_e
+                        LD      uart_EQU, #character_e
                         CALL    send_to_uart
-                        LD      uart_data, #character_a
+                        LD      uart_EQU, #character_a
                         CALL    send_to_uart
-                        LD      uart_data, #character_d
+                        LD      uart_EQU, #character_d
                         CALL    send_to_uart
                         CALL    send_space
                         CALL    send_authorisation
                         CALL    send_cr
-                        LD      uart_data, #_character_e
+                        LD      uart_EQU, #_character_e
                         CALL    send_to_uart
                         CALL    send_dash
                         CALL    send_erase
                         CALL    send_authorisation
                         CALL    send_cr
-                        LD      uart_data, #_character_a
+                        LD      uart_EQU, #_character_a
                         CALL    send_to_uart
                         CALL    send_dash
                         CALL    send_authorise
                         CALL    send_cr
                         CALL    send_cr
-                        LD      uart_data, #character_greater_than ;prompt for input
+                        LD      uart_EQU, #character_greater_than ;prompt for input
                         CALL    send_to_uart
                         RET
 ;
@@ -1677,7 +1677,7 @@ send_menu:              CALL    send_cr
 ;**************************************************************************************
 ;
 ;LCD module is a 16 character by 2 line display but all displays are very similar
-;The 4-wire data interface will be used (DB4 to DB7).
+;The 4-wire EQU interface will be used (DB4 to DB7).
 ;
 ;The LCD modules are relatively slow and software delay loops are used to slow down
 ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
@@ -1741,10 +1741,10 @@ lcd_write_inst8:        LD      s4, s5
 ;
 ;
 ;
-;Write 8-bit data to LCD display.
+;Write 8-bit EQU to LCD display.
 ;
-;The 8-bit data should be provided in register s5.
-;Data bytes are written using the following sequence
+;The 8-bit EQU should be provided in register s5.
+;EQU bytes are written using the following sequence
 ; Upper nibble
 ; wait >1us
 ; Lower nibble
@@ -1752,15 +1752,15 @@ lcd_write_inst8:        LD      s4, s5
 ;
 ;Registers used s0, s1, s4, s5
 ;
-lcd_write_data:         LD      s4, s5
+lcd_write_EQU:         LD      s4, s5
                         AND     s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-                        OR      s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+                        OR      s4, #0x0c               ;Enable=1 RS=1 EQU, RW=0 Write, E=0
                         OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
                         CALL    lcd_pulse_e             ;write upper nibble
                         CALL    delay_1us               ;wait >1us
                         LD      s4, s5                  ;select lower nibble with
                         SL1     s4                      ;Enable=1
-                        SL1     s4                      ;RS=1 Data
+                        SL1     s4                      ;RS=1 EQU
                         SL0     s4                      ;RW=0 Write
                         SL0     s4                      ;E=0
                         OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
@@ -1773,15 +1773,15 @@ lcd_write_data:         LD      s4, s5
 ;
 ;
 ;
-;Read 8-bit data from LCD display.
+;Read 8-bit EQU from LCD display.
 ;
-;The 8-bit data will be read from the current LCD memory address
+;The 8-bit EQU will be read from the current LCD memory address
 ;and will be returned in register s5.
 ;It is advisable to set the LCD address (cursor position) before
-;using the data read for the first time otherwise the display may
-;generate invalid data on the first read.
+;using the EQU read for the first time otherwise the display may
+;generate invalid EQU on the first read.
 ;
-;Data bytes are read using the following sequence
+;EQU bytes are read using the following sequence
 ; Upper nibble
 ; wait >1us
 ; Lower nibble
@@ -1789,18 +1789,18 @@ lcd_write_data:         LD      s4, s5
 ;
 ;Registers used s0, s1, s4, s5
 ;
-lcd_read_data8:         LD      s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+lcd_read_EQU8:         LD      s4, #0x0e               ;Enable=1 RS=1 EQU, RW=1 Read, E=0
                         OUT     s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
                         XOR     s4, #lcd_e              ;E=1
                         OUT     s4, lcd_output_port
-                        CALL    delay_1us               ;wait >260ns to access data
+                        CALL    delay_1us               ;wait >260ns to access EQU
                         IN      s5, lcd_input_port      ;read upper nibble
                         XOR     s4, #lcd_e              ;E=0
                         OUT     s4, lcd_output_port
                         CALL    delay_1us               ;wait >1us
                         XOR     s4, #lcd_e              ;E=1
                         OUT     s4, lcd_output_port
-                        CALL    delay_1us               ;wait >260ns to access data
+                        CALL    delay_1us               ;wait >260ns to access EQU
                         IN      s0, lcd_input_port      ;read lower nibble
                         XOR     s4, #lcd_e              ;E=0
                         OUT     s4, lcd_output_port
@@ -1810,13 +1810,13 @@ lcd_read_data8:         LD      s4, #0x0e               ;Enable=1 RS=1 Data, RW=
                         SR0     s0
                         SR0     s0
                         OR      s5, s0
-                        LD      s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+                        LD      s4, #0x04               ;Enable=0 RS=1 EQU, RW=0 Write, E=0
                         OUT     s4, lcd_output_port     ;Stop reading 5V device and release master enable
                         CALL    delay_40us              ;wait >40us
                         RET
 ;
 ;
-;Reset and initialise display to communicate using 4-bit data mode
+;Reset and initialise display to communicate using 4-bit EQU mode
 ;Includes routine to clear the display.
 ;
 ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays
@@ -1966,23 +1966,23 @@ delay_ns:               CALL    delay_1s
 ;
 ;
 disp_picoblaze:         LD      s5, #_character_p
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_c
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_o
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_b
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_l
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_z
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;
@@ -1990,21 +1990,21 @@ disp_picoblaze:         LD      s5, #_character_p
 ;
 ;
 disp_security:          LD      s5, #_character_s
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_c
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_u
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_r
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_t
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_y
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;
@@ -2012,37 +2012,37 @@ disp_security:          LD      s5, #_character_s
 ;
 ;
 disp_flash_serial_no:   LD      s5, #_character_f
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_l
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_s
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_h
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_space
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_s
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_r
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_l
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_space
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #_character_n
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_o
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_fullstop
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;
@@ -2053,33 +2053,33 @@ disp_flash_serial_no:   LD      s5, #_character_f
 disp_authentication:    LD      s5, #0x11               ;Line 1 position 1
                         CALL    lcd_cursor
                         LD      s5, #_character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_u
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_t
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_h
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_n
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_t
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_c
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_t
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_o
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_n
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;
@@ -2091,16 +2091,16 @@ disp_authentication:    LD      s5, #0x11               ;Line 1 position 1
 disp_passed:            LD      s5, #0x25               ;Line 2 position 5
                         CALL    lcd_cursor
                         LD      s5, #_character_p
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_s
-                        CALL    lcd_write_data
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_d
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;
@@ -2113,17 +2113,17 @@ disp_passed:            LD      s5, #0x25               ;Line 2 position 5
 disp_failed:            LD      s5, #0x25               ;Line 2 position 5
                         CALL    lcd_cursor
                         LD      s5, #_character_f
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_a
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_i
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_l
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_e
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         LD      s5, #character_d
-                        CALL    lcd_write_data
+                        CALL    lcd_write_EQU
                         RET
 ;
 ;

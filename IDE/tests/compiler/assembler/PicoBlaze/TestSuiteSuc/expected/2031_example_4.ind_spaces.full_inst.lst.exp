@@ -54,28 +54,28 @@
                   54     ;The master enable signal is not used by the LCD display itself
                   55     ;but may be required to confirm that LCD communication is active.
                   56     ;This is required on the Spartan-3E Starter Kit if the StrataFLASH
-                  57     ;is used because it shares the same data pins and conflicts must be avoided.
+                  57     ;is used because it shares the same EQU pins and conflicts must be avoided.
                   58     ;
-  00004           59     lcd_output_port         EQU             0x04                    ;LCD character module output data and control
+  00004           59     lcd_output_port         EQU             0x04                    ;LCD character module output EQU and control
   00001           60     lcd_e                   EQU             0x01                    ;   active High Enable        E - bit0
   00002           61     lcd_rw                  EQU             0x02                    ;   Read=1 Write=0           RW - bit1
-  00004           62     lcd_rs                  EQU             0x04                    ;   Instruction=0 Data=1     RS - bit2
+  00004           62     lcd_rs                  EQU             0x04                    ;   Instruction=0 EQU=1     RS - bit2
   00008           63     lcd_drive               EQU             0x08                    ;   Master enable (active High) - bit3
-  00010           64     lcd_db4                 EQU             0x10                    ;   4-bit              Data DB4 - bit4
-  00020           65     lcd_db5                 EQU             0x20                    ;   interface          Data DB5 - bit5
-  00040           66     lcd_db6                 EQU             0x40                    ;                      Data DB6 - bit6
-  00080           67     lcd_db7                 EQU             0x80                    ;                      Data DB7 - bit7
+  00010           64     lcd_db4                 EQU             0x10                    ;   4-bit              EQU DB4 - bit4
+  00020           65     lcd_db5                 EQU             0x20                    ;   interface          EQU DB5 - bit5
+  00040           66     lcd_db6                 EQU             0x40                    ;                      EQU DB6 - bit6
+  00080           67     lcd_db7                 EQU             0x80                    ;                      EQU DB7 - bit7
                   68     ;
                   69     ;
-  00009           70     lcd_input_port          EQU             0x09                    ;LCD character module input data
+  00009           70     lcd_input_port          EQU             0x09                    ;LCD character module input EQU
   00001           71     lcd_read_spare0         EQU             0x01                    ;    Spare bits               - bit0
   00002           72     lcd_read_spare1         EQU             0x02                    ;    are zero                 - bit1
   00004           73     lcd_read_spare2         EQU             0x04                    ;                             - bit2
   00008           74     lcd_read_spare3         EQU             0x08                    ;                             - bit3
-  00010           75     lcd_read_db4            EQU             0x10                    ;    4-bit           Data DB4 - bit4
-  00020           76     lcd_read_db5            EQU             0x20                    ;    interface       Data DB5 - bit5
-  00040           77     lcd_read_db6            EQU             0x40                    ;                    Data DB6 - bit6
-  00080           78     lcd_read_db7            EQU             0x80                    ;                    Data DB7 - bit7
+  00010           75     lcd_read_db4            EQU             0x10                    ;    4-bit           EQU DB4 - bit4
+  00020           76     lcd_read_db5            EQU             0x20                    ;    interface       EQU DB5 - bit5
+  00040           77     lcd_read_db6            EQU             0x40                    ;                    EQU DB6 - bit6
+  00080           78     lcd_read_db7            EQU             0x80                    ;                    EQU DB7 - bit7
                   79     ;
                   80     ;
                   81     ;
@@ -128,7 +128,7 @@
                  128     ;
                  129     ;
                  130     ;**************************************************************************************
-                 131     ;Useful data constants
+                 131     ;Useful EQU constants
                  132     ;**************************************************************************************
                  133     ;
                  134     ;
@@ -386,11 +386,11 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 059 00FFF        378                             load         sf, #0xff               ;check if any MHz were active
 05A 3505F        379                             JUMP            z, khz_space
 05B 0052E        380                             LOAD            s5, #character_stop
-05C 361D3        381                             CALL            lcd_write_data
+05C 361D3        381                             CALL            lcd_write_EQU
 05D 00E4D        382                             LOAD            se, #_character_m
 05E 34061        383                             JUMP            khz_digits
 05F 00520        384     khz_space:              LOAD            s5, #character_space
-060 361D3        385                             CALL            lcd_write_data
+060 361D3        385                             CALL            lcd_write_EQU
 061 105B0        386     khz_digits:             load           s5, decimal5            ;100KHz digit
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 062 36088        387                             CALL            zero_load
@@ -408,11 +408,11 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 06C 00FFF        397                             load         sf, #0xff               ;check if any KHz were active
 06D 35072        398                             JUMP            z, hz_space
 06E 0052E        399                             LOAD            s5, #character_stop
-06F 361D3        400                             CALL            lcd_write_data
+06F 361D3        400                             CALL            lcd_write_EQU
 070 00E4B        401                             LOAD            se, #_character_k
 071 34074        402                             JUMP            hz_digits
 072 00520        403     hz_space:               LOAD            s5, #character_space
-073 361D3        404                             CALL            lcd_write_data
+073 361D3        404                             CALL            lcd_write_EQU
 074 10598        405     hz_digits:              load           s5, decimal2            ;100KHz digit
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 075 36088        406                             CALL            zero_load
@@ -424,17 +424,17 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 07A 10588        411                             load           s5, decimal0            ;1KHz digit (always displayed)
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 07B 08530        412                             ADD             s5, #character_0        ;convert number to ASCII
-07C 361D3        413                             CALL            lcd_write_data
+07C 361D3        413                             CALL            lcd_write_EQU
 07D 00520        414                             LOAD            s5, #character_space
-07E 361D3        415                             CALL            lcd_write_data
+07E 361D3        415                             CALL            lcd_write_EQU
 07F 10570        416                             LOAD            s5, se
-080 361D3        417                             CALL            lcd_write_data
+080 361D3        417                             CALL            lcd_write_EQU
 081 00548        418                             LOAD            s5, #_character_h
-082 361D3        419                             CALL            lcd_write_data
+082 361D3        419                             CALL            lcd_write_EQU
 083 0057A        420                             LOAD            s5, #character_z
-084 361D3        421                             CALL            lcd_write_data
+084 361D3        421                             CALL            lcd_write_EQU
 085 00520        422                             LOAD            s5, #character_space    ;ensure end of line is clear
-086 361D3        423                             CALL            lcd_write_data
+086 361D3        423                             CALL            lcd_write_EQU
 087 24000        424                             RETURN
                  425     ;
                  426     ;Check digit for zero. If not zero then clear
@@ -450,10 +450,10 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
 08C 00FFF        436     disp_digit:             load         sf, #0xff
 08D 35091        437                             JUMP            z, blank_digit
 08E 08530        438                             ADD             s5, #character_0        ;convert number to ASCII
-08F 361D3        439                             CALL            lcd_write_data
+08F 361D3        439                             CALL            lcd_write_EQU
 090 24000        440                             RETURN
 091 00520        441     blank_digit:            LOAD            s5, #character_space
-092 361D3        442                             CALL            lcd_write_data
+092 361D3        442                             CALL            lcd_write_EQU
 093 24000        443                             RETURN
                  444     ;
                  445     ;
@@ -539,23 +539,23 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  524     ;
                  525     ;
 0C0 00550        526     disp_picoblaze:         LOAD            s5, #_character_p
-0C1 361D3        527                             CALL            lcd_write_data
+0C1 361D3        527                             CALL            lcd_write_EQU
 0C2 00569        528                             LOAD            s5, #character_i
-0C3 361D3        529                             CALL            lcd_write_data
+0C3 361D3        529                             CALL            lcd_write_EQU
 0C4 00563        530                             LOAD            s5, #character_c
-0C5 361D3        531                             CALL            lcd_write_data
+0C5 361D3        531                             CALL            lcd_write_EQU
 0C6 0056F        532                             LOAD            s5, #character_o
-0C7 361D3        533                             CALL            lcd_write_data
+0C7 361D3        533                             CALL            lcd_write_EQU
 0C8 00542        534                             LOAD            s5, #_character_b
-0C9 361D3        535                             CALL            lcd_write_data
+0C9 361D3        535                             CALL            lcd_write_EQU
 0CA 0056C        536                             LOAD            s5, #character_l
-0CB 361D3        537                             CALL            lcd_write_data
+0CB 361D3        537                             CALL            lcd_write_EQU
 0CC 00561        538                             LOAD            s5, #character_a
-0CD 361D3        539                             CALL            lcd_write_data
+0CD 361D3        539                             CALL            lcd_write_EQU
 0CE 0057A        540                             LOAD            s5, #character_z
-0CF 361D3        541                             CALL            lcd_write_data
+0CF 361D3        541                             CALL            lcd_write_EQU
 0D0 00565        542                             LOAD            s5, #character_e
-0D1 361D3        543                             CALL            lcd_write_data
+0D1 361D3        543                             CALL            lcd_write_EQU
 0D2 24000        544                             RETURN
                  545     ;
                  546     ;
@@ -563,23 +563,23 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  548     ;
                  549     ;
 0D3 00546        550     disp_frequency:         LOAD            s5, #_character_f
-0D4 361D3        551                             CALL            lcd_write_data
+0D4 361D3        551                             CALL            lcd_write_EQU
 0D5 00572        552                             LOAD            s5, #character_r
-0D6 361D3        553                             CALL            lcd_write_data
+0D6 361D3        553                             CALL            lcd_write_EQU
 0D7 00565        554                             LOAD            s5, #character_e
-0D8 361D3        555                             CALL            lcd_write_data
+0D8 361D3        555                             CALL            lcd_write_EQU
 0D9 00571        556                             LOAD            s5, #character_q
-0DA 361D3        557                             CALL            lcd_write_data
+0DA 361D3        557                             CALL            lcd_write_EQU
 0DB 00575        558                             LOAD            s5, #character_u
-0DC 361D3        559                             CALL            lcd_write_data
+0DC 361D3        559                             CALL            lcd_write_EQU
 0DD 00565        560                             LOAD            s5, #character_e
-0DE 361D3        561                             CALL            lcd_write_data
+0DE 361D3        561                             CALL            lcd_write_EQU
 0DF 0056E        562                             LOAD            s5, #character_n
-0E0 361D3        563                             CALL            lcd_write_data
+0E0 361D3        563                             CALL            lcd_write_EQU
 0E1 00563        564                             LOAD            s5, #character_c
-0E2 361D3        565                             CALL            lcd_write_data
+0E2 361D3        565                             CALL            lcd_write_EQU
 0E3 00579        566                             LOAD            s5, #character_y
-0E4 361D3        567                             CALL            lcd_write_data
+0E4 361D3        567                             CALL            lcd_write_EQU
 0E5 24000        568                             RETURN
                  569     ;
                  570     ;
@@ -587,34 +587,34 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  572     ;
                  573     ;
 0E6 00543        574     disp_counter:           LOAD            s5, #_character_c
-0E7 361D3        575                             CALL            lcd_write_data
+0E7 361D3        575                             CALL            lcd_write_EQU
 0E8 0056F        576                             LOAD            s5, #character_o
-0E9 361D3        577                             CALL            lcd_write_data
+0E9 361D3        577                             CALL            lcd_write_EQU
 0EA 00575        578                             LOAD            s5, #character_u
-0EB 361D3        579                             CALL            lcd_write_data
+0EB 361D3        579                             CALL            lcd_write_EQU
 0EC 0056E        580                             LOAD            s5, #character_n
-0ED 361D3        581                             CALL            lcd_write_data
+0ED 361D3        581                             CALL            lcd_write_EQU
 0EE 00574        582                             LOAD            s5, #character_t
-0EF 361D3        583                             CALL            lcd_write_data
+0EF 361D3        583                             CALL            lcd_write_EQU
 0F0 00565        584                             LOAD            s5, #character_e
-0F1 361D3        585                             CALL            lcd_write_data
+0F1 361D3        585                             CALL            lcd_write_EQU
 0F2 00572        586                             LOAD            s5, #character_r
-0F3 361D3        587                             CALL            lcd_write_data
+0F3 361D3        587                             CALL            lcd_write_EQU
 0F4 24000        588                             RETURN
                  589     ;
                  590     ;Display version number on LCD at current cursor position
                  591     ;
                  592     ;
 0F5 00576        593     disp_version:           LOAD            s5, #character_v
-0F6 361D3        594                             CALL            lcd_write_data
+0F6 361D3        594                             CALL            lcd_write_EQU
 0F7 00531        595                             LOAD            s5, #character_1
-0F8 361D3        596                             CALL            lcd_write_data
+0F8 361D3        596                             CALL            lcd_write_EQU
 0F9 0052E        597                             LOAD            s5, #character_stop
-0FA 361D3        598                             CALL            lcd_write_data
+0FA 361D3        598                             CALL            lcd_write_EQU
 0FB 00530        599                             LOAD            s5, #character_0
-0FC 361D3        600                             CALL            lcd_write_data
+0FC 361D3        600                             CALL            lcd_write_EQU
 0FD 00530        601                             LOAD            s5, #character_0
-0FE 361D3        602                             CALL            lcd_write_data
+0FE 361D3        602                             CALL            lcd_write_EQU
 0FF 24000        603                             RETURN
                  604     ;
                  605     ;
@@ -622,23 +622,23 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  607     ;
                  608     ;
 100 00553        609     disp_sma_input:         LOAD            s5, #_character_s
-101 361D3        610                             CALL            lcd_write_data
+101 361D3        610                             CALL            lcd_write_EQU
 102 0054D        611                             LOAD            s5, #_character_m
-103 361D3        612                             CALL            lcd_write_data
+103 361D3        612                             CALL            lcd_write_EQU
 104 00541        613                             LOAD            s5, #_character_a
-105 361D3        614                             CALL            lcd_write_data
+105 361D3        614                             CALL            lcd_write_EQU
 106 00520        615                             LOAD            s5, #character_space
-107 361D3        616                             CALL            lcd_write_data
+107 361D3        616                             CALL            lcd_write_EQU
 108 00569        617                             LOAD            s5, #character_i
-109 361D3        618                             CALL            lcd_write_data
+109 361D3        618                             CALL            lcd_write_EQU
 10A 0056E        619                             LOAD            s5, #character_n
-10B 361D3        620                             CALL            lcd_write_data
+10B 361D3        620                             CALL            lcd_write_EQU
 10C 00570        621                             LOAD            s5, #character_p
-10D 361D3        622                             CALL            lcd_write_data
+10D 361D3        622                             CALL            lcd_write_EQU
 10E 00575        623                             LOAD            s5, #character_u
-10F 361D3        624                             CALL            lcd_write_data
+10F 361D3        624                             CALL            lcd_write_EQU
 110 00574        625                             LOAD            s5, #character_t
-111 361D3        626                             CALL            lcd_write_data
+111 361D3        626                             CALL            lcd_write_EQU
 112 00F06        627                             LOAD            sf, #0x06
 113 34157        628                             JUMP            disp_spaces
                  629     ;
@@ -648,31 +648,31 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  633     ;
                  634     ;
 114 00535        635     disp_50mhz_crystal:     LOAD            s5, #character_5
-115 361D3        636                             CALL            lcd_write_data
+115 361D3        636                             CALL            lcd_write_EQU
 116 00530        637                             LOAD            s5, #character_0
-117 361D3        638                             CALL            lcd_write_data
+117 361D3        638                             CALL            lcd_write_EQU
 118 0054D        639                             LOAD            s5, #_character_m
-119 361D3        640                             CALL            lcd_write_data
+119 361D3        640                             CALL            lcd_write_EQU
 11A 00548        641                             LOAD            s5, #_character_h
-11B 361D3        642                             CALL            lcd_write_data
+11B 361D3        642                             CALL            lcd_write_EQU
 11C 0057A        643                             LOAD            s5, #character_z
-11D 361D3        644                             CALL            lcd_write_data
+11D 361D3        644                             CALL            lcd_write_EQU
 11E 00520        645                             LOAD            s5, #character_space
-11F 361D3        646                             CALL            lcd_write_data
+11F 361D3        646                             CALL            lcd_write_EQU
 120 00543        647                             LOAD            s5, #_character_c
-121 361D3        648                             CALL            lcd_write_data
+121 361D3        648                             CALL            lcd_write_EQU
 122 00572        649                             LOAD            s5, #character_r
-123 361D3        650                             CALL            lcd_write_data
+123 361D3        650                             CALL            lcd_write_EQU
 124 00579        651                             LOAD            s5, #character_y
-125 361D3        652                             CALL            lcd_write_data
+125 361D3        652                             CALL            lcd_write_EQU
 126 00573        653                             LOAD            s5, #character_s
-127 361D3        654                             CALL            lcd_write_data
+127 361D3        654                             CALL            lcd_write_EQU
 128 00574        655                             LOAD            s5, #character_t
-129 361D3        656                             CALL            lcd_write_data
+129 361D3        656                             CALL            lcd_write_EQU
 12A 00561        657                             LOAD            s5, #character_a
-12B 361D3        658                             CALL            lcd_write_data
+12B 361D3        658                             CALL            lcd_write_EQU
 12C 0056C        659                             LOAD            s5, #character_l
-12D 361D3        660                             CALL            lcd_write_data
+12D 361D3        660                             CALL            lcd_write_EQU
 12E 00F02        661                             LOAD            sf, #0x02
 12F 34157        662                             JUMP            disp_spaces
                  663     ;
@@ -682,34 +682,34 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  667     ;
                  668     ;
 130 00544        669     disp_dcm_oscillator:    LOAD            s5, #_character_d
-131 361D3        670                             CALL            lcd_write_data
+131 361D3        670                             CALL            lcd_write_EQU
 132 00543        671                             LOAD            s5, #_character_c
-133 361D3        672                             CALL            lcd_write_data
+133 361D3        672                             CALL            lcd_write_EQU
 134 0054D        673                             LOAD            s5, #_character_m
-135 361D3        674                             CALL            lcd_write_data
+135 361D3        674                             CALL            lcd_write_EQU
 136 00520        675     disp_oscillator:        LOAD            s5, #character_space
-137 361D3        676                             CALL            lcd_write_data
+137 361D3        676                             CALL            lcd_write_EQU
 138 0054F        677                             LOAD            s5, #_character_o
-139 361D3        678                             CALL            lcd_write_data
+139 361D3        678                             CALL            lcd_write_EQU
 13A 00573        679                             LOAD            s5, #character_s
-13B 361D3        680                             CALL            lcd_write_data
+13B 361D3        680                             CALL            lcd_write_EQU
 13C 00563        681                             LOAD            s5, #character_c
-13D 361D3        682                             CALL            lcd_write_data
+13D 361D3        682                             CALL            lcd_write_EQU
 13E 00569        683                             LOAD            s5, #character_i
-13F 361D3        684                             CALL            lcd_write_data
+13F 361D3        684                             CALL            lcd_write_EQU
 140 0056C        685                             LOAD            s5, #character_l
-141 361D3        686                             CALL            lcd_write_data
-142 361D3        687                             CALL            lcd_write_data
+141 361D3        686                             CALL            lcd_write_EQU
+142 361D3        687                             CALL            lcd_write_EQU
 143 00561        688                             LOAD            s5, #character_a
-144 361D3        689                             CALL            lcd_write_data
+144 361D3        689                             CALL            lcd_write_EQU
 145 00574        690                             LOAD            s5, #character_t
-146 361D3        691                             CALL            lcd_write_data
+146 361D3        691                             CALL            lcd_write_EQU
 147 0056F        692                             LOAD            s5, #character_o
-148 361D3        693                             CALL            lcd_write_data
+148 361D3        693                             CALL            lcd_write_EQU
 149 00572        694                             LOAD            s5, #character_r
-14A 361D3        695                             CALL            lcd_write_data
+14A 361D3        695                             CALL            lcd_write_EQU
 14B 00520        696                             LOAD            s5, #character_space
-14C 361D3        697                             CALL            lcd_write_data
+14C 361D3        697                             CALL            lcd_write_EQU
 14D 24000        698                             RETURN
                  699     ;
                  700     ;
@@ -718,13 +718,13 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  703     ;
                  704     ;
 14E 00552        705     disp_ring_oscillator:   LOAD            s5, #_character_r
-14F 361D3        706                             CALL            lcd_write_data
+14F 361D3        706                             CALL            lcd_write_EQU
 150 00569        707                             LOAD            s5, #character_i
-151 361D3        708                             CALL            lcd_write_data
+151 361D3        708                             CALL            lcd_write_EQU
 152 0056E        709                             LOAD            s5, #character_n
-153 361D3        710                             CALL            lcd_write_data
+153 361D3        710                             CALL            lcd_write_EQU
 154 00567        711                             LOAD            s5, #character_g
-155 361D3        712                             CALL            lcd_write_data
+155 361D3        712                             CALL            lcd_write_EQU
 156 34136        713                             JUMP            disp_oscillator
                  714     ;
                  715     ;
@@ -734,7 +734,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 157 00F00        719     disp_spaces:            load         sf, #0x00
 158 25000        720                             RETURN          z
 159 00520        721                             LOAD            s5, #character_space
-15A 361D3        722                             CALL            lcd_write_data
+15A 361D3        722                             CALL            lcd_write_EQU
 15B 0CF01        723                             SUB             sf, #0x01
 15C 34157        724                             JUMP            disp_spaces
                  725     ;
@@ -743,71 +743,71 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 15D 00510        728     disp_menu:              LOAD            s5, #0x10               ;Line 1 position 0
 15E 36213        729                             CALL            lcd_cursor
 15F 00552        730                             LOAD            s5, #_character_r
-160 361D3        731                             CALL            lcd_write_data
+160 361D3        731                             CALL            lcd_write_EQU
 161 00569        732                             LOAD            s5, #character_i
-162 361D3        733                             CALL            lcd_write_data
+162 361D3        733                             CALL            lcd_write_EQU
 163 0056E        734                             LOAD            s5, #character_n
-164 361D3        735                             CALL            lcd_write_data
+164 361D3        735                             CALL            lcd_write_EQU
 165 00567        736                             LOAD            s5, #character_g
-166 361D3        737                             CALL            lcd_write_data
+166 361D3        737                             CALL            lcd_write_EQU
 167 00520        738                             LOAD            s5, #character_space
-168 361D3        739                             CALL            lcd_write_data
+168 361D3        739                             CALL            lcd_write_EQU
 169 00544        740                             LOAD            s5, #_character_d
-16A 361D3        741                             CALL            lcd_write_data
+16A 361D3        741                             CALL            lcd_write_EQU
 16B 00543        742                             LOAD            s5, #_character_c
-16C 361D3        743                             CALL            lcd_write_data
+16C 361D3        743                             CALL            lcd_write_EQU
 16D 0054D        744                             LOAD            s5, #_character_m
-16E 361D3        745                             CALL            lcd_write_data
+16E 361D3        745                             CALL            lcd_write_EQU
 16F 00520        746                             LOAD            s5, #character_space
-170 361D3        747                             CALL            lcd_write_data
+170 361D3        747                             CALL            lcd_write_EQU
 171 00535        748                             LOAD            s5, #character_5
-172 361D3        749                             CALL            lcd_write_data
+172 361D3        749                             CALL            lcd_write_EQU
 173 00530        750                             LOAD            s5, #character_0
-174 361D3        751                             CALL            lcd_write_data
+174 361D3        751                             CALL            lcd_write_EQU
 175 0054D        752                             LOAD            s5, #_character_m
-176 361D3        753                             CALL            lcd_write_data
+176 361D3        753                             CALL            lcd_write_EQU
 177 00520        754                             LOAD            s5, #character_space
-178 361D3        755                             CALL            lcd_write_data
+178 361D3        755                             CALL            lcd_write_EQU
 179 00553        756                             LOAD            s5, #_character_s
-17A 361D3        757                             CALL            lcd_write_data
+17A 361D3        757                             CALL            lcd_write_EQU
 17B 0054D        758                             LOAD            s5, #_character_m
-17C 361D3        759                             CALL            lcd_write_data
+17C 361D3        759                             CALL            lcd_write_EQU
 17D 00541        760                             LOAD            s5, #_character_a
-17E 361D3        761                             CALL            lcd_write_data
+17E 361D3        761                             CALL            lcd_write_EQU
 17F 00520        762                             LOAD            s5, #0x20               ;Line 2 position 0
 180 36213        763                             CALL            lcd_cursor
 181 00520        764                             LOAD            s5, #character_space
-182 361D3        765                             CALL            lcd_write_data
+182 361D3        765                             CALL            lcd_write_EQU
 183 00553        766                             LOAD            s5, #_character_s
-184 361D3        767                             CALL            lcd_write_data
+184 361D3        767                             CALL            lcd_write_EQU
 185 00557        768                             LOAD            s5, #_character_w
-186 361D3        769                             CALL            lcd_write_data
+186 361D3        769                             CALL            lcd_write_EQU
 187 00533        770                             LOAD            s5, #character_3
-188 361D3        771                             CALL            lcd_write_data
+188 361D3        771                             CALL            lcd_write_EQU
 189 00520        772                             LOAD            s5, #character_space
-18A 361D3        773                             CALL            lcd_write_data
+18A 361D3        773                             CALL            lcd_write_EQU
 18B 00553        774                             LOAD            s5, #_character_s
-18C 361D3        775                             CALL            lcd_write_data
+18C 361D3        775                             CALL            lcd_write_EQU
 18D 00557        776                             LOAD            s5, #_character_w
-18E 361D3        777                             CALL            lcd_write_data
+18E 361D3        777                             CALL            lcd_write_EQU
 18F 00532        778                             LOAD            s5, #character_2
-190 361D3        779                             CALL            lcd_write_data
+190 361D3        779                             CALL            lcd_write_EQU
 191 00520        780                             LOAD            s5, #character_space
-192 361D3        781                             CALL            lcd_write_data
+192 361D3        781                             CALL            lcd_write_EQU
 193 00553        782                             LOAD            s5, #_character_s
-194 361D3        783                             CALL            lcd_write_data
+194 361D3        783                             CALL            lcd_write_EQU
 195 00557        784                             LOAD            s5, #_character_w
-196 361D3        785                             CALL            lcd_write_data
+196 361D3        785                             CALL            lcd_write_EQU
 197 00531        786                             LOAD            s5, #character_1
-198 361D3        787                             CALL            lcd_write_data
+198 361D3        787                             CALL            lcd_write_EQU
 199 00520        788                             LOAD            s5, #character_space
-19A 361D3        789                             CALL            lcd_write_data
+19A 361D3        789                             CALL            lcd_write_EQU
 19B 00553        790                             LOAD            s5, #_character_s
-19C 361D3        791                             CALL            lcd_write_data
+19C 361D3        791                             CALL            lcd_write_EQU
 19D 00557        792                             LOAD            s5, #_character_w
-19E 361D3        793                             CALL            lcd_write_data
+19E 361D3        793                             CALL            lcd_write_EQU
 19F 00530        794                             LOAD            s5, #character_0
-1A0 361D3        795                             CALL            lcd_write_data
+1A0 361D3        795                             CALL            lcd_write_EQU
 1A1 24000        796                             RETURN
                  797     ;
                  798     ;
@@ -884,7 +884,7 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  869     ;**************************************************************************************
                  870     ;
                  871     ;LCD module is a 16 character by 2 line display but all displays are very similar
-                 872     ;The 4-wire data interface will be used (DB4 to DB7).
+                 872     ;The 4-wire EQU interface will be used (DB4 to DB7).
                  873     ;
                  874     ;The LCD modules are relatively slow and software delay loops are used to slow down
                  875     ;KCPSM3 adequately for the LCD to communicate. The delay routines are provided in
@@ -948,10 +948,10 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  933     ;
                  934     ;
                  935     ;
-                 936     ;Write 8-bit data to LCD display.
+                 936     ;Write 8-bit EQU to LCD display.
                  937     ;
-                 938     ;The 8-bit data should be provided in register s5.
-                 939     ;Data bytes are written using the following sequence
+                 938     ;The 8-bit EQU should be provided in register s5.
+                 939     ;EQU bytes are written using the following sequence
                  940     ; Upper nibble
                  941     ; wait >1us
                  942     ; Lower nibble
@@ -959,15 +959,15 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  944     ;
                  945     ;Registers used s0, s1, s4, s5
                  946     ;
-1D3 10428        947     lcd_write_data:         LOAD            s4, s5
+1D3 10428        947     lcd_write_EQU:         LOAD            s4, s5
 1D4 024F0        948                             AND             s4, #0xf0               ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-1D5 0440C        949                             OR              s4, #0x0c               ;Enable=1 RS=1 Data, RW=0 Write, E=0
+1D5 0440C        949                             OR              s4, #0x0c               ;Enable=1 RS=1 EQU, RW=0 Write, E=0
 1D6 22404        950                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
 1D7 361BA        951                             CALL            lcd_pulse_e             ;write upper nibble
 1D8 361A2        952                             CALL            delay_1us               ;wait >1us
 1D9 10428        953                             LOAD            s4, s5                  ;select lower nibble with
 1DA 28407        954                             SL1             s4                      ;Enable=1
-1DB 28407        955                             SL1             s4                      ;RS=1 Data
+1DB 28407        955                             SL1             s4                      ;RS=1 EQU
 1DC 28406        956                             SL0             s4                      ;RW=0 Write
 1DD 28406        957                             SL0             s4                      ;E=0
 1DE 22404        958                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
@@ -980,15 +980,15 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  965     ;
                  966     ;
                  967     ;
-                 968     ;Read 8-bit data from LCD display.
+                 968     ;Read 8-bit EQU from LCD display.
                  969     ;
-                 970     ;The 8-bit data will be read from the current LCD memory address
+                 970     ;The 8-bit EQU will be read from the current LCD memory address
                  971     ;and will be returned in register s5.
                  972     ;It is advisable to set the LCD address (cursor position) before
-                 973     ;using the data read for the first time otherwise the display may
-                 974     ;generate invalid data on the first read.
+                 973     ;using the EQU read for the first time otherwise the display may
+                 974     ;generate invalid EQU on the first read.
                  975     ;
-                 976     ;Data bytes are read using the following sequence
+                 976     ;EQU bytes are read using the following sequence
                  977     ; Upper nibble
                  978     ; wait >1us
                  979     ; Lower nibble
@@ -996,18 +996,18 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
                  981     ;
                  982     ;Registers used s0, s1, s4, s5
                  983     ;
-1E4 0040E        984     lcd_read_data8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 Data, RW=1 Read, E=0
+1E4 0040E        984     lcd_read_EQU8:         LOAD            s4, #0x0e               ;Enable=1 RS=1 EQU, RW=1 Read, E=0
 1E5 22404        985                             OUTPUT          s4, lcd_output_port     ;set up RS and RW >40ns before enable pulse
 1E6 06401        986                             XOR             s4, #lcd_e              ;E=1
 1E7 22404        987                             OUTPUT          s4, lcd_output_port
-1E8 361A2        988                             CALL            delay_1us               ;wait >260ns to access data
+1E8 361A2        988                             CALL            delay_1us               ;wait >260ns to access EQU
 1E9 20509        989                             INPUT           s5, lcd_input_port      ;read upper nibble
 1EA 06401        990                             XOR             s4, #lcd_e              ;E=0
 1EB 22404        991                             OUTPUT          s4, lcd_output_port
 1EC 361A2        992                             CALL            delay_1us               ;wait >1us
 1ED 06401        993                             XOR             s4, #lcd_e              ;E=1
 1EE 22404        994                             OUTPUT          s4, lcd_output_port
-1EF 361A2        995                             CALL            delay_1us               ;wait >260ns to access data
+1EF 361A2        995                             CALL            delay_1us               ;wait >260ns to access EQU
 1F0 20009        996                             INPUT           s0, lcd_input_port      ;read lower nibble
 1F1 06401        997                             XOR             s4, #lcd_e              ;E=0
 1F2 22404        998                             OUTPUT          s4, lcd_output_port
@@ -1017,13 +1017,13 @@ W: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or ex
 1F6 2800E       1002                             SR0             s0
 1F7 2800E       1003                             SR0             s0
 1F8 14500       1004                             OR              s5, s0
-1F9 00404       1005                             LOAD            s4, #0x04               ;Enable=0 RS=1 Data, RW=0 Write, E=0
+1F9 00404       1005                             LOAD            s4, #0x04               ;Enable=0 RS=1 EQU, RW=0 Write, E=0
 1FA 22404       1006                             OUTPUT          s4, lcd_output_port     ;Stop reading 5V device and release master enable
 1FB 361A6       1007                             CALL            delay_40us              ;wait >40us
 1FC 24000       1008                             RETURN
                 1009     ;
                 1010     ;
-                1011     ;Reset and initialise display to communicate using 4-bit data mode
+                1011     ;Reset and initialise display to communicate using 4-bit EQU mode
                 1012     ;Includes routine to clear the display.
                 1013     ;
                 1014     ;Requires the 4-bit instructions 3,3,3,2 to be sent with suitable delays

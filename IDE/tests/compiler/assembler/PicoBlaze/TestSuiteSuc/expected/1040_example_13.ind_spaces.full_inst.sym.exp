@@ -147,7 +147,7 @@ LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    1040_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x002E5 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1204.1-1204.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:37.1-37.45
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:36.1-36.45
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x002D4 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1127.1-1127.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x002D4 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1127.1-1127.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x002C1 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1081.1-1081.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x002C5 USED     CONSTANT    1040_example_13.ind_spaces.full_inst.asm:1098.1-1098.17
 LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    1040_example_13.ind_spaces.full_inst.asm:4.1-4.45

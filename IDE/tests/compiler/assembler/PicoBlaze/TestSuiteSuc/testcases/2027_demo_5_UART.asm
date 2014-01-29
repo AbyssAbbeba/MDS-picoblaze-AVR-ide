@@ -19,22 +19,22 @@
 device kcpsm2
         
 ; Asign names to registers
-        NAMEREG         s0,temp1              ; temporary data register
-        NAMEREG         s1,temp2              ; temporary data register
-        NAMEREG         s2,temp3              ; temporary data register
+        NAMEREG         s0,temp1              ; temporary EQU register
+        NAMEREG         s1,temp2              ; temporary EQU register
+        NAMEREG         s2,temp3              ; temporary EQU register
         ; OR
-        RX_data        AUTOREG   AT 3          ; RX data
-        TXdata        AUTOREG               ; TX data
-        LED_reg       AUTOREG           ; Leds data register
+        RX_EQU        AUTOREG   AT 3          ; RX EQU
+        TXEQU        AUTOREG               ; TX EQU
+        LED_reg       AUTOREG           ; Leds EQU register
 
 ; PORT_IDs
-        TX_id       PORT        0x01          ;  data register port ID
-        RX_id       PORT        0x02          ;  data register port ID
+        TX_id       PORT        0x01          ;  EQU register port ID
+        RX_id       PORT        0x02          ;  EQU register port ID
         UART_stat   PORT        0x04          ; status register port ID
         LED_id      PORT        0x08          ; Led register
 ; UART Status register:
 ;  [2] Tx ready
-;  [3] new Rx data
+;  [3] new Rx EQU
 ;  [4] Rx buffer overflow
         
 ;  Macro definition
@@ -45,8 +45,8 @@ UART_ready_wait     MACRO
                     load        Temp1, 4            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM
-; UART status checking MACRO (NEW RX data?)
-UART_new_data_wait  MACRO
+; UART status checking MACRO (NEW RX EQU?)
+UART_new_EQU_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
                     load        Temp1, 8            ; load bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
@@ -57,16 +57,16 @@ UART_new_data_wait  MACRO
 ;==============================================================================;
 Sendchar            MACRO       char                 ; One parameter
                     UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-                    LOAD        TXdata, char
-                    OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                    LOAD        TXEQU, char
+                    OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                     ENDM
 ;==============================================================================;
 ; Reads a single character from UART (waits on receive when none is prepared)
 ; Registers used: Temp1, chreg
 ;==============================================================================;
 GetChar             MACRO
-                    UART_new_data_wait              ; Wait for new data
-                    INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+                    UART_new_EQU_wait              ; Wait for new EQU
+                    INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
                     ENDM
 ;==============================================================================;
 ; Send 0D and 0A character pair via UART

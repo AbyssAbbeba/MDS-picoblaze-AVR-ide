@@ -16,19 +16,19 @@
                   16     ;
                   17     device kcpsm1
                   18     ; Asign names to registers
-  00000           19             NAMEREG         s0,temp1              ; temporary data register
-  00001           20             NAMEREG         s1,temp2              ; temporary data register
-  00002           21             NAMEREG         s2,temp3              ; temporary data register
+  00000           19             NAMEREG         s0,temp1              ; temporary EQU register
+  00001           20             NAMEREG         s1,temp2              ; temporary EQU register
+  00002           21             NAMEREG         s2,temp3              ; temporary EQU register
                   22             ; OR
                   23
                   24     ; PORT_IDs
-  00001           25             TX_id       PORT        0x01          ;  data register port ID
-  00002           26             RX_id       PORT        0x02          ;  data register port ID
+  00001           25             TX_id       PORT        0x01          ;  EQU register port ID
+  00002           26             RX_id       PORT        0x02          ;  EQU register port ID
   00004           27             UART_stat   PORT        0x04          ; status register port ID
   00008           28             LED_id      PORT        0x08          ; Led register
                   29     ; UART Status register:
                   30     ;  [2] Tx ready
-                  31     ;  [3] new Rx data
+                  31     ;  [3] new Rx EQU
                   32     ;  [4] Rx buffer overflow
                   33
                   34     ;  Macro definition
@@ -39,8 +39,8 @@
                   39                         load        Temp1, 4            ; load bit 2 (is Tx ready?)
                   40                         JUMP        Z, ($ - 2)
                   41                         ENDM
-                  42     ; UART status checking MACRO (NEW RX data?)
-                  43     UART_new_data_wait  MACRO
+                  42     ; UART status checking MACRO (NEW RX EQU?)
+                  43     UART_new_EQU_wait  MACRO
                   44                         INPUT       Temp1, UART_stat    ; checking UART status
                   45                         load        Temp1, 8            ; load bit 2 (is Tx ready?)
                   46                         JUMP        Z, ($ - 2)
@@ -51,16 +51,16 @@
                   51     ;==============================================================================;
                   52     Sendchar            MACRO       char                 ; One parameter
                   53                         UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-                  54                         LOAD        TXdata, char
-                  55                         OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
+                  54                         LOAD        TXEQU, char
+                  55                         OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                   56                         ENDM
                   57     ;==============================================================================;
                   58     ; Reads a single character from UART (waits on receive when none is prepared)
                   59     ; Registers used: Temp1, chreg
                   60     ;==============================================================================;
                   61     GetChar             MACRO
-                  62                         UART_new_data_wait              ; Wait for new data
-                  63                         INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
+                  62                         UART_new_EQU_wait              ; Wait for new EQU
+                  63                         INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
                   64                         ENDM
                   65     ;==============================================================================;
                   66     ; Send 0D and 0A character pair via UART

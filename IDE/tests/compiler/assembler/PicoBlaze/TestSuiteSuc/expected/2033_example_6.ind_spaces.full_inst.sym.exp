@@ -104,11 +104,11 @@ LCD_E  . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2033_ex
 LCD_INPUT_PORT . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:80.1-80.45
 LCD_OUTPUT_PORT  . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:69.1-69.45
 LCD_PULSE_E  . . . . . . . . . . . . LABEL  0x001B8 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1113.1-1113.13
-LCD_READ_DATA8 . . . . . . . . . . . LABEL  0x001E2 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1212.1-1212.16
 LCD_READ_DB4 . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:85.1-85.45
 LCD_READ_DB5 . . . . . . . . . . . . NUMBER 0x00020 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:86.1-86.45
 LCD_READ_DB6 . . . . . . . . . . . . NUMBER 0x00040 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:87.1-87.45
 LCD_READ_DB7 . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:88.1-88.45
+LCD_READ_EQU8  . . . . . . . . . . . LABEL  0x001E2 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1212.1-1212.15
 LCD_READ_SPARE0  . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:81.1-81.45
 LCD_READ_SPARE1  . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:82.1-82.45
 LCD_READ_SPARE2  . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:83.1-83.45
@@ -116,7 +116,7 @@ LCD_READ_SPARE3  . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2033_ex
 LCD_RESET  . . . . . . . . . . . . . LABEL  0x001FB USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1252.1-1252.11
 LCD_RS . . . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:72.1-72.45
 LCD_RW . . . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:71.1-71.45
-LCD_WRITE_DATA . . . . . . . . . . . LABEL  0x001D1 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1175.1-1175.16
+LCD_WRITE_EQU  . . . . . . . . . . . LABEL  0x001D1 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1175.1-1175.15
 LCD_WRITE_INST4  . . . . . . . . . . LABEL  0x001BE USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1129.1-1129.17
 LCD_WRITE_INST8  . . . . . . . . . . LABEL  0x001C2 USED     CONSTANT    2033_example_6.ind_spaces.full_inst.asm:1146.1-1146.17
 LED0 . . . . . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2033_example_6.ind_spaces.full_inst.asm:42.1-42.45

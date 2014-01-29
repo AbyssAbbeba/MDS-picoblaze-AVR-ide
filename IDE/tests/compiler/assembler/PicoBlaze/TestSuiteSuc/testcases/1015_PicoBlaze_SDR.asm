@@ -17,23 +17,23 @@ device kcpsm1
 ; Start
 ;##############################################################################;
 ; Přiřazení jmen registrům
-	NAMEREG		s0,temp1              ; temporary data register
-	NAMEREG		s1,temp2              ; temporary data register
-	NAMEREG		s2,temp3              ; temporary data register
-	NAMEREG		s3,RXdata             ; temporary data register
-	NAMEREG		s4,TXdata             ; temporary data register
+	NAMEREG		s0,temp1              ; temporary EQU register
+	NAMEREG		s1,temp2              ; temporary EQU register
+	NAMEREG		s2,temp3              ; temporary EQU register
+	NAMEREG		s3,RXEQU             ; temporary EQU register
+	NAMEREG		s4,TXEQU             ; temporary EQU register
 
 ; PORT_IDs
-	CONSTANT	TX_data_01, 01          ;  data register port ID
-	CONSTANT	TX_data_02, 02          ;  data register port ID
-	CONSTANT	TX_data_03, 04          ;  data register port ID
-	CONSTANT	TX_data_04, 08          ;  data register port ID
-	CONSTANT	Read_data, 12           ;  data register port ID
+	CONSTANT	TX_EQU_01, 01          ;  EQU register port ID
+	CONSTANT	TX_EQU_02, 02          ;  EQU register port ID
+	CONSTANT	TX_EQU_03, 04          ;  EQU register port ID
+	CONSTANT	TX_EQU_04, 08          ;  EQU register port ID
+	CONSTANT	Read_EQU, 12           ;  EQU register port ID
 
 CHREG                   equ             4
 SWITCH                   equ             4
 UART_STAT                   equ             4
-UART_DATA                   equ             4
+UART_EQU                   equ             4
 
 	
 ; Inicializace
@@ -64,7 +64,7 @@ main_loop:          CALL      GetChar             ; get (wait for) new character
 ;==============================================================================;
 SendChar:           IN        Temp1, UART_stat    ; checking UART status
                     JUMP      Z, SendChar         ; wait until Tx is ready
-                    OUT       chreg, UART_data    ; Send the character
+                    OUT       chreg, UART_EQU    ; Send the character
                     RET                           ; Return from procedure
 
 ;==============================================================================;
@@ -73,8 +73,8 @@ SendChar:           IN        Temp1, UART_stat    ; checking UART status
 ;==============================================================================;
 GetChar:            IN        Temp1, UART_stat    ; checking UART status
 
-                    JUMP      Z, GetChar          ; wait for new Rx data
-                    IN        chreg, UART_data    ; Read the character
+                    JUMP      Z, GetChar          ; wait for new Rx EQU
+                    IN        chreg, UART_EQU    ; Read the character
                     RET                           ; Return from procedure
 
 ;==============================================================================;

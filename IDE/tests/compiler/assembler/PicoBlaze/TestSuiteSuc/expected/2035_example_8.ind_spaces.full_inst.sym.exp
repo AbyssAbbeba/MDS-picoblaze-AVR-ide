@@ -116,7 +116,7 @@ READ_UPPER_CASE  . . . . . . . . . . LABEL  0x00214 USED     CONSTANT    2035_ex
 RESET_MENU . . . . . . . . . . . . . LABEL  0x00003 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:212.1-212.12
 RESET_PASSED . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:232.1-232.14
 RESET_PROMPT . . . . . . . . . . . . LABEL  0x00005 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:215.1-215.14
-RMC_DATA_LOOP  . . . . . . . . . . . LABEL  0x00075 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:411.1-411.15
+RMC_EQU_LOOP . . . . . . . . . . . . LABEL  0x00075 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:411.1-411.14
 RMC_LINE_LOOP  . . . . . . . . . . . LABEL  0x0006E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:404.1-404.15
 RM_POLL_240US  . . . . . . . . . . . LABEL  0x00156 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:814.1-814.15
 RM_WAIT_500US  . . . . . . . . . . . LABEL  0x0014A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:797.1-797.15
@@ -125,7 +125,7 @@ ROM_MENU . . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    2035_ex
 ROM_PROMPT . . . . . . . . . . . . . LABEL  0x00015 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:242.1-242.12
 RSC_CRC16_FAIL . . . . . . . . . . . LABEL  0x00110 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:640.1-640.16
 RSC_LOOP . . . . . . . . . . . . . . LABEL  0x000EF USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:607.1-607.10
-RX_DATA_PRESENT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:34.1-34.45
+RX_EQU_PRESENT . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:34.1-34.44
 RX_FULL  . . . . . . . . . . . . . . NUMBER 0x00010 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:36.1-36.45
 RX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00008 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:35.1-35.45
 S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
@@ -165,8 +165,8 @@ SEND_CODE  . . . . . . . . . . . . . LABEL  0x00386 USED     CONSTANT    2035_ex
 SEND_COMMAND . . . . . . . . . . . . LABEL  0x00356 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1716.1-1716.14
 SEND_CR  . . . . . . . . . . . . . . LABEL  0x0021F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1323.1-1323.9
 SEND_CRC . . . . . . . . . . . . . . LABEL  0x0039C USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1810.1-1810.10
-SEND_DATA  . . . . . . . . . . . . . LABEL  0x00374 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1754.1-1754.11
 SEND_DS2432_MENU . . . . . . . . . . LABEL  0x00293 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1468.1-1468.18
+SEND_EQU . . . . . . . . . . . . . . LABEL  0x00374 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1754.1-1754.10
 SEND_EQUALS  . . . . . . . . . . . . LABEL  0x00371 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1747.1-1747.13
 SEND_ES  . . . . . . . . . . . . . . LABEL  0x0037E USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1768.1-1768.9
 SEND_FAIL  . . . . . . . . . . . . . LABEL  0x0034D USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1703.1-1703.11
@@ -203,7 +203,7 @@ SPARE3 . . . . . . . . . . . . . . . NUMBER 0x00080 NOT USED CONSTANT    2035_ex
 STATUS_PORT  . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:31.1-31.45
 TX_FULL  . . . . . . . . . . . . . . NUMBER 0x00002 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:33.1-33.45
 TX_HALF_FULL . . . . . . . . . . . . NUMBER 0x00001 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:32.1-32.45
-UART_DATA  . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:57.1-57.43
+UART_EQU . . . . . . . . . . . . . . REG.   0x0000F USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:57.1-57.42
 UART_READ_PORT . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:41.1-41.45
 UART_WRITE . . . . . . . . . . . . . LABEL  0x001BC USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1100.1-1100.12
 UART_WRITE_PORT  . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:43.1-43.45
@@ -226,7 +226,7 @@ WRITE_LOW_SLOW . . . . . . . . . . . LABEL  0x0016A USED     CONSTANT    2035_ex
 WRITE_SCRATCHPAD_COMMAND . . . . . . LABEL  0x00081 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:452.1-452.26
 WSC_ADDR_LOOP  . . . . . . . . . . . LABEL  0x00086 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:457.1-457.15
 WSC_CRC16_FAIL . . . . . . . . . . . LABEL  0x000C1 USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:516.1-516.16
-WSC_DATA_LOOP  . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:477.1-477.15
+WSC_EQU_LOOP . . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:477.1-477.14
 _1CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x001CB USED     CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1156.1-1156.17
 _2CHAR_TO_VALUE  . . . . . . . . . . LABEL  0x001CF NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:1172.1-1172.17
 _CHARACTER_A . . . . . . . . . . . . NUMBER 0x00041 NOT USED CONSTANT    2035_example_8.ind_spaces.full_inst.asm:131.1-131.45

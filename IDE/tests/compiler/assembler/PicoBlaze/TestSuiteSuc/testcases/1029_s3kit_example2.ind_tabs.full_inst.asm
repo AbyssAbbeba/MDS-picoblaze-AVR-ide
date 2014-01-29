@@ -64,11 +64,11 @@ link_fifo_control_port	EQU		0x20			;FIFO control
 link_fifo_reset		EQU		0x01			;     reset - bit0
 ;
 link_fifo_status_port	EQU		0x01			;FIFO status input
-link_fifo_data_present	EQU		0x01			;      half full - bit0
+link_fifo_EQU_present	EQU		0x01			;      half full - bit0
 link_fifo_half_full	EQU		0x02			;           full - bit1
-link_fifo_full		EQU		0x04			;   data present - bit2
+link_fifo_full		EQU		0x04			;   EQU present - bit2
 ;
-link_fifo_read_port	EQU		0x02			;read FIFO data
+link_fifo_read_port	EQU		0x02			;read FIFO EQU
 ;
 ;
 ;
@@ -109,7 +109,7 @@ led7_sequence		EQU		0x17
 ;
 ;
 ;**************************************************************************************
-;Useful data constants
+;Useful EQU constants
 ;**************************************************************************************
 ;
 ;
@@ -483,15 +483,15 @@ stop_completely:	JUMP		stop_completely
 ; Read Byte from Link FIFO
 ;**************************************************************************************
 ;
-; The routine first loads the FIFO buffer to see if data is present.
+; The routine first loads the FIFO buffer to see if EQU is present.
 ; If the FIFO is empty, the routine waits until there is a character to read.
 ; the read value is returned in register s0.
 ;
 ;
 read_link_fifo:		INPUT		s0, link_fifo_status_port	;load FIFO buffer
-			load		s0, #link_fifo_data_present	;wait if empty
+			load		s0, #link_fifo_EQU_present	;wait if empty
 			JUMP		z, read_link_fifo
-			INPUT		s0, link_fifo_read_port	;read data from FIFO
+			INPUT		s0, link_fifo_read_port	;read EQU from FIFO
 			RETURN
 ;
 ;

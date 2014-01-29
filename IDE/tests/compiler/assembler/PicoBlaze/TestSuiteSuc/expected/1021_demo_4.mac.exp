@@ -2,7 +2,7 @@ GETCHAR (  )  . . . . . . . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.
 RX_RESOLVE ( UART_BYTE )  . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.asm:123.1-123.26
 SENDCHAR ( CHAR ) . . . . . . . . . . . . . . . . . . .  11 × USED 1021_demo_4.asm:56.1-56.26
 SENDCRLF (  ) . . . . . . . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.asm:73.1-73.26
-UART_NEW_DATA_WAIT (  ) . . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.asm:47.1-47.26
+UART_NEW_EQU_WAIT (  )  . . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.asm:47.1-47.25
 UART_READY_WAIT (  )  . . . . . . . . . . . . . . . . .  11 × USED 1021_demo_4.asm:41.1-41.26
 WAIT_FOR_100MS (  ) . . . . . . . . . . . . . . . . . .   NOT USED 1021_demo_4.asm:107.1-107.26
 WAIT_FOR_1S (  )  . . . . . . . . . . . . . . . . . . .   1 × USED 1021_demo_4.asm:95.1-95.26

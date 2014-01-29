@@ -216,7 +216,7 @@ W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; whil
                  174     ; SBox( s )
   0006D          175     sbox:
 06D 0E804        176                             OUT     s8, sbox_rom            ; set index
-06E 0A804        177                             IN      s8, sbox_rom            ; get data
+06E 0A804        177                             IN      s8, sbox_rom            ; get EQU
 06F 08080        178                             RET
                  179
                  180     ; soload version of SBOX, very slow
