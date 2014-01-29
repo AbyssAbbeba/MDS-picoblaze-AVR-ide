@@ -153,11 +153,11 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const Com
     {
         switch ( expr->lVal().m_type )
         {
-            case CompilerValue::TYPE_EMPTY:  return STYPE_UNSPECIFIED;
             case CompilerValue::TYPE_INT:    return STYPE_NUMBER;
             case CompilerValue::TYPE_REAL:   return STYPE_NUMBER;
-            case CompilerValue::TYPE_EXPR:   return STYPE_EXPRESSION;
+            case CompilerValue::TYPE_EMPTY:  return STYPE_UNSPECIFIED;
             case CompilerValue::TYPE_ARRAY:  return STYPE_UNSPECIFIED;
+            case CompilerValue::TYPE_EXPR:   return getType(expr->lVal().m_data.m_expr);
             case CompilerValue::TYPE_SYMBOL: return getType(expr->lVal().m_data.m_symbol);
         }
     }
