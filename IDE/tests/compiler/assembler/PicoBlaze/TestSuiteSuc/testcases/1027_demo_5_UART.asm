@@ -130,7 +130,8 @@ wait_100ms_i:       SUB       Temp1, #1
 ;  [1] Rotate leds 8x
 ;  [2] Send "Hello world" via UART
 ;-------------------------------------------------------------------------------------
-
+                    ADDRESS 0x000                             ; RESET vector
+                    JUMP    Start
 
 
 
@@ -162,13 +163,6 @@ main_loop:          GetChar                       ; Receive via UART, get status
 ;=======================================================================
 ; Main program >>>
 
-; Vectors
-                    ADDRESS 0x3FF                             ; interrupt vector
-                    JUMP    INTERRUPT
-                    ADDRESS 0x000                             ; RESET vector
-                    JUMP    Start
-
-                    
 ; AND NOW YOU ARE READY !
 ; We hope this example can help you use this IDE at his maximum potential
 ; Click on [Main menu] -> [Project] -> [New] and create your own PicoBlaze project ...

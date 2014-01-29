@@ -1,0 +1,712 @@
+                   1     ; KCPSM3 Program - Automatic Pulse Width Modulation (PWM) Control on the Spartan-3E Starter Kit.
+                   2     ;
+                   3     ; Ken Chapman - Xilinx Ltd
+                   4     ;
+                   5     ; Version v1.00 - 24th May 2006
+                   6     device kcpsm2
+                   7     ; Automatically sequences the LEDs on the board using PWM to change intensity.
+                   8     ;
+                   9     ;**************************************************************************************
+                  10     ; Port definitions
+                  11     ;**************************************************************************************
+                  12     ;
+                  13     ;
+                  14     ;
+  00080           15     led_port                EQU     0x80                    ;8 simple LEDs
+  00001           16     led0                    EQU     0x01                    ;     LED 0 - bit0
+  00002           17     led1                    EQU     0x02                    ;         1 - bit1
+  00004           18     led2                    EQU     0x04                    ;         2 - bit2
+  00008           19     led3                    EQU     0x08                    ;         3 - bit3
+  00010           20     led4                    EQU     0x10                    ;         4 - bit4
+  00020           21     led5                    EQU     0x20                    ;         5 - bit5
+  00040           22     led6                    EQU     0x40                    ;         6 - bit6
+  00080           23     led7                    EQU     0x80                    ;         7 - bit7
+                  24     ;
+                  25     ;
+  00040           26     simple_port             EQU     0x40                    ;4 simple outputs
+  00001           27     simple_io9              EQU     0x01                    ;  Header  IO9  - bit0
+  00002           28     simple_io10             EQU     0x02                    ;          IO10 - bit1
+  00004           29     simple_io11             EQU     0x04                    ;          IO11 - bit2
+  00008           30     simple_io12             EQU     0x08                    ;          IO12 - bit3
+                  31     ;
+                  32     ;
+                  33     ;
+  00000           34     status_port             EQU     0x00                    ;UART status input
+  00001           35     tx_half_full            EQU     0x01                    ;  Transmitter     half full - bit0
+  00002           36     tx_full                 EQU     0x02                    ;    FIFO               full - bit1
+  00004           37     rx_EQU_present         EQU     0x04                    ;  Receiver     EQU present - bit2
+  00008           38     rx_half_full            EQU     0x08                    ;    FIFO          half full - bit3
+  00010           39     rx_full                 EQU     0x10                    ;                   full - bit4
+  00020           40     spare1                  EQU     0x20                    ;                  spare '0' - bit5
+  00040           41     spare2                  EQU     0x40                    ;                  spare '0' - bit6
+  00080           42     spare3                  EQU     0x80                    ;                  spare '0' - bit7
+                  43     ;
+  00001           44     uart_read_port          EQU     0x01                    ;UART Rx EQU input
+                  45     ;
+  00020           46     uart_write_port         EQU     0x20                    ;UART Tx EQU output
+                  47     ;
+                  48     ;
+                  49     ;
+                  50     ;**************************************************************************************
+                  51     ; Special Register usage
+                  52     ;**************************************************************************************
+                  53     ;
+  0000F           54     uart_EQU               REG     sf                      ;used to pass EQU to and from the UART
+                  55     ;
+                  56     ;
+                  57     ;
+                  58     ;**************************************************************************************
+                  59     ;Scratch Pad Memory Locations
+                  60     ;**************************************************************************************
+                  61     ;
+  00000           62     pwm_duty_counter        EQU     0x00                    ;Duty Counter 0 to 255 within 1KHz period (1ms)
+  00001           63     pwm_channel0            EQU     0x01                    ;PWM settings for each channel
+  00002           64     pwm_channel1            EQU     0x02                    ; Channels 0 to 7 = LEDs 0 to 7
+  00003           65     pwm_channel2            EQU     0x03                    ; Channels 8 to 11 = IO9 to IO12
+  00004           66     pwm_channel3            EQU     0x04
+  00005           67     pwm_channel4            EQU     0x05
+  00006           68     pwm_channel5            EQU     0x06
+  00007           69     pwm_channel6            EQU     0x07
+  00008           70     pwm_channel7            EQU     0x08
+  00009           71     pwm_channel8            EQU     0x09
+  0000A           72     pwm_channel9            EQU     0x0a
+  0000B           73     pwm_channel10           EQU     0x0b
+  0000C           74     pwm_channel11           EQU     0x0c
+  0000D           75     isr_preserve_s0         EQU     0x0d                    ;preserve register contents during Interrupt Service Routine
+  0000E           76     isr_preserve_s1         EQU     0x0e
+  0000F           77     isr_preserve_s2         EQU     0x0f
+                  78     ;
+                  79     ;
+  00010           80     led0_sequence           EQU     0x10                    ;LED sequence values
+  00011           81     led1_sequence           EQU     0x11
+  00012           82     led2_sequence           EQU     0x12
+  00013           83     led3_sequence           EQU     0x13
+  00014           84     led4_sequence           EQU     0x14
+  00015           85     led5_sequence           EQU     0x15
+  00016           86     led6_sequence           EQU     0x16
+  00017           87     led7_sequence           EQU     0x17
+                  88     ;
+                  89     ;
+                  90     ;
+                  91     ;**************************************************************************************
+                  92     ;Useful EQU constants
+                  93     ;**************************************************************************************
+                  94     ;
+                  95     ;
+                  96     ;
+                  97     ;
+                  98     ;ASCII table
+                  99     ;
+  00061          100     character_a             EQU     0x61
+  00062          101     character_b             EQU     0x62
+  00063          102     character_c             EQU     0x63
+  00064          103     character_d             EQU     0x64
+  00065          104     character_e             EQU     0x65
+  00066          105     character_f             EQU     0x66
+  00067          106     character_g             EQU     0x67
+  00068          107     character_h             EQU     0x68
+  00069          108     character_i             EQU     0x69
+  0006A          109     character_j             EQU     0x6a
+  0006B          110     character_k             EQU     0x6b
+  0006C          111     character_l             EQU     0x6c
+  0006D          112     character_m             EQU     0x6d
+  0006E          113     character_n             EQU     0x6e
+  0006F          114     character_o             EQU     0x6f
+  00070          115     character_p             EQU     0x70
+  00071          116     character_q             EQU     0x71
+  00072          117     character_r             EQU     0x72
+  00073          118     character_s             EQU     0x73
+  00074          119     character_t             EQU     0x74
+  00075          120     character_u             EQU     0x75
+  00076          121     character_v             EQU     0x76
+  00077          122     character_w             EQU     0x77
+  00078          123     character_x             EQU     0x78
+  00079          124     character_y             EQU     0x79
+  0007A          125     character_z             EQU     0x7a
+  00041          126     _character_a            EQU     0x41
+  00042          127     _character_b            EQU     0x42
+  00043          128     _character_c            EQU     0x43
+  00044          129     _character_d            EQU     0x44
+  00045          130     _character_e            EQU     0x45
+  00046          131     _character_f            EQU     0x46
+  00047          132     _character_g            EQU     0x47
+  00048          133     _character_h            EQU     0x48
+  00049          134     _character_i            EQU     0x49
+  0004A          135     _character_j            EQU     0x4a
+  0004B          136     _character_k            EQU     0x4b
+  0004C          137     _character_l            EQU     0x4c
+  0004D          138     _character_m            EQU     0x4d
+  0004E          139     _character_n            EQU     0x4e
+  0004F          140     _character_o            EQU     0x4f
+  00050          141     _character_p            EQU     0x50
+  00051          142     _character_q            EQU     0x51
+  00052          143     _character_r            EQU     0x52
+  00053          144     _character_s            EQU     0x53
+  00054          145     _character_t            EQU     0x54
+  00055          146     _character_u            EQU     0x55
+  00056          147     _character_v            EQU     0x56
+  00057          148     _character_w            EQU     0x57
+  00058          149     _character_x            EQU     0x58
+  00059          150     _character_y            EQU     0x59
+  0005A          151     _character_z            EQU     0x5a
+  00030          152     character_0             EQU     0x30
+  00031          153     character_1             EQU     0x31
+  00032          154     character_2             EQU     0x32
+  00033          155     character_3             EQU     0x33
+  00034          156     character_4             EQU     0x34
+  00035          157     character_5             EQU     0x35
+  00036          158     character_6             EQU     0x36
+  00037          159     character_7             EQU     0x37
+  00038          160     character_8             EQU     0x38
+  00039          161     character_9             EQU     0x39
+  0003A          162     character_colon         EQU     0x3a
+  0002E          163     character_stop          EQU     0x2e
+  0003B          164     character_semi_colon    EQU     0x3b
+  0002D          165     character_minus         EQU     0x2d
+  0002F          166     character_divide        EQU     0x2f                    ;'/'
+  0002B          167     character_plus          EQU     0x2b
+  0002C          168     character_comma         EQU     0x2c
+  0003C          169     character_less_than     EQU     0x3c
+  0003E          170     character_greater_than  EQU     0x3e
+  0003D          171     character_equals        EQU     0x3d
+  00020          172     character_space         EQU     0x20
+  0000D          173     character_cr            EQU     0x0d                    ;carriage return
+  0003F          174     character_question      EQU     0x3f                    ;'?'
+  00024          175     character_dollar        EQU     0x24
+  00021          176     character_exclaim       EQU     0x21                    ;'!'
+  00008          177     character_bs            EQU     0x08                    ;Back Space command character
+                 178     ;
+                 179     ;
+                 180     ;
+                 181     ;
+                 182     ;
+                 183     ;**************************************************************************************
+                 184     ;Initialise the system
+                 185     ;**************************************************************************************
+                 186     ;
+                 187     ; All PWM channels initialise to off (zero).
+                 188     ; Simple I/O outputs will remain off at all times.
+                 189     ;
+000 00000        190     cold_start:             LD      s0, #0x00
+001 00101        191                             LD      s1, #pwm_channel0
+  00002          192     clear_loop:
+002 0010C        193                             load     s1, #pwm_channel11
+003 35006        194                             JUMP    z, enable_int
+004 08101        195                             ADD     s1, #0x01
+005 34002        196                             JUMP    clear_loop
+                 197     ;
+006 3C001        198     enable_int:             ENA                             ;interrupts used to drive servo
+                 199     ;
+007 360C6        200                             CALL    send_welcome            ;Write welcome message to UART
+008 360FA        201                             CALL    send_ok
+                 202     ;
+                 203     ;
+                 204     ; Initialise LED pattern sequence
+                 205     ;
+009 00001        206                             LD      s0, #0x01               ;trigger to start wave pattern
+00A 10080        207                             load      s0, led0_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00B 00000        208                             LD      s0, #0x00
+00C 10088        209                             load      s0, led1_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00D 10090        210                             load      s0, led2_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00E 10098        211                             load      s0, led3_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00F 100A0        212                             load      s0, led4_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+010 100A8        213                             load      s0, led5_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+011 100B0        214                             load      s0, led6_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 100B8        215                             load      s0, led7_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 216     ;
+                 217     ;**************************************************************************************
+                 218     ; Main program
+                 219     ;**************************************************************************************
+                 220     ;
+                 221     ; Provides a pattern of interest on the LEDs :-)
+                 222     ;
+                 223     ; Each LED increases intensity in 8 steps and then decreases intensity in 8 steps until it is off.
+                 224     ; The middle LEDs (LD2 to LD5) each start to turn on when either neighbour is turned half on and increasing
+                 225     ; to provide the effect of a passing a 'wave' of light passing from side to side. The pair of LEDs at each
+                 226     ; (LD0, Ld1 and LD6, LD7) are required to reflect the 'wave' so that the pattern continues.
+                 227     ;
+                 228     ; I'm sure this code cold be written in more elegant way, but I leave that as an exercise to you :-)
+                 229     ;
+013 00203        230     warm_start:             LD      s2, #0x03               ;simple delay loop (time will be increased by ISR processing)
+014 001FF        231     delay_s2_loop:          LD      s1, #0xff
+015 000FF        232     delay_s1_loop:          LD      s0, #0xff
+016 0C001        233     delay_s0_loop:          SUB     s0, #0x01
+017 35C16        234                             JUMP    nc, delay_s0_loop
+018 0C101        235                             SUB     s1, #0x01
+019 35C15        236                             JUMP    nc, delay_s1_loop
+01A 0C201        237                             SUB     s2, #0x01
+01B 35C14        238                             JUMP    nc, delay_s2_loop
+                 239     ;
+                 240     ;Pattern generation
+                 241     ;
+01C 10080        242                             load      s0, led0_sequence       ;read sequence for LED0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01D 00000        243                             load     s0, #0x00
+01E 35024        244                             JUMP    z, load_led0_start
+01F 0C020        245                             SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+020 35027        246                             JUMP    z, update_led0
+021 08020        247                             ADD     s0, #0x20
+022 08001        248     inc_led0:               ADD     s0, #0x01               ;increment counter
+023 34027        249                             JUMP    update_led0
+024 10188        250     load_led0_start:        load      s1, led1_sequence       ;start LED0 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+025 00104        251                             load     s1, #0x04
+026 35022        252                             JUMP    z, inc_led0
+027 10080        253     update_led0:            load      s0, led0_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+028 360A6        254                             CALL    led_to_duty
+029 10108        255                             load      s1, pwm_channel0
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 256     ;
+02A 10180        257                             load      s1, led0_sequence       ; refresh LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+02B 0010B        258                             load     s1, #0x0b
+02C 3542F        259                             JUMP    nz, normal_led1
+02D 00004        260                             LD      s0, #0x04
+02E 3403D        261                             JUMP    update_led1
+02F 10088        262     normal_led1:            load      s0, led1_sequence       ;read sequence for LED1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+030 00000        263                             load     s0, #0x00
+031 35037        264                             JUMP    z, load_led1_start
+032 0C010        265                             SUB     s0, #0x10               ;reset count if maximum
+033 3503D        266                             JUMP    z, update_led1
+034 08010        267                             ADD     s0, #0x10
+035 08001        268     inc_led1:               ADD     s0, #0x01               ;increment counter
+036 3403D        269                             JUMP    update_led1
+037 10180        270     load_led1_start:        load      s1, led0_sequence       ;start LED1 if LED0 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+038 0010B        271                             load     s1, #0x0b
+039 35035        272                             JUMP    z, inc_led1
+03A 10190        273                             load      s1, led2_sequence       ;start LED1 if LED2 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03B 00104        274                             load     s1, #0x04
+03C 35035        275                             JUMP    z, inc_led1
+03D 10088        276     update_led1:            load      s0, led1_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03E 360A6        277                             CALL    led_to_duty
+03F 10110        278                             load      s1, pwm_channel1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 279     ;
+040 10090        280                             load      s0, led2_sequence       ;read sequence for LED2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+041 00000        281                             load     s0, #0x00
+042 35048        282                             JUMP    z, load_led2_start
+043 0C010        283                             SUB     s0, #0x10               ;reset count if maximum
+044 3504E        284                             JUMP    z, update_led2
+045 08010        285                             ADD     s0, #0x10
+046 08001        286     inc_led2:               ADD     s0, #0x01               ;increment counter
+047 3404E        287                             JUMP    update_led2
+048 10188        288     load_led2_start:        load      s1, led1_sequence       ;start LED2 if LED1 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+049 00104        289                             load     s1, #0x04
+04A 35046        290                             JUMP    z, inc_led2
+04B 10198        291                             load      s1, led3_sequence       ;start LED2 if LED3 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+04C 00104        292                             load     s1, #0x04
+04D 35046        293                             JUMP    z, inc_led2
+04E 10090        294     update_led2:            load      s0, led2_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+04F 360A6        295                             CALL    led_to_duty
+050 10118        296                             load      s1, pwm_channel2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 297     ;
+                 298     ;
+051 10098        299                             load      s0, led3_sequence       ;read sequence for LED3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+052 00000        300                             load     s0, #0x00
+053 35059        301                             JUMP    z, load_led3_start
+054 0C010        302                             SUB     s0, #0x10               ;reset count if maximum
+055 3505F        303                             JUMP    z, update_led3
+056 08010        304                             ADD     s0, #0x10
+057 08001        305     inc_led3:               ADD     s0, #0x01               ;increment counter
+058 3405F        306                             JUMP    update_led3
+059 10190        307     load_led3_start:        load      s1, led2_sequence       ;start LED3 if LED2 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+05A 00104        308                             load     s1, #0x04
+05B 35057        309                             JUMP    z, inc_led3
+05C 101A0        310                             load      s1, led4_sequence       ;start LED3 if LED4 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+05D 00104        311                             load     s1, #0x04
+05E 35057        312                             JUMP    z, inc_led3
+05F 10098        313     update_led3:            load      s0, led3_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+060 360A6        314                             CALL    led_to_duty
+061 10120        315                             load      s1, pwm_channel3
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 316     ;
+062 100A0        317                             load      s0, led4_sequence       ;read sequence for LED4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+063 00000        318                             load     s0, #0x00
+064 3506A        319                             JUMP    z, load_led4_start
+065 0C010        320                             SUB     s0, #0x10               ;reset count if maximum
+066 35070        321                             JUMP    z, update_led4
+067 08010        322                             ADD     s0, #0x10
+068 08001        323     inc_led4:               ADD     s0, #0x01               ;increment counter
+069 34070        324                             JUMP    update_led4
+06A 10198        325     load_led4_start:        load      s1, led3_sequence       ;start LED4 if LED3 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+06B 00104        326                             load     s1, #0x04
+06C 35068        327                             JUMP    z, inc_led4
+06D 101A8        328                             load      s1, led5_sequence       ;start LED4 if LED5 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+06E 00104        329                             load     s1, #0x04
+06F 35068        330                             JUMP    z, inc_led4
+070 100A0        331     update_led4:            load      s0, led4_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+071 360A6        332                             CALL    led_to_duty
+072 10128        333                             load      s1, pwm_channel4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 334     ;
+073 100A8        335                             load      s0, led5_sequence       ;read sequence for LED5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+074 00000        336                             load     s0, #0x00
+075 3507B        337                             JUMP    z, load_led5_start
+076 0C010        338                             SUB     s0, #0x10               ;reset count if maximum
+077 35081        339                             JUMP    z, update_led5
+078 08010        340                             ADD     s0, #0x10
+079 08001        341     inc_led5:               ADD     s0, #0x01               ;increment counter
+07A 34081        342                             JUMP    update_led5
+07B 101A0        343     load_led5_start:        load      s1, led4_sequence       ;start LED5 if LED4 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07C 00104        344                             load     s1, #0x04
+07D 35079        345                             JUMP    z, inc_led5
+07E 101B0        346                             load      s1, led6_sequence       ;start LED5 if LED6 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+07F 00104        347                             load     s1, #0x04
+080 35079        348                             JUMP    z, inc_led5
+081 100A8        349     update_led5:            load      s0, led5_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+082 360A6        350                             CALL    led_to_duty
+083 10130        351                             load      s1, pwm_channel5
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 352     ;
+084 101B8        353                             load      s1, led7_sequence       ; refresh LED6 if LED7 = 11 (0B hex) to reflect wave
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+085 0010B        354                             load     s1, #0x0b
+086 35489        355                             JUMP    nz, normal_led6
+087 00004        356                             LD      s0, #0x04
+088 34094        357                             JUMP    update_led6
+089 100B0        358     normal_led6:            load      s0, led6_sequence       ;read sequence for LED6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+08A 00000        359                             load     s0, #0x00
+08B 35091        360                             JUMP    z, load_led6_start
+08C 0C010        361                             SUB     s0, #0x10               ;reset count if maximum
+08D 35094        362                             JUMP    z, update_led6
+08E 08010        363                             ADD     s0, #0x10
+08F 08001        364     inc_led6:               ADD     s0, #0x01               ;increment counter
+090 34094        365                             JUMP    update_led6
+091 101A8        366     load_led6_start:        load      s1, led5_sequence       ;start LED6 if LED5 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+092 00104        367                             load     s1, #0x04
+093 3508F        368                             JUMP    z, inc_led6
+094 100B0        369     update_led6:            load      s0, led6_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+095 360A6        370                             CALL    led_to_duty
+096 10138        371                             load      s1, pwm_channel6
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 372     ;
+097 100B8        373                             load      s0, led7_sequence       ;read sequence for LED7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+098 00000        374                             load     s0, #0x00
+099 3509F        375                             JUMP    z, load_led7_start
+09A 0C020        376                             SUB     s0, #0x20               ;Count longer to ensure end stops then reset count if maximum
+09B 350A2        377                             JUMP    z, update_led7
+09C 08020        378                             ADD     s0, #0x20
+09D 08001        379     inc_led7:               ADD     s0, #0x01               ;increment counter
+09E 340A2        380                             JUMP    update_led7
+09F 101B0        381     load_led7_start:        load      s1, led6_sequence       ;start LED7 if LED6 = 4
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A0 00104        382                             load     s1, #0x04
+0A1 3509D        383                             JUMP    z, inc_led7
+0A2 100B8        384     update_led7:            load      s0, led7_sequence
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A3 360A6        385                             CALL    led_to_duty
+0A4 10140        386                             load      s1, pwm_channel7
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+0A5 34013        387                             JUMP    warm_start
+                 388     ;
+                 389     ;
+                 390     ; Convert LED sequence number into PWM intensity figure
+                 391     ;
+                 392     ; LEDs duty cycle values are 0,1,2,4,8,16,32 and 64 because they appear to give what
+                 393     ; appears to be a fairly liner change in intensity and provides a simple way to set
+                 394     ; the duty value.
+                 395     ;
+                 396     ; Provide sequence value in register s0 and intensity will be
+                 397     ; returned in register s1.
+                 398     ;
+                 399     ; s0   s1
+                 400     ; 00   00
+                 401     ; 01   01
+                 402     ; 02   02
+                 403     ; 03   04
+                 404     ; 04   08
+                 405     ; 05   10
+                 406     ; 06   20
+                 407     ; 07   40
+                 408     ; 08   80
+                 409     ; 09   40
+                 410     ; 0A   20
+                 411     ; 0B   10
+                 412     ; 0C   08
+                 413     ; 0D   04
+                 414     ; 0E   02
+                 415     ; 0F   01
+                 416     ; 10   00  and zero for all larger values of s0
+                 417     ;
+0A6 00100        418     led_to_duty:            LD      s1, #0x00
+0A7 00000        419                             load     s0, #0x00               ;load for zero
+0A8 24000        420                             RET
+0A9 00101        421                             LD      s1, #0x01               ;inject '1'
+0AA 0C001        422     go_up_loop:             SUB     s0, #0x01
+0AB 24000        423                             RET
+0AC 28106        424                             SL0     s1                      ;multiply by 2
+0AD 358AF        425                             JUMP    c, go_down
+0AE 340AA        426                             JUMP    go_up_loop
+0AF 00140        427     go_down:                LD      s1, #0x40
+0B0 0C001        428     go_down_loop:           SUB     s0, #0x01
+0B1 24000        429                             RET
+0B2 2810E        430                             SR0     s1                      ;divide by 2
+0B3 340B0        431                             JUMP    go_down_loop
+                 432     ;
+                 433     ;**************************************************************************************
+                 434     ; UART communication routines
+                 435     ;**************************************************************************************
+                 436     ;
+                 437     ; Read one character from the UART
+                 438     ;
+                 439     ; Character read will be returned in a register called 'UART_EQU'.
+                 440     ;
+                 441     ; The routine first loads the receiver FIFO buffer to see if EQU is present.
+                 442     ; If the FIFO is empty, the routine waits until there is a character to read.
+                 443     ; As this could take any amount of time the wait loop could include a call to a
+                 444     ; subroutine which performs a useful function.
+                 445     ;
+                 446     ;
+                 447     ; Registers used s0 and UART_EQU
+                 448     ;
+0B4 20000        449     read_from_uart:         IN      s0, status_port         ;load Rx_FIFO buffer
+0B5 00004        450                             load    s0, #rx_EQU_present    ;wait if empty
+0B6 354B8        451                             JUMP    nz, read_character
+0B7 340B4        452                             JUMP    read_from_uart
+0B8 20F01        453     read_character:         IN      uart_EQU, uart_read_port ;read from FIFO
+0B9 24000        454                             RET
+                 455     ;
+                 456     ;
+                 457     ;
+                 458     ; Transmit one character to the UART
+                 459     ;
+                 460     ; Character supplied in register called 'UART_EQU'.
+                 461     ;
+                 462     ; The routine first loads the transmit FIFO buffer to see if it is full.
+                 463     ; If the FIFO is full, then the routine waits until it there is space.
+                 464     ;
+                 465     ; Registers used s0
+                 466     ;
+0BA 20000        467     send_to_uart:           IN      s0, status_port         ;load Tx_FIFO buffer
+0BB 00002        468                             load    s0, #tx_full            ;wait if full
+0BC 350BE        469                             JUMP    z, uart_write
+0BD 340BA        470                             JUMP    send_to_uart
+0BE 22F20        471     uart_write:             OUT     uart_EQU, uart_write_port
+0BF 24000        472                             RET
+                 473     ;
+                 474     ;
+                 475     ;
+                 476     ;**************************************************************************************
+                 477     ; Text messages
+                 478     ;**************************************************************************************
+                 479     ;
+                 480     ;
+                 481     ; Send Carriage Return to the UART
+                 482     ;
+0C0 00F0D        483     send_cr:                LD      uart_EQU, #character_cr
+0C1 360BA        484                             CALL    send_to_uart
+0C2 24000        485                             RET
+                 486     ;
+                 487     ; Send a space to the UART
+                 488     ;
+0C3 00F20        489     send_space:             LD      uart_EQU, #character_space
+0C4 360BA        490                             CALL    send_to_uart
+0C5 24000        491                             RET
+                 492     ;
+                 493     ;
+                 494     ;
+                 495     ; Send 'PicoBlaze Servo Control' string to the UART
+                 496     ;
+0C6 360C0        497     send_welcome:           CALL    send_cr
+0C7 360C0        498                             CALL    send_cr
+0C8 00F50        499                             LD      uart_EQU, #_character_p
+0C9 360BA        500                             CALL    send_to_uart
+0CA 00F69        501                             LD      uart_EQU, #character_i
+0CB 360BA        502                             CALL    send_to_uart
+0CC 00F63        503                             LD      uart_EQU, #character_c
+0CD 360BA        504                             CALL    send_to_uart
+0CE 00F6F        505                             LD      uart_EQU, #character_o
+0CF 360BA        506                             CALL    send_to_uart
+0D0 00F42        507                             LD      uart_EQU, #_character_b
+0D1 360BA        508                             CALL    send_to_uart
+0D2 00F6C        509                             LD      uart_EQU, #character_l
+0D3 360BA        510                             CALL    send_to_uart
+0D4 00F61        511                             LD      uart_EQU, #character_a
+0D5 360BA        512                             CALL    send_to_uart
+0D6 00F7A        513                             LD      uart_EQU, #character_z
+0D7 360BA        514                             CALL    send_to_uart
+0D8 00F65        515                             LD      uart_EQU, #character_e
+0D9 360BA        516                             CALL    send_to_uart
+0DA 360C3        517                             CALL    send_space
+0DB 00F41        518                             LD      uart_EQU, #_character_a
+0DC 360BA        519                             CALL    send_to_uart
+0DD 00F75        520                             LD      uart_EQU, #character_u
+0DE 360BA        521                             CALL    send_to_uart
+0DF 00F74        522                             LD      uart_EQU, #character_t
+0E0 360BA        523                             CALL    send_to_uart
+0E1 00F6F        524                             LD      uart_EQU, #character_o
+0E2 360BA        525                             CALL    send_to_uart
+0E3 360C3        526                             CALL    send_space
+0E4 00F50        527                             LD      uart_EQU, #_character_p
+0E5 360BA        528                             CALL    send_to_uart
+0E6 00F57        529                             LD      uart_EQU, #_character_w
+0E7 360BA        530                             CALL    send_to_uart
+0E8 00F4D        531                             LD      uart_EQU, #_character_m
+0E9 360BA        532                             CALL    send_to_uart
+0EA 360C3        533                             CALL    send_space
+0EB 00F41        534                             LD      uart_EQU, #_character_a
+0EC 360BA        535                             CALL    send_to_uart
+0ED 00F63        536                             LD      uart_EQU, #character_c
+0EE 360BA        537                             CALL    send_to_uart
+0EF 00F74        538                             LD      uart_EQU, #character_t
+0F0 360BA        539                             CALL    send_to_uart
+0F1 00F69        540                             LD      uart_EQU, #character_i
+0F2 360BA        541                             CALL    send_to_uart
+0F3 00F76        542                             LD      uart_EQU, #character_v
+0F4 360BA        543                             CALL    send_to_uart
+0F5 00F65        544                             LD      uart_EQU, #character_e
+0F6 360BA        545                             CALL    send_to_uart
+0F7 360C0        546                             CALL    send_cr
+0F8 360C0        547                             CALL    send_cr
+0F9 24000        548                             RET
+                 549     ;
+                 550     ;
+                 551     ;Send 'OK' to the UART
+                 552     ;
+0FA 360C0        553     send_ok:                CALL    send_cr
+0FB 00F4F        554                             LD      uart_EQU, #_character_o
+0FC 360BA        555                             CALL    send_to_uart
+0FD 00F4B        556                             LD      uart_EQU, #_character_k
+0FE 360BA        557                             CALL    send_to_uart
+0FF 340C0        558                             JUMP    send_cr
+                 559     ;
+                 560     ;
+                 561     ;**************************************************************************************
+                 562     ; Interrupt Service Routine (ISR)
+                 563     ;**************************************************************************************
+                 564     ;
+                 565     ; Interrupts occur at 3.92us intervals and are used to generate the PWM pulses generated
+                 566     ; at a PRF of 1KHz. The 3.92us interrupt rate corresponds with a resolution of 256 steps
+                 567     ; over the 1ms associated with the 1KHz PRF.
+                 568     ;
+                 569     ; The ISR is self contained and all registers used are preserved. Scratch pad memory
+                 570     ; locations are used to determine the desired duty factor for each of 12 channels.
+                 571     ;
+                 572     ; Note that an interrupt is generated every 196 clock cycles. This means that there is
+                 573     ; only time to execute 98 instructions between each interrupt. This ISR is 48 instructions
+                 574     ; long. A further 3 instructions are also consumed by the interrupt process
+                 575     ; (abandoned instruction, virtual CALL to 3FF and the interrupt vector JUMP) and hence
+                 576     ; PicoBlaze has approximately half of its time available for other tasks in the main program.
+                 577     ;
+                 578     ; Although a loop would normal be employed in software to process each of 12 channels,
+                 579     ; the implementation of a loop would increase the number of instructions which needed to
+                 580     ; be executed to such an extent that this 12 channel implementation would not be possible.
+                 581     ; Consequently the code is written out in a linear fashion which consumes more program
+                 582     ; space but which executes faster.
+                 583     ;
+100 10068        584     isr:                    load      s0, isr_preserve_s0     ;preserve registers to be used
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+101 10170        585                             load      s1, isr_preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+102 10278        586                             load      s2, isr_preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 587     ;Determine the number of steps currently through the 1ms PWM cycle
+103 10100        588                             load      s1, pwm_duty_counter    ;read 8-bit counter of steps
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+104 08101        589                             ADD     s1, #0x01               ;increment counter (will roll over to zero)
+105 10100        590                             load      s1, pwm_duty_counter    ;update count value in memory for next interrupt.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 591     ;Read duty factor for each channel and load it with the duty counter and set or
+                 592     ;reset a bit in register s2 accordingly.
+106 10060        593                             load      s0, pwm_channel11       ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+107 10100        594                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+108 28200        595                             SLA     s2                      ;shift carry into register s2
+109 10058        596                             load      s0, pwm_channel10       ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+10A 10100        597                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+10B 28200        598                             SLA     s2                      ;shift carry into register s2
+10C 10050        599                             load      s0, pwm_channel9        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+10D 10100        600                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+10E 28200        601                             SLA     s2                      ;shift carry into register s2
+10F 10048        602                             load      s0, pwm_channel8        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+110 10100        603                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+111 28200        604                             SLA     s2                      ;shift carry into register s2
+112 22240        605                             OUT     s2, simple_port         ;drive pins on connector J4
+113 10040        606                             load      s0, pwm_channel7        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+114 10100        607                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+115 28200        608                             SLA     s2                      ;shift carry into register s2
+116 10038        609                             load      s0, pwm_channel6        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+117 10100        610                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+118 28200        611                             SLA     s2                      ;shift carry into register s2
+119 10030        612                             load      s0, pwm_channel5        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11A 10100        613                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+11B 28200        614                             SLA     s2                      ;shift carry into register s2
+11C 10028        615                             load      s0, pwm_channel4        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+11D 10100        616                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+11E 28200        617                             SLA     s2                      ;shift carry into register s2
+11F 10020        618                             load      s0, pwm_channel3        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+120 10100        619                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+121 28200        620                             SLA     s2                      ;shift carry into register s2
+122 10018        621                             load      s0, pwm_channel2        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+123 10100        622                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+124 28200        623                             SLA     s2                      ;shift carry into register s2
+125 10010        624                             load      s0, pwm_channel1        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+126 10100        625                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+127 28200        626                             SLA     s2                      ;shift carry into register s2
+128 10008        627                             load      s0, pwm_channel0        ;read desired setting of pulse width
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+129 10100        628                             load     s1, s0                  ;set carry flag if duty factor > duty counter
+12A 28200        629                             SLA     s2                      ;shift carry into register s2
+12B 22280        630                             OUT     s2, led_port            ;drive LEDs
+12C 10068        631                             load      s0, isr_preserve_s0     ;reload register values
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12D 10170        632                             load      s1, isr_preserve_s1
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12E 10278        633                             load      s2, isr_preserve_s2
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+12F 2C001        634                             RETIE
+                 635     ;
+                 636     ;
+                 637     ;**************************************************************************************
+                 638     ; Interrupt Vector
+                 639     ;**************************************************************************************
+                 640     ;
+  003FF          641                             ORG     0x3ff
+3FF 34100        642                             JUMP    isr
+                 643     ;
+                 644     ;
+                 645

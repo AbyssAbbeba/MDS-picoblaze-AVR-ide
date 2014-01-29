@@ -1,0 +1,104 @@
+--
+-- Definition of a single port ROM for KCPSM program defined by 2030_example3.ind_spaces.short_inst.asm.psm
+-- and assmbled using KCPSM assembler.
+--
+-- Standard IEEE libraries
+--
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+--
+-- The Unisim Library is used to define Xilinx primitives. It is also used during
+-- simulation. The source can be viewed at %XILINX%\vhdl\src\unisims\unisim_VCOMP.vhd
+--
+library unisim;
+use unisim.vcomponents.all;
+--
+--
+entity 2030_example3.ind_spaces.short_inst.asm is
+    Port (      address : in std_logic_vector(7 downto 0);
+            instruction : out std_logic_vector(15 downto 0);
+                    clk : in std_logic);
+    end 2030_example3.ind_spaces.short_inst.asm;
+--
+architecture low_level_definition of 2030_example3.ind_spaces.short_inst.asm is
+--
+-- Attributes to define ROM contents during implementation synthesis.
+-- The information is repeated in the generic map for functional simulation
+--
+attribute INIT_00 : string;
+attribute INIT_01 : string;
+attribute INIT_02 : string;
+attribute INIT_03 : string;
+attribute INIT_04 : string;
+attribute INIT_05 : string;
+attribute INIT_06 : string;
+attribute INIT_07 : string;
+attribute INIT_08 : string;
+attribute INIT_09 : string;
+attribute INIT_0A : string;
+attribute INIT_0B : string;
+attribute INIT_0C : string;
+attribute INIT_0D : string;
+attribute INIT_0E : string;
+attribute INIT_0F : string;
+--
+-- Attributes to define ROM contents during implementation synthesis.
+--
+attribute INIT_00 of ram_256_x_16 : label is  "61B200006375000005250000633C0000C0010000635900000050000000000000";
+attribute INIT_01 of ram_256_x_16 : label is  "613E0000625000000DC000000D8E0000635E00006152000060650000635E0000";
+attribute INIT_02 of ram_256_x_16 : label is  "0A68000063A700006152000000500000005800000BD8000060920000613E0000";
+attribute INIT_03 of ram_256_x_16 : label is  "0F520000611B000000E0000060560000628D0000403C000063C600000B700000";
+attribute INIT_04 of ram_256_x_16 : label is  "62A8000062870000626D00006152000060AC0000403C00000F4100000F450000";
+attribute INIT_05 of ram_256_x_16 : label is  "20100000635E000020100000635E000020100000403C000060BC00000DC00000";
+attribute INIT_06 of ram_256_x_16 : label is  "4000000040670000506E0000615500000003000061F0000020100000635E0000";
+attribute INIT_07 of ram_256_x_16 : label is  "0410000061520000C60100000610000000060000633C00006386000005100000";
+attribute INIT_08 of ram_256_x_16 : label is  "C10100008D080000800E00006D02000000010000006800008401000004170000";
+attribute INIT_09 of ram_256_x_16 : label is  "54A200002BF00000549E00002AF00000549A000060FF00000800000040000000";
+attribute INIT_0A of ram_256_x_16 : label is  "615200000800000040950000C0010000400000004B00000054A600004A000000";
+attribute INIT_0B of ram_256_x_16 : label is  "00040000080000004000000054AF000054B200008701000060FF000061550000";
+attribute INIT_0C of ram_256_x_16 : label is  "210F000054D200004008000021F0000054CC00004008000021F0000054C60000";
+attribute INIT_0D of ram_256_x_16 : label is  "0006000060E2000040BF00008701000040080000210F000054D8000040080000";
+attribute INIT_0E of ram_256_x_16 : label is  "4000000061090000610900004000000061090000610900000700000040000000";
+attribute INIT_0F of ram_256_x_16 : label is  "29830000611300008201000050FD000000020000610900000210000008010000";
+--
+begin
+--
+  --Instantiate the Xilinx primitive for a block RAM
+  ram_256_x_16: RAMB4_S16
+  --translate_off
+  --INIT values repeated to define contents for functional simulation
+  generic map (INIT_00 => X"61B200006375000005250000633C0000C0010000635900000050000000000000",
+               INIT_01 => X"613E0000625000000DC000000D8E0000635E00006152000060650000635E0000",
+               INIT_02 => X"0A68000063A700006152000000500000005800000BD8000060920000613E0000",
+               INIT_03 => X"0F520000611B000000E0000060560000628D0000403C000063C600000B700000",
+               INIT_04 => X"62A8000062870000626D00006152000060AC0000403C00000F4100000F450000",
+               INIT_05 => X"20100000635E000020100000635E000020100000403C000060BC00000DC00000",
+               INIT_06 => X"4000000040670000506E0000615500000003000061F0000020100000635E0000",
+               INIT_07 => X"0410000061520000C60100000610000000060000633C00006386000005100000",
+               INIT_08 => X"C10100008D080000800E00006D02000000010000006800008401000004170000",
+               INIT_09 => X"54A200002BF00000549E00002AF00000549A000060FF00000800000040000000",
+               INIT_0A => X"615200000800000040950000C0010000400000004B00000054A600004A000000",
+               INIT_0B => X"00040000080000004000000054AF000054B200008701000060FF000061550000",
+               INIT_0C => X"210F000054D200004008000021F0000054CC00004008000021F0000054C60000",
+               INIT_0D => X"0006000060E2000040BF00008701000040080000210F000054D8000040080000",
+               INIT_0E => X"4000000061090000610900004000000061090000610900000700000040000000",
+               INIT_0F => X"29830000611300008201000050FD000000020000610900000210000008010000",
+  --translate_on
+  port map(    DI => "0000000000000000",
+               EN => '1',
+               WE => '0',
+              RST => '0',
+              CLK => clk,
+             ADDR => address,
+               DO => instruction(15 downto 0));
+--
+end low_level_definition;
+--
+------------------------------------------------------------------------------------
+--
+-- END OF FILE 2030_example3.ind_spaces.short_inst.asm.vhd
+--
+------------------------------------------------------------------------------------
+

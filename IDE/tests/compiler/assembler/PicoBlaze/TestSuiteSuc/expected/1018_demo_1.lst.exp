@@ -39,16 +39,8 @@
                   39     ; Main loop
                   40     ; --------------------
   00004           41     main:   shiload   s0, s1
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 004 0C100         42 +1          LOAD     reg1, reg0
-W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 005 0C010         43 +1          LOAD     reg0, reg1
-W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 006 08104         44             JUMP    main
                   45
                   46     ; Program end
