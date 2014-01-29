@@ -343,7 +343,11 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
             }
         }
 
-        CU_ASSERT_TRUE(entryFoundInMacExpFile);
+        if ( false == entryFoundInMacExpFile )
+        {
+            CU_FAIL("Table of macros is different than expected.");
+            break;
+        }
     }
 
     if ( 0 != macExpFileVec.size() )
