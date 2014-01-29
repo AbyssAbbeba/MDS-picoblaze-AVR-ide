@@ -13,13 +13,12 @@
  */
 // =============================================================================
 
-
 #include "HexFile.h"
 
 #include <string>
+#include <cstdio>
 #include <fstream>
 #include <cstdint>
-#include <cstdio>
 #include <cstring>
 
 inline int HexFile::computeCRC ( const char * data ) const
