@@ -13,8 +13,8 @@
 
 ; Constant definitions
 ; --------------------
-LED             EQU             0x01            ; VHDL PORT_IDs
-Btn             EQU             0x02            ; 
+LEDs             EQU             0x01            ; VHDL PORT_IDs
+Btn              EQU             0x02            ; 
 ; Automaticaly assign registers to symbols
 LED_i           AUTOREG                         ; Led working register
 BTN_i           AUTOREG                         ; Buttons working register
@@ -32,6 +32,11 @@ Temp3         REG       s2
 ; Waiting loop macro
 
 wait_for_100ms      MACRO
+					
+					local	  wait_100ms
+					local	  wait_100ms_i
+
+
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
@@ -45,7 +50,7 @@ wait_100ms_i:       SUB       Temp1, 1
                     
 ; Subroutines
 ;-------------------------
-Snake:          OUTPUT          Snake,LEDs        ; Turn LEDs OFF
+Snake_:          OUTPUT          Snake,LEDs        ; Turn LEDs OFF
                                                   ; REPT directive is very good for repeating blocks of code
                 REPT            7                 ; Moving right
                 RR              Snake              
@@ -57,7 +62,7 @@ Snake:          OUTPUT          Snake,LEDs        ; Turn LEDs OFF
                 
 ; Blinks with LEDs for N times.                 
 ;--------------------------
-Blink:          WHILE   N
+Blink:          #WHILE   N
                 N       SET     N - 1           ; Blinks defined by N
 
                 OUTPUT          ON,LEDs         ; Turn LEDs ON          
@@ -65,7 +70,7 @@ Blink:          WHILE   N
                 OUTPUT          OFF,LEDs        ; Turn LEDs OFF
                 wait_for_100ms
                 
-                ENDW
+                #ENDW
                 RETURN
                 
 ; Program initialization
