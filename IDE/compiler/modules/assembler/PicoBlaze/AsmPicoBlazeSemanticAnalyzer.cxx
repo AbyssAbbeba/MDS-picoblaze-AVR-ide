@@ -117,26 +117,41 @@ void AsmPicoBlazeSemanticAnalyzer::setDevice ( const std::string & deviceName )
     if ( "kcpsm1cpld" == deviceName )
     {
         m_device = DEV_KCPSM1CPLD;
+        m_memoryPtr->m_hardLimits.m_reg  = 8;
+        m_memoryPtr->m_hardLimits.m_data = 0;
+        m_memoryPtr->m_hardLimits.m_code = 256;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet1CPLD() );
     }
     else if ( "kcpsm1" == deviceName )
     {
         m_device = DEV_KCPSM1;
+        m_memoryPtr->m_hardLimits.m_reg  = 16;
+        m_memoryPtr->m_hardLimits.m_data = 0;
+        m_memoryPtr->m_hardLimits.m_code = 256;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet1() );
     }
     else if ( "kcpsm2" == deviceName )
     {
         m_device = DEV_KCPSM2;
+        m_memoryPtr->m_hardLimits.m_reg  = 32;
+        m_memoryPtr->m_hardLimits.m_data = 0;
+        m_memoryPtr->m_hardLimits.m_code = 1024;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet2() );
     }
     else if ( "kcpsm3" == deviceName )
     {
         m_device = DEV_KCPSM3;
+        m_memoryPtr->m_hardLimits.m_reg  = 16;
+        m_memoryPtr->m_hardLimits.m_data = 64;
+        m_memoryPtr->m_hardLimits.m_code = 1024;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet3() );
     }
     else if ( "kcpsm6" == deviceName )
     {
         m_device = DEV_KCPSM6;
+        m_memoryPtr->m_hardLimits.m_reg  = 32;
+        m_memoryPtr->m_hardLimits.m_data = 256;
+        m_memoryPtr->m_hardLimits.m_code = 4095;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet6() );
     }
 }

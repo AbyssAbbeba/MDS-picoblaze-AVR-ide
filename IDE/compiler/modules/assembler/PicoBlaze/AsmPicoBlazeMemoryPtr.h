@@ -52,11 +52,11 @@ class AsmPicoBlazeMemoryPtr
         /**
          * @brief
          */
-        enum HardLimits
+        struct HardLimits
         {
-            HARD_LIM_REG  = 31,
-            HARD_LIM_DATA = 63,
-            HARD_LIM_CODE = 4095
+            unsigned int m_reg;
+            unsigned int m_data;
+            unsigned int m_code;
         };
 
     ////    Constructors and Destructors    ////
@@ -112,6 +112,11 @@ class AsmPicoBlazeMemoryPtr
 
         /// @brief Program memory (CODE).
         int m_code;
+
+    ////    Public Attributes    ////
+    public:
+        /// @brief
+        HardLimits m_hardLimits;
 
     ////    Private Attributes    ////
     private:

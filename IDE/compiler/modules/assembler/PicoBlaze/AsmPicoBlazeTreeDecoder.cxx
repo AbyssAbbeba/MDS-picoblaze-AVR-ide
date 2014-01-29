@@ -38,6 +38,7 @@
 // Standard headers.
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #define HANDLE_ACTION(arg)                  \
     switch ( arg )                          \
@@ -1257,11 +1258,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
        AsmPicoBlazeTreeDecoder::dir_DEVICE ( CompilerStatement * node )
 {
     std::string deviceName = node->args()->lVal().m_data.m_symbol;
-    for ( size_t i = 0; i < deviceName.size(); i++ )
-    {
-        deviceName[i] = (char) tolower(deviceName[i]);
-    }
-
+    std::transform(deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower);
     CompilerBase::DevSpecLoaderFlag loaderFlag;
     CompilerStatement * devSpecCode = m_compilerCore->loadDevSpecCode(deviceName, &loaderFlag);
 
