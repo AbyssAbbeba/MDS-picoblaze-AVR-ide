@@ -41,20 +41,12 @@
                   41     ; Main loop
                   42     ; --------------------
   00004           43     main:   shift   s0, s1
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 004 2E001         44 +1          STORE    s0, ram_pointer + 1
 005 2E101         45 +1          STORE    s1, ram_pointer + 1
                   46 +1
                   47 +1
 006 01100         48 +1          LOAD     reg1, reg0
-W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 007 01010         49 +1          LOAD     reg0, reg1
-W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
 008 34004         50             JUMP    main
                   51
                   52     ; Program end

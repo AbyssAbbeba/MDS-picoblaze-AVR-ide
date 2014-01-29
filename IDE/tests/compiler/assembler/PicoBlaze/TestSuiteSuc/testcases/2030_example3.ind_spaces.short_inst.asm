@@ -59,7 +59,7 @@ rx_half_full            EQU     0x08                    ;    FIFO          half 
 rx_full                 EQU     0x10                    ;                    rx_full - bit4
 spare1                  EQU     0x20                    ;                  spare '0' - bit5
 spare2                  EQU     0x40                    ;                  spare '0' - bit6
-strataflash_sts         EQU     0x80                    ;  StrataFLASH           STS - bit7
+strataflash_sts         EQU     0x80                    ;  StrataFLASH           loadS - bit7
 ;
 uart_read_port          EQU     0x01                    ;UART Rx EQU input
 ;
@@ -292,7 +292,7 @@ cold_start:             CALL    sf_init                 ;initialise StrataFLASH 
                         LD      s0, #0x00               ;Start with application enabled in hardware
                         OUT     s0, authentication_control_port
                         LD      s0, #_character_p       ;start with design enabled by software (see ISR)
-                        ST      s0, authentication_status
+                        load      s0, authentication_status
                         CALL    delay_1s                ;delay to allow system to settle
                         CALL    lcd_reset               ;Initialise the LCD
 ;
@@ -387,8 +387,8 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
 ;
 ; load CRC value in scratch pad memory and display computed CRC value on the PC via UART.
 ;
-                        ST      sd, computed_crc0       ;load CRC value
-                        ST      se, computed_crc1
+                        load      sd, computed_crc0       ;load CRC value
+                        load      se, computed_crc1
                         CALL    send_computed_crc       ;display computed CRC value on PC via UART
                         LD      s0, se
                         CALL    send_hex_byte
@@ -404,8 +404,8 @@ warm_start:             LD      s5, #0x12               ;Line 1 position 2
 ; Read value is loadd in scratch pad memory and displayed on the PC via UART.
 ;
                         CALL    read_authentication     ;read StrataFLASH memory into [sB,sA]
-                        ST      sa, authentication_crc0 ;load CRC value
-                        ST      sb, authentication_crc1
+                        load      sa, authentication_crc0 ;load CRC value
+                        load      sb, authentication_crc1
                         CALL    send_flash_crc          ;display CRC value from FLASH on PC via UART
                         LD      s0, sb
                         CALL    send_hex_byte
@@ -449,7 +449,7 @@ auth_failure:           CALL    disp_failed             ;display failure to auth
                         CALL    send_cr
                         CALL    disable_app_hardware    ;sequence hardware disable signals
                         LD      s0, #_character_f       ;change authentication status to 'F' for failed.
-                        ST      s0, authentication_status ; so that application software disable is demonstrated
+                        load      s0, authentication_status ; so that application software disable is demonstrated
 ;
 ;
 ;
@@ -485,8 +485,8 @@ erase_command:          CALL    send_erase_in_progress
 ;
 authorise_command:      CALL    send_writing            ;Send 'Writing Authorisation' message
                         CALL    send_cr
-                        FT      sd, computed_crc0       ;load computed CRC value
-                        FT      se, computed_crc1
+                        load      sd, computed_crc0       ;load computed CRC value
+                        load      se, computed_crc1
                         CALL    write_authentication    ;write computed CRC to FLASH with random EQU
                         CALL    send_ok
                         JUMP    menu
@@ -544,7 +544,7 @@ disable_app_hardware:   LD      s0, #security_disable_interrupts
 ;
 send_serial_number:     CALL    send_flash_serial_number ;display text message
                         LD      s3, #serial_number7     ;pointer to scratch pad memory
-send_sn_loop:           FT      s0, #s3                 ;read serial number byte
+send_sn_loop:           load      s0, #s3                 ;read serial number byte
                         CALL    send_hex_byte           ;display byte
                         CALL    send_space              ;display byte
                         load     s3, #serial_number0     ;check for 8 bytes sent to UART
@@ -575,7 +575,7 @@ disp_serial_number:     CALL    lcd_clear               ;clear LCD display
                         LD      s5, #0x20               ;Line 2 position 0
                         CALL    lcd_cursor
                         LD      s6, #serial_number7     ;pointer to scratch pad memory
-disp_sn_loop:           FT      s0, #s6                 ;read serial number byte
+disp_sn_loop:           load      s0, #s6                 ;read serial number byte
                         CALL    disp_hex_byte           ;display byte
                         load     s6, #serial_number0     ;check for 8 bytes sent to UART
                         JUMP    z, end_disp_sn
@@ -607,12 +607,11 @@ end_disp_sn:            CALL    send_cr
 ; Registers used s0,s1,s2,s3
 ;
 compute_seeded_crc:     LD      s4, #serial_number0     ;pointer to scratch pad memory holding serial number
-crc_send_loop:          FT      s3, #s4                 ;read serial number byte
                         CALL    compute_crc16           ;compute CRC for value in 's3'
                         load     s4, #serial_number7     ;check for 8 bytes processed
                         RET
                         ADD     s4, #0x01               ;increment memory pointer
-                        JUMP    crc_send_loop
+
 ;
 ;
 ;**************************************************************************************
@@ -908,7 +907,7 @@ read_sf_serial_number:  LD      s9, #0x00               ;StrataFLASH address to 
                         LD      s1, #0x90               ;command to read device information
                         CALL    sf_byte_write
 read_sn_loop:           CALL    sf_byte_read            ;read serial number value
-                        ST      s0, #s2
+                        load      s0, #s2
                         load     s2, #serial_number7     ;check for 8 bytes copied
                         JUMP    z, end_read_sn
                         ADD     s7, #0x01               ;increment StrataFLASH address
@@ -2135,9 +2134,9 @@ disp_failed:            LD      s5, #0x25               ;Line 2 position 5
 ; message. Therefore an interrupt results in a message being sent to the Link FIFO
 ; depending on the authentication status.
 ;
-isr:                    ST      s0, isr_preserve_s0     ;save register contents
+isr:                    load      s0, isr_preserve_s0     ;save register contents
 ;
-                        FT      s0, authentication_status ;read authentication status
+                        load      s0, authentication_status ;read authentication status
                         load     s0, #_character_p       ;load for pass 'P' or fail 'F'
                         JUMP    z, pass_token
 ;
@@ -2158,7 +2157,7 @@ pass_token:             OUT     s0, link_fifo_write_port ;send PASS to link FIFO
                         OUT     s0, link_fifo_write_port
                         OUT     s0, link_fifo_write_port
 ;
-end_isr:                FT      s0, isr_preserve_s0     ;reload register contents
+end_isr:                load      s0, isr_preserve_s0     ;reload register contents
                         RETIE
 ;
 ;

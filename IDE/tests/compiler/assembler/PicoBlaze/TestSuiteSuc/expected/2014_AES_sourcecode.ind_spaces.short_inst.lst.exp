@@ -1,0 +1,344 @@
+                   1
+                   2
+                   3     device kcpsm2
+                   4
+  00004            5     G               equ     4
+  00004            6     SBOX_ROM               equ     4
+  00004            7     STATE               equ     4
+  00004            8     RESULT               equ     4
+  00004            9     KEY               equ     4
+  00004           10     INKEY               equ     4
+  00004           11     B128               equ     4
+  00004           12     XORROUNDKEY               equ     4
+  00004           13     INTOSTATE               equ     4
+  00004           14     X   equ                         4
+                  15
+                  16     ; Rijndael encrypt entry
+                  17     ; plain  is assumed to be in {plain }, the key in {inkey}
+                  18     ; both will be copied, final state will be the result
+  00000           19     encrypt:
+000 3601C         20                             CALL    inkeytokey
+001 36004         21                             CALL    intostate               ; state = in
+W: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+                  22
+002 36004         23                             CALL    xorroundkey             ; XorRoundKey( state, k[0], Nc )
+W: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+003 20F04         24                             IN      sf, x                   ; x^(i-1) (i=1)
+004 20309         25                             IN      s3, 9                   ; for round = 1 step 1 to Nn - 1
+  00005           26     round:                                                  ;
+005 3605E         27                             CALL    subbytes                ; ..SubBytes( state, Nc )
+006 36088         28                             CALL    shiftrows               ; ..ShiftRows( state, Nc )
+007 36095         29                             CALL    mixcolumns              ; ..MixColumns( state, Nc )
+008 3602D         30                             CALL    nextroundkey            ; ..XorRoundKey( state, k[ round ], Nc )
+009 36004         31                             CALL    xorroundkey
+W: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+00A 0C301         32                             SUB     s3, #1                  ; ..step 1
+00B 35405         33                             JUMP    nz, round               ; end for
+00C 3605E         34                             CALL    subbytes                ; SubBytes( state, Nc )
+00D 36088         35                             CALL    shiftrows               ; ShiftRows( state, Nc )
+00E 3602D         36                             CALL    nextroundkey            ; XorRoundKey( state, k[ round ], Nc )
+00F 36004         37                             CALL    xorroundkey
+W: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+010 36024         38                             CALL    statetoout
+011 24000         39                             RET                             ; result  is last {state}
+                  40
+                  41     ; result should be: (Gladman)
+                  42     ; R[10].k_sch d014f9a8c9ee2589e13f0cc8b6630ca6
+                  43     ; R[10].result  3925841d02dc09fbdc118597196a0b32
+                  44
+                  45     ; XorRoundKey( state, k, Nc )
+  00005           46     pkey    EQU     5
+  00004           47     pstate  equ     4
+                  48
+012 20004         49     xor128:                 IN      s0, b128                ; set up loop count
+013 00405         50     xornext:                LD      s4, #pkey               ; get key byte
+014 00504         51                             LD      s5, #pstate             ; get state byte
+015 16428         52                             XOR     s4, s5                  ; do the xor
+016 08501         53                             ADD     pkey, #1                ; increment key pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+017 08401         54                             ADD     pstate, #1              ; increment state pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+018 0C001         55                             SUB     s0, #1                  ; decrement loop counter
+019 35413         56                             JUMP    nz, xornext             ; loop back if not done 16 times (128/8)
+01A 24000         57                             RET
+                  58
+                  59     ; get pointer to state
+01B 3401E         60                             JUMP    toscratch128
+                  61
+  0001C           62     inkeytokey:
+01C 20504         63                             IN      pkey, inkey             ; get pointer to plain
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+01D 20404         64                             IN      pstate, key             ; get pointer to state
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                  65
+  0001E           66     toscratch128:
+01E 00405         67     putnext:                LD      s4, #pkey               ; get plain  byte
+01F 08501         68                             ADD     pkey, #1                ; increment key pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+020 08401         69                             ADD     pstate, #1              ; increment state pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+021 0C001         70                             SUB     s0, #1                  ; decrement loop counter
+022 3541E         71                             JUMP    nz, putnext             ; loop back if not done 16 times (128/8)
+023 24000         72                             RET
+                  73
+  00024           74     statetoout:
+024 20504         75                             IN      pkey, state             ; get pointer to state
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+025 20404         76                             IN      pstate, result          ; get pointer to result
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                  77
+026 20004         78                             IN      s0, b128                ; set up loop count
+027 00405         79     getnext:                LD      s4, #pkey               ; get plain  byte
+028 08501         80                             ADD     pkey, #1                ; increment key pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+029 08401         81                             ADD     pstate, #1              ; increment state pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+02A 0C001         82                             SUB     s0, #1                  ; decrement loop counter
+02B 35427         83                             JUMP    nz, getnext             ; loop back if not done 16 times (128/8)
+02C 24000         84                             RET
+                  85
+  0002D           86     nextroundkey:
+                  87     ; temp = k[i - 1]
+02D 00410         88                             LD      s4, #key + 12           ; get last word of previous key
+02E 00511         89                             LD      s5, #key + 13
+02F 00612         90                             LD      s6, #key + 14
+030 00713         91                             LD      s7, #key + 15
+                  92
+031 20804         93                             IN      s8, s4                 ; RotWord
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+032 20405         94                             IN      s4, s5
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+033 20506         95                             IN      s5, s6
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+034 20607         96                             IN      s6, s7
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+035 20708         97                             IN      s7, s8
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                  98
+036 20804         99                             IN      s8, s4                 ; temp=SubWord( RotWord( temp ) )
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+037 36066        100                             CALL    sbox
+038 20408        101                             IN      s4, s8
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 102
+039 16478        103                             XOR     s4, sf                  ; xor Rcon( i / Nk )
+03A 28F06        104                             SL0     sf                      ; x^(i-1) (i+=1)
+03B 35C3D        105                             JUMP    nc, nowrap
+03C 06F04        106                             XOR     sf, #g
+  0003D          107     nowrap:
+03D 20805        108                             IN      s8, s5                 ; SubWord( RotWord( temp ) )
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+03E 36066        109                             CALL    sbox
+03F 20508        110                             IN      s5, s8
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 111
+040 20806        112                             IN      s8, s6                 ; SubWord( RotWord( temp ) )
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+041 36066        113                             CALL    sbox
+042 20608        114                             IN      s6, s8
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 115
+043 20807        116                             IN      s8, s7                 ; SubWord( RotWord( temp ) )
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+044 36066        117                             CALL    sbox
+045 20708        118                             IN      s7, s8
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+                 119
+046 20504        120                             IN      pkey, key
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 121
+047 20004        122                             IN      s0, b128
+048 00805        123     key96:                  LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
+049 16440        124                             XOR     s4, s8
+04A 08501        125                             ADD     pkey, #1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 126
+04B 00805        127                             LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
+04C 16540        128                             XOR     s5, s8
+04D 08501        129                             ADD     pkey, #1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 130
+04E 00805        131                             LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
+04F 16640        132                             XOR     s6, s8
+050 08501        133                             ADD     pkey, #1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 134
+051 00805        135                             LD      s8, #pkey               ; k[i]=k[i - Nk] ^ temp
+052 16740        136                             XOR     s7, s8
+053 08501        137                             ADD     pkey, #1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 138
+054 0C004        139                             SUB     s0, #4
+055 35448        140                             JUMP    nz, key96
+056 24000        141                             RET
+                 142
+                 143     ; Sub bytes of one 32b word pointed at by pKey
+  00057          144     subword:
+057 20004        145                             IN      s0, 4
+058 00805        146     subword1:               LD      s8, #pkey
+059 36066        147                             CALL    sbox
+05A 08501        148                             ADD     pkey, #1
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+05B 0C001        149                             SUB     s0, #1
+05C 35458        150                             JUMP    nz, subword1
+05D 24000        151                             RET
+                 152
+                 153     ; SubBytes( state, Nc )
+  0005E          154     subbytes:
+05E 20404        155                             IN      pstate, state          ; get pointer to state
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                 156
+05F 20004        157                             IN      s0, b128                ; set up loop count
+060 00804        158     sub128:                 LD      s8, #pstate             ; get state byte
+061 36066        159                             CALL    sbox             ; save new state byte
+062 08401        160                             ADD     pstate, #1              ; increment state pointer
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+063 0C001        161                             SUB     s0, #1                  ; decrement loop counter
+064 35460        162                             JUMP    nz, sub128              ; loop back if not done 16 times (128/8)
+065 24000        163                             RET
+                 164
+                 165     ; SBox( s )
+  00066          166     sbox:
+066 22804        167                             OUT     s8, sbox_rom            ; set index
+067 20804        168                             IN      s8, sbox_rom            ; get EQU
+068 24000        169                             RET
+                 170
+                 171     ; soft version of SBOX, very slow
+  00069          172     sbox_soft:
+069 36073        173                             CALL    mulinverse              ; .    x = sbox_affine(mul_inverse(in));
+  0006A          174     sboxaffine:
+                 175     ; for(counter = 1; counter > (DEGREE - 1)) | (s << 1); s &= MASK;
+06A 16848        176                             XOR     s8, s9                  ; in ^= s;
+06B 28902        177                             RL      s9
+06C 16848        178                             XOR     s8, s9
+06D 28902        179                             RL      s9
+06E 16848        180                             XOR     s8, s9
+06F 28902        181                             RL      s9
+070 16848        182                             XOR     s8, s9
+071 0683F        183                             XOR     s8, #63                 ; in ^= 0x63;
+072 24000        184                             RET                             ; return in;
+                 185     ; }
+                 186
+                 187     ; MulInverse by trial and error
+  00073          188     mulinverse:
+073 20900        189                             IN      s9, 0                   ; int result = 0;
+074 14840        190                             OR      s8, s8                  ; if (in == 0)
+075 24000        191                             RET                             ; return 0;
+076 08901        192     mulinverse1:            ADD     s9, #1                  ; result = 1; result++
+077 24000        193                             RET                             ; result < MOD
+078 20C08        194                             IN      sc, s8                 ; in
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+079 20D09        195                             IN      sd, s9                 ; result
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+07A 3607E        196                             CALL    gmul                    ; gmul( in, result, ...)
+07B 0CE01        197                             SUB     se, #1                  ; == 1
+07C 35476        198                             JUMP    nz, mulinverse1         ; == 1?
+07D 24000        199                             RET                             ; return result
+                 200
+  0007E          201     gmul:
+07E 20E00        202                             IN      se, 0
+  0007F          203     gmul1:
+07F 28D0E        204                             SR0     sd
+080 35883        205                             JUMP    c, gmul2                ; ; last bit was 1
+081 24000        206                             RET                             ; ; i2 was 0 already ?
+082 34084        207                             JUMP    gmul3
+                 208
+083 16E60        209     gmul2:                  XOR     se, sc
+084 28C06        210     gmul3:                  SL0     sc
+085 35C7F        211                             JUMP    nc, gmul1
+086 06C04        212                             XOR     sc, #g                  ; ; i1 ^= field;
+087 3407F        213                             JUMP    gmul1
+                 214
+                 215     ;; ShiftRows( state, Nc )
+  00088          216     shiftrows:
+088 00705        217                             LD      s7, #state + 1
+089 00409        218                             LD      s4, #state + 1 + 4
+08A 0050D        219                             LD      s5, #state + 1 + 4 + 4
+08B 00611        220                             LD      s6, #state + 1 + 4 + 4 + 4
+08C 00606        221                             LD      s6, #state + 2
+08D 0070A        222                             LD      s7, #state + 2 + 4
+08E 0040E        223                             LD      s4, #state + 2 + 4 + 4
+08F 00512        224                             LD      s5, #state + 2 + 4 + 4 + 4
+                 225
+090 00507        226                             LD      s5, #state + 3
+091 0060B        227                             LD      s6, #state + 3 + 4
+092 0070F        228                             LD      s7, #state + 3 + 4 + 4
+093 00413        229                             LD      s4, #state + 3 + 4 + 4 + 4
+                 230
+094 24000        231                             RET
+                 232
+                 233     ;; MixColumns( state, Nc )
+  00095          234     mixcolumns:
+                 235
+095 00404        236                             LD      s4, #state + 0
+096 00505        237                             LD      s5, #state + 1
+097 00606        238                             LD      s6, #state + 2
+098 00707        239                             LD      s7, #state + 3
+099 360AA        240                             CALL    mixcolumn
+                 241
+09A 00408        242                             LD      s4, #state + 0 + 4
+09B 00509        243                             LD      s5, #state + 1 + 4
+09C 0060A        244                             LD      s6, #state + 2 + 4
+09D 0070B        245                             LD      s7, #state + 3 + 4
+09E 360AA        246                             CALL    mixcolumn
+                 247
+09F 0040C        248                             LD      s4, #state + 0 + 4 + 4
+0A0 0050D        249                             LD      s5, #state + 1 + 4 + 4
+0A1 0060E        250                             LD      s6, #state + 2 + 4 + 4
+0A2 0070F        251                             LD      s7, #state + 3 + 4 + 4
+0A3 360AA        252                             CALL    mixcolumn
+                 253
+0A4 00410        254                             LD      s4, #state + 0 + 4 + 4 + 4
+0A5 00511        255                             LD      s5, #state + 1 + 4 + 4 + 4
+0A6 00612        256                             LD      s6, #state + 2 + 4 + 4 + 4
+0A7 00713        257                             LD      s7, #state + 3 + 4 + 4 + 4
+0A8 360AA        258                             CALL    mixcolumn
+                 259
+0A9 24000        260                             RET
+                 261
+  000AA          262     mixcolumn:
+0AA 20904        263                             IN      s9, s4                 ; ; t = c[0] ^ c[3]
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0AB 16938        264                             XOR     s9, s7
+0AC 20A05        265                             IN      sa, s5                 ; ; u = c[1] ^ c[2]
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0AD 16A30        266                             XOR     sa, s6
+0AE 20B09        267                             IN      sb, s9                 ;  ; v = t ^ u
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0AF 16B50        268                             XOR     sb, sa
+                 269
+0B0 20804        270                             IN      s8, s4                 ; ; c[0] = c[0] ^ v ^ FFmul(0x02, c[0] ^ c[1])
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0B1 16828        271                             XOR     s8, s5
+0B2 28806        272                             SL0     s8
+0B3 35CB5        273                             JUMP    nc, mcf1
+0B4 06804        274                             XOR     s8, #g
+0B5 16858        275     mcf1:                   XOR     s8, sb
+0B6 16440        276                             XOR     s4, s8
+                 277
+0B7 2080A        278                             IN      s8, sa                 ;  ; c[1] = c[1] ^ v ^ FFmul(0x02, u)
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0B8 28806        279                             SL0     s8
+0B9 35CBB        280                             JUMP    nc, mcf2
+0BA 06804        281                             XOR     s8, #g
+0BB 16858        282     mcf2:                   XOR     s8, sb
+0BC 16540        283                             XOR     s5, s8
+                 284
+0BD 20806        285                             IN      s8, s6                 ; ; c[2] = c[2] ^ v ^ FFmul(0x02, c[2] ^ c[3])
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0BE 16838        286                             XOR     s8, s7
+0BF 28806        287                             SL0     s8
+0C0 35CC2        288                             JUMP    nc, mcf3
+0C1 06804        289                             XOR     s8, #g
+0C2 16858        290     mcf3:                   XOR     s8, sb
+0C3 16640        291                             XOR     s6, s8
+                 292
+0C4 20809        293                             IN      s8, s9                 ; ; c[3] = c[3] ^ v ^ FFmul(0x02, t)
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+0C5 28806        294                             SL0     s8
+0C6 35CC8        295                             JUMP    nc, mcf4
+0C7 06804        296                             XOR     s8, #g
+0C8 16858        297     mcf4:                   XOR     s8, sb
+0C9 16740        298                             XOR     s7, s8
+                 299
+0CA 24000        300                             RET

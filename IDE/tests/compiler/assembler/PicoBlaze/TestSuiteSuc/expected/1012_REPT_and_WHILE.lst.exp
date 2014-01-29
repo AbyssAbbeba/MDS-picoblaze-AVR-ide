@@ -2,225 +2,205 @@
                    2     device kcpsm1
                    3
                    4
-  00000            5     s10     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x0.
-  00001            6     s11     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x1.
-  00002            7     s12     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x2.
-  00003            8     s13     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x3.
-  00004            9     s14     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x4.
-  00005           10     s15     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x5.
-  00006           11     s16     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x6.
-  00007           12     s17     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x7.
-  00008           13     s18     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x8.
-  00009           14     s19     AUTOSPR
-E: attempting to use unavailable space in scratch pad memory at address: 0x9.
-                  15
-  00244           16     a1      EQU     580
-  3FFFF           17     a2      EQU     0xFFFFFF
+                   5
+  00244            6     a1      EQU     580
+  3FFFF            7     a2      EQU     0xFFFFFF
 W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
-  00000           18     a3      EQU     0
-  00019           19     a4      EQU     0b11001
-  00001           20     a5      EQU     0b0001
-  00011           21     a6      EQU     0b00010001
-  00001           22     a7      EQU     0b00000001
-  00003           23     a8      EQU     3
-  00001           24     a9      EQU     1h
-  00011           25     a10     EQU     11h
-  000AA           26     a11     EQU     AAh
-  00004           27     a12     EQU     0x04
-                  28
-  00244           29     b1      SET     580
-  3FFFF           30     b2      SET     0xFFFFFF
+  00000            8     a3      EQU     0
+  00019            9     a4      EQU     0b11001
+  00001           10     a5      EQU     0b0001
+  00011           11     a6      EQU     0b00010001
+  00001           12     a7      EQU     0b00000001
+  00003           13     a8      EQU     3
+  00001           14     a9      EQU     1h
+  00011           15     a10     EQU     11h
+  000AA           16     a11     EQU     AAh
+  00004           17     a12     EQU     0x04
+                  18
+  00244           19     b1      SET     580
+  3FFFF           20     b2      SET     0xFFFFFF
 W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
-  00000           31     b3      SET     0
-  00019           32     b4      SET     0b11001
-  00001           33     b5      SET     0b0001
-  00011           34     b6      SET     0b00010001
-  00001           35     b7      SET     0b00000001
-  00003           36     b8      SET     3
-  00001           37     b9      SET     1h
-  00011           38     b10     SET     11h
-  000AA           39     b11     SET     AAh
-  00004           40     b12     SET     0x04
-                  41
-  00222           42     CONSTANT        c1,546
-  0FFFF           43     CONSTANT        c2,0xffff
-  0000C           44     CONSTANT        c3,12
-  00000           45     CONSTANT        c4,0
-  00000           46     CONSTANT        c5,0b00000000
-  00001           47     CONSTANT        c6,0b001
-  00001           48     CONSTANT        c7,0b01
-  00015           49     CONSTANT        c8,0b00010101
-  0001E           50     CONSTANT        c9,0b11110
-  00001           51     CONSTANT        c10,1h
-  000FE           52     CONSTANT        c11,FEh
-  00003           53     CONSTANT        c12,0x03
-                  54
-  00222           55     VARIABLE        d1,546
-  0FFFF           56     VARIABLE        d2,0xffff
-  0000C           57     VARIABLE        d3,12
-  00000           58     VARIABLE        d4,0
-  00000           59     VARIABLE        d5,0b00000000
-  00001           60     VARIABLE        d6,0b001
-  00001           61     VARIABLE        d7,0b01
-  00015           62     VARIABLE        d8,0b00010101
-  0001E           63     VARIABLE        d9,0b11110
-  00001           64     VARIABLE        d10,1h
-  000FE           65     VARIABLE        d11,FEh
-  00003           66     VARIABLE        d12,0x03
-                  67
-  00001           68     NAMEREG         1,AHOJ
-  00002           69     NAMEREG         2,TE
-  00003           70     NAMEREG         3,VY
-  00004           71     NAMEREG         4,TAM
-  00005           72     NAMEREG         5,DOLE
-  00006           73     NAMEREG         6,ZDRA
-  00007           74     NAMEREG         7,VIM
-  00008           75     NAMEREG         8,VAS
-  00009           76     NAMEREG         9,SECKY
-  0000A           77     NAMEREG         10,HOLA
-  0000B           78     NAMEREG         11,OLA
-  0000C           79     NAMEREG         12,HEJ
-                  80
-                  81
-  00001           82     f1      REG     1
+  00000           21     b3      SET     0
+  00019           22     b4      SET     0b11001
+  00001           23     b5      SET     0b0001
+  00011           24     b6      SET     0b00010001
+  00001           25     b7      SET     0b00000001
+  00003           26     b8      SET     3
+  00001           27     b9      SET     1h
+  00011           28     b10     SET     11h
+  000AA           29     b11     SET     AAh
+  00004           30     b12     SET     0x04
+                  31
+  00222           32     CONSTANT        c1,546
+  0FFFF           33     CONSTANT        c2,0xffff
+  0000C           34     CONSTANT        c3,12
+  00000           35     CONSTANT        c4,0
+  00000           36     CONSTANT        c5,0b00000000
+  00001           37     CONSTANT        c6,0b001
+  00001           38     CONSTANT        c7,0b01
+  00015           39     CONSTANT        c8,0b00010101
+  0001E           40     CONSTANT        c9,0b11110
+  00001           41     CONSTANT        c10,1h
+  000FE           42     CONSTANT        c11,FEh
+  00003           43     CONSTANT        c12,0x03
+                  44
+  00222           45     VARIABLE        d1,546
+  0FFFF           46     VARIABLE        d2,0xffff
+  0000C           47     VARIABLE        d3,12
+  00000           48     VARIABLE        d4,0
+  00000           49     VARIABLE        d5,0b00000000
+  00001           50     VARIABLE        d6,0b001
+  00001           51     VARIABLE        d7,0b01
+  00015           52     VARIABLE        d8,0b00010101
+  0001E           53     VARIABLE        d9,0b11110
+  00001           54     VARIABLE        d10,1h
+  000FE           55     VARIABLE        d11,FEh
+  00003           56     VARIABLE        d12,0x03
+                  57
+  00001           58     NAMEREG         1,AHOJ
+  00002           59     NAMEREG         2,TE
+  00003           60     NAMEREG         3,VY
+  00004           61     NAMEREG         4,TAM
+  00005           62     NAMEREG         5,DOLE
+  00006           63     NAMEREG         6,ZDRA
+  00007           64     NAMEREG         7,VIM
+  00008           65     NAMEREG         8,VAS
+  00009           66     NAMEREG         9,SECKY
+  0000A           67     NAMEREG         10,HOLA
+  0000B           68     NAMEREG         11,OLA
+  0000C           69     NAMEREG         12,HEJ
+                  70
+                  71
+  00001           72     f1      REG     1
 W: reusing already reserved space in register file memory at address: 0x1.
-  00002           83     f2      REG     2
+  00002           73     f2      REG     2
 W: reusing already reserved space in register file memory at address: 0x2.
-  00003           84     f3      REG     3
+  00003           74     f3      REG     3
 W: reusing already reserved space in register file memory at address: 0x3.
-  00004           85     f4      REG     4
+  00004           75     f4      REG     4
 W: reusing already reserved space in register file memory at address: 0x4.
-  00005           86     f5      REG     5
+  00005           76     f5      REG     5
 W: reusing already reserved space in register file memory at address: 0x5.
-  00006           87     f6      REG     6
+  00006           77     f6      REG     6
 W: reusing already reserved space in register file memory at address: 0x6.
-  00007           88     f7      REG     7
+  00007           78     f7      REG     7
 W: reusing already reserved space in register file memory at address: 0x7.
-  00008           89     f8      REG     8
+  00008           79     f8      REG     8
 W: reusing already reserved space in register file memory at address: 0x8.
-  00009           90     f9      REG     9
+  00009           80     f9      REG     9
 W: reusing already reserved space in register file memory at address: 0x9.
-  0000A           91     f10     REG     10
+  0000A           81     f10     REG     10
 W: reusing already reserved space in register file memory at address: 0xa.
-  0000B           92     f11     REG     11
+  0000B           82     f11     REG     11
 W: reusing already reserved space in register file memory at address: 0xb.
-  0000C           93     f12     REG     12
+  0000C           83     f12     REG     12
 W: reusing already reserved space in register file memory at address: 0xc.
-                  94
-  00001           95     g1      EQU     1
-  00002           96     g2      EQU     2
-  00003           97     g3      EQU     3
-  00004           98     g4      EQU     4
-  00005           99     g5      EQU     5
-  00006          100     g6      EQU     6
-  00007          101     g7      EQU     7
-  00008          102     g8      EQU     8
-  00009          103     g9      EQU     9
-  00011          104     g10     EQU     11h
-  0000A          105     g11     EQU     Ah
-  00004          106     g12     EQU     0x04
-                 107
-                 108
-  00244          109     h1      CODE     580
-  3FFFF          110     h2      CODE     0xFFFFFF
+                  84
+  00001           85     g1      EQU     1
+  00002           86     g2      EQU     2
+  00003           87     g3      EQU     3
+  00004           88     g4      EQU     4
+  00005           89     g5      EQU     5
+  00006           90     g6      EQU     6
+  00007           91     g7      EQU     7
+  00008           92     g8      EQU     8
+  00009           93     g9      EQU     9
+  00011           94     g10     EQU     11h
+  0000A           95     g11     EQU     Ah
+  00004           96     g12     EQU     0x04
+                  97
+                  98
+  00244           99     h1      CODE     580
+  3FFFF          100     h2      CODE     0xFFFFFF
 W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
-  00000          111     h3      CODE     0
-  00019          112     h4      CODE     0b11001
-  00001          113     h5      CODE     0b0001
-  00011          114     h6      CODE     0b00010001
-  00001          115     h7      CODE     0b00000001
-  00003          116     h8      CODE     3
-  00001          117     h9      CODE     1h
-  00011          118     h10     CODE     11h
-  000AA          119     h11     CODE     AAh
-  00004          120     h12     CODE     0x04
-                 121
-  00244          122     i1      PORT     580
-  3FFFF          123     i2      PORT     0xFFFFFF
+  00000          101     h3      CODE     0
+  00019          102     h4      CODE     0b11001
+  00001          103     h5      CODE     0b0001
+  00011          104     h6      CODE     0b00010001
+  00001          105     h7      CODE     0b00000001
+  00003          106     h8      CODE     3
+  00001          107     h9      CODE     1h
+  00011          108     h10     CODE     11h
+  000AA          109     h11     CODE     AAh
+  00004          110     h12     CODE     0x04
+                 111
+  00244          112     i1      PORT     580
+  3FFFF          113     i2      PORT     0xFFFFFF
 W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
-  00000          124     i3      PORT     0
-  00019          125     i4      PORT     0b11001
-  00001          126     i5      PORT     0b0001
-  00011          127     i6      PORT     0b00010001
-  00001          128     i7      PORT     0b00000001
-  00003          129     i8      PORT     3
-  00001          130     i9      PORT     1h
-  00011          131     i10     PORT     11h
-  000AA          132     i11     PORT     AAh
-  00004          133     i12     PORT     0x04
+  00000          114     i3      PORT     0
+  00019          115     i4      PORT     0b11001
+  00001          116     i5      PORT     0b0001
+  00011          117     i6      PORT     0b00010001
+  00001          118     i7      PORT     0b00000001
+  00003          119     i8      PORT     3
+  00001          120     i9      PORT     1h
+  00011          121     i10     PORT     11h
+  000AA          122     i11     PORT     AAh
+  00004          123     i12     PORT     0x04
+                 124
+                 125     m1      DEFINE   h8 + i3
+                 126     m2      DEFINE   i8 + a11
+                 127     m3      DEFINE   A3 * A4 * A5 * A6 * A7 + A8 - A9
+                 128     M4      DEFINE   (b5 - B6)--B10
+                 129
+                 130     ;--- CODE ------------- CODE -----------------CODE -----------------
+  003FF          131             ORG     0x3FF
+  00000          132             ORG     0x000
+000 08101        133             JUMP    Start
                  134
-                 135     m1      DEFINE   h8 + i3
-                 136     m2      DEFINE   i8 + a11
-                 137     m3      DEFINE   A3 * A4 * A5 * A6 * A7 + A8 - A9
-                 138     M4      DEFINE   (b5 - B6)--B10
-                 139
-                 140     ;--- CODE ------------- CODE -----------------CODE -----------------
-  003FF          141             ORG     0x3FF
-  00000          142             ORG     0x000
-000 08101        143             JUMP    Start
-                 144
-                 145
-  00001          146     Start:
-                 147             REPT    B6
-                 148             SUB     s0,s2                  ; kkkkkkk
-                 149             ADD     s1,s2
-                 150             ENDR
-001 0C026        151 +1          SUB     s0,s2                  ; kkkkkkk
-002 0C124        152 +1          ADD     s1,s2
-003 0C026        153 +1          SUB     s0,s2                  ; kkkkkkk
-004 0C124        154 +1          ADD     s1,s2
-005 0C026        155 +1          SUB     s0,s2                  ; kkkkkkk
-006 0C124        156 +1          ADD     s1,s2
-007 0C026        157 +1          SUB     s0,s2                  ; kkkkkkk
-008 0C124        158 +1          ADD     s1,s2
-009 0C026        159 +1          SUB     s0,s2                  ; kkkkkkk
-00A 0C124        160 +1          ADD     s1,s2
-00B 0C026        161 +1          SUB     s0,s2                  ; kkkkkkk
-00C 0C124        162 +1          ADD     s1,s2
-00D 0C026        163 +1          SUB     s0,s2                  ; kkkkkkk
-00E 0C124        164 +1          ADD     s1,s2
-00F 0C026        165 +1          SUB     s0,s2                  ; kkkkkkk
-010 0C124        166 +1          ADD     s1,s2
-011 0C026        167 +1          SUB     s0,s2                  ; kkkkkkk
-012 0C124        168 +1          ADD     s1,s2
-013 0C026        169 +1          SUB     s0,s2                  ; kkkkkkk
-014 0C124        170 +1          ADD     s1,s2
-015 0C026        171 +1          SUB     s0,s2                  ; kkkkkkk
-016 0C124        172 +1          ADD     s1,s2
-017 0C026        173 +1          SUB     s0,s2                  ; kkkkkkk
-018 0C124        174 +1          ADD     s1,s2
-019 0C026        175 +1          SUB     s0,s2                  ; kkkkkkk
-01A 0C124        176 +1          ADD     s1,s2
-01B 0C026        177 +1          SUB     s0,s2                  ; kkkkkkk
-01C 0C124        178 +1          ADD     s1,s2
-01D 0C026        179 +1          SUB     s0,s2                  ; kkkkkkk
-01E 0C124        180 +1          ADD     s1,s2
-01F 0C026        181 +1          SUB     s0,s2                  ; kkkkkkk
-020 0C124        182 +1          ADD     s1,s2
-021 0C026        183 +1          SUB     s0,s2                  ; kkkkkkk
-022 0C124        184 +1          ADD     s1,s2
-                 185             ;-----------
-                 186             REPT    C10
-                 187             SUB     s0,s2                  ; kkkkkkk
-                 188             ADD     s1,s2
-                 189             INPUT   S0,i1
+                 135
+  00001          136     Start:
+                 137             REPT    B6
+                 138             SUB     s0,s2                  ; kkkkkkk
+                 139             ADD     s1,s2
+                 140             ENDR
+001 0C026        141 +1          SUB     s0,s2                  ; kkkkkkk
+002 0C124        142 +1          ADD     s1,s2
+003 0C026        143 +1          SUB     s0,s2                  ; kkkkkkk
+004 0C124        144 +1          ADD     s1,s2
+005 0C026        145 +1          SUB     s0,s2                  ; kkkkkkk
+006 0C124        146 +1          ADD     s1,s2
+007 0C026        147 +1          SUB     s0,s2                  ; kkkkkkk
+008 0C124        148 +1          ADD     s1,s2
+009 0C026        149 +1          SUB     s0,s2                  ; kkkkkkk
+00A 0C124        150 +1          ADD     s1,s2
+00B 0C026        151 +1          SUB     s0,s2                  ; kkkkkkk
+00C 0C124        152 +1          ADD     s1,s2
+00D 0C026        153 +1          SUB     s0,s2                  ; kkkkkkk
+00E 0C124        154 +1          ADD     s1,s2
+00F 0C026        155 +1          SUB     s0,s2                  ; kkkkkkk
+010 0C124        156 +1          ADD     s1,s2
+011 0C026        157 +1          SUB     s0,s2                  ; kkkkkkk
+012 0C124        158 +1          ADD     s1,s2
+013 0C026        159 +1          SUB     s0,s2                  ; kkkkkkk
+014 0C124        160 +1          ADD     s1,s2
+015 0C026        161 +1          SUB     s0,s2                  ; kkkkkkk
+016 0C124        162 +1          ADD     s1,s2
+017 0C026        163 +1          SUB     s0,s2                  ; kkkkkkk
+018 0C124        164 +1          ADD     s1,s2
+019 0C026        165 +1          SUB     s0,s2                  ; kkkkkkk
+01A 0C124        166 +1          ADD     s1,s2
+01B 0C026        167 +1          SUB     s0,s2                  ; kkkkkkk
+01C 0C124        168 +1          ADD     s1,s2
+01D 0C026        169 +1          SUB     s0,s2                  ; kkkkkkk
+01E 0C124        170 +1          ADD     s1,s2
+01F 0C026        171 +1          SUB     s0,s2                  ; kkkkkkk
+020 0C124        172 +1          ADD     s1,s2
+021 0C026        173 +1          SUB     s0,s2                  ; kkkkkkk
+022 0C124        174 +1          ADD     s1,s2
+                 175             ;-----------
+                 176             REPT    C10
+                 177             SUB     s0,s2                  ; kkkkkkk
+                 178             ADD     s1,s2
+                 179             INPUT   S0,i1
 W: value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
-                 190             ENDR
-023 0C026        191 +1          SUB     s0,s2                  ; kkkkkkk
-024 0C124        192 +1          ADD     s1,s2
-025 0A044        193 +1          INPUT   S0,i1
+                 180             ENDR
+023 0C026        181 +1          SUB     s0,s2                  ; kkkkkkk
+024 0C124        182 +1          ADD     s1,s2
+025 0A044        183 +1          INPUT   S0,i1
 W: ==> value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
-                 194             ;-------------
-                 195     XYZ     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S9
+                 184             ;-------------
+                 185     XYZ     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8,S9,S9
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
@@ -232,73 +212,73 @@ W: macro parameter `S7' eclipses global symbol `S7'.
 W: macro parameter `S8' eclipses global symbol `S8'.
 W: macro parameter `S9' eclipses global symbol `S9'.
 W: macro parameter `S9' eclipses global symbol `S9'.
-                 196
-                 197                 #IF      S0 == S1
-                 198                 EXITM
-                 199                 #ENDIF
-                 200             ENDM
-                 201
-                 202     XYZ0    MACRO   S0
+                 186
+                 187                 #IF      S0 == S1
+                 188                 EXITM
+                 189                 #ENDIF
+                 190             ENDM
+                 191
+                 192     XYZ0    MACRO   S0
 W: macro parameter `S0' eclipses global symbol `S0'.
-                 203
-                 204                 #IF      S0 == S1
-                 205                 EXITM
-                 206                 #ENDIF
-                 207             ENDM
-                 208
-                 209     XYZ1     MACRO   S0,S1
+                 193
+                 194                 #IF      S0 == S1
+                 195                 EXITM
+                 196                 #ENDIF
+                 197             ENDM
+                 198
+                 199     XYZ1     MACRO   S0,S1
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
-                 210
-                 211                 #IF      S0 == S1
-                 212                 EXITM
-                 213                 #ENDIF
-                 214             ENDM
-                 215
-                 216     XYZ2     MACRO   S0,S1,S2
+                 200
+                 201                 #IF      S0 == S1
+                 202                 EXITM
+                 203                 #ENDIF
+                 204             ENDM
+                 205
+                 206     XYZ2     MACRO   S0,S1,S2
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
-                 217
-                 218                 #IF      S0 == S1
-                 219                 EXITM
-                 220                 #ENDIF
-                 221             ENDM
-                 222
-                 223     XYZ3     MACRO   S0,S1,S2,S3
+                 207
+                 208                 #IF      S0 == S1
+                 209                 EXITM
+                 210                 #ENDIF
+                 211             ENDM
+                 212
+                 213     XYZ3     MACRO   S0,S1,S2,S3
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
 W: macro parameter `S3' eclipses global symbol `S3'.
-                 224
-                 225                 #IF      S0 == S1
-                 226                 EXITM
-                 227                 #ENDIF
-                 228             ENDM
-                 229     XYZ4     MACRO   S0,S1,S2,S3,S4
+                 214
+                 215                 #IF      S0 == S1
+                 216                 EXITM
+                 217                 #ENDIF
+                 218             ENDM
+                 219     XYZ4     MACRO   S0,S1,S2,S3,S4
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
 W: macro parameter `S3' eclipses global symbol `S3'.
 W: macro parameter `S4' eclipses global symbol `S4'.
-                 230
-                 231                 #IF      S0 == S1
-                 232                 EXITM
-                 233                 #ENDIF
-                 234             ENDM
-                 235     XYZ5     MACRO   S0,S1,S2,S3,S4,S5
+                 220
+                 221                 #IF      S0 == S1
+                 222                 EXITM
+                 223                 #ENDIF
+                 224             ENDM
+                 225     XYZ5     MACRO   S0,S1,S2,S3,S4,S5
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
 W: macro parameter `S3' eclipses global symbol `S3'.
 W: macro parameter `S4' eclipses global symbol `S4'.
 W: macro parameter `S5' eclipses global symbol `S5'.
-                 236
-                 237                 #IF      S0 == S1
-                 238                 EXITM
-                 239                 #ENDIF
-                 240             ENDM
-                 241     XYZ6     MACRO   S0,S1,S2,S3,S4,S5,S6
+                 226
+                 227                 #IF      S0 == S1
+                 228                 EXITM
+                 229                 #ENDIF
+                 230             ENDM
+                 231     XYZ6     MACRO   S0,S1,S2,S3,S4,S5,S6
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
@@ -306,12 +286,12 @@ W: macro parameter `S3' eclipses global symbol `S3'.
 W: macro parameter `S4' eclipses global symbol `S4'.
 W: macro parameter `S5' eclipses global symbol `S5'.
 W: macro parameter `S6' eclipses global symbol `S6'.
-                 242
-                 243                 #IF      S0 == S1
-                 244                 EXITM
-                 245                 #ENDIF
-                 246             ENDM
-                 247     XYZ7     MACRO   S0,S1,S2,S3,S4,S5,S6,S7
+                 232
+                 233                 #IF      S0 == S1
+                 234                 EXITM
+                 235                 #ENDIF
+                 236             ENDM
+                 237     XYZ7     MACRO   S0,S1,S2,S3,S4,S5,S6,S7
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
@@ -320,12 +300,12 @@ W: macro parameter `S4' eclipses global symbol `S4'.
 W: macro parameter `S5' eclipses global symbol `S5'.
 W: macro parameter `S6' eclipses global symbol `S6'.
 W: macro parameter `S7' eclipses global symbol `S7'.
-                 248
-                 249                 #IF      S0 == S1
-                 250                 EXITM
-                 251                 #ENDIF
-                 252             ENDM
-                 253     XYZ8     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8
+                 238
+                 239                 #IF      S0 == S1
+                 240                 EXITM
+                 241                 #ENDIF
+                 242             ENDM
+                 243     XYZ8     MACRO   S0,S1,S2,S3,S4,S5,S6,S7,S8
 W: macro parameter `S0' eclipses global symbol `S0'.
 W: macro parameter `S1' eclipses global symbol `S1'.
 W: macro parameter `S2' eclipses global symbol `S2'.
@@ -335,14 +315,14 @@ W: macro parameter `S5' eclipses global symbol `S5'.
 W: macro parameter `S6' eclipses global symbol `S6'.
 W: macro parameter `S7' eclipses global symbol `S7'.
 W: macro parameter `S8' eclipses global symbol `S8'.
+                 244
+                 245                 #IF      S0 == S1
+                 246                 EXITM
+                 247                 #ENDIF
+                 248             ENDM
+                 249
+                 250
+                 251             END
+                 252             5555BALBALBALABLABALA
+                 253
                  254
-                 255                 #IF      S0 == S1
-                 256                 EXITM
-                 257                 #ENDIF
-                 258             ENDM
-                 259
-                 260
-                 261             END
-                 262             5555BALBALBALABLABALA
-                 263
-                 264

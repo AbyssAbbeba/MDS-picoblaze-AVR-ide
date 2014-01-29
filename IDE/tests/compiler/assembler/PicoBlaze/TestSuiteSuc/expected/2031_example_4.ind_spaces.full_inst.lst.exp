@@ -1216,8 +1216,7 @@ W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; whi
                 1163     ;
                 1164     ;Reload registers and end ISR
                 1165     ;
-  00256         1166     reload_reg:            FETCH           sf, preserve_sf         ;reload registers
-E: instruction not supported on the this device: FETCH sX, ss.
+  00256         1166     reload_reg:         ;reload registers
 256 10EF0       1167                             load           se, preserve_se
 W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x3e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x1e.
