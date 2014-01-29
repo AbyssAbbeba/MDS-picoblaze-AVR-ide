@@ -145,12 +145,12 @@ void TestSuiteSuc::testFunction()
 
     try
     {
-        compareHex  ( expectedCommonPath + ".hex.exp",  m_options->m_hexFile     );
-        compareBin  ( expectedCommonPath + ".bin.exp",  m_options->m_binFile     );
+        compareHex  ( expectedCommonPath +  ".hex.exp", m_options->m_hexFile     );
+        compareBin  ( expectedCommonPath +  ".bin.exp", m_options->m_binFile     );
         compareSrec ( expectedCommonPath + ".srec.exp", m_options->m_srecFile    );
-        compareMem  ( expectedCommonPath + ".mem.exp",  m_options->m_memFile     );
-        compareV    ( expectedCommonPath + ".v.exp",    m_options->m_verilogFile );
-        compareVhd  ( expectedCommonPath + ".vhd.exp",  m_options->m_vhdlFile    );
+        compareMem  ( expectedCommonPath +  ".mem.exp", m_options->m_memFile     );
+        compareV    ( expectedCommonPath +    ".v.exp", m_options->m_verilogFile );
+        compareVhd  ( expectedCommonPath +  ".vhd.exp", m_options->m_vhdlFile    );
     }
     catch ( const DataFileException & e )
     {

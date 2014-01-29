@@ -184,7 +184,7 @@ void XilHDLFile::save ( const std::string & filename,
     }
 
     std::ifstream tmplFile(m_templateFile);
-    std::ofstream outFile(filename);
+    std::ofstream outFile(filename, ( std::ios_base::out | std::ios_base::trunc ));
 
     if ( false == tmplFile.is_open() )
     {

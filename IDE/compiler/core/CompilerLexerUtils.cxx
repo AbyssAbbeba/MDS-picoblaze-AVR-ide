@@ -175,8 +175,8 @@ double CompilerLexerUtils::str2float ( CompilerParserInterface * compiler,
     if ( ( -HUGE_VAL == result ) || ( HUGE_VAL == result ) )
     {
         compiler->lexerMessage ( location,
-                             CompilerBase::MT_ERROR,
-                             QObject::tr("number is too big: ").toStdString() + "`" + std::string(str) + "'" );
+                                 CompilerBase::MT_ERROR,
+                                 QObject::tr("number is too big: ").toStdString() + "`" + std::string(str) + "'" );
 
         return 1.0; // Some "neutral dummy value"
     }
