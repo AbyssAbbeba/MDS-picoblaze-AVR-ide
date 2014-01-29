@@ -24,6 +24,9 @@
 AsmPicoBlazeMemoryPtr::AsmPicoBlazeMemoryPtr ( CompilerSemanticInterface * compilerCore )
                                              : m_compilerCore ( compilerCore )
 {
+    m_hardLimits.m_reg  = 32;
+    m_hardLimits.m_data = 64;
+    m_hardLimits.m_code = 4096;
 }
 
 void AsmPicoBlazeMemoryPtr::clear()
@@ -81,15 +84,15 @@ bool AsmPicoBlazeMemoryPtr::tryReserve ( const CompilerSourceLocation & location
     switch ( where )
     {
         case MS_REG:
-            hardLimit = HARD_LIM_REG;
+            hardLimit = m_hardLimits.m_reg;
             memName = "register file";
             break;
         case MS_DATA:
-            hardLimit = HARD_LIM_DATA;
+            hardLimit = m_hardLimits.m_data;
             memName = "scratch pad";
             break;
         case MS_CODE:
-            hardLimit = HARD_LIM_CODE;
+            hardLimit = m_hardLimits.m_code;
             memName = "program";
             break;
         case MS__MAX__:
@@ -106,7 +109,7 @@ bool AsmPicoBlazeMemoryPtr::tryReserve ( const CompilerSourceLocation & location
                                                       . toStdString() );
         return false;
     }
-    else if ( address > hardLimit )
+    else if ( address >= hardLimit )
     {
         m_compilerCore->semanticMessage ( location,
                                           CompilerBase::MT_ERROR,
