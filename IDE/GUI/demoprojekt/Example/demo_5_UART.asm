@@ -45,13 +45,13 @@
 ; UART status checking MACRO (IF TX can be done)
 UART_ready_wait     MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                    TEST        Temp1, #4            ; test bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM
 ; UART status checking MACRO (NEW RX data?)
 UART_new_data_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                    TEST        Temp1, #8            ; test bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
                     ENDM                    
 ;==============================================================================;
@@ -101,11 +101,11 @@ wait_for_1s         MACRO
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #200          ; Load Temp3 register
-wait_1s_i:          SUB       Temp1, 1
+wait_1s_i:          SUB       Temp1, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_1s_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_1s_i
                     ENDM
 
@@ -113,11 +113,11 @@ wait_for_100ms      MACRO
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
+wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
                     ENDM
 ;==============================================================================;
@@ -127,14 +127,13 @@ wait_100ms_i:       SUB       Temp1, 1
 ;-------------------------------------------------------------------------------------
 RX_resolve          MACRO     uart_byte
 
-                    RT_IF  uart_byte == 1
+                    IF  uart_byte == #1
                         REPT    8
                         RR      LED_reg
                         wait_for_100ms
                         ENDR
-                            EXITM
 
-                    RT_ELSEIF      uart_byte == 2
+                    ELSEIF      uart_byte == #2
                         SendChar  'I'
                         SendChar  'N'
                         SendChar  'T'
@@ -145,7 +144,6 @@ RX_resolve          MACRO     uart_byte
                         SendChar  'P'
                         SendChar  'T'
                         SendCRLF
-                            EXITM
                     ENDIF
 
                     ENDM
