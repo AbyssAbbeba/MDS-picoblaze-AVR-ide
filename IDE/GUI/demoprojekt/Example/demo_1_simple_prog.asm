@@ -6,8 +6,7 @@
 ; Press Start simulation and Animate to run the program
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-        ;DEVICE          KCPSM6
-_
+        ;DEVICE          KCPSM6_
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment
@@ -19,9 +18,9 @@ start:
 		enable interrupt
 		load	s8,#0b10000000
 		load	S9,#0b00111011
-		test	0x9,0x8
+		test	0x9,#0x8
 
-           TEST    0x9, 0x8
+           TEST    0x9, #0x8
           JUMP    Z, IF_5
                       add     s3,#1
                                 ; else
