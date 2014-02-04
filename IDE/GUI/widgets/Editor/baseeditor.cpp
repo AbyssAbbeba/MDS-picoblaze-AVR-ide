@@ -88,22 +88,82 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 
         //if (editor1->getParentCodeEdit() != editor2)
         //{
-            disconnect(editor1->getTextEdit(), SIGNAL(bookmark(int)), editor1->getParentCodeEdit(), SLOT(manageBookmarkEmit(int)));
-            disconnect(editor1->getParentCodeEdit()->getTextEdit(), SIGNAL(bookmark(int)), editor1, SLOT(manageBookmarkEmit(int)));
-            disconnect(editor1->getParentCodeEdit(), SIGNAL(updateText(const QString&, int, CodeEdit*)), editor1, SLOT(updateTextSlotIn(const QString&, int, CodeEdit*)));
-            disconnect(editor1, SIGNAL(updateText(const QString&, int, CodeEdit*)), editor1->getParentCodeEdit(), SLOT(updateTextSlotIn(const QString&, int, CodeEdit*)));
+            disconnect(editor1->getTextEdit(),
+                       SIGNAL(bookmark(int)),
+                       editor1->getParentCodeEdit(),
+                       SLOT(manageBookmarkEmit(int))
+                      );
+            disconnect(editor1->getParentCodeEdit()->getTextEdit(),
+                       SIGNAL(bookmark(int)),
+                       editor1,
+                       SLOT(manageBookmarkEmit(int))
+                      );
+            disconnect(editor1->getParentCodeEdit(),
+                       SIGNAL(updateText(const QString&, int, CodeEdit*)),
+                       editor1,
+                       SLOT(updateTextSlotIn(const QString&,int, CodeEdit*))
+                      );
+            disconnect(editor1,
+                       SIGNAL(updateText(const QString&, int, CodeEdit*)),
+                       editor1->getParentCodeEdit(),
+                       SLOT(updateTextSlotIn(const QString&, int, CodeEdit*))
+                      );
+            disconnect(editor1->getParentCodeEdit(),
+                       SIGNAL(updateRemoveSelection(int, int, CodeEdit*)),
+                       editor1,
+                       SLOT(selectionRemovedIn(int, int, CodeEdit*))
+                      );
+            disconnect(editor1,
+                       SIGNAL(updateText(const QString&, int, CodeEdit*)),
+                       editor1->getParentCodeEdit(),
+                       SLOT(selectionRemovedIn(int, int, CodeEdit*))
+                      );
 
             editor1->setParentCodeEdit(editor2);
         //}
 
         //connect(editor1->getTextEdit(), SIGNAL(textChanged()), editor1, SLOT(updateTextSlotOut()));
         //connect(editor2->getTextEdit(), SIGNAL(textChanged()), editor2, SLOT(updateTextSlotOut()));
-        connect(editor1, SIGNAL(updateText(const QString&, int, CodeEdit*)), editor2, SLOT(updateTextSlotIn(const QString&, int, CodeEdit*)));
-        connect(editor2, SIGNAL(updateText(const QString&, int, CodeEdit*)), editor1, SLOT(updateTextSlotIn(const QString&, int, CodeEdit*)));
-        connect(editor1->getTextEdit(), SIGNAL(bookmark(int)), editor2, SLOT(manageBookmarkEmit(int)));
-        connect(editor2->getTextEdit(), SIGNAL(bookmark(int)), editor1, SLOT(manageBookmarkEmit(int)));
-        connect(editor1->getTextEdit(), SIGNAL(breakpoint(int)), editor2, SLOT(manageBreakpointEmit(int)));
-        connect(editor2->getTextEdit(), SIGNAL(breakpoint(int)), editor1, SLOT(manageBreakpointEmit(int)));
+        connect(editor1,
+                SIGNAL(updateText(const QString&, int, CodeEdit*)),
+                editor2,
+                SLOT(updateTextSlotIn(const QString&, int, CodeEdit*))
+               );
+        connect(editor2,
+                SIGNAL(updateText(const QString&, int, CodeEdit*)),
+                editor1,
+                SLOT(updateTextSlotIn(const QString&, int, CodeEdit*))
+               );
+        connect(editor1,
+                SIGNAL(updateRemoveSelection(int, int, CodeEdit*)),
+                editor2,
+                SLOT(selectionRemovedIn(int, int, CodeEdit*))
+               );
+        connect(editor2,
+                SIGNAL(updateRemoveSelection(int, int, CodeEdit*)),
+                editor1,
+                SLOT(selectionRemovedIn(int, int, CodeEdit*))
+               );
+        connect(editor1->getTextEdit(),
+                SIGNAL(bookmark(int)),
+                editor2,
+                SLOT(manageBookmarkEmit(int))
+               );
+        connect(editor2->getTextEdit(),
+                SIGNAL(bookmark(int)),
+                editor1,
+                SLOT(manageBookmarkEmit(int))
+               );
+        connect(editor1->getTextEdit(),
+                SIGNAL(breakpoint(int)),
+                editor2,
+                SLOT(manageBreakpointEmit(int))
+               );
+        connect(editor2->getTextEdit(),
+                SIGNAL(breakpoint(int)),
+                editor1,
+                SLOT(manageBreakpointEmit(int))
+               );
         
     }
     //qDebug() << "BaseEditor: return connectCodeEdits()";
