@@ -174,13 +174,13 @@ void PortHexEdit::deviceChanged()
 
 void PortHexEdit::changeValueIn(int address)
 {
- 	//m_memory->directWrite(address, m_hexEdit->getVal(address));
+ 	m_plio->getInputArray()[address] = m_hexEditIn->getVal(address);
 }
 
 
 void PortHexEdit::changeValueOut(int address)
 {
-    //m_memory->directWrite(address, m_hexEdit->getVal(address));
+    m_plio->getOutputArray()[address] = m_hexEditIn->getVal(address);
 }
 
 
