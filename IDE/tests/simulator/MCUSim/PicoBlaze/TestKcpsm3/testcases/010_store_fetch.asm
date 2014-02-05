@@ -30,8 +30,7 @@ wait	MACRO					; rotate macro declaration
 		LOAD	sF,#255
 waitin:	
 		SUB		sF,#1
-		JUMP	NZ,waitin
-					
+		JUMP	NZ,waitin					
 		ENDM
 
 ;==============================================================================;
@@ -85,8 +84,12 @@ MAIN:
              SendCRLF
          ENDIF
 ;-----------------------------------------------------
-        load            s5,#5h
+        load            uart_byte,#5h
         load            s6,#2h
+;-----------------------------------------------------
+		WHILE		uart_byte != #1
+		SUB			uart_byte,#1		
+		ENDW
 
 
 		COMPARE     s0,#20
