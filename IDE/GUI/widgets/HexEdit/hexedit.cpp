@@ -487,11 +487,17 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
     int line = 0;
     if (hexTextEdit->isReadOnly())
     {
-        hexTextEdit->setTextColor(Qt::darkGray);
+        //hexTextEdit->setTextColor(Qt::darkGray);
+        QPalette p = hexTextEdit->palette();
+        p.setColor(QPalette::Text, Qt::darkGray);
+        hexTextEdit->setPalette(p);
     }
     else
     {
-        hexTextEdit->setTextColor(Qt::black);
+        //hexTextEdit->setTextColor(Qt::black);
+        QPalette p = hexTextEdit->palette();
+        p.setColor(QPalette::Text, Qt::black);
+        hexTextEdit->setPalette(p);
     }
     //QString tmp(*byteArray);
     for (int i=0; i<byteArray->size(); i++)
@@ -500,19 +506,31 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
         {
             if (back == true)
             {
-                hexTextEdit->setTextBackgroundColor(Qt::lightGray);
+                //hexTextEdit->setTextBackgroundColor(Qt::lightGray);
+                QPalette p = hexTextEdit->palette();
+                p.setColor(QPalette::Base, Qt::white);
+                hexTextEdit->setPalette(p);
                 if (ascii == true)
                 {
-                    hexAsciiEdit->setTextBackgroundColor(Qt::lightGray);
+                    //hexAsciiEdit->setTextBackgroundColor(Qt::lightGray);
+                    QPalette p = hexAsciiEdit->palette();
+                    p.setColor(QPalette::Base, Qt::white);
+                    hexAsciiEdit->setPalette(p);
                 }
                 back = false;
             }
             else
             {
-                hexTextEdit->setTextBackgroundColor(Qt::white);
+                //hexTextEdit->setTextBackgroundColor(Qt::white);
+                QPalette p = hexTextEdit->palette();
+                p.setColor(QPalette::Base, Qt::lightGray);
+                hexTextEdit->setPalette(p);
                 if (ascii == true)
                 {
-                    hexAsciiEdit->setTextBackgroundColor(Qt::white);
+                    //hexAsciiEdit->setTextBackgroundColor(Qt::white);
+                    QPalette p = hexAsciiEdit->palette();
+                    p.setColor(QPalette::Base, Qt::lightGray);
+                    hexAsciiEdit->setPalette(p);
                 }
                 back = true;
             }
