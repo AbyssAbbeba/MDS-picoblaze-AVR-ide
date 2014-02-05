@@ -115,17 +115,18 @@ void TestSuiteSuc::testFunction()
     m_options->m_sourceFiles.push_back ( ( path("TestSuiteSuc") / "testcases" / (testName + ".asm") ).string() );
 
     const std::string resultsCommonPath = ( path("..") / "results" / testName ).string();
-    m_options->m_symbolTable  = resultsCommonPath + ".sym";
-    m_options->m_macroTable   = resultsCommonPath + ".mac";
-    m_options->m_mdsDebugFile = resultsCommonPath + ".dbg";
-    m_options->m_codeTree     = resultsCommonPath + ".crt";
-    m_options->m_hexFile      = resultsCommonPath + ".hex";
-    m_options->m_binFile      = resultsCommonPath + ".bin";
-    m_options->m_srecFile     = resultsCommonPath + ".srec";
-    m_options->m_lstFile      = resultsCommonPath + ".lst";
-    m_options->m_verilogFile  = resultsCommonPath + ".v";
-    m_options->m_vhdlFile     = resultsCommonPath + ".vhd";
-    m_options->m_memFile      = resultsCommonPath + ".mem";
+    m_options->m_symbolTable    = resultsCommonPath + ".sym";
+    m_options->m_macroTable     = resultsCommonPath + ".mac";
+    m_options->m_mdsDebugFile   = resultsCommonPath + ".dbg";
+    m_options->m_codeTree       = resultsCommonPath + ".crt";
+    m_options->m_hexFile        = resultsCommonPath + ".hex";
+    m_options->m_binFile        = resultsCommonPath + ".bin";
+    m_options->m_srecFile       = resultsCommonPath + ".srec";
+    m_options->m_lstFile        = resultsCommonPath + ".lst";
+    m_options->m_verilogFile    = resultsCommonPath + ".v";
+    m_options->m_vhdlFile       = resultsCommonPath + ".vhd";
+    m_options->m_memFile        = resultsCommonPath + ".mem";
+    m_options->m_rawHexDumpFile = resultsCommonPath + ".rawhex";
 
     const std::string errFile = (path("TestSuiteSuc") / "results" / ( testName + ".err" )).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
