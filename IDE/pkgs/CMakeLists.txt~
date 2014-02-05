@@ -11,7 +11,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( pkgs )
+project ( MultitargetDevelopmentSystem )
 
 # ------------------------------------------------------------------------------
 # ADD SOME DATA FILES TO THE INSTALLATION PACKAGES.
@@ -142,12 +142,21 @@ set ( CPACK_RPM_PACKAGE_LICENSE "<package license>" )
 
  # Installation directory on the target system.
 set ( CPACK_PACKAGE_INSTALL_DIRECTORY "Moravia Microsystems\\\\${PRODUCT_NAME}" )
- # Installer program icon.
-set ( CPACK_NSIS_MUI_ICON "${CMAKE_SOURCE_DIR}/pkgs/installer.ico" )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_NSIS_MUI_ICON ${CPACK_NSIS_MUI_ICON} )
- # Uninstaller program icon.
-set ( CPACK_NSIS_MUI_UNIICON "${CMAKE_SOURCE_DIR}/pkgs/uninstaller.ico" )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_NSIS_MUI_UNIICON ${CPACK_NSIS_MUI_UNIICON} )
+  # A branding image that will be displayed inside the installer
+set ( CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/pkgs/header.bmp" )
+string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON} )
+ # Various images.
+set ( CPACK_NSIS_INSTALLER_MUI_ICON_CODE "
+      \; Installer program icon
+      !define MUI_ICON \\\"${CMAKE_SOURCE_DIR}/pkgs/installer.ico\\\"
+
+      \; Uninstaller program icon.
+      !define CPACK_NSIS_MUI_UNIICON \\\"${CMAKE_SOURCE_DIR}/pkgs/uninstaller.ico\\\"
+
+      \; Sidebar image.
+      !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_SOURCE_DIR}/pkgs/sidebar.bmp\\\"
+" )
+string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_NSIS_INSTALLER_MUI_ICON_CODE ${CPACK_NSIS_INSTALLER_MUI_ICON_CODE} )
  # Set the compression algorithm used to compress files/data in the installer
 set ( CPACK_NSIS_COMPRESSOR "/SOLID /FINAL lzma" )
  # Ask about uninstalling previous versions first.
@@ -177,26 +186,18 @@ set ( CPACK_NSIS_DELETE_ICONS_EXTRA "" )
 set ( CPACK_NSIS_MUI_FINISHPAGE_RUN "mds-ide.exe" )
  # Specify links in [application] menu.
 set ( CPACK_NSIS_MENU_LINKS
-         "doc/cmake-@CMake_VERSION_MAJOR@.@CMake_VERSION_MINOR@/cmake.html"
-         "Moravia Microsystems, s.r.o."
-         "http://www.moravia-microsystems.com" "${PRODUCT_NAME} Web Site" )
- # A branding image that will be displayed inside the installer
-set ( CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/pkgs/header.bmp" )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON} )
+      "doc/cmake-@CMake_VERSION_MAJOR@.@CMake_VERSION_MINOR@/cmake.html"
+      "Moravia Microsystems, s.r.o."
+      "http://www.moravia-microsystems.com" "${PRODUCT_NAME} Web Site" )
  # Extra NSIS commands that will be added to the beginning of the install Section
-set ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "
-    !ifdef MUI_WELCOMEFINISHPAGE_BITMAP
-        !undef MUI_WELCOMEFINISHPAGE_BITMAP
-    !endif
-    !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_SOURCE_DIR}/pkgs/sidebar.bmp\\\"
-" )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS ${CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS} )
+set ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "" )
  # Extra NSIS commands that will be added to the end of the install Section
 set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "" )
  # Extra NSIS commands that will be added to the uninstall Section
 set ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "Delete \\\"$DESKTOP\\\\${PRODUCT_NAME}.lnk\\\"" )
  # Registry key used when installing this project.
 SET ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Moravia Microsystems\\\\${PRODUCT_NAME}" )
+set ( CPACK_NSIS_EXECUTABLES_DIRECTORY "bat/" )
 
 # Include packaging driver provided by CMake.
 include ( CPack )
