@@ -4,7 +4,7 @@
 
 # TSP_TestKcpsm1CPLD: T = Test, S = Simulator, P = PicoBlaze, _<nameOfTheTestSuite>
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -26,11 +26,11 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/PicoBlaze"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
-                      "${CMAKE_SOURCE_DIR}"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../PicoBlazeStrategy"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles"
+                      "${CMAKE_SOURCE_DIR}/simulators/MCUSim/PicoBlaze"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../PicoBlazeStrategy" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
@@ -47,7 +47,7 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
 ## Add a target with no output so it will always be built.
  # Compile .asm files for all testcases in the `testcases' directory
 add_custom_target ( "${PROJECT_NAME}_compile" ALL
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
+                    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
                     DEPENDS PicoBlazeAsmIncludeFiles_prc_file_kcpsm1cpld
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/testcases"
                     COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_SOURCE_DIR}/testcases'." )

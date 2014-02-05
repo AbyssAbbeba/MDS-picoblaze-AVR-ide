@@ -2,7 +2,7 @@
 #
 # Unit tests.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -39,22 +39,20 @@ include_directories ( "${CMAKE_SOURCE_DIR}"
                       "${CMAKE_SOURCE_DIR}/utilities/AsmTranslator/" )
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${PROJECT_NAME}
-                 main.cxx )
+add_executable ( ${PROJECT_NAME} main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        TAT_TestPicoBlazeXil
-                        TAT_TestPicoBlazeMed
-                        TAT_TestPicoBlazeOPI
-                        AsmTranslator
-                        compiler
-                        MCUDataFiles
-                        AutoTest )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        TAT_TestPicoBlazeXil
+                                        TAT_TestPicoBlazeMed
+                                        TAT_TestPicoBlazeOPI
+                                        AsmTranslator
+                                        compiler
+                                        MCUDataFiles
+                                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "AsmTranslator_PicoBlaze" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+add_test_subject ( "AsmTranslator_PicoBlaze" ${PROJECT_NAME} )

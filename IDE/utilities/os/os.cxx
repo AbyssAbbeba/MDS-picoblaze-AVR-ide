@@ -27,7 +27,11 @@
 
 namespace boost
 {
-    namespace filesystem
+    #if BOOST_VERSION <= 104800
+        namespace filesystem3
+    #else
+        namespace filesystem
+    #endif
     {
         template < >
             path & path::append< typename path::iterator > ( typename path::iterator begin,

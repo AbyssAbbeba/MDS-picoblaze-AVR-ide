@@ -2,7 +2,7 @@
 #
 # Unit tests for PicoBlaze Assembler.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -30,21 +30,20 @@ add_subdirectory ( TestSuiteErr )
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_SOURCE_DIR}"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/AutoTest/" )
+                      "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        TAP_TestSuiteSuc
-                        TAP_TestSuiteErr
-                        AutoTest )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        TAP_TestSuiteSuc
+                                        TAP_TestSuiteErr
+                                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "Assembler_PicoBlaze" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+add_test_subject ( "Assembler_PicoBlaze" ${PROJECT_NAME} )

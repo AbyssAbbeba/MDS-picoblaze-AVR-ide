@@ -113,7 +113,7 @@ static int return_data(hid_device *dev, unsigned char *data, size_t length);
 
 static hid_device *new_hid_device(void)
 {
-	hid_device *dev = calloc(1, sizeof(hid_device));
+	hid_device *dev = (hid_device *)calloc(1, sizeof(hid_device));
 	dev->device_handle = NULL;
 	dev->input_endpoint = 0;
 	dev->output_endpoint = 0;
@@ -454,7 +454,7 @@ struct hid_device_info  HID_API_EXPORT *hid_enumerate(unsigned short vendor_id, 
 							struct hid_device_info *tmp;
 
 							/* VID/PID match. Create the record. */
-							tmp = calloc(1, sizeof(struct hid_device_info));
+							tmp = (hid_device_info *)calloc(1, sizeof(struct hid_device_info));
 							if (cur_dev) {
 								cur_dev->next = tmp;
 							}
@@ -617,12 +617,12 @@ hid_device * hid_open(unsigned short vendor_id, unsigned short product_id, wchar
 
 static void read_callback(struct libusb_transfer *transfer)
 {
-	hid_device *dev = transfer->user_data;
+	hid_device *dev = (hid_device *)transfer->user_data;
 	
 	if (transfer->status == LIBUSB_TRANSFER_COMPLETED) {
 
-		struct input_report *rpt = malloc(sizeof(*rpt));
-		rpt->data = malloc(transfer->actual_length);
+		struct input_report *rpt = (input_report *)malloc(sizeof(*rpt));
+		rpt->data = (uint8_t*)malloc(transfer->actual_length);
 		memcpy(rpt->data, transfer->buffer, transfer->actual_length);
 		rpt->len = transfer->actual_length;
 		rpt->next = NULL;
@@ -676,12 +676,12 @@ static void read_callback(struct libusb_transfer *transfer)
 
 static void *read_thread(void *param)
 {
-	hid_device *dev = param;
+	hid_device *dev = (hid_device *)param;
 	unsigned char *buf;
 	const size_t length = dev->input_ep_max_packet_size;
 
 	/* Set up the transfer object. */
-	buf = malloc(length);
+	buf = (unsigned char *)malloc(length);
 	dev->transfer = libusb_alloc_transfer(0);
 	libusb_fill_interrupt_transfer(dev->transfer,
 		dev->device_handle,
@@ -941,7 +941,7 @@ static int return_data(hid_device *dev, unsigned char *data, size_t length)
 
 static void cleanup_mutex(void *param)
 {
-	hid_device *dev = param;
+	hid_device *dev = (hid_device *)param;
 	pthread_mutex_unlock(&dev->mutex);
 }
 

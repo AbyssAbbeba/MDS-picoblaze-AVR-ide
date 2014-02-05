@@ -93,6 +93,9 @@ void AutoTest::printHelp ( const char * executable )
     std::cout << "        Run one test suite specified by its name." << std::endl;
     std::cout << "    --test-name, -T <test_suite_name>/<test_case_name>" << std::endl;
     std::cout << "        Run one test case specified by its name." << std::endl;
+    std::cout << "    --dir, -d" << std::endl;
+    std::cout << "        Set base directory for the test (by default it's the directory where this binary is located)."
+              << std::endl;
     std::cout << "    --help, -h" << std::endl;
     std::cout << "        Print this message." << std::endl;
     std::cout << std::endl;
@@ -104,21 +107,15 @@ int AutoTest::main ( int argc, char ** argv )
     // Initialization.
     // -----------------------------------------------------------------------------------------------------------------
 
+    int exitStatus = 0;
+
     // Print the introduction message.
     std::cout << m_intoMessage << std::endl << std::endl;
 
-    // Change current directory this the location of the test binary.
+    // Change current working directory to the location of the test binary.
     {
         using namespace boost::filesystem;
         current_path(system_complete(path(argv[0]).parent_path()));
-    }
-
-    // Initialize the test environment.
-    int exitStatus = initTestEnv();
-    if ( 0 != exitStatus )
-    {
-        std::cerr << CU_get_error_msg() << std::endl;
-        return exitStatus;
     }
 
     CU_basic_set_mode(CU_BRM_VERBOSE);
@@ -137,7 +134,7 @@ int AutoTest::main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":halix:s:t:S:T:";
+    const char * shortopts = ":halix:s:t:S:T:d:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0, 'h' },
@@ -149,6 +146,7 @@ int AutoTest::main ( int argc, char ** argv )
         { "test",        required_argument, 0, 't' },
         { "suite-name",  required_argument, 0, 'S' },
         { "test-name",   required_argument, 0, 'T' },
+        { "dir",         required_argument, 0, 'd' },
         { 0,             0,                 0,  0  }
     };
 
@@ -159,12 +157,66 @@ int AutoTest::main ( int argc, char ** argv )
         switch ( opt )
         {
             case 'h':
+            {
                 printHelp(argv[0]);
                 return 0;
+            }
             case 'i':
+            {
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
                 CU_console_run_tests();
                 break;
+            }
+            case 'a':
+            {
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
+                CU_basic_run_tests();
+                break;
+            }
+            case 'd':
+            {
+                // Change current working directory to the specified base directory of the test.
+                {
+                    using namespace boost::filesystem;
+
+                    const path dir = optarg;
+
+                    if ( false == is_directory(dir) )
+                    {
+                        std::cerr << "Directory does not exists: `" << optarg << "'" << std::endl;
+                        return 1;
+                    }
+                    else
+                    {
+                        current_path(system_complete(dir));
+                    }
+                }
+                break;
+            }
             case 'x':
+            {
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
                 CU_set_output_filename(optarg);
                 CU_list_tests_to_file();
                 CU_automated_run_tests();
@@ -174,11 +226,37 @@ int AutoTest::main ( int argc, char ** argv )
                     std::cout << "List of tests written to: `" << optarg << "-Listing.xml'." << std::endl;
                 }
                 break;
-            case 'a':
-                CU_basic_run_tests();
+            }
+            case 'S':
+            {
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
+                CU_pSuite suite = CU_get_suite(optarg);
+                if ( nullptr == suite )
+                {
+                    std::cerr << "Error: there is no test suite with name `" << optarg << "'." << std::endl;
+                    return 1;
+                }
+
+                CU_basic_run_suite(suite);
                 break;
+            }
             case 'l':
             {
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
                 CU_pSuite suite = CU_get_registry()->pSuite;
                 for ( int i = 0; nullptr != suite; i++ )
                 {
@@ -206,6 +284,14 @@ int AutoTest::main ( int argc, char ** argv )
                                   << std::endl;
                         return 1;
                     }
+                }
+
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
                 }
 
                 unsigned int number = 1 + (unsigned int) atoi(optarg);
@@ -255,6 +341,14 @@ int AutoTest::main ( int argc, char ** argv )
                     }
                 }
 
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
+
                 unsigned int number = 1 + (unsigned int) atoi(testSuiteNumberSrt);
                 CU_pSuite suite = CU_get_suite_at_pos(number);
                 if ( nullptr == suite )
@@ -279,18 +373,6 @@ int AutoTest::main ( int argc, char ** argv )
                 CU_basic_run_test(suite, test);
                 break;
             }
-            case 'S':
-            {
-                CU_pSuite suite = CU_get_suite(optarg);
-                if ( nullptr == suite )
-                {
-                    std::cerr << "Error: there is no test suite with name `" << optarg << "'." << std::endl;
-                    return 1;
-                }
-
-                CU_basic_run_suite(suite);
-                break;
-            }
             case 'T':
             {
                 char * testSuiteName = new char [ strlen(optarg) + 1 ];
@@ -305,6 +387,14 @@ int AutoTest::main ( int argc, char ** argv )
                 }
                 testCaseName[0] = '\0';
                 testCaseName++;
+
+                // Initialize the test environment.
+                exitStatus = initTestEnv();
+                if ( 0 != exitStatus )
+                {
+                    std::cerr << CU_get_error_msg() << std::endl;
+                    return exitStatus;
+                }
 
                 CU_pSuite suite = CU_get_suite(testSuiteName);
                 if ( nullptr == suite )

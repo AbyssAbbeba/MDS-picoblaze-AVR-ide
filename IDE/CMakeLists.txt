@@ -28,9 +28,18 @@ cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
 # Create verbose makefiles if on.
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
+set ( INSTALL_DIR_BIN "bin" )
+set ( INSTALL_DIR_LIB "lib/mds" )
+set ( INSTALL_DIR_SHARE "share" )
+set ( INSTALL_DIR_INCLUDE "include/mds" )
+
+set ( PRODUCT_VERSION "1.0" )
+set ( COPYRIGHT_YEARS "2013, 2014" )
+set ( PRODUCT_NAME    "Multitarget Development System" )
+
 ## Set global compilation flags:
  # - for all build types:
-set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe" )
+set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe -Drestrict=__restrict__" )
  # - for debug build only:
 set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
@@ -51,12 +60,16 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 # Optionally start test subjects in Valgrind:Memcheck.
 option ( TEST_MEMCHECK "Start test subjects in Valgrind:Memcheck." ON )
 
+# Optionally skip build of test binaries.
+option ( NO_TEST "Do not build test binaries." OFF )
+
 # Optionally colorize compiler output messages.
 if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
     option ( COLOR_GCC "Filter compiler output messages to add VT100 terminal compatible color codes to them." ON )
     if ( COLOR_GCC )
         set ( COLOR_GCC ON )
-        set_property ( GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CMAKE_SOURCE_DIR}/gccColor.sh" )
+        set_property ( GLOBAL PROPERTY RULE_LAUNCH_LINK    "bash ${CMAKE_SOURCE_DIR}/ldColor.sh"  )
+        set_property ( GLOBAL PROPERTY RULE_LAUNCH_COMPILE "bash ${CMAKE_SOURCE_DIR}/gccColor.sh" )
     else()
         set ( COLOR_GCC OFF )
     endif()
@@ -71,14 +84,21 @@ if ( NOT CMAKE_BUILD_TYPE )
 endif()
 message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}." )
 
+# Build all libraries by default as shared or static.
+if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set ( BUILD_SHARED_LIBS ON )
+else()
+    set ( BUILD_SHARED_LIBS OFF )
+endif()
+
 # Optionally build with support for coverage analysis support.
 option ( TEST_COVERAGE "Configure build for coverage analysis." OFF )
 if ( TEST_COVERAGE )
+    set ( CMAKE_EXE_LINKER_FLAGS    "--coverage -lgcov" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "--coverage -lgcov" )
+    set ( CMAKE_C_FLAGS             "--coverage ${CMAKE_C_FLAGS}" )
+    set ( CMAKE_CXX_FLAGS           "--coverage ${CMAKE_CXX_FLAGS}" )
     message ( STATUS "This build is configured for coverage analysis!" )
-    set ( CMAKE_EXE_LINKER_FLAGS "--coverage" )
-    set ( CMAKE_SHARED_LINKER_FLAGS "--coverage" )
-    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -coverage" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage" )
 endif()
 
 # Target architecture.
@@ -87,11 +107,11 @@ if ( NOT TARGET_ARCH )
     set ( TARGET_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
 endif()
 if ( TARGET_ARCH STREQUAL "x86_64" )
-    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m64" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64" )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -march=x86-64" )
 elseif ( TARGET_ARCH STREQUAL "x86" )
-    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32" )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -march=i686" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -march=i686" )
 else()
     message ( FATAL_ERROR "Target architecture \"${TARGET_ARCH}\" not recognized!" )
 endif()
@@ -104,6 +124,10 @@ if ( NOT TARGET_OS )
 endif()
 if ( TARGET_OS STREQUAL "Linux" )
 elseif ( TARGET_OS STREQUAL "Windows" )
+    set ( LIBRARY_OUTPUT_PATH    ${CMAKE_BINARY_DIR} )
+    set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
+#     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -static-libstdc++ -static-libgcc" ) # Link statically with std. lib.
+#     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc" ) # Link statically with std. lib.
 elseif ( TARGET_OS STREQUAL "Darwin" )
 else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
@@ -135,12 +159,15 @@ endif()
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Find Qt4 directories and libraries.
-find_package ( Qt4 4.8.0 REQUIRED
+set ( QT_MIN_VER "4.8.1" )
+set ( QT_IS_STATIC OFF )
+find_package ( Qt4 ${QT_MIN_VER} REQUIRED
                COMPONENTS QtCore QtGui QtXml QtHelp )
 include ( ${QT_USE_FILE} )
 
 # Find Boost include directories and libraries.
-find_package ( Boost 1.55 REQUIRED
+set ( Boost_USE_STATIC_LIBS OFF )
+find_package ( Boost 1.48 REQUIRED
                COMPONENTS regex filesystem system )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
@@ -150,6 +177,9 @@ find_package ( BISON 2.5    REQUIRED )
 
 # Include our own macros for using Flex and Bison.
 include ( "${CMAKE_SOURCE_DIR}/FlexBisonPair.cmake" )
+
+# Include our own macros for doing Windows specific stuff.
+include ( "${CMAKE_SOURCE_DIR}/windres.cmake" )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # SUPPORT FOR AUTOMATED TESTS
@@ -192,11 +222,13 @@ add_subdirectory ( disassembler )
 # Build utility libraries.
 add_subdirectory ( utilities )
 
-# Build of installation packages.
-add_subdirectory ( pkgs )
-
-# Build automated tests.
-add_subdirectory ( tests )
-
 # Build 3rd party software.
 add_subdirectory ( 3rdParty )
+
+# Build automated tests.
+if ( NOT NO_TEST )
+    add_subdirectory ( tests )
+endif()
+
+# Build installation packages.
+add_subdirectory ( pkgs )

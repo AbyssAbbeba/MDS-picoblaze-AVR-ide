@@ -4,7 +4,7 @@
 
 # TAT_TestPicoBlazeMed: T = Test, AT = AsmTranslator, _<nameOfTheTestSuite>
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -32,9 +32,8 @@ add_library ( ${PROJECT_NAME} SHARED
               TestMedAsmTrans.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        AsmTranslator
-                        compiler
-                        MCUDataFiles
-                        CUnit )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        AsmTranslator
+                                        compiler
+                                        MCUDataFiles
+                                        CUnit )

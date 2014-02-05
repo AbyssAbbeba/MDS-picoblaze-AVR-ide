@@ -57,6 +57,7 @@ class WTextEdit : public QPlainTextEdit
         void breakpoint(int line);
         void bookmark(int line);
         void textChangedSignal(const QString& text, int pos);
+        void selectionRemovedSignal(int posStart, int posEnd);
 
     private:
         Highlighter *highlighter;

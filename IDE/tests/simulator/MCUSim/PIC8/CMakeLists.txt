@@ -2,7 +2,7 @@
 #
 # Unit tests for PIC8 Simulator.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -34,13 +34,12 @@ add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        TSC_TestGenericSubsys
-                        AutoTest )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        TSC_TestGenericSubsys
+                                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-# ADD_TEST_SUBJECT ( "MCU_Simulator_PIC8" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+# add_test_subject ( "MCU_Simulator_PIC8" ${PROJECT_NAME} )

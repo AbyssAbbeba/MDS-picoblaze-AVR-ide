@@ -151,6 +151,9 @@ void printHelp ( const char * executable )
               << QObject::tr("        Specify verilog template file.").toStdString() << std::endl
               << QObject::tr("    --mem <.mem file>").toStdString() << std::endl
               << QObject::tr("        Specify target file for generation of MEM file.").toStdString() << std::endl
+              << QObject::tr("    --raw-hex-dump <.hex file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal "
+                             "numbers separated by CRLF sequence).").toStdString() << std::endl
               << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
               << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
                              "used by the compiler itself, it's intended for the user (valid for C language "
@@ -314,6 +317,8 @@ int main ( int argc, char ** argv )
         { "verilog-tmpl",required_argument, 0, 0x103 },
         { "mem",         required_argument, 0, 0x104 },
         { "cunit",       required_argument, 0, 0x105 },
+        { "raw-hex-dump",required_argument, 0, 0x106 },
+        { "base-inc-dir",required_argument, 0, 0x107 },
 
         { 0,             0,                 0, 0     }
     };
@@ -416,6 +421,12 @@ int main ( int argc, char ** argv )
                 break;
             case 0x105: // --cunit=<compilation_unit>
                 opts.m_cunit = optarg;
+                break;
+            case 0x106: // --raw-hex-dump
+                opts.m_rawHexDumpFile = optarg;
+                break;
+            case 0x107: // --base-inc-dir
+                compiler.setBaseIncludeDir(optarg);
                 break;
 
             case 0x200: // --no-backup

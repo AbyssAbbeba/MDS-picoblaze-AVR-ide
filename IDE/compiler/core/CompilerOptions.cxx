@@ -54,13 +54,13 @@ CompilerOptions::CompilerOptions()
 
 void CompilerOptions::clearOutputFiles()
 {
-    const std::string * const files[] =
+    const std::string * restrict const files[] =
     {
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
         &m_codeTree,    &m_lstFile,     &m_hexFile,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
-        &m_cunit,       &m_second,
+        &m_cunit,       &m_second,      &m_rawHexDumpFile,
         nullptr
     };
 
@@ -84,14 +84,14 @@ void CompilerOptions::normalizeFilePaths()
 {
     using namespace boost::filesystem;
 
-    std::string * const files[] =
+    std::string * restrict const files[] =
     {
         &m_symbolTable, &m_macroTable,  &m_mdsDebugFile,
         &m_codeTree,    &m_lstFile,     &m_vhdlTemplate,
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
-        &m_memFile,     &m_hexFile,     &m_cunit,
-        &m_second,
+        &m_memFile,     &m_hexFile,     &m_rawHexDumpFile,
+        &m_second,      &m_cunit,
         nullptr
     };
 

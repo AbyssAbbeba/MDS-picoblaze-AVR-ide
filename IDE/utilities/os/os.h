@@ -19,6 +19,7 @@
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include "boost/filesystem.hpp"
+#include "boost/version.hpp"
 
 namespace boost
 {

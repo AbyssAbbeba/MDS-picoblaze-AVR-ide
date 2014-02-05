@@ -2,7 +2,7 @@
 #
 # Unit tests for PicoBlaze Simulator.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -61,4 +61,4 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "MCU_Simulator_PicoBlaze" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+add_test_subject ( "MCU_Simulator_PicoBlaze" ${PROJECT_NAME} )
