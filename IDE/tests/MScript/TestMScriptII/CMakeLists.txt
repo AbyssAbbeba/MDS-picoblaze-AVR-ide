@@ -4,7 +4,7 @@
 
 # TMS_TestMScriptII: T = Test, MS = MScript, _<nameOfTheTestSuite>
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

@@ -2,7 +2,7 @@
 #
 # libraries of microcontroller simulators.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

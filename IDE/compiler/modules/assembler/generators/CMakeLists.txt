@@ -2,7 +2,7 @@
 #
 # Code generators used by assembler.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -20,8 +20,8 @@ project ( CompilerModuleAsmGenerators )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../core/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/MCUDataFiles/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities/DbgFile/" )
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
+                      "${CMAKE_SOURCE_DIR}/utilities/DbgFile/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
@@ -40,5 +40,5 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
 # ------------------------------------------------------------------------------
 
 install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

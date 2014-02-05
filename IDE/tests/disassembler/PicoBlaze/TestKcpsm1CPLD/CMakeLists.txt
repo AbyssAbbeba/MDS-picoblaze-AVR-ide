@@ -4,7 +4,7 @@
 
 # TDP_TestKcpsm1CPLD: T = Test, D = Disassembler, P = PicoBlaze, _<nameOfTheTestSuite>
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -27,8 +27,8 @@ set_directory_properties ( PROPERTIES
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_SOURCE_DIR}"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../utilities" )
+                      "${CMAKE_SOURCE_DIR}/"
+                      "${CMAKE_SOURCE_DIR}/utilities" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.

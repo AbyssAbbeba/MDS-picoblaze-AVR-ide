@@ -9,13 +9,23 @@ if ! which xsltproc &> /dev/null; then
     exit 1
 fi
 
+declare -r OS="$(uname -o)"
+if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
+    if ! which 'cygpath' &> /dev/null; then
+        echo "Error: cygpath is missging."
+        exit 1
+    fi
+    declare -ir inWindows=1
+else
+    declare -ir inWindows=0
+fi
 declare -ri CLEAN_UP=${clean_up:-1}
 declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -ri COMPRESS_HTML=${compress_html:-1}
 declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
-declare -ri CPU_CORES=$( which lscpu &> /dev/null && lscpu |
-                         gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
-declare -ri PP=${CPU_CORES}
+declare -ri DETECTED_CPU_CORES=$( which lscpu &> /dev/null && lscpu |
+                                  gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
+declare -i  CPU_CORES=${1:-${DETECTED_CPU_CORES}}
 
 # ======================================================================================================================
 # SUPPORT FOR PARALLEL RUN OF MULTIPLE JOBS
@@ -28,7 +38,7 @@ function runParallelJobs() {
     local -i next
     local    job
 
-    if (( 1 == ${PP} )); then
+    if (( 1 == ${CPU_CORES} )); then
         for job in "${JOBS[@]}"; do
             wait
             bash -c "${job}" &
@@ -37,7 +47,7 @@ function runParallelJobs() {
         next=0
         while (( ${next} < ${#JOBS[@]} )); do
             runningJobs=( $( jobs -pr ) )
-            for (( i=0; i < ( ${1:-0} + ${PP} - ${#runningJobs[@]} ); i++ )); do
+            for (( i=0; i < ( ${1:-0} + ${CPU_CORES} - ${#runningJobs[@]} ); i++ )); do
                 if (( ${next} >= ${#JOBS[@]} )); then
                     # No more jobs left to do.
                     break
@@ -67,7 +77,11 @@ done
 
 # ======================================================================================================================
 
-cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
+if (( inWindows )); then
+    cd "$(dirname "$(readlink -n -f "$( cygpath "${0}" )" )" )/results" || exit 1
+else
+    cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
+fi
 
 cp ../*.png .
 gawk -f '../TestLog2html.awk' \
@@ -114,7 +128,7 @@ for i in *-Listing.xml; do
 
     let idx++
 done
-runParallelJobs ${PP} # (${PP} in args. means run in twice as many processes as usual.)
+runParallelJobs ${CPU_CORES} # (${CPU_CORES} in args. means run in twice as many processes as usual.)
 
 declare -ra GCOV_FILES=( $(find . -name '*.gcov') )
 if (( 0 == ${#GCOV_FILES[@]} )); then
@@ -184,7 +198,7 @@ echo "            text-align: left;" >> index.html
 echo "            padding-left: 5px" >> index.html
 echo "        }" >> index.html
 echo "        td.passed {" >> index.html
-echo "            background-color: #50ff50;" >> index.html
+echo "            background-color: #00FF00;" >> index.html
 echo "        }" >> index.html
 echo "        td.percentage {" >> index.html
 echo "            background-color: #ff0000;" >> index.html
@@ -241,11 +255,12 @@ echo "            <th style=\"width: 15%\"> Status </th>" >> index.html
 echo "            <th style=\"width: 1%\"> # </th>" >> index.html
 echo "            <th> Test subject </th>" >> index.html
 echo "        </tr>" >> index.html
-declare -i suitesTotal=0
-declare -i casesTotal=0
-declare -i memErrorsTotal=0
-declare -i failedTotal=0
+declare -i crash=0
 declare -i testNumber=1
+declare -i casesTotal=0
+declare -i suitesTotal=0
+declare -i failedTotal=0
+declare -i memErrorsTotal=0
 declare    memLeaksTotal=0
 for i in *-Results.xml; do
     TEST_NAME="${i%%-Results.xml}"
@@ -331,7 +346,7 @@ for i in *-Results.xml; do
             }' "${VALGRIND_LOG}" )"
 
         if [[ "${leaked}" == "0.00" ]]; then
-            style="background-color: #50ff50"
+            style="background-color: #00FF00"
         else
             style="background-color: #ffbb00"
         fi
@@ -339,7 +354,7 @@ for i in *-Results.xml; do
         memLeaksTotal="$( bc -q <<< "scale = 2; ${memLeaksTotal} + ${leaked} " )"
 
         if [[ "${errors}" == "0" ]]; then
-            style="background-color: #50ff50"
+            style="background-color: #00FF00"
         else
             style="background-color: #ffbb00"
         fi
@@ -373,6 +388,7 @@ for i in *-Results.xml; do
             echo "            <td class=\"passed\"><a href=\"${i%%.xml}.html\"> Passed </a></td>" >> index.html
         fi
     else
+        crash=1
         echo "            <td style=\"background-color: #555555; color: #FFFFFF\"> CRASHED </td>" >> index.html
     fi
 
@@ -402,7 +418,11 @@ echo "            <td><b>${memErrorsTotal}</b></td>" >> index.html
 if (( ${failedTotal} )); then
     echo "            <td><b>${failedTotal} failed</b></td>" >> index.html
 else
-    echo "            <td><b>all passed</b></td>" >> index.html
+    if (( crash )); then
+        echo "            <td><b>--</b></td>" >> index.html
+    else
+        echo "            <td><b>all passed</b></td>" >> index.html
+    fi
 fi
 echo "            <td colspan=\"2\" style=\"text-align: left; padding-left: 5px\"><b>Total</b></td>" >> index.html
 echo "        </tr>" >> index.html

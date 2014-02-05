@@ -6,6 +6,7 @@
 #include <QQueue>
 #include <QMutex>
 #include <QThread>
+#include <QVariant>
 
 class Avr8UsbProgThread : public QThread
 {

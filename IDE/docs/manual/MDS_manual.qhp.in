@@ -10,15 +10,15 @@
         <filterAttribute>MDS</filterAttribute>
         <filterAttribute>1.0</filterAttribute>
         <toc>
-            {@GENQHP_SECTIONS@}
+            @GENQHP_SECTIONS@
         </toc>
         <keywords>
-            {@GENQHP_KEYWORDS@}
+            @GENQHP_KEYWORDS@
         </keywords>
         <files>
-            <file>MDS_manual/MDS_manual.css</file>
-            <file>MDS_manual/*.html</file>
-            <file>MDS_manual/*.png</file>
+            <file>*.css</file>
+            <file>*.html</file>
+            <file>img/*.png</file>
         </files>
     </filterSection>
 </QtHelpProject>

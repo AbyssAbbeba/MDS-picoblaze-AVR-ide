@@ -12,13 +12,13 @@
 #
 # Usage:
 # genQHP.awk -v DNPR=1 -v RESFILE=<file.qhp> <index.html> <file.qhp.in>
-#   - DNPR=1 : Don't print final result at the end (it will be written to the
+#   - DNPR=1 : Do Not PRint final result at the end (it will be written to the
 #              file specified in the RESFILE variable instead).
-#   - Use {@GENQHP_KEYWORDS@} and {@GENQHP_SECTIONS@} in the .qhp.in file, these
+#   - Use @GENQHP_KEYWORDS@ and @GENQHP_SECTIONS@ in the .qhp.in file, these
 #     will be automatically replaced with appropriate XML tag sequences by this 
 #     script.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # author: Martin Ošmera <martin.osmera@moravia-microsystems.com>
 #
@@ -32,15 +32,14 @@ BEGIN {
     nodeName   = ""
     nodeUrn    = ""
     indentCh   = ""
+    lastClass  = ""
 
     genIndentation(indent)
 }
 
 END {
-    if ( ! DNPR )
-    {
-        for ( i = 0; i < sectionsNL; i++ )
-        {
+    if ( ! DNPR ) {
+        for ( i = 0; i < sectionsNL; i++ ) {
             print ( sections[i] )
         }
     }
@@ -48,55 +47,24 @@ END {
 
 function genIndentation ( level ) {
     indentCh = ""
-    for ( i = 0; i < level; i++ )
-    {
+    for ( i = 0; i < level; i++ ) {
         indentCh = indentCh "    "
     }
 }
 
-function processIndexFile ( indexFile ) {
-    indent = 3
-    genIndentation(indent)
-
-    while ( 1 == getline line < indexFile )
-    {
-        if ( line ~ /<DT>/ )
-        {
-            match ( line, />[^<>\/]*<\// )
-            name = substr ( line, RSTART + 1, RLENGTH - 3 )
-        }
-        else if ( line ~ /<DD>/ )
-        {
-            match ( line, /"[^\"]*"/ )
-            urn = substr ( line, RSTART + 1, RLENGTH - 2 )
-
-            keywords [ keywordsNL++ ] = sprintf ( "%s<keyword name=\"%s\" ref=\"MDS_manual/%s\"/>", \
-                                                  indentCh, name, urn )
-        }
-    }
-}
-
 ( FILENAME ~ /\.qhp\.in$/ ) {
-    if ( RESFILE )
-    {
+    if ( RESFILE ) {
         printf("") > RESFILE
 
-        if ( $0 ~ /\{@GENQHP_SECTIONS@\}/ )
-        {
-            for ( i = 0; i < sectionsNL; i++ )
-            {
+        if ( $0 ~ /@GENQHP_SECTIONS@/ ) {
+            for ( i = 0; i < sectionsNL; i++ ) {
                 print ( sections[i] ) >> RESFILE
             }
-        }
-        else if ( $0 ~ /\{@GENQHP_KEYWORDS@\}/ )
-        {
-            for ( i = 0; i < keywordsNL; i++ )
-            {
+        } else if ( $0 ~ /@GENQHP_KEYWORDS@/ ) {
+            for ( i = 0; i < keywordsNL; i++ ) {
                 print ( keywords[i] ) >> RESFILE
             }
-        }
-        else
-        {
+        } else {
             print($0) >> RESFILE
         }
     }
@@ -104,49 +72,79 @@ function processIndexFile ( indexFile ) {
     next
 }
 
-/NAME="CHILD_LINKS"/ {
+/div class="tableofcontents"/ {
     start = 1
 
-    sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"MDS_manual/%s\">", \
-                                          indentCh, "MDS Manual", "index.html" )
+    sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, NAME, INDEX_FILE )
 
+    lastClass = "C"
     indent++
     genIndentation(indent)
 }
 
-/HREF="node[0-9]+\.html"/ && ( start ) {
-    if ( ( "" != nodeName ) && ( "" != nodeUrn ) )
-    {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"MDS_manual/%s\"/>", \
-                                              indentCh, nodeName, nodeUrn )
+/href=".+\.html(#[^"]*)?"/ && ( start ) {
+    if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
     }
 
     match ( $0, />[^<>]*</ )
     nodeName = substr ( $0, RSTART + 1, RLENGTH - 2 )
 
+    if ( "Contents" == nodeName )
+    {
+        nodeName = ""
+        next
+    }
+
     match ( $0, /"[^\"]*"/ )
     nodeUrn = substr ( $0, RSTART + 1, RLENGTH - 2 )
+    sub ( /#.+$/, "", nodeUrn )
+}
 
-    if ( "Index" == nodeName )
-    {
-        processIndexFile( "MDS_manual/" nodeUrn )
+/class="chapterToc"/ && ( start ) {
+    if ( "S" == lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+            nodeName = ""
+            nodeUrn  = ""
+        }
+
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
     }
+
+    lastClass = "C"
 }
 
-/<UL>/ && ( start ) {
-    sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"MDS_manual/%s\">", \
-                                          indentCh, nodeName, nodeUrn )
+/class="sectionToc"/ && ( start ) {
+    if ( "C" == lastClass ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
 
-    nodeName = ""
-    nodeUrn  = ""
+        nodeName = ""
+        nodeUrn  = ""
 
-    indent++
-    genIndentation(indent)
+        indent++
+        genIndentation(indent)
+    }
+
+    lastClass = "S"
 }
 
-/<\/UL>/ && ( start ) {
+/<\/div>/ && ( start ) {
+    start = 0
+
+    if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+    }
+
+    if ( "S" == lastClass ) {
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    }
+
     indent--
     genIndentation(indent)
-
     sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
 }
