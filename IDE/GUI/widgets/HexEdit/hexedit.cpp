@@ -93,7 +93,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
-    hexTextEdit = new QTextEdit(this);
+    hexTextEdit = new QPlainTextEdit(this);
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
@@ -107,7 +107,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
 
     if (AsciiPanel == true)
     {
-        hexAsciiEdit = new QTextEdit(this);
+        hexAsciiEdit = new QPlainTextEdit(this);
         hexAsciiEdit->setFont(QFont("Andale Mono", fontSize));
         //hexAsciiEdit->resize(columns*15,250);
         hexAsciiEdit->setMaximumWidth(columns*fontSize);
@@ -171,14 +171,38 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
 
     changable = false;
     setData(hexByteArray);
-    connect(hexTextEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveCursor()));
+    connect( hexTextEdit,
+             SIGNAL(cursorPositionChanged()),
+             this,
+             SLOT(moveCursor())
+           );
     if (AsciiPanel == true)
     {
-        connect(hexAsciiEdit, SIGNAL(cursorPositionChanged()), this, SLOT(moveAsciiCursor()));
-        connect(this, SIGNAL(textChanged(int)), this, SLOT(changeAscii(int)));
-        connect(this, SIGNAL(asciiChanged(int)), this, SLOT(changeText(int)));
-        connect(hexTextEdit->verticalScrollBar(), SIGNAL(valueChanged(int)), hexAsciiEdit->verticalScrollBar(), SLOT(setValue(int)));
-        connect(hexAsciiEdit->verticalScrollBar(), SIGNAL(valueChanged(int)), hexTextEdit->verticalScrollBar(), SLOT(setValue(int)));
+        connect( hexAsciiEdit,
+                 SIGNAL(cursorPositionChanged()),
+                 this,
+                 SLOT(moveAsciiCursor())
+               );
+        connect( this,
+                 SIGNAL(textChanged(int)),
+                 this,
+                 SLOT(changeAscii(int))
+               );
+        connect( this,
+                 SIGNAL(asciiChanged(int)),
+                 this,
+                 SLOT(changeText(int))
+               );
+        connect( hexTextEdit->verticalScrollBar(),
+                 SIGNAL(valueChanged(int)),
+                 hexAsciiEdit->verticalScrollBar(),
+                 SLOT(setValue(int))
+               );
+        connect( hexAsciiEdit->verticalScrollBar(),
+                 SIGNAL(valueChanged(int)),
+                 hexTextEdit->verticalScrollBar(),
+                 SLOT(setValue(int))
+               );
     }
 
 
@@ -205,7 +229,7 @@ HexEdit::~HexEdit()
 }
 
 
-QTextEdit* HexEdit::getTextEdit()
+QPlainTextEdit* HexEdit::getTextEdit()
 {
     return hexTextEdit;
 }
@@ -557,11 +581,11 @@ void HexEdit::setReadOnly(bool readonly)
 
 void HexEdit::fixHeight()
 {
-    this->hexLineCount->getWidget()->changeHeight();
     //if (this->hexTextEdit->verticalScrollBar()->isVisible())
     //{
         hexTextEdit->setMinimumWidth((columns*3-4)*fontSize+20);
         hexTextEdit->setMaximumWidth((columns*3-4)*fontSize+20);
+        this->hexLineCount->getWidget()->changeHeight();
     //}
     //else
     //{
