@@ -199,7 +199,7 @@ include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Build API and user documentation.
-add_subdirectory ( docs )
+# add_subdirectory ( docs )
 
 # Build compiler collection.
 add_subdirectory ( compiler )
