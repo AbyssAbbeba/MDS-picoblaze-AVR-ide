@@ -92,6 +92,6 @@ add_subdirectory ( include )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
+install ( TARGETS ${PROJECT_NAME} ${COMPILER_EXEC_TARGET}
           RUNTIME DESTINATION ${INSTALL_DIR_BIN}
           LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
