@@ -162,7 +162,7 @@ set ( CPACK_NSIS_COMPRESSOR "/SOLID /FINAL lzma" )
  # Ask about uninstalling previous versions first.
 set ( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON )
  # Modify PATH toggle.
-set ( CPACK_NSIS_MODIFY_PATH ON )
+set ( CPACK_NSIS_MODIFY_PATH OFF )
  # The display name string that appears in the Windows Add/Remove Program control panel.
 set ( CPACK_NSIS_DISPLAY_NAME "${PRODUCT_NAME}" )
  # The title displayed at the top of the installer.
@@ -197,7 +197,6 @@ set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "" )
 set ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "Delete \\\"$DESKTOP\\\\${PRODUCT_NAME}.lnk\\\"" )
  # Registry key used when installing this project.
 SET ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Moravia Microsystems\\\\${PRODUCT_NAME}" )
-set ( CPACK_NSIS_EXECUTABLES_DIRECTORY "bat/" )
 
 # Include packaging driver provided by CMake.
 include ( CPack )
