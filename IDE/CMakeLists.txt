@@ -166,8 +166,9 @@ find_package ( Qt4 ${QT_MIN_VER} REQUIRED
 include ( ${QT_USE_FILE} )
 
 # Find Boost include directories and libraries.
+set ( BOOST_MIN_VER "1.48" )
 set ( Boost_USE_STATIC_LIBS OFF )
-find_package ( Boost 1.48 REQUIRED
+find_package ( Boost ${BOOST_MIN_VER} REQUIRED
                COMPONENTS regex filesystem system )
 include_directories ( ${Boost_INCLUDE_DIRS} )
 
