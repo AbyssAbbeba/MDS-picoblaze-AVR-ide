@@ -5,6 +5,20 @@
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
 
+
+
+windres_rc ( OUTPUT_VAR         EXEC_RC_FILE
+             FILETYPE           "APP"
+             FILE_VERSION       "1.0"
+             FILEOS             "NT_WINDOWS32"
+             FILE_DESCRIPTION   "MDS IDE"
+             ICON               "windres/mds-ide.ico"
+             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             TARGET             ${COMPILER_EXEC_TARGET}
+             PRODUCT_NAME       ${PRODUCT_NAME}
+             PRODUCT_VERSION    ${PRODUCT_VERSION}
+             YEARS              ${COPYRIGHT_YEARS} )
+
   
   # with SET() command you can change variables or define new ones
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
@@ -68,11 +82,11 @@ include_directories(
 )
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
-  ADD_EXECUTABLE( MDS ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
+  ADD_EXECUTABLE( mds-ide ${EXEC_RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( MDS ${QT_LIBRARIES} Mainform GuiCfg)
+  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform GuiCfg)
 
 
 
@@ -95,6 +109,6 @@ add_subdirectory(guicfg)
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS MDS
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+install( TARGETS mds-ide
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

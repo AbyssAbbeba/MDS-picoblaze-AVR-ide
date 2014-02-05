@@ -70,3 +70,7 @@ add_library(${PROJECT_NAME} SHARED
 
 #QtNetwork !!
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog)
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
