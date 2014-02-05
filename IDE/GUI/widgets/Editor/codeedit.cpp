@@ -103,6 +103,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
+    connect(textEdit, SIGNAL(selectionRemovedSignal(int, int)), this, SLOT(selectionRemovedOut(int, int)));
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
@@ -184,6 +185,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
     connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
     connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
+    connect(textEdit, SIGNAL(selectionRemovedSignal(int, int)), this, SLOT(selectionRemovedOut(int, int)));
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
@@ -383,6 +385,44 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
+void CodeEdit::selectionRemovedOut(int posStart, int posEnd)
+{
+    emit updateRemoveSelection(posStart, posEnd, this);
+    emit updateAnalysers(this);
+    if (prevBlockCount != this->textEdit->document()->blockCount())
+    {
+        this->changeHeight();
+        prevBlockCount = this->textEdit->document()->blockCount();
+    }
+}
+
+
+void CodeEdit::selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor)
+{
+    if ( this != editor )
+    {
+        QTextCursor textCursor = this->textEdit->textCursor();
+        int prevPos = textCursor.position();
+        textCursor.setPosition(posStart);
+        textCursor.setPosition(posEnd, QTextCursor::KeepAnchor);
+        textCursor.removeSelectedText();
+
+        textCursor.setPosition(prevPos);
+        if ( NULL == parentCodeEdit )
+        {
+            //qDebug() << "CodeEdit: updateTextSlotIn parent";
+            emit updateRemoveSelection(posStart, posEnd, editor);
+        }
+        else if ( this->textEdit->document()->blockCount() != prevBlockCount )
+        {
+            this->changeHeight();
+            prevBlockCount = this->textEdit->document()->blockCount();
+        }
+        prevBlockCount = this->textEdit->document()->blockCount();
+    }
+}
+
+
 void CodeEdit::updateTextSlotOut(const QString& text, int pos)
 {
     //qDebug() << "CodeEdit: updateTextSlotOut()";
@@ -449,6 +489,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     //qDebug() << "CodeEdit: loadCodeEditor()";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
+    disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
     //disconnect(this, SIGNAL(), 0, 0);
     disconnect(this, SIGNAL(bookmarkListAdd(int)), 0, 0);
     disconnect(this, SIGNAL(bookmarkListRemove(int)), 0, 0);

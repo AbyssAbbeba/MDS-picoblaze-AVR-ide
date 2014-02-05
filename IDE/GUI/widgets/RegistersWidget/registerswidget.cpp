@@ -252,10 +252,11 @@ void RegistersWidget::updateValue(int row, int column)
     if ( false == this->update )
     {
         this->update = true;
+        int value;
         if ( column == 2 || column == 6 )
         {
             //qDebug() << "update 1" << column + 1;
-            int value = this->item(row, column)->text().toInt(0, 16);
+            value = this->item(row, column)->text().toInt(0, 16);
             if ( 255 < value )
             {
                 this->item(row, column-1)->setText(QString::number(255, 10));
@@ -302,7 +303,7 @@ void RegistersWidget::updateValue(int row, int column)
         else if (column == 1 || column == 5)
         {
             //qDebug() << "update 2" << column + 1;
-            int value = this->item(row, column)->text().toInt(0, 10);
+            value = this->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
                 this->item(row, column)->setText(QString::number(255, 10));
@@ -349,7 +350,7 @@ void RegistersWidget::updateValue(int row, int column)
         else
         {
             //qDebug() << "update 3" << column + 1;
-            int value = this->item(row, column)->text().toInt(0, 10);
+            value = this->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
                 this->item(row, column-2)->setText(QString::number(255, 10));
@@ -392,6 +393,14 @@ void RegistersWidget::updateValue(int row, int column)
                 }
                 this->item(row, column)->setText(bin);
             }
+        }
+        if (column > 4)
+        {
+            this->m_memory->directWrite(row+m_size/2, value);
+        }
+        else
+        {
+            this->m_memory->directWrite(row, value);
         }
         this->update = false;
     }
