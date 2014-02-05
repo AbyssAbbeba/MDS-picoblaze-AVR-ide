@@ -100,8 +100,10 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 {
                     a = "/*" + a + "*/";
                 }
+                emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
                 cursor.removeSelectedText();
-                cursor.insertText(a); 
+                emit textChangedSignal(a, cursor.position());
+                cursor.insertText(a);
             }
             else
             {
@@ -109,11 +111,14 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 cursor.setPosition(cursor.position() - linePos);
                 if (cursor.block().text().startsWith("//"))
                 {
+                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
                     cursor.deleteChar();
+                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
                     cursor.deleteChar();
                 }
                 else
                 {
+                    emit textChangedSignal("//", cursor.position());
                     cursor.insertText("//");
                 }
                 cursor.setPosition(cursor.position() + linePos);
@@ -121,7 +126,50 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
-        emit textChangedSignal(keyEvent->text(), this->textCursor().position());
+        if ( (keyEvent->modifiers() & Qt::ControlModifier)
+          && (keyEvent->key() == Qt::Key_V)
+           )
+        {
+            if (true == this->textCursor().hasSelection())
+            {
+                emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
+                this->textCursor().removeSelectedText();
+            }
+            emit textChangedSignal(QApplication::clipboard()->text(), this->textCursor().position());
+            this->textCursor().insertText(QApplication::clipboard()->text());
+            return true;
+        }
+        if ( (keyEvent->key() >= Qt::Key_Space && keyEvent->key() <= Qt::Key_Z)
+          && (!(keyEvent->modifiers() & Qt::ControlModifier))
+          || (keyEvent->key() == Qt::Key_Backspace)
+          || (keyEvent->key() == Qt::Key_Tab)
+          || (keyEvent->key() == Qt::Key_Delete)
+          || (keyEvent->key() == Qt::Key_Enter)
+          || (keyEvent->key() == Qt::Key_Return)
+           )
+        {
+            bool select = this->textCursor().hasSelection();
+            if (true == select)
+            {
+                emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
+                this->textCursor().removeSelectedText();
+            }
+            if (keyEvent->key() != Qt::Key_Backspace && keyEvent->key() != Qt::Key_Delete)
+            {
+                emit textChangedSignal(keyEvent->text(), this->textCursor().position());
+            }
+            else 
+            {
+                if (false == select)
+                {
+                    emit textChangedSignal(keyEvent->text(), this->textCursor().position());
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
     }
     //qDebug() << "WTextEdit: return eventFilter()";
     return QWidget::eventFilter(target, event);

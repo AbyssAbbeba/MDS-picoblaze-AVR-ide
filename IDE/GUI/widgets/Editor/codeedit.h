@@ -64,6 +64,8 @@ class CodeEdit : public QWidget
         void splitVertical();
         void updateTextSlotOut(const QString& text, int pos);
         void updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor);
+        void selectionRemovedOut(int posStart, int posEnd);
+        void selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor);
         void getFocus();
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
@@ -80,6 +82,7 @@ class CodeEdit : public QWidget
         void breakpointListAdd(int line);
         void breakpointListRemove(int line);
         void updateAnalysers(CodeEdit *editor);
+        void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
 
     private:
         void makeMenu();

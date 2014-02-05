@@ -27,7 +27,7 @@ add_library ( ${PROJECT_NAME} SHARED
               XilHDLFile.cxx
               XilMemFile.cxx
               XilVHDLFile.cxx
-              RawHexDumpFile.cxx
+              #RawHexDumpFile.cxx
               XilVerilogFile.cxx
               ObjectDataFile.cxx )
 

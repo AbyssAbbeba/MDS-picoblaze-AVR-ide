@@ -24,9 +24,15 @@ OFF             AUTOREG                         ; Off register
 ON              AUTOREG                         ; On register
 SNAKE           AUTOREG                         ; Snake register
 ; Declaration of some registers
-Temp1         REG       s0
-Temp2         REG       s1
-Temp3         REG       s2
+Temp1         REG       sE
+Temp2         REG       sF
+Temp3         REG       sD
+
+; Program initialization
+; --------------------
+        ORG     0h                      ; Define code segment
+        JUMP    start                   ; Jump to code initialization
+
 ; Macro table
 ; --------------------
 ; Waiting loop macro
@@ -40,11 +46,11 @@ wait_for_100ms      MACRO
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
-wait_100ms_i:       SUB       Temp1, 1
+wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp2, 1
+                    SUB       Temp2, #1
                     JUMP      NZ, wait_100ms_i
-                    SUB       Temp3, 1
+                    SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
                     ENDM
                     
@@ -73,26 +79,23 @@ Blink:          #WHILE   N
                 #ENDW
                 RETURN
                 
-; Program initialization
-; --------------------
-        ORG     0h                      ; Define code segment
-        JUMP    start                   ; Jump to code initialization
+
 
 ; Program start
 ; --------------------
 start:  
         wait_for_100ms                  ; FPGA circuits startup time
-        LOAD    ON,0xFF                 ; Declare ON, snake and OFF
-        LOAD    OFF,0x00                ;
-        LOAD    Snake,0x01              ;
+        LOAD    ON,#0xFF                 ; Declare ON, snake and OFF
+        LOAD    OFF,#0x00                ;
+        LOAD    Snake,#0x01              ;
         JUMP    main                    ; Execute main program loop
 
 ; Main loop
 ; --------------------
 main:   INPUT   BTN_i,Btn               ; Save buttons status
-        TEST    BTN_i,1                 ; Button one pressed
-        JUMP    C,Snake                 ; JUMP to snake subroutine
-        TEST    BTN_i,2                 ; Button two pressed
+        TEST    BTN_i,#1                 ; Button one pressed
+        JUMP    C,Snake_                 ; JUMP to snake subroutine
+        TEST    BTN_i,#2                 ; Button two pressed
         JUMP    C,Blink                 ; JUMP to Blink subroutine
         JUMP    main
 ; Program end

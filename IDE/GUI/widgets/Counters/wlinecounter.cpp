@@ -72,8 +72,9 @@ WLineCounterWidget* WLineCounter::getWidget()
  */
 void WLineCounter::change(int value)
 {
-    //qDebug() << "WLineCounter: change()";
+    //qDebug() << "WLineCounter: change()" << value;
     this->widget->update();
+    this->update();
     //qDebug() << "WLineCounter: return change()";
 }
 
