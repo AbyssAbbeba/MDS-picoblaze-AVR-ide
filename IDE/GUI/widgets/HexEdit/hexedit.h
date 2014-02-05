@@ -45,7 +45,7 @@ class HexEdit : public QWidget
         HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns);
         ~HexEdit();
         //void setData(int pos, char value);
-        QTextEdit* getTextEdit();
+        QPlainTextEdit* getTextEdit();
         //void setByteArray();
         void setVal(int pos, unsigned char val);
         char getVal(int pos);
@@ -72,8 +72,8 @@ class HexEdit : public QWidget
 
         WColumnCounter *hexColumnCount;
         WLineCounter *hexLineCount;
-        QTextEdit *hexTextEdit;
-        QTextEdit *hexAsciiEdit;
+        QPlainTextEdit *hexTextEdit;
+        QPlainTextEdit *hexAsciiEdit;
         QList<unsigned char> *hexByteArray;
         //QStatusBar *hexStatusBar;
         QLabel *hexStatusLabel;

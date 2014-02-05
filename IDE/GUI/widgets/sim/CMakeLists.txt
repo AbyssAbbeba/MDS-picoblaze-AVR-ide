@@ -98,6 +98,8 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr Pi
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install(TARGETS ${PROJECT_NAME}
-	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib)
+
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

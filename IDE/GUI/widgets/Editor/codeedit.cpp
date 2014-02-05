@@ -108,6 +108,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
+    this->changeHeight();
     //qDebug() << "CodeEdit: return CodeEdit()";
 }
 
@@ -190,6 +191,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
+    this->changeHeight();
     //qDebug() << "CodeEdit: return CodeEdit()";
 }
 

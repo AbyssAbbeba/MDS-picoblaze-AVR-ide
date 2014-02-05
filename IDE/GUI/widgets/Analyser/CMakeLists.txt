@@ -67,3 +67,7 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
   # here we instruct CMake to build "UniCuckoo" executable from all of the source files
  # ADD_EXECUTABLE( test main.cpp  )
  # TARGET_LINK_LIBRARIES( test ${QT_LIBRARIES} ${PROJECT_NAME} )
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

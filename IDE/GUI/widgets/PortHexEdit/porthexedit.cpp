@@ -263,6 +263,7 @@ void PortHexEdit::switchPorts()
         this->m_hexEditIn->show();
         this->visibleIn = true;
     }
+    this->fixHeight();
     //qDebug() << "PortHexEdit: return switchPorts()";
 }
 
