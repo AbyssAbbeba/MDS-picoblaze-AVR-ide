@@ -6,28 +6,50 @@
 #
 # ==============================================================================
 
-macro ( ADD_TEST_SUBJECT testName testBinary )
+macro ( ADD_TEST_SUBJECT TestName TestBinaryTarget )
     set ( testDir "${CMAKE_SOURCE_DIR}/tests" )
 
-    if ( TEST_COVERAGE )
-        set ( coverageFlag 1 )
-    else()
-        set ( coverageFlag 0 )
-    endif()
+    # Locate test subject's executable binary.
+    get_property ( testBinary TARGET ${TestBinaryTarget} PROPERTY LOCATION )
 
     if ( TEST_MEMCHECK )
-        add_test ( NAME "${testName}"
-                   WORKING_DIRECTORY "${testDir}"
-                   COMMAND "${testDir}/coverage.sh" "${testName}" "${coverageFlag}"
-                            valgrind --leak-check=full
-                                     --track-origins=yes
-                                     "--log-file=${testDir}/results/${testName}-Valgring.log"
-                           "${testBinary}" -x "${testDir}/results/${testName}" )
+        # Run test subject with Memcheck.
+        if ( TEST_COVERAGE )
+            # Run test subject with Memcheck, and with Coverage.
+            add_test ( NAME "${TestName}"
+                       WORKING_DIRECTORY "${testDir}"
+                       COMMAND bash "${testDir}/coverage.sh" "${TestName}" "${coverageFlag}"
+                               valgrind --leak-check=full
+                                        --track-origins=yes
+                                        "--log-file=${testDir}/results/${TestName}-Valgring.log"
+                               "${testBinary}" --dir "${CMAKE_CURRENT_SOURCE_DIR}"
+                                               --xml "${testDir}/results/${TestName}" )
+        else()
+            # Run test subject with Memcheck, and without Coverage.
+            add_test ( NAME "${TestName}"
+                       WORKING_DIRECTORY "${testDir}"
+                       COMMAND valgrind --leak-check=full
+                                        --track-origins=yes
+                                        "--log-file=${testDir}/results/${TestName}-Valgring.log"
+                               "${testBinary}" --dir "${CMAKE_CURRENT_SOURCE_DIR}"
+                                               --xml "${testDir}/results/${TestName}" )
+        endif()
     else()
-        add_test ( NAME "${testName}"
-                   WORKING_DIRECTORY "${testDir}"
-                   COMMAND "${testDir}/coverage.sh" "${testName}" "${coverageFlag}"
-                           "${testBinary}" -x "${testDir}/results/${testName}" )
+        # Run test subject without Memcheck.
+        if ( TEST_COVERAGE )
+            # Run test subject without Memcheck, and with Coverage.
+            add_test ( NAME "${TestName}"
+                       WORKING_DIRECTORY "${testDir}"
+                       COMMAND bash "${testDir}/coverage.sh" "${TestName}"
+                               "${testBinary}" --dir "${CMAKE_CURRENT_SOURCE_DIR}"
+                                               --xml "${testDir}/results/${TestName}" )
+        else()
+            # Run test subject without Memcheck, and without Coverage.
+            add_test ( NAME "${TestName}"
+                       WORKING_DIRECTORY "${testDir}"
+                       COMMAND "${testBinary}" --dir "${CMAKE_CURRENT_SOURCE_DIR}"
+                                               --xml "${testDir}/results/${TestName}" )
+        endif()
     endif()
 endmacro()
 

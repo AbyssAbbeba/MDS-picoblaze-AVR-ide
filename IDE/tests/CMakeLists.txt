@@ -2,7 +2,7 @@
 #
 # Unit tests.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -25,7 +25,7 @@ set_directory_properties ( PROPERTIES
 ## Add a target with no output so it will always be built.
  # Process test results and generate corresponding HTML files.
 add_custom_target ( test_analysis
-                    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/results2html.sh
+                    COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/results2html.sh"
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                     COMMENT "Processing test results." )
 

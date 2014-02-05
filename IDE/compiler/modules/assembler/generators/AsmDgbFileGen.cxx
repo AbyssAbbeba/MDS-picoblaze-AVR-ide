@@ -62,7 +62,7 @@ void AsmDgbFileGen::setCode ( const CompilerSourceLocation & location,
 inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCore,
                                           const std::string & filename )
 {
-    std::ofstream file ( filename, ( std::fstream::out | std::fstream::trunc ) );
+    std::ofstream file ( filename, ( std::fstream::out | std::fstream::trunc | std::fstream::binary ) );
 
     if ( false == file.is_open() )
     {

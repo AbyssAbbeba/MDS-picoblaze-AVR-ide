@@ -2,7 +2,7 @@
 #
 # Unit tests for PicoBlaze Disassembler.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -40,28 +40,23 @@ add_subdirectory ( TestKcpsm6 )
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_SOURCE_DIR}"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities/AutoTest/" )
+                      "${CMAKE_SOURCE_DIR}/utilities/AutoTest/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
                  main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        TDP_TestKcpsm1CPLD
-                        TDP_TestKcpsm1
-                        TDP_TestKcpsm2
-                        TDP_TestKcpsm3
-                        TDP_TestKcpsm6
-                        AutoTest )
-
-# Add a dependency between top-level targets.
-add_dependencies ( ${PROJECT_NAME} compiler )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        TDP_TestKcpsm1CPLD
+                                        TDP_TestKcpsm1
+                                        TDP_TestKcpsm2
+                                        TDP_TestKcpsm3
+                                        TDP_TestKcpsm6
+                                        AutoTest )
 
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "Disassembler_PicoBlaze"
-                   "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+add_test_subject ( "Disassembler_PicoBlaze" ${PROJECT_NAME} )

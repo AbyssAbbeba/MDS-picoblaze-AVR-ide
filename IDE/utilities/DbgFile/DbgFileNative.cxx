@@ -328,16 +328,15 @@ inline void DbgFileNative::clear()
 {
     m_lastAddress = -1;
 
-    m_sourceFile.clear();
-
     // Clear vectors
-    m_numberOfLines.clear();
     m_fileNames.clear();
+    m_sourceFile.clear();
     m_lineRecords.clear();
+    m_typeRecords.clear();
+    m_numberOfLines.clear();
+    m_moduleRecords.clear();
     m_symbolRecords.clear();
     m_functionRecords.clear();
-    m_typeRecords.clear();
-    m_moduleRecords.clear();
 }
 
 inline int DbgFileNative::getFileNumber ( const std::string & filename ) const

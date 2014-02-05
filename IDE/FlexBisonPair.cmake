@@ -51,9 +51,10 @@ macro ( FLEX_BISON_PAIR LexerTarget ParserTarget libraryTarget )
     # List of additional files that will be cleaned as a part of the "make clean" stage.
     set ( LEXER_CLEAN_FILES "${LexerTarget}.h;${LexerTarget}.cxx" )
     set ( PARSER_CLEAN_FILES "${ParserTarget}.output;${ParserTarget}.h;${ParserTarget}.cxx" )
-    get_directory_property ( CLEAN_FILES ADDITIONAL_MAKE_CLEAN_FILES )
+    get_directory_property ( cleanFiles ADDITIONAL_MAKE_CLEAN_FILES )
+    list ( APPEND cleanFiles ${LEXER_CLEAN_FILES} ${PARSER_CLEAN_FILES} )
     set_directory_properties ( PROPERTIES
-                               ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES};${LEXER_CLEAN_FILES};${PARSER_CLEAN_FILES}" )
+                               ADDITIONAL_MAKE_CLEAN_FILES "${cleanFiles}" )
 
     ## Procude static C++ library from the generated lexer and parser.
     add_library ( ${libraryTarget} STATIC

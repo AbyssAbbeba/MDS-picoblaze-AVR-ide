@@ -37,6 +37,7 @@
 #include "XilMemFile.h"
 #include "XilVHDLFile.h"
 #include "XilVerilogFile.h"
+#include "RawHexDumpFile.h"
 
 // Standard headers.
 #include <string>
@@ -207,8 +208,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             return;
 
         case DEV_KCPSM1CPLD:
-            arrSize = ( 2 * 256 );
             bytesPerRecord = 2;
+            arrSize = ( 256 * bytesPerRecord );
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
             opCodeSize = XilHDLFile::SIZE_16b;
@@ -217,8 +218,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM1:
-            arrSize = ( 2 * 256 );
             bytesPerRecord = 2;
+            arrSize = ( 256 * bytesPerRecord );
             linesInTotal = 16;
             wordSize = AsmMachineCodeGen::WORD_2B;
             opCodeSize = XilHDLFile::SIZE_16b;
@@ -227,8 +228,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM2:
-            arrSize = ( 3 * 1024 );
             bytesPerRecord = 3;
+            arrSize = ( 1024 * bytesPerRecord );
             linesInTotal = 64;
             wordSize = AsmMachineCodeGen::WORD_3B;
             opCodeSize = XilHDLFile::SIZE_18b;
@@ -237,8 +238,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM3:
-            arrSize = ( 3 * 1024 );
             bytesPerRecord = 3;
+            arrSize = ( 1024 * bytesPerRecord );
             linesInTotal = 64;
             wordSize = AsmMachineCodeGen::WORD_3B;
             opCodeSize = XilHDLFile::SIZE_18b;
@@ -247,8 +248,8 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
             break;
 
         case DEV_KCPSM6:
-            arrSize = ( 3 * 4096 );
             bytesPerRecord = 3;
+            arrSize = ( 4096 * bytesPerRecord );
             linesInTotal = 256;
             wordSize = AsmMachineCodeGen::WORD_3B;
             opCodeSize = XilHDLFile::SIZE_18b;
@@ -294,6 +295,11 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
         XilVHDLFile dataFile(name, vhdlTemplate, opCodeSize, arrSize);
         saveHDL(wordSize, dataFile, m_opts->m_vhdlFile);
     }
+    if ( false == m_opts->m_rawHexDumpFile.empty() )
+    {
+        RawHexDumpFile dataFile(RawHexDumpFile::OPCodeSize(opCodeSize), arrSize);
+        saveHDL(wordSize, dataFile, m_opts->m_rawHexDumpFile);
+    }
 }
 
 inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize wordSize,
@@ -311,6 +317,6 @@ inline void AsmPicoBlazeSemanticAnalyzer::saveHDL ( AsmMachineCodeGen::WordSize 
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "unable to save file " ).toStdString()
-                                                        + '"' + fileName  + '"' );
+                                                        + '`' + fileName  + '\'' );
     }
 }

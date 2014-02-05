@@ -240,7 +240,7 @@ function syntaxHgMinor ( string ) {
     string = "<span>" string "</span>"
 
     buffer = ""
-    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|true|false|class|friend|catch|try|throw|new|delete|virtual|override|final|static_assert|static_cast|const_cast|dynamic_cast|reinterpret_cast|constexpr|typeid|inline|goto|nullptr|operator|explicit|decltype|noexcept|alignas|public:?|private:?|protected:?)[<;&]/ ) ) {
+    while ( match ( string, /[;&>](if|else|while|do|for|continue|break|switch|case|default|namespace|struct|union|return|enum|sizeof|using|export|typedef|true|false|class|friend|catch|try|throw|new|delete|virtual|override|final|static_assert|static_cast|const_cast|dynamic_cast|reinterpret_cast|constexpr|restrict|typeid|inline|goto|nullptr|operator|explicit|decltype|noexcept|alignas|public:?|private:?|protected:?|signals:|slots:)[<;&]/ ) ) {
         buffer = buffer substr(string, 1, RSTART) "<span class=\"kw\">" substr(string, RSTART+1, RLENGTH-2) "</span>"
         string = substr(string, RSTART + RLENGTH - 1)
     }

@@ -2,7 +2,7 @@
 #
 # MCU simulator configuration management library.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -37,5 +37,5 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeSim )
 # ------------------------------------------------------------------------------
 
 install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION bin
-          LIBRARY DESTINATION lib )
+          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
