@@ -571,6 +571,7 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
     }
     this->hexByteArray = byteArray;
     this->hexTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //this->hexTextEdit->verticalScrollBar()->setValue(0);
 }
 
 
