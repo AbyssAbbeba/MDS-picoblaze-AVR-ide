@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
-  <mime-type type="application/x-mmIDE-project">
+  <mime-type type="application/x-mds-project">
     <sub-class-of type="text/plain"/>
-    <comment xml:lang="en">mmIDE project</comment>
-    <icon name="mmIDEicon"/>
+    <comment xml:lang="en">Multitarget Development System project</comment>
+    <icon name="mds-ide"/>
     <glob-deleteall/>
-    <glob pattern="*.mmIDE" />
+    <glob pattern="*.mds" />
   </mime-type>
 </mime-info>

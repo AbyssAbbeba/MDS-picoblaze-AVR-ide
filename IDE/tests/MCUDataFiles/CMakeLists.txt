@@ -2,7 +2,7 @@
 #
 # Unit tests for machine code containers.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -37,9 +37,8 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         MCUDataFiles
                                         AutoTest )
 
-
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
 
-ADD_TEST_SUBJECT ( "MCU_Data_Files" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+add_test_subject ( "MCU_Data_Files" ${PROJECT_NAME} )

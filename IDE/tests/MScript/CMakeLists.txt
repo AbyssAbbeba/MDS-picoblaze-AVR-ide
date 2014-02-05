@@ -2,7 +2,7 @@
 #
 # Unit tests for Moravia Script.
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -58,4 +58,4 @@ target_link_libraries ( ${PROJECT_NAME}
 # TESTS
 # ------------------------------------------------------------------------------
 
-# ADD_TEST_SUBJECT ( "Moravia_Script" "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}" )
+# add_test_subject ( "Moravia_Script" ${PROJECT_NAME} )

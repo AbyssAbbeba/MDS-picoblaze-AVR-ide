@@ -4,7 +4,7 @@
 
 # TSA_TestGenericSubsys: T = Test, S = Simulator, A = AVR8, _<nameOfTheTestSuite>
 #
-# (C) copyright 2013 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -26,10 +26,10 @@ set_directory_properties ( PROPERTIES
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../simulators/MCUSim/AVR8"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../utilities/MCUDataFiles"
-                      "${CMAKE_SOURCE_DIR}"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+                      "${CMAKE_SOURCE_DIR}/simulators/MCUSim/AVR8"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
@@ -37,15 +37,15 @@ add_library ( ${PROJECT_NAME} SHARED
               TestGenericSubsys.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME}
-                        ${Boost_LIBRARIES}
-                        MCUSimTestScript
-                        AVR8Sim
-                        CUnit )
+target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
+                                        MCUSimTestScript
+                                        AVR8Sim
+                                        CUnit )
 
 ## Add a target with no output so it will always be built.
  # Compile .asm files for all testcases in the `testcases' directory
-add_custom_target ( "${PROJECT_NAME}_compile" ALL ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
-                    DEPENDS compiler
+add_custom_target ( "${PROJECT_NAME}_compile" ALL
+                    COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
+                    DEPENDS mds-compiler
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/testcases"
                     COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_SOURCE_DIR}/testcases'." )

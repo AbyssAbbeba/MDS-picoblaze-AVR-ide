@@ -1,25 +1,46 @@
 #! /bin/bash
 
-cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
+declare -r OS="$(uname -o)"
+if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
+    if ! which 'cygpath' &> /dev/null; then
+        echo "Error: cygpath is missging."
+        exit 1
+    fi
+    declare -ir inWindows=1
+else
+    declare -ir inWindows=0
+fi
+if (( inWindows )); then
+    cd "$(dirname "$(readlink -n -f "$( cygpath "${0}" )" )" )/results" || exit 1
+else
+    cd "$(dirname "$(readlink -n -f "${0}")" )/results" || exit 1
+fi
 
 declare -r TEST_SUB_DIR="$(readlink -f "${1}")"
 declare -r HTML_FILE="${2}"
 declare -r FILE_PREFIX="${3}"
 declare -r MAIN_DIR="$(readlink -f ../..)"
 declare -r TEST_NAME="$(basename "${TEST_SUB_DIR}")"
-declare -a SRC_FILES=( $(find -L "${MAIN_DIR}" -type f -name '*.cxx') \
-                       $(find -L "${MAIN_DIR}" -type f -name '*.cpp') \
-                       $(find -L "${MAIN_DIR}" -type f -name '*.c'  ) \
-                       $(find -L "${MAIN_DIR}" -type f -name '*.h'  ) )
+declare -a SRC_FILES=( $( find -L "${MAIN_DIR}" -type f -name '*.cxx' ) \
+                       $( find -L "${MAIN_DIR}" -type f -name '*.cpp' ) \
+                       $( find -L "${MAIN_DIR}" -type f -name '*.c'   ) \
+                       $( find -L "${MAIN_DIR}" -type f -name '*.h'   ) )
 
 declare -a GCOV_FILES=( $(find -L "${TEST_SUB_DIR}" -type f -name '*.gcov' 2> /dev/null ) )
 declare -A RESULTS
 declare -A FILENAMES
 declare -i dotCounter=0
 
+declare -r thirdParty="${MAIN_DIR}/3rdParty/"
+for (( i=0; i < ${#SRC_FILES[@]}; i++ )); do
+    if [[ "${SRC_FILES[${i}]:0:${#thirdParty}}" == "${thirdParty}" ]]; then
+        SRC_FILES[${i}]=''
+    fi
+done
+
 function isInSources() {
     for (( i=0; i < ${#SRC_FILES[@]}; i++ )); do
-        if [[ "${1}" == "${SRC_FILES[$i]}" ]]; then
+        if [[ "${#SRC_FILES[${i}]}" != '0' && "${1}" == "${SRC_FILES[${i}]}" ]]; then
             return 0
         fi
     done
@@ -47,12 +68,20 @@ for gcovFile in "${GCOV_FILES[@]}"; do
         line="${infile[${idx}]}"
 
         if [[ "${line}" =~ ^' '*-:' '*0:Source: ]]; then
-            filename="$(readlink -f "${line:${#BASH_REMATCH[0]}}")"
+            filename="${line:${#BASH_REMATCH[0]}}"
+
+            if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
+                filename="$( cygpath "${filename}" )"
+            fi
+
+            filename="$(readlink -f "${filename}")"
             line="${line:0:${#BASH_REMATCH[0]}}${filename}"
+
             if ! isInSources "${filename}"; then
                 filename=""
                 break
             fi
+
             for fn in ${!FILENAMES[*]}; do
                 if [[ "${filename}" == "${fn}" ]]; then
                     inResults=1
