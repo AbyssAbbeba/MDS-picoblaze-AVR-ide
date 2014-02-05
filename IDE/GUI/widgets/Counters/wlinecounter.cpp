@@ -73,6 +73,7 @@ WLineCounterWidget* WLineCounter::getWidget()
 void WLineCounter::change(int value)
 {
     //qDebug() << "WLineCounter: change()" << value;
+    //this->verticalScrollBar()->setValue(value);
     this->widget->update();
     this->update();
     //qDebug() << "WLineCounter: return change()";

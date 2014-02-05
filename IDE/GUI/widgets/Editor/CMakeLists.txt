@@ -98,3 +98,8 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter GuiCf
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

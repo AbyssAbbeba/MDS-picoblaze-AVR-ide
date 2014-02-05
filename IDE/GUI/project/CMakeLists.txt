@@ -84,3 +84,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog McuSimCfgMgr SimControl ProjectTree) #QtNetwork ProjectTree Editor Dialogs WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool CompileWidget)
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

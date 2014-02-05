@@ -75,3 +75,7 @@ add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} disassembler MCUDataFiles DAsmPicoBlaze)# SimControl)
+
+install( TARGETS ${PROJECT_NAME}
+         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
