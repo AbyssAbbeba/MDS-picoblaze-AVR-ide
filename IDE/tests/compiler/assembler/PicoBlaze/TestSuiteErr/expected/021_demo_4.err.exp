@@ -4,42 +4,42 @@ MT_WARNING: 021_demo_4.asm:160.21-160.34: Warning: ==> ==> instruction `TEST sX,
 MT_WARNING: 021_demo_4.asm:44.37-44.42: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 MT_WARNING: 021_demo_4.asm:57.21-57.36: Warning: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 MT_WARNING: 021_demo_4.asm:160.21-160.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:160.31-160.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:58.41-58.45: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:160.31-160.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 021_demo_4.asm:58.41-58.45: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:161.21-161.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:161.21-161.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:161.31-161.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:161.31-161.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:162.21-162.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:162.21-162.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:162.31-162.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:162.31-162.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:163.21-163.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:163.21-163.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:163.31-163.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:163.31-163.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:164.21-164.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:164.21-164.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:164.31-164.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:164.31-164.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:165.21-165.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:165.21-165.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:165.31-165.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:165.31-165.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:166.21-166.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:166.21-166.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:166.31-166.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:166.31-166.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:167.21-167.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:167.21-167.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:167.31-167.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:167.31-167.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:168.21-168.34: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:168.21-168.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:168.31-168.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:168.31-168.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:74.21-74.35: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:169.21-169.29: Warning: ==> ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:74.21-74.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 MT_WARNING: 021_demo_4.asm:169.21-169.29: Warning: ==> ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:74.31-74.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:169.21-169.29: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:58.41-58.45: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:74.31-74.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 021_demo_4.asm:169.21-169.29: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 021_demo_4.asm:58.41-58.45: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:75.21-75.35: Warning: ==> ==> instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:75.21-75.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-MT_WARNING: 021_demo_4.asm:75.31-75.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 021_demo_4.asm:75.31-75.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_ERROR: 021_demo_4.asm:170.21-170.28: Error: macro not defined: "RETURNI".
 MT_WARNING: 021_demo_4.asm:99.38-99.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 MT_WARNING: 021_demo_4.asm:173.21-173.32: Warning: ==> instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
