@@ -66,9 +66,6 @@ class XilHDLFile : public DataFile
         /// @brief
         static const char * const MARK_INITP_E;
 
-        /// @brief
-        static const char * const EOL_SEQUENCE;
-
     ////    Public Datatypes    ////
     public:
         /**
