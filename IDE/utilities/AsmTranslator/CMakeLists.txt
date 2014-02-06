@@ -66,7 +66,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES} )
 
 # Main executable.
-add_executable ( ${TRANSLATOR_EXEC_TARGET} main.cxx ${EXEC_RC_FILE} )
+add_executable ( ${TRANSLATOR_EXEC_TARGET} ${EXEC_RC_FILE} main.cxx )
 target_link_libraries ( ${TRANSLATOR_EXEC_TARGET} ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------

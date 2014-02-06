@@ -49,10 +49,10 @@ elseif ( TARGET_OS STREQUAL "Windows" )
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
 
-    INSTALL ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
-    INSTALL ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.
-    INSTALL ( FILES ${QT_LIBRARIES}    DESTINATION ${INSTALL_DIR_BIN} ) # Include Qt framework libraries.
-    INSTALL ( FILES ${Boost_LIBRARIES} DESTINATION ${INSTALL_DIR_BIN} ) # Include boost libraries.
+    install ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
+    install ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.
+    install ( FILES ${QT_LIBRARIES}    DESTINATION ${INSTALL_DIR_BIN} ) # Include Qt framework libraries.
+    install ( FILES ${Boost_LIBRARIES} DESTINATION ${INSTALL_DIR_BIN} ) # Include boost libraries.
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
@@ -103,10 +103,10 @@ set ( CPACK_PACKAGE_VERSION_PATCH 0 )
 ## Resources.
 #
 
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/pkgs/pkgdesc.txt" )
-set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/pkgs/pkglicense.txt" )
-set ( CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/pkgs/pkgreadme.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/pkgs/pkgwelcome.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" )
+set ( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme.txt" )
+set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome.txt" )
 
 #
 ## Options for the "DEB" generator.
@@ -141,63 +141,83 @@ set ( CPACK_RPM_PACKAGE_LICENSE "<package license>" )
 ## Options for the "NSIS" generator (Windows).
 #
 
+# Coverts a sane path (e.g. "/x/y/z") into an MS-DOS crap (e.g. "\\\\x\\\\y\\\\z").
+macro ( SLASH_TO_QUADRUPLE_BACKSLACH Variable )
+    string ( REGEX REPLACE "/" "\\\\\\\\" ${Variable} "${${Variable}}" )
+    string ( REGEX REPLACE "\\|" "/" ${Variable} "${${Variable}}" )
+endmacro()
+
  # Installation directory on the target system.
-set ( CPACK_PACKAGE_INSTALL_DIRECTORY "Moravia Microsystems\\\\${PRODUCT_NAME}" )
+set ( CPACK_PACKAGE_INSTALL_DIRECTORY "Moravia Microsystems/${PRODUCT_NAME}" )
+slash_to_quadruple_backslach ( CPACK_PACKAGE_INSTALL_DIRECTORY )
   # A branding image that will be displayed inside the installer
-set ( CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/pkgs/header.bmp" )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_PACKAGE_ICON ${CPACK_PACKAGE_ICON} )
+set ( CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/header.bmp" )
+slash_to_quadruple_backslach ( CPACK_PACKAGE_ICON )
  # Various images.
 set ( CPACK_NSIS_INSTALLER_MUI_ICON_CODE "
-      \; Installer program icon
-      !define MUI_ICON \\\"${CMAKE_SOURCE_DIR}/pkgs/installer.ico\\\"
+      ; Installer program icon
+      !define MUI_ICON \\\"${CMAKE_CURRENT_SOURCE_DIR}/installer.ico\\\"
 
-      \; Uninstaller program icon.
-      !define CPACK_NSIS_MUI_UNIICON \\\"${CMAKE_SOURCE_DIR}/pkgs/uninstaller.ico\\\"
+      ; Uninstaller program icon.
+      !define MUI_UNICON \\\"${CMAKE_CURRENT_SOURCE_DIR}/uninstaller.ico\\\"
 
-      \; Sidebar image.
-      !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_SOURCE_DIR}/pkgs/sidebar.bmp\\\"
+      ; Sidebar image.
+      !define MUI_WELCOMEFINISHPAGE_BITMAP \\\"${CMAKE_CURRENT_SOURCE_DIR}/sidebar.bmp\\\"
 " )
-string ( REGEX REPLACE "/" "\\\\\\\\" CPACK_NSIS_INSTALLER_MUI_ICON_CODE ${CPACK_NSIS_INSTALLER_MUI_ICON_CODE} )
+slash_to_quadruple_backslach ( CPACK_NSIS_INSTALLER_MUI_ICON_CODE )
  # Set the compression algorithm used to compress files/data in the installer
 set ( CPACK_NSIS_COMPRESSOR "/SOLID /FINAL lzma" )
  # Ask about uninstalling previous versions first.
 set ( CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON )
  # Modify PATH toggle.
-set ( CPACK_NSIS_MODIFY_PATH OFF )
+set ( CPACK_NSIS_MODIFY_PATH ON )
  # The display name string that appears in the Windows Add/Remove Program control panel.
 set ( CPACK_NSIS_DISPLAY_NAME "${PRODUCT_NAME}" )
  # The title displayed at the top of the installer.
 set ( CPACK_NSIS_PACKAGE_NAME "${PRODUCT_NAME}" )
  # A path to the executable that contains the app. icon.
-set ( CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\mds-ide.exe" )
+set ( CPACK_NSIS_INSTALLED_ICON_NAME "${INSTALL_DIR_BIN}/mds-ide.exe" )
+slash_to_quadruple_backslach ( CPACK_NSIS_INSTALLED_ICON_NAME )
  # URL to a web site providing assistance in installing your application.
 set ( CPACK_NSIS_HELP_LINK "http://www.moravia-microsystems.com" )
  # URL to a web site providing more information about your application.
 set ( CPACK_NSIS_URL_INFO_ABOUT "http://www.moravia-microsystems.com/about" )
  # Contact information for questions and comments about the installation process.
 set ( CPACK_NSIS_CONTACT "support@moravia-microsystems.com" )
- # Additional NSIS commands for creating start menu shortcuts.
-set ( CPACK_NSIS_CREATE_ICONS_EXTRA "
-      CreateShortCut '\$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\${PRODUCT_NAME}.lnk' '\$INSTDIR\\\\bin\\\\mds-ide.exe'
-      CreateShortCut \\\"$DESKTOP\\\\${PRODUCT_NAME}.lnk\\\" \\\"$INSTDIR\\\\bin\\\\mds-ide.exe\\\"
-" )
  # Additional NSIS commands to uninstall start menu shortcuts.
 set ( CPACK_NSIS_DELETE_ICONS_EXTRA "" )
  # Specify an executable to add an option to run on the finish page of the NSIS installer
 set ( CPACK_NSIS_MUI_FINISHPAGE_RUN "mds-ide.exe" )
+ # Registry key used when installing this project.
+SET ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Moravia Microsystems/${PRODUCT_NAME}" )
+slash_to_quadruple_backslach ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY )
+ # Additional NSIS commands for creating start menu shortcuts.
+set ( CPACK_NSIS_CREATE_ICONS_EXTRA "
+      CreateShortCut \\\"$DESKTOP/${PRODUCT_NAME}.lnk\\\" \\\"$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe\\\"
+      CreateShortCut \\\"$QUICKLAUNCH/${PRODUCT_NAME}.lnk\\\" \\\"$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe\\\"
+      CreateShortCut '\$SMPROGRAMS/$STARTMENU_FOLDER/${PRODUCT_NAME}.lnk' '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe'
+" )
+slash_to_quadruple_backslach ( CPACK_NSIS_CREATE_ICONS_EXTRA )
  # Specify links in [application] menu.
 set ( CPACK_NSIS_MENU_LINKS
-      "doc/cmake-@CMake_VERSION_MAJOR@.@CMake_VERSION_MINOR@/cmake.html"
-      "Moravia Microsystems, s.r.o."
-      "http://www.moravia-microsystems.com" "${PRODUCT_NAME} Web Site" )
+      "${INSTALL_DIR_DOC}/${MANUAL_PDF}" "${PRODUCT_NAME} user documentation"
+      "http:||www.moravia-microsystems.com" "Moravia Microsystems Web Site" )
+slash_to_quadruple_backslach ( CPACK_NSIS_MENU_LINKS )
  # Extra NSIS commands that will be added to the beginning of the install Section
 set ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "" )
+slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the end of the install Section
-set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "" )
+set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    !include \\\"${CMAKE_CURRENT_SOURCE_DIR}/FileAssociation.nsh\\\"
+    \\\${registerExtension} '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe' '.mds-ide' '${PRODUCT_NAME} Project File'
+" )
+slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the uninstall Section
-set ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "Delete \\\"$DESKTOP\\\\${PRODUCT_NAME}.lnk\\\"" )
- # Registry key used when installing this project.
-SET ( CPACK_PACKAGE_INSTALL_REGISTRY_KEY "Moravia Microsystems\\\\${PRODUCT_NAME}" )
+set ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
+    Delete \\\"$DESKTOP/${PRODUCT_NAME}.lnk\\\"
+    \\\${unregisterExtension} '.mds-ide' '${PRODUCT_NAME} Project File'
+" )
+slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS )
 
 # Include packaging driver provided by CMake.
-include ( CPack )
+include ( "CPack" )

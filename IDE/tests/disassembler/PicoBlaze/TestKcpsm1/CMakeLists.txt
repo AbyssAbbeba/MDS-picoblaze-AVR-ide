@@ -39,5 +39,4 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         MCUDataFiles
                                         compiler
                                         disassembler
-                                        DAsmPicoBlaze
                                         CUnit )

@@ -5,6 +5,6 @@
     <comment xml:lang="en">Multitarget Development System project</comment>
     <icon name="mds-ide"/>
     <glob-deleteall/>
-    <glob pattern="*.mds" />
+    <glob pattern="*.mds-ide" />
   </mime-type>
 </mime-info>

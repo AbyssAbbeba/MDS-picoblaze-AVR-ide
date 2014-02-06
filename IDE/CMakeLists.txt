@@ -31,6 +31,7 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 set ( INSTALL_DIR_BIN "bin" )
 set ( INSTALL_DIR_LIB "lib/mds" )
 set ( INSTALL_DIR_SHARE "share" )
+set ( INSTALL_DIR_DOC "doc/mds" )
 set ( INSTALL_DIR_INCLUDE "include/mds" )
 
 set ( PRODUCT_VERSION "1.0" )
@@ -43,9 +44,9 @@ set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe -
  # - for debug build only:
 set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
-set ( CMAKE_C_FLAGS_RELEASE    "-O3 -DNDEBUG" )
+set ( CMAKE_C_FLAGS_RELEASE    "-O2 -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_C_FLAGS_MINSIZEREL "-O3 -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-O2 -DNDEBUG" )
 
 # Set the same compilation flags for C++ as they are set for C.
 set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
@@ -84,7 +85,7 @@ if ( NOT CMAKE_BUILD_TYPE )
 endif()
 message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}." )
 
-# Build all libraries by default as shared or static.
+# When in Debug build mode, build all libraries as shared by default.
 if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
     set ( BUILD_SHARED_LIBS ON )
 else()
@@ -123,12 +124,17 @@ if ( NOT TARGET_OS )
     set ( TARGET_OS "${CMAKE_HOST_SYSTEM_NAME}" )
 endif()
 if ( TARGET_OS STREQUAL "Linux" )
+    # Make all code position independent.
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fPIC" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
 elseif ( TARGET_OS STREQUAL "Windows" )
+    # Output all executable binaries and dynamic link libraries to the same directory.
     set ( LIBRARY_OUTPUT_PATH    ${CMAKE_BINARY_DIR} )
     set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
-#     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -static-libstdc++ -static-libgcc" ) # Link statically with std. lib.
-#     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc" ) # Link statically with std. lib.
 elseif ( TARGET_OS STREQUAL "Darwin" )
+#     # Link statically with std. lib.
+#     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -static-libstdc++ -static-libgcc" )
+#     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc" )
 else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
 endif()
@@ -190,7 +196,7 @@ include ( "${CMAKE_SOURCE_DIR}/windres.cmake" )
 enable_testing()
 
 # CTest is a testing tool distributed as a part of CMake.
-include ( CTest )
+include ( "CTest" )
 
 # Include our own test macros.
 include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
@@ -200,7 +206,7 @@ include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Build API and user documentation.
-# add_subdirectory ( docs )
+add_subdirectory ( docs )
 
 # Build compiler collection.
 add_subdirectory ( compiler )

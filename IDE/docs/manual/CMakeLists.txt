@@ -18,6 +18,9 @@ project ( manual )
 # GENERATE MDS MANUAL.
 # ------------------------------------------------------------------------------
 
+# Path to MDS manual as PDF file.
+set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
+
 #
 ## Attempt to locate LaTeX tools.
 #
@@ -101,13 +104,13 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     file ( GLOB CLEAN_HTLATEX *.html *.css *.4ct *.4tc *.lg *.tc *.dvi *.idv *.tmp *.xref texput.log genXHTML.log )
     set ( CLEAN_MAKEINDEX "MDS_manual.idx;MDS_manual.ind;MDS_manual.ilg" )
     set ( CLEAN_QHELP     "MDS_manual.qhc;MDS_manual.qch;MDS_manual.qhp" )
-    set ( CLEAN_LATEX     "MDS_manual.log;MDS_manual.pdf;MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
+    set ( CLEAN_LATEX     "MDS_manual.log;${MANUAL_PDF};MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
     set ( CLEAN_FILES "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
     set_directory_properties ( PROPERTIES
                                ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
 
     # Use LaTeX tools to generate end user documentation, and Qt Help Framework tools to generate Qt Help.
-    if ( "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.tex" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.pdf" )
+    if ( "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.tex" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_PDF}" )
         add_custom_target ( manual-pdflatex ALL
                             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                             COMMENT "Generating MDS documentation as PDF with PDF LaTeX."
@@ -152,3 +155,6 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                             COMMENT "MDS documentation is already built ... skipping." )
     endif()
 endif()
+
+install ( FILES "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_PDF}"
+          DESTINATION ${INSTALL_DIR_DOC} )

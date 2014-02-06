@@ -26,7 +26,7 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME}
               CompilerCPreprocessor.cxx
               CompilerCSemanticAnalyzer.cxx )
 
@@ -41,6 +41,8 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
