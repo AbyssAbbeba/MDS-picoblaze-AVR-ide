@@ -30,9 +30,15 @@ SET( SAMPLE_MOC_HDRS
         ./projectcfgdlg_core.h
         ./projectcfg_general.h
         ./projectcfg_filemgr.h
-        ./projectcfg_compiler.h
         ./projectcfg_comppaths.h
 #        ./cfginterface.h
+)
+
+# some .ui files
+SET( SAMPLE_UIS
+        ./projectcfg_compiler.ui
+        ./projectcfg_comppaths.ui
+        ./projectcfg_filemgr.ui
 )
 
 
@@ -72,10 +78,13 @@ add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -D PICOBLAZE)
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
+# this will run uic on .ui files:
+QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Project CfgInterface)# SimControl)
 

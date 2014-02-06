@@ -33,6 +33,7 @@ set ( INSTALL_DIR_LIB "lib/mds" )
 set ( INSTALL_DIR_SHARE "share" )
 set ( INSTALL_DIR_DOC "doc/mds" )
 set ( INSTALL_DIR_INCLUDE "include/mds" )
+set ( INSTALL_DIR_DEMOPROJECT "demoproject" )
 
 set ( PRODUCT_VERSION "1.0" )
 set ( COPYRIGHT_YEARS "2013, 2014" )

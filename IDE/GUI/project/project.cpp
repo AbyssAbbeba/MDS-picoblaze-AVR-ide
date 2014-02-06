@@ -634,16 +634,16 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     fileCount=0;
 
     this->treeProjSource = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Source");
+    this->treeProjSource->setText(0, "Source");
 
     this->treeProjInclude = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Include");
+    this->treeProjInclude->setText(0, "Include");
 
     this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Compiled");
+    this->treeProjCompiled->setText(0, "Compiled");
 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Other");
+    this->treeProjOther->setText(0, "Other");
 
     for (int i = 0; i < 8; i++)
     {

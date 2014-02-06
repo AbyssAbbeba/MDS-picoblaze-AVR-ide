@@ -273,10 +273,10 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                     // Arbitrary identifier, e.g. `MYREG_U1'.
 
                     // Convert the string to upper case characters.
-                    for ( int i = 0; i < yyleng; i++ )
-                    {
-                        yytext[i] = yytext[i];
-                    }
+                    //for ( int i = 0; i < yyleng; i++ )
+                    //{
+                    //    yytext[i] = yytext[i];
+                    //}
 
                     // Return as general identifier.
                     yylval->symbol = yytext;
