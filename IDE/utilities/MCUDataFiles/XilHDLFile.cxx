@@ -28,7 +28,6 @@ const char * const XilHDLFile::MARK_NAME       = "{name}";
 const char * const XilHDLFile::MARK_START      = "{begin template}";
 const char * const XilHDLFile::MARK_INIT_E     = "}";
 const char * const XilHDLFile::MARK_INITP_E    = "}";
-const char * const XilHDLFile::EOL_SEQUENCE    = "\r\n";
 const char * const XilHDLFile::MARK_INITP_S[3] = { "{INITP_", "{[8:0]_INITP_", "{[17:9]_INITP_" };
 const char * const XilHDLFile::MARK_INIT_S[6]  =
 {
@@ -203,6 +202,11 @@ void XilHDLFile::save ( const std::string & filename,
     {
         std::getline(tmplFile, line);
 
+        if ( '\r' == line.back() )
+        {
+            line.pop_back();
+        }
+
         if ( true == tmplFile.bad() || true == outFile.bad() )
         {
             throw DataFileException(DataFileException::EXP_IO_ERROR);
@@ -266,7 +270,7 @@ void XilHDLFile::save ( const std::string & filename,
             }
         }
 
-        outFile << line << EOL_SEQUENCE;
+        outFile << line << std::endl;
     }
 }
 
