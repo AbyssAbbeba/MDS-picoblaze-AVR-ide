@@ -62,9 +62,6 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 # Optionally start test subjects in Valgrind:Memcheck.
 option ( TEST_MEMCHECK "Start test subjects in Valgrind:Memcheck." ON )
 
-# Optionally skip build of test binaries.
-option ( NO_TEST "Do not build test binaries." OFF )
-
 # Optionally colorize compiler output messages.
 if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
     option ( COLOR_GCC "Filter compiler output messages to add VT100 terminal compatible color codes to them." ON )
@@ -234,7 +231,7 @@ add_subdirectory ( utilities )
 add_subdirectory ( 3rdParty )
 
 # Build automated tests.
-if ( NOT NO_TEST )
+if ( BUILD_TESTING )
     add_subdirectory ( tests )
 endif()
 
