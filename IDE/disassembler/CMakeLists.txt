@@ -66,20 +66,26 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( DisassemblerCore
               ${LIB_RC_FILE}
-              DAsm.cxx
               DAsmCore.cxx )
+
+# Add a library to the project using the specified source files.
+add_library ( ${PROJECT_NAME} SHARED
+              DAsm.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( ${PROJECT_NAME} DAsmPicoBlaze )
 
 #
 ## Disassembler as executable file.
 #
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${DISASSEMBLER_EXEC} main.cxx ${EXEC_RC_FILE} )
+add_executable ( ${DISASSEMBLER_EXEC} ${EXEC_RC_FILE} main.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${DISASSEMBLER_EXEC} DAsmPicoBlaze )
+target_link_libraries ( ${DISASSEMBLER_EXEC} ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
@@ -88,3 +94,9 @@ target_link_libraries ( ${DISASSEMBLER_EXEC} DAsmPicoBlaze )
 install ( TARGETS ${PROJECT_NAME} ${DISASSEMBLER_EXEC}
           RUNTIME DESTINATION ${INSTALL_DIR_BIN}
           LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS DisassemblerCore
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

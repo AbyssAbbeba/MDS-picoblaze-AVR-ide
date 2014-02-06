@@ -103,6 +103,11 @@ void RawHexDumpFile::save ( const std::string & filename,
             throw DataFileException(DataFileException::EXP_IO_ERROR);
         }
 
+        if ( opCode & 0xfe0000 )
+        {
+            opCode = 0;
+        }
+
         sprintf(buf, "%05X", opCode);
         file << buf << std::endl;
     }
