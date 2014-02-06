@@ -363,9 +363,9 @@ inline void XilHDLFile::generateDataFieldWord ( std::string * dataField,
                     data[i] <<= 8;
                     data[i] |= byteInt;
                 }
-
-                data[i] = ( ( 0xffff & data[i] ) << 16 ) | ( 0xffff & ( data[i] >> 16) );
             }
+
+            data[i] = ( ( 0xffff & data[i] ) << 16 ) | ( 0xffff & ( data[i] >> 16) );
         }
     }
     else
