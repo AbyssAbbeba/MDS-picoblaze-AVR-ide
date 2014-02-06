@@ -70,6 +70,7 @@ add_subdirectory(mainform)
 add_subdirectory(project)
 add_subdirectory(errordialog)
 add_subdirectory(guicfg)
+add_subdirectory(demoprojekt)
 
 
 
