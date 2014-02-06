@@ -27,26 +27,17 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
     : QWidget(parentWidget)
 {
     this->project = currProject;
-    fileList = new QListWidget(this);
-    deleteBtn = new QPushButton("Delete", this);
-    newBtn = new QPushButton("New", this);
-    editBtn = new QPushButton("Edit", this);
-    btnLayout = new QVBoxLayout(this);
-    btnLayout->addWidget(newBtn);
-    btnLayout->addWidget(editBtn);
-    btnLayout->addWidget(deleteBtn);
-    btnWidget = new QWidget(this);
-    btnWidget->setLayout(btnLayout);
-    layout = new QGridLayout(this);
-    layout->addWidget(fileList, 0,0,Qt::AlignJustify);
-    layout->addWidget(btnWidget, 0,1,Qt::AlignJustify);
-    this->setLayout(layout);
-    this->adjustSize();
-    this->load();
 
-    connect(this->newBtn, SIGNAL(clicked()), this, SLOT(New()));
-    connect(this->editBtn, SIGNAL(clicked()), this, SLOT(Edit()));
-    connect(this->deleteBtn, SIGNAL(clicked()), this, SLOT(Delete()));
+    ui.setupUi(this);
+    
+    if (this->project != NULL)
+    {
+        this->load();
+    }
+
+    connect(this->ui.btnNew, SIGNAL(clicked()), this, SLOT(newPath()));
+    connect(this->ui.btnEdit, SIGNAL(clicked()), this, SLOT(editPath()));
+    connect(this->ui.btnDelete, SIGNAL(clicked()), this, SLOT(deletePath()));
     //connect(this, SIGNAL(savePaths(QList<QString>)), this->project, SLOT(setCompileIncPaths(QList<QString>)));
 }
 
@@ -54,12 +45,12 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
 /**
  * @brief
  */
-void ProjectCfg_CompPaths::New()
+void ProjectCfg_CompPaths::newPath()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
     if (NULL != path)
     {
-        QListWidgetItem *item = new QListWidgetItem(path, fileList);
+        QListWidgetItem *item = new QListWidgetItem(path, ui.lstPaths);
     }
 }
 
@@ -67,12 +58,12 @@ void ProjectCfg_CompPaths::New()
 /**
  * @brief
  */
-void ProjectCfg_CompPaths::Edit()
+void ProjectCfg_CompPaths::editPath()
 {
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
     if (NULL != path)
     {
-        this->fileList->currentItem()->setText(path);
+        this->ui.lstPaths->currentItem()->setText(path);
     }
 }
 
@@ -80,17 +71,17 @@ void ProjectCfg_CompPaths::Edit()
 /**
  * @brief
  */
-void ProjectCfg_CompPaths::Delete()
+void ProjectCfg_CompPaths::deletePath()
 {
-    if (0 < this->fileList->count())
+    if (0 < this->ui.lstPaths->count())
     {
-        if (NULL == this->fileList->currentItem())
+        if (NULL == this->ui.lstPaths->currentItem())
         {
-            delete this->fileList->item(0);
+            delete this->ui.lstPaths->item(0);
         }
         else
         {
-            delete this->fileList->currentItem();
+            delete this->ui.lstPaths->currentItem();
         }
     }
 }
@@ -104,7 +95,7 @@ void ProjectCfg_CompPaths::load()
     qDebug() << "ProjectCfg_CompPaths: load()";
     for (int i = 0; i < this->project->compileIncPaths.count(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->fileList);
+        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->ui.lstPaths);
     }
     qDebug() << "ProjectCfg_CompPaths: load()";
 }
@@ -116,9 +107,9 @@ void ProjectCfg_CompPaths::load()
 void ProjectCfg_CompPaths::save()
 {
     QStringList paths;
-    for (int i = 0; i < this->fileList->count(); i++)
+    for (int i = 0; i < this->ui.lstPaths->count(); i++)
     {
-        paths.append(this->fileList->item(i)->text());
+        paths.append(this->ui.lstPaths->item(i)->text());
     }
     this->project->setCompileIncPaths(paths);
 }

@@ -31,8 +31,8 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     QAction *projectConfigAct;
     if (project == true)
     {
-        addFileAct = new QAction("New File", projectPopup);
-        newFileAct = new QAction("Add File", projectPopup);
+        newFileAct = new QAction("New File", projectPopup);
+        addFileAct = new QAction("Add File", projectPopup);
         projectConfigAct = new QAction("Configuration", projectPopup);
         projectPopup->addAction(newFileAct);
         projectPopup->addAction(addFileAct);
@@ -103,7 +103,9 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 void ProjectTree::contextP2(int fileCount)
 {
     qDebug() << "ProjectTree: contextP2()";
-    if (fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0 || this->itemAt(lastEvent->pos())->toolTip(0) == NULL)
+    if ( fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0
+      || this->itemAt(lastEvent->pos())->toolTip(0) == NULL
+       )
     {
         projectPopup->popup(lastEvent->globalPos());
     }

@@ -3,11 +3,7 @@
 
 
 #include <QWidget>
-#include <QDialogButtonBox>
-#include <QListWidget>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include "ui_projectcfg_comppaths.h"
 
 class Project;
 
@@ -20,21 +16,15 @@ class ProjectCfg_CompPaths : public QWidget
        void save();
        
     private slots:
-        void New();
-        void Edit();
-        void Delete();
+        void newPath();
+        void editPath();
+        void deletePath();
         
     private:
         void load();
         
         Project *project;
-        QPushButton *newBtn;
-        QPushButton *editBtn;
-        QPushButton *deleteBtn;
-        QListWidget *fileList;
-        QGridLayout *layout;
-        QVBoxLayout *btnLayout;
-        QWidget *btnWidget;
+        Ui_ProjectCfg_CompPaths ui;
 };
 
 
