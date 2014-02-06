@@ -50,8 +50,6 @@ target_link_libraries ( ${PROJECT_NAME}
                         TMS_TestMScriptI
                         TMS_TestMScriptII
                         TMS_TestMScriptIII
-                        MScript
-                        MScriptTestStrategy
                         AutoTest )
 
 # ------------------------------------------------------------------------------

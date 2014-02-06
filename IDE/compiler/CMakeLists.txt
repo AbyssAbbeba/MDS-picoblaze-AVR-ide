@@ -70,7 +70,7 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME} CompilerModules )
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${COMPILER_EXEC_TARGET} main.cxx ${EXEC_RC_FILE} )
+add_executable ( ${COMPILER_EXEC_TARGET} ${EXEC_RC_FILE} main.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${COMPILER_EXEC_TARGET} ${PROJECT_NAME} )

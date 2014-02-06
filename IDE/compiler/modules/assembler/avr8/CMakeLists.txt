@@ -22,15 +22,16 @@ project ( CompilerModuleAsmAvr8 )
 FLEX_BISON_PAIR ( AsmAvr8Lexer AsmAvr8Parser AsmAvr8LexerParser )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../core" )
+include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/" )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+# Add a library to the project using the specified source files.
+add_library ( ${PROJECT_NAME}
               AsmAvr8SemanticAnalyzer.cxx )
 
-# Link a target to given libraries
+# Link target to given libraries
 target_link_libraries ( AsmAvr8LexerParser CompilerCore )
+
+# Link target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
                                         CompilerCore
@@ -41,6 +42,8 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

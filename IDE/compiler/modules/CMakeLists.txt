@@ -11,7 +11,7 @@
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
-# Set project name
+# Set project name.
 project ( CompilerModules )
 
 # ------------------------------------------------------------------------------
@@ -29,25 +29,24 @@ add_subdirectory ( assembler )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../core/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/assembler/generators/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
+include_directories ( "${CMAKE_SOURCE_DIR}/utilities/DbgFile/"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../core/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/assembler/generators/" )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library.
-add_library ( ${PROJECT_NAME} SHARED
-              CompilerModules.cxx )
+# Add library to the project using the specified source files.
+add_library ( ${PROJECT_NAME} CompilerModules.cxx )
 
-# Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} CompilerModulesAsm
-                                        CompilerModuleC )
-
+# Link target to given libraries.
+target_link_libraries ( ${PROJECT_NAME} CompilerModuleC
+                                        CompilerModulesAsm )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

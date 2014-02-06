@@ -40,8 +40,6 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         PicoBlazeStrategy
-                                        MCUSimTestScript
-                                        PicoBlazeSim
                                         CUnit )
 
 ## Add a target with no output so it will always be built.

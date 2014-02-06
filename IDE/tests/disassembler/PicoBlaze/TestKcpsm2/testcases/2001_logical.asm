@@ -1,0 +1,84 @@
+; Compiler load case for Assembler
+; instruction opcodes
+; instruction opcodes
+device kcpsm2
+
+
+
+
+Start:
+
+
+; Logical
+        LOAD      s1,#01h
+        LOAD      s1,#5
+        LOAD      s1,#05
+        LOAD      s1,#0x05
+        LOAD      s1,#0b101
+        LOAD      s1,#0b00000101
+        LOAD      s1,#5D
+        LOAD      s1,#5O
+        LOAD      s1,#5Q
+        LOAD      s1,#5h
+        LOAD      s1,#101b
+        LOAD      s1,#00000101b
+        
+        AND       s1,#5
+        AND       s1,#05
+        AND       s1,#0x05
+        AND       s1,#0b101
+        AND       s1,#0b00000101
+        AND       s1,#5D
+        AND       s1,#5O
+        AND       s1,#5Q
+        AND       s1,#5h
+        AND       s1,#101b
+        AND       s1,#00000101b
+        
+        OR        s1,#5
+        OR        s1,#5
+        OR        s1,#05
+        OR        s1,#0x05
+        OR        s1,#0b101
+        OR        s1,#0b00000101
+        OR        s1,#5D
+        OR        s1,#5O
+        OR        s1,#5Q
+        OR        s1,#5h
+        OR        s1,#101b
+        OR        s1,#00000101b
+        
+        XOR       s1,#5
+        XOR       s1,#5
+        XOR       s1,#05
+        XOR       s1,#0x05
+        XOR       s1,#0b101
+        XOR       s1,#0b00000101
+        XOR       s1,#5D
+        XOR       s1,#5O
+        XOR       s1,#5Q
+        XOR       s1,#5h
+        XOR       s1,#101b
+        XOR       s1,#00000101b
+        
+        load      s1,#5
+        load      s1,#5
+        load      s1,#05
+        load      s1,#0x05
+        load      s1,#0b101
+        load      s1,#0b00000101
+        load      s1,#5D
+        load      s1,#5O
+        load      s1,#5Q
+        load      s1,#5h
+        load      s1,#101b
+        load      s1,#00000101b
+
+        LOAD      s1,s2
+        AND       s1,s2
+        OR        s1,s2
+        XOR       s1,s2
+        load      s1,s2
+
+END
+

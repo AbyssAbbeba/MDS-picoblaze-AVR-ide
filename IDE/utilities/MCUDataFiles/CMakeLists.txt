@@ -20,6 +20,7 @@ project ( MCUDataFiles )
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
+              ${DEFAULT_LIB_RC_FILE}
               BinFile.cxx
               HexFile.cxx
               DataFile.cxx

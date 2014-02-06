@@ -6,7 +6,7 @@
 \addtolength{\voffset}{-5pt}
 
 \title{Moravia Microsystems - Corporate Coding Convention}
-\author{Martin Ošmera <martin.osmera@gmail.com>}
+\author{Martin Ošmera <martin.osmera@moravia-microsystems.com.com>}
 
 \newcommand{\mysubject}{Moravia Microsystems, the Corporate Coding Convention.}
 \newcommand{\mykeywords}{Moravia Microsystems}
@@ -46,9 +46,9 @@
 \fancyhead[RE]{\bfseries\leftmark}
 
 \fancypagestyle{plain}{
-        \fancyhead{}
-        \fancyhead[EL,OR]{\bfseries\thepage}
-        \renewcommand{\headrulewidth}{0pt}
+    \fancyhead{}
+    \fancyhead[EL,OR]{\bfseries\thepage}
+    \renewcommand{\headrulewidth}{0pt}
 }
 
 % define colors for syntax highlight
@@ -71,28 +71,28 @@
 \begin{document}
 
 \begin{titlepage}
-        \begin{figure}[ht!]
-                \centering{}
-                \includegraphics[width=.9\textwidth]{Moravia_Microsystems.png}
-                \caption{\textit{Moravia Microsystems, s.r.o.}}
-        \end{figure}
-        \begin{center}
-                \fontsize{35.83pt}{60pt} \selectfont{}
-                \textbf{Coding Convention}
-                \\[2cm]
-                \fontsize{25pt}{30pt} \selectfont{}
-                Corporate coding convention\\
-                guildelines for C++ and C.
-                \\[1cm]
-                \fontsize{15pt}{19pt} \selectfont{}
-                Martin Ošmera\\
-                Brno, 2013
-        \end{center}
+    \begin{figure}[ht!]
+        \centering{}
+        \includegraphics[width=.9\textwidth]{Moravia_Microsystems.png}
+        \caption{\textit{Moravia Microsystems, s.r.o.}}
+    \end{figure}
+    \begin{center}
+        \fontsize{35.83pt}{60pt} \selectfont{}
+        \textbf{Coding Convention}
+        \\[2cm]
+        \fontsize{25pt}{30pt} \selectfont{}
+        Corporate coding convention\\
+        guildelines for C++ and C.
+        \\[1cm]
+        \fontsize{15pt}{19pt} \selectfont{}
+        Martin Ošmera\\
+        Brno, 2013
+    \end{center}
 \end{titlepage}
 
 Copyright Information:
 \\
-\copyright{} 2013, Moravia Microsystems, s.r.o. All rights reserved.\\
+Copyright \copyright{} 2013, 2014 Moravia Microsystems, s.r.o. All rights reserved.\\
 Brno, Czech Republic, European Union.
 \\
 This document is protected by copyright. No part of this document may be reproduced in any form by any means
@@ -192,12 +192,13 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'C++'}\verb' '{\color{highlight_c_dox_comment}\verb'Interface:'}\verb' '{\color{highlight_c_dox_comment}\verb'PicoBlaze'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'for'}\verb' '{\color{highlight_c_dox_comment}\verb'stack.'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'Implements'}\verb' '{\color{highlight_c_dox_comment}\verb'processor'}\verb' '{\color{highlight_c_dox_comment}\verb'stack,'}\verb' '{\color{highlight_c_dox_comment}\verb'requires'}\verb' '{\color{highlight_c_dox_comment}\verb'no'}\verb' '{\color{highlight_c_dox_comment}\verb'configuration,'}\verb' '{\color{highlight_c_dox_comment}\verb'default'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'size'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'31,'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'initialized'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'contain'}\\
-            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'only'}\verb' '{\color{highlight_c_dox_comment}\verb'zeros'}\verb' '{\color{highlight_c_dox_comment}\verb'after'}\verb' '{\color{highlight_c_dox_comment}\verb'MCU'}\verb' '{\color{highlight_c_dox_comment}\verb'reset.'}\verb' '{\color{highlight_c_dox_comment}\verb'Fast'}\verb' '{\color{highlight_c_dox_comment}\verb'operation'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'a'}\verb' '{\color{highlight_c_dox_comment}\verb'priority.'}\verb' '{\color{highlight_c_dox_comment}\verb'The'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'shares'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'only'}\verb' '{\color{highlight_c_dox_comment}\verb'zeros'}\verb' '{\color{highlight_c_dox_comment}\verb'after'}\verb' '{\color{highlight_c_dox_comment}\verb'MCU'}\verb' '{\color{highlight_c_dox_comment}\verb'reset.'}\verb' '{\color{highlight_c_dox_comment}\verb'Fast'}\verb' '{\color{highlight_c_dox_comment}\verb'operation'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'was'}\verb' '{\color{highlight_c_dox_comment}\verb'a'}\verb' '{\color{highlight_c_dox_comment}\verb'priority.'}\verb' '{\color{highlight_c_dox_comment}\verb'The'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'subsystem'}\verb' '{\color{highlight_c_dox_comment}\verb'simulator'}\verb' '{\color{highlight_c_dox_comment}\verb'shares'}\
+verb' '{\color{highlight_c_dox_comment}\verb'the'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'common'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'interface,'}\verb' '{\color{highlight_c_dox_comment}\verb'like'}\verb' '{\color{highlight_c_dox_comment}\verb'register'}\verb' '{\color{highlight_c_dox_comment}\verb'file,'}\verb' '{\color{highlight_c_dox_comment}\verb'scratch'}\verb' '{\color{highlight_c_dox_comment}\verb'pad'}\verb' '{\color{highlight_c_dox_comment}\verb'RAM,'}\verb' '{\color{highlight_c_dox_comment}\verb'program'}\verb' '{\color{highlight_c_dox_comment}\verb'memory,'}\verb' '{\color{highlight_c_dox_comment}\verb'etc.'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_comment}\verb'(C)'}\verb' '{\color{highlight_c_dox_comment}\verb'copyright'}\verb' '{\color{highlight_c_dox_comment}\verb'2013'}\verb' '{\color{highlight_c_dox_comment}\verb'Moravia'}\verb' '{\color{highlight_c_dox_comment}\verb'Microsystems,'}\verb' '{\color{highlight_c_dox_comment}\verb's.r.o.'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\\
-            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Martin Ošmera <martin.osmera@gmail.com>, (C) 2013'}\\
+            \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@author'}{\color{highlight_c_dox_name}\verb' Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@ingroup'}{\color{highlight_c_dox_name}\verb' PicoBlaze'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@file'}\verb' '{\color{highlight_c_dox_word}\verb'PicoBlazeStack.h'}\\
             \verb' '{\color{highlight_c_dox_comment}\verb'*/'}\\
@@ -295,7 +296,8 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
             {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
             \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Change stack capacity.'}\\
             \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@warning'}\verb' '{\color{highlight_c_dox_comment}\verb'This'}\verb' '{\color{highlight_c_dox_comment}\verb'operation'}\verb' '{\color{highlight_c_dox_comment}\verb'does'}\verb' '{\color{highlight_c_dox_comment}\verb'NOT'}\verb' '{\color{highlight_c_dox_comment}\verb'preserve'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'memory'}\verb' '{\color{highlight_c_dox_comment}\verb'contents,'}\verb' '{\color{highlight_c_dox_comment}\verb'i.e.'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'is'}\verb' '{\color{highlight_c_dox_comment}\verb'(re-)initialize'}\verb' '{\color{highlight_c_dox_comment}\verb'to'}\verb' '{\color{highlight_c_dox_comment}\verb'zeros.'}\\
-            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'newSize'}\verb' '{\color{highlight_c_dox_comment}\verb'New'}\verb' '{\color{highlight_c_dox_comment}\verb'size'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'once.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@param[in]'}\verb' '{\color{highlight_c_dox_comment}\verb'newSize'}\verb' '{\color{highlight_c_dox_comment}\verb'New'}\verb' '{\color{highlight_c_dox_comment}\verb'size'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{
+highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'once.'}\\
             \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
             {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'void'}\verb' resize '{\color{highlight_c_bracket}\verb'('}\verb' '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' newSize '{\color{highlight_c_bracket}\verb')'}{\color{highlight_c_symbol}\verb';'}}\\
             \verb''\\
@@ -315,7 +317,8 @@ without prior written authorization of Moravia Microsystems, s.r.o, if any.
             {\color{highlight_normal}\verb'    public'{\color{highlight_c_symbol}\verb':'}}\\
             {\color{highlight_normal}\verb'        '}{\color{highlight_c_dox_comment}\verb'/**'}\\
             \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@brief'}{\color{highlight_c_dox_name}\verb' Get stack capacity.'}\\
-            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'same'}\verb' '{\color{highlight_c_dox_comment}\verb'time,'}\verb' '{\color{highlight_c_dox_comment}\verb'not'}\verb' '{\color{highlight_c_dox_comment}\verb'bytes.'}\\
+            \verb'         '{\color{highlight_c_dox_comment}\verb'*'}\verb' '{\color{highlight_c_dox_tag}\verb'@return'}\verb' '{\color{highlight_c_dox_comment}\verb'Stack'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'number'}\verb' '{\color{highlight_c_dox_comment}\verb'of'}\verb' '{\color{highlight_c_dox_comment}\verb'values'}\verb' '{\color{highlight_c_dox_comment}\verb'which'}\verb' '{\color{highlight_c_dox_comment}\verb'can'}\verb' '{\color{highlight_c_dox_comment}\verb'be'}\verb' '{\color{highlight_c_dox_comment}\verb'stored'}\verb' '{\color{highlight_c_dox_comment}\verb'in'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'stack'}\verb' '{\color{highlight_c_dox_comment}\verb'at'}\verb' '{\color{highlight_c_dox_comment}\verb'the'}\verb' '{\color{highlight_c_dox_comment}\verb'same'}\verb' '{\color{highlight_c_dox_comment}\verb'time,'}\verb' '{\color{highlight_c_dox_comment}\verb'not'}\verb' '{\color{
+highlight_c_dox_comment}\verb'bytes.'}\\
             \verb'         '{\color{highlight_c_dox_comment}\verb'*/'}\\
             {\color{highlight_normal}\verb'        '{\color{highlight_c_data_type}\verb'unsigned'}\verb' '{\color{highlight_c_data_type}\verb'int'}\verb' size'{\color{highlight_c_bracket}\verb'()'}\verb' '{\color{highlight_c_data_type}\verb'const'}}\\
             {\color{highlight_normal}\verb'        '{\color{highlight_c_bracket}\verb'{'}}\\

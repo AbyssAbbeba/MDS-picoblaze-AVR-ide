@@ -23,7 +23,7 @@ link_directories ("${CMAKE_CURRENT_SOURCE_DIR}/.." )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce static C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME}
               DAsmPicoBlazeCore.cxx
               DAsmPicoBlazeKcpsm6.cxx
               DAsmPicoBlazeKcpsm3.cxx
@@ -34,13 +34,15 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES}
-                                        disassembler
+                                        DisassemblerCore
                                         MCUDataFiles )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
