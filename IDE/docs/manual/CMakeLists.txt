@@ -93,7 +93,12 @@ if ( NOT ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR ) )
             message ( WARNING "qcollectiongenerator program not found." )
         endif()
     endif()
+
 endif()
+
+mark_as_advanced ( Q_HELP_TOOLS_FOUND )
+mark_as_advanced ( LATEX_FOUND )
+mark_as_advanced ( MANUAL_PDF )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # Set some configuration variables.
