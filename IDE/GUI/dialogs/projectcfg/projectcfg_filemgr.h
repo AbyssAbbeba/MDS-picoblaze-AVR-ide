@@ -16,10 +16,8 @@
 #define FILEMGR_H
 
 
-#include <QListWidget>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include <QWidget>
+#include "ui_projectcfg_filemgr.h"
 
 class Project;
 
@@ -47,14 +45,7 @@ class ProjectCfg_FileMgr : public QWidget
 
     private:
         Project *project;
-        QPushButton *deleteBtn;
-        QPushButton *addBtn;
-        QPushButton *newBtn;
-        QPushButton *setMainBtn;
-        QListWidget *fileList;
-        QGridLayout *layout;
-        QVBoxLayout *btnLayout;
-        QWidget *btnWidget;
+        Ui_ProjectCfg_FileMgr ui;
 
         bool reloadFiles;
 };

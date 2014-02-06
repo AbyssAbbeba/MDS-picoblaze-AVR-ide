@@ -41,6 +41,10 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
             keyEvent->key() <= Qt::Key_F))
         {
             int position = hexTextEdit->textCursor().position();
+            if ((position/3)+1 > hexByteArray->size())
+            {
+                return true;
+            }
             QChar data;
             QString final;
             if (position % 3 == 1)
@@ -76,6 +80,10 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
             keyEvent->key() <= 0x7e)
         {
             int position = hexAsciiEdit->textCursor().position() - hexAsciiEdit->textCursor().blockNumber();
+            if (position+1 > hexByteArray->size())
+            {
+                return true;
+            }
             (*hexByteArray)[position] = keyEvent->text().at(0).toAscii();
             emit asciiChanged(position);
         }
