@@ -113,3 +113,17 @@ void ProjectCfg_CompPaths::save()
     }
     this->project->setCompileIncPaths(paths);
 }
+
+
+/**
+ * @brief
+ */
+QStringList ProjectCfg_CompPaths::getPaths()
+{
+    QStringList paths;
+    for (int i = 0; i < this->ui.lstPaths->count(); i++)
+    {
+        paths.append(this->ui.lstPaths->item(i)->text());
+    }
+    return paths;
+}

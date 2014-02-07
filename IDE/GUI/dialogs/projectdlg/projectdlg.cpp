@@ -53,7 +53,7 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
 
     
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(bCreate()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(bReject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 
@@ -86,6 +86,15 @@ void ProjectDialog::bCreate()
                                LANG_ASM,
                                &file);
         file.close();
+
+        
+        projectMan->getActive()->setCompileOpt(this->prjdlg_compiler->getOpt());
+        projectMan->getActive()->setCompileIncPaths(this->prjdlg_comppaths->getPaths());
+        QStringList paths = this->prjdlg_filemgr->getPaths();
+        for (int i = 0; i < paths.count(); i++)
+        {
+            projectMan->getActive()->addFile(paths.at(i), paths.at(i).section('/', -1));
+        }
 
         accept();
     }

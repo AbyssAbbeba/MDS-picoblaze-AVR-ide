@@ -27,7 +27,16 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
     //layout = new QGridLayout(this);
     ui.setupUi(this);
 
-    connect(ui.btnChange, SIGNAL(pressed()), this, SLOT(setPath()));
+    connect(ui.btnChange,
+            SIGNAL(pressed()),
+            this,
+            SLOT(setPath())
+           );
+    connect(ui.cmbFamily,
+            SIGNAL(currentIndexChanged(const QString&)),
+            this,
+            SLOT(familyChanged(const QString&))
+           );
 
     this->show();
 }
@@ -76,4 +85,19 @@ QString Projectdlg_General::getIntVector()
 QString Projectdlg_General::getHWBuild()
 {
     return ui.leHWBuild->text();
+}
+
+
+void Projectdlg_General::familyChanged(const QString &text)
+{
+    if ("kcpsm6" == text)
+    {
+        ui.lblHWBuild->setEnabled(true);
+        ui.leHWBuild->setEnabled(true);
+    }
+    else
+    {
+        ui.lblHWBuild->setDisabled(true);
+        ui.leHWBuild->setDisabled(true);
+    }
 }

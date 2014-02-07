@@ -17,6 +17,7 @@
 
 
 #include <QWidget>
+#include <QStringList>
 #include "ui_projectcfg_filemgr.h"
 
 class Project;
@@ -32,6 +33,7 @@ class ProjectCfg_FileMgr : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject);
+        QStringList getPaths();
 
 
     private slots:
