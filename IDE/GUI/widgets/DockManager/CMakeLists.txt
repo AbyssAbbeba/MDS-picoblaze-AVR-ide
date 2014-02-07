@@ -33,28 +33,28 @@ SET( SAMPLE_MOC_HDRS
 # ------------------------------------------------------------------------------
 
 # Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
+#find_package(Qt4 REQUIRED)
 
 
 # <DEBUG!>
-link_directories(
-	#"${CMAKE_CURRENT_BINARY_DIR}/../SimulationInfo/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../PicoBlazeGrid/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../BookmarkList/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../BreakpointList/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../TabBar/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../Analyser/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../AnalyserWidget/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
-    "${CMAKE_CURRENT_BINARY_DIR}/../CompileInfo/"
-	)
-
-include_directories(
-    "${CMAKE_SOURCE_DIR}/GUI/widgets/PicoBlazeInfo/"
-    "${CMAKE_SOURCE_DIR}/GUI/widgets/sim/"
-    "${CMAKE_SOURCE_DIR}/simulators/MCUSim/"
-)
-
+#link_directories(
+#	#"${CMAKE_CURRENT_BINARY_DIR}/../SimulationInfo/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../PicoBlazeGrid/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../BookmarkList/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../BreakpointList/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../TabBar/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../Analyser/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../AnalyserWidget/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
+#    "${CMAKE_CURRENT_BINARY_DIR}/../CompileInfo/"
+#	)
+#
+#include_directories(
+#    "${CMAKE_SOURCE_DIR}/GUI/widgets/PicoBlazeInfo/"
+#    "${CMAKE_SOURCE_DIR}/GUI/widgets/sim/"
+#    "${CMAKE_SOURCE_DIR}/simulators/MCUSim/"
+#)
+#
 # </DEBUG!>
 
 ## Add switches to compiler command line
@@ -63,7 +63,7 @@ include_directories(
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+#add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 
 # and finally this will run moc:
@@ -71,7 +71,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
