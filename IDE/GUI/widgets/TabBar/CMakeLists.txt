@@ -31,7 +31,7 @@ SET( SAMPLE_MOC_HDRS
 # ------------------------------------------------------------------------------
 
 # Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
+#find_package(Qt4 REQUIRED)
 
 # Include Qt4's XML module
 #set(QT_USE_QTXML 1)
@@ -51,14 +51,14 @@ find_package(Qt4 REQUIRED)
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+#add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})

@@ -28,7 +28,7 @@ cmake_minimum_required(VERSION 2.8)
    )
 
   # enable warnings
-  ADD_DEFINITIONS( -Wall -std=c++0x )
+  #ADD_DEFINITIONS( -Wall -std=c++0x )
   
   # by default only QtCore and QtGui modules are enabled
   # other modules must be enabled like this:
@@ -37,7 +37,7 @@ cmake_minimum_required(VERSION 2.8)
   
   # this command finds Qt4 libraries and sets all required variables
   # note that it's Qt4, not QT4 or qt4
-  FIND_PACKAGE( Qt4 REQUIRED )
+  #FIND_PACKAGE( Qt4 REQUIRED )
   
   # add some useful macros and variables
   # (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
@@ -54,7 +54,7 @@ cmake_minimum_required(VERSION 2.8)
   QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
   # we need this to be able to include headers produced by uic in our code
   # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
-  INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
+  #INCLUDE_DIRECTORIES( ${CMAKE_BINARY_DIR} )
   
   # here we instruct CMake to build "mmIDE" executable from all of the source files
   ADD_EXECUTABLE( testwidget ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
