@@ -198,7 +198,7 @@ void ProjectCfg_General::load()
 }
 
 
-bool ProjectCfg_General::save()
+int ProjectCfg_General::save()
 {
     if (this->getHWBuild() == -2)
     {
