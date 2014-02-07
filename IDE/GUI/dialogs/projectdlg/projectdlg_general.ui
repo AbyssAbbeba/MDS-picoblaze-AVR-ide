@@ -83,10 +83,6 @@
    <property name="text">
     <string/>
    </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>../../../../../../../../Stažené/famfamfam_silk_icons_v013/icons/drive_magnify.png</normaloff>../../../../../../../../Stažené/famfamfam_silk_icons_v013/icons/drive_magnify.png</iconset>
-   </property>
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="geometry">

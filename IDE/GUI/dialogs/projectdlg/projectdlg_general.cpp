@@ -26,6 +26,9 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
 {
     //layout = new QGridLayout(this);
     ui.setupUi(this);
+    QPixmap *pm_btnChange = new QPixmap(":/resources//icons//drive_magnify.png");
+    QIcon *icon_btnChange = new QIcon(*pm_btnChange);
+    ui.btnChange->setIcon(*icon_btnChange);
 
     connect(ui.btnChange,
             SIGNAL(pressed()),
