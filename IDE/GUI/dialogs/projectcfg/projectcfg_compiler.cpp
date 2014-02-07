@@ -58,3 +58,22 @@ void ProjectCfg_Compiler::save()
     
     this->project->setCompileOpt(opt);
 }
+
+
+/**
+ * @brief
+ */
+QList<bool> ProjectCfg_Compiler::getOpt()
+{
+    QList<bool> opt;
+    opt.append(this->ui.chckSymbolTbl->isChecked());
+    opt.append(this->ui.chckMacroTbl->isChecked());
+    opt.append(this->ui.chckDbgFile->isChecked());
+    opt.append(this->ui.chckCodeTree->isChecked());
+    opt.append(this->ui.chckLstFile->isChecked());
+    opt.append(this->ui.chckHexFile->isChecked());
+    opt.append(this->ui.chckBinFile->isChecked());
+    opt.append(this->ui.chckSRecFile->isChecked());
+
+    return opt;
+}
