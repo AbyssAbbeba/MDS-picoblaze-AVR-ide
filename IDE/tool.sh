@@ -103,7 +103,7 @@ function tests() {
         ctest -j ${TEST_PP} --tests-regex "${1}"
     fi
 
-    bash tests/results2html.sh ${CPU_CORES}
+    bash tests/results2html.sh ${cov:-on} ${CPU_CORES}
 }
 
 function clean() {

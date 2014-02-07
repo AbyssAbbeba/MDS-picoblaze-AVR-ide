@@ -64,15 +64,15 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
 ## Disassembler as shared library.
 #
 
-## Add a library to the project using the specified source files,
- # in this case it will produce dynamic C++ library.
+## Add a library to the project using the specified source files.
 add_library ( DisassemblerCore
-              ${LIB_RC_FILE}
-              DAsmCore.cxx )
+              DAsmCore.cxx
+              DAsm.cxx )
 
 # Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
-              DAsm.cxx )
+              ${LIB_RC_FILE}
+              Disassembler.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} DAsmPicoBlaze )

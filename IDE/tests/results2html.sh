@@ -19,13 +19,14 @@ if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
 else
     declare -ir inWindows=0
 fi
+declare -ri COVERAGE=${1:-on}
 declare -ri CLEAN_UP=${clean_up:-1}
 declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -ri COMPRESS_HTML=${compress_html:-1}
 declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
 declare -ri DETECTED_CPU_CORES=$( which lscpu &> /dev/null && lscpu |
                                   gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
-declare -i  CPU_CORES=${1:-${DETECTED_CPU_CORES}}
+declare -i  CPU_CORES=${2:-${DETECTED_CPU_CORES}}
 
 # ======================================================================================================================
 # SUPPORT FOR PARALLEL RUN OF MULTIPLE JOBS
@@ -130,29 +131,31 @@ for i in *-Listing.xml; do
 done
 runParallelJobs ${CPU_CORES} # (${CPU_CORES} in args. means run in twice as many processes as usual.)
 
-declare -ra GCOV_FILES=( $(find . -name '*.gcov') )
-if (( 0 == ${#GCOV_FILES[@]} )); then
-    megaBytesOfGcov=0
-else
-    read megaBytesOfGcov _ <<< $( wc -c "${GCOV_FILES[@]}" | tail -n 1 )
-fi
-megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )
-numberOfGcovFiles=$( find . -name '*.gcov' | wc -l )
+if [[ COVERAGE =~ [oO][nN] ]]; then
+    declare -ra GCOV_FILES=( $(find . -name '*.gcov') )
+    if (( 0 == ${#GCOV_FILES[@]} )); then
+        megaBytesOfGcov=0
+    else
+        read megaBytesOfGcov _ <<< $( wc -c "${GCOV_FILES[@]}" | tail -n 1 )
+    fi
+    megaBytesOfGcov=$( bc -q <<< "scale = 2; ${megaBytesOfGcov} / ( 1024 * 1024 )" )
+    numberOfGcovFiles=$( find . -name '*.gcov' | wc -l )
 
-echo ""
-echo "Initiating final stage of coverage analysis (processing ${megaBytesOfGcov} MB in ${numberOfGcovFiles} files):"
-unset JOBS
-idx=1
-prefix=1
-JOBS[0]="../gcovanalysis.sh . 'Total-Coverage.html' 0"
-for i in *-Results.xml; do
-    test="${i%%-Results.xml}"
-    JOBS[${idx}]="../gcovanalysis.sh '${test}' '${test}-Coverage.html' '${prefix}'"
-    let prefix++
-    let idx++
-done
-runParallelJobs
-echo "Coverage analysis complete."
+    echo ""
+    echo "Initiating final stage of coverage analysis (processing ${megaBytesOfGcov} MB in ${numberOfGcovFiles} files):"
+    unset JOBS
+    idx=1
+    prefix=1
+    JOBS[0]="../gcovanalysis.sh . 'Total-Coverage.html' 0"
+    for i in *-Results.xml; do
+        test="${i%%-Results.xml}"
+        JOBS[${idx}]="../gcovanalysis.sh '${test}' '${test}-Coverage.html' '${prefix}'"
+        let prefix++
+        let idx++
+    done
+    runParallelJobs
+    echo "Coverage analysis complete."
+fi
 
 echo -n "Generating final results ... "
 

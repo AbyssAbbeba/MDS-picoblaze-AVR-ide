@@ -88,15 +88,15 @@ void DAsmPicoBlazeKcpsm1CPLD::phase2 ( unsigned int code,
     if ( addr != m_lastAddr )
     {
         m_code.push_back(std::string());
-        std::string & line = m_code.back();
+        std::string & ln = m_code.back();
 
         m_lastAddr = addr;
 
-        indent(line, 16);
-        appendStr(line, "ORG");
+        indent(ln, 16);
+        appendStr(ln, "ORG");
 
-        indent(line, 32);
-        appendStr(line, num2str(addr));
+        indent(ln, 32);
+        appendStr(ln, num2str(addr));
     }
 
     m_code.push_back(std::string());
@@ -203,7 +203,6 @@ void DAsmPicoBlazeKcpsm1CPLD::inst_RETURN ( std::string & line,
     if ( nullptr != cnd )
     {
         appendStr(line, cnd);
-        line += ", ";
     }
 }
 
