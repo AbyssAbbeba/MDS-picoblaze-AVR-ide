@@ -87,6 +87,21 @@ void ProjectConfigDialog_Core::reload()
  */
 void ProjectConfigDialog_Core::ok()
 {
+    int value = this->generalCfg->save();
+    if (value == -1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid Interrupt Vector value");
+        msgBox.exec();
+        return;
+    }
+    if (value == -2)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid HWBuild value");
+        msgBox.exec();
+        return;
+    }
     this->compilerCfg->save();
     this->pathsCfg->save();
     this->done(1);

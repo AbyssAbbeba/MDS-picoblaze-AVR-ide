@@ -14,6 +14,7 @@ class ProjectCfg_CompPaths : public QWidget
     public:
        ProjectCfg_CompPaths(QWidget *parentWidget, Project *currProject);
        void save();
+       QStringList getPaths();
        
     private slots:
         void newPath();

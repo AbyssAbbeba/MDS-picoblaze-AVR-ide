@@ -16,6 +16,7 @@
      <file>resources/icons/disassemble.png</file>
      <file>resources/icons/unhighlight.png</file>
      <file>resources/icons/cross.png</file>
+     <file>resources/icons/drive_magnify.png</file>
      <file>resources/xml/mcuspecfile.xml</file>
      <file>resources/help/mdshelp.qhc</file>
  </qresource>

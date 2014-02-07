@@ -112,6 +112,13 @@ class Project : public QObject
         MCUSimControl* getSimControl();
         void setCompileOpt(QList<bool> opt);
         void setCompileIncPaths(QList<QString> paths);
+        void setUseMainFile(bool enabled);
+        void setIntVector(int value);
+        void setHWBuild(int value);
+        void setScratchpad(int value);
+        void setProgMem(int value);
+        void setName(QString name);
+        void setFamily(QString family);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -121,9 +128,14 @@ class Project : public QObject
         int fileCount;
 
         LangType langType;
-        QString architecture;
+        QString family;
+        int scratchpadSize;
+        int progMemSize;
+        int intVector;
+        int hwBuild;
         QString mainFileName;
         QString mainFilePath;
+        bool useMainFile;
         QList<QString> fileNames;
         QList<QString> filePaths;
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
