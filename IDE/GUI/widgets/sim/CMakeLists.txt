@@ -20,7 +20,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
+#find_package(Qt4 REQUIRED)
 
 # Include Qt4's XML module
 set(QT_USE_QTXML 1)
@@ -36,12 +36,12 @@ include(${QT_USE_FILE})
 #)
 
 # <DEBUG!>
-link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
-)
+#link_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../utilities/MCUDataFiles/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/AVR8/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/SimControl/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/McuSimCfgMgr/"
+#)
 #include_directories(
 #	"${CMAKE_CURRENT_BINARY_DIR}/.."
 #	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/"
@@ -58,7 +58,7 @@ link_directories(
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
+#add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 #	RegDisplay.h
@@ -72,7 +72,7 @@ qt4_wrap_cpp(QT_MOC_GENERATED_CPP_FILES
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
 	${QT_MOC_GENERATED_CPP_FILES}
 #	RegDisplay.cxx
 #	RegDisplayList.cxx

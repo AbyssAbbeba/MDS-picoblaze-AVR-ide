@@ -325,13 +325,29 @@ Project::Project(QFile *file, ProjectMan *parent)
                             {
                                 prjName = xmlGeneralElement.attribute("name", "");
                             }
-                            else if (xmlGeneralElement.tagName() == "Architecture")
+                            else if (xmlGeneralElement.tagName() == "Family")
                             {
-                                architecture = xmlGeneralElement.attribute("architecture", "");
+                                family = xmlGeneralElement.attribute("family", "");
                             }
                             else if (xmlGeneralElement.tagName() == "Language")
                             {
                                 langType = (LangType)(xmlGeneralElement.attribute("language", "").toInt(NULL));
+                            }
+                            else if (xmlGeneralElement.tagName() == "IntVector")
+                            {
+                                intVector = xmlGeneralElement.attribute("value", "").toInt(NULL);
+                            }
+                            else if (xmlGeneralElement.tagName() == "HWBuild")
+                            {
+                                hwBuild = xmlGeneralElement.attribute("value", "").toInt(NULL);
+                            }
+                            else if (xmlGeneralElement.tagName() == "ScratchpadSize")
+                            {
+                                scratchpadSize = xmlGeneralElement.attribute("value", "").toInt(NULL);
+                            }
+                            else if (xmlGeneralElement.tagName() == "ProgMemSize")
+                            {
+                                progMemSize = xmlGeneralElement.attribute("value", "").toInt(NULL);
                             }
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
@@ -359,6 +375,14 @@ Project::Project(QFile *file, ProjectMan *parent)
                         {
                             mainFileName = xmlElement.attribute("name", "");
                             mainFilePath = xmlElement.attribute("path", "");
+                            if ("true" == xmlElement.attribute("enabled", ""))
+                            {
+                                useMainFile = true;
+                            }
+                            else
+                            {
+                                useMainFile = false;
+                            }
                         }
                     }
                     else if (xmlElement.tagName() == "Compiler")
@@ -650,7 +674,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
         compileOpt.append(false);
     }
 
-    this->architecture = arch;
+    this->family = arch;
     this->langType = lang;
     
     //a zapsani do souboru
@@ -662,12 +686,20 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlName = domDoc.createElement("Name");
     xmlName.setAttribute("name", name);
     xmlGeneral.appendChild(xmlName);
-    QDomElement xmlArch = domDoc.createElement("Architecture");
-    xmlArch.setAttribute("architecture", arch);
+    QDomElement xmlArch = domDoc.createElement("Family");
+    xmlArch.setAttribute("family", arch);
     xmlGeneral.appendChild(xmlArch);
     QDomElement xmlLang = domDoc.createElement("Language");
     xmlLang.setAttribute("language", lang);
     xmlGeneral.appendChild(xmlLang);
+    QDomElement xmlScratchpad = domDoc.createElement("ScratchpadSize");
+    xmlGeneral.appendChild(xmlScratchpad);
+    QDomElement xmlProgMem = domDoc.createElement("ProgMemSize");
+    xmlGeneral.appendChild(xmlProgMem);
+    QDomElement xmlIntVector = domDoc.createElement("IntVector");
+    xmlGeneral.appendChild(xmlIntVector);
+    QDomElement xmlHWBuild = domDoc.createElement("HWBuild");
+    xmlGeneral.appendChild(xmlHWBuild);
     xmlRoot.appendChild(xmlGeneral);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
@@ -676,6 +708,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlMainFile = domDoc.createElement("Mainfile");
     xmlMainFile.setAttribute("name", "");
     xmlMainFile.setAttribute("path", "");
+    xmlMainFile.setAttribute("enabled", "false");
     xmlRoot.appendChild(xmlMainFile);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
@@ -803,6 +836,7 @@ QString Project::addFile(QString path, QString name)
                                 mainFilePath = relativePath;
                                 xmlElement.setAttribute("name", mainFileName);
                                 xmlElement.setAttribute("path", mainFilePath);
+                                xmlElement.setAttribute("enabled", "false");
                             }
                         }
                     }
@@ -1003,6 +1037,440 @@ void Project::setMainFile(QString path, QString name)
     //qDebug() << "Project: return setMainFile()";
 }
 
+/**
+ * @brief Sets usage of main file
+ * @param enabled indicator
+ */ 
+void Project::setUseMainFile(bool enabled)
+{
+    //qDebug() << "Project: setMainFile()";
+    //QDir project(QFileInfo(prjPath).dir());
+
+    //QDir project(QFileInfo(prjPath).dir());
+    //QString relativePath = project.relativeFilePath(path);
+    useMainFile = enabled;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Mainfile")
+                    {
+                        if (enabled == true)
+                        {
+                            xmlElement.setAttribute("enabled", "true");
+                        }
+                        else
+                        {
+                            xmlElement.setAttribute("enabled", "false");
+                        }
+                        done = true;
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+    //qDebug() << "Project: return setMainFile()";
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setIntVector(int value)
+{
+    intVector = value;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "IntVector")
+                                {
+                                    xmlGeneralElement.setAttribute("value", QString::number(value));
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setHWBuild(int value)
+{
+    hwBuild = value;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "HWBuild")
+                                {
+                                    xmlGeneralElement.setAttribute("value", QString::number(value));
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setScratchpad(int value)
+{
+    scratchpadSize = value;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "ScratchpadSize")
+                                {
+                                    xmlGeneralElement.setAttribute("value", QString::number(value));
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setProgMem(int value)
+{
+    progMemSize = value;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "ProgMemSize")
+                                {
+                                    xmlGeneralElement.setAttribute("value", QString::number(value));
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setName(QString name)
+{
+    prjName = name;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "Name")
+                                {
+                                    xmlGeneralElement.setAttribute("name", name);
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+/**
+ * @brief Sets int vector
+ * @param value value
+ */
+void Project::setFamily(QString family)
+{
+    this->family = family;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "General")
+                    {
+                        QDomNode xmlGeneralNode = xmlElement.firstChild();
+                        QDomElement xmlGeneralElement;
+                        while (!xmlGeneralNode.isNull() && done == false)
+                        {
+                            xmlGeneralElement = xmlGeneralNode.toElement();
+                            if (!xmlGeneralElement.isNull())
+                            {
+                                if (xmlGeneralElement.tagName() == "Family")
+                                {
+                                    xmlGeneralElement.setAttribute("family", family);
+                                    done = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
 
 /**
  * @brief Removes selected file from project
@@ -1085,7 +1553,7 @@ void Project::setupSim()
     //qDebug() << "Project: setupSim()";
     McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
-    this->m_simControlUnit = new MCUSimControl(architecture.toUtf8().constData());
+    this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
     connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     //qDebug() << architecture;
     //qDebug() << "Project: return setupSim()";

@@ -37,6 +37,7 @@ void ProjectCfg_Compiler::load()
     this->ui.chckBinFile->setChecked(project->compileOpt.at(6));
     this->ui.chckSRecFile->setChecked(project->compileOpt.at(7));
     this->ui.leMain->setText(project->mainFileName);
+    this->ui.chckMain->setChecked(project->useMainFile);
     qDebug() << "ProjectCfg_Compiler: return load()";
 }
 
@@ -57,4 +58,24 @@ void ProjectCfg_Compiler::save()
     opt.append(this->ui.chckSRecFile->isChecked());
     
     this->project->setCompileOpt(opt);
+    this->project->setUseMainFile(this->ui.chckMain->isChecked());
+}
+
+
+/**
+ * @brief
+ */
+QList<bool> ProjectCfg_Compiler::getOpt()
+{
+    QList<bool> opt;
+    opt.append(this->ui.chckSymbolTbl->isChecked());
+    opt.append(this->ui.chckMacroTbl->isChecked());
+    opt.append(this->ui.chckDbgFile->isChecked());
+    opt.append(this->ui.chckCodeTree->isChecked());
+    opt.append(this->ui.chckLstFile->isChecked());
+    opt.append(this->ui.chckHexFile->isChecked());
+    opt.append(this->ui.chckBinFile->isChecked());
+    opt.append(this->ui.chckSRecFile->isChecked());
+
+    return opt;
 }

@@ -20,25 +20,25 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Load settings specific for the Qt4 library
-find_package(Qt4 REQUIRED)
+#find_package(Qt4 REQUIRED)
 
 INCLUDE( ${QT_USE_FILE} )
 
-link_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../mainform/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
-
-include_directories(
-	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
-	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
-
-
+#link_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../Editor/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../HexEdit"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../mainform/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../../dialogs/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
+#
+#include_directories(
+#	"${CMAKE_CURRENT_BINARY_DIR}/../MovGridLayout/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Convertor/"
+#	"${CMAKE_CURRENT_BINARY_DIR}/../Tools/Display/")
+#
+#
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 

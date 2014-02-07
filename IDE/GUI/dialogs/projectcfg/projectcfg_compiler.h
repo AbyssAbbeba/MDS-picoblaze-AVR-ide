@@ -7,6 +7,7 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QList>
 #include "../project/project.h"
 #include "ui_projectcfg_compiler.h"
 
@@ -24,6 +25,7 @@ class ProjectCfg_Compiler : public QWidget
     public:
         ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject);
         void save();
+        QList<bool> getOpt();
 
     private:
         void load();
