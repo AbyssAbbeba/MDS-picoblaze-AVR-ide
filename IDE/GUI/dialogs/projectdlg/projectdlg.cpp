@@ -23,7 +23,7 @@
  */
 ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     : QDialog(parent)
-{
+{   
     projectMan = dialogProjectMan;
 
     QTabWidget *tabWidget = new QTabWidget(this);
@@ -32,7 +32,7 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     this->prjdlg_comppaths = new ProjectCfg_CompPaths(this, NULL);
     this->prjdlg_filemgr = new ProjectCfg_FileMgr(this, NULL);
     int height = prjdlg_general->height() + tabWidget->height();
-    int width = prjdlg_general->width();// + tabWidget->width();
+    int width = prjdlg_comppaths->width();// + tabWidget->width();
     tabWidget->addTab(prjdlg_general, "General");
     tabWidget->addTab(prjdlg_compiler, "Compiler");
     tabWidget->addTab(prjdlg_comppaths, "Paths");
@@ -49,7 +49,7 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     this->setMaximumWidth(tabWidget->width());
     this->setMinimumHeight(tabWidget->height() + this->buttonBox->height() + 10);
     this->setMaximumHeight(tabWidget->height() + this->buttonBox->height() + 10);
-    this->buttonBox->move(this->width() - this->buttonBox->width(), this->height() - this->buttonBox->height() - 5);
+    this->buttonBox->move(this->width() - this->buttonBox->width() - 5, this->height() - this->buttonBox->height() - 5);
 
     
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(bCreate()));
