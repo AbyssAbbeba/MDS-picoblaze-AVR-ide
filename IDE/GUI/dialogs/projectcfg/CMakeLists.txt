@@ -39,6 +39,7 @@ SET( SAMPLE_UIS
         ./projectcfg_compiler.ui
         ./projectcfg_comppaths.ui
         ./projectcfg_filemgr.ui
+        ./projectcfg_general.ui
 )
 
 

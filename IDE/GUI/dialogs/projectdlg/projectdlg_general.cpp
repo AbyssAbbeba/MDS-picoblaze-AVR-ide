@@ -134,15 +134,43 @@ QString Projectdlg_General::getFamily()
 }
 
 
-QString Projectdlg_General::getIntVector()
+int Projectdlg_General::getIntVector()
 {
-    return ui.leIntVector->text();
+    bool ok;
+    int value = ui.leIntVector->text().toInt(&ok, 16);
+    if (ok != true || value > ui.lblProgMem->text().toInt())
+    {
+        return -1;
+    }
+    return value;
 }
 
 
-QString Projectdlg_General::getHWBuild()
+int Projectdlg_General::getHWBuild()
 {
-    return ui.leHWBuild->text();
+    bool ok;
+    int value = ui.leHWBuild->text().toInt(&ok, 16);
+    if (ui.leHWBuild->isEnabled() == false)
+    {
+        return -1;
+    }
+    if (ok != true)
+    {
+        return -2;
+    }
+    return value;
+}
+
+
+int Projectdlg_General::getScratchpadSize()
+{
+    return ui.lblScratchpad->text().toInt();
+}
+
+
+int Projectdlg_General::getProgMemSize()
+{
+    return ui.lblProgMem->text().toInt();
 }
 
 

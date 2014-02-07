@@ -17,9 +17,10 @@
 
 //#include <QVBoxLayout>
 //#include <QDialogButtonBox>
-#include <QLineEdit>
-#include <QLabel>
+#include <QWidget>
+#include <QStringList>
 #include "../project/project.h"
+#include "ui_projectcfg_general.h"
 
 
 class Project;
@@ -35,13 +36,19 @@ class ProjectCfg_General : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_General(QWidget *parentWidget, Project *currProject);
-        void fixButtonBox();
+
+    private slots:
+        void familyChanged(const QString &text);
+        void sliderScratchpadUpdate(int value);
+        void sliderProgMemUpdate(int value);
+        
     private:
+        void load();
+        int save();
+        
         Project *project;
-        //QVBoxLayout *layout;
-        //QDialogButtonBox *buttonBox;
-        QLineEdit *projName;
-        QLabel *labelName;
+        Ui_ProjectCfg_General ui;
+        QStringList notes;
 };
 
 
