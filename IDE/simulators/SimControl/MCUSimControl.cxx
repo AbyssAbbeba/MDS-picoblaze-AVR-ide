@@ -539,6 +539,10 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
     }
 
     if (
+           ( 0 == strcmp("kcpsm1cpld", deviceName) )
+               ||
+           ( 0 == strcmp("kcpsm1", deviceName) )
+               ||
            ( 0 == strcmp("kcpsm2", deviceName) )
                ||
            ( 0 == strcmp("kcpsm3", deviceName) )
