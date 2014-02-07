@@ -30,6 +30,46 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
     QIcon *icon_btnChange = new QIcon(*pm_btnChange);
     ui.btnChange->setIcon(*icon_btnChange);
 
+    notes.append("256");
+    notes.append("8");
+    notes.append("-");
+    notes.append("4");
+    notes.append("256");
+
+    notes.append("256");
+    notes.append("16");
+    notes.append("-");
+    notes.append("15");
+    notes.append("256");
+
+    notes.append("256");
+    notes.append("32");
+    notes.append("-");
+    notes.append("31");
+    notes.append("1024");
+
+    notes.append("256");
+    notes.append("16");
+    notes.append("64 Bytes");
+    notes.append("31");
+    notes.append("1024");
+
+    notes.append("256");
+    notes.append("2x16");
+    notes.append("64/128/256 Bytes");
+    notes.append("31");
+    notes.append("1024/2048/4096");
+
+
+    ui.teNotes->append("Name:\t\t" + ui.cmbFamily->currentText());
+    ui.teNotes->append("IO port address count:\t" + notes.at(0));
+    ui.teNotes->append("Register count:\t" + notes.at(1));
+    ui.teNotes->append("Scratchpad:\t\t" + notes.at(2));
+    ui.teNotes->append("Callstack size:\t" + notes.at(3));
+    ui.teNotes->append("Instruction count:\t" + notes.at(4));
+
+    
+
     connect(ui.btnChange,
             SIGNAL(pressed()),
             this,
@@ -103,4 +143,13 @@ void Projectdlg_General::familyChanged(const QString &text)
         ui.lblHWBuild->setDisabled(true);
         ui.leHWBuild->setDisabled(true);
     }
+
+    int index = ui.cmbFamily->findText(text);
+    ui.teNotes->clear();
+    ui.teNotes->append("Name:\t\t" + text);
+    ui.teNotes->append("IO port address count:\t" + notes.at(5*index));
+    ui.teNotes->append("Register count:\t" + notes.at(5*index+1));
+    ui.teNotes->append("Scratchpad:\t\t" + notes.at(5*index+2));
+    ui.teNotes->append("Callstack size:\t" + notes.at(5*index+3));
+    ui.teNotes->append("Instruction count:\t" + notes.at(5*index+4));
 }

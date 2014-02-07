@@ -45,6 +45,7 @@ class Projectdlg_General : public QWidget
 
     private:
         Ui_Projectdlg_General ui;
+        QStringList notes;
         
 };
 
