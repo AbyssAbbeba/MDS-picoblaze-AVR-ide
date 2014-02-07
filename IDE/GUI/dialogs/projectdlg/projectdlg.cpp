@@ -40,15 +40,11 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     
     this->buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
     this->show();
-    tabWidget->setMinimumHeight(height);
-    tabWidget->setMaximumHeight(height);
-    tabWidget->setMinimumWidth(width);
-    tabWidget->setMaximumWidth(width);
+    tabWidget->setFixedHeight(height);
+    tabWidget->setFixedWidth(width);
     
-    this->setMinimumWidth(tabWidget->width());
-    this->setMaximumWidth(tabWidget->width());
-    this->setMinimumHeight(tabWidget->height() + this->buttonBox->height() + 10);
-    this->setMaximumHeight(tabWidget->height() + this->buttonBox->height() + 10);
+    this->setFixedWidth(tabWidget->width());
+    this->setFixedHeight(tabWidget->height() + this->buttonBox->height() + 10);
     this->buttonBox->move(this->width() - this->buttonBox->width() - 5, this->height() - this->buttonBox->height() - 5);
 
     
@@ -62,6 +58,20 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
  */
 void ProjectDialog::bCreate()
 {
+    if (this->prjdlg_general->getIntVector() == -1)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid Interrupt Vector value");
+        msgBox.exec();
+        return;
+    }
+    if (this->prjdlg_general->getHWBuild() == -2)
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid HWBuild value");
+        msgBox.exec();
+        return;
+    }
     //vytvoreni projektu
     QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mmp");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -90,11 +100,17 @@ void ProjectDialog::bCreate()
         
         projectMan->getActive()->setCompileOpt(this->prjdlg_compiler->getOpt());
         projectMan->getActive()->setCompileIncPaths(this->prjdlg_comppaths->getPaths());
+        
         QStringList paths = this->prjdlg_filemgr->getPaths();
         for (int i = 0; i < paths.count(); i++)
         {
             projectMan->getActive()->addFile(paths.at(i), paths.at(i).section('/', -1));
         }
+
+        projectMan->getActive()->setIntVector(this->prjdlg_general->getIntVector());
+        projectMan->getActive()->setHWBuild(this->prjdlg_general->getHWBuild());
+        projectMan->getActive()->setScratchpad(this->prjdlg_general->getScratchpadSize());
+        projectMan->getActive()->setProgMem(this->prjdlg_general->getProgMemSize());
 
         accept();
     }

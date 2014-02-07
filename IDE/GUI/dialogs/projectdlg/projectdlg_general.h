@@ -36,8 +36,10 @@ class Projectdlg_General : public QWidget
         QString getPath();
         QString getArch();
         QString getFamily();
-        QString getIntVector();
-        QString getHWBuild();
+        int getIntVector();
+        int getHWBuild();
+        int getScratchpadSize();
+        int getProgMemSize();
 
     private slots:
         void setPath();
