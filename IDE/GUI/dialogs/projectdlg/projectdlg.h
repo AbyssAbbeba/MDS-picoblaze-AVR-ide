@@ -17,14 +17,14 @@
 #ifndef PROJECTDLG_H
 #define PROJECTDLG_H
 
-#include <QDialog>
+#include <QWidget>
 #include <QDialogButtonBox>
-#include <QLabel>
-#include <QMainWindow>
-#include <QGridLayout>
-#include <QLineEdit>
-#include <QComboBox>
-#include "../project/project.h"
+#include <QDialog>
+#include "../../project/project.h"
+#include "projectdlg_general.h"
+#include "../projectcfg/projectcfg_compiler.h"
+#include "../projectcfg/projectcfg_comppaths.h"
+#include "../projectcfg/projectcfg_filemgr.h"
 
 
 
@@ -38,24 +38,19 @@ class ProjectDialog : public QDialog
 {
     Q_OBJECT
     public:
-        ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjectMan);
+        ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan);
 
     private slots:
-        void bSetPath();
         void bCreate();
         void bReject();
 
     private:
-        void freeDialog();
-        //QGridLayout *layout;
-        QComboBox *architecture;
-        QComboBox *language;
-        QLineEdit *projName, *projDir;
-        QLabel *labelName, *labelDir;
-        QPushButton *chooseName;
         QDialogButtonBox *buttonBox;
-        QMainWindow *parent;
         ProjectMan *projectMan;
+        Projectdlg_General *prjdlg_general;
+        ProjectCfg_Compiler *prjdlg_compiler;
+        ProjectCfg_CompPaths *prjdlg_comppaths;
+        ProjectCfg_FileMgr *prjdlg_filemgr;
         
 };
 

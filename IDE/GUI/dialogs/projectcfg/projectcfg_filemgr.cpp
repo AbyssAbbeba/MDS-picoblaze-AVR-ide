@@ -30,41 +30,27 @@ ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProje
     //this->parent = parentWidget;
     this->project = currProject;
     this->reloadFiles = false;
-    fileList = new QListWidget(this);
-    deleteBtn = new QPushButton("Delete", this);
-    newBtn = new QPushButton("New", this);
-    addBtn = new QPushButton("Add", this);
-    setMainBtn = new QPushButton("Set Main", this);
-    btnLayout = new QVBoxLayout(this);
-    btnLayout->addWidget(newBtn);
-    btnLayout->addWidget(addBtn);
-    btnLayout->addWidget(setMainBtn);
-    btnLayout->addWidget(deleteBtn);
-    btnWidget = new QWidget(this);
-    btnWidget->setLayout(btnLayout);
-    layout = new QGridLayout(this);
-    layout->addWidget(fileList, 0,0,Qt::AlignJustify);
-    layout->addWidget(btnWidget, 0,1,Qt::AlignJustify);
-    this->setLayout(layout);
-    this->adjustSize();
+    ui.setupUi(this);
     //load files
-    if (this->project->fileNames.size() > 0)
+    if (this->project != NULL)
     {
-        QString absolutePath = QFileInfo(this->project->prjPath).dir().path();
-        for (int i = 0; i < this->project->fileNames.size(); i++)
+        if (this->project->fileNames.size() > 0)
         {
-            QListWidgetItem *newItem = new QListWidgetItem(this->project->fileNames.at(i), fileList);
-            newItem->setToolTip(QDir(absolutePath + "/" + this->project->filePaths.at(i)).canonicalPath());
-            fileList->addItem(newItem);
+            QString absolutePath = QFileInfo(this->project->prjPath).dir().path();
+            for (int i = 0; i < this->project->fileNames.size(); i++)
+            {
+                QListWidgetItem *newItem = new QListWidgetItem(this->project->fileNames.at(i), ui.lstFiles);
+                newItem->setToolTip(QDir(absolutePath + "/" + this->project->filePaths.at(i)).canonicalPath());
+                ui.lstFiles->addItem(newItem);
+            }
         }
     }
-
     //connect buttons with actions
-    connect(newBtn, SIGNAL(clicked()), this, SLOT(newFile()));
-    connect(addBtn, SIGNAL(clicked()), this, SLOT(addFile()));
-    connect(setMainBtn, SIGNAL(clicked()), this, SLOT(setMainFile()));
-    connect(deleteBtn, SIGNAL(clicked()), this, SLOT(deleteFile()));
-    //newBtn->setCheckable(false);
+    connect(ui.btnNew, SIGNAL(clicked()), this, SLOT(newFile()));
+    connect(ui.btnAdd, SIGNAL(clicked()), this, SLOT(addFile()));
+    connect(ui.btnSetMain, SIGNAL(clicked()), this, SLOT(setMainFile()));
+    connect(ui.btnDelete, SIGNAL(clicked()), this, SLOT(deleteFile()));
+    //ui.btnNew->setCheckable(false);
 }
 
 
@@ -74,11 +60,14 @@ ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProje
  */
 void ProjectCfg_FileMgr::deleteFile()
 {
-    if (fileList->currentItem() != NULL)
+    if (ui.lstFiles->currentItem() != NULL)
     {
-        project->removeFile(fileList->currentItem()->toolTip(), fileList->currentItem()->text());
-        delete fileList->currentItem();
-        if (reloadFiles == false)
+        if (this->project != NULL)
+        {
+            project->removeFile(ui.lstFiles->currentItem()->toolTip(), ui.lstFiles->currentItem()->text());
+        }
+        delete ui.lstFiles->currentItem();
+        if (reloadFiles == false && this->project != NULL)
         {
             emit reloadTree();
             reloadFiles = true;
@@ -104,11 +93,14 @@ void ProjectCfg_FileMgr::newFile()
         else
         {
             file.close();
-            project->addFile(path, path.section('/', -1));
-            QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), fileList);
+            if (this->project != NULL)
+            {
+                project->addFile(path, path.section('/', -1));
+            }
+            QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), ui.lstFiles);
             newItem->setToolTip(path);
-            fileList->addItem(newItem);
-            if (reloadFiles == false)
+            ui.lstFiles->addItem(newItem);
+            if (reloadFiles == false && this->project != NULL)
             {
                 emit reloadTree();
                 reloadFiles = true;
@@ -127,10 +119,13 @@ void ProjectCfg_FileMgr::addFile()
     QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (path != NULL)
     {
-        project->addFile(path, path.section('/', -1));
-        QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), fileList);
+        if (this->project != NULL)
+        {
+            project->addFile(path, path.section('/', -1));
+        }
+        QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), ui.lstFiles);
         newItem->setToolTip(path);
-        fileList->addItem(newItem);
+        ui.lstFiles->addItem(newItem);
         /*if (reloadFiles == false)
         {
             emit reloadTree();
@@ -145,13 +140,27 @@ void ProjectCfg_FileMgr::addFile()
  */
 void ProjectCfg_FileMgr::setMainFile()
 {
-    if (fileList->currentItem() != NULL)
+    if (ui.lstFiles->currentItem() != NULL)
     {
-        project->setMainFile(fileList->currentItem()->toolTip(), fileList->currentItem()->text()); 
+        if (this->project != NULL)
+        {
+            project->setMainFile(ui.lstFiles->currentItem()->toolTip(), ui.lstFiles->currentItem()->text());
+        }
         /*if (reloadFiles == false)
         {
             emit reloadTree();
             reloadFiles = true;
         }*/
     }
-} 
+}
+
+
+QStringList ProjectCfg_FileMgr::getPaths()
+{
+    QStringList paths;
+    for (int i = 0; i < ui.lstFiles->count(); i++)
+    {
+        paths.append(ui.lstFiles->item(i)->toolTip());
+    }
+    return paths;
+}

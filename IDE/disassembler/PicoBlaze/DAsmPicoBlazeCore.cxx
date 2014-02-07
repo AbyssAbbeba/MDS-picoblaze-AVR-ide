@@ -20,14 +20,15 @@
 
 bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
 {
-    bool result = true;
+    const int initShift = ( ( IS_18b == m_instSize ) ? 16 : 8 );
     unsigned int addr = 0;
+    bool result = true;
 
     m_lastAddr = 0;
     for ( unsigned int i = 0; i < source.maxSize(); )
     {
         unsigned int code = 0;
-        for ( int shift = 16; shift >= 0; shift -= 8 )
+        for ( int shift = initShift; shift >= 0; shift -= 8 )
         {
             int byte = -1;
             if ( i < source.maxSize() )
@@ -37,7 +38,7 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
 
             if ( -1 == byte )
             {
-                if ( 16 == shift )
+                if ( initShift == shift )
                 {
                     code |= 0x200000;
                 }
@@ -74,7 +75,7 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
     for ( unsigned int i = 0; i < source.maxSize(); )
     {
         unsigned int code = 0;
-        for ( int shift = 16; shift >= 0; shift -= 8 )
+        for ( int shift = initShift; shift >= 0; shift -= 8 )
         {
             int byte = -1;
             if ( i < source.maxSize() )

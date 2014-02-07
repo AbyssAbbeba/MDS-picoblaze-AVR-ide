@@ -233,7 +233,7 @@ void TestXilAsmTrans::test ( const std::string & suffix )
     const std::string errFile = (path("Xilinx") / "results" / (testName + suffix + ".err")).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
-    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
 
     if ( false == result )
     {

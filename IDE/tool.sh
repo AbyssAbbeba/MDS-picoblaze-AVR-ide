@@ -48,7 +48,7 @@ function build() {
           -DTEST_COVERAGE=OFF                   \
           -DTARGET_OS="${os}"                   \
           -DTARGET_ARCH="${arch}"               \
-          -DNO_TEST=${notest:-OFF}              \
+          -DBUILD_TESTING=${btest:-on}          \
           -DCOLOR_GCC=${color:-on}              \
           -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
           -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
@@ -103,7 +103,7 @@ function tests() {
         ctest -j ${TEST_PP} --tests-regex "${1}"
     fi
 
-    bash tests/results2html.sh ${CPU_CORES}
+    bash tests/results2html.sh ${cov:-on} ${CPU_CORES}
 }
 
 function clean() {
@@ -180,7 +180,7 @@ function printHelp() {
     echo "    color=<on|off>  Turn on/off color output. (normal: 'on', tests: 'off')."
     echo "    arch=<arch>     Set target architecture to build for (options: 'x86', and 'x86_64'). (all: <native>)."
     echo "    os=<os>         Set target operating system to build for (options: 'Linux', 'Windows', and 'Darwin') (all: <native>)."
-    echo "    notest=<on|off> Skip build of test binaries  (normal: 'off', tests: n/a)."
+    echo "    btest=<on|off> Build est binaries  (normal: 'on', tests: [always on])."
     echo ""
     echo "Example:"
     echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."

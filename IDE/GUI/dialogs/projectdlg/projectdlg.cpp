@@ -21,68 +21,39 @@
  * @param
  * @param
  */
-ProjectDialog::ProjectDialog(QMainWindow *dialogParent, ProjectMan *dialogProjectMan)
-    : QDialog(dialogParent)
+ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
+    : QDialog(parent)
 {
-    //layout = new QGridLayout(this);
-#ifndef PICOBLAZE
-    architecture = new QComboBox(this);
-    architecture->addItem("ATmega8A");
-    language = new QComboBox(this);
-    language->addItem("ASM");
-    language->addItem("C");
-#endif
-    projName = new QLineEdit(this);
-    projDir = new QLineEdit(this);
-    labelName = new QLabel(this);
-    labelName->setText("Project name");
-    labelDir = new QLabel(this);
-    labelDir->setText("Project Directory");
-    chooseName = new QPushButton("Dir", this);
-    connect(chooseName, SIGNAL(pressed()), this, SLOT(bSetPath()));
-    
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
-
-     connect(buttonBox, SIGNAL(accepted()), this, SLOT(bCreate()));
-     connect(buttonBox, SIGNAL(rejected()), this, SLOT(bReject()));
-
-    /*layout->addWidget(labelName);
-    layout->addWidget(projName);
-    layout->addWidget(labelDir);
-    layout->addWidget(projDir);
-    layout->addWidget(chooseName);
-    layout->addWidget(architecture);
-    layout->addWidget(buttonBox);*/
-    //EDIT THIS!
-    labelName->move(0, 0);
-    projName->move(0, 20);
-    projName->setMinimumWidth(200);
-    labelDir->move(0, 50);
-    projDir->move(0, 70);
-    projDir->setMinimumWidth(168);
-    chooseName->move(170, 70);
-    chooseName->setMaximumWidth(30);
-#ifndef PICOBLAZE
-    architecture->move(0, 100);
-    language->move(140, 100);
-#endif
-    buttonBox->move(100, 130);
-    buttonBox->setMaximumWidth(100);
-    this->show();
-    this->setMaximumWidth(205);
-    
-    parent = dialogParent;
     projectMan = dialogProjectMan;
-}
 
+    QTabWidget *tabWidget = new QTabWidget(this);
+    this->prjdlg_general = new Projectdlg_General(this);
+    this->prjdlg_compiler = new ProjectCfg_Compiler(this, NULL);
+    this->prjdlg_comppaths = new ProjectCfg_CompPaths(this, NULL);
+    this->prjdlg_filemgr = new ProjectCfg_FileMgr(this, NULL);
+    int height = prjdlg_general->height() + tabWidget->height();
+    int width = prjdlg_general->width();// + tabWidget->width();
+    tabWidget->addTab(prjdlg_general, "General");
+    tabWidget->addTab(prjdlg_compiler, "Compiler");
+    tabWidget->addTab(prjdlg_comppaths, "Paths");
+    tabWidget->addTab(prjdlg_filemgr, "Files");
+    
+    this->buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    this->show();
+    tabWidget->setMinimumHeight(height);
+    tabWidget->setMaximumHeight(height);
+    tabWidget->setMinimumWidth(width);
+    tabWidget->setMaximumWidth(width);
+    
+    this->setMinimumWidth(tabWidget->width());
+    this->setMaximumWidth(tabWidget->width());
+    this->setMinimumHeight(tabWidget->height() + this->buttonBox->height() + 10);
+    this->setMaximumHeight(tabWidget->height() + this->buttonBox->height() + 10);
+    this->buttonBox->move(this->width() - this->buttonBox->width(), this->height() - this->buttonBox->height() - 5);
 
-/**
- * @brief
- */
-void ProjectDialog::bSetPath()
-{
-    QString path = QFileDialog::getExistingDirectory (this, tr("Project Directory"), "");
-    projDir->setText(path);
+    
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(bCreate()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
 
@@ -91,33 +62,42 @@ void ProjectDialog::bSetPath()
  */
 void ProjectDialog::bCreate()
 {
-     //vytvoreni projektu
-     QFile file(projDir->text() + "/" + projName->text() + ".mmp");
-     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-     {
-         QMessageBox msgBox;
-         if (projName->text().isEmpty()==true)
-         {
-             msgBox.setText("Enter valid project name");
-         }
-         else
-         {
-             msgBox.setText("Error opening file");
-         }
-         msgBox.exec();
-     }
-     else
-     {
-         //nacteni projektu do manageru otevrenych projektu
-#ifndef PICOBLAZE
-         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", architecture->currentText(), (LangType)language->currentIndex(), &file);
-#else
-         projectMan->addProject(projName->text(), projDir->text() + "/" + projName->text()+ ".mmp", "kcpsm3", LANG_ASM, &file);
-#endif
-         file.close();
+    //vytvoreni projektu
+    QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mmp");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QMessageBox msgBox;
+        if (this->prjdlg_general->getName().isEmpty() == true)
+        {
+            msgBox.setText("Enter valid project name");
+        }
+        else
+        {
+            msgBox.setText("Error opening file");
+        }
+        msgBox.exec();
+    }
+    else
+    {
+        //nacteni projektu do manageru otevrenych projektu
+        projectMan->addProject(this->prjdlg_general->getName(),
+                               this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mmp",
+                               this->prjdlg_general->getFamily(),
+                               LANG_ASM,
+                               &file);
+        file.close();
 
-         freeDialog();
-     }
+        
+        projectMan->getActive()->setCompileOpt(this->prjdlg_compiler->getOpt());
+        projectMan->getActive()->setCompileIncPaths(this->prjdlg_comppaths->getPaths());
+        QStringList paths = this->prjdlg_filemgr->getPaths();
+        for (int i = 0; i < paths.count(); i++)
+        {
+            projectMan->getActive()->addFile(paths.at(i), paths.at(i).section('/', -1));
+        }
+
+        accept();
+    }
 }
 
 
@@ -126,26 +106,5 @@ void ProjectDialog::bCreate()
  */
 void ProjectDialog::bReject()
 {
-    //opravdu nutne? Qt si mozna vsechny deti maze samo...
-    freeDialog();
-}
-
-
-/**
- * @brief
- */
-void ProjectDialog::freeDialog()
-{
-    //delete layout;
-    delete projName;
-    delete projDir;
-    delete labelName;
-    delete labelDir;
-    delete chooseName;
-#ifndef PICOBLAZE
-    delete architecture;
-    delete language;
-#endif
-    delete buttonBox;
-    accept();
+    reject();
 }

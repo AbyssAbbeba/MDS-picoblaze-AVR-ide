@@ -16,10 +16,9 @@
 #define FILEMGR_H
 
 
-#include <QListWidget>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QVBoxLayout>
+#include <QWidget>
+#include <QStringList>
+#include "ui_projectcfg_filemgr.h"
 
 class Project;
 
@@ -34,6 +33,7 @@ class ProjectCfg_FileMgr : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject);
+        QStringList getPaths();
 
 
     private slots:
@@ -47,14 +47,7 @@ class ProjectCfg_FileMgr : public QWidget
 
     private:
         Project *project;
-        QPushButton *deleteBtn;
-        QPushButton *addBtn;
-        QPushButton *newBtn;
-        QPushButton *setMainBtn;
-        QListWidget *fileList;
-        QGridLayout *layout;
-        QVBoxLayout *btnLayout;
-        QWidget *btnWidget;
+        Ui_ProjectCfg_FileMgr ui;
 
         bool reloadFiles;
 };

@@ -79,15 +79,15 @@ void DAsmPicoBlazeKcpsm1::phase2 ( unsigned int code,
     if ( addr != m_lastAddr )
     {
         m_code.push_back(std::string());
-        std::string & line = m_code.back();
+        std::string & ln = m_code.back();
 
         m_lastAddr = addr;
 
-        indent(line, 16);
-        appendStr(line, "ORG");
+        indent(ln, 16);
+        appendStr(ln, "ORG");
 
-        indent(line, 32);
-        appendStr(line, num2str(addr));
+        indent(ln, 32);
+        appendStr(ln, num2str(addr));
     }
 
     m_code.push_back(std::string());
@@ -123,6 +123,7 @@ void DAsmPicoBlazeKcpsm1::phase2 ( unsigned int code,
                 case KCPSM1_SUB_SX_KK:   sx_sy(line, code, "SUB");       break;
                 case KCPSM1_SUBCY_SX_KK: sx_sy(line, code, "SUBCY");     break;
             }
+            break;
 
         case KCPSM1_INPUT_SX_SY:         sx_at_sy(line, code, "INPUT");  break;
         case KCPSM1_OUTPUT_SX_SY:        sx_at_sy(line, code, "OUTPUT"); break;
@@ -146,9 +147,9 @@ void DAsmPicoBlazeKcpsm1::phase2 ( unsigned int code,
 void DAsmPicoBlazeKcpsm1::inst_1000_and_1001 ( std::string & line,
                                                unsigned int code )
 {
-    if ( 0x100 & code )
+    if ( 0x0100 & code )
     {
-        if ( 0x200 & code )
+        if ( 0x0200 & code )
         {
             inst_CALL(line, code);
         }
@@ -246,7 +247,6 @@ inline void DAsmPicoBlazeKcpsm1::inst_RETURN ( std::string & line,
     if ( nullptr != cnd )
     {
         appendStr(line, cnd);
-        line += ", ";
     }
 }
 
@@ -254,21 +254,18 @@ void DAsmPicoBlazeKcpsm1::shift_rotate ( std::string & line,
                                          unsigned int code )
 {
     const char * inst = nullptr;
-    if ( 0 == ( code & 0xff00 ) )
+    switch ( code & 0xff )
     {
-        switch ( code & 0xff )
-        {
-            case 0b0110: inst = "SL0";      break;
-            case 0b0111: inst = "SL1";      break;
-            case 0b0100: inst = "SLX";      break;
-            case 0b0000: inst = "SLA";      break;
-            case 0b0010: inst = "RL";       break;
-            case 0b1110: inst = "SR0";      break;
-            case 0b1111: inst = "SR1";      break;
-            case 0b1010: inst = "SRX";      break;
-            case 0b1000: inst = "SRA";      break;
-            case 0b1100: inst = "RR";       break;
-        }
+        case 0b0110: inst = "SL0";      break;
+        case 0b0111: inst = "SL1";      break;
+        case 0b0100: inst = "SLX";      break;
+        case 0b0000: inst = "SLA";      break;
+        case 0b0010: inst = "RL";       break;
+        case 0b1110: inst = "SR0";      break;
+        case 0b1111: inst = "SR1";      break;
+        case 0b1010: inst = "SRX";      break;
+        case 0b1000: inst = "SRA";      break;
+        case 0b1100: inst = "RR";       break;
     }
 
     if ( nullptr == inst )
