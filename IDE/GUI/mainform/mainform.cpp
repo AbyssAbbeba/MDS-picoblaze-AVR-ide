@@ -999,7 +999,7 @@ void MainForm::simulationFlowHandle()
         {
             if ( true == projectMan->getActive()->start() )
             {
-                QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStop.png");
+                QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStop.png");
                 QIcon *icon_simFlow = new QIcon(*pm_simFlow);
                 simulationFlowAct->setIcon(*icon_simFlow);
                 simulationFlowAct->setText(tr("Stop simulation"));
@@ -1017,7 +1017,7 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
-            QPixmap *pm_simFlow = new QPixmap("resources//icons//simulationStart.png");
+            QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStart.png");
             QIcon *icon_simFlow = new QIcon(*pm_simFlow);
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Start simulation"));
