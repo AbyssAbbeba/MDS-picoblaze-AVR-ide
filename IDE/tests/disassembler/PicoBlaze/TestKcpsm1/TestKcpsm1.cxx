@@ -35,13 +35,13 @@
 #include "compiler/core/CompilerMsgIntfFile.h"
 
 // Disassembler header files.
-#include "disassembler/PicoBlaze/DAsmPicoBlazeKcpsm2.h"
+#include "disassembler/PicoBlaze/DAsmPicoBlazeKcpsm1.h"
 
 int TestKcpsm1::init()
 {
     using namespace boost::filesystem;
 
-    m_disassembler = new DAsmPicoBlazeKcpsm2();
+    m_disassembler = new DAsmPicoBlazeKcpsm1();
 
     m_msgInt = new CompilerMsgIntfFile();
     m_options = new CompilerOptions();
@@ -127,7 +127,7 @@ void TestKcpsm1::testFunction()
     const std::string errFile = ( resultsPath + ".err" );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
-    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
     if ( false == result )
     {
         CU_FAIL("Compilation failed.");

@@ -48,6 +48,22 @@ class DAsmPicoBlazeCore : public DAsmCore
             AS_MAX_ ///<
         };
 
+        /**
+         * @brief
+         */
+        enum InstructionSize
+        {
+            IS_16b, ///<
+            IS_18b  ///<
+        };
+
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        DAsmPicoBlazeCore ( InstructionSize instSize ) : m_instSize ( instSize ) {}
+
     ////    Public Operations    ////
     public:
         /**
@@ -172,6 +188,9 @@ class DAsmPicoBlazeCore : public DAsmCore
 
         ///
         unsigned int m_lastAddr;
+
+        ///
+        const InstructionSize m_instSize;
 };
 
 #endif // DASMPICOBLAZECORE_H

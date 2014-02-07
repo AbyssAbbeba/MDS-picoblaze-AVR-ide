@@ -26,9 +26,9 @@ if ( TARGET_OS STREQUAL "Linux" )
     set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr/local" )
 
     # Install .desktop spec and application icon
-    install ( FILES mds-ide.png           DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
-    install ( FILES mds-ide.desktop       DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
-    install ( FILES application-x-mds.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
+    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
@@ -209,13 +209,13 @@ slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the end of the install Section
 set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     !include \\\"${CMAKE_CURRENT_SOURCE_DIR}/FileAssociation.nsh\\\"
-    \\\${registerExtension} '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe' '.mds-ide' '${PRODUCT_NAME} Project File'
+    \\\${registerExtension} '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe' '.mds-project' '${PRODUCT_NAME} Project File'
 " )
 slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the uninstall Section
 set ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "
     Delete \\\"$DESKTOP/${PRODUCT_NAME}.lnk\\\"
-    \\\${unregisterExtension} '.mds-ide' '${PRODUCT_NAME} Project File'
+    \\\${unregisterExtension} '.mds-project' '${PRODUCT_NAME} Project File'
 " )
 slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS )
 
