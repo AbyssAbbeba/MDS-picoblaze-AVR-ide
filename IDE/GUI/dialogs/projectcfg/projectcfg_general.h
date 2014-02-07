@@ -36,6 +36,7 @@ class ProjectCfg_General : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_General(QWidget *parentWidget, Project *currProject);
+        int save();
 
     private slots:
         void familyChanged(const QString &text);
@@ -44,7 +45,8 @@ class ProjectCfg_General : public QWidget
         
     private:
         void load();
-        int save();
+        int getIntVector();
+        int getHWBuild();
         
         Project *project;
         Ui_ProjectCfg_General ui;

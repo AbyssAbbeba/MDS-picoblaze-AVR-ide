@@ -6,6 +6,7 @@
 HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     : QWidget(parent)
 {
+    //QHelpEngineCore *helpEngine;
     this->textBrowser = new QTextBrowser(this);
     QFile file("../docs/manual/MDS_manual/index.html");
     QStringList pathList;
