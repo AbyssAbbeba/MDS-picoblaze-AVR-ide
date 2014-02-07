@@ -42,6 +42,8 @@ class Projectdlg_General : public QWidget
     private slots:
         void setPath();
         void familyChanged(const QString &text);
+        void sliderScratchpadUpdate(int value);
+        void sliderProgMemUpdate(int value);
 
     private:
         Ui_Projectdlg_General ui;
