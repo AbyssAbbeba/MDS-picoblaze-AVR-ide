@@ -33,6 +33,7 @@ set ( INSTALL_DIR_LIB "lib/mds" )
 set ( INSTALL_DIR_SHARE "share" )
 set ( INSTALL_DIR_DOC "doc/mds" )
 set ( INSTALL_DIR_INCLUDE "include/mds" )
+set ( INSTALL_DIR_DEMOPROJECT "demoproject" )
 
 set ( PRODUCT_VERSION "1.0" )
 set ( COPYRIGHT_YEARS "2013, 2014" )
@@ -60,9 +61,6 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 
 # Optionally start test subjects in Valgrind:Memcheck.
 option ( TEST_MEMCHECK "Start test subjects in Valgrind:Memcheck." ON )
-
-# Optionally skip build of test binaries.
-option ( NO_TEST "Do not build test binaries." OFF )
 
 # Optionally colorize compiler output messages.
 if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
@@ -233,7 +231,7 @@ add_subdirectory ( utilities )
 add_subdirectory ( 3rdParty )
 
 # Build automated tests.
-if ( NOT NO_TEST )
+if ( BUILD_TESTING )
     add_subdirectory ( tests )
 endif()
 

@@ -34,7 +34,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->cfgInterface = new CfgInterface(this);
     this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
     this->compilerCfg = new ProjectCfg_Compiler(cfgInterface, this->project);
-    //this->pathsCfg = new ProjectCfg_CompPaths(cfgInterface, this->project);
+    this->pathsCfg = new ProjectCfg_CompPaths(cfgInterface, this->project);
     this->fileMgr = new ProjectCfg_FileMgr(cfgInterface, this->project);
 
     this->cfgInterface->addWidget(NULL, "Project", "Project Config");
@@ -42,7 +42,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->cfgInterface->addWidget(this->fileMgr, "Files", "Project Files", true);
     this->cfgInterface->addWidget(NULL, "Compiler", "Compiler Config");
     this->cfgInterface->addWidget(this->compilerCfg, "Options", "Compiler Options", true);
-    //this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", "Compiler Include Paths", true);
+    this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", "Compiler Include Paths", true);
     
 
     this->cfgInterface->show();

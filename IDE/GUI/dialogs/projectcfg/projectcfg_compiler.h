@@ -7,7 +7,9 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QList>
 #include "../project/project.h"
+#include "ui_projectcfg_compiler.h"
 
 
 class Project;
@@ -23,33 +25,14 @@ class ProjectCfg_Compiler : public QWidget
     public:
         ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject);
         void save();
+        QList<bool> getOpt();
 
     private:
         void load();
-        
+      
         Project *project;
-        //QDialogButtonBox *buttonBox;
-        QLabel *lblMain;
-        QLabel *lblSymbolTbl;
-        QLabel *lblMacroTbl;
-        QLabel *lblDbgFile;
-        QLabel *lblCodeTree;
-        QLabel *lblLstFile;
-        QLabel *lblHexFile;
-        QLabel *lblBinFile;
-        QLabel *lblSRecFile;
+        Ui_ProjectCfg_Compiler ui;
 
-        QLineEdit *leMain;
-
-        QCheckBox *chckMain;
-        QCheckBox *chckSymbolTbl;
-        QCheckBox *chckMacroTbl;
-        QCheckBox *chckDbgFile;
-        QCheckBox *chckCodeTree;
-        QCheckBox *chckLstFile;
-        QCheckBox *chckHexFile;
-        QCheckBox *chckBinFile;
-        QCheckBox *chckSRecFile;
 };
 
 #endif

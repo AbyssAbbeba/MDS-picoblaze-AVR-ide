@@ -116,10 +116,10 @@ void TestSuiteErr::testFunction()
     if ( true == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
     {
         CU_FAIL("Compilation succeeded (while it should have failed).");
-        dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
         return;
     }
-    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
 
     const std::string expectedCommonPath = system_complete( path("TestSuiteErr") / "expected" / testName ).string();
     compareLst ( expectedCommonPath + ".lst.exp", m_options->m_lstFile );

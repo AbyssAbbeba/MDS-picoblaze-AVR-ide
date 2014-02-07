@@ -112,6 +112,7 @@ class Project : public QObject
         MCUSimControl* getSimControl();
         void setCompileOpt(QList<bool> opt);
         void setCompileIncPaths(QList<QString> paths);
+        void setUseMainFile(bool enabled);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -124,6 +125,7 @@ class Project : public QObject
         QString architecture;
         QString mainFileName;
         QString mainFilePath;
+        bool useMainFile;
         QList<QString> fileNames;
         QList<QString> filePaths;
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec

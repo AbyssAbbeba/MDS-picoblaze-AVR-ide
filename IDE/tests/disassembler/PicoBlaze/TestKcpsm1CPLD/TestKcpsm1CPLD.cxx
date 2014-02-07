@@ -164,7 +164,7 @@ void TestKcpsm1CPLD::testFunction()
     const std::string errFile = ( resultsPath + ".err" );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
-    dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->closeFile();
+
     if ( false == result )
     {
         CU_FAIL("Recompilation of the disassembled code failed.");

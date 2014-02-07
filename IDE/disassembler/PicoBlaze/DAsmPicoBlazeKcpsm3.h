@@ -25,6 +25,13 @@
  */
 class DAsmPicoBlazeKcpsm3 : public DAsmPicoBlazeCore
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        DAsmPicoBlazeKcpsm3() : DAsmPicoBlazeCore ( IS_18b ) {}
+
     ////    Protected Operations    ////
     protected:
         /**

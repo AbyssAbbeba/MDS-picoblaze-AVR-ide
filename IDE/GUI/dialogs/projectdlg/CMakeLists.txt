@@ -18,13 +18,25 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
         ./projectdlg.cpp
+        ./projectdlg_general.cpp
+        ../projectcfg/projectcfg_compiler.cpp
+        ../projectcfg/projectcfg_comppaths.cpp
+        ../projectcfg/projectcfg_filemgr.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
         ./projectdlg.h
+        ./projectdlg_general.h
+        ../projectcfg/projectcfg_compiler.h
+        ../projectcfg/projectcfg_comppaths.h
+        ../projectcfg/projectcfg_filemgr.h
 )
 
+# some .ui files
+SET( SAMPLE_UIS
+        ./projectdlg_general.ui
+)
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -55,16 +67,19 @@ link_directories(
  # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
  # -O2         : Optimization, level 2.
  # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe -D PICOBLAZE)
+add_definitions(-Wall -Wextra -std=c++0x -O2 -pipe)
 
 
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
+# this will run uic on .ui files:
+QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
+
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME} SHARED
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Project)# SimControl)
 

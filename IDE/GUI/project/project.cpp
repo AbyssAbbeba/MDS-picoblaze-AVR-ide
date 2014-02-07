@@ -359,6 +359,14 @@ Project::Project(QFile *file, ProjectMan *parent)
                         {
                             mainFileName = xmlElement.attribute("name", "");
                             mainFilePath = xmlElement.attribute("path", "");
+                            if ("true" == xmlElement.attribute("enabled", ""))
+                            {
+                                useMainFile = true;
+                            }
+                            else
+                            {
+                                useMainFile = false;
+                            }
                         }
                     }
                     else if (xmlElement.tagName() == "Compiler")
@@ -634,16 +642,16 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     fileCount=0;
 
     this->treeProjSource = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Source");
+    this->treeProjSource->setText(0, "Source");
 
     this->treeProjInclude = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Include");
+    this->treeProjInclude->setText(0, "Include");
 
     this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Compiled");
+    this->treeProjCompiled->setText(0, "Compiled");
 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
-    treeProjName->setText(0, "Other");
+    this->treeProjOther->setText(0, "Other");
 
     for (int i = 0; i < 8; i++)
     {
@@ -676,6 +684,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlMainFile = domDoc.createElement("Mainfile");
     xmlMainFile.setAttribute("name", "");
     xmlMainFile.setAttribute("path", "");
+    xmlMainFile.setAttribute("enabled", "false");
     xmlRoot.appendChild(xmlMainFile);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
@@ -803,6 +812,7 @@ QString Project::addFile(QString path, QString name)
                                 mainFilePath = relativePath;
                                 xmlElement.setAttribute("name", mainFileName);
                                 xmlElement.setAttribute("path", mainFilePath);
+                                xmlElement.setAttribute("enabled", "false");
                             }
                         }
                     }
@@ -989,6 +999,69 @@ void Project::setMainFile(QString path, QString name)
                     {
                         xmlElement.setAttribute("name", mainFileName);
                         xmlElement.setAttribute("path", mainFilePath);
+                        done = true;
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+    //qDebug() << "Project: return setMainFile()";
+}/**
+ * @brief Sets selected name and path as main file
+ * @param path The path to the selected file
+ * @param name The name of the selected file
+ */
+
+ 
+void Project::setUseMainFile(bool enabled)
+{
+    //qDebug() << "Project: setMainFile()";
+    //QDir project(QFileInfo(prjPath).dir());
+
+    //QDir project(QFileInfo(prjPath).dir());
+    //QString relativePath = project.relativeFilePath(path);
+    useMainFile = enabled;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MMProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MMProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            bool done = false;
+            while (!xmlNode.isNull() && done == false)
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Mainfile")
+                    {
+                        if (enabled == true)
+                        {
+                            xmlElement.setAttribute("enabled", "true");
+                        }
+                        else
+                        {
+                            xmlElement.setAttribute("enabled", "false");
+                        }
                         done = true;
                     }
                 }
