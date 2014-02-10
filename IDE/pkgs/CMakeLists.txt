@@ -128,7 +128,7 @@ elseif ( TARGET_ARCH STREQUAL "x86" )
     set ( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i686" )
 endif()
 # boost 1.48.0
-set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (>= ${BOOST_MIN_VER}), libboost-filesystem (>= ${BOOST_MIN_VER}), libboost-system (>= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
+set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
 set ( CPACK_DEBIAN_PACKAGE_RECOMMENDS "" )
 set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
 set ( CPACK_PACKAGE_CONTACT "Moravia Microsystems, s.r.o.; trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
@@ -140,7 +140,7 @@ set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "\t${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n
 ## Options for the "RPM" generator.
 #
 
-set ( CPACK_RPM_PACKAGE_REQUIRES "qt-x11 >= ${QT_MIN_VER}, boost-filesystem >= ${BOOST_MIN_VER}, boost-system >= ${BOOST_MIN_VER}, libboost-regex >= ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
+set ( CPACK_RPM_PACKAGE_REQUIRES "qt-x11 >= ${QT_MIN_VER}, boost-filesystem = ${BOOST_MIN_VER}, boost-system = ${BOOST_MIN_VER}, libboost-regex = ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
 set ( CPACK_RPM_PACKAGE_SUGGESTS "" )
 set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
