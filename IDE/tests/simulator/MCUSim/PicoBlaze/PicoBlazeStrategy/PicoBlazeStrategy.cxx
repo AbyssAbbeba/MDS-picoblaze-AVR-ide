@@ -114,6 +114,8 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
         case CTE_FLAG_EQ:
         case CTE_FLAG_NE:
         {
+            *m_anyAssertionMade = true;
+
             int flagValue;
             PicoBlazeStatusFlagsBase * flags = dynamic_cast<PicoBlazeStatusFlagsBase*>
                                                (m_simulator->getSubsys(MCUSimSubsys::ID_FLAGS));

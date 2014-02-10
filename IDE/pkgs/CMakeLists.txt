@@ -23,7 +23,7 @@ if ( TARGET_OS STREQUAL "Linux" )
     #
 
     set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
-    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr/local" )
+    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
 
     # Install .desktop spec and application icon
     install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
@@ -40,14 +40,24 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     get_filename_component ( COMPILER_DIRECTORY ${CMAKE_CXX_COMPILER} PATH )
 
     find_library ( LIB_GCC
-                   NAMES libgcc_s_sjlj-1.dll
+                   NAMES gcc_s_sjlj-1 gcc_s_seh-1
+                   DOC "GCC library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
 
     find_library ( LIB_STD_CPP
-                   NAMES libstdc++-6.dll
+                   NAMES stdc++-6
+                   DOC "stdc++ library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
+
+    if ( NOT LIB_GCC )
+        message ( SEND_ERROR "Unable to find gcc library." )
+    endif()
+
+    if ( NOT LIB_STD_CPP )
+        message ( SEND_ERROR "Unable to find stdc++ library." )
+    endif()
 
     install ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
     install ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.

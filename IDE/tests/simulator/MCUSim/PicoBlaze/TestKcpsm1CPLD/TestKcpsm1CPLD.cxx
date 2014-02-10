@@ -152,5 +152,22 @@ void TestKcpsm1CPLD::testFunction()
     PicoBlazeProgramMemory * programMem = dynamic_cast<PicoBlazeProgramMemory*>(programMemSubsys);
     programMem->loadDataFile(m_programFile);
 
-    CU_ASSERT_TRUE ( m_testScript->runScript(inFile, outFile, useAsmFile) );
+    switch ( m_testScript->runScript(inFile, outFile, useAsmFile) )
+    {
+        case MCUSimTestScript::ES_NO_COMMANDS:
+            CU_FAIL("Test script does not contain any commands.");
+            break;
+        case MCUSimTestScript::ES_NO_ASSERTIONS:
+            CU_FAIL("Test script does not contain any assertions.");
+            break;
+        case MCUSimTestScript::ES_OK:
+            // Success.
+            break;
+        case MCUSimTestScript::ES_ABORTED:
+            CU_FAIL("Test script execution encountered a fatal error and was aborted.");
+            break;
+        case MCUSimTestScript::ES_ASSERTION_FAILED:
+            CU_FAIL("Some of the test script assertions have failed.");
+            break;
+    }
 }

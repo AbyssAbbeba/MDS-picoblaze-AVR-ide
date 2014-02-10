@@ -20,84 +20,6 @@ project ( manual )
 
 # Path to MDS manual as PDF file.
 set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
-
-#
-## Attempt to locate LaTeX tools.
-#
-if ( NOT ( PDFLATEX_COMPILER AND HTLATEX_CONVERTER AND MAKEINDEX_PROGRAM ) )
-    find_program ( PDFLATEX_COMPILER
-                   NAMES pdflatex pdflatex.exe
-                   PATHS $ENV{PATH}
-                   DOC "path to the pdflatex executable" )
-
-    find_program ( HTLATEX_CONVERTER
-                   NAMES htlatex htlatex.exe
-                   PATHS $ENV{PATH}
-                   DOC "path to the htlatex executable" )
-
-    find_program ( MAKEINDEX_PROGRAM
-                   NAMES makeindex makeindex.exe
-                   PATHS $ENV{PATH}
-                   DOC "path to the makeindex executable" )
-
-    mark_as_advanced ( PDFLATEX_COMPILER )
-    mark_as_advanced ( HTLATEX_CONVERTER )
-    mark_as_advanced ( MAKEINDEX_PROGRAM )
-
-    if ( PDFLATEX_COMPILER AND HTLATEX_CONVERTER AND MAKEINDEX_PROGRAM )
-        set ( LATEX_FOUND TRUE CACHE BOOL "" )
-        message ( STATUS "Found pdflatex: ${PDFLATEX_COMPILER}" )
-        message ( STATUS "Found htlatex: ${HTLATEX_CONVERTER}" )
-        message ( STATUS "Found makeindex: ${MAKEINDEX_PROGRAM}" )
-    else()
-        set ( LATEX_FOUND FALSE CACHE BOOL "" )
-        if ( NOT PDFLATEX_COMPILER )
-            message ( WARNING "pdflatex compiler not found." )
-        endif()
-        if ( NOT HTLATEX_CONVERTER )
-            message ( WARNING "htlatex coverter not found." )
-        endif()
-        if ( NOT MAKEINDEX_PROGRAM )
-            message ( WARNING "makeindex utility not found." )
-        endif()
-    endif()
-endif()
-
-#
-## Attempt to locate the Qt Help Framework tools.
-#
-if ( NOT ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR ) )
-    find_program ( Q_HELP_GENERATOR
-                   NAMES qhelpgenerator qhelpgenerator.exe
-                   PATHS $ENV{PATH}
-                   DOC "path to the qhelpgenerator executable" )
-
-    find_program ( Q_COLLECTION_GENERATOR
-                   NAMES qcollectiongenerator qcollectiongenerator.exe
-                   PATHS $ENV{PATH}
-                   DOC "path to the qcollectiongenerator executable" )
-
-    mark_as_advanced ( Q_HELP_GENERATOR )
-    mark_as_advanced ( Q_COLLECTION_GENERATOR )
-
-    if ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR )
-        set ( Q_HELP_TOOLS_FOUND TRUE CACHE BOOL "" )
-        message ( STATUS "Found qhelpgenerator: ${Q_HELP_GENERATOR}" )
-        message ( STATUS "Found qcollectiongenerator: ${Q_COLLECTION_GENERATOR}" )
-    else()
-        set ( Q_HELP_TOOLS_FOUND FALSE CACHE BOOL "" )
-        if ( NOT Q_HELP_GENERATOR )
-            message ( WARNING "qcollectiongenerator program not found." )
-        endif()
-        if ( NOT Q_COLLECTION_GENERATOR )
-            message ( WARNING "qcollectiongenerator program not found." )
-        endif()
-    endif()
-
-endif()
-
-mark_as_advanced ( Q_HELP_TOOLS_FOUND )
-mark_as_advanced ( LATEX_FOUND )
 mark_as_advanced ( MANUAL_PDF )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
@@ -110,7 +32,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     set ( CLEAN_MAKEINDEX "MDS_manual.idx;MDS_manual.ind;MDS_manual.ilg" )
     set ( CLEAN_QHELP     "MDS_manual.qhc;MDS_manual.qch;MDS_manual.qhp" )
     set ( CLEAN_LATEX     "MDS_manual.log;${MANUAL_PDF};MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
-    set ( CLEAN_FILES "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
+    set ( CLEAN_FILES     "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
     set_directory_properties ( PROPERTIES
                                ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
 
@@ -120,7 +42,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                             COMMENT "Generating MDS documentation as PDF with PDF LaTeX."
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} MDS_manual.tex
-                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_PROGRAM} MDS_manual.idx
+                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_COMPILER} MDS_manual.idx
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} MDS_manual.tex
                             VERBATIM )
 

@@ -50,10 +50,12 @@ class MCUSimTestScriptStrategy
          * @param[in,out] simulator
          * @param[in,out] execMessage
          * @param[in,out] success
+         * @param[in,out] anyAssertionMade
          */
         void link ( MCUSim * simulator,
                     std::string * execMessage,
-                    bool * success );
+                    bool * success,
+                    bool * anyAssertionMade );
 
         /**
          * @brief
@@ -91,6 +93,11 @@ class MCUSimTestScriptStrategy
          * @brief
          */
         bool * m_success;
+
+        /**
+         * @brief
+         */
+        bool * m_anyAssertionMade;
 };
 
 #endif // MCUSIMTESTSCRIPTSTRATEGY_H
