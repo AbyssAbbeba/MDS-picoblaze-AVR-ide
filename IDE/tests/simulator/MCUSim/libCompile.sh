@@ -31,6 +31,8 @@ fi
 
 function runBuild()
 {
+    local hexFile
+
     if ! ls *.asm &> /dev/null; then
         return
     fi
@@ -40,7 +42,9 @@ function runBuild()
     fi
 
     for i in *.asm; do
-        if [[ -f "${1}/${i%%.asm}.hex" && "${1}/${i%%.asm}.hex" -nt "$i" ]]; then
+        hexFile="${1}/${i%%.asm}.hex"
+
+        if [[ -s "${hexFile}" && ! "${i}" -nt "${hexFile}" ]]; then
             continue
         fi
 
