@@ -446,7 +446,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -460,17 +460,17 @@ void MainForm::openFilePath(QString path)
         }
         else
         {
-            qDebug() << "MainForm: addCentralWidget";
+            //qDebug() << "MainForm: addCentralWidget";
             wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
-            qDebug() << "MainForm: connect";
+            //qDebug() << "MainForm: connect";
             wDockManager->getCentralWidget()->connectAct();
-            qDebug() << "MainForm: set parent";
+            //qDebug() << "MainForm: set parent";
             wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
         }
     }
-    qDebug() << "MainForm: return openFilePath()";
+    //qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -508,7 +508,7 @@ void MainForm::addFile()
  */
 void MainForm::saveFile()
 {
-    qDebug() << "MainForm: saveFile()";
+    //qDebug() << "MainForm: saveFile()";
     if (wDockManager->getCentralWidget()->isChanged() == true || wDockManager->getCentralPath() == "untracked")
     {
         QString path;
@@ -544,7 +544,7 @@ void MainForm::saveFile()
             }
         }
     }
-    qDebug() << "MainForm: return saveFile()";
+    //qDebug() << "MainForm: return saveFile()";
 }
 
 
@@ -1078,17 +1078,17 @@ ProjectMan* MainForm::getProjectMan()
  */
 void MainForm::exampleOpen()
 {
-    qDebug() << "MainForm: exampleOpen";
+    //qDebug() << "MainForm: exampleOpen";
     this->openProject("./demoprojekt/Example/Example.mmp");
     int count = this->projectMan->getActive()->filePaths.count();
     QDir projectDir = QFileInfo(this->projectMan->getActive()->prjPath).dir();
     QString absolutePath = projectDir.path();
     for (int i = 0; i < count; i++)
     {
-        qDebug() << "MainForm: loading";
+        //qDebug() << "MainForm: loading";
         this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
-    qDebug() << "MainForm: return exampleOpen";
+    //qDebug() << "MainForm: return exampleOpen";
 }
 
 
@@ -1208,7 +1208,7 @@ void MainForm::setEditorReadOnly(bool readOnly)
  */
 void MainForm::addUntrackedFile(QString name, QString path)
 {
-    qDebug() << "MainForm: addUntrackedFile";
+    //qDebug() << "MainForm: addUntrackedFile";
     if (name != NULL && path != NULL)
     {
         getWDockManager()->addUntrackedCentralWidget(name, path);
@@ -1219,7 +1219,7 @@ void MainForm::addUntrackedFile(QString name, QString path)
         //getWDockManager()->getCentralWidget()->setChanged();
         //getWDockManager()->getCentralWidget()->connectAct();
     }
-    qDebug() << "MainForm: return addUntrackedFile";
+    //qDebug() << "MainForm: return addUntrackedFile";
 }
 
 

@@ -106,7 +106,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(QFont("Andale Mono", fontSize));
-    qDebug() << "HexEdit: font size" << this->hexTextEdit->font().pixelSize();
+    //qDebug() << "HexEdit: font size" << fontSize;
     //hexTextEdit->resize((columns*2-1)*10,5);
     hexTextEdit->setMinimumWidth((columns*3-4)*fontSize);
     hexTextEdit->setMaximumWidth((columns*3-4)*fontSize);
