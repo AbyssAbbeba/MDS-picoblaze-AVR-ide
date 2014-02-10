@@ -32,7 +32,7 @@ MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
 {
     if ( nullptr != m_strategy )
     {
-        m_strategy->link(simulator, &m_execMessage, &m_success);
+        m_strategy->link(simulator, &m_execMessage, &m_success, &m_anyAssertionMade);
     }
 }
 
@@ -40,11 +40,13 @@ MCUSimTestScript::~MCUSimTestScript()
 {
 }
 
-bool MCUSimTestScript::runScript ( const std::string & inFileName,
-                                   const std::string & outFileName,
-                                   bool useAsmFile )
+MCUSimTestScript::ExecStatus MCUSimTestScript::runScript ( const std::string & inFileName,
+                                                           const std::string & outFileName,
+                                                           bool useAsmFile )
 {
     m_success = true;
+    m_anythingExecuted = false;
+    m_anyAssertionMade = false;
 
     std::ifstream inFile  ( inFileName,  std::ios_base::in );
     std::ofstream outFile ( outFileName, std::ios_base::out | std::ios_base::trunc );
@@ -57,7 +59,7 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
         {
             outFile << "[ABORTED] " << std::endl;
             outFile << ">>> I/O error." << std::endl;
-            return false;
+            return ES_ABORTED;
         }
 
         inFile.getline(line, MAX_LINE_LENGTH);
@@ -80,11 +82,26 @@ bool MCUSimTestScript::runScript ( const std::string & inFileName,
 
         if ( false == ok )
         {
-            return false;
+            return ES_ABORTED;
         }
     }
 
-    return m_success;
+    if ( false == m_anythingExecuted )
+    {
+        return ES_NO_COMMANDS;
+    }
+    else if ( false == m_anyAssertionMade )
+    {
+        return ES_NO_ASSERTIONS;
+    }
+    else if ( true == m_success )
+    {
+        return ES_OK;
+    }
+    else
+    {
+        return ES_ASSERTION_FAILED;
+    }
 }
 
 inline MCUSimTestScript::Command MCUSimTestScript::processLine ( const char * line,
@@ -401,6 +418,11 @@ int MCUSimTestScript::str2bool ( const std::string & token )
 inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
                                                std::ofstream & outFile )
 {
+    if ( CT_EMPTY != cmd.m_type )
+    {
+        m_anythingExecuted = true;
+    }
+
     switch ( cmd.m_type )
     {
         case CT_ABORT:
@@ -419,6 +441,8 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         case CT_PC_EQ:
         case CT_PC_NE:
         {
+            m_anyAssertionMade = true;
+
             MCUSimSubsys * cpuSubsys = m_simulator->getSubsys ( MCUSimSubsys::ID_CPU );
             if ( nullptr == cpuSubsys )
             {
@@ -475,6 +499,8 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         case CT_EQ:
         case CT_NE:
         {
+            m_anyAssertionMade = true;
+
             MCUSimSubsys * memSubsys = m_simulator->getSubsys ( MCUSimSubsys::SubsysId(cmd.m_args[0]) );
             if ( nullptr == memSubsys )
             {

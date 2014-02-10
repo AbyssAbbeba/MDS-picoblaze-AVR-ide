@@ -62,6 +62,18 @@ class MCUSimTestScript
         /**
          * @brief
          */
+        enum ExecStatus
+        {
+            ES_OK = 0,          ///<
+            ES_ABORTED,         ///<
+            ES_NO_COMMANDS,     ///<
+            ES_NO_ASSERTIONS,   ///<
+            ES_ASSERTION_FAILED ///<
+        };
+
+        /**
+         * @brief
+         */
         enum CommandType
         {
             CT_UNKNOWN,
@@ -109,9 +121,9 @@ class MCUSimTestScript
          * @param[in] useAsmFile
          * @return
          */
-        bool runScript ( const std::string & inFileName,
-                         const std::string & outFileName,
-                         bool useAsmFile = false );
+        ExecStatus runScript ( const std::string & inFileName,
+                               const std::string & outFileName,
+                               bool useAsmFile = false );
 
     ////    Static Public Operations    ////
     public:
@@ -184,6 +196,16 @@ class MCUSimTestScript
          * @brief
          */
         bool m_success;
+
+        /**
+         * @brief
+         */
+        bool m_anythingExecuted;
+
+        /**
+         * @brief
+         */
+        bool m_anyAssertionMade;
 };
 
 #endif // MCUSIMTESTSCRIPT_H

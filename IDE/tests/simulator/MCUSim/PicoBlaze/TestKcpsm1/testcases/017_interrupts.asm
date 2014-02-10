@@ -34,7 +34,7 @@ INTERRUPT:
             OUT         S2,0
             RETURNI ENABLE
 
-org     3ffh
+org     ffh
 jump    INTERRUPT
 
             

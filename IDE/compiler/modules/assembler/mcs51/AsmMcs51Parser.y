@@ -1730,17 +1730,17 @@ inline int AsmMcs51Parser_error ( YYLTYPE * yylloc,
             {
                 case 'D':
                     errStr = QObject::tr("unexpected directive ").toStdString();
-                    errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
+                    errStr += reinterpret_cast<const char *>( size_t(errorInfo) + 27 );
                     errorInfo = errStr.c_str();
                     break;
                 case 'I':
                     errStr = QObject::tr("unexpected instruction ").toStdString();
-                    errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
+                    errStr += reinterpret_cast<const char *>( size_t(errorInfo) + 27 );
                     errorInfo = errStr.c_str();
                     break;
                 case 'C':
                     errStr = QObject::tr("unexpected assembler control $").toStdString();
-                    errStr += reinterpret_cast<const char *>( long(errorInfo) + 27 );
+                    errStr += reinterpret_cast<const char *>( size_t(errorInfo) + 27 );
                     errorInfo = errStr.c_str();
                     break;
                 default:
@@ -1751,7 +1751,7 @@ inline int AsmMcs51Parser_error ( YYLTYPE * yylloc,
         else
         {
             errStr = QObject::tr("unexpected ").toStdString();
-            errStr += reinterpret_cast<const char *>( long(errorInfo) + 25 );
+            errStr += reinterpret_cast<const char *>( size_t(errorInfo) + 25 );
             errorInfo = errStr.c_str();
         }
     }
