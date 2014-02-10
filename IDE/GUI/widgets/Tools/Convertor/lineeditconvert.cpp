@@ -6,22 +6,30 @@ LineEditConvert::LineEditConvert(QWidget *parent, int base)
 {
     connect(this, SIGNAL(textEdited(const QString &)), this, SLOT(catchEditSignal(const QString &)));
     this->base = base;
+    QFontMetrics metrics(this->font());
     if (base == 2)
     {
-        this->setInputMask("BBBBBBBBBBBBBBBB");
-        this->setText("0000000000000000");
+        //this->setInputMask("BBBBBBBB");
+        QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01]{8}"), this);
+        this->setValidator(binValidator);
+        this->setText("");
+        this->setMaximumWidth(metrics.width("00000000")+10);
     }
     else if (base == 10)
     {
-        this->setInputMask("99999");
-        QIntValidator *dec32bitValidator = new QIntValidator(0, 65535, this);
-        this->setValidator(dec32bitValidator);
-        this->setText("00000");
+        //this->setInputMask("999");
+        QIntValidator *dec8bitValidator = new QIntValidator(0, 255, this);
+        this->setValidator(dec8bitValidator);
+        this->setText("");
+        this->setMaximumWidth(metrics.width("255")+10);
     }
     else
     {
-        this->setInputMask("HHHH");
-        this->setText("0000");
+        //this->setInputMask("HH");
+        QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-F]{2}"), this);
+        this->setValidator(hexValidator);
+        this->setText("");
+        this->setMaximumWidth(metrics.width("DD")+10);
     }
     
 }
@@ -36,35 +44,35 @@ void LineEditConvert::setTextSlot(const QString &text, int base)
 {
     bool done;
     int number = text.toInt(&done, base);
-    qDebug () << "LineEditConvert: Number" << text << "of base" << base << "is" << number;
+    //qDebug () << "LineEditConvert: Number" << text << "of base" << base << "is" << number;
     if (done)
     {
         QString a = QString::number(number, this->base);
-        qDebug() << "LineEditConvert: Number converted to base" << this->base << "is" << a;
-        int length = 0;
+        //qDebug() << "LineEditConvert: Number converted to base" << this->base << "is" << a;
+        /*int length = 0;
         if (this->base == 2)
         {
-            length = 16 - a.length();
+            length = 8 - a.length();
         }
         else if (this->base == 10)
         {
-            length = 5 - a.length();
+            length = 3 - a.length();
         }
         else
         {
-            length = 4 - a.length();
+            length = 2 - a.length();
         }
         while (length > 0)
         {
             a.prepend('0');
             length--;
-        }
-        qDebug() << "LineEditConvert: Text set:" << a;
+        }*/
+        //qDebug() << "LineEditConvert: Text set:" << a;
         this->setText(a);
     }
     else if (text == "")
     {
-        this->setText("0");
+        this->setText("");
     }
     /*else
     {
