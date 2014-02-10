@@ -15,6 +15,7 @@ ConvertorTool::ConvertorTool(QWidget *parent)
     LineEditConvert *le_dec2 = new LineEditConvert(this, 10);
     LineEditConvert *le_dec3 = new LineEditConvert(this, 10);
     QGridLayout *layout = new QGridLayout(this);
+    layout->setSpacing(1);
     QLabel *hex = new QLabel("HEX", this);
     QLabel *bin = new QLabel("BIN", this);
     QLabel *dec = new QLabel("DEC", this);

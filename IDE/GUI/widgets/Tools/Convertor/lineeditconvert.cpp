@@ -49,7 +49,7 @@ void LineEditConvert::setTextSlot(const QString &text, int base)
     {
         QString a = QString::number(number, this->base);
         //qDebug() << "LineEditConvert: Number converted to base" << this->base << "is" << a;
-        int length = 0;
+        /*int length = 0;
         if (this->base == 2)
         {
             length = 8 - a.length();
@@ -66,13 +66,13 @@ void LineEditConvert::setTextSlot(const QString &text, int base)
         {
             a.prepend('0');
             length--;
-        }
+        }*/
         //qDebug() << "LineEditConvert: Text set:" << a;
         this->setText(a);
     }
     else if (text == "")
     {
-        this->setText("0");
+        this->setText("");
     }
     /*else
     {
