@@ -17,12 +17,14 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 SET( SAMPLE_SRCS
-       ./helpwidget.cpp
+        ./helpwidget.cpp
+        ./helpbrowser.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./helpwidget.h
+        #./helpwidget.h
+        #./helpbrowser.h
 )
 
 
