@@ -338,10 +338,11 @@ void PicoBlazeInstructionSet3::inst_ADD ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
+    sXval &= 0xff;
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( sXval & 0xff ) );
+    m_registers -> write ( sX, sXval );
 }
 
 void PicoBlazeInstructionSet3::inst_ADDCY ( const unsigned int opCode )
@@ -375,10 +376,11 @@ void PicoBlazeInstructionSet3::inst_ADDCY ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
+    sXval &= 0xff;
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( sXval & 0xff ) );
+    m_registers -> write ( sX, sXval );
 }
 
 void PicoBlazeInstructionSet3::inst_SUB ( const unsigned int opCode )
@@ -406,10 +408,11 @@ void PicoBlazeInstructionSet3::inst_SUB ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
+    sXval &= 0xff;
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( sXval & 0xff ) );
+    m_registers -> write ( sX, sXval );
 }
 
 void PicoBlazeInstructionSet3::inst_SUBCY ( const unsigned int opCode )
@@ -443,10 +446,11 @@ void PicoBlazeInstructionSet3::inst_SUBCY ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
+    sXval &= 0xff;
+    m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( sXval & 0xff ) );
+    m_registers -> write ( sX, sXval );
 }
 
 void PicoBlazeInstructionSet3::inst_COMPARE ( const unsigned int opCode )
@@ -474,7 +478,7 @@ void PicoBlazeInstructionSet3::inst_COMPARE ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0x100 &  sXval ) ? true : false );
-    m_statusFlags -> setZero  ( ( 0     == sXval ) ? true : false );
+    m_statusFlags -> setZero  ( ( 0 == ( 0xff & sXval ) ) ? true : false );
 }
 
 void PicoBlazeInstructionSet3::inst_RETURNI ( const unsigned int opCode )
@@ -845,10 +849,11 @@ inline void PicoBlazeInstructionSet3::inst_SL0 ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    sXval &= 0xff;
     m_statusFlags -> setZero  ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( 0xff & sXval ) );
+    m_registers -> write ( sX, sXval );
 }
 
 inline void PicoBlazeInstructionSet3::inst_SL1 ( const unsigned int opCode )
@@ -888,10 +893,11 @@ inline void PicoBlazeInstructionSet3::inst_SLX ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    sXval &= 0xff;
     m_statusFlags -> setZero  ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( 0xff & sXval ) );
+    m_registers -> write ( sX, sXval );
 }
 
 inline void PicoBlazeInstructionSet3::inst_SLA ( const unsigned int opCode )
@@ -913,10 +919,11 @@ inline void PicoBlazeInstructionSet3::inst_SLA ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    sXval &= 0xff;
     m_statusFlags -> setZero  ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( 0xff & sXval ) );
+    m_registers -> write ( sX, sXval );
 }
 
 inline void PicoBlazeInstructionSet3::inst_RL ( const unsigned int opCode )
