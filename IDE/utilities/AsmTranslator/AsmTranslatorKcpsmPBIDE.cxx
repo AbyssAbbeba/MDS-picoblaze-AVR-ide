@@ -208,7 +208,7 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
     if ( ( false == secondPass ) && ( line.cend() != begin ) )
     {
         messages.push_back ( std::make_pair ( lineNumber,
-                                              QObject::tr ( "Warning: line not understood: `%1'." )
+                                              QObject::tr ( "Error: line not understood: `%1'." )
                                                           . arg ( line.c_str() )
                                                           . toStdString() ) );
         return false;
