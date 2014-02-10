@@ -22,4 +22,4 @@ project ( 3rdParty )
 add_subdirectory ( CUnit )
 
 # Build hidapi library.
-add_subdirectory ( hidapi )
+# add_subdirectory ( hidapi )
