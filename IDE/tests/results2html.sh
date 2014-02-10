@@ -19,14 +19,14 @@ if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
 else
     declare -ir inWindows=0
 fi
-declare -ri COVERAGE=${1:-on}
+declare -r  COVERAGE=${1:-on}
 declare -ri CLEAN_UP=${clean_up:-1}
 declare -ri MERGE_LOGS=${merge_logs:-0}
 declare -ri COMPRESS_HTML=${compress_html:-1}
 declare -r  XSLT_PROC_LOG_SUFFIX="xsltproc.log"
 declare -ri DETECTED_CPU_CORES=$( which lscpu &> /dev/null && lscpu |
                                   gawk 'BEGIN {n=1} END {print(n)} /^CPU\(s\)/ {n=$2;exit}' || echo 1 )
-declare -i  CPU_CORES=${2:-${DETECTED_CPU_CORES}}
+declare -ri CPU_CORES=${2:-${DETECTED_CPU_CORES}}
 
 # ======================================================================================================================
 # SUPPORT FOR PARALLEL RUN OF MULTIPLE JOBS
@@ -131,7 +131,7 @@ for i in *-Listing.xml; do
 done
 runParallelJobs ${CPU_CORES} # (${CPU_CORES} in args. means run in twice as many processes as usual.)
 
-if [[ COVERAGE =~ [oO][nN] ]]; then
+if [[ 'on' == "${COVERAGE}" ]]; then
     declare -ra GCOV_FILES=( $(find . -name '*.gcov') )
     if (( 0 == ${#GCOV_FILES[@]} )); then
         megaBytesOfGcov=0

@@ -47,7 +47,7 @@ set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
 set ( CMAKE_C_FLAGS_RELEASE    "-O2 -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_C_FLAGS_MINSIZEREL "-O2 -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
 
 # Set the same compilation flags for C++ as they are set for C.
 set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
@@ -104,7 +104,11 @@ endif()
 if ( NOT TARGET_ARCH )
     message ( STATUS "Target architecture not specified, using native: ${CMAKE_HOST_SYSTEM_PROCESSOR}." )
     set ( TARGET_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    if ( TARGET_ARCH STREQUAL "AMD64" )
+        set ( TARGET_ARCH "x86_64")
+    endif()
 endif()
+
 if ( TARGET_ARCH STREQUAL "x86_64" )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -march=x86-64" )
@@ -137,6 +141,29 @@ else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
 endif()
 message ( STATUS "Target operating system for this build: ${TARGET_OS}." )
+
+
+if ( ( TARGET_ARCH STREQUAL "x86" ) AND ( TARGET_OS STREQUAL "Linux" ) )
+    message(">>>> CROSS <<<<")
+
+    # where is the target environment
+    set(CMAKE_FIND_ROOT_PATH  "/usr/lib/i386-linux-gnu" "/lib/i386-linux-gnu" )
+    # search for programs in the build host directories
+    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+    # for libraries and headers in the target directories
+    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
+
+    set(BOOST_LIBRARYDIR "/usr/lib/i386-linux-gnu")
+    set(Boost_REGEX_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_regex.so")
+    set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system.so")
+    set(Boost_FILESYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_filesystem.so")
+    set(Boost_INCLUDE_DIR "/usr/include/boost")
+    set(Boost_REGEX_FOUND TRUE)
+    set(Boost_FILESYSTEM_FOUND TRUE)
+    set(Boost_SYSTEM_FOUND TRUE)
+    set(QT_QTCORE_LIBRARY_RELEASE "/usr/lib/i386-linux-gnu/libQtCore.so.4.8.1")
+endif()
 
 # ----------------------------------------------------------------------------------------------------------------------
 # REQUIRED COMPILER AND ITS MINIMUM REQUIRED VERSION.
@@ -180,10 +207,19 @@ include_directories ( ${Boost_INCLUDE_DIRS} )
 find_package ( FLEX  2.5.35 REQUIRED )
 find_package ( BISON 2.5    REQUIRED )
 
+# Find Doxygen (not required).
+find_package ( Doxygen 1.7.6 )
+
+# Find QtHelp tools.
+include ( "${CMAKE_SOURCE_DIR}/QtHelpTools.cmake" )
+
+# Find LaTeX tools (native CMake's FindLatex is crummy).
+include ( "${CMAKE_SOURCE_DIR}/MDSFindLatex.cmake" )
+
 # Include our own macros for using Flex and Bison.
 include ( "${CMAKE_SOURCE_DIR}/FlexBisonPair.cmake" )
 
-# Include our own macros for doing Windows specific stuff.
+# Include our own macros for using windres - compiler for Windows RC files.
 include ( "${CMAKE_SOURCE_DIR}/windres.cmake" )
 
 # ----------------------------------------------------------------------------------------------------------------------

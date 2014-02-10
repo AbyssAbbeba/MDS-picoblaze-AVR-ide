@@ -22,7 +22,7 @@
 CfgInterface::CfgInterface(QWidget *parent)
     : QWidget(parent)
 {
-    qDebug() << "CfgInterface: CfgInterface()";
+    //qDebug() << "CfgInterface: CfgInterface()";
     //this->setWindowTitle("Config");
     this->count = 0;
     this->tabs = new QStackedWidget(this);
@@ -48,7 +48,7 @@ CfgInterface::CfgInterface(QWidget *parent)
     connect(this->menuList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
         this, SLOT(changeWidget(QTreeWidgetItem*, QTreeWidgetItem*)));
 
-    qDebug() << "CfgInterface: return CfgInterface()";
+    //qDebug() << "CfgInterface: return CfgInterface()";
 }
 
 
@@ -61,7 +61,7 @@ void CfgInterface::fixSize()
     this->menuList->setMaximumHeight(this->tabs->height()+this->widgetLabel->height());
     this->menuList->setMinimumHeight(this->tabs->height()+this->widgetLabel->height());
     this->setFixedWidth(this->tabs->width()+this->menuList->width()+10);
-    this->setFixedHeight(this->menuList->height()+this->buttonBox->height()+15);
+    this->setFixedHeight(this->menuList->height()+this->buttonBox->height()+20);
     this->buttonBox->move(this->width() - buttonBox->width()-5, this->height() - buttonBox->height()-5);
     this->widgetLabel->setMaximumWidth(this->tabs->width());
     this->widgetLabel->setMinimumWidth(this->tabs->width());

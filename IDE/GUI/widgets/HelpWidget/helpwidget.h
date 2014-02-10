@@ -3,17 +3,19 @@
 
 
 #include <QWidget>
-#include <QTextBrowser>
+#include <QHelpEngine>
+#include <QHelpSearchEngine>
+#include "helpbrowser.h"
 
 
 
 class HelpWidget : public QWidget
 {
     public:
-        HelpWidget(QWidget *parent, int width = 600, int height = 750);
+        HelpWidget(QWidget *parent, int width = 600, int height = 800);
 
     private:
-        QTextBrowser *textBrowser;
+        HelpBrowser *textBrowser;
 };
 
 

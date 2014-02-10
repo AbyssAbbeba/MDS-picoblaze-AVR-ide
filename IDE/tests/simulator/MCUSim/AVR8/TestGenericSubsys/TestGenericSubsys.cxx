@@ -100,9 +100,21 @@ void TestGenericSubsys::testFunction()
 
     const std::string testName = CU_get_current_test()->pName;
 
-    const std::string inFile  = ( path("TestGenericSubsys") / "testcases" / (testName + ".asm" ) ).string();
-    const std::string outFile = ( path("TestGenericSubsys") / "results"   / (testName + ".out") ).string();
-    const std::string hexFile = ( path("TestGenericSubsys") / "results"   / (testName + ".hex") ).string();
+    std::string inFile  = ( path("TestGenericSubsys") / "testcases" / (testName + "."   ) ).string();
+    std::string outFile = ( path("TestGenericSubsys") / "results"   / (testName + ".out") ).string();
+    std::string hexFile = ( path("TestGenericSubsys") / "results"   / (testName + ".hex") ).string();
+
+    bool useAsmFile;
+    if ( true == exists(inFile + "in") )
+    {
+        inFile += "in";
+        useAsmFile = false;
+    }
+    else
+    {
+        inFile += "asm";
+        useAsmFile = true;
+    }
 
     m_avr8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_avr8Sim->reset(MCUSim::RSTMD_MCU_RESET);
@@ -120,5 +132,22 @@ void TestGenericSubsys::testFunction()
 
     dynamic_cast<AVR8ProgramMemory*>(m_avr8Sim->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(m_programFile);
 
-    CU_ASSERT_TRUE ( m_testScript->runScript(inFile, outFile) );
+    switch ( m_testScript->runScript(inFile, outFile, useAsmFile) )
+    {
+        case MCUSimTestScript::ES_NO_COMMANDS:
+            CU_FAIL("Test script does not contain any commands.");
+            break;
+        case MCUSimTestScript::ES_NO_ASSERTIONS:
+            CU_FAIL("Test script does not contain any assertions.");
+            break;
+        case MCUSimTestScript::ES_OK:
+            // Success.
+            break;
+        case MCUSimTestScript::ES_ABORTED:
+            CU_FAIL("Test script execution encountered a fatal error and was aborted.");
+            break;
+        case MCUSimTestScript::ES_ASSERTION_FAILED:
+            CU_FAIL("Some of the test script assertions have failed.");
+            break;
+    }
 }

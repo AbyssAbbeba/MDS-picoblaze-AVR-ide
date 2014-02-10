@@ -18,8 +18,8 @@ project ( docs )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Build API documentation.
-add_subdirectory ( doxygen )
-
 # Build manual.
 add_subdirectory ( manual )
+
+# Build API documentation.
+add_subdirectory ( doxygen )

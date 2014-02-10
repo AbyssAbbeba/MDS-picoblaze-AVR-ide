@@ -13,6 +13,7 @@
 
 
 #include <QtGui>
+#include <math.h>
 #include "projectdlg_general.h"
 
 
@@ -50,23 +51,23 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
 
     notes.append("256");
     notes.append("16");
-    notes.append("64 Bytes");
+    notes.append("64");
     notes.append("31");
     notes.append("1024");
 
     notes.append("256");
     notes.append("2x16");
-    notes.append("64/128/256 Bytes");
+    notes.append("256");
     notes.append("31");
-    notes.append("1024/2048/4096");
+    notes.append("4096");
 
 
-    ui.teNotes->append("Name:\t\t" + ui.cmbFamily->currentText());
-    ui.teNotes->append("IO port address count:\t" + notes.at(0));
-    ui.teNotes->append("Register count:\t" + notes.at(1));
-    ui.teNotes->append("Scratchpad:\t\t" + notes.at(2));
-    ui.teNotes->append("Callstack size:\t" + notes.at(3));
-    ui.teNotes->append("Instruction count:\t" + notes.at(4));
+    //ui.teNotes->append("Name:\t\t" + ui.cmbFamily->currentText());
+    //ui.teNotes->append("IO port address count:\t" + notes.at(0));
+    //ui.teNotes->append("Register count:\t" + notes.at(1));
+    //ui.teNotes->append("Scratchpad:\t\t" + notes.at(2));
+    //ui.teNotes->append("Callstack:\t\t" + notes.at(3));
+    //ui.teNotes->append("Program memory:\t" + notes.at(4));
 
     
 
@@ -80,6 +81,20 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
             this,
             SLOT(familyChanged(const QString&))
            );
+    connect(ui.sldScratchpad,
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(sliderScratchpadUpdate(int))
+           );
+    connect(ui.sldProgMem,
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(sliderProgMemUpdate(int))
+           );
+
+    ui.cmbFamily->setCurrentIndex(4);
+    ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
+    ui.sldProgMem->setValue(ui.sldProgMem->maximum());
 
     this->show();
 }
@@ -119,15 +134,43 @@ QString Projectdlg_General::getFamily()
 }
 
 
-QString Projectdlg_General::getIntVector()
+int Projectdlg_General::getIntVector()
 {
-    return ui.leIntVector->text();
+    bool ok;
+    int value = ui.leIntVector->text().toInt(&ok, 16);
+    if (ok != true || value > ui.lblProgMem->text().toInt())
+    {
+        return -1;
+    }
+    return value;
 }
 
 
-QString Projectdlg_General::getHWBuild()
+int Projectdlg_General::getHWBuild()
 {
-    return ui.leHWBuild->text();
+    bool ok;
+    int value = ui.leHWBuild->text().toInt(&ok, 16);
+    if (ui.leHWBuild->isEnabled() == false)
+    {
+        return -1;
+    }
+    if (ok != true)
+    {
+        return -2;
+    }
+    return value;
+}
+
+
+int Projectdlg_General::getScratchpadSize()
+{
+    return ui.lblScratchpad->text().toInt();
+}
+
+
+int Projectdlg_General::getProgMemSize()
+{
+    return ui.lblProgMem->text().toInt();
 }
 
 
@@ -146,10 +189,49 @@ void Projectdlg_General::familyChanged(const QString &text)
 
     int index = ui.cmbFamily->findText(text);
     ui.teNotes->clear();
-    ui.teNotes->append("Name:\t\t" + text);
     ui.teNotes->append("IO port address count:\t" + notes.at(5*index));
     ui.teNotes->append("Register count:\t" + notes.at(5*index+1));
-    ui.teNotes->append("Scratchpad:\t\t" + notes.at(5*index+2));
     ui.teNotes->append("Callstack size:\t" + notes.at(5*index+3));
-    ui.teNotes->append("Instruction count:\t" + notes.at(5*index+4));
+
+    if (notes.at(5*index+2) != "-")
+    {
+        ui.sldScratchpad->setEnabled(true);
+        ui.lblScratchpad->setEnabled(true);
+        ui.sldScratchpad->setMaximum(log2(notes.at(5*index+2).toInt()));
+        ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
+    }
+    else
+    {
+        ui.sldScratchpad->setDisabled(true);
+        ui.lblScratchpad->setDisabled(true);
+    }
+
+    ui.sldProgMem->setMaximum(log2(notes.at(5*index+4).toInt()));
+    ui.sldProgMem->setValue(ui.sldProgMem->maximum());
+}
+
+
+void Projectdlg_General::sliderScratchpadUpdate(int value)
+{
+    if (value > -1)
+    {
+        ui.lblScratchpad->setText(QString::number(qPow(2,value)));
+    }
+    else
+    {
+        ui.lblScratchpad->setText("0");
+    }
+}
+
+
+void Projectdlg_General::sliderProgMemUpdate(int value)
+{
+    if (value > -1)
+    {
+        ui.lblProgMem->setText(QString::number(qPow(2,value)));
+    }
+    else
+    {
+        ui.lblProgMem->setText("0");
+    }
 }

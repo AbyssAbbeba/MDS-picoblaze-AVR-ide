@@ -34,9 +34,9 @@ TabBar::TabBar(QWidget *parent)
  */
 void TabBar::tabRemoved(int index)
 {
-    qDebug() << "TabBar: tabRemoved()";
+    //qDebug() << "TabBar: tabRemoved()";
     tabStats.removeAt(index);
-    qDebug() << "TabBar: return tabRemoved()";
+    //qDebug() << "TabBar: return tabRemoved()";
 }
 
 
@@ -45,9 +45,9 @@ void TabBar::tabRemoved(int index)
  */
 void TabBar::tabAdded()
 {
-    qDebug() << "TabBar: tabAdded()";
+    //qDebug() << "TabBar: tabAdded()";
     tabStats.append(false);
-    qDebug() << "TabBar: return tabAdded()";
+    //qDebug() << "TabBar: return tabAdded()";
 }
 
 
@@ -78,9 +78,9 @@ void TabBar::tabChanged(int index, bool changed)
  */
 void TabBar::tabStatsMoved(int from, int to)
 {
-    qDebug() << "TabBar: tabStatsMoved()";
+    //qDebug() << "TabBar: tabStatsMoved()";
     tabStats.swap(from, to);
-    qDebug() << "TabBar: return tabStatsMoved()";
+    //qDebug() << "TabBar: return tabStatsMoved()";
 }
 
 
