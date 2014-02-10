@@ -1,3 +1,11 @@
+# ==============================================================================
+#
+# (C) copyright 2014 Moravia Microsystems, s.r.o.
+#
+# author: Martin Ošmera <martin.osmera@moravia-microsystems.com>
+#
+# ==============================================================================
+
 message ( STATUS "CROSS COMPILATION requested (host: ${HOST_OS}-${HOST_ARCH}, target: ${TARGET_OS}-${TARGET_ARCH})." )
 
 macro ( FROM__LINUX_X86_64__TO__LINUX_X86 )
@@ -56,3 +64,5 @@ if ( HOST_OS STREQUAL "Linux" )
 else()
     message ( FATAL_ERROR "This cross compilation is not supported on operating system: ${HOST_OS}." )
 endif()
+
+# cross-compilation.cmake ends here
