@@ -11,12 +11,12 @@ START:
 ;sA = D9 which is not zero (Z=0) but there was an underflow (C=1).
 ;This is equivalent to 142 – 181 = -39 where D9 hex is the twos complement representation of -39.
 ;However, it is the users responsibility to implement and interpret signed arithmetic values and operations
-LOAD sA, #8E                     ;8E - 43 = 4B
-SUB sA, #43                      ;
-LOAD sA, #8E                     ;8E - 8E = 00
-ADD sA, sA
-LOAD sA, #8E
-SUB sA, #B5
+LOAD sA, #8Eh                    ;8E - 43 = 4B
+SUB sA, #43h                      ;
+LOAD sA, #8Eh                     ;8E - 8E = 00
+SUB sA, sA
+LOAD sA, #8Eh
+SUB sA, #B5h
                                 ;; step
                                 ;; reg[10] == 0x8E
                                 ;; step
