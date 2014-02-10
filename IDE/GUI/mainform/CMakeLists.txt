@@ -41,6 +41,8 @@ add_library(${PROJECT_NAME}
 #QtNetwork !!
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg)
 
-install( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

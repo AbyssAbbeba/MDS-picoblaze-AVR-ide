@@ -47,6 +47,8 @@ add_library(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} AsmTranslator)
 
-install( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
