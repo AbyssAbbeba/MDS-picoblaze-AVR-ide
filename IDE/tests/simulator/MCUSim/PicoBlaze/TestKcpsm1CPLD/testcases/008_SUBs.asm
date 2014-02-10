@@ -3,7 +3,7 @@ device kcpsm1
 ORG 0
 
 
-DATA1    AUTOREG         AT 5
+DATA1    AUTOREG         AT 1
 ADRESA  AUTOREG
 CMD1    AUTOREG
 CMD2    AUTOREG

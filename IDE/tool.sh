@@ -1,6 +1,6 @@
 #! /bin/bash
 
-readonly VERSION="0.3"
+readonly VERSION="0.3.1"
 declare -ir DETECTED_CPU_CORES=$( which lscpu &> /dev/null && lscpu 2> /dev/null | \
                                   gawk 'BEGIN { n = 1 } END { print(n) } /^CPU\(s\)/ { n = $2; exit }' || echo 1 )
 
@@ -9,7 +9,7 @@ declare -i PP=${CPU_CORES}
 
 declare allowParallelCovTest=1
 declare cmakeGenerator='<invalid>'
-declare makeUtility='echo "Error: No make selected"; '
+declare makeProgram='echo "Error: No make selected"; '
 
 function initialize() {
     cd "$(dirname "$(readlink -n -f "${0}")" )"
@@ -22,27 +22,27 @@ function initialize() {
         'GNU/Linux')
             # Build on GNU/Linux.
             cmakeGenerator='Unix Makefiles'
-            makeUtility='make'
+            makeProgram='make'
             ;;
 
         'Cygwin'|'Msys')
             # Build on Windows.
             cmakeGenerator='MinGW Makefiles'
-            makeUtility='mingw32-make'
+            makeProgram='mingw32-make'
             allowParallelCovTest=0
             val='off' # Disable Valgrind, on Windows there is no Valgrind.
             ;;
 
         *)
             # Unsupported OS.
-            echo "Unsupported OS: '$(uname -o)'" > /dev/stderr
+            echo "Operating system \"$( uname -o )\" is not supported." > /dev/stderr
             exit 1
             ;;
     esac
 }
 
 function build() {
-    requirePrograms 'cmake' ${makeUtility} 'gawk' 'sed'
+    requirePrograms 'cmake' ${makeProgram} 'gawk' 'sed'
 
     cmake -G "${cmakeGenerator}"                \
           -DTEST_COVERAGE=OFF                   \
@@ -54,7 +54,7 @@ function build() {
           -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
           . || exit 1
 
-    if ! ${makeUtility} -j ${PP} --keep-going; then
+    if ! ${makeProgram} -j ${PP} --keep-going; then
         echo -e "\nBuild FAILED!\n" > /dev/stderr
         exit 1
     fi
@@ -65,7 +65,7 @@ function tests() {
     local -r TIME_FILE="tests/results/startTime.log"
     local -i TEST_PP=${CPU_CORES}
 
-    requirePrograms 'cmake' ${makeUtility} 'xsltproc' 'gawk' 'sed'
+    requirePrograms 'cmake' ${makeProgram} 'xsltproc' 'gawk' 'sed'
 
     if [[ ! "${val}" =~ [oO][fF][fF] ]]; then
         requirePrograms 'valgrind'
@@ -75,6 +75,9 @@ function tests() {
         if (( ! allowParallelCovTest )); then
             TEST_PP=1
         fi
+        cov='on'
+    else
+        cov='off'
     fi
 
     if [[ -e tests/results ]]; then
@@ -88,14 +91,14 @@ function tests() {
           -DCOLOR_GCC=${color:-off}             \
           -DTARGET_OS="${os}"                   \
           -DTARGET_ARCH="${arch}"               \
-          -DTEST_COVERAGE=${cov:-on}            \
+          -DTEST_COVERAGE=${cov}                \
           -DTEST_MEMCHECK=${val:-on}            \
           -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
           -DCMAKE_COLOR_MAKEFILE=${color:-off}  \
           . 2>&1                                \
         | tee "${BUILD_LOG}"
 
-    ${makeUtility} -j ${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
+    ${makeProgram} -j ${PP} --keep-going 2>&1 | tee -a "${BUILD_LOG}"
 
     if [[ -z "${1}" ]]; then
         ctest -j ${TEST_PP}
@@ -103,14 +106,14 @@ function tests() {
         ctest -j ${TEST_PP} --tests-regex "${1}"
     fi
 
-    bash tests/results2html.sh ${cov:-on} ${CPU_CORES}
+    bash tests/results2html.sh ${cov} ${CPU_CORES}
 }
 
 function clean() {
-    requirePrograms 'cmake' ${makeUtility}
+    requirePrograms 'cmake' ${makeProgram}
 
     cmake .
-    ${makeUtility} clean
+    ${makeProgram} clean
 
     for dirGlob in 'CMakeFiles' 'Testing' '_CPack_Packages'; do
         rm -rfv $(find -type d -name "${dirGlob}")
@@ -132,6 +135,15 @@ function repoSync() {
     git commit -a -m "(no comment)"
     git pull ${REMOTE_REPOSITORY} master
     git push ${REMOTE_REPOSITORY} master
+}
+
+function verify() {
+    requirePrograms 'cmake' 'git' 'gawk' 'sed' ${makeProgram}
+
+    tmp="$( mktemp --directory )"
+    git clone --local --no-hardlinks -- "$( readlink -n -f .. )" "${tmp}" || exit 1
+    bt=Release bash "${tmp}/IDE/tool.sh" -b && bt=Debug bash "${tmp}/IDE/tool.sh" -b
+    rm -rf "${tmp}"
 }
 
 function requirePrograms() {
@@ -172,6 +184,7 @@ function printHelp() {
     echo "    -q     Print some statistics regarding generated binary files."
     echo "    -h     Print this message."
     echo "    -V     Print version of this script."
+    echo "    -v     Verify that the project can be compiled using the files currently available in local repository."
     echo ""
     echo "The script might be run with these variables: (value in parentheses is the default value)"
     echo "    bt=<b>          Set build type to <b>, options are: 'Debug', 'Release', and 'MinSizeRel' (all: 'Debug')."
@@ -194,7 +207,7 @@ function main() {
     local -A opts
 
     # Parse CLI options using `getopts' utility.
-    while getopts ":hVcltbsmqT:j:" opt; do
+    while getopts ":hVvcltbsmqT:j:" opt; do
         case $opt in
             b) opts['b']=1;;
             t) opts['t']=1;;
@@ -203,6 +216,7 @@ function main() {
             l) opts['l']=1;;
             s) opts['s']=1;;
             q) opts['q']=1;;
+            v) opts['v']=1;;
             j)
                 if [[ "${OPTARG}" =~ ^[0-9]+$ ]]; then
                     CPU_CORES=${OPTARG}
@@ -234,6 +248,10 @@ function main() {
 
     if [[ ! -z "${opts['l']}" ]]; then
         countLines
+    fi
+
+    if [[ ! -z "${opts['v']}" ]]; then
+        verify
     fi
 
     if [[ ! -z "${opts['T']}" ]]; then

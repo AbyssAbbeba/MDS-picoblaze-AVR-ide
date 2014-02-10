@@ -17,9 +17,11 @@
 
 void MCUSimTestScriptStrategy::link ( MCUSim * simulator,
                                       std::string * execMessage,
-                                      bool * success )
+                                      bool * success,
+                                      bool * anyAssertionMade )
 {
-    m_simulator   = simulator;
-    m_execMessage = execMessage;
-    m_success     = success;
+    m_simulator        = simulator;
+    m_execMessage      = execMessage;
+    m_success          = success;
+    m_anyAssertionMade = anyAssertionMade;
 }

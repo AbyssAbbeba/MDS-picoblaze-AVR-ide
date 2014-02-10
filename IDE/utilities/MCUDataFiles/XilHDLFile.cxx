@@ -202,11 +202,6 @@ void XilHDLFile::save ( const std::string & filename,
     {
         std::getline(tmplFile, line);
 
-        if ( '\r' == line.back() )
-        {
-            line.pop_back();
-        }
-
         if ( true == tmplFile.bad() || true == outFile.bad() )
         {
             throw DataFileException(DataFileException::EXP_IO_ERROR);
@@ -221,6 +216,11 @@ void XilHDLFile::save ( const std::string & filename,
         if ( false == starMarkFound )
         {
             continue;
+        }
+
+        if ( ( false == line.empty() ) && ( '\r' == line.back() ) )
+        {
+            line.pop_back();
         }
 
         position = line.find(MARK_TIMESTAMP);

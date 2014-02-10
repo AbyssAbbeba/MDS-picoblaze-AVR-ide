@@ -2,4 +2,4 @@
 
 readonly LOG_FILE="${1}"
 shift
-exec "${@}" >> "${LOG_FILE}" 2>&1
+"${@}" >> "${LOG_FILE}" 2>&1
