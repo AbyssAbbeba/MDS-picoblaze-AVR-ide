@@ -101,14 +101,14 @@ if ( TEST_COVERAGE )
 endif()
 
 # Target architecture.
-if ( NOT TARGET_ARCH )
-    message ( STATUS "Target architecture not specified, using native: ${CMAKE_HOST_SYSTEM_PROCESSOR}." )
-    set ( TARGET_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
-    if ( TARGET_ARCH STREQUAL "AMD64" )
-        set ( TARGET_ARCH "x86_64")
-    endif()
+set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
+if ( HOST_ARCH STREQUAL "AMD64" )
+    set ( HOST_ARCH "x86_64")
 endif()
-
+if ( NOT TARGET_ARCH )
+    message ( STATUS "Target architecture not specified, using native: ${HOST_ARCH}." )
+    set ( TARGET_ARCH "${HOST_ARCH}")
+endif()
 if ( TARGET_ARCH STREQUAL "x86_64" )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -march=x86-64" )
@@ -121,9 +121,10 @@ endif()
 message ( STATUS "Target architecture for this build: ${TARGET_ARCH}." )
 
 # Target operating system.
+set ( HOST_OS "${CMAKE_HOST_SYSTEM_NAME}" )
 if ( NOT TARGET_OS )
-    message ( STATUS "Target operating system not specified, using native: ${CMAKE_HOST_SYSTEM_NAME}." )
-    set ( TARGET_OS "${CMAKE_HOST_SYSTEM_NAME}" )
+    message ( STATUS "Target operating system not specified, using native: ${HOST_OS}." )
+    set ( TARGET_OS "${HOST_OS}" )
 endif()
 if ( TARGET_OS STREQUAL "Linux" )
     # Make all code position independent.
@@ -142,27 +143,8 @@ else()
 endif()
 message ( STATUS "Target operating system for this build: ${TARGET_OS}." )
 
-
-if ( ( TARGET_ARCH STREQUAL "x86" ) AND ( TARGET_OS STREQUAL "Linux" ) )
-    message(">>>> CROSS <<<<")
-
-    # where is the target environment
-    set(CMAKE_FIND_ROOT_PATH  "/usr/lib/i386-linux-gnu" "/lib/i386-linux-gnu" )
-    # search for programs in the build host directories
-    set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-    # for libraries and headers in the target directories
-    set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
-    set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER)
-
-    set(BOOST_LIBRARYDIR "/usr/lib/i386-linux-gnu")
-    set(Boost_REGEX_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_regex.so")
-    set(Boost_SYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_system.so")
-    set(Boost_FILESYSTEM_LIBRARY_RELEASE "${BOOST_LIBRARYDIR}/libboost_filesystem.so")
-    set(Boost_INCLUDE_DIR "/usr/include/boost")
-    set(Boost_REGEX_FOUND TRUE)
-    set(Boost_FILESYSTEM_FOUND TRUE)
-    set(Boost_SYSTEM_FOUND TRUE)
-    set(QT_QTCORE_LIBRARY_RELEASE "/usr/lib/i386-linux-gnu/libQtCore.so.4.8.1")
+if ( ( NOT TARGET_OS STREQUAL HOST_OS ) OR ( NOT TARGET_ARCH STREQUAL HOST_ARCH ) )
+    include ( "${CMAKE_SOURCE_DIR}/cross-compilation.cmake" )
 endif()
 
 # ----------------------------------------------------------------------------------------------------------------------
