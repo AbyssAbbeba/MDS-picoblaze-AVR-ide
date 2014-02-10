@@ -19,22 +19,22 @@ START:
                         ;; reg[5] == 8
                         
 
-LOAD sA,#8E ;#8E + 43 = D1 sA = D1 which is not zero (Z=0) and with no overflow (C=0).
-ADD sA,#43
+LOAD sA,#8Eh ;#8E + 43 = D1 sA = D1 which is not zero (Z=0) and with no overflow (C=0).
+ADD sA,#43h
                         ;; step 2
                         ;; flag[z] == false
                         ;; flag[c] == false
                         ;; reg[10] == 0xD1
 
 
-LOAD sA,#8E; #8E + 8E = 11C sA = 1C which is not zero (Z=0) but there was an overflow (C=0).
+LOAD sA,#8Eh; #8E + 8E = 11C sA = 1C which is not zero (Z=0) but there was an overflow (C=0).
 ADD sA,sA
                         ;; step 2
-                        ;; flag[z] == true
+                        ;; flag[z] == false
                         ;; flag[c] == true
                         ;; reg[10] == 0x1C
-LOAD sA,#8E ;#8E + 72 = 100 sA = 00 which is zero (Z=1) but there was also an overflow that made this happen (C=1)
-ADD sA,#72
+LOAD sA,#8Eh ;#8E + 72 = 100 sA = 00 which is zero (Z=1) but there was also an overflow that made this happen (C=1)
+ADD sA,#72h
                         ;; step 2
                         ;; flag[z] == true
                         ;; flag[c] == true
@@ -43,8 +43,8 @@ ADD sA,#72
  ;Carry from previous operation
 ;[sB, sA] = A2 7B + 5E 1A = 10095
                         ;; step 2
- LOAD sA, #7B
-LOAD sB, #A2
+ LOAD sA, #7Bh
+LOAD sB, #A2h
                         
 ;A2 + 5E + 0 = 100 sB = 00, Z=0, C=1
 ;7B + 1A = 95 sA = 95, Z=0, C=0.
