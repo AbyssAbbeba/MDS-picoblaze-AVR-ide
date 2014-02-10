@@ -18,77 +18,17 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
         ./mainform.cpp
-#        ./pluginman_gui.cpp
-#       ../dialogs/errordlg.cpp
-#       ../dialogs/projectdlg.cpp
-#       ../widgets/codeedit.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
         ./mainform.h
-#        ./pluginman_gui.h
 )
 
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-
-# Load settings specific for the Qt4 library
-#find_package(Qt4 REQUIRED)
-
-# Include Qt4's XML module
-set(QT_USE_QTXML 1)
-include(${QT_USE_FILE})
-
-#include_directories(
-#	"../../simulators/MCUSim/McuSimCfgMgr/"
-#	"../../simulators/MCUSim"
-#	"../../simulators/SimControl/"
-#    "../../utilities/MCUDataFiles/"
-#	"../../simulators/MCUSim/AVR8/")
-
-# <DEBUG!>
-#link_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/McuSimCfgMgr/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/SimControl/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../../utilities/MCUDataFiles/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../simulators/MCUSim/AVR8/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../../compiler/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/MovGridLayout/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/ProjectTree/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Counters/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/HexEdit/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/DockManager/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/SimulationInfo/"
-#	"${CMAKE_CURRENT_BINARY_DIR}/../widgets/Editor/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Convertor/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/Tools/Display/"
-##    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/CompileWidget"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/CompileInfo/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../widgets/HelpWidget/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/projectcfg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/projectdlg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/interfacecfg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/disasmdlg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/translatordlg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../dialogs/fileconvertdlg/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../errordialog/"
-#    "${CMAKE_CURRENT_BINARY_DIR}/../project/")
-#include_directories(
-#	"${CMAKE_CURRENT_BINARY_DIR}/.."
-#	"${CMAKE_CURRENT_BINARY_DIR}/../../../simulators/MCUSim/")
-# </DEBUG!>
-
-## Add switches to compiler command line
- # -Wall       : Enables all the warnings.
- # -Wextra     : Enables some extra warning flags that are not enabled by -Wall.
- # -std=c++0x  : Default template arguments may not be used in function templates without -std=c++0x or -std=gnu++0x.
- # -O2         : Optimization, level 2.
- # -pipe       : Use pipes rather than temporary files for communication between the various stages of compilation.
-#add_definitions(-Wall -Wextra -g -std=c++0x -O2 -pipe)
 
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
@@ -101,6 +41,8 @@ add_library(${PROJECT_NAME}
 #QtNetwork !!
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager McuSimCfgMgr SimControl AVR8Sim PIC8Sim MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg)
 
-install( TARGETS ${PROJECT_NAME}
-         RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-         LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

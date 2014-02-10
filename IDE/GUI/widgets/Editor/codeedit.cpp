@@ -14,7 +14,7 @@
 
 #include <QtGui>
 #include "codeedit.h"
-#include "wdockmanager.h"
+#include "../DockManager/wdockmanager.h"
 #include "../../guicfg/guicfg.h"
 
 
