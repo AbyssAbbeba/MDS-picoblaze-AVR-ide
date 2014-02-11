@@ -18,7 +18,7 @@ SUB s1, sA
 LOAD s1, #8Eh
 SUB s1, #B5h
                                 ;; step
-                                ;; reg[10] == 0x8E
+                                ;; reg[1] == 0x8E
                                 ;; step
                                 ;; flag[z] == false
                                 ;; flag[c] == false
