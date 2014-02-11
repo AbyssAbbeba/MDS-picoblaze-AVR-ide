@@ -1,4 +1,4 @@
-device kcpsm1
+device kcpsm1cpld
 
 
 ss3      EQU     0x06
@@ -21,7 +21,7 @@ Start:
         #ENDW
 
         REPT    8
-                SL0     sC
+                SL0     s1
         ENDR
 
         END

@@ -3,7 +3,7 @@
 ; ------------------------------------------------------
 ; See manual for more info
 ; 
-device kcpsm1
+device kcpsm1cpld
 end
 ; Code with syntax errors
         nolist                        ; Disable code listing

@@ -2,7 +2,7 @@
 ; instruction opcodes
 
 
-device kcpsm1
+device kcpsm1cpld
 
 Start:        
        
@@ -45,26 +45,26 @@ sX              equ             4
 
 
 inc_16:
-                 lo_byte     REG   s8
-                hi_byte     REG   s9
+                 lo_byte     REG   s5
+                hi_byte     REG   s6
         ; increment low byte
-        ADD             lo_byte,01
+        ADD             lo_byte,01h
         ; increment high byte only if CARRY bit set when incrementing low byte
-        ADDCY           hi_byte,00
+        ADDCY           hi_byte,00h
 
 
 Negate:
         ; invert all bits in the register performing a one’s complement
-        XOR             sX,#FFh
+        XOR             s7,#FFh
         ; add one to sX
-        ADD             sX,#01
+        ADD             s7,#01
         RETURN
 
 
 
 
-NAMEREG         sF, value
-NAMEREG         sE, complement
+NAMEREG         s7, value
+NAMEREG         s7, complement
 ; Clear ‘complement’ to zero
 LOAD            complement, 00
 ; subtract value from 0 to create two’s complement
@@ -88,11 +88,11 @@ NAMEREG         s4, result_lsb
 ; least-significant byte (LSB) of result,
 ; modified
 ;
-LOAD            bit_mask, 01
+LOAD            bit_mask, 01h
 ; start with least-significant bit (lsb)
-LOAD            result_msb, 00
+LOAD            result_msb, 00h
 ; clear product MSB
-LOAD            result_lsb, 00
+LOAD            result_lsb, 00h
 ; clear product LSB (not required)
 ;
 ; loop through all bits in multiplier
@@ -130,8 +130,8 @@ JUMP            NZ, mult_loop
 ;least-significant byte (LSB) of result, modified
 ;
 ; Define the port ID numbers as constants for better clarity
-CONSTANT         multiplier_lsb, 00
-CONSTANT         multiplier_msb, 01
+CONSTANT         multiplier_lsb, 00h
+CONSTANT         multiplier_msb, 01h
 ;
 ;
 ;Output multiplicand and multiplier to FPGA registers connected to the
@@ -162,9 +162,9 @@ NAMEREG          s3, remainder
 ; used to load bits in dividend,
 ; one-hot encoded, modified
 ;
-LOAD             remainder, 00
+LOAD             remainder, 00h
 ; clear remainder
-LOAD             bit_mask, 80
+LOAD             bit_mask, 80h
 ; start with most-significant bit (msb)
 div_loop:
 
@@ -190,12 +190,12 @@ JUMP             NZ, div_loop
 
 
 set_carry:
-LOAD             sX, 00
+LOAD             sX, 00h
 
 ; set CARRY flag and reset ZERO flag
 
 
-LOAD             s0, 05
+LOAD             s0, 05h
 ; s0 = 00000101
 
 ; mask = 00000100

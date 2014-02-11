@@ -1,7 +1,7 @@
 ; Compiler load case for Assembler
 ; instruction opcodes
 
-device kcpsm1
+device kcpsm1cpld
 
 loadsymb1    SET        1h
 loadsymb2    SET        0x11
@@ -11,10 +11,10 @@ loadsymb5    EQU        4h
 loadsymb6    EQU        0x05
 loadsymb7    EQU        6
 loadsymb8    EQU        7
-loadsymb9    REG        8h
-loadsymb10    REG        9h
-loadsymb11    REG        Ah
-loadsymb12    REG        Bh
+loadsymb9    REG        4h
+loadsymb10    REG        1h
+loadsymb11    REG        2h
+loadsymb12    REG        3h
 loadsymb13    EQU        Ch
 loadsymb14    EQU        0x05
 loadsymb15    EQU        2
