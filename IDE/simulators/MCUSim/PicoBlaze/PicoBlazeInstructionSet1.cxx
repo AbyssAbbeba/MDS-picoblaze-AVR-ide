@@ -826,10 +826,11 @@ inline void PicoBlazeInstructionSet1::inst_SL0_sx ( const unsigned int opCode )
 
     // Modify status flags.
     m_statusFlags -> setCarry ( ( 0 == ( 0x100 & sXval ) ) ? false : true );
+    sXval &= 0xff;
     m_statusFlags -> setZero ( ( 0 == sXval ) ? true : false );
 
     // Save the result.
-    m_registers -> write ( sX, ( 0xff & sXval ) );
+    m_registers -> write ( sX, sXval ) );
 }
 
 inline void PicoBlazeInstructionSet1::inst_SL1_sx ( const unsigned int opCode )

@@ -43,6 +43,29 @@ macro ( FROM__LINUX_X86_64__TO__LINUX_X86 )
     endif()
 endmacro()
 
+macro ( windows_cross )
+    # the name of the target operating system
+    set ( CMAKE_SYSTEM_NAME "Windows" )
+
+    if ( TARGET_ARCH STREQUAL "x86" )
+        set ( prefix "i686" )
+    else()
+        set ( prefix "x86_64" )
+    endif()
+
+    # which compilers to use for C and C++
+    set ( CMAKE_C_COMPILER   ${prefix}-w64-mingw32-gcc )
+    set ( CMAKE_CXX_COMPILER ${prefix}-w64-mingw32-g++ )
+    set ( CMAKE_RC_COMPILER  ${prefix}-w64-mingw32-windres )
+
+    # here is the target environment located
+    set ( CMAKE_FIND_ROOT_PATH /usr/${prefix}-w64-mingw32 )
+
+    set ( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
+    set ( CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY  )
+    set ( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY  )
+endmacro()
+
 if ( HOST_OS STREQUAL "Linux" )
     if ( TARGET_OS STREQUAL "Linux" )
         if ( HOST_ARCH STREQUAL "x86" )
@@ -58,6 +81,7 @@ if ( HOST_OS STREQUAL "Linux" )
         endif()
     elseif ( TARGET_OS STREQUAL "Windows" )
         # Windows cross compilation...
+        windows_cross()
     else()
         message ( FATAL_ERROR "This cross compilation is not supported for operating system: ${TARGET_OS}." )
     endif()
