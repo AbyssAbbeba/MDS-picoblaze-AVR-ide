@@ -24,7 +24,7 @@ ADD s1,#43h
                         ;; step 2
                         ;; flag[z] == false
                         ;; flag[c] == false
-                        ;; reg[10] == 0xD1
+                        ;; reg[1] == 0xD1
 
 
 LOAD s1,#8Eh; #8E + 8E = 11C s1 = 1C which is not zero (Z=0) but there was an overflow (C=0).
@@ -32,13 +32,13 @@ ADD s1,s1
                         ;; step 2
                         ;; flag[z] == false
                         ;; flag[c] == true
-                        ;; reg[10] == 0x1C
+                        ;; reg[1] == 0x1C
 LOAD s1,#8Eh ;#8E + 72 = 100 s1 = 00 which is zero (Z=1) but there was also an overflow that made this happen (C=1)
 ADD s1,#72h
                         ;; step 2
                         ;; flag[z] == true
                         ;; flag[c] == true
-                        ;; reg[10] == 0x00
+                        ;; reg[1] == 0x00
 
  ;Carry from previous operation
 ;[sB, s1] = A2 7B + 5E 1A = 10095
