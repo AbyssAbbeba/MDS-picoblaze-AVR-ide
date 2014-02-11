@@ -143,6 +143,10 @@ else()
 endif()
 message ( STATUS "Target operating system for this build: ${TARGET_OS}." )
 
+# ----------------------------------------------------------------------------------------------------------------------
+# CROSS COMPILATION
+# ----------------------------------------------------------------------------------------------------------------------
+
 if ( ( NOT TARGET_OS STREQUAL HOST_OS ) OR ( NOT TARGET_ARCH STREQUAL HOST_ARCH ) )
     include ( "${CMAKE_SOURCE_DIR}/cross-compilation.cmake" )
 endif()
