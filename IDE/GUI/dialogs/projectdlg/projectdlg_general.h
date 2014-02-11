@@ -36,16 +36,15 @@ class Projectdlg_General : public QWidget
         QString getPath();
         QString getArch();
         QString getFamily();
-        int getIntVector();
-        int getHWBuild();
-        int getScratchpadSize();
-        int getProgMemSize();
 
     private slots:
         void setPath();
         void familyChanged(const QString &text);
-        void sliderScratchpadUpdate(int value);
-        void sliderProgMemUpdate(int value);
+
+    signals:
+        void setScratchpadMaximum(int value);
+        void setProgMemMaximum(int value);
+        void setHWBuildEnabled(bool enabled);
 
     private:
         Ui_Projectdlg_General ui;

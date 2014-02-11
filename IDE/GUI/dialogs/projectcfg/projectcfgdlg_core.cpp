@@ -33,12 +33,14 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
 
     this->cfgInterface = new CfgInterface(this);
     this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
+    this->memoryCfg = new ProjectCfg_Memory(cfgInterface, this->project);
     this->compilerCfg = new ProjectCfg_Compiler(cfgInterface, this->project);
     this->pathsCfg = new ProjectCfg_CompPaths(cfgInterface, this->project);
     this->fileMgr = new ProjectCfg_FileMgr(cfgInterface, this->project);
 
     this->cfgInterface->addWidget(NULL, "Project", "Project Config");
     this->cfgInterface->addWidget(this->generalCfg, "Options", "Project Options", true);
+    this->cfgInterface->addWidget(this->memoryCfg, "Memory", "Memory Options", true);
     this->cfgInterface->addWidget(this->fileMgr, "Files", "Project Files", true);
     this->cfgInterface->addWidget(NULL, "Compiler", "Compiler Config");
     this->cfgInterface->addWidget(this->compilerCfg, "Options", "Compiler Options", true);
@@ -55,6 +57,21 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     connect(this->fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
     connect(this->cfgInterface->buttonBox, SIGNAL(accepted()), this, SLOT(ok()));
     connect(this->cfgInterface->buttonBox, SIGNAL(rejected()), this, SLOT(cancel()));
+    connect(this->generalCfg,
+            SIGNAL(setHWBuildEnabled(bool)),
+            this->memoryCfg,
+            SLOT(setHWBuildEnabled(bool))
+           );
+    connect(this->generalCfg,
+            SIGNAL(setScratchpadMaximum(int)),
+            this->memoryCfg,
+            SLOT(setScratchpadMaximum(int))
+           );
+    connect(this->generalCfg,
+            SIGNAL(setProgMemMaximum(int)),
+            this->memoryCfg,
+            SLOT(setProgMemMaximum(int))
+           );
     qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
@@ -87,7 +104,7 @@ void ProjectConfigDialog_Core::reload()
  */
 void ProjectConfigDialog_Core::ok()
 {
-    int value = this->generalCfg->save();
+    int value = this->memoryCfg->save();
     if (value == -1)
     {
         QMessageBox msgBox;
@@ -102,6 +119,7 @@ void ProjectConfigDialog_Core::ok()
         msgBox.exec();
         return;
     }
+    this->generalCfg->save();
     this->compilerCfg->save();
     this->pathsCfg->save();
     this->done(1);

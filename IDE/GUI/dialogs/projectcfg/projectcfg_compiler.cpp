@@ -27,7 +27,6 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
  */
 void ProjectCfg_Compiler::load()
 {
-    qDebug() << "ProjectCfg_Compiler: load()";
     this->ui.chckSymbolTbl->setChecked(project->compileOpt.at(0));
     this->ui.chckMacroTbl->setChecked(project->compileOpt.at(1));
     this->ui.chckDbgFile->setChecked(project->compileOpt.at(2));
@@ -38,7 +37,6 @@ void ProjectCfg_Compiler::load()
     this->ui.chckSRecFile->setChecked(project->compileOpt.at(7));
     this->ui.leMain->setText(project->mainFileName);
     this->ui.chckMain->setChecked(project->useMainFile);
-    qDebug() << "ProjectCfg_Compiler: return load()";
 }
 
 

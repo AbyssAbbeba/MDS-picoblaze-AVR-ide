@@ -25,6 +25,7 @@
 #include "../projectcfg/projectcfg_compiler.h"
 #include "../projectcfg/projectcfg_comppaths.h"
 #include "../projectcfg/projectcfg_filemgr.h"
+#include "../projectcfg/projectcfg_memory.h"
 
 
 
@@ -48,6 +49,7 @@ class ProjectDialog : public QDialog
         QDialogButtonBox *buttonBox;
         ProjectMan *projectMan;
         Projectdlg_General *prjdlg_general;
+        ProjectCfg_Memory *prjdlg_memory;
         ProjectCfg_Compiler *prjdlg_compiler;
         ProjectCfg_CompPaths *prjdlg_comppaths;
         ProjectCfg_FileMgr *prjdlg_filemgr;

@@ -19,6 +19,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 SET( SAMPLE_SRCS
         ./projectdlg.cpp
         ./projectdlg_general.cpp
+        ../projectcfg/projectcfg_memory.cpp
         ../projectcfg/projectcfg_compiler.cpp
         ../projectcfg/projectcfg_comppaths.cpp
         ../projectcfg/projectcfg_filemgr.cpp
@@ -28,6 +29,7 @@ SET( SAMPLE_SRCS
 SET( SAMPLE_MOC_HDRS
         ./projectdlg.h
         ./projectdlg_general.h
+        ../projectcfg/projectcfg_memory.h
         ../projectcfg/projectcfg_compiler.h
         ../projectcfg/projectcfg_comppaths.h
         ../projectcfg/projectcfg_filemgr.h
