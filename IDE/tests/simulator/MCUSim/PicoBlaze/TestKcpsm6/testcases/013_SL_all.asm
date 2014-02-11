@@ -82,7 +82,12 @@ start:      load        s0,#1
             ;; flag[z] == false
             sl1         s0
             ;; step
-            ;; reg[0] == 127
+            ;; reg[0] == 255
+            ;; flag[c] == false
+            ;; flag[z] == false
+            sl1         s0
+            ;; step
+            ;; reg[0] == 255
             ;; flag[c] == true
             ;; flag[z] == false
 ; slx testing
@@ -109,7 +114,12 @@ start:      load        s0,#1
             ;; flag[z] == false
             slx         s2
             ;; step
-            ;; reg[2] == 127
+            ;; reg[0] == 255
+            ;; flag[c] == false
+            ;; flag[z] == false
+            slx         s2
+            ;; step
+            ;; reg[2] == 255
             ;; flag[c] == true
             ;; flag[z] == false
             load        s2,#128
