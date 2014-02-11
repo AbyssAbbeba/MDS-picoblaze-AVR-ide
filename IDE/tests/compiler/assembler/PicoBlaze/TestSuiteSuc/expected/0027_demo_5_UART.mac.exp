@@ -1,0 +1,7 @@
+GETCHAR (  )  . . . . . . . . . . . . . . . . . . . . .   1 × USED 0027_demo_5_UART.asm:67.1-67.26
+SENDCHAR ( CHAR ) . . . . . . . . . . . . . . . . . . .  11 × USED 0027_demo_5_UART.asm:58.1-58.26
+SENDCRLF (  ) . . . . . . . . . . . . . . . . . . . . .   1 × USED 0027_demo_5_UART.asm:75.1-75.26
+UART_NEW_EQU_WAIT (  )  . . . . . . . . . . . . . . . .   1 × USED 0027_demo_5_UART.asm:49.1-49.25
+UART_READY_WAIT (  )  . . . . . . . . . . . . . . . . .  11 × USED 0027_demo_5_UART.asm:43.1-43.26
+WAIT_FOR_100MS (  ) . . . . . . . . . . . . . . . . . .   NOT USED 0027_demo_5_UART.asm:113.1-113.26
+WAIT_FOR_1S (  )  . . . . . . . . . . . . . . . . . . .   1 × USED 0027_demo_5_UART.asm:97.1-97.26

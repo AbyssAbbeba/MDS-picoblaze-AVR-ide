@@ -1,0 +1,43 @@
+                   1     ; Compiler load case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5     device kcpsm1cpld
+                   6
+  00000            7     Start:
+000 0D400          8             JUMP        Z, 0x000
+W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+001 0D500          9             JUMP        NZ,0x000
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+002 0D600         10             JUMP        C, 0x000
+W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+003 0D700         11             JUMP        NC,0x000
+W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+                  12
+                  13
+                  14
+                  15         ; Others
+004 0D809         16             CALl      Podprog
+005 0DC09         17             CALL      Z,Podprog
+006 0DD09         18             CALL      NZ,Podprog
+007 0DE09         19             CALL      C,Podprog
+008 0DF09         20             CALL      NC,Podprog
+                  21
+  00009           22     Podprog:
+009 09000         23             RETURN
+00A 09400         24             RETURN    Z
+00B 09500         25             RETURN    NZ
+00C 09600         26             RETURN    C
+00D 09700         27             RETURN    NC
+                  28
+                  29
+                  30       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  31     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  32     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  33     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  34     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
+                  35     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  36     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  37     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  38     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  39     ;CALL NC,aaa load sX,sY load sX,sY RL sX

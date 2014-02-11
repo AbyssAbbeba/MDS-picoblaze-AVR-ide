@@ -15,7 +15,7 @@
 //Command: kcpsm3 6001_logical.asm.psm
 //Device: Spartan-3, Spartan-3E, Virtex-II, and Virtex-II Pro FPGAs
 //Design Name: 6001_logical.asm
-//Generated 2014-02-06 17:12:38.
+//Generated 2014-02-11 16:35:36.
 //Purpose:
 // 6001_logical.asm verilog program definition.
 //

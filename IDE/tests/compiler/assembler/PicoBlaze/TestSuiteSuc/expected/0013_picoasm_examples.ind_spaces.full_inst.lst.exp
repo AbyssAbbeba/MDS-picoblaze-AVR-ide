@@ -1,0 +1,119 @@
+                   1     ; Compiler load case for Assembler
+                   2     device kcpsm1cpld
+                   3
+                   4     ;=========================================================
+                   5     ; routine: mult_soload
+                   6     ;  function: 8-bit unsigned multiplier using
+                   7     ;           shiload-and-add algorithm
+                   8     ;  input register:
+                   9     ;     s3: multiplicand
+                  10     ;     s4: multiplier
+                  11     ;  output register:
+                  12     ;     s5: upper byte of product
+                  13     ;     s6: lower byte of product
+                  14     ;  temp register: i
+                  15     ;========================================================
+                  16
+                  17     device kcpsm3
+                  18
+                  19
+                  20
+  00000           21     mult_soload:
+000 00500         22                             LOAD            s5, #00                 ;clear s5
+001 00608         23                             LOAD            s6, #08                 ;initialize loop index
+  00002           24     mult_loop:
+002 0A40E         25                             SR0             s4                      ;shiload lsb to carry
+003 0D705         26                             JUMP            nc, shiload_prod          ;lsb is 0
+004 06560         27                             ADD             s5, s3                  ;lsb is 1
+  00005           28     shiload_prod:
+005 0A508         29                             SRA             s5                      ;shiload upper byte right,
+                  30     ;carry to MSB, LSB to carry
+006 0A608         31                             SRA             s6                      ;shiload lower byte right,
+                  32     ;lsb of s5 to MSB of s6
+007 03601         33                             SUB             s6, #01                 ;dec loop index
+008 0D502         34                             JUMP            nz, mult_loop           ;repeat until i=0
+009 09000         35                             RETURN
+                  36
+                  37     ; UART Transmit Example
+                  38     ;
+00A 0012D         39     start:                  LOAD            s1, #45                 ;ASCII "E".
+00B 0D82B         40                             CALL            xmit
+                  41
+                  42     ;Send character.
+00C 0012D         43                             LOAD            s1, #45                 ;ASCII "E".
+00D 0D82B         44                             CALL            xmit
+                  45
+                  46     ;Send character.
+00E 00121         47                             LOAD            s1, #33                 ;ASCII "3".
+00F 0D82B         48                             CALL            xmit
+                  49
+                  50     ;Send character.
+010 00126         51                             LOAD            s1, #38                 ;ASCII "8".
+011 0D82B         52                             CALL            xmit
+                  53
+                  54     ;Send character.
+012 0011F         55                             LOAD            s1, #31                 ;ASCII "1".
+013 0D82B         56                             CALL            xmit
+                  57
+                  58     ;Send character.
+014 0011E         59                             LOAD            s1, #30                 ;ASCII "0".
+015 0D82B         60                             CALL            xmit
+                  61
+                  62     ;Send character.
+016 00114         63                             LOAD            s1, #20                 ;ASCII " ".
+017 0D82B         64                             CALL            xmit
+                  65
+                  66     ;Send character.
+018 00134         67                             LOAD            s1, #52                 ;ASCII "R".
+019 0D82B         68                             CALL            xmit
+                  69
+                  70     ;Send character.
+01A 0014B         71                             LOAD            s1, #75                 ;ASCII "u".
+01B 0D82B         72                             CALL            xmit
+                  73
+                  74     ;Send character.
+01C 0016C         75                             LOAD            s1, #6ch                ;ASCII "l".
+01D 0D82B         76                             CALL            xmit
+                  77
+                  78     ;Send character.
+01E 00141         79                             LOAD            s1, #65                 ;ASCII "e".
+01F 0D82B         80                             CALL            xmit
+                  81     ;Send character.
+                  82
+020 00149         83                             LOAD            s1, #73                 ;ASCII "s".
+021 0D82B         84                             CALL            xmit
+                  85
+                  86     ;Send character.
+022 00115         87                             LOAD            s1, #21                 ;ASCII "!".
+023 0D82B         88                             CALL            xmit
+                  89
+                  90     ;Send character.
+024 00115         91                             LOAD            s1, #21                 ;ASCII "!".
+025 0D82B         92                             CALL            xmit
+                  93
+                  94     ;Send character.
+026 00115         95                             LOAD            s1, #21                 ;ASCII "!".
+027 0D82B         96                             CALL            xmit
+                  97
+                  98     ;Send character.
+028 00114         99                             LOAD            s1, #20                 ;ASCII " ".
+029 0D82B        100                             CALL            xmit
+                 101
+                 102     ;Send character.
+02A 0D00A        103                             JUMP            start
+                 104
+                 105     ; Routine to transmit EQU via RS-232
+                 106     ; First check UART status.
+02B 08000        107     xmit:                   INPUT           s0, 00                  ;read uart status.
+02C 00850        108                             AND             s0, #80                 ;Buffer full mask.
+02D 0D52B        109                             JUMP            nz, xmit                ;Poll if buffer is full.
+                 110     ; Buffer is not full, transmit byte in s1
+02E 08900        111                             OUTPUT          s1, 00                  ;Ship byte.
+02F 09000        112                             RETURN
+                 113
+                 114
+                 115
+                 116
+                 117     END
+                 118
+                 119

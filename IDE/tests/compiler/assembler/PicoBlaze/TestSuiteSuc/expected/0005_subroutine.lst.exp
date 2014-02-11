@@ -1,0 +1,224 @@
+                   1     ; Compiler load case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4
+                   5     device kcpsm1cpld
+                   6
+  00000            7     Start:
+                   8
+                   9         ; Others
+000 0D801         10                     CALl      Podprog1
+                  11
+  00001           12     Podprog1:
+001 0D803         13                     CALl      Podprog2
+002 09000         14                     RETURN
+003 0D805         15     Podprog2:       CALl      Podprog3
+004 09000         16                     RETURN
+005 0D807         17     Podprog3:       CALl      Podprog4
+006 09000         18                     RETURN
+007 0D809         19     Podprog4:       CALl      Podprog5
+008 09000         20                     RETURN
+009 0D80B         21     Podprog5:       CALl      Podprog6
+00A 09000         22                     RETURN
+00B 0D80D         23     Podprog6:       CALl      Podprog7
+00C 09000         24                     RETURN
+  0000D           25     Podprog7:
+00D 09000         26                     RETURN
+                  27
+  0000E           28     ADD16:
+                  29
+  00000           30     NAMEREG         s0, a_lsb
+                  31     ; rename register s0 as “a_lsb”
+  00001           32     NAMEREG         s1, a_msb
+                  33     ; rename register s1 as “a_msb”
+  00002           34     NAMEREG         s2, b_lsb
+                  35     ; rename register s2 as “b_lsb”
+  00003           36     NAMEREG         s3, b_msb
+                  37     ; rename register s3 as “b_lsb”
+00E 06040         38     ADD             a_lsb, b_lsb
+                  39     ; add LSBs, keep result in a_lsb
+00F 06960         40     ADDCY           a_msb, b_msb
+                  41     ; add MSBs, keep result in a_msb
+010 09000         42     RETURN
+                  43
+  00004           44     sX              equ             4
+                  45
+                  46
+  00011           47     inc_16:
+  00005           48                      lo_byte     REG   s5
+  00006           49                     hi_byte     REG   s6
+                  50             ; increment low byte
+011 06520         51             ADD             lo_byte,01h
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  52             ; increment high byte only if CARRY bit set when incrementing low byte
+012 06E00         53             ADDCY           hi_byte,00h
+W: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  54
+                  55
+  00013           56     Negate:
+                  57             ; invert all bits in the register performing a one’s complement
+013 01FFF         58             XOR             s7,#FFh
+                  59             ; add one to sX
+014 02701         60             ADD             s7,#01
+015 09000         61             RETURN
+                  62
+                  63
+                  64
+                  65
+  00007           66     NAMEREG         s7, value
+  00007           67     NAMEREG         s7, complement
+W: reusing already reserved space in register file memory at address: 0x7.
+                  68     ; Clear ‘complement’ to zero
+016 04700         69     LOAD            complement, 00
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  70     ; subtract value from 0 to create two’s complement
+017 077E0         71     SUB             complement, value
+018 09000         72     RETURN
+                  73
+                  74
+  00019           75     mult_8x8:
+  00000           76     NAMEREG         s0, multiplicand
+W: reusing already reserved space in register file memory at address: 0x0.
+                  77     ;
+                  78     ;preserved
+  00001           79     NAMEREG         s1, multiplier
+W: reusing already reserved space in register file memory at address: 0x1.
+                  80     ; preserved
+  00002           81     NAMEREG         s2, bit_mask
+W: reusing already reserved space in register file memory at address: 0x2.
+                  82     ; modified
+  00003           83     NAMEREG         s3, result_msb
+W: reusing already reserved space in register file memory at address: 0x3.
+                  84     ;
+                  85     ;most-significant byte (MSB) of result,
+                  86     ; modified
+  00004           87     NAMEREG         s4, result_lsb
+                  88     ; least-significant byte (LSB) of result,
+                  89     ; modified
+                  90     ;
+019 04220         91     LOAD            bit_mask, 01h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  92     ; start with least-significant bit (lsb)
+01A 04300         93     LOAD            result_msb, 00h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  94     ; clear product MSB
+01B 04400         95     LOAD            result_lsb, 00h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  96     ; clear product LSB (not required)
+                  97     ;
+                  98     ; loop through all bits in multiplier
+  0001C           99     mult_loop:
+                 100
+                 101     ; check if bit is set
+01C 0D41E        102     JUMP            Z, no_add
+                 103     ; if bit is not set, skip addition
+                 104     ;
+01D 06300        105     ADD             result_msb, multiplicand
+                 106     ; addition only occurs in MSB
+                 107     ;
+  0001E          108     no_add:
+01E 0A308        109     SRA             result_msb
+                 110     ; shiload MSB right, CARRY into bit 7,
+                 111     ; lsb into CARRY
+01F 0A408        112     SRA             result_lsb
+                 113     ; shiload LSB right,
+                 114     ; lsb from result_msb into bit 7
+                 115     ;
+020 0A206        116     SL0             bit_mask
+                 117     ; shiload bit_mask leload to examine
+                 118     ; next bit in multiplier
+                 119     ;
+021 0D51C        120     JUMP            NZ, mult_loop
+                 121     ; if all bit examined, then bit_mask = 0,
+                 122
+                 123
+                 124     ; Multiplier Routine (8-bit x 8-bit = 16-bit product)
+                 125     ; ===================================================
+                 126     ; Connects to embedded 18x18 Hardware Multiplier via ports
+                 127     ;
+                 128
+                 129     ;
+                 130     ;least-significant byte (LSB) of result, modified
+                 131     ;
+                 132     ; Define the port ID numbers as constants for better clarity
+  00000          133     CONSTANT         multiplier_lsb, 00h
+  00001          134     CONSTANT         multiplier_msb, 01h
+                 135     ;
+                 136     ;
+                 137     ;Output multiplicand and multiplier to FPGA registers connected to the
+                 138     ;inputs of
+                 139     ; the embedded multiplier.
+022 08800        140     OUTPUT           multiplicand, multiplier_lsb
+023 08901        141     OUTPUT           multiplier, multiplier_msb
+                 142     ;
+                 143     ; Input the resulting product from the embedded multiplier.
+024 08400        144     INPUT            result_lsb, multiplier_lsb
+025 08301        145     INPUT            result_msb, multiplier_msb
+                 146
+                 147
+                 148     ; Divide Routine (8-bit / 8-bit = 8-bit result, remainder)
+                 149     ; ==================================================
+                 150     ; Shiload and subtract algorithm
+                 151     ;
+  00026          152     div_8by8:
+  00000          153     NAMEREG          s0, dividend
+W: reusing already reserved space in register file memory at address: 0x0.
+                 154     ; preserved
+  00001          155     NAMEREG          s1, divisor
+W: reusing already reserved space in register file memory at address: 0x1.
+                 156     ; preserved
+  00002          157     NAMEREG          s2, quotient
+W: reusing already reserved space in register file memory at address: 0x2.
+                 158     ; preserved
+  00003          159     NAMEREG          s3, remainder
+W: reusing already reserved space in register file memory at address: 0x3.
+                 160     ; modified
+                 161
+                 162     ; used to load bits in dividend,
+                 163     ; one-hot encoded, modified
+                 164     ;
+026 04300        165     LOAD             remainder, 00h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 166     ; clear remainder
+027 04200        167     LOAD             bit_mask, 80h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x80, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+                 168     ; start with most-significant bit (msb)
+  00028          169     div_loop:
+                 170
+                 171     ; load bit, set CARRY if bit is '1'
+028 0A300        172     SLA              remainder
+                 173     ; shiload CARRY into lsb of remainder
+029 0A206        174     SL0              quotient
+                 175     ; shiload quotient leload (multiply by 2)
+                 176     ;
+                 177     ; is remainder > divisor?
+02A 0D62D        178     JUMP             C, no_sub
+                 179     ; if divisor is greater, continue to next bit
+02B 07320        180     SUB              remainder, divisor
+                 181     ; if remainder > divisor, then subtract
+02C 06220        182     ADD              quotient, 01
+W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 183     ; add one to quotient
+  0002D          184     no_sub:
+02D 0A20E        185     SR0              bit_mask
+                 186     ; shiload to examine next bit position
+02E 0D528        187     JUMP             NZ, div_loop
+                 188     ;
+                 189     ;if bit_mask=0, then all bits examined
+                 190
+                 191
+  0002F          192     set_carry:
+02F 04400        193     LOAD             sX, 00h
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 194
+                 195     ; set CARRY flag and reset ZERO flag
+                 196
+                 197
+030 040A0        198     LOAD             s0, 05h
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                 199     ; s0 = 00000101
+                 200
+                 201     ; mask = 00000100
+                 202     ; CARRY = 1, ZERO = 0

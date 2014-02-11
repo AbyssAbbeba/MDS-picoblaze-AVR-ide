@@ -1,0 +1,57 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2     ; See manual for more info
+                   3
+                   4     ; Simple example of waiting loop
+                   5     device kcpsm1cpld
+                   6
+  00000            7     TEMP1   autoreg
+  00001            8     TEMP2   autoreg
+  00002            9     TEMP3   autoreg
+                  10
+                  11     ; Press Start simulation and Animate to run the program
+                  12
+  00000           13                         ORG       0x000
+000 0D001         14                         JUMP      Start
+                  15     ; Begining of main loop
+001 0D804         16     Start:              CALL      wait_1s
+002 0D80E         17                         CALL      wait_100ms
+003 0D003         18                         JUMP      $                   ; Infinite loop, $ is translated as number of curent line
+                  19
+                  20
+                  21
+                  22     ; Subroutines-----------------------------------------------------------------
+                  23     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+                  24     ;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                  25
+004 000FA         26     wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
+005 001F9         27                         LOAD      Temp2, #249          ; Load Temp2 register
+006 002C8         28                         LOAD      Temp3, #200          ; Load Temp3 register
+007 07020         29     wait_1s_i:          SUB       Temp1, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+008 0D507         30                         JUMP      NZ, wait_1s_i
+009 07120         31                         SUB       Temp2, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00A 0D507         32                         JUMP      NZ, wait_1s_i
+00B 07220         33                         SUB       Temp3, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00C 0D507         34                         JUMP      NZ, wait_1s_i
+00D 09000         35                         RETURN
+                  36     ;-----------------------------------------------------------------------------
+00E 000FA         37     wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+00F 001F9         38                         LOAD      Temp2, #249          ; Load Temp2 register
+010 00214         39                         LOAD      Temp3, #20           ; Load Temp3 register
+011 07020         40     wait_100ms_i:       SUB       Temp1, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+012 0D511         41                         JUMP      NZ, wait_100ms_i
+013 07120         42                         SUB       Temp2, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+014 0D511         43                         JUMP      NZ, wait_100ms_i
+015 07220         44                         SUB       Temp3, 1
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+016 0D511         45                         JUMP      NZ, wait_100ms_i
+017 09000         46                         RETURN
+                  47     ; <-- Bookmark   (ctrl + shiload + M)
+                  48     ; <-- Breakpoint (ctrl + shiload + B)
+                  49                         END                            ; End of program
+                  50     ; -----------------------------------------
+                  51     ; -----------------------------------------

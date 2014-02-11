@@ -1,0 +1,13 @@
+MULT_LOOP  . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    0013_picoasm_examples.ind_spaces.full_inst.asm:24.1-24.11
+MULT_SOLOAD  . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    0013_picoasm_examples.ind_spaces.full_inst.asm:21.1-21.13
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 USED     CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 USED     CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+SHILOAD_PROD . . . . . . . . . . . . LABEL  0x00005 USED     CONSTANT    0013_picoasm_examples.ind_spaces.full_inst.asm:28.1-28.14
+START  . . . . . . . . . . . . . . . LABEL  0x0000A USED     CONSTANT    0013_picoasm_examples.ind_spaces.full_inst.asm:39.1-39.7
+XMIT . . . . . . . . . . . . . . . . LABEL  0x0002B USED     CONSTANT    0013_picoasm_examples.ind_spaces.full_inst.asm:107.1-107.6

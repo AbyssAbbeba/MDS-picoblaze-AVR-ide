@@ -1,0 +1,26 @@
+INITIAL_VALUE  . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:11.1-11.35
+LEDS . . . . . . . . . . . . . . . . NUMBER 0x00001 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:32.1-32.35
+LED_0  . . . . . . . . . . . . . . . NUMBER 0x000C0 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:35.1-35.35
+LED_1  . . . . . . . . . . . . . . . NUMBER 0x000F9 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:37.1-37.35
+LED_F  . . . . . . . . . . . . . . . NUMBER 0x0008E USED     CONSTANT    0007_SCRATCHPAD_ram.asm:40.1-40.35
+LED_OUTPUT . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:44.1-44.39
+LOOP . . . . . . . . . . . . . . . . LABEL  0x00007 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:58.1-58.6
+MY_SUBROUTINE  . . . . . . . . . . . LABEL  0x0000C NOT USED CONSTANT    0007_SCRATCHPAD_ram.asm:75.1-75.15
+POP_S0 . . . . . . . . . . . . . . . LABEL  0x00011 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:89.1-89.8
+PUSH_S0  . . . . . . . . . . . . . . LABEL  0x0000F USED     CONSTANT    0007_SCRATCHPAD_ram.asm:83.1-83.9
+RAM_ADDRESS  . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:8.1-8.32
+RAM_EQU  . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:7.1-7.28
+RAM_FILL . . . . . . . . . . . . . . LABEL  0x00002 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:18.1-18.10
+RAM_LOCATIONS  . . . . . . . . . . . NUMBER 0x00040 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:10.1-10.35
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    IMPLICIT
+STACK_PTR  . . . . . . . . . . . . . REG.   0x00007 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:71.1-71.30
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    0007_SCRATCHPAD_ram.asm:14.1-14.7
+SWITCHES . . . . . . . . . . . . . . NUMBER 0x00000 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:30.1-30.38
+SWITCH_VALUE . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    0007_SCRATCHPAD_ram.asm:42.1-42.41

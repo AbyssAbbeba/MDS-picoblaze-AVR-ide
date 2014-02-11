@@ -15,7 +15,7 @@
 //Command: kcpsm3 6024_demo_2_wait_loop.asm.psm
 //Device: Spartan-3, Spartan-3E, Virtex-II, and Virtex-II Pro FPGAs
 //Design Name: 6024_demo_2_wait_loop.asm
-//Generated 2014-02-06 17:12:40.
+//Generated 2014-02-11 16:35:38.
 //Purpose:
 // 6024_demo_2_wait_loop.asm verilog program definition.
 //

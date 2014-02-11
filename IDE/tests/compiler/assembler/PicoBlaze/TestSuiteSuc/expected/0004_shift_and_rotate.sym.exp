@@ -1,0 +1,33 @@
+LOADSYMB1  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 0004_shift_and_rotate.asm:6.1-6.27
+LOADSYMB10 . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    0004_shift_and_rotate.asm:15.1-15.28
+LOADSYMB11 . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:16.1-16.28
+LOADSYMB12 . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    0004_shift_and_rotate.asm:17.1-17.28
+LOADSYMB13 . . . . . . . . . . . . . NUMBER 0x0000C NOT USED CONSTANT    0004_shift_and_rotate.asm:18.1-18.28
+LOADSYMB14 . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    0004_shift_and_rotate.asm:19.1-19.30
+LOADSYMB15 . . . . . . . . . . . . . NUMBER 0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:20.1-20.27
+LOADSYMB16 . . . . . . . . . . . . . NUMBER 0x00003 NOT USED CONSTANT    0004_shift_and_rotate.asm:21.1-21.28
+LOADSYMB17 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:22.1-22.34
+LOADSYMB18 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:23.1-23.29
+LOADSYMB19 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:24.1-24.29
+LOADSYMB2  . . . . . . . . . . . . . NUMBER 0x00011 NOT USED REDEFINABLE 0004_shift_and_rotate.asm:7.1-7.29
+LOADSYMB20 . . . . . . . . . . . . . LABEL  0x00002 NOT USED CONSTANT    0004_shift_and_rotate.asm:25.1-25.29
+LOADSYMB21 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    0004_shift_and_rotate.asm:26.1-26.31
+LOADSYMB22 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    0004_shift_and_rotate.asm:27.1-27.31
+LOADSYMB23 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    0004_shift_and_rotate.asm:28.1-28.31
+LOADSYMB24 . . . . . . . . . . . . . EXPR.          NOT USED CONSTANT    0004_shift_and_rotate.asm:29.1-29.51
+LOADSYMB3  . . . . . . . . . . . . . NUMBER 0x00001 NOT USED REDEFINABLE 0004_shift_and_rotate.asm:8.1-8.26
+LOADSYMB4  . . . . . . . . . . . . . NUMBER 0x00003 NOT USED REDEFINABLE 0004_shift_and_rotate.asm:9.1-9.27
+LOADSYMB5  . . . . . . . . . . . . . NUMBER 0x00004 NOT USED CONSTANT    0004_shift_and_rotate.asm:10.1-10.27
+LOADSYMB6  . . . . . . . . . . . . . NUMBER 0x00005 NOT USED CONSTANT    0004_shift_and_rotate.asm:11.1-11.29
+LOADSYMB7  . . . . . . . . . . . . . NUMBER 0x00006 NOT USED CONSTANT    0004_shift_and_rotate.asm:12.1-12.26
+LOADSYMB8  . . . . . . . . . . . . . NUMBER 0x00007 NOT USED CONSTANT    0004_shift_and_rotate.asm:13.1-13.26
+LOADSYMB9  . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    0004_shift_and_rotate.asm:14.1-14.27
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 NOT USED CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 NOT USED CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 NOT USED CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+START  . . . . . . . . . . . . . . . LABEL  0x00000 NOT USED CONSTANT    0004_shift_and_rotate.asm:33.1-33.7

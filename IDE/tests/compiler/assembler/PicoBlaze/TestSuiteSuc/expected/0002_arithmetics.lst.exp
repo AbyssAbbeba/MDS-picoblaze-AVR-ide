@@ -1,0 +1,84 @@
+                   1     ; Compiler load case for Assembler
+                   2     ; instruction opcodes
+                   3     device kcpsm1cpld
+                   4
+                   5
+                   6
+                   7
+  00000            8     START:
+                   9          ; Arithmetics
+000 02101         10             ADD        s1,#01h
+001 02105         11             ADD        s1,#5
+002 02105         12             ADD        s1,#05h
+003 02105         13             ADD        s1,#0x05
+004 02105         14             ADD        s1,#0b101
+005 02105         15             ADD        s1,#0b00000101
+006 02105         16             ADD        s1,#5D
+007 02105         17             ADD        s1,#5O
+008 02105         18             ADD        s1,#5Q
+009 02105         19             ADD        s1,#5h
+00A 02105         20             ADD        s1,#101b
+00B 02105         21             ADD        s1,#00000101b
+                  22
+                  23
+00C 02901         24             ADDCY      s1,#01h
+00D 02905         25             ADDCY      s1,#5
+00E 02905         26             ADDCY      s1,#05h
+00F 02905         27             ADDCY      s1,#0x05
+010 02905         28             ADDCY      s1,#0b101
+011 02905         29             ADDCY      s1,#0b00000101
+012 02905         30             ADDCY      s1,#5D
+013 02905         31             ADDCY      s1,#5O
+014 02905         32             ADDCY      s1,#5Q
+015 02905         33             ADDCY      s1,#5h
+016 02905         34             ADDCY      s1,#101b
+017 02905         35             ADDCY      s1,#00000101b
+                  36
+                  37
+018 03101         38             SUB        s1,#01h
+019 03105         39             SUB        s1,#5
+01A 03105         40             SUB        s1,#05h
+01B 03105         41             SUB        s1,#0x05
+01C 03105         42             SUB        s1,#0b101
+01D 03105         43             SUB        s1,#0b00000101
+01E 03105         44             SUB        s1,#5D
+01F 03105         45             SUB        s1,#5O
+020 03105         46             SUB        s1,#5Q
+021 03105         47             SUB        s1,#5h
+022 03105         48             SUB        s1,#101b
+023 03105         49             SUB        s1,#00000101b
+                  50
+                  51
+024 03901         52             SUBCY      s1,#01h
+025 03905         53             SUBCY      s1,#5
+026 03905         54             SUBCY      s1,#05h
+027 03905         55             SUBCY      s1,#0x05
+028 03905         56             SUBCY      s1,#0b101
+029 03905         57             SUBCY      s1,#0b00000101
+02A 03905         58             SUBCY      s1,#5D
+02B 03905         59             SUBCY      s1,#5O
+02C 03905         60             SUBCY      s1,#5Q
+02D 03905         61             SUBCY      s1,#5h
+02E 03905         62             SUBCY      s1,#101b
+02F 03905         63             SUBCY      s1,#00000101b
+                  64
+                  65
+                  66
+030 06240         67             ADD         s2,s2
+031 06A40         68             ADDCY       s2,s2
+032 07240         69             SUB         s2,s2
+033 07A60         70             SUBCY       s2,s3
+                  71
+                  72     END
+                  73
+                  74
+                  75       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  76     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  77     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  78     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  79     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
+                  80     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  81     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  82     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                  83     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                  84     ;CALL NC,aaa load sX,sY load sX,sY RL sX
