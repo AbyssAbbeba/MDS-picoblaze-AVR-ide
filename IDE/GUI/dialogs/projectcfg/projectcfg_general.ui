@@ -7,41 +7,12 @@
     <x>0</x>
     <y>0</y>
     <width>299</width>
-    <height>413</height>
+    <height>215</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QSlider" name="sldScratchpad">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>270</y>
-     <width>160</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>-1</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblProgMem">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>320</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0</string>
-   </property>
-  </widget>
   <widget class="QComboBox" name="cmbFamily">
    <property name="geometry">
     <rect>
@@ -87,19 +58,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QLabel" name="lblScratchpad">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>270</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>0</string>
-   </property>
-  </widget>
   <widget class="QComboBox" name="cmbArch">
    <property name="geometry">
     <rect>
@@ -114,32 +72,6 @@
      <string>Picoblaze</string>
     </property>
    </item>
-  </widget>
-  <widget class="QLabel" name="label_7">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>250</y>
-     <width>81</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Scratchpad</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>300</y>
-     <width>121</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Program memory</string>
-   </property>
   </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -158,25 +90,6 @@
    </property>
    <property name="text">
     <string>Project name</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_5">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>150</y>
-     <width>131</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Interrupt Vector</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_3">
@@ -202,58 +115,13 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>350</y>
+     <y>150</y>
      <width>281</width>
      <height>61</height>
     </rect>
    </property>
    <property name="readOnly">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="leHWBuild">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>180</x>
-     <y>180</y>
-     <width>113</width>
-     <height>27</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QSlider" name="sldProgMem">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>320</y>
-     <width>160</width>
-     <height>29</height>
-    </rect>
-   </property>
-   <property name="minimum">
-    <number>-1</number>
-   </property>
-   <property name="value">
-    <number>0</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="leIntVector">
-   <property name="geometry">
-    <rect>
-     <x>30</x>
-     <y>180</y>
-     <width>113</width>
-     <height>27</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>3FF</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
@@ -273,47 +141,6 @@
    </property>
    <property name="text">
     <string>Architecture</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblHWBuild">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>150</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>HW Build</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_9">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>220</y>
-     <width>91</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Size Options</string>
    </property>
   </widget>
  </widget>
