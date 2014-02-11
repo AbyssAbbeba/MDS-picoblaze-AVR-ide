@@ -9,7 +9,7 @@
 
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-device kcpsm1
+device kcpsm1cpld
 
 ; Constant definitions
 ; --------------------

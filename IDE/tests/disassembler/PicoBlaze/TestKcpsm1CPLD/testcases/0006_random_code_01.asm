@@ -1,7 +1,7 @@
 ; Compiler load case for Assembler
 ; instruction opcodes
 
-device kcpsm1
+device kcpsm1cpld
 
 
 Start:        

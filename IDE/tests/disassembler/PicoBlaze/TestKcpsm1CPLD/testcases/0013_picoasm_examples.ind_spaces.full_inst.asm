@@ -1,5 +1,5 @@
 ; Compiler load case for Assembler
-device kcpsm1
+device kcpsm1cpld
 
 ;=========================================================
 ; routine: mult_soload

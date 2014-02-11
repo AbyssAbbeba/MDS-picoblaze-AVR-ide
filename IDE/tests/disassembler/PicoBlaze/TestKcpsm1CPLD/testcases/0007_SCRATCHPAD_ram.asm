@@ -1,14 +1,14 @@
 ; Compiler load case for Assembler
 ; instruction opcodes
 
-device kcpsm1
+device kcpsm1cpld
 
 
 NAMEREG         s0, ram_EQU
 NAMEREG         s1, ram_address
 
-CONSTANT        ram_locations, 40               ; there are 64 locations
-CONSTANT        initial_value, 00               ; initialize to zero
+CONSTANT        ram_locations, 40h               ; there are 64 locations
+CONSTANT        initial_value, 00h               ; initialize to zero
 
 
 Start:
@@ -16,7 +16,7 @@ Start:
         LOAD            ram_address, ram_locations
         ; fill from top to bottom
 ram_fill:
-        SUB             ram_address, 01
+        SUB             ram_address, 01h
         ; decrement address
 
         
@@ -27,7 +27,7 @@ ram_fill:
         ; if not address 0, goto
         ; ram_fill
 
-CONSTANT                switches, 00
+CONSTANT                switches, 00h
 ; read switch values at port 0
 CONSTANT                LEDs,  01h
 ; write 7-seg LED at port 1
@@ -68,10 +68,10 @@ loop:
 
 
 
-NAMEREG         sF, stack_ptr
+NAMEREG         s7, stack_ptr
 ; reserve register sF for the stack pointer
 ; Initialize stack pointer to location 32 in the scratchpad RAM
-        LOAD            sF, 20h
+        LOAD            s7, 20h
 my_subroutine:
         ; preserve register s0
         CALL            push_s0

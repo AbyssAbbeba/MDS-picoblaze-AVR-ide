@@ -14,7 +14,7 @@
 ;
 ; Press Start simulation and Animate to run the program
 ; 
-device kcpsm1
+device kcpsm1cpld
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary EQU register
         NAMEREG         s1,temp2              ; temporary EQU register

@@ -16,7 +16,7 @@
 ; Press Start simulation and Animate to run the program
 ;
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-device kcpsm1
+device kcpsm1cpld
         
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary EQU register
