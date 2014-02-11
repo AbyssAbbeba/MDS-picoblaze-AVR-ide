@@ -6,7 +6,7 @@
 ; You may find some useful advices how to use this
 ; IDE more efficiently
 ; [Main menu] -> [Help] -> [Tip of the day]
-device kcpsm1
+device kcpsm1cpld
 ; Web page: www.moravia-microsystems.com
 ; --------------------
 ; Simple program for comunication via UART, with special macros

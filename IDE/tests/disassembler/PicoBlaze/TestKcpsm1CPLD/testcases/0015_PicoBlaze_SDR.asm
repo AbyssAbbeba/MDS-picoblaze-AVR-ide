@@ -13,7 +13,7 @@
 ; Martin Madron 30.4.2013
 ;
 ;
-device kcpsm1
+device kcpsm1cpld
 ; Start
 ;##############################################################################;
 ; Přiřazení jmen registrům

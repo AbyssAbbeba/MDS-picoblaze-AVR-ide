@@ -4,7 +4,7 @@
 ; Simple example of waiting loop
 
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
-device kcpsm1
+device kcpsm1cpld
 
 ; Press Start simulation and Animate to run the program
 

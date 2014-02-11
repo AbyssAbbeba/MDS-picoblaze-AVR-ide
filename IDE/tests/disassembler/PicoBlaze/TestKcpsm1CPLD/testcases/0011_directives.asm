@@ -1,5 +1,5 @@
 ; load case for directives
-device kcpsm1
+device kcpsm1cpld
 
 
 
@@ -61,12 +61,7 @@ NAMEREG         3,VY
 NAMEREG         4,TAM
 NAMEREG         5,DOLE
 NAMEREG         6,ZDRA
-NAMEREG         7,VIM
-NAMEREG         8,VAS
-NAMEREG         9,SECKY
-NAMEREG         10,HOLA
-NAMEREG         11,OLA
-NAMEREG         12,HEJ
+
 
 
 f1      REG     1
@@ -75,12 +70,7 @@ f3      REG     3
 f4      REG     4
 f5      REG     5
 f6      REG     6
-f7      REG     7
-f8      REG     8
-f9      REG     9
-f10     REG     10
-f11     REG     11
-f12     REG     12
+
 
 g1      EQU     1
 g2      EQU     2
@@ -95,18 +85,6 @@ g10     EQU     11h
 g11     EQU     Ah
 g12     EQU     0x04
 
-h1      CODE     580
-h2      CODE     0xFFFFFF
-h3      CODE     0
-h4      CODE     0b11001
-h5      CODE     0b0001
-h6      CODE     0b00010001
-h7      CODE     0b00000001
-h8      CODE     3
-h9      CODE     1h
-h10     CODE     11h
-h11     CODE     AAh
-h12     CODE     0x04
 
 i1      PORT     580
 i2      PORT     0xFFFFFF

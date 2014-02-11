@@ -1,6 +1,6 @@
 ; Compiler load case for Assembler
 ; instruction opcodes
-device kcpsm1
+device kcpsm1cpld
 loadsymb9               AUTOREG
 loadsymb13              AUTOREG
 loadsymb10              AUTOREG
