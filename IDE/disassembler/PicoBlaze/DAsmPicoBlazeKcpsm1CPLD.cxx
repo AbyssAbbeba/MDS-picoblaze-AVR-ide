@@ -233,12 +233,12 @@ void DAsmPicoBlazeKcpsm1CPLD::inst_INTERRUPT ( std::string & line,
     if ( 0xf000 == code )
     {
         // INTERRUPT ENABLE
-        appendStr(line, "INTERRUPT ENABLE");
+        appendStr(line, "ENABLE INTERRUPT");
     }
     else if ( 0xf001 == code )
     {
         // INTERRUPT DISABLE
-        appendStr(line, "INTERRUPT DISABLE");
+        appendStr(line, "DISABLE INTERRUPT");
     }
     else
     {
