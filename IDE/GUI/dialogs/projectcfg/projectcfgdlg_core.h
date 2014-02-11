@@ -18,6 +18,7 @@
 
 #include <QDialog>
 #include "projectcfg_general.h"
+#include "projectcfg_memory.h"
 #include "projectcfg_filemgr.h"
 #include "projectcfg_compiler.h"
 #include "projectcfg_comppaths.h"
@@ -53,6 +54,7 @@ class ProjectConfigDialog_Core : public QDialog
         Project *project;
         CfgInterface *cfgInterface;
         ProjectCfg_General *generalCfg;
+        ProjectCfg_Memory *memoryCfg;
         ProjectCfg_FileMgr *fileMgr;
         ProjectCfg_Compiler *compilerCfg;
         ProjectCfg_CompPaths *pathsCfg;
