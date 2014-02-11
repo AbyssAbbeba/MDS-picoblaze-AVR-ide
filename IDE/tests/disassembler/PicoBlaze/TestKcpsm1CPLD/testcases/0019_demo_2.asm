@@ -2,7 +2,7 @@
 ; See manual for more info
 
 ; Simple example of waiting loop
-device kcpsm1
+device kcpsm1cpld
 
 TEMP1   autoreg
 TEMP2   autoreg
