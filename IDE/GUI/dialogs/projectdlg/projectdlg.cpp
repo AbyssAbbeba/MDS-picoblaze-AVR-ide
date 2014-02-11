@@ -28,12 +28,14 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
 
     QTabWidget *tabWidget = new QTabWidget(this);
     this->prjdlg_general = new Projectdlg_General(this);
+    this->prjdlg_memory = new ProjectCfg_Memory(this, NULL);
     this->prjdlg_compiler = new ProjectCfg_Compiler(this, NULL);
     this->prjdlg_comppaths = new ProjectCfg_CompPaths(this, NULL);
     this->prjdlg_filemgr = new ProjectCfg_FileMgr(this, NULL);
     int height = prjdlg_general->height() + tabWidget->height();
     int width = prjdlg_comppaths->width();// + tabWidget->width();
     tabWidget->addTab(prjdlg_general, "General");
+    tabWidget->addTab(prjdlg_memory, "Memory");
     tabWidget->addTab(prjdlg_compiler, "Compiler");
     tabWidget->addTab(prjdlg_comppaths, "Paths");
     tabWidget->addTab(prjdlg_filemgr, "Files");
@@ -50,6 +52,25 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(bCreate()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(this->prjdlg_general,
+            SIGNAL(setHWBuildEnabled(bool)),
+            this->prjdlg_memory,
+            SLOT(setHWBuildEnabled(bool))
+           );
+    connect(this->prjdlg_general,
+            SIGNAL(setScratchpadMaximum(int)),
+            this->prjdlg_memory,
+            SLOT(setScratchpadMaximum(int))
+           );
+    connect(this->prjdlg_general,
+            SIGNAL(setProgMemMaximum(int)),
+            this->prjdlg_memory,
+            SLOT(setProgMemMaximum(int))
+           );
+    this->prjdlg_memory->setHWBuildEnabled(true);
+    this->prjdlg_memory->setScratchpadMaximum(log2(256));
+    this->prjdlg_memory->setProgMemMaximum(log2(4096));
+
 }
 
 
@@ -58,14 +79,14 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
  */
 void ProjectDialog::bCreate()
 {
-    if (this->prjdlg_general->getIntVector() == -1)
+    if (this->prjdlg_memory->getIntVector() == -1)
     {
         QMessageBox msgBox;
         msgBox.setText("Enter valid Interrupt Vector value");
         msgBox.exec();
         return;
     }
-    if (this->prjdlg_general->getHWBuild() == -2)
+    if (this->prjdlg_memory->getHWBuild() == -2)
     {
         QMessageBox msgBox;
         msgBox.setText("Enter valid HWBuild value");
@@ -107,10 +128,10 @@ void ProjectDialog::bCreate()
             projectMan->getActive()->addFile(paths.at(i), paths.at(i).section('/', -1));
         }
 
-        projectMan->getActive()->setIntVector(this->prjdlg_general->getIntVector());
-        projectMan->getActive()->setHWBuild(this->prjdlg_general->getHWBuild());
-        projectMan->getActive()->setScratchpad(this->prjdlg_general->getScratchpadSize());
-        projectMan->getActive()->setProgMem(this->prjdlg_general->getProgMemSize());
+        projectMan->getActive()->setIntVector(this->prjdlg_memory->getIntVector());
+        projectMan->getActive()->setHWBuild(this->prjdlg_memory->getHWBuild());
+        projectMan->getActive()->setScratchpad(this->prjdlg_memory->getScratchpadSize());
+        projectMan->getActive()->setProgMem(this->prjdlg_memory->getProgMemSize());
 
         accept();
     }

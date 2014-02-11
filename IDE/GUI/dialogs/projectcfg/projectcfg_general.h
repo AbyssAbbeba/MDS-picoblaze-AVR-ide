@@ -36,17 +36,18 @@ class ProjectCfg_General : public QWidget
     Q_OBJECT
     public:
         ProjectCfg_General(QWidget *parentWidget, Project *currProject);
-        int save();
+        void save();
+
+    signals:
+        void setScratchpadMaximum(int value);
+        void setProgMemMaximum(int value);
+        void setHWBuildEnabled(bool enabled);
 
     private slots:
         void familyChanged(const QString &text);
-        void sliderScratchpadUpdate(int value);
-        void sliderProgMemUpdate(int value);
         
     private:
         void load();
-        int getIntVector();
-        int getHWBuild();
         
         Project *project;
         Ui_ProjectCfg_General ui;

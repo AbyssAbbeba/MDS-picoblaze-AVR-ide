@@ -81,20 +81,8 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
             this,
             SLOT(familyChanged(const QString&))
            );
-    connect(ui.sldScratchpad,
-            SIGNAL(valueChanged(int)),
-            this,
-            SLOT(sliderScratchpadUpdate(int))
-           );
-    connect(ui.sldProgMem,
-            SIGNAL(valueChanged(int)),
-            this,
-            SLOT(sliderProgMemUpdate(int))
-           );
 
     ui.cmbFamily->setCurrentIndex(4);
-    ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
-    ui.sldProgMem->setValue(ui.sldProgMem->maximum());
 
     this->show();
 }
@@ -133,58 +121,15 @@ QString Projectdlg_General::getFamily()
     return ui.cmbFamily->currentText();
 }
 
-
-int Projectdlg_General::getIntVector()
-{
-    bool ok;
-    int value = ui.leIntVector->text().toInt(&ok, 16);
-    if (ok != true || value > ui.lblProgMem->text().toInt())
-    {
-        return -1;
-    }
-    return value;
-}
-
-
-int Projectdlg_General::getHWBuild()
-{
-    bool ok;
-    int value = ui.leHWBuild->text().toInt(&ok, 16);
-    if (ui.leHWBuild->isEnabled() == false)
-    {
-        return -1;
-    }
-    if (ok != true)
-    {
-        return -2;
-    }
-    return value;
-}
-
-
-int Projectdlg_General::getScratchpadSize()
-{
-    return ui.lblScratchpad->text().toInt();
-}
-
-
-int Projectdlg_General::getProgMemSize()
-{
-    return ui.lblProgMem->text().toInt();
-}
-
-
 void Projectdlg_General::familyChanged(const QString &text)
 {
     if ("kcpsm6" == text)
     {
-        ui.lblHWBuild->setEnabled(true);
-        ui.leHWBuild->setEnabled(true);
+        emit setHWBuildEnabled(true);
     }
     else
     {
-        ui.lblHWBuild->setDisabled(true);
-        ui.leHWBuild->setDisabled(true);
+        emit setHWBuildEnabled(false);
     }
 
     int index = ui.cmbFamily->findText(text);
@@ -195,43 +140,12 @@ void Projectdlg_General::familyChanged(const QString &text)
 
     if (notes.at(5*index+2) != "-")
     {
-        ui.sldScratchpad->setEnabled(true);
-        ui.lblScratchpad->setEnabled(true);
-        ui.sldScratchpad->setMaximum(log2(notes.at(5*index+2).toInt()));
-        ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
+        emit setScratchpadMaximum(log2(notes.at(5*index+2).toInt()));
     }
     else
     {
-        ui.sldScratchpad->setDisabled(true);
-        ui.lblScratchpad->setDisabled(true);
+        emit setScratchpadMaximum(-1);
     }
 
-    ui.sldProgMem->setMaximum(log2(notes.at(5*index+4).toInt()));
-    ui.sldProgMem->setValue(ui.sldProgMem->maximum());
-}
-
-
-void Projectdlg_General::sliderScratchpadUpdate(int value)
-{
-    if (value > -1)
-    {
-        ui.lblScratchpad->setText(QString::number(qPow(2,value)));
-    }
-    else
-    {
-        ui.lblScratchpad->setText("0");
-    }
-}
-
-
-void Projectdlg_General::sliderProgMemUpdate(int value)
-{
-    if (value > -1)
-    {
-        ui.lblProgMem->setText(QString::number(qPow(2,value)));
-    }
-    else
-    {
-        ui.lblProgMem->setText("0");
-    }
+    emit setProgMemMaximum(log2(notes.at(5*index+4).toInt()));
 }
