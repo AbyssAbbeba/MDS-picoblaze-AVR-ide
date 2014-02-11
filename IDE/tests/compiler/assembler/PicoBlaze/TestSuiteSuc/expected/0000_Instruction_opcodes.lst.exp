@@ -1,0 +1,106 @@
+                   1     ; Compiler load case for Assembler
+                   2     ; instruction opcodes
+                   3     device kcpsm1cpld
+                   4
+  00001            5     loadsymb1    SET        1h
+  00011            6     loadsymb2    SET        0x11
+  00001            7     loadsymb3    SET        1
+  00003            8     loadsymb4    SET        3d
+  00004            9     loadsymb5    EQU        4h
+  00005           10     loadsymb6    EQU        0x05
+  00006           11     loadsymb7    EQU        6
+  00007           12     loadsymb8    EQU        7
+  00001           13     loadsymb9    REG        1h
+  00002           14     loadsymb10    REG        2h
+  00003           15     loadsymb11    REG        3h
+  00004           16     loadsymb12    REG        4h
+  0000C           17     loadsymb13    EQU        Ch
+  00005           18     loadsymb14    EQU        0x05
+  00002           19     loadsymb15    EQU        2
+  00003           20     loadsymb16    EQU        3d
+  00002           21     loadsymb17    CODE        0h + 2h
+  00002           22     loadsymb18    CODE        2h
+  00002           23     loadsymb19    CODE        2h
+  00002           24     loadsymb20    CODE        2h
+                  25     loadsymb21    DEFINE        3h
+                  26     loadsymb22    DEFINE        4h
+                  27     loadsymb23    DEFINE        5h
+                  28     loadsymb24    DEFINE        loadsymb1 + loadsymb11
+                  29
+                  30
+  00000           31               ORG        0x000
+000 0D002         32               JUMP        Start
+001 0D000         33               JUMP        0x000
+W: instruction `JUMP aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+  00002           34     Start:
+002 0D400         35             JUMP        Z, 0x000
+W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+003 0D500         36             JUMP        NZ,0x000
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+004 0D600         37             JUMP        C, 0x000
+W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+005 0D700         38             JUMP        NC,0x000
+W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+                  39
+                  40          ; Arithmetics
+006 0210C         41             ADD         loadsymb9,#12
+007 02914         42             ADDCY       loadsymb9,#20
+008 031FF         43             SUB         loadsymb9,#ffh
+009 039FF         44             SUBCY       loadsymb9,#0xff
+                  45
+                  46
+00A 06120         47             ADD         loadsymb9,loadsymb9
+00B 06920         48             ADDCY       loadsymb9,loadsymb9
+00C 07120         49             SUB         loadsymb9,loadsymb9
+00D 07940         50             SUBCY       loadsymb9,loadsymb10
+                  51
+                  52
+                  53     ; Logical
+00E 00101         54             LOAD      loadsymb9,#01h
+00F 00900         55             AND       loadsymb9,#0
+010 01101         56             OR        loadsymb9,#1
+011 01902         57             XOR       loadsymb9,#2
+                  58
+                  59
+012 04120         60             LOAD      loadsymb9,loadsymb9
+013 04920         61             AND       loadsymb9,loadsymb9
+014 05120         62             OR        loadsymb9,loadsymb9
+015 05920         63             XOR       loadsymb9,loadsymb9
+                  64
+                  65     ; Shiload and rotate
+016 0A20E         66             SR0       loadsymb10
+017 0A20F         67             SR1       loadsymb10
+018 0A20A         68             SRX        loadsymb10
+019 0A208         69             SRA        loadsymb10
+01A 0A20C         70             RR         loadsymb10
+                  71
+01B 0A206         72             SL0       loadsymb10
+01C 0A207         73             SL1       loadsymb10
+01D 0A202         74             SLX       loadsymb10
+01E 0A200         75             SLA       loadsymb10
+01F 0A204         76             RL        loadsymb10
+                  77         ; Others
+020 0D825         78             CALl      Podprog
+021 0DC25         79             CALL      Z,Podprog
+022 0DD25         80             CALL      NZ,Podprog
+023 0DE25         81             CALL      C,Podprog
+024 0DF25         82             CALL      NC,Podprog
+                  83
+  00025           84     Podprog:
+025 09000         85             RETURN
+026 09400         86             RETURN    Z
+027 09500         87             RETURN    NZ
+028 09600         88             RETURN    C
+029 09700         89             RETURN    NC
+                  90
+                  91
+                  92       ;  JUMP aaa ADD sX,kk LOAD sX,kk SR0 sX
+                  93     ;JUMP Z,aaa ADDCY sX,kk AND sX,kk SR1 sX
+                  94     ;JUMP NZ,aaa SUB sX,kk OR sX,kk SRX sX
+                  95     ;JUMP C,aaa SUBCY sX,kk XOR sX,kk SRA sX
+                  96     ;JUMP NC,aaa load sX,kk load sX,kk RR sX
+                  97     ;CALL aaa ADD sX,sY LOAD sX,sY SL0 sX
+                  98     ;CALL Z,aaa ADDCY sX,sY AND sX,sY SL1 sX
+                  99     ;CALL NZ,aaa SUB sX,sY OR sX,sY SLX sX
+                 100     ;CALL C,aaa SUBCY sX,sY XOR sX,sY SLA sX
+                 101     ;CALL NC,aaa load sX,sY load sX,sY RL sX

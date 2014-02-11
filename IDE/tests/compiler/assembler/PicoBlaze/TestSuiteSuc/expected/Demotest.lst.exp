@@ -1,0 +1,71 @@
+                   1      ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Press Start simulation and Animate to run the program
+                   4
+                   5     ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
+                   6             DEVICE          KCPSM3
+                   7
+                   8     ; Constant definitions
+                   9     ; --------------------
+  00001           10     LEDs             PORT             0x01            ; VHDL PORT_IDs
+  00002           11     Btn              PORT             0x02            ;
+                  12     ; Automaticaly assign registers to symbols
+  00000           13     LED_i           AUTOREG                         ; Led working register
+  00001           14     BTN_i           AUTOREG                         ; Buttons working register
+                  15
+  0000E           16     Temp1           REG       sE
+  0000F           17     Temp2           REG       sF
+  0000D           18     Temp3           REG       sD
+                  19
+                  20     ; Program initialization
+                  21     ; --------------------
+  00000           22                     ORG     0h                      ; Define code segment
+000 34001         23                     JUMP    start                   ; Jump to code initialization
+                  24
+                  25     ; Macro table
+                  26     ; --------------------
+                  27     ; Waiting loop macro
+                  28     ;-------------------------------------------------------------------------
+                  29     wait_for        MACRO
+                  30                     local     waiting
+                  31
+                  32                     LOAD      Temp1, #250
+                  33     waiting:        SUB       Temp1, #1
+                  34                     JUMP      NZ, waiting
+                  35
+                  36                     ENDM
+                  37     ;-----------------------------------------------------------------------
+                  38
+                  39     ; Program start
+                  40     ; --------------------
+  00001           41     start:
+                  42             wait_for
+                  43 +1                  local     waiting
+                  44 +1
+001 00EFA         45 +1                  LOAD      Temp1, #250
+002 1CE01         46 +1  waiting:        SUB       Temp1, #1
+003 35402         47 +1  waiting:        SUB       Temp1, #1
+                  48 +1                  JUMP      NZ, waiting
+004 34005         49             JUMP    main                    ; Execute main program loop
+                  50
+                  51     ; Main loop
+                  52     ; BTN           000 1 2 3 4 5
+                  53     ; LED_i         000 1 2 3 4 5
+                  54     ; --------------------
+005 04102         55     main:   INPUT   BTN_i,Btn
+006 01010         56             LOAD    LED_i,BTN_i             ; Save buttons status                 ; Button one pressed
+007 2C001         57             OUTPUT  LED_i,LEDs                          ; JUMP to snake subroutine
+                  58             wait_for
+                  59 +1                  local     waiting
+                  60 +1
+008 00EFA         61 +1                  LOAD      Temp1, #250
+009 1CE01         62 +1  waiting:        SUB       Temp1, #1
+00A 35409         63 +1  waiting:        SUB       Temp1, #1
+                  64 +1                  JUMP      NZ, waiting
+00B 34005         65             JUMP    main
+                  66     ; Program end
+                  67     ; --------------------
+                  68             END
+                  69
+                  70     ; <-- Bookmark   (ctrl + shift + M)
+                  71     ; <-- Breakpoint (ctrl + shift + B)

@@ -1,0 +1,161 @@
+                   1     ; load case for directives
+                   2     device kcpsm1cpld
+                   3
+                   4
+                   5
+  00244            6     a1      EQU     580
+  3FFFF            7     a2      EQU     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000            8     a3      EQU     0
+  00019            9     a4      EQU     0b11001
+  00001           10     a5      EQU     0b0001
+  00011           11     a6      EQU     0b00010001
+  00001           12     a7      EQU     0b00000001
+  00003           13     a8      EQU     3
+  00001           14     a9      EQU     1h
+  00011           15     a10     EQU     11h
+  000AA           16     a11     EQU     AAh
+  00004           17     a12     EQU     0x04
+                  18
+  00244           19     b1      SET     580
+  3FFFF           20     b2      SET     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000           21     b3      SET     0
+  00019           22     b4      SET     0b11001
+  00001           23     b5      SET     0b0001
+  00011           24     b6      SET     0b00010001
+  00001           25     b7      SET     0b00000001
+  00003           26     b8      SET     3
+  00001           27     b9      SET     1h
+  00011           28     b10     SET     11h
+  000AA           29     b11     SET     AAh
+  00004           30     b12     SET     0x04
+                  31
+  00222           32     CONSTANT        c1,546
+  0FFFF           33     CONSTANT        c2,0xffff
+  0000C           34     CONSTANT        c3,12
+  00000           35     CONSTANT        c4,0
+  00000           36     CONSTANT        c5,0b00000000
+  00001           37     CONSTANT        c6,0b001
+  00001           38     CONSTANT        c7,0b01
+  00015           39     CONSTANT        c8,0b00010101
+  0001E           40     CONSTANT        c9,0b11110
+  00001           41     CONSTANT        c10,1h
+  000FE           42     CONSTANT        c11,FEh
+  00003           43     CONSTANT        c12,0x03
+                  44
+  00222           45     VARIABLE        d1,546
+  0FFFF           46     VARIABLE        d2,0xffff
+  0000C           47     VARIABLE        d3,12
+  00000           48     VARIABLE        d4,0
+  00000           49     VARIABLE        d5,0b00000000
+  00001           50     VARIABLE        d6,0b001
+  00001           51     VARIABLE        d7,0b01
+  00015           52     VARIABLE        d8,0b00010101
+  0001E           53     VARIABLE        d9,0b11110
+  00001           54     VARIABLE        d10,1h
+  000FE           55     VARIABLE        d11,FEh
+  00003           56     VARIABLE        d12,0x03
+                  57
+  00001           58     NAMEREG         1,AHOJ
+  00002           59     NAMEREG         2,TE
+  00003           60     NAMEREG         3,VY
+  00004           61     NAMEREG         4,TAM
+  00005           62     NAMEREG         5,DOLE
+  00006           63     NAMEREG         6,ZDRA
+                  64
+                  65
+                  66
+  00001           67     f1      REG     1
+W: reusing already reserved space in register file memory at address: 0x1.
+  00002           68     f2      REG     2
+W: reusing already reserved space in register file memory at address: 0x2.
+  00003           69     f3      REG     3
+W: reusing already reserved space in register file memory at address: 0x3.
+  00004           70     f4      REG     4
+W: reusing already reserved space in register file memory at address: 0x4.
+  00005           71     f5      REG     5
+W: reusing already reserved space in register file memory at address: 0x5.
+  00006           72     f6      REG     6
+W: reusing already reserved space in register file memory at address: 0x6.
+                  73
+                  74
+  00001           75     g1      EQU     1
+  00002           76     g2      EQU     2
+  00003           77     g3      EQU     3
+  00004           78     g4      EQU     4
+  00005           79     g5      EQU     5
+  00006           80     g6      EQU     6
+  00007           81     g7      EQU     7
+  00008           82     g8      EQU     8
+  00009           83     g9      EQU     9
+  00011           84     g10     EQU     11h
+  0000A           85     g11     EQU     Ah
+  00004           86     g12     EQU     0x04
+                  87
+                  88
+  00244           89     i1      PORT     580
+  3FFFF           90     i2      PORT     0xFFFFFF
+W: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+  00000           91     i3      PORT     0
+  00019           92     i4      PORT     0b11001
+  00001           93     i5      PORT     0b0001
+  00011           94     i6      PORT     0b00010001
+  00001           95     i7      PORT     0b00000001
+  00003           96     i8      PORT     3
+  00001           97     i9      PORT     1h
+  00011           98     i10     PORT     11h
+  000AA           99     i11     PORT     AAh
+  00015          100     i12     PORT     0x04 | 0x11
+                 101
+                 102     ; expresions load
+  00005          103     ss1     EQU     +5
+  3FFFB          104     ss2     EQU     -5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00005          105     ss3     EQU     +5h
+  3FFFB          106     ss4     EQU     -0x5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00000          107     ss5     EQU     -5++5
+  3FFEB          108     ss6     EQU     +5+-5++45-66
+R: result is negative number: 0xffffffffffffffeb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffeb.
+  3FF00          109     ss7     EQU     ~0xFF
+R: result is negative number: 0xffffffffffffff00, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ff00.
+  00001          110     ss8     EQU     (0xFF & 0x00) & 0x0F * 5 / 5 % 2 | 0x01
+  0002F          111     ss9     EQU     (12 * 3) + (112 / 10)
+  0002B          112     ss10    EQU     (25 + 36) - (18)
+  3FFE7          113     ss11    EQU     -5 * +5
+R: result is negative number: 0xffffffffffffffe7, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffe7.
+  00002          114     ss12    EQU     0x01 << 1
+  00001          115     ss13    EQU     0x02 >> 1
+  000F0          116     ss14    EQU     0xff ^ 0x0f
+                 117
+  3FFFB          118     a       equ     -5
+R: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+  00005          119     B       EQU     5
+                 120
+                 121     XXX     define          1 * {0} + {1}/{2}+5
+                 122     YYY     define          1 + {0}
+  00008          123     Abyss   EQU             XXX(1,1,YYY(0x01)) + 2
+                 124
+                 125     limit   d,10
+                 126     limit   r,10
+                 127     limit   c,10
+                 128
+  00000          129     Start:
+                 130             SKIP    6
+006 04140        131             LOAD    s1,s2
+007 04140        132             LOAD    s1,s2
+008 04140        133             LOAD    s1,s2
+009 04140        134             LOAD    s1,s2
+                 135
+00A 08001        136             INPUT   s0,0x01
+                 137
+                 138
+                 139
+                 140
+                 141
+                 142
+                 143
+                 144             END
+                 145
+                 146

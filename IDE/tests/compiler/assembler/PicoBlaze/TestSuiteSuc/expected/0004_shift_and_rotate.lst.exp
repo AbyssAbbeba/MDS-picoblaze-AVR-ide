@@ -1,0 +1,50 @@
+                   1     ; Compiler load case for Assembler
+                   2     ; instruction opcodes
+                   3
+                   4     device kcpsm1cpld
+                   5
+  00001            6     loadsymb1    SET        1h
+  00011            7     loadsymb2    SET        0x11
+  00001            8     loadsymb3    SET        1
+  00003            9     loadsymb4    SET        3d
+  00004           10     loadsymb5    EQU        4h
+  00005           11     loadsymb6    EQU        0x05
+  00006           12     loadsymb7    EQU        6
+  00007           13     loadsymb8    EQU        7
+  00004           14     loadsymb9    REG        4h
+  00001           15     loadsymb10    REG        1h
+  00002           16     loadsymb11    REG        2h
+  00003           17     loadsymb12    REG        3h
+  0000C           18     loadsymb13    EQU        Ch
+  00005           19     loadsymb14    EQU        0x05
+  00002           20     loadsymb15    EQU        2
+  00003           21     loadsymb16    EQU        3d
+  00002           22     loadsymb17    CODE        0h + 2h
+  00002           23     loadsymb18    CODE        2h
+  00002           24     loadsymb19    CODE        2h
+  00002           25     loadsymb20    CODE        2h
+                  26     loadsymb21    DEFINE        3h
+                  27     loadsymb22    DEFINE        4h
+                  28     loadsymb23    DEFINE        5h
+                  29     loadsymb24    DEFINE        loadsymb1 + loadsymb11
+                  30
+                  31
+                  32
+  00000           33     Start:
+                  34
+                  35     ; Shiload and rotate
+000 0A10E         36             SR0       loadsymb10
+001 0A10F         37             SR1       loadsymb10
+002 0A10A         38             SRX        loadsymb10
+003 0A108         39             SRA        loadsymb10
+004 0A10C         40             RR         loadsymb10
+                  41
+005 0A106         42             SL0       loadsymb10
+006 0A107         43             SL1       loadsymb10
+007 0A102         44             SLX       loadsymb10
+008 0A100         45             SLA       loadsymb10
+009 0A104         46             RL        loadsymb10
+                  47
+                  48
+                  49             END
+                  50

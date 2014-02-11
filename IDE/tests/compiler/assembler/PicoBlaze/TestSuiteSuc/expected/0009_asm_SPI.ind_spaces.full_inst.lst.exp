@@ -1,0 +1,363 @@
+                   1     device kcpsm1cpld
+                   2
+  00005            3     BSDA_Z  EQU     5
+  00005            4     BSCL_Z  EQU     5
+  00005            5     BSDA_0  EQU     5
+  00005            6     BSCL_0  EQU     5
+  00005            7     BSDA_IN EQU     5
+                   8     ; ---\              /--------\                                            /--
+                   9     ;     \  SDA       /          \                                          /
+                  10     ;      \----------/ \--------/ \----------------------------------------/
+                  11     ; -------\            /----\                                         /-------
+                  12     ;         \  SCL     /      \                                       /
+                  13     ;          \--------/        \-------------------------------------/
+                  14     ; | Start    |      EQU bit     |                             |  Stop     |
+                  15
+000 08905         16     init_i2c:               OUTPUT          sf, bsda_z              ; SDA = Z
+E: symbol not defined: `SF'.
+001 08905         17                             OUTPUT          sf, bscl_z              ; SCL = Z
+E: symbol not defined: `SF'.
+002 0D003         18                             JUMP            delay
+                  19
+  00003           20     delay:
+                  21     ; -------------------------------------------------------------------------------
+                  22     ; Routine to set up for and read four bytes from I2C device
+                  23     ; -------------------------------------------------------------------------------
+                  24
+  00003           25     readwrite4_i2c:
+003 0D89A         26                             CALL            i2c_start               ; Send Start, control byte and ack
+004 08100         27                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+005 0A106         28                             SL0             sc                      ; add write flag
+E: symbol not defined: `SC'.
+006 0D857         29                             CALL            i2c_xmit                ; Send address and ack
+007 0D88E         30                             CALL            i2c_sack
+                  31
+008 08101         32                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+009 0D857         33                             CALL            i2c_xmit                ; Send EQU and ack
+00A 0D88E         34                             CALL            i2c_sack
+                  35
+00B 0D898         36                             CALL            i2c_repstart            ; Send repeated start, control byte and ack
+00C 08100         37                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+00D 0A107         38                             SL1             sc                      ; add read flag
+E: symbol not defined: `SC'.
+00E 0D857         39                             CALL            i2c_xmit                ; Send address and ack
+00F 0D88E         40                             CALL            i2c_sack
+                  41
+010 0D868         42                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+011 0D878         43                             CALL            i2c_mack
+012 08201         44                             INPUT           s2, sc
+E: symbol not defined: `SC'.
+                  45
+013 0D868         46                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+014 0D878         47                             CALL            i2c_mack
+015 08301         48                             INPUT           s3, sc
+E: symbol not defined: `SC'.
+                  49
+016 0D868         50                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+017 0D878         51                             CALL            i2c_mack
+018 08401         52                             INPUT           s4, sc
+E: symbol not defined: `SC'.
+                  53
+019 0D868         54                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+01A 0D883         55                             CALL            i2c_mnack
+01B 08501         56                             INPUT           s5, sc
+E: symbol not defined: `SC'.
+                  57
+01C 0D0A0         58                             JUMP            i2c_stop                ; Send Stop
+                  59
+                  60     ; -------------------------------------------------------------------------------
+                  61     ; Routine to set up for and write two bytes to I2C device
+                  62     ; -------------------------------------------------------------------------------
+  0001D           63     write3_i2c:
+01D 0D89A         64                             CALL            i2c_start               ; Send Start, control byte and ack
+01E 08100         65                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+01F 0A106         66                             SL0             sc                      ; add write flag
+E: symbol not defined: `SC'.
+020 0D857         67                             CALL            i2c_xmit                ; Send address and ack
+021 0D88E         68                             CALL            i2c_sack
+                  69
+022 08101         70                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+023 0D857         71                             CALL            i2c_xmit                ; Send EQU and ack
+024 0D88E         72                             CALL            i2c_sack
+                  73
+025 08102         74                             INPUT           sc, s2                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+026 0D857         75                             CALL            i2c_xmit                ; Send EQU and ack
+027 0D88E         76                             CALL            i2c_sack
+                  77
+028 08103         78                             INPUT           sc, s3                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+029 0D857         79                             CALL            i2c_xmit                ; Send EQU and ack
+02A 0D88E         80                             CALL            i2c_sack
+                  81
+02B 0D0A0         82                             JUMP            i2c_stop                ; Send stop
+                  83
+                  84     ; -------------------------------------------------------------------------------
+                  85     ; Routine to set up for and read two bytes from I2C device
+                  86     ; -------------------------------------------------------------------------------
+                  87
+  0002C           88     read2_i2c:
+02C 0D89A         89                             CALL            i2c_start               ; Send start, control byte and ack
+02D 08100         90                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+02E 0A107         91                             SL1             sc                      ; add read flag
+E: symbol not defined: `SC'.
+02F 0D857         92                             CALL            i2c_xmit                ; Send address and ack
+030 0D88E         93                             CALL            i2c_sack
+                  94
+031 0D868         95                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+032 0D878         96                             CALL            i2c_mack
+033 08201         97                             INPUT           s2, sc
+E: symbol not defined: `SC'.
+                  98
+034 0D868         99                             CALL            i2c_recv                ; Read next 8 bits of EQU and send ack
+035 0D883        100                             CALL            i2c_mnack
+036 08301        101                             INPUT           s3, sc
+E: symbol not defined: `SC'.
+                 102
+037 0D0A0        103                             JUMP            i2c_stop                ; Send Stop
+                 104
+                 105     ; -------------------------------------------------------------------------------
+                 106     ; Routine to set up for and write two bytes to I2C device
+                 107     ; -------------------------------------------------------------------------------
+  00038          108     write2_i2c:
+038 0D89A        109                             CALL            i2c_start               ; Send Start, control byte and ack
+039 08100        110                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+03A 0A106        111                             SL0             sc                      ; add write flag
+E: symbol not defined: `SC'.
+03B 0D857        112                             CALL            i2c_xmit                ; Send address and ack
+03C 0D88E        113                             CALL            i2c_sack
+                 114
+03D 08101        115                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+03E 0D857        116                             CALL            i2c_xmit                ; Send EQU and ack
+03F 0D88E        117                             CALL            i2c_sack
+                 118
+040 08102        119                             INPUT           sc, s2                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+041 0D857        120                             CALL            i2c_xmit                ; Send EQU and ack
+042 0D88E        121                             CALL            i2c_sack
+                 122
+043 0D0A0        123                             JUMP            i2c_stop                ; Send stop
+                 124
+                 125     ; -------------------------------------------------------------------------------
+                 126     ; Routine to set up for and read one byte of I2C device
+                 127     ; -------------------------------------------------------------------------------
+  00044          128     read1_i2c:
+                 129
+044 0D89A        130                             CALL            i2c_start               ; Send start, control byte and ack
+045 08100        131                             INPUT           sc, s0                 ; Load address for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+046 0A107        132                             SL1             sc                      ; add read flag
+E: symbol not defined: `SC'.
+047 0D857        133                             CALL            i2c_xmit                ; Send address and ack
+048 0D88E        134                             CALL            i2c_sack
+                 135
+049 0D89A        136                             CALL            i2c_start               ; Send start, control byte and ack
+                 137
+04A 0D868        138                             CALL            i2c_recv                ; Read 8 bits of EQU and send ack
+04B 0D883        139                             CALL            i2c_mnack
+04C 08201        140                             INPUT           s2, sc
+E: symbol not defined: `SC'.
+                 141
+04D 0D0A0        142                             JUMP            i2c_stop                ; Send Stop
+                 143
+                 144     ; -------------------------------------------------------------------------------
+                 145     ; Routine to set up for and write one byte to I2C device
+                 146     ; -------------------------------------------------------------------------------
+  0004E          147     write1_i2c:
+                 148
+04E 0D89A        149                             CALL            i2c_start               ; Send Start, control byte and ack
+04F 08100        150                             INPUT           sc, s0                 ; Load device code for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+050 0A106        151                             SL0             sc                      ; add write flag
+E: symbol not defined: `SC'.
+051 0D857        152                             CALL            i2c_xmit                ; Send address and ack
+052 0D88E        153                             CALL            i2c_sack
+                 154
+053 08101        155                             INPUT           sc, s1                 ; Load EQU for TX
+W: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+E: symbol not defined: `SC'.
+054 0D857        156                             CALL            i2c_xmit                ; Send EQU and ack
+055 0D88E        157                             CALL            i2c_sack
+                 158
+056 0D0A0        159                             JUMP            i2c_stop                ; Send stop
+                 160
+                 161     ; -------------------------------------------------------------------------------
+                 162     ; Transmit 8 bits of I2C EQU
+                 163     ; -------------------------------------------------------------------------------
+  00057          164     i2c_xmit:
+057 08108        165                             INPUT           sd, 8                   ; Load I2C bit counter
+E: symbol not defined: `SD'.
+  00058          166     i2c_tx:
+058 0D803        167                             CALL            delay
+059 0A106        168                             SL0             sc                      ; Move EQU bit -> carry
+E: symbol not defined: `SC'.
+05A 0D65E        169                             JUMP            c, i2c_tx1              ; Jump if bit high
+  0005B          170     i2c_tx0:
+05B 08905        171                             OUTPUT          sf, bsda_0              ; SDA = 0
+E: symbol not defined: `SF'.
+05C 0D803        172                             CALL            delay
+05D 0D060        173                             JUMP            i2c_tx2                 ; Jump over next instructions
+  0005E          174     i2c_tx1:
+05E 08905        175                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+E: symbol not defined: `SF'.
+05F 0D803        176                             CALL            delay
+  00060          177     i2c_tx2:
+                 178
+060 08905        179                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+061 0D803        180                             CALL            delay
+062 0D803        181                             CALL            delay
+063 0D803        182                             CALL            delay
+064 08905        183                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+                 184
+065 03101        185                             SUB             sd, #1                  ; Decrement I2C bit counter
+E: symbol not defined: `SD'.
+066 0D558        186                             JUMP            nz, i2c_tx              ; Loop until 8 bits are sent
+067 0D003        187                             JUMP            delay
+                 188
+                 189     ; -------------------------------------------------------------------------------
+                 190     ; Read 8 bits of I2C EQU
+                 191     ; -------------------------------------------------------------------------------
+  00068          192     i2c_recv:
+068 08108        193                             INPUT           sd, 8                   ; Load I2C bit counter
+E: symbol not defined: `SD'.
+069 0D803        194                             CALL            delay
+06A 08905        195                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+E: symbol not defined: `SF'.
+                 196
+  0006B          197     i2c_rx:
+06B 0D803        198                             CALL            delay
+06C 08905        199                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+06D 0D803        200                             CALL            delay
+06E 0D803        201                             CALL            delay
+06F 08105        202                             INPUT           sf, bsda_in
+E: symbol not defined: `SF'.
+070 0D803        203                             CALL            delay
+071 0A10E        204                             SR0             sf                      ; LSBit -> carry bit
+E: symbol not defined: `SF'.
+072 0A100        205                             SLA             sc                      ; Carry shiloaded into LSBit
+E: symbol not defined: `SC'.
+073 08905        206                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+074 0D803        207                             CALL            delay
+075 03101        208                             SUB             sd, #1                  ; Decrement I2C bit counter
+E: symbol not defined: `SD'.
+076 0D56B        209                             JUMP            nz, i2c_rx              ; Loop until 8 bits are read
+077 09000        210                             RETURN
+                 211
+                 212     ; -------------------------------------------------------------------------------
+                 213     ; Ack by master, keep EQU 0
+                 214     ; -------------------------------------------------------------------------------
+  00078          215     i2c_mack:
+078 0D803        216                             CALL            delay
+079 08905        217                             OUTPUT          sf, bsda_0              ; SDA = 0
+E: symbol not defined: `SF'.
+07A 0D803        218                             CALL            delay
+07B 08905        219                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+07C 0D803        220                             CALL            delay
+07D 0D803        221                             CALL            delay
+07E 0D803        222                             CALL            delay
+07F 08905        223                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+080 0D803        224                             CALL            delay
+081 08905        225                             OUTPUT          sf, bsda_0              ; SDA = 0
+E: symbol not defined: `SF'.
+082 09000        226                             RETURN
+                 227
+                 228     ; -------------------------------------------------------------------------------
+                 229     ; NAck by master, release EQU
+                 230     ; -------------------------------------------------------------------------------
+  00083          231     i2c_mnack:
+083 0D803        232                             CALL            delay
+084 08905        233                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+E: symbol not defined: `SF'.
+085 0D803        234                             CALL            delay
+086 08905        235                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+087 0D803        236                             CALL            delay
+088 0D803        237                             CALL            delay
+089 0D803        238                             CALL            delay
+08A 08905        239                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+08B 0D803        240                             CALL            delay
+08C 08905        241                             OUTPUT          sf, bsda_0              ; SDA = 0
+E: symbol not defined: `SF'.
+08D 09000        242                             RETURN
+                 243
+                 244     ; -------------------------------------------------------------------------------
+                 245     ; Ack by slave, release EQU
+                 246     ; -------------------------------------------------------------------------------
+  0008E          247     i2c_sack:
+08E 0D803        248                             CALL            delay
+08F 08905        249                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+E: symbol not defined: `SF'.
+090 0D803        250                             CALL            delay
+091 08905        251                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+092 0D803        252                             CALL            delay
+093 0D803        253                             CALL            delay
+094 0D803        254                             CALL            delay
+095 08905        255                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+096 0D803        256                             CALL            delay
+097 09000        257                             RETURN
+                 258
+                 259     ; -------------------------------------------------------------------------------
+                 260     ; Set up start condition for I2C
+                 261     ; -------------------------------------------------------------------------------
+                 262
+                 263     ; SCL and SDA set to inputs, signals go high due to pull-up resistors
+                 264
+  00098          265     i2c_repstart:
+098 0D803        266                             CALL            delay
+099 08905        267                             OUTPUT          sf, bscl_z              ; SCL = Z
+E: symbol not defined: `SF'.
+  0009A          268     i2c_start:
+09A 0D803        269                             CALL            delay
+09B 08905        270                             OUTPUT          sf, bsda_0              ; SDA = 0
+E: symbol not defined: `SF'.
+09C 0D803        271                             CALL            delay
+09D 08905        272                             OUTPUT          sf, bscl_0              ; SCL = 0
+E: symbol not defined: `SF'.
+09E 0D803        273                             CALL            delay
+09F 09000        274                             RETURN
+                 275
+                 276     ; -------------------------------------------------------------------------------
+                 277     ; Send I2C stop command
+                 278     ; -------------------------------------------------------------------------------
+  000A0          279     i2c_stop:
+0A0 0D803        280                             CALL            delay
+0A1 08905        281                             OUTPUT          sf, bscl_z              ; SCL = 1 due to pull-up
+E: symbol not defined: `SF'.
+0A2 0D803        282                             CALL            delay
+0A3 08905        283                             OUTPUT          sf, bsda_z              ; SDA = 1 due to pull-up
+E: symbol not defined: `SF'.
+0A4 0D803        284                             CALL            delay
+0A5 09000        285                             RETURN
+                 286
+                 287     ; -----------I2C Subroutines end-------------------------------------------------
+                 288

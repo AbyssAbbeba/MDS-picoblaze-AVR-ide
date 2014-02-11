@@ -1,0 +1,222 @@
+                   1     ;##############################################################################;
+                   2     ; Description of code
+                   3     ;##############################################################################;
+                   4     ;
+                   5     device kcpsm1cpld
+                   6     ;
+                   7     ;
+                   8     ;##############################################################################;
+                   9     ; Start of code
+                  10     ;##############################################################################;
+                  11     ; Register name assignment
+  00000           12     temp1               EQU       s0                  ; temporary EQU register
+  00001           13     temp2               EQU       s1                  ; temporary EQU register
+  00002           14     temp3               EQU       s2                  ; temporary EQU register
+  00003           15     chreg               EQU       s3                  ; character register
+  00004           16     RxDat               EQU       s4                  ; received character register
+  00005           17     addr                EQU       s5                  ; address register
+                  18
+                  19     ; Peripherals
+  00001           20     UART_EQU           EQU        01h                 ; UART EQU register port ID
+  00002           21     UART_stat           EQU        02h                 ; UART control register port ID
+                  22     ; UART Status register:
+                  23     ;  [2] Tx ready
+                  24     ;  [3] new Rx EQU
+                  25     ;  [4] Rx buffer overflow
+                  26
+  00004           27     BCD_01              EQU        04h                 ; 7 segment, upper two segments
+  00008           28     BCD_23              EQU        08h                 ; 7 segment, lower two segments
+  00010           29     LED                 EQU        10h                 ; LEDs
+  00020           30     Switch              EQU        20h                 ; Switches
+  00040           31     Button              EQU        40h                 ; Buttons (3:0)
+                  32
+                  33     ;##############################################################################;
+                  34
+                  35     ;##############################################################################;
+                  36     ; Initialization
+                  37     ;##############################################################################;
+                  38
+                  39     ; initial wait
+000 0D82C         40     Start:              CALL      wait_1s             ; wait for peripheral startup
+001 00000         41     	                LOAD      Temp1,#00           ; LEDs OFF at startup
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+002 08810         42     	                OUT       Temp1,LED           ; write valu to LED register
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+                  43
+                  44     ; end of initialization
+                  45
+                  46     ;##############################################################################;
+                  47     ;  Main loop
+                  48     ;##############################################################################;
+003 0D80E         49     main_loop:          CALL      GetChar             ; get (wait for) new character
+004 00314         50                         load      chreg,#20           ; Space character received?
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+005 0D503         51                         JUMP      NZ,main_loop        ; If not space, get another character
+006 08320         52                         IN        chreg,Switch        ; If yes, read content of switches
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+007 0D809         53                         CALL      SendChar            ; And send it via UART
+008 0D003         54                         JUMP      main_loop
+                  55
+                  56     ;##############################################################################;
+                  57     ;  General purpose procedures
+                  58     ;##############################################################################;
+                  59
+                  60     ; Basic UART text output procedures (CALLs)
+                  61
+                  62     ;==============================================================================;
+                  63     ; Send character loadd in chreg via UART
+                  64     ; Registers used: Temp1, chreg
+                  65     ;==============================================================================;
+009 08002         66     SendChar:           IN        Temp1, UART_stat    ; checking UART status
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+00A 04080         67                         load      Temp1, 4            ; load bit 2 (is Tx ready?)
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+00B 0D409         68                         JUMP      Z, SendChar         ; wait until Tx is ready
+00C 08B01         69                         OUT       chreg, UART_EQU    ; Send the character
+W: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+00D 09000         70                         RET                           ; Return from procedure
+                  71
+                  72     ;==============================================================================;
+                  73     ; Reads a single character from UART (waits on receive when none is prepared)
+                  74     ; Registers used: Temp1, chreg
+                  75     ;==============================================================================;
+00E 08002         76     GetChar:            IN        Temp1, UART_stat    ; checking UART status
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+00F 04000         77                         load      Temp1, 8            ; load bit 3 (new Rx EQU?)
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+010 0D40E         78                         JUMP      Z, GetChar          ; wait for new Rx EQU
+011 08301         79                         IN        chreg, UART_EQU    ; Read the character
+W: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+012 09000         80                         RET                           ; Return from procedure
+                  81
+                  82     ;==============================================================================;
+                  83     ; Procedure for sending content of "chreg" register in hexadecimal ASCII format
+                  84     ;   (two characters, one for each nibble)
+                  85     ; Reister used: Temp1, Temp2, chreg
+                  86     ; Procedures used: SendChar
+                  87     ;==============================================================================;
+013 04160         88     SendByte:           LOAD      Temp2, chreg        ; make a backup of chreg
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+014 0A30E         89                         SR0       chreg               ; move upper nibble to lower nibble
+W: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+015 0A30E         90                         SR0       chreg
+W: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+016 0A30E         91                         SR0       chreg
+W: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+017 0A30E         92                         SR0       chreg
+W: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+018 04340         93                         load      chreg, 10           ; if not greater than 9, than it is a number
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+019 0D61C         94                         JUMP      C, SendBNum1        ; C is set when Temp < 10 (Temp-10)
+01A 02325         95                         ADD       chreg, #37          ; when letter, add #37; letter conversion
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+01B 0D01D         96                         JUMP      SendB1
+01C 0231E         97     SendBNum1:          ADD       chreg, #30          ; when number, add #30; number conversion
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+01D 0D809         98     SendB1:             CALL      SendChar            ; Send Character
+                  99
+01E 04320        100                         LOAD      chreg, Temp2        ; load the whole byte again
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+01F 00B0F        101                         AND       chreg, #0Fh          ; select second character
+W: instruction `AND sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+020 04340        102                         load      chreg, 10           ; if not greater than 9, than number
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+021 0D624        103                         JUMP      C, SendBNum2        ; C is set when Temp < 10 (Temp-10 under 0)
+022 02325        104                         ADD       chreg, #37          ; when letter, add #37; letter conversion
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+023 0D025        105                         JUMP      SendB2
+024 0231E        106     SendBNum2:          ADD       chreg, #30          ; when number, add #30; number conversion
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+025 0D809        107     SendB2:             CALL      SendChar            ; Send character
+026 09000        108                         RET
+                 109
+                 110     ;==============================================================================;
+                 111     ; Send 0D and 0A character pair via UART
+                 112     ; Registers used: Temp1, chreg
+                 113     ; Procedures used: SendChar
+                 114     ;==============================================================================;
+027 00300        115     SendCRLF:           LOAD      chreg, #0D          ; CR character
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+028 0D809        116                         CALL      SendChar            ; Send character
+029 0030A        117                         LOAD      chreg, #0Ah         ; Load LF character
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+02A 0D809        118                         CALL      SendChar            ; Send character
+02B 09000        119                         RET                           ; Return from procedure
+                 120
+                 121     ;==============================================================================;
+                 122     ; Procedures for waiting for specified time
+                 123     ; Duration is set in registers Temp1, Temp2 and Temp3
+                 124     ;
+                 125     ;   clock           instruction execution time
+                 126     ;   10.00 MHz              200.00 ns
+                 127     ;   19.44 MHz              102.88 ns
+                 128     ;   38.88 MHz               51.44 ns
+                 129     ;   50.00 MHz               40.00 ns
+                 130     ;  100.00 MHz               20.00 ns
+                 131     ;
+                 132     ; wait_time = (4 + (((2 * Temp1) + 2) * Temp2 + 2) * Temp3) * 2 * clk_period
+                 133     ;   1s  (10 MHz, Temp1 = 250, Temp2 = 249, Temp3 = 40)
+                 134     ;==============================================================================;
+02C 04040        135     wait_1s:            LOAD      Temp1, 250          ; Load Temp1 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xfa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+02D 04120        136                         LOAD      Temp2, 249          ; Load Temp2 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xf9, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+02E 04200        137                         LOAD      Temp3, 200          ; Load Temp3 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xc8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+02F 07020        138     wait_1s_i:          SUB       Temp1, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+030 0D52F        139                         JUMP      NZ, wait_1s_i
+031 07120        140                         SUB       Temp2, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+032 0D52F        141                         JUMP      NZ, wait_1s_i
+033 07220        142                         SUB       Temp3, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+034 0D52F        143                         JUMP      NZ, wait_1s_i
+035 09000        144                         RET
+                 145
+036 04040        146     wait_100ms:         LOAD      Temp1, 250          ; Load Temp1 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xfa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+037 04120        147                         LOAD      Temp2, 249          ; Load Temp2 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0xf9, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+038 04280        148                         LOAD      Temp3, 20           ; Load Temp3 register
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+W: value out of range: 0x14, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+039 07020        149     wait_100ms_i:       SUB       Temp1, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03A 0D539        150                         JUMP      NZ, wait_100ms_i
+03B 07120        151                         SUB       Temp2, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03C 0D539        152                         JUMP      NZ, wait_100ms_i
+03D 07220        153                         SUB       Temp3, 1
+W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+03E 0D539        154                         JUMP      NZ, wait_100ms_i
+03F 09000        155                         RET
+                 156
+                 157     ;##############################################################################;
+                 158

@@ -1,0 +1,55 @@
+                   1     ; MDS PicoBlaze IDE - Demonstration code
+                   2
+                   3     ; Macro instructions, conditional compilation, constants and scratch-pad ram handling.
+                   4     ; See manual for more info
+                   5     ; Press Start simulation and Animate to run the program
+                   6     device kcpsm1cpld
+                   7     ; Constant definitions
+                   8     ; --------------------
+  0000F            9     counter          SET     00Fh    ; Counter of Px shiloads
+  00064           10     x                SET     100     ; Some variable
+  00001           11     inc_dec          EQU     100 / X ; Flag: Increment/Decrement counter
+  00000           12     ram_pointer      SET     00h      ; Assign name to register 3
+                  13
+                  14     ; Macro instructions
+                  15     ; --------------------
+                  16     ;; Shiload the given registers
+                  17     shiload   MACRO    reg0, reg1
+                  18
+                  19
+                  20
+                  21
+                  22             ; Shiload
+                  23             LOAD     reg1, reg0
+                  24             LOAD     reg0, reg1
+                  25     ENDM
+                  26
+                  27     ; Program initialization
+                  28     ; --------------------
+  00000           29             ORG     0h                      ; Define code segment
+000 0D001         30             JUMP    start                   ; Jump to code initialization
+                  31
+                  32     ; Program start
+                  33     ; --------------------
+  00001           34     start:
+001 0000F         35             LOAD     s0, #00Fh              ; Load content to shiloaded registers
+002 0011E         36             LOAD     s1, #01Eh              ;
+003 0D004         37             JUMP    main                    ; Execute main program loop
+                  38
+                  39     ; Main loop
+                  40     ; --------------------
+  00004           41     main:   shiload   s0, s1
+004 04100         42 +1          LOAD     reg1, reg0
+005 04020         43 +1          LOAD     reg0, reg1
+006 0D004         44             JUMP    main
+                  45
+                  46     ; Program end
+                  47     ; --------------------
+                  48             END
+                  49
+                  50     /*Tento program nevytváří žádný viditelný výstup, spustíme jej tedy v krokovacím režimu (debug mode)
+                  51     klávesou F10. Klávesou Alt+5 zobrazíme okno "Registers", ukazující obsahy registrů.
+                  52     Opakovaným stlačením klávesy F10 projděte program krok po kroku a sledujte, jak se obsahy registrů mění.
+                  53       */
+                  54     ; <-- Bookmark   (ctrl + shiload + M)
+                  55     ; <-- Breakpoint (ctrl + shiload + B)
