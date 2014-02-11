@@ -14,7 +14,7 @@ START:
 LOAD s1, #8Eh                    ;8E - 43 = 4B
 SUB s1, #43h                      ;
 LOAD s1, #8Eh                     ;8E - 8E = 00
-SUB s1, sA
+SUB s1, s1
 LOAD s1, #8Eh
 SUB s1, #B5h
                                 ;; step
