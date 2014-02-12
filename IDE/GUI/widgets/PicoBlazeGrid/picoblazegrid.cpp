@@ -72,7 +72,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
     this->memPorts->move(520,19);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
-    this->memStack->move(760, 20);
+    this->memStack->move(960, 20);
     this->memStack->setMaximumWidth(100);
     this->memStack->setMaximumHeight(225);
     this->memRegs->show();
@@ -84,8 +84,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblRegs->move(40,0);
     this->lblScratch = new QLabel("Scratch", this);
     this->lblScratch->move(345,0);
-    this->lblPorts = new QLabel("Ports", this);
-    this->lblPorts->move(560,0);
+    this->lblPortsIn = new QLabel("Input Ports", this);
+    this->lblPortsIn->move(560,0);
+    this->lblPortsOut = new QLabel("Output Ports", this);
+    this->lblPortsOut->move(770,0);
     this->lblRD = new QLabel("RD", this);
     this->lblRD->move(680, 0);
     //this->lblRD->setMaximumWidth(25);
@@ -97,65 +99,65 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->lblWR->setFrameRect(QRect(0,0,0,0));
     //this->lblWR->setFrameShape(QFrame::NoFrame);
     this->lblStack = new QLabel("Stack", this);
-    this->lblStack->move(760,0);
+    this->lblStack->move(960,0);
     this->lblPC = new QLabel("PC", this);
-    this->lblPC->move(880,0);
+    this->lblPC->move(1080,0);
     this->lblTime = new QLabel("Time", this);
-    this->lblTime->move(880,20);
+    this->lblTime->move(1080,20);
     this->lblClock = new QLabel("Clock", this);
-    this->lblClock->move(880,40);
+    this->lblClock->move(1080,40);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setMaximumWidth(50);
     this->leSP->setMaximumHeight(17);
     this->leSP->setFont(QFont("Andale Mono", 9));
     this->leSP->setReadOnly(true);
-    this->leSP->move(810, 0);
+    this->leSP->move(1010, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
     this->lePC->setFont(QFont("Andale Mono", 9));
     this->lePC->setReadOnly(true);
-    this->lePC->move(920, 0);
+    this->lePC->move(1120, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
     this->leTime->setFont(QFont("Andale Mono", 9));
     this->leTime->setReadOnly(true);
-    this->leTime->move(920, 20);
+    this->leTime->move(1120, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
     this->leClock->setFont(QFont("Andale Mono", 9));
     this->leClock->setReadOnly(true);
-    this->leClock->move(920, 40);
+    this->leClock->move(1120, 40);
 
     this->btnIntr = new QPushButton("Interrupt", this);
     this->btnIntr->setMaximumHeight(17);
     this->btnIntr->setMaximumWidth(80);
-    this->btnIntr->move(880, 80);
-    this->btnPorts = new QPushButton("Output", this);
-    this->btnPorts->setMaximumHeight(17);
-    this->btnPorts->setMaximumWidth(50);
-    this->btnPorts->move(615, 0);
+    this->btnIntr->move(1080, 80);
+    //this->btnPorts = new QPushButton("Output", this);
+    //this->btnPorts->setMaximumHeight(17);
+    //this->btnPorts->setMaximumWidth(50);
+    //this->btnPorts->move(615, 0);
     this->btnCarry = new QPushButton("Carry", this);
-    this->btnCarry->move(880,60);
+    this->btnCarry->move(1080,60);
     this->btnCarry->setMaximumHeight(17);
     this->btnCarry->setMaximumWidth(40);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(920,60);
+    this->btnZero->move(1120,60);
     this->btnZero->setMaximumHeight(17);
     this->btnZero->setMaximumWidth(40);
     this->btnInte = new QPushButton("Int enable", this);
     this->btnInte->setMaximumHeight(17);
     this->btnInte->setMaximumWidth(80);
-    this->btnInte->move(880, 100);
+    this->btnInte->move(1080, 100);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
     //QFont btnFont = QFont("Andale Mono", 9);
     this->btnIntr->setFont(btnFont);
-    this->btnPorts->setFont(btnFont);
+    //this->btnPorts->setFont(btnFont);
     this->btnCarry->setFont(btnFont);
     this->btnZero->setFont(btnFont);
     this->btnInte->setFont(btnFont);
@@ -163,7 +165,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->leClock->setText(
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
     //);
-    connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
+    //connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
     connect(this->btnInte, SIGNAL(clicked()), this, SLOT(setIntE()));
     connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
     connect(controlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
@@ -260,19 +262,19 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
             {
                 this->lblWR->setStyleSheet("color: #00ff00");
-                if (this->btnPorts->text() == "Output")
+                /*if (this->btnPorts->text() == "Output")
                 {
                     this->btnPorts->setStyleSheet("background-color: yellow");
-                }
+                }*/
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ:
             {
                 this->lblRD->setStyleSheet("color: #00ff00");
-                if (this->btnPorts->text() == "Input")
+                /*if (this->btnPorts->text() == "Input")
                 {
                     this->btnPorts->setStyleSheet("color: background-color: yellow");
-                }
+                }*/
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
@@ -430,7 +432,7 @@ void PicoBlazeGrid::unhighlight()
     this->leTime->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
-    this->btnPorts->setStyleSheet("color: none");
+    //this->btnPorts->setStyleSheet("color: none");
     if (m_flags->getInte() == true)
     {
         this->btnInte->setStyleSheet("color: #00ff00");

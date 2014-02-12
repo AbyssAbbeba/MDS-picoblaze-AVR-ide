@@ -154,7 +154,9 @@ void PortHexEdit::deviceChanged()
     //m_hexEditIn->horizontalScrollBar()->hide();
     //m_hexEditIn->horizontalScrollBar()->resize(0, 0);
     m_hexEditOut = new HexEdit(this, false, m_size, 8);
-    m_hexEditOut->hide();
+    m_hexEditOut->move(m_hexEditIn->width(), 0);
+    m_hexEditOut->show();
+    //m_hexEditOut->hide();
     //m_hexEditOut->verticalScrollBar()->hide();
     //m_hexEditOut->getTextEdit()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //m_hexEditOut->verticalScrollBar()->hide();
