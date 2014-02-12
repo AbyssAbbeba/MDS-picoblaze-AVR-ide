@@ -14,13 +14,11 @@
 
 #include <QtGui>
 #include "projecttree.h"
-//#include "../project/project.h"
-//#include "../dialogs/projectcfgdlg_core.h"
+#include "../../errordialog/errordlg.h"
 
 ProjectTree::ProjectTree(QWidget *parent, bool project)
     : QTreeWidget(parent)
 {
-    //this->parentProject = parentProject;
     this->parent = parent;
     mainFileName = "";
     mainFilePath = "";
@@ -37,6 +35,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
         projectPopup->addAction(newFileAct);
         projectPopup->addAction(addFileAct);
         projectPopup->addAction(projectConfigAct);
+        connect(newFileAct, SIGNAL(triggered()), this, SLOT(newFile()));
         connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
         connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
     }
@@ -46,6 +45,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
         addFileAct = new QAction("Add File", projectPopup);
         projectPopup->addAction(newFileAct);
         projectPopup->addAction(addFileAct);
+        connect(newFileAct, SIGNAL(triggered()), this, SLOT(newFile()));
         connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
     }
     //QAction *projectHWCanvasAct = new QAction("Hardware Canvas", projectPopup);
@@ -77,11 +77,11 @@ ProjectTree::~ProjectTree()
 
 void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
 {
-    qDebug() << "ProjectTree: contextMenuEvent()";
+   // qDebug() << "ProjectTree: contextMenuEvent()";
     if (this->itemAt(event->pos()) != NULL)
     {
         lastEvent = event;
-        qDebug() << "ProjectTree: emit requestFileCount()";
+        //qDebug() << "ProjectTree: emit requestFileCount()";
         emit requestFileCount();
         /*if (parentProject->fileCount == 0 || this->itemAt(event->pos())->childCount() > 0)
         {
@@ -95,14 +95,14 @@ void ProjectTree::contextMenuEvent(QContextMenuEvent *event)
             filePopup->popup(event->globalPos());
         }*/
     }
-    qDebug() << "ProjectTree: return contextMenuEvent()";
+    //qDebug() << "ProjectTree: return contextMenuEvent()";
 }
 
 
 //mozno dat do jedne funkce, signaly jsou sekvencne
 void ProjectTree::contextP2(int fileCount)
 {
-    qDebug() << "ProjectTree: contextP2()";
+    //qDebug() << "ProjectTree: contextP2()";
     if ( fileCount == 0 || this->itemAt(lastEvent->pos())->childCount() > 0
       || this->itemAt(lastEvent->pos())->toolTip(0) == NULL
        )
@@ -116,7 +116,7 @@ void ProjectTree::contextP2(int fileCount)
         lastItem = this->itemAt(lastEvent->pos());
         filePopup->popup(lastEvent->globalPos());
     }
-    qDebug() << "ProjectTree: return contextP2()";
+    //qDebug() << "ProjectTree: return contextP2()";
 }
 
 
@@ -218,5 +218,27 @@ void ProjectTree::addFile()
         //treeProjFile->setText(0, path.section('/', -1));
         //treeProjFile->setData(0, Qt::ToolTipRole, path);
         //fileList->addItem(newItem);
+    }
+}
+
+
+void ProjectTree::newFile()
+{
+    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    if (path != NULL)
+    {
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            error(ERR_OPENFILE);
+        }
+        else
+        {
+            //QTextStream fout(&file);
+            //fout << wDockManager->getCentralTextEdit()->toPlainText();
+            file.close();
+            emit addFile(path, path.section('/', -1));
+        }
+            
     }
 }

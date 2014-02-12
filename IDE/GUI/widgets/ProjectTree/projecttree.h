@@ -49,6 +49,7 @@ class ProjectTree: public QTreeWidget
         QContextMenuEvent *lastEvent;
 
     private slots:
+        void newFile();
         void addFile();
         void setMainFile();
         void removeFile();
