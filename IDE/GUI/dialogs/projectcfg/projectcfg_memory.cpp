@@ -114,6 +114,7 @@ void ProjectCfg_Memory::setScratchpadMaximum(int maximum)
         ui.lblScratchpad->setEnabled(true);
         ui.sldScratchpad->setMaximum(maximum);
         ui.sldScratchpad->setValue(maximum);
+        qDebug() << "ProjectCfg_Memory: maximum" << maximum;
     }
     else
     {
@@ -161,7 +162,14 @@ void ProjectCfg_Memory::load()
     ui.leIntVector->setText(QString::number(project->intVector, 16));
     if (project->hwBuild > -1)
     {
+        ui.lblHWBuild->setEnabled(true);
+        ui.leHWBuild->setEnabled(true);
         ui.leHWBuild->setText(QString::number(project->hwBuild, 16));
+    }
+    else
+    {
+        ui.lblHWBuild->setDisabled(true);
+        ui.leHWBuild->setDisabled(true);
     }
     ui.sldProgMem->setValue(project->progMemSize);
     ui.sldScratchpad->setValue(project->scratchpadSize);

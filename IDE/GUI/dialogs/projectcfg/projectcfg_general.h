@@ -37,6 +37,9 @@ class ProjectCfg_General : public QWidget
     public:
         ProjectCfg_General(QWidget *parentWidget, Project *currProject);
         void save();
+        int getScratchpadMaximum();
+        int getProgMemMaximum();
+        //bool getHWBuildEnabled();
 
     signals:
         void setScratchpadMaximum(int value);

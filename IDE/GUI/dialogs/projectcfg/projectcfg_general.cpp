@@ -118,3 +118,21 @@ void ProjectCfg_General::save()
     this->project->setName(ui.leName->text());
     this->project->setFamily(ui.cmbFamily->currentText());
 }
+
+
+int ProjectCfg_General::getScratchpadMaximum()
+{
+    return log2(notes.at(5*ui.cmbFamily->currentIndex()+2).toInt());
+}
+
+
+int ProjectCfg_General::getProgMemMaximum()
+{
+    return log2(notes.at(5*ui.cmbFamily->currentIndex()+4).toInt());
+}
+
+
+/*bool ProjectCfg_General::getHWBuildEnabled()
+{
+    return (ui.cmbFamily->currentText() == "kcpsm6");
+}*/
