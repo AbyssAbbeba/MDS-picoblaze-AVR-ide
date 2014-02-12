@@ -102,6 +102,7 @@ class MainForm : public QMainWindow
         void unhighlight();
         void projectConfig();
         void interfaceConfig();
+        void projectOpened();
 
     signals:
         void unhighlightSim();

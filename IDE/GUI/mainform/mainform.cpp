@@ -38,18 +38,55 @@ MainForm::MainForm()
 {
     //qDebug() << "MainForm: MainForm()";
     projectMan = new ProjectMan(this);
-    connect(projectMan, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
-    connect(projectMan, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
-    connect(projectMan, SIGNAL(connectProject(Project*)), this, SLOT(connectProjectSlot(Project*)));
+    connect(projectMan,
+            SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
+            this,
+            SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*))
+           );
+    connect(projectMan,
+            SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)),
+            this,
+            SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*))
+           );
+    connect(projectMan,
+            SIGNAL(connectProject(Project*)),
+            this,
+            SLOT(connectProjectSlot(Project*))
+           );
+    connect(projectMan,
+            SIGNAL(projectOpened()),
+            this,
+            SLOT(projectOpened())
+           );
     QWidget *centralWidget = new QWidget(this);
     wDockManager = new WDockManager(this, centralWidget);
     this->setCentralWidget(centralWidget);
     //connect(this, SIGNAL(dockWidgetsCreated()), wDockManager, SLOT(dockWidgetsCreated()));
-    connect(wDockManager, SIGNAL(createDockWidgets()), this, SLOT(createDockWidgets()));
-    connect(wDockManager, SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)), this, SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*)));
-    connect(wDockManager, SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)), this, SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*)));
-    connect(wDockManager, SIGNAL(getSimProjectData()), this, SLOT(simProjectData()));
-    connect(this, SIGNAL(unhighlightSim()), wDockManager, SLOT(unhighlightSimWidget()));
+    connect(wDockManager,
+            SIGNAL(createDockWidgets()),
+            this,
+            SLOT(createDockWidgets())
+           );
+    connect(wDockManager,
+            SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)),
+            this,
+            SLOT(tabifyDockWidgetSlot(QDockWidget*, QDockWidget*))
+           );
+    connect(wDockManager,
+            SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
+            this,
+            SLOT(addDockWidgetSlot(Qt::DockWidgetArea, QDockWidget*))
+           );
+    connect(wDockManager,
+            SIGNAL(getSimProjectData()),
+            this,
+            SLOT(simProjectData())
+           );
+    connect(this,
+            SIGNAL(unhighlightSim()),
+            wDockManager,
+            SLOT(unhighlightSimWidget())
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -349,7 +386,6 @@ void MainForm::createDockWidgets()
     saveProjAct->setEnabled(true);
     projectCompileAct->setEnabled(true);
     simulationFlowAct->setEnabled(true);
-    projectConfigAct->setEnabled(true);
     saveAct->setEnabled(true);
     saveAsAct->setEnabled(true);
     saveAllAct->setEnabled(true);
@@ -670,7 +706,6 @@ void MainForm::openProject()
         else {
             //nacteni obsahu do widgetu
             projectMan->openProject(&file);            
-
             file.close();
         }
     }
@@ -697,6 +732,12 @@ void MainForm::openProject(QString path)
         file.close();
     }
     //qDebug() << "MainForm: return openProject()";
+}
+
+
+void MainForm::projectOpened()
+{
+    projectConfigAct->setEnabled(true);
 }
 
 
