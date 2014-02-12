@@ -66,6 +66,7 @@ void ProjectMan::openProject(QFile *file)
 
     projectCount++;
     emit connectProject(newProject);
+    emit projectOpened();
     //qDebug() << "ProjectMan: return openProject()";
 }
 
@@ -171,6 +172,7 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     openProjects.append(newProject);
     projectCount++;
     emit connectProject(newProject);
+    emit projectOpened();
     //qDebug() << "ProjectMan: return addProject()";
 }
 

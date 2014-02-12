@@ -72,6 +72,8 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
             this->memoryCfg,
             SLOT(setProgMemMaximum(int))
            );
+    this->memoryCfg->setScratchpadMaximum(this->generalCfg->getScratchpadMaximum());
+    this->memoryCfg->setProgMemMaximum(this->generalCfg->getProgMemMaximum());
     qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
