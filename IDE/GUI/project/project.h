@@ -74,6 +74,7 @@ class ProjectMan : public QObject
         void connectProject(Project *project);
         void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
+        void projectOpened();
 
     private:
         int projectCount;
