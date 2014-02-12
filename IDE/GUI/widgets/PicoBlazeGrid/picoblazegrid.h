@@ -73,7 +73,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         QLabel *lblRegs;
         QLabel *lblScratch;
-        QLabel *lblPorts;
+        QLabel *lblPortsIn;
+        QLabel *lblPortsOut;
         QLabel *lblStack;
         QLabel *lblRD;
         QLabel *lblWR;

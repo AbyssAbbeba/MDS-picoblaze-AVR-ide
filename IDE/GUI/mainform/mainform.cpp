@@ -724,6 +724,7 @@ void MainForm::saveProject()
  */
 void MainForm::compileProject()
 {
+    
     if (projectMan->getActive() == NULL)
     {
         error(ERR_NO_PROJECT);

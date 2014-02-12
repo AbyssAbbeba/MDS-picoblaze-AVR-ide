@@ -1128,7 +1128,7 @@ void Project::setIntVector(int value)
             QDomNode xmlNode = xmlRoot.firstChild();
             QDomElement xmlElement;
             bool done = false;
-            while (!xmlNode.isNull() && done == false)
+            while (xmlNode.isNull() == false && done == false)
             {
                 xmlElement = xmlNode.toElement();
                 if (!xmlElement.isNull())
@@ -1137,7 +1137,7 @@ void Project::setIntVector(int value)
                     {
                         QDomNode xmlGeneralNode = xmlElement.firstChild();
                         QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
+                        while (xmlGeneralNode.isNull() == false && done == false)
                         {
                             xmlGeneralElement = xmlGeneralNode.toElement();
                             if (!xmlGeneralElement.isNull())
@@ -1148,6 +1148,7 @@ void Project::setIntVector(int value)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1210,6 +1211,7 @@ void Project::setHWBuild(int value)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1272,6 +1274,7 @@ void Project::setScratchpad(int value)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1334,6 +1337,7 @@ void Project::setProgMem(int value)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1396,6 +1400,7 @@ void Project::setName(QString name)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1458,6 +1463,7 @@ void Project::setFamily(QString family)
                                     done = true;
                                 }
                             }
+                            xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
                     }
                 }
@@ -1515,15 +1521,15 @@ void Project::removeFile(QString path, QString name)
                         while (!xmlFilesNode.isNull())
                         {
                             xmlFilesElement = xmlFilesNode.toElement();
-                             if (xmlFilesElement.tagName() == "File"
+                            if (xmlFilesElement.tagName() == "File"
                                 && xmlFilesElement.attribute("name") == name
                                 && xmlFilesElement.attribute("path") == relativePath)
-                             {
-                                 xmlFilesNode.parentNode().removeChild(xmlFilesNode);
-                                 done = true;
-                                 break;
-                             }
-                             xmlFilesNode = xmlFilesNode.nextSibling();
+                            {
+                                xmlFilesNode.parentNode().removeChild(xmlFilesNode);
+                                done = true;
+                                break;
+                            }
+                            xmlFilesNode = xmlFilesNode.nextSibling();
                         }
                     }
                 }
