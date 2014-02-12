@@ -92,7 +92,8 @@ MAIN:
 		ENDW
 
 
-		COMPARE     s0,#20
+
+		jump	NC,main
 		jump	main
 
 podp:   
