@@ -93,7 +93,8 @@ MAIN:
 
 
 
-		jump	NC,main
+
+		call	Z,podp
 		jump	main
 
 podp:   
