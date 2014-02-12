@@ -92,7 +92,9 @@ MAIN:
 		ENDW
 
 
-		COMPARE     s0,#20
+
+
+		call	Z,podp
 		jump	main
 
 podp:   
