@@ -1314,7 +1314,7 @@ void PicoBlazeInstructionSet6::inst_CALL_Z_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if ZERO.
-    if ( false == m_statusFlags -> getZero() )
+    if ( true == m_statusFlags -> getZero() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1331,7 +1331,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NZ_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if NOT ZERO.
-    if ( true == m_statusFlags -> getZero() )
+    if ( false == m_statusFlags -> getZero() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1348,7 +1348,7 @@ void PicoBlazeInstructionSet6::inst_CALL_C_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if CARRY.
-    if ( false == m_statusFlags -> getCarry() )
+    if ( true == m_statusFlags -> getCarry() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
@@ -1365,7 +1365,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NC_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Call, if NOT CARRY.
-    if ( true == m_statusFlags -> getCarry() )
+    if ( false == m_statusFlags -> getCarry() )
     {
         logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
