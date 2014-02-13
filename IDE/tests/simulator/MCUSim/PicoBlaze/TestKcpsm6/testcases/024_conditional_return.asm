@@ -15,12 +15,13 @@ aaa:
             sub         s1,#1
             load        s3,#25
             call        _1
+                        ;; 
                         ;; step
                         ;; pc == 2
                         ;; step 4
                         ;; flag[z] == true
-                        ;; step                 # call z
-                        ;; pc == 8
+                        ;; step 2               # call z
+                        ;; pc == 7
 
             load        s2,#255
 zero_test:
@@ -29,9 +30,9 @@ zero_test:
             call        _2
                         ;; step                 # sub
                         ;; step                 # call nz
-                        ;; step                 #
+                        ;; step 2               #
                         ;; flag[z] == false
-                        ;; pc == 12
+                        ;; pc == 11
 
             load        s2,#255
 nzero_test:
