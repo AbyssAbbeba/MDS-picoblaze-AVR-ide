@@ -57,12 +57,13 @@ c_test:
             call        _4
 
                         ;; step                 #
-                        ;; pc == 17
+                        ;; pc == 16
                         ;; step                 # call
-                        ;; pc == 18
+                        ;; pc == 17
                         ;; step
                         ;; flag[c] == false
-                        ;; pc == 20
+                        ;; step 2
+                        ;; pc == 19
             load        s1,#1
 nc_test:
             load        s1,#1
