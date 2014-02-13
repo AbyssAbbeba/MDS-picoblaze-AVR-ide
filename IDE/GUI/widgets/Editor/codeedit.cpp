@@ -645,3 +645,9 @@ void CodeEdit::changeFont(QFont font)
 {
     this->textEdit->setFont(font);
 }
+
+
+Project* CodeEdit::getParentProject()
+{
+    return this->parentProject;
+}

@@ -18,9 +18,7 @@ start:
 		enable interrupt
 		load	s8,#0b10000000
 		load	S9,#0b00111011
-		test	0x9,#0x8
 
-           TEST    0x9, #0x8
           JUMP    Z, IF_5
                       add     s3,#1
                                 ; else
@@ -36,14 +34,9 @@ start:
         load    s2,#9
         load    s0,#10
 
-        while	s1 != #10
-			add		s1,#1
-		endw
-
 		jump	start
 
 ISR:	
-		store   s1, 0
 		returni enable
 
 
