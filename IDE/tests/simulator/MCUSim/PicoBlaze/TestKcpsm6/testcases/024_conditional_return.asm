@@ -1,5 +1,5 @@
 ; TEST CASE
-; testing conditional jump and ret
+; testing conditional et
 device kcpsm6
 org     0
 
@@ -14,21 +14,21 @@ aaa:
 
             sub         s1,#1
             load        s3,#25
-            jump        Z,zero_test
+            call        _1
                         ;; step
                         ;; pc == 2
                         ;; step 4
                         ;; flag[z] == true
-                        ;; step                 # jump z
+                        ;; step                 # call z
                         ;; pc == 8
 
             load        s2,#255
 zero_test:
             load        s1,#1
             sub         s2,#12
-            jump        NZ,nzero_test
+            call        _2
                         ;; step                 # sub
-                        ;; step                 # jump nz
+                        ;; step                 # call nz
                         ;; step                 #
                         ;; flag[z] == false
                         ;; pc == 12
@@ -37,26 +37,26 @@ zero_test:
 nzero_test:
             load        s2,#255
             add         s2,#10
-            jump        C,c_test
+            call        _3
 
                         ;; step                 # add
                         ;; pc == 13
-                        ;; step                 # jump c
+                        ;; step                 # call c
                         ;; pc == 14
                         ;; flag[c] == true
                         ;; pc == 14
-                        ;; step                 # after jump load2
+                        ;; step                 # after call load2
                         ;; pc == 16
 
             load        s2,#255
 c_test:
             load        s2,#255
             add         s1,#10
-            jump        NC,nc_test
+            call        _4
 
                         ;; step                 #
                         ;; pc == 17
-                        ;; step                 # jump
+                        ;; step                 # call
                         ;; pc == 18
                         ;; step
                         ;; flag[c] == false
@@ -67,5 +67,12 @@ nc_test:
 
 
 
-
+_1:
+            return      Z    
+_2:
+            return      NZ   
+_3:
+            return      C
+_4:
+            return      NC
            
