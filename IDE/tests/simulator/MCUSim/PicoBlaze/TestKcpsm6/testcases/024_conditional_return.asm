@@ -30,7 +30,7 @@ zero_test:
             call        _2
                         ;; step                 # sub
                         ;; step                 # call nz
-                        ;; step 2               #
+                        ;; step 3               #
                         ;; flag[z] == false
                         ;; pc == 11
 
@@ -41,13 +41,14 @@ nzero_test:
             call        _3
 
                         ;; step                 # add
-                        ;; pc == 13
+                        ;; pc == 12
                         ;; step                 # call c
-                        ;; pc == 14
+                        ;; pc == 13
                         ;; flag[c] == true
-                        ;; pc == 14
                         ;; step                 # after call load2
-                        ;; pc == 16
+                        ;; pc == 14
+                        ;; step 2                 # call c
+                        ;; pc == 15
 
             load        s2,#255
 c_test:
