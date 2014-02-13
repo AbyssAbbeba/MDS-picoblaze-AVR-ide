@@ -65,12 +65,20 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
         this->activeCodeEdit = editor;
-        if (breakpointList != NULL)
+        if (breakpointList != NULL && editor->getParentProject() != NULL)
         {
-            breakpointList->disconnect();
+            //breakpointList->disconnect();
             breakpointList->reload(editor->getBreakpointList());
-            connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
-            connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
+            connect(this->activeCodeEdit,
+                      SIGNAL(breakpointListAdd(int)),
+                      breakpointList,
+                      SLOT(breakpointListAddSlot(int))
+                     );
+            connect(this->activeCodeEdit,
+                    SIGNAL(breakpointListRemove(int)),
+                    breakpointList,
+                    SLOT(breakpointListRemoveSlot(int))
+                   );
         }
         if (bookmarkList != NULL)
         {
@@ -104,8 +112,16 @@ void WDockManager::changeCodeEditor(int index)
         {
             breakpointList->disconnect();
             breakpointList->reload(editor->getBreakpointList());
-            connect(this->activeCodeEdit, SIGNAL(breakpointListAdd(int)), breakpointList, SLOT(breakpointListAddSlot(int)));
-            connect(this->activeCodeEdit, SIGNAL(breakpointListRemove(int)), breakpointList, SLOT(breakpointListRemoveSlot(int)));
+            connect(this->activeCodeEdit,
+                    SIGNAL(breakpointListAdd(int)),
+                    breakpointList,
+                    SLOT(breakpointListAddSlot(int))
+                   );
+            connect(this->activeCodeEdit,
+                    SIGNAL(breakpointListRemove(int)),
+                    breakpointList,
+                    SLOT(breakpointListRemoveSlot(int))
+                   );
         }
         if (bookmarkList != NULL)
         {
@@ -305,7 +321,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         newEditor->connectAct();
         activeCodeEdit->connectAct();
         connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
-        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        //connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         if (wPath == "untracked")
         {
             newEditor->setChanged();

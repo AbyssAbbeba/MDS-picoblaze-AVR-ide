@@ -57,6 +57,7 @@ class CodeEdit : public QWidget
         CodeEdit* getParentCodeEdit();
         void setParentCodeEdit(CodeEdit *parentCodeEdit);
         void changeHeight();
+        Project *getParentProject();
 
     public slots:
         void setChanged();
