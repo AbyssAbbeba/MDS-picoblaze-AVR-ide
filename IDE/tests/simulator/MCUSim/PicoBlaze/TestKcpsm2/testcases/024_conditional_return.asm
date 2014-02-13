@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional et
-device kcpsm6
+device kcpsm2
 org     0
 
 start:

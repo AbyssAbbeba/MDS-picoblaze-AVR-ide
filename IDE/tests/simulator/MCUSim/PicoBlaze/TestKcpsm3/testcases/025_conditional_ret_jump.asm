@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional jump and ret
-device kcpsm6
+device kcpsm3
 org     0
 
 start:
