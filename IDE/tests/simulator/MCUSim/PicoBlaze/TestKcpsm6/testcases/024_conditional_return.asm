@@ -44,8 +44,8 @@ nzero_test:
                         ;; pc == 12
                         ;; step                 # call c
                         ;; pc == 13
-                        ;; flag[c] == true
                         ;; step                 # after call load2
+                        ;; flag[c] == true
                         ;; pc == 14
                         ;; step 2                 # call c
                         ;; pc == 15
