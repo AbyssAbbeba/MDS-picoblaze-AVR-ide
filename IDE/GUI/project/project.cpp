@@ -1619,16 +1619,20 @@ bool Project::start()
             qDebug() << "Project: m_simControlUnit->start() returned true";
         }
     }
-    emit setEditorReadOnly(true);
-    //qDebug() << "Project: getLineNumber";
+    qDebug() << "Project: getLineNumber";
     m_simControlUnit->getLineNumber(currLine);
+    qDebug() << "Project: getLineNumber check";
     if (currLine.empty() == true)
     {
         return false;
     }
+    qDebug() << "Project: setEditorReadOnly";
+    emit setEditorReadOnly(true);
+    qDebug() << "Project: currFile";
     this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+    qDebug() << "Project: highlightLine";
     emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, this->currLineColor);
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
@@ -1639,7 +1643,7 @@ bool Project::start()
     this->prevFile = this->currFile;
     this->prevFile2 = this->currFile;
     this->prevFile3 = this->currFile;
-    //qDebug() << "Project: return start()";
+    qDebug() << "Project: return start()";
     return true;
 }
 

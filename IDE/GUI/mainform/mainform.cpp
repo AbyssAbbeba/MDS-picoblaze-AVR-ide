@@ -367,7 +367,7 @@ void MainForm::createDockWidgets()
     //qDebug() << "MainForm: CreateDockWidgets()";
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
-    setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
+    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
     //mozno stejne jako u WDockManager - ulozit si ptr na okno
     //projectMan->addProject(NULL, NULL, NULL);
@@ -378,7 +378,7 @@ void MainForm::createDockWidgets()
     wDockManager->addDockWidget(wSimulationInfo);
     wDockManager->addDockWidget(wBottomHide);
     //wDockManager->addDockWidget(wBookmarkList);
-    //wDockManager->addDockWidget(wBreakpointList);
+    wDockManager->addDockWidget(wBreakpointList);
     //wDockManager->addDockWidget(wAnalysVar);
     //wDockManager->addDockWidget(wAnalysFunc);
     addAct->setEnabled(true);
