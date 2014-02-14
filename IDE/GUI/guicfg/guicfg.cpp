@@ -393,7 +393,13 @@ void GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
     QFile cfgFile("./resources/xml/config.xml");
-    cfgFile.open(QIODevice::ReadOnly);
+    if (!cfgFile.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "GuiCfg: config file not found";
+        this->setDefaultAll();
+        this->saveConfig();
+        return;
+    }
     if (!domDoc.setContent(&cfgFile))
     {
         error(ERR_XML_ASSIGN);
