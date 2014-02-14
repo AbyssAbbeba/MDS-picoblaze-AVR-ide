@@ -90,7 +90,7 @@ MainForm::MainForm()
     //this->dockWidgets = false;
     createActions();
     createMenu();
-    createShortcuts();
+    //createShortcuts();
     createToolbar();
     //CreateDockWidgets();
     //CreateWelcome();
@@ -107,8 +107,9 @@ void MainForm::createMenu()
     //qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
+    fileMenu->addAction(newAddAct);
     fileMenu->addAction(openAct);
-    fileMenu->addAction(addAct);
+    //fileMenu->addAction(addAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(saveAllAct);
@@ -160,17 +161,19 @@ void MainForm::createActions()
     newAct = new QAction(tr("New File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+    newAct->setShortcut(QKeySequence("Ctrl+N"));
 
     openAct = new QAction(tr("Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
+    openAct->setShortcut(QKeySequence("Ctrl+O"));
 
 
 
-    QPixmap *pm_projAdd = new QPixmap(":/resources//icons//projAdd.png");
+    /*QPixmap *pm_projAdd = new QPixmap(":/resources//icons//projAdd.png");
     QIcon *icon_projAdd = new QIcon(*pm_projAdd);
     addAct = new QAction(*icon_projAdd, tr("Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
-    addAct->setDisabled(true);
+    addAct->setDisabled(true);*/
 
 
     QPixmap *pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
@@ -189,6 +192,7 @@ void MainForm::createActions()
     saveAct = new QAction(tr("Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
     saveAct->setDisabled(true);
+    saveAct->setShortcut(QKeySequence("Ctrl+S"));
 
     saveAsAct = new QAction(tr("Save As"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
@@ -234,6 +238,7 @@ void MainForm::createActions()
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
     projectCompileAct->setDisabled(true);
+    projectCompileAct->setShortcut(Qt::Key_F5);
 
     projectConfigAct = new QAction(tr("Config"), this);
     connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(projectConfig()));
@@ -249,30 +254,35 @@ void MainForm::createActions()
     simulationRunStatus = false;
     simulationAnimateStatus = false;
     simulationFlowAct->setDisabled(true);
+    simulationFlowAct->setShortcut(Qt::Key_F6);
 
     QPixmap *pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
     QIcon *icon_simRun = new QIcon(*pm_simRun);
     simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
     simulationRunAct->setDisabled(true);
+    simulationRunAct->setShortcut(Qt::Key_F7);
 
     QPixmap *pm_simAnimate = new QPixmap(":/resources//icons//simulationAnimate.png");
     QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
     simulationAnimateAct = new QAction(*icon_simAnimate, tr("Animate"), this);
     connect(simulationAnimateAct, SIGNAL(triggered()), this, SLOT(simulationAnimateHandle()));
     simulationAnimateAct->setDisabled(true);
+    simulationAnimateAct->setShortcut(Qt::Key_F8);
 
     QPixmap *pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
     QIcon *icon_simStep = new QIcon(*pm_simStep);
     simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
     simulationStepAct->setDisabled(true);
+    simulationStepAct->setShortcut(Qt::Key_F9);
 
     QPixmap *pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
     QIcon *icon_simReset = new QIcon(*pm_simReset);
     simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
+    simulationResetAct->setShortcut(Qt::Key_F10);
 
     QPixmap *pm_simUnhighlight = new QPixmap(":/resources//icons//unhighlight.png");
     QIcon *icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
@@ -306,8 +316,26 @@ void MainForm::createActions()
 
 void MainForm::createShortcuts()
 {
-    QShortcut *srtSave = new QShortcut(QKeySequence("Ctrl+S"), this);
-    connect(srtSave, SIGNAL(activated()), this, SLOT(saveFile()));
+    //QShortcut *srtSave = new QShortcut(QKeySequence("Ctrl+S"), this);
+    //connect(srtSave, SIGNAL(activated()), this, SLOT(saveFile()));
+    
+    /*QShortcut *srtCompile = new QShortcut(QKeySequence("F5"), this);
+    connect(srtCompile, SIGNAL(activated()), this, SLOT(compileProject()));
+
+    QShortcut *srtSimFlow = new QShortcut(QKeySequence("F6"), this);
+    connect(srtSimFlow, SIGNAL(activated()), this, SLOT(simulationFlowHandle()));
+
+    QShortcut *srtSimRun = new QShortcut(QKeySequence("F7"), this);
+    connect(srtSimRun, SIGNAL(activated()), this, SLOT(simulationRunHandle()));
+
+    QShortcut *srtSimAnimate = new QShortcut(QKeySequence("F8"), this);
+    connect(srtSimAnimate, SIGNAL(activated()), this, SLOT(simulationAnimateHandle()));
+
+    QShortcut *srtSimStep = new QShortcut(QKeySequence("F9"), this);
+    connect(srtSimStep, SIGNAL(activated()), this, SLOT(simulationStep()));
+
+    QShortcut *srtSimReset = new QShortcut(QKeySequence("F10"), this);
+    connect(srtSimReset, SIGNAL(activated()), this, SLOT(simulationReset()));*/
 }
 
 
@@ -328,7 +356,7 @@ void MainForm::createToolbar()
     projectToolBar->addAction(saveProjAct);
     projectToolBar->addAction(newAddAct);
     //projectToolBar->addAction(removeFileAct);
-    projectToolBar->addAction(addAct);
+    //projectToolBar->addAction(addAct);
 
     //fileToolBar->addAction(saveAct);
 
@@ -381,7 +409,7 @@ void MainForm::createDockWidgets()
     wDockManager->addDockWidget(wBreakpointList);
     //wDockManager->addDockWidget(wAnalysVar);
     //wDockManager->addDockWidget(wAnalysFunc);
-    addAct->setEnabled(true);
+    //addAct->setEnabled(true);
     newAddAct->setEnabled(true);
     saveProjAct->setEnabled(true);
     projectCompileAct->setEnabled(true);
