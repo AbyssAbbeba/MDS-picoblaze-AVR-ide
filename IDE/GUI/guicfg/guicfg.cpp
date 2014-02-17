@@ -123,7 +123,13 @@ void GuiCfg::setDefaultIDEShortcuts()
 
 void GuiCfg::setDefaultEditFont()
 {
-    this->editorFont.setFamily("Monospace");
+    #ifdef __linux__
+        this->editorFont.setFamily("Monospace");
+    #elif _WIN32
+        this->editorFont.setFamily("Courier");
+    #else
+        qDebug() << "GuiCfg: setDefaultEditFont: Platform not supported";
+    #endif
     this->editorFont.setPointSize(9);
 }
 
@@ -393,7 +399,13 @@ void GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
     QFile cfgFile("./resources/xml/config.xml");
-    cfgFile.open(QIODevice::ReadOnly);
+    if (!cfgFile.open(QIODevice::ReadOnly))
+    {
+        qDebug() << "GuiCfg: config file not found";
+        this->setDefaultAll();
+        this->saveConfig();
+        return;
+    }
     if (!domDoc.setContent(&cfgFile))
     {
         error(ERR_XML_ASSIGN);
