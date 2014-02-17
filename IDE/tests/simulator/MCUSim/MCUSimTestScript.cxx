@@ -24,7 +24,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <algorithm>
-
+#include<iostream>//debug
 MCUSimTestScript::MCUSimTestScript ( MCUSim * simulator,
                                      MCUSimTestScriptStrategy * strategy )
                                    : m_simulator ( simulator ),
@@ -420,6 +420,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
 {
     if ( CT_EMPTY != cmd.m_type )
     {
+std::cout << "m_anythingExecuted = true;\n";
         m_anythingExecuted = true;
     }
 
@@ -499,6 +500,7 @@ inline bool MCUSimTestScript::executeCommand ( const Command & cmd,
         case CT_EQ:
         case CT_NE:
         {
+std::cout << "m_anyAssertionMade = true;\n";
             m_anyAssertionMade = true;
 
             MCUSimSubsys * memSubsys = m_simulator->getSubsys ( MCUSimSubsys::SubsysId(cmd.m_args[0]) );
