@@ -18,6 +18,7 @@
 #include "../../../../../simulators/MCUSim/MCUSim.h"
 #include "../../../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlagsBase.h"
 #include "../../../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
+#include<iostream>//debug
 
 bool PicoBlazeStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool /*useAsmFile*/,
@@ -114,6 +115,7 @@ bool PicoBlazeStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
         case CTE_FLAG_EQ:
         case CTE_FLAG_NE:
         {
+std::cout << "*m_anyAssertionMade = true;\n";
             *m_anyAssertionMade = true;
 
             int flagValue;
