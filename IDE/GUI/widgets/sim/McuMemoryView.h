@@ -7,6 +7,7 @@
  * Copyright: See COPYING file that comes with this distribution.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2012
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>, (C) 2012
  * @ingroup SimWidgets
  * @file McuMemoryView.h
  */
@@ -30,30 +31,33 @@ class QHBoxLayout;
 
 class McuMemoryView : public QWidget, public MCUSimObserver  {
 	Q_OBJECT
-public:
-	McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys);
-	virtual ~McuMemoryView();
+    public:
+        McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys);
+        virtual ~McuMemoryView();
 
-	void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
-	void deviceChanged();
-	void deviceReset();
-	void setReadOnly(bool readOnly);
-    void fixHeight();
-    void unhighlight();
+        void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
+        void deviceChanged();
+        void deviceReset();
+        void setReadOnly(bool readOnly);
+        void fixHeight();
+        void unhighlight();
 
-public slots:
-	void changeValue(int address);
+    signals:
+        void stopSimSig();
 
-private:
-	int m_startingAddress;
-	int m_size;
-	HexEdit * m_hexEdit;
-	MCUSimMemory * m_memory;
-    MCUSimSubsys::SubsysId subsys;
+    public slots:
+        void changeValue(int address);
 
-	QHBoxLayout * m_layout;
+    private:
+        int m_startingAddress;
+        int m_size;
+        HexEdit * m_hexEdit;
+        MCUSimMemory * m_memory;
+        MCUSimSubsys::SubsysId subsys;
 
-	inline void deleteHexEdit();
+        QHBoxLayout * m_layout;
+
+        inline void deleteHexEdit();
 };
 
 #endif // MCUMEMORYVIEW_H

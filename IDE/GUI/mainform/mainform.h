@@ -47,6 +47,7 @@ class MainForm : public QMainWindow
     Q_OBJECT
     public:
         MainForm();
+        ~MainForm();
 
         void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
@@ -103,6 +104,7 @@ class MainForm : public QMainWindow
         void projectConfig();
         void interfaceConfig();
         void projectOpened();
+        void stopSimSlot();
 
     signals:
         void unhighlightSim();

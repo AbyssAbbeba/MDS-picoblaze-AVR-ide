@@ -191,11 +191,13 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
         case PicoBlazeStack::EVENT_STACK_OVERFLOW:
         {
             error(ErrorCode::ERR_STACK_OVERFLOW);
+            emit stopSimSig();
             break;
         }
         case PicoBlazeStack::EVENT_STACK_UNDERFLOW:
         {
             error(ErrorCode::ERR_STACK_UNDERFLOW);
+            emit stopSimSig();
             break;
         }
         default:

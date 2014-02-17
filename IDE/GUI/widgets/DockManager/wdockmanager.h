@@ -95,6 +95,13 @@ class WDockManager : public QObject
         void setEditorsReadOnly(bool readonly);
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
+
+    public slots:
+        void changeLine(QListWidgetItem *item);
+        void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
+        void unhighlightSimWidget();
+        void highlightError(QString filename, int line);
+        void handleShowHideBottom(int index);
         
 
     private slots:
@@ -104,13 +111,7 @@ class WDockManager : public QObject
         void changeActiveCodeEdit(CodeEdit* editor);
         void updateAnalysersSlot(CodeEdit *editor);
         void moveEditorsSlot(int from, int to);
-
-    public slots:
-        void changeLine(QListWidgetItem *item);
-        void addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget);
-        void unhighlightSimWidget();
-        void highlightError(QString filename, int line);
-        void handleShowHideBottom(int index);
+        void stopSimSlot();
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
         //void dockWidgetsCreated();
@@ -122,6 +123,7 @@ class WDockManager : public QObject
         void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
         void getSimProjectData();
         void unhighlightSim();
+        void stopSimSig();
 
     private:
         //MainForm *wMainWindow;
@@ -154,16 +156,23 @@ class WDockManager : public QObject
  * @ingroup GUI
  * @class WDock
  */
-class WDock
+class WDock : public QObject
 {
+    Q_OBJECT
     public:
         WDock(WDockManager *parent, int code, QWidget *parentWindow);
         WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
-        ~WDock();
+        //~WDock();
         bool cmpCode(int code);
         bool cmpArea(int area);
         int getArea();
         QDockWidget* getQDockWidget();
+
+    signals:
+        void stopSimSig();
+
+    private slots:
+        void stopSimSlot();
         
     private:
         QDockWidget *wDockWidget;
