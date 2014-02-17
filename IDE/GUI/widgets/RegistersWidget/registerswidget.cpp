@@ -26,7 +26,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setColumnWidth(7, 65);
     
     //QFont font = this->font();
-    this->setFont(QFont("Andale Mono", 9));
+    this->setFont(QFont("UbuntuMono", 10));
     //font.setPointSize(9);
     //this->setFont(font);
 
@@ -255,6 +255,7 @@ void RegistersWidget::updateValue(int row, int column)
         int value;
         if ( column == 2 || column == 6 )
         {
+            //HEX
             //qDebug() << "update 1" << column + 1;
             value = this->item(row, column)->text().toInt(0, 16);
             if ( 255 < value )
@@ -271,11 +272,11 @@ void RegistersWidget::updateValue(int row, int column)
             }
             else
             {
-                if (value > 100)
+                if (value >= 100)
                 {
                     this->item(row, column-1)->setText(QString::number(value, 10));
                 }
-                else if (value > 10)
+                else if (value >= 10)
                 {
                     this->item(row, column-1)->setText("0" + QString::number(value, 10));
                 }
@@ -303,6 +304,7 @@ void RegistersWidget::updateValue(int row, int column)
         else if (column == 1 || column == 5)
         {
             //qDebug() << "update 2" << column + 1;
+            //DEC
             value = this->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
@@ -318,11 +320,11 @@ void RegistersWidget::updateValue(int row, int column)
             }
             else
             {
-                if (value > 100)
+                if (value >= 100)
                 {
                     this->item(row, column)->setText(QString::number(value, 10));
                 }
-                else if (value > 10)
+                else if (value >= 10)
                 {
                     this->item(row, column)->setText("0" + QString::number(value, 10));
                 }
@@ -350,7 +352,7 @@ void RegistersWidget::updateValue(int row, int column)
         else
         {
             //qDebug() << "update 3" << column + 1;
-            value = this->item(row, column)->text().toInt(0, 10);
+            value = this->item(row, column)->text().toInt(0, 2);
             if ( 255 < value )
             {
                 this->item(row, column-2)->setText(QString::number(255, 10));
@@ -365,11 +367,11 @@ void RegistersWidget::updateValue(int row, int column)
             }
             else
             {
-                if (value > 100)
+                if (value >= 100)
                 {
                     this->item(row, column-2)->setText(QString::number(value, 10));
                 }
-                else if (value > 10)
+                else if (value >= 10)
                 {
                     this->item(row, column-2)->setText("0" + QString::number(value, 10));
                 }
