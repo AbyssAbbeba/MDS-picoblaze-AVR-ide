@@ -25,13 +25,22 @@ InterfaceCfg_EditFonts::InterfaceCfg_EditFonts(QWidget *parent)
         QListWidgetItem *item = new QListWidgetItem(QString::number(i), this->ui.listSize);
     }
 
-    this->ui.listFonts->setCurrentItem(this->ui.listFonts->findItems(GuiCfg::getInstance().getEditorFont().family(),
-                                                                     Qt::MatchExactly).at(0));
-    this->ui.listSize->setCurrentItem(this->ui.listSize->findItems(QString::number(GuiCfg::getInstance().getEditorFont().pointSize()),
-                                                                     Qt::MatchExactly).at(0));
+    if (ui.listFonts->findItems(GuiCfg::getInstance().getEditorFont().family(), Qt::MatchExactly).isEmpty() == false)
+    {
+        ui.listFonts->setCurrentItem(ui.listFonts->findItems(GuiCfg::getInstance().getEditorFont().family(),
+                                                             Qt::MatchExactly).at(0));
+        ui.listSize->setCurrentItem(ui.listSize->findItems(
+                  QString::number(GuiCfg::getInstance().getEditorFont().pointSize()),
+                  Qt::MatchExactly).at(0));
 
 
-    this->ui.lblSample->setFont(GuiCfg::getInstance().getEditorFont());
+        this->ui.lblSample->setFont(GuiCfg::getInstance().getEditorFont());
+    }
+    else
+    {
+        this->ui.listFonts->setCurrentItem(this->ui.listFonts->item(0));
+        this->ui.listSize->setCurrentItem(this->ui.listSize->item(0));
+    }
 
     connect(this->ui.listFonts, SIGNAL(currentTextChanged(QString)), this, SLOT(familyChanged(QString)));
     connect(this->ui.listSize, SIGNAL(currentTextChanged(QString)), this, SLOT(sizeChanged(QString)));
