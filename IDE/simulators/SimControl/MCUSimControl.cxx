@@ -588,7 +588,11 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
     }
 
     m_simulatorLog = m_simulator->getLog();
-    m_simCpu = static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
+    m_simCpu = dynamic_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
+    if ( nullptr == m_simCpu )
+    {
+        std::cout << "nullptr == m_simCpu\n" << std::flush;
+    }
 
     McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
