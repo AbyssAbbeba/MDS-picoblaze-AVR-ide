@@ -64,6 +64,8 @@ void error(int errCode)
             msgBox.setText("Error: Simulation could not start");
             break;
         }
+        case ERR_NO_MAINFILE:
+            msgBox.setText("Error: Project main file not set");
         default:
         {
             msgBox.setText("Error: Error not specified");

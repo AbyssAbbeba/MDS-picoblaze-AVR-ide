@@ -1490,6 +1490,11 @@ void Project::removeFile(QString path, QString name)
     //qDebug() << "Project: removeFile()";
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
+    if (path == this->mainFilePath && name == mainFileName)
+    {
+        mainFileName = "";
+        mainFilePath = "";
+    }
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
