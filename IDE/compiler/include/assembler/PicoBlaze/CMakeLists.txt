@@ -15,7 +15,7 @@
 project ( PicoBlazeAsmIncludeFiles )
 
 # ------------------------------------------------------------------------------
-# COMPILATION OPTIONS
+# COMPILATION & INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
@@ -29,6 +29,7 @@ get_property ( MDS_COMPILER TARGET ${COMPILER_EXEC_TARGET} PROPERTY LOCATION )
 
 # Build device specification files.
 foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
+    # Build.
     set ( FILE_BASE "${CMAKE_CURRENT_SOURCE_DIR}/${PROCESSOR}" )
     if ( "${FILE_BASE}.asm" IS_NEWER_THAN "${FILE_BASE}.prc" )
         add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
@@ -48,13 +49,10 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
         add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
                             COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )
     endif()
+
+    # Install.
+    foreach ( EXTENSION "prc" "v" "vhd" )
+        install ( FILES "${PROCESSOR}.${EXTENSION}"
+                  DESTINATION "${INSTALL_DIR_INCLUDE}/assembler/PicoBlaze" )
+    endforeach()
 endforeach ( PROCESSOR )
-
-# ------------------------------------------------------------------------------
-# INSTALLATION OPTIONS
-# ------------------------------------------------------------------------------
-
-foreach ( extension "asm" "prc" "v" "vhd" )
-    file ( GLOB files2install *.${extension} )
-    install ( FILES ${files2install} DESTINATION "${INSTALL_DIR_INCLUDE}/assembler/PicoBlaze" )
-endforeach ( extension )
