@@ -111,6 +111,12 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
     public slots:
         void unhighlight();
+
+    private slots:
+        void stopSimSlot();
+
+    signals:
+        void stopSimSig();
         
     //protected:
         //void contextMenuEvent(QContextMenuEvent *event);
