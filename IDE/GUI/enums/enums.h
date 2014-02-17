@@ -20,7 +20,8 @@ typedef enum ErrorCode
     ERR_STACK_OVERFLOW,
     ERR_STACK_UNDERFLOW,
     ERR_UNTRACKED_PROJECT,
-    ERR_SIM_NOSTART
+    ERR_SIM_NOSTART,
+    ERR_NO_MAINFILE
 } ErrorCode;
 
 

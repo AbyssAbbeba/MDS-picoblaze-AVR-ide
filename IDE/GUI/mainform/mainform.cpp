@@ -818,6 +818,11 @@ void MainForm::compileProject()
         error(ERR_UNTRACKED_PROJECT);
         return;
     }
+    if (projectMan->getActive()->mainFileName == "" && projectMan->getActive()->mainFilePath == "")
+    {
+        error(ERR_NO_MAINFILE);
+        return;
+    }
 
     
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
