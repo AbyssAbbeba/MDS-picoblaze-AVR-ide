@@ -110,25 +110,25 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leSP = new QLineEdit(this);
     this->leSP->setMaximumWidth(50);
     this->leSP->setMaximumHeight(17);
-    this->leSP->setFont(QFont("Andale Mono", 9));
+    this->leSP->setFont(QFont("UbuntuMono", 10));
     this->leSP->setReadOnly(true);
     this->leSP->move(1010, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setMaximumWidth(50);
     this->lePC->setMaximumHeight(17);
-    this->lePC->setFont(QFont("Andale Mono", 9));
+    this->lePC->setFont(QFont("UbuntuMono", 10));
     this->lePC->setReadOnly(true);
     this->lePC->move(1120, 0);
     this->leTime = new QLineEdit(this);
     this->leTime->setMaximumWidth(50);
     this->leTime->setMaximumHeight(17);
-    this->leTime->setFont(QFont("Andale Mono", 9));
+    this->leTime->setFont(QFont("UbuntuMono", 10));
     this->leTime->setReadOnly(true);
     this->leTime->move(1120, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setMaximumWidth(50);
     this->leClock->setMaximumHeight(17);
-    this->leClock->setFont(QFont("Andale Mono", 9));
+    this->leClock->setFont(QFont("UbuntuMono", 10));
     this->leClock->setReadOnly(true);
     this->leClock->move(1120, 40);
 
@@ -143,14 +143,14 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->btnCarry = new QPushButton("Carry", this);
     this->btnCarry->move(1080,60);
     this->btnCarry->setMaximumHeight(17);
-    this->btnCarry->setMaximumWidth(40);
+    this->btnCarry->setMaximumWidth(45);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(1120,60);
+    this->btnZero->move(1125,60);
     this->btnZero->setMaximumHeight(17);
-    this->btnZero->setMaximumWidth(40);
+    this->btnZero->setMaximumWidth(45);
     this->btnInte = new QPushButton("Int enable", this);
     this->btnInte->setMaximumHeight(17);
-    this->btnInte->setMaximumWidth(80);
+    this->btnInte->setMaximumWidth(100);
     this->btnInte->move(1080, 100);
 
     QFont btnFont = this->btnIntr->font();

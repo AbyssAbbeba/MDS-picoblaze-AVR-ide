@@ -97,7 +97,7 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
-    this->fontSize = 9;
+    this->fontSize = 10;
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -105,22 +105,21 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
-    hexTextEdit->setFont(QFont("Andale Mono", fontSize));
+    hexTextEdit->setFont(QFont("UbuntuMono", fontSize));
     //qDebug() << "HexEdit: font size" << fontSize;
     //hexTextEdit->resize((columns*2-1)*10,5);
-    hexTextEdit->setMinimumWidth((columns*3-4)*fontSize);
-    hexTextEdit->setMaximumWidth((columns*3-4)*fontSize);
+    QFontMetrics metrics(hexTextEdit->font());
+    hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
     hexTextEdit->setMinimumHeight(175);
     //hexTextEdit->setMaximumHeight(175);
 
     if (AsciiPanel == true)
     {
         hexAsciiEdit = new QPlainTextEdit(this);
-        hexAsciiEdit->setFont(QFont("Andale Mono", fontSize));
+        hexAsciiEdit->setFont(QFont("UbuntuMono", fontSize));
         //hexAsciiEdit->resize(columns*15,250);
-        hexAsciiEdit->setMaximumWidth(columns*fontSize);
+        hexAsciiEdit->setFixedWidth(columns*3*fontSize);
         hexAsciiEdit->setMinimumHeight(175);
-        hexAsciiEdit->setMinimumWidth(columns*fontSize);
         hexAsciiEdit->setOverwriteMode(true);
         hexAsciiEdit->setWordWrapMode(QTextOption::NoWrap);
         hexAsciiEdit->verticalScrollBar()->hide();
@@ -220,11 +219,11 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
 
     if (AsciiPanel == false)
     {
-        this->setMaximumWidth(hexTextEdit->width()+hexLineCount->width());
+        this->setFixedWidth(hexTextEdit->width()+hexLineCount->width());
     }
     else
     {
-        this->setMaximumWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
+        this->setFixedWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
     }
     //this->show();
     //this->hexLineCount->getWidget()->changeHeight();

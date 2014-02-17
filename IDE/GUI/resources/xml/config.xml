@@ -1,64 +1,63 @@
 <!DOCTYPE config>
 <config>
-    <IDEGeneral>
-        <Option name = "splash" param ="false"/>
-        <Option name = "tips" param = "false"/>
-        <Option name = "language" param = "English"/>
-    </IDEGeneral>
-    <IDEShortcuts>
-    </IDEShortcuts>
-    <EditorGeneral>
-        <Option name = "tabwidth" param = "4"/>
-        <Option name = "spaces" param = "true"/>
-        <Option name = "spaceswidth" param = "4"/>
-        <Option name = "encoding" param = "utf-8"/>
-        <Option name = "eol" param = "lf"/>
-    </EditorGeneral>
-    <EditorHighlighter>
-        <Option name = "enabled" param = "true"/>
-        <Option name = "highlight" type = "comment"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-        <Option name = "highlight" type = "label"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-        <Option name = "highlight" type = "keyword"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-        <Option name = "highlight" type = "operand"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-        <Option name = "highlight" type = "operator"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-        <Option name = "highlight" type = "quote"  color = "#FFFFFF" i = "false" u = "false" s = "false" b = "false"/>
-    </EditorHighlighter>
-    <EditorFonts>
-        <Option name = "font" family = "Monospace" size="9"/>
-    </EditorFonts>
-    <SimWarnings>
-        <Option name = "mem_rnonexist" param = "true"/>
-        <Option name = "mem_wnonexist" param = "true"/>
-        <Option name = "mem_runimplement" param = "true"/>
-        <Option name = "mem_wunimplement" param = "true"/>
-        <Option name = "mem_rdenied" param = "true"/>
-        <Option name = "mem_wdenied" param = "true"/>
-        <Option name = "mem_runidentified" param = "true"/>
-        <Option name = "mem_rdefault" param = "true"/>
-        <Option name = "mem_rwonly" param = "true"/>
-        <Option name = "mem_wronly" param = "true"/>
-        <Option name = "mem_rpartwonly" param = "true"/>
-        <Option name = "mem_wpartronly" param = "true"/>
-        <Option name = "mem_rreserved" param = "true"/>
-        <Option name = "mem_wreserved" param = "true"/>
-        <Option name = "stack_over" param = "true"/>
-        <Option name = "stack_under" param = "true"/>
-        <Option name = "cpu_opcode" param = "true"/>
-        <Option name = "cpu_jump" param = "true"/>
-        <Option name = "cpu_call" param = "true"/>
-        <Option name = "cpu_irq" param = "true"/>
-        <Option name = "cpu_ret" param = "true"/>
-        <Option name = "cpu_reti" param = "true"/>
-        <Option name = "cpu_opset" param = "true"/>
-        <Option name = "cpu_instunsupported" param = "true"/>
-        <Option name = "cpu_instignored" param = "true"/>
-        <Option name = "cpu_pcover" param = "true"/>
-        <Option name = "cpu_pcunder" param = "true"/>
-    </SimWarnings>
-    <SimOthers>
-        <Option name = "undef" param = "random"/>
-        <Option name = "color" type = "line" color="#FFFFFF"/>
-        <Option name = "color" type = "breakpoint" color="#FFFFFF"/>
-        <Option name = "color" type = "update" color="#FFFFFF"/>
-    </SimOthers>
+ <IDEGeneral>
+  <Option param="false" name="splash"/>
+  <Option param="false" name="tips"/>
+  <Option param="English" name="language"/>
+ </IDEGeneral>
+ <IDEShortcuts/>
+ <EditorGeneral>
+  <Option param="4" name="tabwidth"/>
+  <Option param="true" name="spaces"/>
+  <Option param="4" name="spaceswidth"/>
+  <Option param="utf-8" name="encoding"/>
+  <Option param="lf" name="eol"/>
+ </EditorGeneral>
+ <EditorHighlighter>
+  <Option param="true" name="enabled"/>
+  <Option i="false" type="comment" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+  <Option i="false" type="label" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+  <Option i="false" type="keyword" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+  <Option i="false" type="operand" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+  <Option i="false" type="operator" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+  <Option i="false" type="quote" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
+ </EditorHighlighter>
+ <EditorFonts>
+  <Option size="10" family="Monospace" name="font"/>
+ </EditorFonts>
+ <SimWarnings>
+  <Option param="true" name="mem_rnonexist"/>
+  <Option param="true" name="mem_wnonexist"/>
+  <Option param="true" name="mem_runimplement"/>
+  <Option param="true" name="mem_wunimplement"/>
+  <Option param="true" name="mem_rdenied"/>
+  <Option param="true" name="mem_wdenied"/>
+  <Option param="true" name="mem_runidentified"/>
+  <Option param="true" name="mem_rdefault"/>
+  <Option param="true" name="mem_rwonly"/>
+  <Option param="true" name="mem_wronly"/>
+  <Option param="true" name="mem_rpartwonly"/>
+  <Option param="true" name="mem_wpartronly"/>
+  <Option param="true" name="mem_rreserved"/>
+  <Option param="true" name="mem_wreserved"/>
+  <Option param="true" name="stack_over"/>
+  <Option param="true" name="stack_under"/>
+  <Option param="true" name="cpu_opcode"/>
+  <Option param="true" name="cpu_jump"/>
+  <Option param="true" name="cpu_call"/>
+  <Option param="true" name="cpu_irq"/>
+  <Option param="true" name="cpu_ret"/>
+  <Option param="true" name="cpu_reti"/>
+  <Option param="true" name="cpu_opset"/>
+  <Option param="true" name="cpu_instunsupported"/>
+  <Option param="true" name="cpu_instignored"/>
+  <Option param="true" name="cpu_pcover"/>
+  <Option param="true" name="cpu_pcunder"/>
+ </SimWarnings>
+ <SimOthers>
+  <Option param="random" name="undef"/>
+  <Option type="line" name="color" color="#ffffff"/>
+  <Option type="breakpoint" name="color" color="#ffffff"/>
+  <Option type="update" name="color" color="#ffffff"/>
+ </SimOthers>
 </config>
