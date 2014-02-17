@@ -64,7 +64,7 @@ next3:
 
         jump    next4
         ;; step 2
-        ;; flag[z] == false     
+        ;; flag[z] == true     
         ;; flag[c] == true
         ;; step
         ;; step 2
@@ -95,7 +95,7 @@ next5:
 
         jump    $
         ;; step 2
-        ;; flag[z] == false
+        ;; flag[z] == true
         ;; flag[c] == true
         ;; step
         ;; step 2
