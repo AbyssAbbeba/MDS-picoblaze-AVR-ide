@@ -170,6 +170,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
     connect(controlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
 
+    connect(this->memRegs, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    connect(this->memPorts, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    connect(this->memStack, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    connect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+
     deviceChanged();
     
     //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
@@ -468,6 +473,11 @@ void PicoBlazeGrid::setIntE()
 
 void PicoBlazeGrid::interrupt()
 {
-    m_interrupt->irq();
-    
+    m_interrupt->irq();   
+}
+
+
+void PicoBlazeGrid::stopSimSlot()
+{
+    emit stopSimSig();
 }

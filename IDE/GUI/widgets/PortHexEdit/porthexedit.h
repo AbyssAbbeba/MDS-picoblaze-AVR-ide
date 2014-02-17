@@ -47,6 +47,9 @@ class PortHexEdit : public QWidget, public MCUSimObserver
 
         bool visibleIn;
 
+    signals:
+        void stopSimSig();
+
     public slots:
         void changeValueIn(int address);
         void changeValueOut(int address);

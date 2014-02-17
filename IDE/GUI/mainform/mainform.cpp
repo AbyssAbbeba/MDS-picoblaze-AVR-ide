@@ -87,6 +87,11 @@ MainForm::MainForm()
             wDockManager,
             SLOT(unhighlightSimWidget())
            );
+    connect(wDockManager,
+            SIGNAL(stopSimSig()),
+            this,
+            SLOT(stopSimSlot())
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -95,6 +100,15 @@ MainForm::MainForm()
     //CreateDockWidgets();
     //CreateWelcome();
     //qDebug() << "MainForm: return MainForm()";
+}
+
+
+MainForm::~MainForm()
+{
+    if (true == simulationStatus)
+    {
+        projectMan->getActive()->stop();
+    }
 }
 
 
@@ -1419,4 +1433,17 @@ void MainForm::interfaceConfig()
 {
     InterfaceCfgDlg_Core *cfgdlg = new InterfaceCfgDlg_Core(this);
     cfgdlg->exec();
+}
+
+
+void MainForm::stopSimSlot()
+{
+    if (true == simulationRunStatus)
+    {
+        this->simulationRunHandle();
+    }
+    else if (true == simulationAnimateStatus)
+    {
+        this->simulationAnimateHandle();
+    }
 }
