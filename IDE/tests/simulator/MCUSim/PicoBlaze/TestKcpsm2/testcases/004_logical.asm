@@ -4,7 +4,7 @@
     ORG         0x00
     JUMP        Start
 Start:
-
+    ;; STEP
     ;; step 2
     ;; reg[0] == 1
     ;; step
@@ -15,7 +15,7 @@ Start:
 
 
 
-    ;; STEP
+    
     ;; STEP
     ;; REG[0] == 1
     ;;STEP
@@ -47,9 +47,9 @@ Start:
     OR          s1,s1
 
     ;;STEP
-    ;;REG[2] == 6
+    ;;REG[0] == 2
     ;;STEP 
-    ;; REG[3] == 10
+    ;; REG[1] == 2
 
 
     
