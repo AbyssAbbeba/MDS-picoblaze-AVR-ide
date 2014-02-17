@@ -515,6 +515,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
     {
         wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
     }
+    connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
@@ -756,66 +757,12 @@ void WDockManager::handleShowHideBottom(int index)
         visible = true;
     }
 }
-/*void WDockManager::hideBottomArea(bool show)
+
+
+void WDockManager::stopSimSlot()
 {
-    qDebug() << "WDockManager: showBottomArea(" << show << ")";
-    //qDebug() << "WDockManager: sync(" << wDockBotSync << ")";
-    if (true == show && true == visible)
-    {
-        //qDebug() << "WDockManager: hide";
-        visible = false;
-        this->hideDockWidgetArea(2);
-        //wDockBotSync = false;
-    }
-    else if (false == show && false == visible)
-    {
-        qDebug() << "WDockManager: show";
-        if (false == wDockBotSync)
-        {
-        qDebug() << "WDockManager: wDockSync set";
-            wDockBotSync = true;
-        }
-        else
-        {
-            this->showDockWidgetArea(2);
-            visible = true;
-        }
-    }
-}*/
-
-
-/*void WDockManager::showBottomArea(bool show)
-{
-    qDebug() << "WDockManager: showBottomArea(" << show << ")";
-    //qDebug() << "WDockManager: sync(" << wDockBotSync << ")";
-    if (true == show && true == visible)
-    {
-        //qDebug() << "WDockManager: hide";
-        this->hideDockWidgetArea(2);
-        visible = false;
-        wDockBotSync = false;
-    }
-    else if (true == show && false == visible)
-    {
-        qDebug() << "WDockManager: show";
-        if (false == wDockBotSync)
-        {
-        qDebug() << "WDockManager: wDockSync set";
-            wDockBotSync = true;
-        }
-        else
-        {
-            visible = true;
-            this->showDockWidgetArea(2);
-        //}
-    }
-}*/
-
-/*void WDockManager::dockWidgetsCreated()
-{
-    this->dockWidgets = true;
-}*/
-
+    emit stopSimSig();
+}
 
 
 
@@ -824,6 +771,7 @@ void WDockManager::handleShowHideBottom(int index)
 /////
 
 WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
+    : QObject(parentWindow)
 {
     //qDebug() << "WDock: WDock()";
     switch (code)
@@ -927,6 +875,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
 
 
 WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl)
+    : QObject(parentWindow)
 {
     switch (code)
     {
@@ -937,12 +886,13 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
-            QObject::connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
+            connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
             newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);
             wDockWidget->show();
             newWidget->fixHeight();
+            connect(newWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
             //qDebug() << "WSimulationInfo: height fixed";
             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
             break;
@@ -952,10 +902,10 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
 
 
 
-WDock::~WDock()
+/*WDock::~WDock()
 {
     delete wDockWidget;
-}
+}*/
 
 
 
@@ -981,4 +931,10 @@ bool WDock::cmpArea(int area)
 int WDock::getArea()
 {
     return this->area;
+}
+
+
+void WDock::stopSimSlot()
+{
+    emit stopSimSig();
 }
