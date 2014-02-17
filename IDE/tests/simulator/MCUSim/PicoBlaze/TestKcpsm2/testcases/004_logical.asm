@@ -36,19 +36,24 @@ Start:
 
     ;;STEP
     ;;REG[2] == 6
-    ;;STEP
+    ;;STEP 2
     ;; REG[3] == 10
 
-    XOR         s2,s1
-    XOR         s3,s1
-    
+    ;; step 2
+    ;; reg[0] == 1
+    ;; step
+    ;; reg[0] == 0
+    LOAD        s0,#0
+    XOR         s0, #01h
+    XOR         s0, #01h
+
 
     CALL        Podprog
 
 ;----------------------
 Podprog:
     LOAD        s3,#50
-    ;;STEP 2
+    ;;STEP 
     ;; REG[3] == 50
     RETURN
 
