@@ -65,7 +65,10 @@ void error(int errCode)
             break;
         }
         case ERR_NO_MAINFILE:
+        {
             msgBox.setText("Error: Project main file not set");
+            break;
+        }
         default:
         {
             msgBox.setText("Error: Error not specified");

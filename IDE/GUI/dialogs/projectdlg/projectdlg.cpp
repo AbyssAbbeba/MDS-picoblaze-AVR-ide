@@ -94,7 +94,7 @@ void ProjectDialog::bCreate()
         return;
     }
     //vytvoreni projektu
-    QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mmp");
+    QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds_project");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QMessageBox msgBox;
@@ -112,7 +112,7 @@ void ProjectDialog::bCreate()
     {
         //nacteni projektu do manageru otevrenych projektu
         projectMan->addProject(this->prjdlg_general->getName(),
-                               this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mmp",
+                               this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds_project",
                                this->prjdlg_general->getFamily(),
                                LANG_ASM,
                                &file);

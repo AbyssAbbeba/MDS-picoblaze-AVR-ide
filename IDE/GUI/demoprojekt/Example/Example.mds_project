@@ -1,5 +1,5 @@
-<!DOCTYPE MMProject>
-<MMProject>
+<!DOCTYPE MDSProject>
+<MDSProject>
  <General>
   <Name name="Example"/>
   <Family family="kcpsm3"/>
@@ -29,4 +29,4 @@
    <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/compiler/include/assembler/PicoBlaze"/>
   </IncludePaths>
  </Compiler>
-</MMProject>
+</MDSProject>
