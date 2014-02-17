@@ -22,6 +22,9 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         //void fixHeight();
         void unhighlight();
 
+    signals:
+        void stopSimSig();
+        
     private slots:
         void updateValue(int row, int column);
         
