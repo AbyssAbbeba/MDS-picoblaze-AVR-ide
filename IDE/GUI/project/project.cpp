@@ -38,8 +38,8 @@ ProjectMan::ProjectMan(QWidget *parent)
 
 
 /**
- * @brief Opens and loads project according to opened xml (.mmp) file.
- * @param file Opened xml (.mmp) file.
+ * @brief Opens and loads project according to opened xml (.mds_project) file.
+ * @param file Opened xml (.mds_project) file.
  */
 void ProjectMan::openProject(QFile *file)
 {
@@ -138,9 +138,9 @@ void ProjectMan::addUntrackedProject()
 /**
  * @brief Creates new project.
  * @param name name of the new project
- * @param path path to the new project xml (.mmp) file
+ * @param path path to the new project xml (.mds_project) file
  * @param architecture target architecture of the new project
- * @param file xml (.mmp) file of the new project
+ * @param file xml (.mds_project) file of the new project
  */
 void ProjectMan::addProject(QString name, QString path, QString architecture, LangType langType, QFile *file)
 {
@@ -272,8 +272,8 @@ void ProjectMan::createActiveMakefile()
 
 //otevreni projektu
 /**
- * @brief Opens project from opened xml (.mmp) file.
- * @param file Opened xml (.mmp) file.
+ * @brief Opens project from opened xml (.mds_project) file.
+ * @param file Opened xml (.mds_project) file.
  * @param parent Project parent project manager.
  */
 Project::Project(QFile *file, ProjectMan *parent)
@@ -295,7 +295,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     prevLineColor = new QColor(102,204,255,125);
     prevLine2Color = new QColor(102,204,255,50);
     //nacteni ze souboru
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(file))
     {
         error(ERR_XML_ASSIGN);
@@ -303,7 +303,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     else
     {
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -622,10 +622,10 @@ Project::Project(ProjectMan *parent)
 /**
  * @brief Constructor. Creates a blank new project
  * @param name The name of the project
- * @param path The path to xml (.mmp) file
+ * @param path The path to xml (.mds_project) file
  * @param arch Compiler option, architecture
  * @param langType Compiler option, language
- * @param file Opened file for xml (.mmp) stream
+ * @param file Opened file for xml (.mds_project) stream
  * @param parent Pointer to parent (project manager)
  */
 Project::Project(QString name, QString path, QString arch, LangType lang, QFile *file, ProjectMan *parent)
@@ -680,8 +680,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->langType = lang;
     
     //a zapsani do souboru
-    QDomDocument domDoc("MMProject");
-    QDomElement xmlRoot = domDoc.createElement("MMProject");
+    QDomDocument domDoc("MDSProject");
+    QDomElement xmlRoot = domDoc.createElement("MDSProject");
     domDoc.appendChild(xmlRoot);
 
     QDomElement xmlGeneral = domDoc.createElement("General");
@@ -783,7 +783,7 @@ QString Project::addFile(QString path, QString name)
             }
         }
         QString relativePath;
-        QDomDocument domDoc("MMProject");
+        QDomDocument domDoc("MDSProject");
         QFile *file = new QFile(prjPath);
         if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
         {
@@ -799,7 +799,7 @@ QString Project::addFile(QString path, QString name)
             QDir project(QFileInfo(this->prjPath).dir());
             relativePath = project.relativeFilePath(path);
             QDomElement xmlRoot = domDoc.documentElement();
-            if (xmlRoot.tagName() != "MMProject")
+            if (xmlRoot.tagName() != "MDSProject")
             {
                 error(ERR_XML_CONTENT);
             }
@@ -998,7 +998,7 @@ void Project::setMainFile(QString path, QString name)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1007,7 +1007,7 @@ void Project::setMainFile(QString path, QString name)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1054,7 +1054,7 @@ void Project::setUseMainFile(bool enabled)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1063,7 +1063,7 @@ void Project::setUseMainFile(bool enabled)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1112,7 +1112,7 @@ void Project::setIntVector(int value)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1121,7 +1121,7 @@ void Project::setIntVector(int value)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1175,7 +1175,7 @@ void Project::setHWBuild(int value)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1184,7 +1184,7 @@ void Project::setHWBuild(int value)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1238,7 +1238,7 @@ void Project::setScratchpad(int value)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1247,7 +1247,7 @@ void Project::setScratchpad(int value)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1301,7 +1301,7 @@ void Project::setProgMem(int value)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1310,7 +1310,7 @@ void Project::setProgMem(int value)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1364,7 +1364,7 @@ void Project::setName(QString name)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1373,7 +1373,7 @@ void Project::setName(QString name)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1427,7 +1427,7 @@ void Project::setFamily(QString family)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1436,7 +1436,7 @@ void Project::setFamily(QString family)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1490,15 +1490,14 @@ void Project::removeFile(QString path, QString name)
     //qDebug() << "Project: removeFile()";
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = project.relativeFilePath(path);
-    if (path == this->mainFilePath && name == mainFileName)
+    if (relativePath == this->mainFilePath && name == mainFileName)
     {
-        mainFileName = "";
-        mainFilePath = "";
+        this->setMainFile("", "");
     }
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1507,7 +1506,7 @@ void Project::removeFile(QString path, QString name)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1824,7 +1823,7 @@ void Project::setCompileOpt(QList<bool> opt)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1833,7 +1832,7 @@ void Project::setCompileOpt(QList<bool> opt)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -1977,7 +1976,7 @@ void Project::setCompileIncPaths(QList<QString> paths)
 
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&prjFile))
     {
         error(ERR_XML_ASSIGN);
@@ -1986,7 +1985,7 @@ void Project::setCompileIncPaths(QList<QString> paths)
     {
         //otevrit xml, upravit a ulozit
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
