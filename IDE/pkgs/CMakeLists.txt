@@ -14,6 +14,47 @@
 project ( MultitargetDevelopmentSystem )
 
 # ------------------------------------------------------------------------------
+# MACRO DEFINITIONS
+# ------------------------------------------------------------------------------
+
+## Make list o libraries to install, e.g. include optimized libraries only.
+ # If it is not possible to determine which libraries are optimized and which
+ # are debug, all libraries specified in the LIBRARIES list will be added to
+ # LIBRARIES_TO_INSTALL.
+ #
+ # parameter LIBRARIES_TO_INSTALL : The resulting list of libraries.
+ # parameter LIBRARIES            : The original list of libraries.
+macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL LIBRARIES )
+    # Clear resulting list of libraries
+    set ( ${LIBRARIES_TO_INSTALL} "" )
+
+    # Flag: insert ${lib} into the result.
+    set ( insertThis FALSE )
+
+    # Iterate over the given list of libraries.
+    foreach ( lib ${LIBRARIES} )
+        if ( insertThis )
+            # Include ${lib} in the result.
+            set ( insertThis FALSE )
+            list ( APPEND ${LIBRARIES_TO_INSTALL} "${lib}" )
+        else()
+            # Determine whether the next ${lib} is optimized variant or not.
+            if ( "${lib}" STREQUAL "optimized" )
+                set ( insertThis TRUE )
+            else()
+                set ( insertThis FALSE )
+            endif()
+        endif()
+    endforeach()
+
+    # If the result if zero length, include all libraries.
+    list ( LENGTH ${LIBRARIES_TO_INSTALL} length )
+    if ( length EQUAL 0 )
+        set ( ${LIBRARIES_TO_INSTALL} ${LIBRARIES} )
+    endif()
+endmacro()
+
+# ------------------------------------------------------------------------------
 # ADD SOME DATA FILES TO THE INSTALLATION PACKAGES.
 # ------------------------------------------------------------------------------
 
@@ -61,8 +102,14 @@ elseif ( TARGET_OS STREQUAL "Windows" )
 
     install ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
     install ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.
-    install ( FILES ${QT_LIBRARIES}    DESTINATION ${INSTALL_DIR_BIN} ) # Include Qt framework libraries.
-    install ( FILES ${Boost_LIBRARIES} DESTINATION ${INSTALL_DIR_BIN} ) # Include boost libraries.
+
+    # Include Qt framework libraries.
+    filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
+    install ( FILES ${LIBS_TO_INSTALL}       DESTINATION ${INSTALL_DIR_BIN} )
+
+    # Include boost libraries.
+    filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
+    install ( FILES ${BOOST_LIBS_TO_INSTALL} DESTINATION ${INSTALL_DIR_BIN} )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #

@@ -129,13 +129,13 @@ nc_test:
 
 
 _1:
-            return      Z    
+            ;return      Z    
 _2:
-            return      NZ   
+           ; return      NZ   
 _3:
-            return      C
+          ;  return      C
 _4:
-            return      NC
+           ; return      NC
            
 		jump	main
 

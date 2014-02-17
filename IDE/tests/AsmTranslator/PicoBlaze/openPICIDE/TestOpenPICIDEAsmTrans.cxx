@@ -227,8 +227,8 @@ void TestOpenPICIDEAsmTrans::test ( const std::string & suffix )
             return;
     }
 
-    m_options->m_verilogTemplate = (current_path() / (m_options->m_device + ".vhd")).string();
-    m_options->m_vhdlTemplate    = (current_path() / (m_options->m_device + ".v"  )).string();
+    m_options->m_verilogTemplate = (current_path() / (m_options->m_device + ".v"  )).string();
+    m_options->m_vhdlTemplate    = (current_path() / (m_options->m_device + ".vhd")).string();
 
     const std::string errFile = (path("openPICIDE") / "results" / (testName + suffix + ".err")).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
