@@ -3,7 +3,19 @@
 
     ORG         0x00
     JUMP        Start
+Start:
     ;; STEP
+    ;; step 2
+    ;; reg[0] == 1
+    ;; step
+    ;; reg[0] == 0
+    LOAD        s0, #0
+    XOR         s0, #01h
+    XOR         s0, #01h
+
+
+
+    
     ;; STEP
     ;; REG[0] == 1
     ;;STEP
@@ -12,7 +24,7 @@
     ;; REG[2]== 4
     ;;STEP
     ;; REG[3]== 8
-Start:
+
 ; Logical
     LOAD        s0,#1
     LOAD        s1,#2
@@ -35,22 +47,10 @@ Start:
     OR          s1,s1
 
     ;;STEP
-    ;;REG[2] == 6
-    ;;STEP
-    ;; REG[3] == 10
+    ;;REG[0] == 2
+    ;;STEP 
+    ;; REG[1] == 2
 
-    XOR         s2,s1
-    XOR         s3,s1
-    
-
-    CALL        Podprog
-
-;----------------------
-Podprog:
-    LOAD        s3,#50
-    ;;STEP 2
-    ;; REG[3] == 50
-    RETURN
 
     
     
