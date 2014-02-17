@@ -105,7 +105,7 @@ elseif ( TARGET_OS STREQUAL "Windows" )
 
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
-    install ( FILES ${LIBS_TO_INSTALL}
+    install ( FILES ${QT_LIBS_TO_INSTALL}
               DESTINATION ${INSTALL_DIR_BIN} )
 
     # Include boost libraries.
