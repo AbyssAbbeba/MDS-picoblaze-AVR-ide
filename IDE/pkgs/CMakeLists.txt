@@ -23,8 +23,8 @@ project ( MultitargetDevelopmentSystem )
  # LIBRARIES_TO_INSTALL.
  #
  # parameter LIBRARIES_TO_INSTALL : The resulting list of libraries.
- # parameter LIBRARIES            : The original list of libraries.
-macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL LIBRARIES )
+ # parameter ...                  : The original list of libraries.
+macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL )
     # Clear resulting list of libraries
     set ( ${LIBRARIES_TO_INSTALL} "" )
 
@@ -32,7 +32,7 @@ macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL LIBRARIES )
     set ( insertThis FALSE )
 
     # Iterate over the given list of libraries.
-    foreach ( lib ${LIBRARIES} )
+    foreach ( lib ${ARGN} )
         if ( insertThis )
             # Include ${lib} in the result.
             set ( insertThis FALSE )
@@ -50,7 +50,7 @@ macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL LIBRARIES )
     # If the result if zero length, include all libraries.
     list ( LENGTH ${LIBRARIES_TO_INSTALL} length )
     if ( length EQUAL 0 )
-        set ( ${LIBRARIES_TO_INSTALL} ${LIBRARIES} )
+        set ( ${LIBRARIES_TO_INSTALL} ${ARGN} )
     endif()
 endmacro()
 
@@ -105,11 +105,13 @@ elseif ( TARGET_OS STREQUAL "Windows" )
 
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
-    install ( FILES ${LIBS_TO_INSTALL}       DESTINATION ${INSTALL_DIR_BIN} )
+    install ( FILES ${QT_LIBS_TO_INSTALL}
+              DESTINATION ${INSTALL_DIR_BIN} )
 
     # Include boost libraries.
     filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
-    install ( FILES ${BOOST_LIBS_TO_INSTALL} DESTINATION ${INSTALL_DIR_BIN} )
+    install ( FILES ${BOOST_LIBS_TO_INSTALL}
+              DESTINATION ${INSTALL_DIR_BIN} )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
