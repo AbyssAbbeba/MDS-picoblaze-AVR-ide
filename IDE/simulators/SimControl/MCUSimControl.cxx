@@ -45,7 +45,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
-
+#include<iostream>//debug
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
@@ -437,16 +437,21 @@ void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, u
     m_dbgFile->getLineByAddr(m_simCpu->getProgramCounter(), recordNumbers);
     if ( true == recordNumbers.empty() )
     {
+std::cout << "No line record found!\n" << std::flush;
         return;
     }
 
     for ( unsigned int idx : recordNumbers )
     {
+std::cout << "Line record found, idx = "<<idx<<" ... analyzing.\n" << std::flush;
         const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
         const std::string * filename = &( m_dbgFile->fileNumber2Name(lineRecord.m_fileNumber) );
+std::cout << "Line record found, filename = "<<(*filename)<<" [ptr:"<<((void*)filename)<<"]\n" << std::flush;
         unsigned int lineNumber = lineRecord.m_lineNumber;
+std::cout << "Line record found, lineNumber = "<<lineNumber<<"\n" << std::flush;
 
         lines.push_back(std::make_pair(filename, lineNumber));
+std::cout << "Line record found, idx = "<<idx<<" ... ok.\n" << std::flush;
     }
 }
 
@@ -583,7 +588,11 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
     }
 
     m_simulatorLog = m_simulator->getLog();
-    m_simCpu = static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
+    m_simCpu = dynamic_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
+    if ( nullptr == m_simCpu )
+    {
+        std::cout << "nullptr == m_simCpu\n" << std::flush;
+    }
 
     McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);

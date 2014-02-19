@@ -734,7 +734,7 @@ void MainForm::openProject()
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), tr("Project (*.mmp)"));
+    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds_project)"));
     
     if (path.isEmpty() == false)
     {
@@ -816,6 +816,11 @@ void MainForm::compileProject()
     if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
     {
         error(ERR_UNTRACKED_PROJECT);
+        return;
+    }
+    if (projectMan->getActive()->mainFileName == "" && projectMan->getActive()->mainFilePath == "")
+    {
+        error(ERR_NO_MAINFILE);
         return;
     }
 
@@ -1163,7 +1168,7 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    this->openProject("./demoprojekt/Example/Example.mmp");
+    this->openProject("./demoprojekt/Example/Example.mds_project");
     int count = this->projectMan->getActive()->filePaths.count();
     QDir projectDir = QFileInfo(this->projectMan->getActive()->prjPath).dir();
     QString absolutePath = projectDir.path();

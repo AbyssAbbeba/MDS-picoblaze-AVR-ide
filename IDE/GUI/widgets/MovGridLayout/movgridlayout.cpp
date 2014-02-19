@@ -154,7 +154,7 @@ void MovGridLayout::loadGridWidgets(QString path)
     //xml format:
     //  WIDGET_ID, x, y
     QFile file(path);
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(&file))
     {
         error(ERR_XML_ASSIGN);
@@ -162,7 +162,7 @@ void MovGridLayout::loadGridWidgets(QString path)
     else
     {
         QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
         }
@@ -333,7 +333,7 @@ void MovGridLayout::saveGridWidgets(QString path)
 {
     QFile file(path);
     //qDebug() << "path:" << path;
-    QDomDocument domDoc("MMProject");
+    QDomDocument domDoc("MDSProject");
     QDomElement xmlRoot;
     if (!domDoc.setContent(&file))
     {
@@ -343,7 +343,7 @@ void MovGridLayout::saveGridWidgets(QString path)
     else
     {
         xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MMProject")
+        if (xmlRoot.tagName() != "MDSProject")
         {
             error(ERR_XML_CONTENT);
             return;
