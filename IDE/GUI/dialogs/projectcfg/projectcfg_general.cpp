@@ -30,6 +30,11 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     this->project = currProject;
     ui.setupUi(this);
 
+    if (this->project->prjPath == "untracked" && this->project->prjName == "untracked")
+    {
+        ui.leName->setReadOnly(true);
+    }
+
     notes.append("256");
     notes.append("8");
     notes.append("-");

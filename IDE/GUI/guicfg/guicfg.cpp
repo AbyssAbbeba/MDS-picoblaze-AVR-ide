@@ -221,9 +221,31 @@ void GuiCfg::setDefaultSimWarnings()
 void GuiCfg::setDefaultSimOthers()
 {
     this->undefinedValue = (GuiCfg_Items::UndefinedValueOpt)0;
-    this->simColorLine.setNamedColor("#FFFFFF");
-    this->simColorBreakpoint.setNamedColor("#FFFFFF");
-    this->simColorWidgetChanged.setNamedColor("#FFFFFF");
+    this->simColorLine.setRgb(102,204,255, 255);
+    this->simColorBreakpoint.setNamedColor("#00FF00");
+    this->simColorWidgetChanged.setNamedColor("#FFFF00");
+}
+
+
+void GuiCfg::setDefaultProject()
+{
+    this->family = "kcpsm3";
+    this->scratchpadSize = 64;
+    this->progMemSize = 1024;
+    this->intVector = 0x3ff;
+    this->hwBuild = -1;
+    this->mainFileName = "";
+    this->mainFilePath = "";
+    this->useMainFile = false;
+    //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
+    this->compileOpt.append(false);
+    this->compileOpt.append(false);
+    this->compileOpt.append(true);
+    this->compileOpt.append(false);
+    this->compileOpt.append(true);
+    this->compileOpt.append(true);
+    this->compileOpt.append(false);
+    this->compileOpt.append(false);
 }
 
 
@@ -236,6 +258,7 @@ void GuiCfg::setDefaultAll()
     this->setDefaultEditSyntax();
     this->setDefaultSimWarnings();
     this->setDefaultSimOthers();
+    this->setDefaultProject();
 }
 
 
@@ -388,6 +411,62 @@ bool GuiCfg::getHighlightEnabled()
     return this->highlightEnabled;
 }
 
+
+QColor GuiCfg::getCurrLineColor()
+{
+    this->simColorLine.setAlpha(255);
+    return this->simColorLine;
+}
+
+
+QColor GuiCfg::getPrevLineColor()
+{
+    this->simColorLine.setAlpha(125);
+    return this->simColorLine;
+}
+
+
+QColor GuiCfg::getPrevLine2Color()
+{
+    this->simColorLine.setAlpha(50);
+    return this->simColorLine;
+}
+
+
+QString GuiCfg::getProjectFamily()
+{
+    return this->family;
+}
+
+
+int GuiCfg::getProjectIntVector()
+{
+    return this->intVector;
+}
+
+
+int GuiCfg::getProjectHWBuild()
+{
+    return this->hwBuild;
+}
+
+
+int GuiCfg::getProjectScratchpadSize()
+{
+    return this->scratchpadSize;
+}
+
+
+int GuiCfg::getProjectProgMemSize()
+{
+    return this->progMemSize;
+}
+
+
+QList<bool> GuiCfg::getProjectCompOpt()
+{
+    return this->compileOpt;
+}
 
 
 
@@ -754,6 +833,7 @@ void GuiCfg::loadConfig()
         }
     }
     cfgFile.close();
+    this->setDefaultProject();
 }
 
 

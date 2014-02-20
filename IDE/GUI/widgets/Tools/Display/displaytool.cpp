@@ -157,7 +157,7 @@ void DisplayTool::segmentPressed(int index)
     {
         config[index] = false;
         labels[index]->setText("0");
-        qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
+        //qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
         int currPin = comboBoxes[index]->currentIndex();
         for (int i = 0; i < 8; i++)
         {
@@ -174,7 +174,7 @@ void DisplayTool::segmentPressed(int index)
     {
         labels[index]->setText("1");
         config[index] = true;
-        qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
+        //qDebug() << "Display Tool: pin" << comboBoxes[index]->currentIndex();
         int currPin = comboBoxes[index]->currentIndex();
         for (int i = 0; i < 8; i++)
         {
@@ -214,7 +214,7 @@ void DisplayTool::pinEdited(int pin, bool active)
 //index is pin
 void DisplayTool::updateComboBoxes(ComboBox *box, int index)
 {
-    qDebug() << "Combo Box: testing";
+    //qDebug() << "Combo Box: testing";
     bool conflict = false;
     for (int i = 0; i < 8; i++)
     {
@@ -222,11 +222,11 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
         {
             if (comboBoxes[i]->currentIndex() == index)
             {
-                qDebug() << "Combo Box: color changing to red";
+                //qDebug() << "Combo Box: color changing to red";
                 conflict = true;
                 if (box->conflict == true)
                 {
-                    qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
+                    //qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
                     box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
                     char globalPinConflict = 0;
                     int lastPinConflict = 0;
@@ -298,7 +298,7 @@ void DisplayTool::updateComboBoxes(ComboBox *box, int index)
     {
         if (box->conflict == true)
         {
-            qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
+            //qDebug() << "DisplayTool: combobox color changing to normal for pin" << index;
             box->setItemData(box->previousPin, box->palette().base().color(), Qt::BackgroundRole);
             char globalPinConflict = 0;
             int lastPinConflict = 0;
@@ -654,19 +654,19 @@ void DisplayTool::updateLEGlobal(int pin, bool active)
     unsigned char decInv;
     QString number;
     int length;
-    qDebug() << "DisplayTool: old dec number:" << (unsigned int)dec;
+    //qDebug() << "DisplayTool: old dec number:" << (unsigned int)dec;
     if (active == true)
     {
-        qDebug() << "DisplayTool: active == true";
+        //qDebug() << "DisplayTool: active == true";
         dec |= 1 << pin;
         //dec = dec&0xFF;
     }
     else
     {
-        qDebug() << "DisplayTool: active == false";
+        //qDebug() << "DisplayTool: active == false";
         dec &= ~(1 << pin);
     }
-    qDebug() << "DisplayTool: new dec number:" << (unsigned int)dec;
+    //qDebug() << "DisplayTool: new dec number:" << (unsigned int)dec;
     decInv = ~dec&0xFF;
     //hex
     number = QString::number(dec, 16);

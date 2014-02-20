@@ -94,14 +94,14 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void McuMemoryView::deviceChanged()
 {
-    qDebug() << "McuMemoryView: deviceChanged()";
+    //qDebug() << "McuMemoryView: deviceChanged()";
     if ( NULL == m_simControlUnit )
     {
         qDebug() << "McuMemoryView: m_simControlUnit is NULL";
     }
-    qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
+    //qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
 	m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << "McuMemoryView: SubsysId " << this->subsys;
+    //qDebug() << "McuMemoryView: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
         qDebug() << "McuMemoryView: m_memory is NULL";
@@ -128,7 +128,7 @@ void McuMemoryView::deviceChanged()
 	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
-    qDebug() << "McuMemoryView: return deviceChanged()";
+    //qDebug() << "McuMemoryView: return deviceChanged()";
 }
 
 
@@ -140,7 +140,7 @@ void McuMemoryView::changeValue(int address)
 
 void McuMemoryView::deviceReset()
 {
-    qDebug() << "McuMemoryView: deviceReset()"; 
+    //qDebug() << "McuMemoryView: deviceReset()"; 
 	if ( NULL == m_hexEdit )
     {
 		return;
@@ -156,7 +156,7 @@ void McuMemoryView::deviceReset()
  		m_hexEdit->setVal(i, (char)value);
 	}
     m_hexEdit->fixHeight();
-    qDebug() << "McuMemoryView: return deviceReset()"; 
+    //qDebug() << "McuMemoryView: return deviceReset()"; 
 }
 
 

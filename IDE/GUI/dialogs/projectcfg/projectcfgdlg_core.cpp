@@ -25,7 +25,7 @@
 ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *currProject)
     : QDialog(parent)
 {
-    qDebug() << "ProjectConfigDialog_Core: ProjectConfigDialog_Core()";
+    //qDebug() << "ProjectConfigDialog_Core: ProjectConfigDialog_Core()";
     this->project = currProject;
     this->reloadFiles = false;
     this->setModal(true);
@@ -74,7 +74,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
            );
     this->memoryCfg->setScratchpadMaximum(this->generalCfg->getScratchpadMaximum());
     this->memoryCfg->setProgMemMaximum(this->generalCfg->getProgMemMaximum());
-    qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
+    //qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 
 

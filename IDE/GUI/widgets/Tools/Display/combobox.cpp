@@ -19,6 +19,6 @@ ComboBox::ComboBox(QWidget *parent, int index)
 
 void ComboBox::changedEmit(int index)
 {
-    qDebug() << "changed";
+    //qDebug() << "changed";
     emit changed(this, index);
 }

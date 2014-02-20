@@ -180,9 +180,9 @@ class Project : public QObject
         int prevLine;
         int prevLine2;
         int prevLine3;
-        QColor *currLineColor;
-        QColor *prevLineColor;
-        QColor *prevLine2Color;
+        QColor currLineColor;
+        QColor prevLineColor;
+        QColor prevLine2Color;
         QString currFile;
         QString prevFile;
         QString prevFile2;
