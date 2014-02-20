@@ -380,7 +380,14 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bENDR\\b" << "\\bendr\\b"
             << "\\bAUTOREG\\b" << "\\bautoreg\\b"
             << "\\bAUTOSPR\\b" << "\\bautospr\\b"
-            << "\\bMACRO\\b" << "\\bmacro\\b";
+            << "\\bMACRO\\b" << "\\bmacro\\b"
+            << "\\bORGSPR\\b" << "\\borgspr\\b"
+            << "\\bINITSPR\\b" << "\\binitspr\\b"
+            << "\\bMERGESPR\\b" << "\\bmergespr\\b"
+            << "\\bINCLUDE\\b" << "\\binclude\\b";
+            //vsechny s {WS}
+            //RETURNI_ENABLE_INST predelat na returni{WS}enable
+            //ENA_INT_INST predelat na enable{WS}interrupt
 
         keywordFormat.setForeground(Qt::darkBlue);
         keywordFormat.setFontWeight(QFont::Bold);
@@ -401,6 +408,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         highlightingRules.append(rule);
 
         QStringList operandsPatterns;
+        //pridat do keywords s {WS}
         operandsPatterns << "\\bz\\b" << "\\bnz\\b"
             << "\\bc\\b" << "\\bnc\\b";
 
@@ -421,7 +429,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\b(\\b" << "\\b)\\b"
             << "\\b#\\b" << "\\b,\\b"
             << "\\b..\\b"
-            << "\\b+\\b" << "\\b/\\b"
+            << "\\b+\\b" << "\\b\/\\b"
             << "\\b-\\b" << "\\b*\\b"
             << "\\b!\\b" << "\\b%\\b"
             << "\\b<<\\b" << "\\b>>\\b"

@@ -13,7 +13,7 @@ CompileWidget::CompileWidget(QString mainFileName, QString path, LangType langTy
 
 void CompileWidget::compile()
 {
-    qDebug() << "CompileWidget: compile()";
+    //qDebug() << "CompileWidget: compile()";
     //QStringList args;
     //args << " -g -Os -mmcu=atmega8 -c ../" + this->mainFileName;
     QProcess compiler(this);
@@ -47,7 +47,7 @@ void CompileWidget::compile()
         if (!compiler.waitForFinished())
         {
             emit write(compiler.errorString());
-            qDebug() << "CompileWidget: return compile()";
+            //qDebug() << "CompileWidget: return compile()";
             emit finished();
             return;
         }
@@ -62,7 +62,7 @@ void CompileWidget::compile()
         if (!compiler.waitForFinished())
         {
             emit write(compiler.errorString());
-            qDebug() << "CompileWidget: return compile()";
+            //qDebug() << "CompileWidget: return compile()";
             emit finished();
             return;
         }
@@ -83,6 +83,6 @@ void CompileWidget::compile()
             emit write(compiler.readAll() + "\n\n");
         }
     }
-    qDebug() << "CompileWidget: return compile()";
+    //qDebug() << "CompileWidget: return compile()";
     emit finished();
 }

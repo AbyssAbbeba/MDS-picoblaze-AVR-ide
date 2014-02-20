@@ -71,8 +71,8 @@ void DisplaySegment::emitPressed(int index)
 
 void DisplaySegment::setSegment(unsigned char mask)
 {
-    qDebug() << "DisplaySegment: setting mask:" << mask;
-    qDebug() << "DisplaySegment: binary mask:" << QString::number(mask, 2);
+    //qDebug() << "DisplaySegment: setting mask:" << mask;
+    //qDebug() << "DisplaySegment: binary mask:" << QString::number(mask, 2);
     unsigned char maskCpy = mask;
     for (int i = 0; i < 8; i++)
     {

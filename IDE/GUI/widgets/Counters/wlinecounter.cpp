@@ -108,14 +108,13 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     //qDebug() << "WLineCounterWidget: WLineCounterWidget()";
     this->parent = parent;
     this->icons = icons;
-    font.setPixelSize(font.pixelSize()-2);
+    //font.setPixelSize(font.pixelSize()-2);
     this->setFont(font);
     QFontMetrics fontMetrics(font);
     this->fontWidth = fontMetrics.width("0000");
     this->fontHeight = fontMetrics.height();
-    this->setMaximumWidth(fontWidth*2);
+    this->setFixedWidth(fontWidth*2);
     //this->setMaximumHeight(parent->height());
-    this->setMinimumWidth(fontWidth*2);
     //this->setMinimumHeight(parent->parent->height());
     this->hex = hex;
     this->offset = offset;
@@ -244,8 +243,7 @@ void WLineCounterWidget::changeHeight()
     QPlainTextEdit* textEdit = parent->getTextEdit();
     //this->setMinimumHeight(textEdit->document()->size().height());
     //this->setMaximumHeight(textEdit->document()->size().height());
-    this->setMinimumHeight(textEdit->height());
-    this->setMaximumHeight(textEdit->height());
+    this->setFixedHeight(textEdit->height());
     //this->parent->setMaximumHeight(this->height());
     //this->parent->setMinimumHeight(this->height());
     //qDebug() << "WLineCounterWidget: height" << this->height();
@@ -262,11 +260,10 @@ void WLineCounterWidget::changeHeight()
  */
 void WLineCounterWidget::changeFont(QFont font)
 {
-    font.setPixelSize(font.pixelSize()-2);
+    //font.setPixelSize(font.pixelSize()-2);
     this->setFont(font);
     QFontMetrics fontMetrics(font);
     this->fontWidth = fontMetrics.width("0000");
     this->fontHeight = fontMetrics.height();
-    this->setMaximumWidth(fontWidth*2);
-    this->setMinimumWidth(fontWidth*2);
+    this->setFixedWidth(fontWidth*2);
 }

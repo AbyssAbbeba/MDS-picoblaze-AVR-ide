@@ -133,6 +133,19 @@ class GuiCfg_Items
 
         //warnings
         WarningsOpt warnings;
+
+        //compiler options
+        QString family;
+        int scratchpadSize;
+        int progMemSize;
+        int intVector;
+        int hwBuild;
+        QString mainFileName;
+        QString mainFilePath;
+        bool useMainFile;
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
+        QList<bool> compileOpt;
+        
 };
 
 

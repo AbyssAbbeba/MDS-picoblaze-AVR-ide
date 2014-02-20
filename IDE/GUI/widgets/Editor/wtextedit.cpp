@@ -63,7 +63,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
         {
             QTextCursor cursor(this->textCursor());
             emit breakpoint(cursor.blockNumber());
-            qDebug() << "Breakpoint on line:" << cursor.blockNumber()+1;
+            //qDebug() << "Breakpoint on line:" << cursor.blockNumber()+1;
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
@@ -72,7 +72,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
         {
             QTextCursor cursor(this->textCursor());
             emit bookmark(cursor.blockNumber());
-            qDebug() << "Bookmark on line:" << cursor.blockNumber()+1;
+            //qDebug() << "Bookmark on line:" << cursor.blockNumber()+1;
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
         }
