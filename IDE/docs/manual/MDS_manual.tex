@@ -13,7 +13,7 @@
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Martin Madron,bookmarksopen=false,pdfpagemode=None]{hyperref}
-
+    %\usepackage{underscore}
 %\setcounter{chapter}{0} 0x0xxxxx
 
 % \setcounter{chapter}{0} 0x0xxxxx
@@ -140,7 +140,7 @@ the following:
         PicoBlaze is the designation of a series of three free soft processor cores
         from Xilinx for use in their FPGA and CPLD products. They are based on a RISC
         architecture of 8 bits and can reach speeds up to 100 MIPS on the Virtex 4
-        FPGA's family. The processors have an 8-bit address and data port for access
+        FPGA"s family. The processors have an 8-bit address and data port for access
         to a wide range of peripherals. The license of the cores allows their free
         use, albeit only on Xilinx devices, and they come with development tools.
         All instructions execute in two clock cycles, making performance of the core instruction
@@ -180,11 +180,11 @@ the following:
                          
                 \subsection{Source code editor}
                 \subsection{Top panel}
-                        \begin{wrapfigure}{r}{0pt}
+                        \begin{figure}{r}{0pt}
                                 \centering
                                 \includegraphics[width=110pt]{img/menu_file.png}
                                 \caption{File selection}
-                        \end{wrapfigure}
+                        \end{figure}
                         
                         \begin{itemize}
                             \item New file: creates a new document to enter a new source file.
@@ -481,14 +481,12 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
                             {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
                             {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
-<<<<<<< HEAD
                             '\\\\s' ; Character
                             '\\\\n' ; Character
-=======
 %             	            {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
 %             	            {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
                                     % Caption
->>>>>>> 076069953c822134d74d02270d5581df5770f4ce
+
                     \caption{Syntax of various constant bases}
                 \end{code}
                 When you want to say to compiler, that you are using constant, you must add "\#" before.
@@ -2289,7 +2287,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{LD} sX,\#kk\\
                             \textbf{LD} sX,sY\\
                         \subsubsection{STAR}
-                        Apart from bank ?A? being the default on power up or following a reset you are completely free to select back ?A? or bank ?B? as an when you wish using the
+                        Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the
                         REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank. This is
                         typically of value when creating a subroutine that implements an intense task where the use of many registers to manipulate data makes the task easier. It is
                         also very appealing when servicing an interrupt as it can really help to ensure that the contents of registers being used anywhere else in the program at the
@@ -2297,66 +2295,66 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
                         \textbf{STAR} sX,sY\\
                         \subsubsection{OR}
-                        The ?OR? instructions perform the bit-wise logical OR operation.\\
-                        The first operand must specify a register ?sX? whose value provides one input to the OR operation and in to which the result is returned.
-                        The second operand defines the second input to the OR operation and can either be an 8-bit constant ?kk? or a register ?sY?.
-                        The zero flag (Z) will be set if all 8-bits of the result returned to ?sX? are zero.
+                        The "OR" instructions perform the bit-wise logical OR operation.\\
+                        The first operand must specify a register "sX" whose value provides one input to the OR operation and in to which the result is returned.
+                        The second operand defines the second input to the OR operation and can either be an 8-bit constant "kk" or a register "sY".
+                        The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
                         The carry flag (C) will be cleared (C=0) in all cases.\\
 
                             \textbf{OR} sX,sY\\
                             \textbf{OR} sX,\#kk\\
-                                \begin{wrapfigure}
-                                    \centering
+                                \begin{figure}
+                                    \centering{}
                                     \includegraphics[scale=1]{img/OR_snapshot.png}
                                     \caption{AND instruction}
-                                \end{wrapfigure}
+                                \end{figure}
                         \subsubsection{XOR}
-                                The ?XOR? instructions perform the bit-wise logical exclusive-OR operation.\\
-                                The first operand must specify a register ?sX? whose value provides one input to the XOR operation and in to which the result is returned.
-                                The second operand defines the second input to the XOR operation and can either be an 8-bit constant ?kk? or a register ?sY?.
-                                The zero flag (Z) will be set if all 8-bits of the result returned to ?sX? are zero.
+                                The "XOR" instructions perform the bit\-wise logical exclusive-OR operation.\\
+                                The first operand must specify a register "sX" whose value provides one input to the XOR operation and in to which the result is returned.
+                                The second operand defines the second input to the XOR operation and can either be an 8-bit constant "kk" or a register "sY".
+                                The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
                                 The carry flag (C) will be cleared (C=0) in all cases.\\
 
                             \textbf{XOR} sX,\#kk\\
                             \textbf{XOR} sX,sY\\
-                                \begin{wrapfigure}
-                                    \centering
+                                \begin{figure}
+                                    \centering{}
                                     \includegraphics[scale=1]{img/XOR_snapshot.png}
                                     \caption{AND instruction}
-                                \end{wrapfigure}
+                                \end{figure}
                         \subsubsection{AND}
-                        The first operand must specify a register \?sX\? whose value provides one input to the AND operation and in to which the result is returned.
-                        The second operand defines the second input to the AND operation and can either be an 8-bit constant \?\#kk\? or a register \?sY\?.
-                        The zero flag (Z) will be set if all 8-bits of the result returned to \?sX\? are zero.
+                        The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned.
+                        The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk\ or a register sY.
+                        The zero flag (Z) will be set if all 8-bits of the result returned to sX are zero.
                         The carry flag (C) will be cleared (C=0) in all cases.\\
                             \textbf{AND} sX,\#kk\\
                             \textbf{AND} sX,sY\\
-                                \begin{wrapfigure}
-                                    \centering
+                                \begin{figure}
+                                    \centering{}
                                     \includegraphics[scale=1]{img/AND_snapshot.png}
                                     \caption{AND instruction}
-                                \end{wrapfigure}
+                                \end{figure}
                                 
                         \subsubsection{TEST}
-                        The ?TEST? instructions are similar to the ?AND? instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and
-                        only the flags are updates to reflect the temporary 8-bit. The ?TEST? instruction also reports then exclusive-OR of the temporary result which can be used to
-                        compute the ?odd parity? of a value.\\
-                        The first operand must specify a register ?sX? whose value provides one input to the AND operation (sX will not be effected by the operation).
-                        The second operand defines the second input to the AND operation and can either be an 8-bit constant ?kk? or a register ?sY?.
+                        The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and
+                        only the flags are updates to reflect the temporary 8-bit. The "TEST" instruction also reports then exclusive-OR of the temporary result which can be used to
+                        compute the "odd parity" of a value.\\
+                        The first operand must specify a register "sX" whose value provides one input to the AND operation (sX will not be effected by the operation).
+                        The second operand defines the second input to the AND operation and can either be an 8-bit constant "kk" or a register "sY".
                         The zero flag (Z) will be set if all 8-bits of the temporary result are zero.
-                        The carry flag (C) will be set if the temporary result contains an odd number of bits set to ?1? (the exclusive-OR of the 8-bit temporary result).
+                        The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).
                             \textbf{TEST} sX,sY\\
                             \textbf{TEST} sX,\#kk\\
                         \subsubsection{TESTCY}
-                        The ?TESTCY? instructions are primarily intended as an extension to the basic ?TEST? instructions in order to support testing and odd parity calculation of
+                        The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of
                         values more than 8-bits. The key difference from the TEST instructions is that the zero and carry flags are also used as inputs that can influence the new
                         states of the flags. Although each register only contains an 8-bit value, any combination of registers can be used to hold larger values segmented into bytes.
                         For example a 32-bit value can be held in a 4 registers. Although there is no restriction on which registers, and no formal way of describing the assignment, it
-                        is common practice to assign adjacent registers and refer to them as a ?register set? such as [sD, sC, sB, sA].
-                        The first operand must specify a register ?sX? whose value provides one input to the AND operation (sX will not be effected by the operation).
-                        The second operand defines the second input to the AND operation and can either be an 8-bit constant ?kk? or a register ?sY?.
+                        is common practice to assign adjacent registers and refer to them as a "register set" such as [sD, sC, sB, sA].
+                        The first operand must specify a register "sX" whose value provides one input to the AND operation (sX will not be effected by the operation).
+                        The second operand defines the second input to the AND operation and can either be an 8-bit constant "kk" or a register "sY".
                         The zero flag (Z) will be set if all 8-bits of the temporary result are zero and the zero flag was set prior to the TESTCY instruction.
-                        The carry flag (C) will be set if the temporary result together with the previous state of the carry flag contains an odd number of bits set to ?1?.
+                        The carry flag (C) will be set if the temporary result together with the previous state of the carry flag contains an odd number of bits set to "1".
                             \textbf{TESTCY} sX,sY\\
                             \textbf{TESTCY} sX,\#kk\\
                 \subsection{Shift and Rotate Group}
@@ -2374,7 +2372,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{SRX} sX\\
                             \textbf{SRA} sX\\
                         \subsubsection{RR, RL}
-                        The ?RL? and ?RR? instructions rotate the contents of the specified register (sX) one bit to the left or right. The bit that is shifted out of on end of the register and
+                        The "RL" and "RR" instructions rotate the contents of the specified register (sX) one bit to the left or right. The bit that is shifted out of on end of the register and
                         back into the other end is also copied into the into the carry flag (C). The zero flag (Z) will be set only if all 8-bits of the register contents are zero.\\
                             \textbf{RR}  sX\\
                             \textbf{RL}  sX\\
@@ -2393,25 +2391,25 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{STORE}
-                        The store instructions write the contents of a register ?sX? into the scratch pad memory (SPM). The location (or address) within the SPM into which the register
-contents are written can be defined by a specific address ?ss? or by the contents of a second register ?(sY)?. The contents of the register and the states of the
+                        The store instructions write the contents of a register "sX" into the scratch pad memory (SPM). The location (or address) within the SPM into which the register
+contents are written can be defined by a specific address "ss" or by the contents of a second register "(sY)". The contents of the register and the states of the
 zero and carry flags are not effected by the operation.
-The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0?d to 63?d). If more memory is required then the
-?scratch_pad_memory_size? generic can be set to ?128? or ?256? to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
+The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
+"scratch\_pad_memory\_size" generic can be set to "128" or "256" to increase the size to 128\-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
 your responsibility to ensure that you only write to locations that physically exist.\\
 
                             \textbf{STORE} sX,ss\\
-                            \textbf{STORE} sX,\@sY\\
+                            \textbf{STORE} sX,@sY\\
                             
                         \subsubsection{FETCH}
-                        The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register ?sX? into The SPM location (or address) to be read can be
-                        defined by a specific address ?ss? or by the contents of a second register ?(sY)?. The contents of the SPM and the states of the zero and carry flags are not
+                        The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX" into The SPM location (or address) to be read can be
+                        defined by a specific address "ss" or by the contents of a second register "@sY". The contents of the SPM and the states of the zero and carry flags are not
                         effected by the operation.
-                        The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0?d to 63?d). If more memory is required then the
-                        ?scratch_pad_memory_size? generic can be set to ?128? or ?256? to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
+                        The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
+                        "scratch_pad_memory_size" generic can be set to "128" or "256" to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
                         your responsibility to ensure that you only read locations that physically exist.\\
                             \textbf{FETCH} sX,ss\\
-                            \textbf{FETCH} sX,\@sY\\
+                            \textbf{FETCH} sX,@sY\\
                             
                 \subsection{Input output group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
@@ -2420,34 +2418,34 @@ your responsibility to ensure that you only write to locations that physically e
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{INPUT, IN}
-                        An ?INPUT? instruction enables to read information from the from your hardware design into a register ?sX? using a general purpose input port
-                        specified by an 8-bit constant value ?pp? or the contents of another register ?(sY)?. KCPSM6 presents the port address defined by ?pp? or ?(sY)? on ?port_id? and
-                        your hardware interface is then responsible for selecting and presenting the appropriate information to the ?in_port? so that it can be captured into the ?sX?
-                        register. An active High (?1?) synchronous pulse is also generated on the ?read_strobe? pin and may be used by the hardware interface to confirm when a
+                        An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port
+                        specified by an 8-bit constant value "pp" or the contents of another register "@sY". KCPSM6 presents the port address defined by "pp" or "(sY)" on "port_id" and
+                        your hardware interface is then responsible for selecting and presenting the appropriate information to the "in_port" so that it can be captured into the "sX"
+                        register. An active High ("1") synchronous pulse is also generated on the "read_strobe" pin and may be used by the hardware interface to confirm when a
                         particular port has been read.
                         \\
                             \textbf{INPUT}      sX,pp\\
-                            \textbf{INPUT}      sX,\@sY\\
+                            \textbf{INPUT}      sX,@sY\\
                             \textbf{IN}         sX,pp\\
-                            \textbf{IN}         sX,\@sY\\
+                            \textbf{IN}         sX,@sY\\
                         \subsubsection{OUTPUT, OUT}
-                        An ?OUTPUT? instruction is used to transfer information from a register ?sX? to a general purpose output port specified by an 8-bit constant value ?pp? or the
-                        contents of another register ?(sY)?. KCPSM6 presents the contents of the register ?sX? on ?out_port? and the port address defined by ?pp? or ?(sY)? is presented
-                        on ?port_id?. Both pieces of information are qualified by an active High (?1?)
-                        synchronous pulse on the ?write_strobe? pin. Your hardware interface is responsible for capturing the information presented
+                        An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
+                        contents of another register "@sY". KCPSM6 presents the contents of the register "sX" on "out_port" and the port address defined by "pp" or "@sY" is presented
+                        on "port_id". Both pieces of information are qualified by an active High ("1")
+                        synchronous pulse on the "write_strobe" pin. Your hardware interface is responsible for capturing the information presented
                         \\
                             \textbf{OUTPUT}     sX,pp\\
-                            \textbf{OUTPUT}     sX,\@sY\\
+                            \textbf{OUTPUT}     sX,@sY\\
                             \textbf{OUT}        sX,pp\\
-                            \textbf{OUT}        sX,\@sY\\
+                            \textbf{OUT}        sX,@sY\\
                         \subsubsection{OUTPUTK, OUTK}
-                        The OUTPUTK instruction has two operands. The first operand is the 8-bit constant value ?kk? that will be presented on ?out-port? and therefore must be in
-                        the range ?00? to ?FF? hex. The second operand must specify the port address that will be presented on port_id[3:0] and therefore must be in the range ?0? to
-                        ?F? hex.
+                        The OUTPUTK instruction has two operands. The first operand is the 8-bit constant value "kk" that will be presented on "out-port" and therefore must be in
+                        the range "00" to "FF" hex. The second operand must specify the port address that will be presented on port_id[3:0] and therefore must be in the range "0" to
+                        "F" hex.
                             \textbf{OUTPUTK}     sX,pp\\
-                            \textbf{OUTPUTK}     sX,\@sY\\
+                            \textbf{OUTPUTK}     sX,@sY\\
                             \textbf{OUTK}        sX,pp\\
-                            \textbf{OUTK}        sX,\@sY\\
+                            \textbf{OUTK}        sX,@sY\\
                        
         \section{Generated VHDL and Verilog files}
         As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow.
