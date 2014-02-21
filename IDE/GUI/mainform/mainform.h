@@ -105,6 +105,7 @@ class MainForm : public QMainWindow
         void interfaceConfig();
         void projectOpened();
         void stopSimSlot();
+        void activeProjectChanged(int index);
 
     signals:
         void unhighlightSim();
@@ -186,6 +187,8 @@ class MainForm : public QMainWindow
         bool simulationRunStatus;
         // sim animate status
         bool simulationAnimateStatus;
+
+        bool projectTabConnected;
 };
 
 
