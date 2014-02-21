@@ -10,7 +10,7 @@ ShowHideWidget::ShowHideWidget(QWidget *parent)
 
 void ShowHideWidget::paintEvent ( QPaintEvent * event )
 {
-    qDebug() << "ShowHideWidget: is shown " << isShown;
+    //qDebug() << "ShowHideWidget: is shown " << isShown;
     emit show(isShown);
     isShown = !isShown;
 }

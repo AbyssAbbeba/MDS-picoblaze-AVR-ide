@@ -162,9 +162,9 @@ void RegistersWidget::deviceChanged()
     {
         qDebug() << "RegistersWidget: m_simControlUnit is NULL";
     }
-    qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
+    //qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
     m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << "RegistersWidget: SubsysId " << this->subsys;
+    //qDebug() << "RegistersWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
         qDebug() << "RegistersWidget: m_memory is NULL";

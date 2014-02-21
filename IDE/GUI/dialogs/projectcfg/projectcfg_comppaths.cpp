@@ -92,12 +92,12 @@ void ProjectCfg_CompPaths::deletePath()
  */
 void ProjectCfg_CompPaths::load()
 {
-    qDebug() << "ProjectCfg_CompPaths: load()";
+    //qDebug() << "ProjectCfg_CompPaths: load()";
     for (int i = 0; i < this->project->compileIncPaths.count(); i++)
     {
         QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->ui.lstPaths);
     }
-    qDebug() << "ProjectCfg_CompPaths: load()";
+    //qDebug() << "ProjectCfg_CompPaths: load()";
 }
 
 

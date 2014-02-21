@@ -143,8 +143,9 @@ void MainForm::createMenu()
 
     simulationMenu = menuBar()->addMenu(tr("&Simulation"));
     simulationMenu->addAction(simulationFlowAct);
-    simulationMenu->addAction(simulationStepAct);
     simulationMenu->addAction(simulationRunAct);
+    simulationMenu->addAction(simulationAnimateAct);
+    simulationMenu->addAction(simulationStepAct);
     simulationMenu->addAction(simulationResetAct);
     simulationMenu->addAction(simulationUnhighlightAct);
 

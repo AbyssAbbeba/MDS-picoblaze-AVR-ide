@@ -161,7 +161,7 @@ WSimulationInfo::~WSimulationInfo()
 
 void WSimulationInfo::contextMenuEvent(QContextMenuEvent *event)
 {
-    qDebug() << "simulation info: popup";
+    //qDebug() << "simulation info: popup";
     popupMenu->popup(event->globalPos());
     this->gridLayout->grab = 0;
 }
@@ -169,7 +169,7 @@ void WSimulationInfo::contextMenuEvent(QContextMenuEvent *event)
 
 void WSimulationInfo::rearangeLayoutSlot()
 {
-    qDebug() << "simulation info: rearange layout slot";
+    //qDebug() << "simulation info: rearange layout slot";
     QWidget *infoWidget = new QWidget(0);
     QVBoxLayout *layout = new QVBoxLayout(infoWidget);
     WSimulationInfo *info1 = new WSimulationInfo(controlUnit, this, infoWidget);
@@ -193,14 +193,14 @@ void WSimulationInfo::rearangeLayoutSlot()
 
 void WSimulationInfo::saveLayoutSlot()
 {
-    qDebug() << "simulation info: save layout slot";
+    //qDebug() << "simulation info: save layout slot";
     this->getGridLayout()->saveGridWidgets(projectPath);
 }
 
 
 void WSimulationInfo::setFocusSlot()
 {
-    qDebug() << "simulation info: focus in";
+    //qDebug() << "simulation info: focus in";
     this->setFocus(Qt::OtherFocusReason);
     //this->activateWindow();
 }
@@ -220,13 +220,13 @@ MovGridLayout* WSimulationInfo::getGridLayout()
 
 void WSimulationInfo::catchDragSlot(MovGridLayoutItem *item)
 {
-    qDebug() << "WSimulationInfo: catchDragSlot";
+    //qDebug() << "WSimulationInfo: catchDragSlot";
     this->dragItem = item;
     if (item != NULL)
     {
        // this->gridLayout->grab = true;
         MovGridLayoutItem *temp = this->gridLayout->getTempGridWidget(dragItem->index);
-        qDebug() << "WSimulationInfo: index" << temp->index;
+        //qDebug() << "WSimulationInfo: index" << temp->index;
         this->gridLayout->addItem(temp);
         temp->widget->show();
     }
