@@ -17,6 +17,7 @@
 #include "McuSimCfgMgr.h"
 #include "MCUSimControl.h"
 #include "../widgets/ProjectTree/projecttree.h"
+#include "../guicfg/guicfg.h"
 
 
 
@@ -291,9 +292,9 @@ Project::Project(QFile *file, ProjectMan *parent)
     parentManager = parent;
     this->m_simControlUnit = NULL;
     prjPath = QFileInfo(*file).filePath();
-    currLineColor = new QColor(102,204,255,255);
-    prevLineColor = new QColor(102,204,255,125);
-    prevLine2Color = new QColor(102,204,255,50);
+    currLineColor = GuiCfg::getInstance().getCurrLineColor();
+    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
+    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
     //nacteni ze souboru
     QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(file))
@@ -576,8 +577,22 @@ Project::Project(ProjectMan *parent)
     //qDebug() << "Project: Project()";
     parentManager = parent;
     this->m_simControlUnit = NULL;
-    prjName = "untracked";
-    prjPath = "untracked";
+    this->prjName = "untracked";
+    this->prjPath = "untracked";
+
+    currLineColor = GuiCfg::getInstance().getCurrLineColor();
+    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
+    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
+
+    this->family = GuiCfg::getInstance().getProjectFamily();
+    this->intVector = GuiCfg::getInstance().getProjectIntVector();
+    this->hwBuild = GuiCfg::getInstance().getProjectHWBuild();
+    this->scratchpadSize = GuiCfg::getInstance().getProjectScratchpadSize();
+    this->progMemSize = GuiCfg::getInstance().getProjectProgMemSize();
+    this->useMainFile = false;
+    this->mainFileName = "";
+    this->mainFilePath = "";
+    this->compileOpt = GuiCfg::getInstance().getProjectCompOpt();
 
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -608,7 +623,7 @@ Project::Project(ProjectMan *parent)
     connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
     connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
     connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
-    //connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
     //connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
@@ -633,9 +648,12 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     //qDebug() << "Project: Project() blank";
     parentManager = parent;
     this->m_simControlUnit = NULL;
-    currLineColor = new QColor(102,204,255,255);
-    prevLineColor = new QColor(102,204,255,125);
-    prevLine2Color = new QColor(102,204,255,50);
+    currLineColor = GuiCfg::getInstance().getCurrLineColor();
+    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
+    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
+    //currLineColor = new QColor(102,204,255,255);
+    //prevLineColor = new QColor(102,204,255,125);
+    //prevLine2Color = new QColor(102,204,255,50);
 
     if (name != NULL)
     {
@@ -648,7 +666,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
     prjDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
     prjTreeWidget = new ProjectTree(prjDockWidget, true);
-            /*connect signals!!!*/
+            /*connect signals!!! - connected elsewhere*/
 
     prjDockWidget->setWidget(prjTreeWidget);
     //prjDockWidget->setMinimumWidth(150);
@@ -917,11 +935,13 @@ QString Project::addFile(QString path, QString name)
                 fileName = "untracked"+QString::number(fileCount);
             }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
+            filePaths.append("untracked");
         }
         else
         {
             treeProjFile->setText(0, name);
             treeProjFile->setData(0, Qt::ToolTipRole, path);
+            filePaths.append(path);
         }
         fileCount++;
     }
@@ -1592,7 +1612,7 @@ bool Project::start()
                                                         m_simControlUnit->DBGFILEID_HEX)
            )
         {
-            qDebug() << "Project: return false start()";
+            qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
             for (unsigned int i = 0; i < messages.size(); i++)
             {
@@ -1600,10 +1620,10 @@ bool Project::start()
             }
             return false;
         }
-        else
-        {
-            qDebug() << "Project: m_simControlUnit->start() returned true";
-        }
+        //else
+        //{
+            //qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
+        //}
     }
     else if (langType == LANG_C)
     {
@@ -1618,10 +1638,10 @@ bool Project::start()
             qDebug() << "Project: return false start()";
             return false;
         }
-        else
-        {
-            qDebug() << "Project: m_simControlUnit->start() returned true";
-        }
+        //else
+        //{
+        //    qDebug() << "Project: m_simControlUnit->start() returned true";
+        //}
     }
     qDebug() << "Project: getLineNumber";
     m_simControlUnit->getLineNumber(currLine);
@@ -1630,14 +1650,14 @@ bool Project::start()
     {
         return false;
     }
-    qDebug() << "Project: setEditorReadOnly";
+    qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
-    qDebug() << "Project: currFile";
+    //qDebug() << "Project: currFile";
     this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-    qDebug() << "Project: highlightLine";
-    emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, this->currLineColor);
+    //qDebug() << "Project: highlightLine";
+    emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
     this->prevLine = std::get<1>(this->currLine.at(0))-1;
@@ -1647,7 +1667,7 @@ bool Project::start()
     this->prevFile = this->currFile;
     this->prevFile2 = this->currFile;
     this->prevFile3 = this->currFile;
-    qDebug() << "Project: return start()";
+    //qDebug() << "Project: return start()";
     return true;
 }
 
@@ -1703,9 +1723,9 @@ void Project::handleUpdateRequest(int mask)
         //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
         //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
         emit highlightLine(this->prevFile3, this->prevLine3, NULL);
-        emit highlightLine(this->prevFile2, this->prevLine2,this-> prevLine2Color);
-        emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
-        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, this->currLineColor);
+        emit highlightLine(this->prevFile2, this->prevLine2,&(this->prevLine2Color));
+        emit highlightLine(this->prevFile, this->prevLine, &(this->prevLineColor));
+        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
 
         //emit setCentralByName(this->currFile);
         //emit scrollToLine(this->line);

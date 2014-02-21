@@ -55,6 +55,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setDefaultSimOthers();
 
+        void setDefaultProject();
+
         void setDefaultAll();
 
         void setTabWidth(int width);
@@ -102,6 +104,24 @@ class GuiCfg : public QObject, public GuiCfg_Items
         QString getEncoding();
 
         QString getEOL();
+
+        QColor getCurrLineColor();
+
+        QColor getPrevLineColor();
+
+        QColor getPrevLine2Color();
+
+        QString getProjectFamily();
+        
+        int getProjectIntVector();
+        
+        int getProjectHWBuild();
+        
+        int getProjectScratchpadSize();
+        
+        int getProjectProgMemSize();
+        
+        QList<bool> getProjectCompOpt();
 
         //xml parser
         void loadConfig();

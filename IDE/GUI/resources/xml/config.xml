@@ -23,7 +23,7 @@
   <Option i="false" type="quote" name="highlight" s="false" b="false" color="#ffffff" u="false"/>
  </EditorHighlighter>
  <EditorFonts>
-  <Option size="10" family="Monospace" name="font"/>
+  <Option size="9" family="Monospace" name="font"/>
  </EditorFonts>
  <SimWarnings>
   <Option param="true" name="mem_rnonexist"/>
@@ -56,8 +56,8 @@
  </SimWarnings>
  <SimOthers>
   <Option param="random" name="undef"/>
-  <Option type="line" name="color" color="#ffffff"/>
-  <Option type="breakpoint" name="color" color="#ffffff"/>
-  <Option type="update" name="color" color="#ffffff"/>
+  <Option type="line" name="color" color="#66ccff"/>
+  <Option type="breakpoint" name="color" color="#00ff00"/>
+  <Option type="update" name="color" color="#ffff00"/>
  </SimOthers>
 </config>

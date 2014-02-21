@@ -86,18 +86,17 @@ WColumnCounterWidget::WColumnCounterWidget(WColumnCounter *parent, QFont font, i
 {
     this->parent = parent;
     this->columns = columns;
-    qDebug() << font.pixelSize();
+    //qDebug() << font.pixelSize();
     //font.setPixelSize(font.pixelSize());
     //font.setStyleHint(QFont::Monospace);
     QFontMetrics fontMetrics(font);
     this->setFont(font);
-    qDebug() << this->fontInfo().pixelSize();
-    qDebug() << font.pixelSize();
+    //qDebug() << this->fontInfo().pixelSize();
+    //qDebug() << font.pixelSize();
     this->fontHeight = fontMetrics.height();
     this->fontWidth = fontMetrics.width("0 0");
-    this->setMaximumHeight(this->fontHeight);
+    this->setFixedHeight(this->fontHeight);
     this->setMinimumWidth(parent->width());
-    this->setMinimumHeight(this->fontHeight);
 }
 
 
@@ -119,7 +118,7 @@ void WColumnCounterWidget::paintEvent(QPaintEvent *)
     paint.setPen(pen);
     for (int i = 0; i<columns; i++)
     {
-        point.setX(i*this->fontWidth+5-i*0.5);
+        point.setX(i*this->fontWidth+5);
         rect.moveTopLeft(point);
         //paint.drawRect(rect);
         //paint.setPen(pen);

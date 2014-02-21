@@ -114,7 +114,7 @@ void ProjectCfg_Memory::setScratchpadMaximum(int maximum)
         ui.lblScratchpad->setEnabled(true);
         ui.sldScratchpad->setMaximum(maximum);
         ui.sldScratchpad->setValue(maximum);
-        qDebug() << "ProjectCfg_Memory: maximum" << maximum;
+        //qDebug() << "ProjectCfg_Memory: maximum" << maximum;
     }
     else
     {
