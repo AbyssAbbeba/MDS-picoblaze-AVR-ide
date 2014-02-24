@@ -19,7 +19,7 @@ project ( CompilerModuleC )
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers.
-FLEX_BISON_PAIR ( CompilerCLexer CompilerCParser CompilerCLexerParser )
+flex_bison_pair ( CompilerCLexer CompilerCParser CompilerCLexerParser )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )

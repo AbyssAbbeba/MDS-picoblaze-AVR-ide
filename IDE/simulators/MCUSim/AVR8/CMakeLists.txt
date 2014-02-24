@@ -23,7 +23,7 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
-add_library ( ${PROJECT_NAME}
+add_library ( ${PROJECT_NAME} OBJECT
               AVR8IO.cxx
               AVR8Sim.cxx
               AVR8DES.cxx
@@ -49,15 +49,3 @@ add_library ( ${PROJECT_NAME}
               AVR8AnalogComparator.cxx
               AVR8ExternalInterrupts.cxx
               AVR8InterruptController.cxx )
-
-# Link the target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} MCUDataFiles )
-
-
-# ------------------------------------------------------------------------------
-# INSTALLATION OPTIONS
-# ------------------------------------------------------------------------------
-
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )

@@ -19,7 +19,9 @@ project ( 3rdParty )
 # ------------------------------------------------------------------------------
 
 # Build modified CUnit library.
-add_subdirectory ( CUnit )
+if ( BUILD_TESTING )
+    add_subdirectory ( CUnit )
+endif()
 
 # Build hidapi library.
 # add_subdirectory ( hidapi )
