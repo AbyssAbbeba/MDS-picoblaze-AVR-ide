@@ -19,7 +19,7 @@ project ( CompilerModuleAsmPic8 )
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers.
-FLEX_BISON_PAIR ( AsmPic8Lexer AsmPic8Parser AsmPic8LexerParser )
+flex_bison_pair ( AsmPic8Lexer AsmPic8Parser AsmPic8LexerParser )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core" )

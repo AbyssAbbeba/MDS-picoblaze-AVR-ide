@@ -142,7 +142,7 @@ if [[ 'on' == "${COVERAGE}" ]]; then
     numberOfGcovFiles=$( find . -name '*.gcov' | wc -l )
 
     echo ""
-    echo "Initiating final stage of coverage analysis (processing ${megaBytesOfGcov} MB in ${numberOfGcovFiles} files):"
+    echo "Initiating final stage of coverage analysis (processing ${megaBytesOfGcov} MiB in ${numberOfGcovFiles} files):"
     unset JOBS
     idx=1
     prefix=1

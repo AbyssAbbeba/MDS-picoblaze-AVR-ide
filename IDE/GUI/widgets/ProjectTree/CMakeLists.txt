@@ -15,11 +15,11 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
+# here we define SAMPLE_SRCS variable that contains a list of all .cpp files
 SET( SAMPLE_SRCS
 	./projecttree.cpp
 )
-  
+
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
 	./projecttree.h
@@ -40,7 +40,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} McuSimCfgMgr SimControl)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator)
 
 
 # ------------------------------------------------------------------------------

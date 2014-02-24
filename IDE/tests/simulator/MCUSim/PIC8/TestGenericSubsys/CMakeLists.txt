@@ -39,7 +39,7 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         MCUSimTestScript
-                                        PIC8Sim
+                                        Simulator
                                         CUnit )
 
 ## Add a target with no output so it will always be built.

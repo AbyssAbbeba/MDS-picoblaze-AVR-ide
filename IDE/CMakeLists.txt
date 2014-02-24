@@ -88,15 +88,17 @@ if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
     set ( BUILD_SHARED_LIBS ON )
 else()
     set ( BUILD_SHARED_LIBS OFF )
+    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,--strip-all" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--strip-all" )
 endif()
 
 # Optionally build with support for coverage analysis support.
 option ( TEST_COVERAGE "Configure build for coverage analysis." OFF )
 if ( TEST_COVERAGE )
-    set ( CMAKE_EXE_LINKER_FLAGS    "--coverage -lgcov" )
-    set ( CMAKE_SHARED_LINKER_FLAGS "--coverage -lgcov" )
-    set ( CMAKE_C_FLAGS             "--coverage ${CMAKE_C_FLAGS}" )
-    set ( CMAKE_CXX_FLAGS           "--coverage ${CMAKE_CXX_FLAGS}" )
+    set ( CMAKE_C_FLAGS             "${CMAKE_C_FLAGS}             --coverage" )
+    set ( CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS}           --coverage" )
+    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    --coverage -lgcov" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage -lgcov" )
     message ( STATUS "This build is configured for coverage analysis!" )
 endif()
 
@@ -237,7 +239,7 @@ add_subdirectory ( compiler )
 add_subdirectory ( GUI )
 
 # Build Moravia Script language support.
-add_subdirectory ( moraviascript )
+# add_subdirectory ( moraviascript )
 
 # Build dev. hardware support software.
 add_subdirectory ( HW )

@@ -19,7 +19,7 @@ project ( CompilerModuleAsmMcs51 )
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers.
-FLEX_BISON_PAIR ( AsmMcs51Lexer AsmMcs51Parser AsmMcs51LexerParser )
+flex_bison_pair ( AsmMcs51Lexer AsmMcs51Parser AsmMcs51LexerParser )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core" )

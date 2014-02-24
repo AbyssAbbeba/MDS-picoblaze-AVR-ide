@@ -33,4 +33,6 @@ add_subdirectory ( os )
 add_subdirectory ( AsmTranslator )
 
 # Library for automated testing environment using libCUnit.
-add_subdirectory ( AutoTest )
+if ( BUILD_TESTING )
+    add_subdirectory ( AutoTest )
+endif()

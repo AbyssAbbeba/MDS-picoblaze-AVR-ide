@@ -19,7 +19,7 @@ project ( CompilerModuleAsmPicoBlaze )
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers.
-FLEX_BISON_PAIR ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
+flex_bison_pair ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
