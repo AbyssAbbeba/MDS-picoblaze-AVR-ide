@@ -66,6 +66,7 @@ class ProjectMan : public QObject
         void addUntrackedProject();
         void openProject(QFile *file);
         void setActive(Project *activePrj);
+        void setActiveByIndex(int index);
         bool isActiveProject(Project *project);
         Project* getActive();
         void createActiveMakefile();
