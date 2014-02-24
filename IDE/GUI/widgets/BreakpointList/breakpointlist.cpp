@@ -40,7 +40,7 @@ void BreakpointList::reload(QList<int> breakpointList)
         QListWidgetItem *newItem = new QListWidgetItem(QString::number(*i+1, 10), this);
         this->addItem(newItem);
     }
-    qDebug() << "breakpointlist - reload";
+    //qDebug() << "breakpointlist - reload";
 }
 
 
@@ -53,7 +53,7 @@ void BreakpointList::breakpointListAddSlot(int line)
     QListWidgetItem *newItem = new QListWidgetItem(QString::number(line+1, 10), this);
     this->addItem(newItem);
     this->sortItems();
-    qDebug() << "breakpointlist - add";
+    //qDebug() << "breakpointlist - add";
 }
 
 
@@ -71,5 +71,5 @@ void BreakpointList::breakpointListRemoveSlot(int line)
         delete *i;
         *i = NULL;
     }
-    qDebug() << "breakpointlist - remove";
+    //qDebug() << "breakpointlist - remove";
 }

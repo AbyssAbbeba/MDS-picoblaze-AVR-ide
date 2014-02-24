@@ -134,7 +134,7 @@ void DisplayWidget::mousePressEvent(QMouseEvent *event)
     {
         activated = true;
     }
-    qDebug() << "DisplayWidget: pressed: " << this->index;
+    //qDebug() << "DisplayWidget: pressed: " << this->index;
     this->update();
 }
 
@@ -142,7 +142,7 @@ void DisplayWidget::mousePressEvent(QMouseEvent *event)
 void DisplayWidget::activate(bool active)
 {
     activated = active;
-    qDebug() << "DisplayWidget: auto pressed: " << this->index;
+    //qDebug() << "DisplayWidget: auto pressed: " << this->index;
     this->update();
 }
 

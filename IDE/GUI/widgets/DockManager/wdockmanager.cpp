@@ -278,7 +278,7 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: addUntrackedCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -327,7 +327,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             newEditor->setChanged();
         }
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
 
 
@@ -556,7 +556,7 @@ QDockWidget* WDockManager::getDockWidgetArea(int area)
 
 void WDockManager::hideDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: hideDockWidgetArea()";
+    //qDebug() << "WDockManager: hideDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -564,8 +564,8 @@ void WDockManager::hideDockWidgetArea(int area)
         {
             if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
             {
-                qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
-                qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
+                //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+                //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
                 wDockBotPrevHeight = (*i)->getQDockWidget()->height();
             }
             (*i)->getQDockWidget()->setMaximumHeight(0);
@@ -573,12 +573,12 @@ void WDockManager::hideDockWidgetArea(int area)
             //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), 0);
         }
     }
-    qDebug() << "WDockManager: return hideDockWidgetArea()";
+    //qDebug() << "WDockManager: return hideDockWidgetArea()";
 }
 
 void WDockManager::showDockWidgetArea(int area)
 {
-    qDebug() << "WDockManager: showDockWidgetArea()";
+    //qDebug() << "WDockManager: showDockWidgetArea()";
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
@@ -593,7 +593,7 @@ void WDockManager::showDockWidgetArea(int area)
         }
     }
     //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
-    qDebug() << "WDockManager: return showDockWidgetArea()";
+    //qDebug() << "WDockManager: return showDockWidgetArea()";
 }
 
 
@@ -742,7 +742,7 @@ void WDockManager::highlightError(QString filename, int line)
 
 void WDockManager::handleShowHideBottom(int index)
 {
-    qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
+    //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
     if ("Hide" == bottomAreaTabs->tabText(index))
     {
         if (true == visible)
