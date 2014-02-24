@@ -1432,56 +1432,56 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 == \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0  != \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 >    \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 < \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 <= \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 >= \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 & \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_constant}   s0 \& \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 !& \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_constant}   s0 !\& \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
@@ -2390,7 +2390,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 contents are written can be defined by a specific address "ss" or by the contents of a second register "(sY)". The contents of the register and the states of the
 zero and carry flags are not effected by the operation.
 The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
-"scratch\_pad_memory\_size" generic can be set to "128" or "256" to increase the size to 128\-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
+"scratch\_pad\_memory\_size" generic can be set to "128" or "256" to increase the size to 128\-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
 your responsibility to ensure that you only write to locations that physically exist.\\
 
                             \textbf{STORE} sX,ss\\
@@ -2401,7 +2401,7 @@ your responsibility to ensure that you only write to locations that physically e
                         defined by a specific address "ss" or by the contents of a second register "@sY". The contents of the SPM and the states of the zero and carry flags are not
                         effected by the operation.
                         The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
-                        "scratch_pad_memory_size" generic can be set to "128" or "256" to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
+                        "scratch\_pad\_memory\_size" generic can be set to "128" or "256" to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
                         your responsibility to ensure that you only read locations that physically exist.\\
                             \textbf{FETCH} sX,ss\\
                             \textbf{FETCH} sX,@sY\\
@@ -2414,9 +2414,9 @@ your responsibility to ensure that you only write to locations that physically e
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{INPUT, IN}
                         An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port
-                        specified by an 8-bit constant value "pp" or the contents of another register "@sY". KCPSM6 presents the port address defined by "pp" or "(sY)" on "port_id" and
-                        your hardware interface is then responsible for selecting and presenting the appropriate information to the "in_port" so that it can be captured into the "sX"
-                        register. An active High ("1") synchronous pulse is also generated on the "read_strobe" pin and may be used by the hardware interface to confirm when a
+                        specified by an 8-bit constant value "pp" or the contents of another register "@sY". KCPSM6 presents the port address defined by "pp" or "(sY)" on "port\_id" and
+                        your hardware interface is then responsible for selecting and presenting the appropriate information to the "in\_port" so that it can be captured into the "sX"
+                        register. An active High ("1") synchronous pulse is also generated on the "read\_strobe" pin and may be used by the hardware interface to confirm when a
                         particular port has been read.
                         \\
                             \textbf{INPUT}      sX,pp\\
@@ -2425,9 +2425,9 @@ your responsibility to ensure that you only write to locations that physically e
                             \textbf{IN}         sX,@sY\\
                         \subsubsection{OUTPUT, OUT}
                         An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
-                        contents of another register "@sY". KCPSM6 presents the contents of the register "sX" on "out_port" and the port address defined by "pp" or "@sY" is presented
-                        on "port_id". Both pieces of information are qualified by an active High ("1")
-                        synchronous pulse on the "write_strobe" pin. Your hardware interface is responsible for capturing the information presented
+                        contents of another register "@sY". KCPSM6 presents the contents of the register "sX" on "out\_port" and the port address defined by "pp" or "@sY" is presented
+                        on "port\_id". Both pieces of information are qualified by an active High ("1")
+                        synchronous pulse on the "write\_strobe" pin. Your hardware interface is responsible for capturing the information presented
                         \\
                             \textbf{OUTPUT}     sX,pp\\
                             \textbf{OUTPUT}     sX,@sY\\
@@ -2435,7 +2435,7 @@ your responsibility to ensure that you only write to locations that physically e
                             \textbf{OUT}        sX,@sY\\
                         \subsubsection{OUTPUTK, OUTK}
                         The OUTPUTK instruction has two operands. The first operand is the 8-bit constant value "kk" that will be presented on "out-port" and therefore must be in
-                        the range "00" to "FF" hex. The second operand must specify the port address that will be presented on port_id[3:0] and therefore must be in the range "0" to
+                        the range "00" to "FF" hex. The second operand must specify the port address that will be presented on port\_id[3:0] and therefore must be in the range "0" to
                         "F" hex.
                             \textbf{OUTPUTK}     sX,pp\\
                             \textbf{OUTPUTK}     sX,@sY\\
