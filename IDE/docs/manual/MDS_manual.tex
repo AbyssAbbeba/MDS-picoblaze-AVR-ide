@@ -1405,9 +1405,9 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                     { \color{highlight_directive} IF }
                                     { \color{highlight_constant}   s0 == \#10 }\\
                                     { \color{highlight_instruction}   LOAD  s0, \#10h }\\
-                                    { \color{highlight_comment} ; ELSEIF} { \color{highlight_constant}   B >= \#100 }\\
+                                    { \color{highlight_comment}  ELSEIF} { \color{highlight_constant}   B >= \#100 }\\
                                     { \color{highlight_instruction}   SR0   s0 }\\
-                                    { \color{highlight_comment} ; ELSE} { \color{highlight_constant}   A >= 5 }\\
+                                    { \color{highlight_comment}  ELSE} { \color{highlight_constant}   A >= 5 }\\
                                     { \color{highlight_instruction}   INPUT   s0,RX\_data }\\
                                 \caption{Run time if example}
                         \end{code}
@@ -1432,9 +1432,59 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 == \#10 }\\
-                                    { \color{highlight_directive} ; ENDW}\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
-                        \end{code}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0  != \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 >    \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 < \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 <= \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 >= \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 & \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
+                            \begin{code}[h!]
+                                    { \color{highlight_directive} WHILE  }
+                                    { \color{highlight_constant}   s0 !& \#10 }\\
+                                    { \color{highlight_instruction} ADDCY    S1,#1 }\\
+                                    { \color{highlight_directive}  ENDW}\\
+                                \caption{Run time while example}
+                            \end{code}
                 
                 \subsection{FOR}
                     \textbf{SYNTAX:}\\
@@ -1586,61 +1636,6 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \verb'        '{\color{highlight_instruction}\verb'SUB'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
                         \caption{An exaple of named macro used with if statement}
                 \end{code}
-%                 \begin{code}[h!]
-%                        
-%                         {\color{highlight_comment}\verb'; Suppose we have these macros:'}\\
-%                         {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-%                         {\color{highlight_directive}\verb'endm'}\\
-%                         {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
-%                         \verb''\\
-%                         \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_constant}\verb'foo'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
-%                         \verb'                '{\color{highlight_instruction}\verb'nop'}\\
-%                         \verb'        '{\color{highlight_directive}\verb'endif'}\\
-%                         \verb''\\
-%                         \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#foo'}\\
-%                         {\color{highlight_directive}\verb'endm'}\\
-%                         {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'bar'}\\
-%                         \verb'        '{\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_constant}\verb'foo'}\\
-%                         \verb'        '{\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_constant}\verb'bar'}\\
-%                         \verb''\\
-%                         \verb'        '{\color{highlight_macro}\verb'abc'}\\
-%                         {\color{highlight_directive}\verb'endm'}\\
-%                         \verb''\\
-%                         {\color{highlight_comment}\verb'; And we expand ``xyz'\verb"'"\verb''\verb"'"\verb' like this:'}\\
-%                         {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_unknown_base}\verb'4'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_unknown_base}\verb'5'}\\
-%                         \verb''\\
-%                         {\color{highlight_comment}\verb'; Then we get this result:'}\\
-%                         \verb'        '{\color{highlight_comment}\verb'; ijk     4'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'nop'}\verb'     '{\color{highlight_comment}\verb'; <-- Note this'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
-%                         \verb'        '{\color{highlight_comment}\verb'; ijk     5'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
-%                         \verb'        '{\color{highlight_comment}\verb'; abc'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-%                         \caption{An exaple of nested macros}
-%                 \end{code}
-%                 \begin{code}[h!]
-%                      
-%                         {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\\
-%                         {\color{highlight_comment}\verb'  ; Unnamed macro cannot be contained inside a named one'}\\
-%                         \verb'  '{\color{highlight_directive}\verb'times'}\verb' '{\color{highlight_unknown_base}\verb'2'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-%                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-%                         \verb'  '{\color{highlight_directive}\verb'endm'}\\
-%                         {\color{highlight_directive}\verb'endm'}\\
-%                         \caption{An exaple of nested macros, which will not work}
-%                 \end{code}
-
-
                     
         \section{Conditional Assembly}
 		The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met.
