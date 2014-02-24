@@ -193,7 +193,7 @@ function printHelp() {
     echo "    color=<on|off>  Turn on/off color output. (normal: 'on', tests: 'off')."
     echo "    arch=<arch>     Set target architecture to build for (options: 'x86', and 'x86_64'). (all: <native>)."
     echo "    os=<os>         Set target operating system to build for (options: 'Linux', 'Windows', and 'Darwin') (all: <native>)."
-    echo "    btest=<on|off> Build est binaries  (normal: 'on', tests: [always on])."
+    echo "    btest=<on|off>  Build test binaries  (normal: 'on', tests: [always on])."
     echo ""
     echo "Example:"
     echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."
@@ -264,12 +264,14 @@ function main() {
 
     if [[ ! -z "${opts['q']}" ]]; then
         for i in $(find . -executable); do
-            if [[ -f "$i" ]]; then
+            if [[ "$i" =~ \./CMakeFiles/ ]]; then
+                continue
+            elif [[ -f "$i" ]]; then
                 if file "$i" | grep 'ELF' &>/dev/null; then
                     ls -l $i
                 fi
             fi
-        done | tee /dev/stderr | gawk 'BEGIN {b=0} END {printf("%.2f MB\n", b/(1024*1024))} {b+=$5}'
+        done | tee /dev/stderr | gawk 'BEGIN {b=0;n=0} END {printf("%d: %.2f MB\n", n, b/(1024*1024))} {b+=$5;n++}'
     fi
 }
 

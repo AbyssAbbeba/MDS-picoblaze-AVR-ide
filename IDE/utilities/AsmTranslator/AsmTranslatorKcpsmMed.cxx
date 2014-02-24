@@ -827,9 +827,13 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
     return true;
 }
 
-void AsmTranslatorKcpsmMed::fixRadix ( LineFields & /*lineFields*/,
-                                       int /*i*/ )
+void AsmTranslatorKcpsmMed::fixRadix ( LineFields & lineFields,
+                                       int i )
 {
+//     if ( true == lineFields.hasOperand(i) )
+//     {
+//         lineFields.replaceOpr ( regex_replace ( lineFields.getOperand(i), boost::regex("\$([0-9a-fA-F]+)"), "(?10x$&)"), i );
+//     }
 }
 
 inline unsigned int AsmTranslatorKcpsmMed::indSz() const

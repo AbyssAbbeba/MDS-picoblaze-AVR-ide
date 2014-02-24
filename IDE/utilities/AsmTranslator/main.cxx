@@ -76,9 +76,9 @@ void printHelp ( const char * executable )
               << QObject::tr("        Specify line separator, available options are:").toStdString() << std::endl
               << QObject::tr("            - crlf : [WINDOWS] use sequence of carriage return and line feed characters")
                             .toStdString() << std::endl
-              << QObject::tr("            - lf : [UNIX] use a single line feed character (0x0a = '\\n') (default),")
+              << QObject::tr("            - lf   : [UNIX] use a single line feed character (0x0a = '\\n') (default),")
                             .toStdString() << std::endl
-              << QObject::tr("            - cr : [APPLE] use single carriage return (0x0d = '\\r').")
+              << QObject::tr("            - cr   : [APPLE] use single carriage return (0x0d = '\\r').")
                             .toStdString() << std::endl
               << std::endl
               << QObject::tr("    --short-inst <true|false>").toStdString() << std::endl

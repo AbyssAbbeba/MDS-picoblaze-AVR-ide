@@ -15,15 +15,32 @@
 project ( MScript )
 
 # ------------------------------------------------------------------------------
+# WINDRES RC FILES.
+# Windows only: generate windres RC file(s) to provide information for Windows.
+# ------------------------------------------------------------------------------
+
+windres_rc ( OUTPUT_VAR         RC_FILE
+             FILETYPE           "DLL"
+             FILE_VERSION       "1.0"
+             FILEOS             "NT_WINDOWS32"
+             FILE_DESCRIPTION   "Moravia Script Language"
+             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             TARGET             ${PROJECT_NAME}
+             PRODUCT_NAME       ${PRODUCT_NAME}
+             PRODUCT_VERSION    ${PRODUCT_VERSION}
+             YEARS              ${COPYRIGHT_YEARS} )
+
+# ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
 # Generate lexical and syntax analyzers.
-FLEX_BISON_PAIR ( MScriptLexer MScriptParser MScriptLexerParser )
+flex_bison_pair ( MScriptLexer MScriptParser MScriptLexerParser )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} SHARED
+              ${RC_FILE}
               MScript.cxx
               MScriptCore.cxx
               MScriptBase.cxx

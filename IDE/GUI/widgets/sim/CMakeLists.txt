@@ -41,7 +41,7 @@ add_library(${PROJECT_NAME}
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wlinecounter.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/../Counters/wcolumncounter.cpp)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} SimControl McuSimCfgMgr PicoBlazeSim MCUDataFiles)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator MCUDataFiles)
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
