@@ -37,6 +37,10 @@
 MainForm::MainForm()
 {
     //qDebug() << "MainForm: MainForm()";
+    this->projectTabConnected = false;
+    this->simulationStatus = false;
+    this->simulationRunStatus = false;
+    this->simulationAnimateStatus = false;
     projectMan = new ProjectMan(this);
     connect(projectMan,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
@@ -434,8 +438,8 @@ void MainForm::createDockWidgets()
     saveAllAct->setEnabled(true);
     wDockManager->dockWidgets = true;
     QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-    wDockManager->bottomAreaTabs = tabList.at(1);
-    connect(tabList.at(1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
+    wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+    connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
     //emit dockWidgetsCreated;
     //qDebug() << "MainForm: return CreateDockWidgets()";
 }
@@ -780,7 +784,14 @@ void MainForm::openProject(QString path)
 
 void MainForm::projectOpened()
 {
+    //qDebug() << "MainForm: projectOpened";
     projectConfigAct->setEnabled(true);
+    QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
+    if (false == projectTabConnected && tabList.size() > 1)
+    {
+        projectTabConnected = true;
+        connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), this, SLOT(activeProjectChanged(int)));
+    }
 }
 
 
@@ -881,8 +892,11 @@ void MainForm::compileProject()
     {
         options->m_srecFile = (mainFile + ".srec").toStdString();
     }
-    
-    CompilerThread *compiler = new CompilerThread("../compiler/include/");
+    #ifdef V_RELEASE
+        CompilerThread *compiler = new CompilerThread("../include/mds/");
+    #else
+        CompilerThread *compiler = new CompilerThread("../compiler/include/");
+    #endif
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
@@ -1452,4 +1466,10 @@ void MainForm::stopSimSlot()
     {
         this->simulationAnimateHandle();
     }
+}
+
+
+void MainForm::activeProjectChanged(int index)
+{
+    projectMan->setActiveByIndex(index);
 }

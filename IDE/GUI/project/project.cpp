@@ -132,6 +132,7 @@ void ProjectMan::addUntrackedProject()
     untrackedProject = newProject;
     projectCount++;
     emit connectProject(newProject);
+    emit projectOpened();
     //qDebug() << "ProjectMan: return addUntrackedProject()";
 }
 
@@ -187,6 +188,15 @@ void ProjectMan::setActive(Project *activePrj)
     //qDebug() << "ProjectMan: setActive()";
     activeProject = activePrj;
     //qDebug() << "ProjectMan: return setActive()";
+}
+
+
+void ProjectMan::setActiveByIndex(int index)
+{
+    //qDebug() << "ProjectMan: setActiveByIndex" << index;
+    activeProject = openProjects.at(index);
+    //qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
+    //qDebug() << "ProjectMan: return setActiveByIndex";
 }
 
 
