@@ -33,20 +33,8 @@ qt4_wrap_cpp ( QT_MOC_GENERATED_CPP_FILES
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce dynamic C++ library.
-add_library ( ${PROJECT_NAME} SHARED
+add_library ( ${PROJECT_NAME} OBJECT
               ${QT_MOC_GENERATED_CPP_FILES}
               SimControl.cxx
               MCUSimControl.cxx
               MCUSimObserver.cxx )
-
-# Link the target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} MCUDataFiles McuSimCfgMgr AVR8Sim PIC8Sim PicoBlazeSim DbgFile )
-
-
-# ------------------------------------------------------------------------------
-# INSTALLATION OPTIONS
-# ------------------------------------------------------------------------------
-
-install ( TARGETS ${PROJECT_NAME}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
