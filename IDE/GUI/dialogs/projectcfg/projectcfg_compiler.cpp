@@ -35,8 +35,16 @@ void ProjectCfg_Compiler::load()
     this->ui.chckHexFile->setChecked(project->compileOpt.at(5));
     this->ui.chckBinFile->setChecked(project->compileOpt.at(6));
     this->ui.chckSRecFile->setChecked(project->compileOpt.at(7));
-    this->ui.leMain->setText(project->mainFileName);
-    this->ui.chckMain->setChecked(project->useMainFile);
+    if (project->prjPath == "untracked" && project->prjName == "untracked")
+    {
+        this->ui.leMain->setDisabled(true);
+        this->ui.chckMain->setDisabled(true);
+    }
+    else
+    {
+        this->ui.leMain->setText(project->mainFileName);
+        this->ui.chckMain->setChecked(project->useMainFile);
+    }
 }
 
 

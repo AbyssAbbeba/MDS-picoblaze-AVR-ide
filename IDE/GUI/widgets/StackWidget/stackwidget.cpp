@@ -130,7 +130,7 @@ void StackWidget::pop()
 
 void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
 {
-    qDebug() << "StackWidget: handleEvent()";
+    //qDebug() << "StackWidget: handleEvent()";
     if ( subsysId != this->subsys )
     {
         qDebug("StackWidget: Invalid event received, event ignored.");
@@ -204,7 +204,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
             qDebug("Invalid event received, event ignored.");
             break;
     }
-    qDebug() << "StackWidget: return handleEvent()";
+    //qDebug() << "StackWidget: return handleEvent()";
 }
 
 
@@ -214,9 +214,9 @@ void StackWidget::deviceChanged()
     {
         qDebug() << "StackWidget: m_simControlUnit is NULL";
     }
-    qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
+    //qDebug() << m_simControlUnit->getSimSubsys(this->subsys);
     m_memory = dynamic_cast<PicoBlazeStack*>(m_simControlUnit->getSimSubsys(this->subsys));
-    qDebug() << "StackWidget: SubsysId " << this->subsys;
+    //qDebug() << "StackWidget: SubsysId " << this->subsys;
     if ( NULL == m_memory )
     {
         qDebug() << "StackWidget: m_memory is NULL";
@@ -237,7 +237,7 @@ void StackWidget::deviceChanged()
             return;
     }*/
     m_size = m_memory->size();
-    qDebug() << "StackWidget: size" << m_size;
+    //qDebug() << "StackWidget: size" << m_size;
 
     this->lwStack->clear();
     for (int i = 0; i < m_size; i++)

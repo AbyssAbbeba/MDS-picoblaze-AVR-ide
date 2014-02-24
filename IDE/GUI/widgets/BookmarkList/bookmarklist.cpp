@@ -40,7 +40,7 @@ void BookmarkList::reload(QList<int> bookmarkList)
         QListWidgetItem *newItem = new QListWidgetItem(QString::number(*i+1, 10), this);
         this->addItem(newItem);
     }
-    qDebug() << "bookmarklist - reload";
+    //qDebug() << "bookmarklist - reload";
 }
 
 
@@ -53,7 +53,7 @@ void BookmarkList::bookmarkListAddSlot(int line)
     QListWidgetItem *newItem = new QListWidgetItem(QString::number(line+1, 10), this);
     this->addItem(newItem);
     this->sortItems();
-    qDebug() << "bookmarklist - add";
+    //qDebug() << "bookmarklist - add";
 }
 
 
@@ -71,5 +71,5 @@ void BookmarkList::bookmarkListRemoveSlot(int line)
         delete *i;
         *i = NULL;
     }
-    qDebug() << "bookmarklist - remove";
+    //qDebug() << "bookmarklist - remove";
 }
