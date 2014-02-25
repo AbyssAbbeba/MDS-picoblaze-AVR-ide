@@ -297,17 +297,18 @@ the following:
                     \end{figure}
                     
                 \subsection{DATA file convertor}
-                    With this tool, you can translate your previously written assembler code in different syntax.
-                    You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde.
-
+                    This tool alows you to convert selected data file to another. Mutual conversion can be made with
+                    Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl. 
                     \begin{description}
-                        \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
-                        \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of three choices - Xilinx, Mediatronix and OpenPicIde
-                        \item[Symbol] Case of symbols - UPPERCASE or LOWERCASE
-                        \item[End of line] Indentation - Choose between Tabs or Spaces
+                        \item[Section Input File] Here you can choose which file you want to convert
+                        \item[Section Input Options] In this section, you define what type of input file is going to be converted
+                        \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+                        \item[Bytes per record] Only if you want to convert XilMem file. 
                         \item[Directive] Case of Directives - UPPERCASE or LOWERCASE
                         \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
                         \item[Instruction] Case of instructions - UPPERCASE or LOWERCASE
+                        \item[Section Output File]
+                        \item[Section Output Options]
                         \item[Tab size]  Define number of inserted spaces when you press Tab.
                         \item[Short instructions] Here you can allow short instructions like LD, RETI or others
                     \end{description}
@@ -317,12 +318,7 @@ the following:
                         \includegraphics [scale=1]{img/DATA_convertor.png}
                         \caption{DATA file convertor}
                     \end{figure}
-                    
-
-
-
-
-  
+ 
                 \subsection{ASM translator}
                     With this tool, you can translate your previously written assembler code in different syntax.
                     You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde.
