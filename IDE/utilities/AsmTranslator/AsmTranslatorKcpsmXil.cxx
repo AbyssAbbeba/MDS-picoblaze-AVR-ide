@@ -30,8 +30,11 @@ const boost::regex AsmTranslatorKcpsmXil::m_reAndReturn   = boost::regex ( "^&[[
 const boost::regex AsmTranslatorKcpsmXil::m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
 const boost::regex AsmTranslatorKcpsmXil::m_reLabel       = boost::regex ( "^[_[:alnum:]]*[[:space:]]*:", flags );
 const boost::regex AsmTranslatorKcpsmXil::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
-const boost::regex AsmTranslatorKcpsmXil::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
-const boost::regex AsmTranslatorKcpsmXil::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return",
+                                                                            flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)"
+                                                                           "|(\\([[:space:]]*[_[:alnum:]]+"
+                                                                           "[[:space:]]*\\))", flags );
 
 AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
 {
@@ -552,9 +555,55 @@ inline bool AsmTranslatorKcpsmXil::ishex ( const std::string & str ) const
 void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
                                        int i )
 {
-    if ( ( true == lineFields.hasOperand(i) ) && ( true == ishex(lineFields.getOperand(i)) ) )
+    if ( false == lineFields.hasOperand(i) )
     {
-        lineFields.replaceOpr ( "0x" + lineFields.getOperand(i), i );
+        return;
+    }
+
+    std::string opr = lineFields.getOperand(i);
+
+    if ( true == ishex(opr) )
+    {
+        lineFields.replaceOpr ( "0x" + opr, i );
+    }
+    else if ( ( '"' == opr.back() ) && ( '"' == opr.front() ) )
+    {
+        lineFields.replaceOpr ( '\'' + opr.substr ( 1, opr.size() - 2 ) + '\'', i );
+    }
+    else if ( ( opr.size() >= 3 ) && ( "'" == opr.substr(opr.size() - 2, 1) ) )
+    {
+        switch ( std::tolower(opr.back()) )
+        {
+            case 'b':
+                // Binary.
+                lineFields.replaceOpr ( "0b" + opr.substr(0, opr.size() - 2), i );
+                break;
+
+            case 'q':
+            case 'o':
+                // Octal.
+                lineFields.replaceOpr ( "0" + opr.substr(0, opr.size() - 2), i );
+                break;
+
+            case 'd': // Decimal.
+                opr = opr.substr(0, opr.size() - 2);
+
+                while ( '0' == opr.front() )
+                {
+                    opr = opr.substr(1);
+                }
+                if ( true == opr.empty() )
+                {
+                    opr = "0";
+                }
+
+                lineFields.replaceOpr ( opr, i );
+                break;
+
+            case 'h': // Hexadecimal.
+                lineFields.replaceOpr ( "0x" + opr.substr(0, opr.size() - 2), i );
+                break;
+        }
     }
 }
 

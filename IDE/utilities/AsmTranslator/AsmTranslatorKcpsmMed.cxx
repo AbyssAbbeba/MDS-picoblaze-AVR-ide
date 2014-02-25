@@ -20,20 +20,26 @@
 #include <cctype>
 #include <cstdlib>
 #include <iterator>
-
+#include<iostream>//debug
 constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 const boost::regex AsmTranslatorKcpsmMed::m_reAtMark      = boost::regex ( "^@", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_dollar        = boost::regex ( "\\$", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reComment     = boost::regex ( "(;)|(//).*$", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reOperand     = boost::regex ( "^[^,]*[^,[:space:]]", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reWord        = boost::regex ( "[_[:alnum:]]+", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reWhiteSpace  = boost::regex ( "^[[:space:]]+", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reWord        = boost::regex ( "[_\\$[:alnum:]]+", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reOperand     = boost::regex ( "^[^,]*[^,[:space:]]", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reInstruction = boost::regex ( "^\\.?[_[:alpha:]][_[:alnum:]]*", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+([[:space:]]|$)", flags );
-const boost::regex AsmTranslatorKcpsmMed::m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+\\.[_[:alnum:]]*", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*"
+                                                                           "return", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*"
+                                                                           "[[:space:]]*:", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+"
+                                                                           "([[:space:]]|$)", flags );
+const boost::regex AsmTranslatorKcpsmMed::m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+"
+                                                                           "([dD][sS](([iI][nN])|([oO][uU][tT]))?)"
+                                                                           "|(\\.?[eE][qQ][uU])", flags );
 
 AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
 {
@@ -313,7 +319,17 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
         return true;
     }
 
-    if ( "constant" == directive )
+    if ( ( ".equ" == directive ) || ( "equ" == directive ) )
+    {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("equ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+    }
+    else if ( ( "ds" == directive ) || ( "dsin" == directive ) || ( "dsout" == directive ) )
+    {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("port", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+    }
+    else if ( "constant" == directive )
     {
         fixRadix(lineFields, 1);
         std::string substitute = changeLetterCase ( lineFields.getOperand(0, true),
@@ -336,14 +352,6 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
         {
             lineFields.replaceInstOpr(substitute);
         }
-    }
-    else if ( ".equ" == directive )
-    {
-        lineFields.replaceInst ( changeLetterCase ( "equ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) );
-    }
-    else if ( ( "dsin" == directive ) || ( "dsout" == directive ) )
-    {
-        lineFields.replaceInst(changeLetterCase("port", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
     else if ( "namereg" == directive )
     {
@@ -830,10 +838,10 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
 void AsmTranslatorKcpsmMed::fixRadix ( LineFields & lineFields,
                                        int i )
 {
-//     if ( true == lineFields.hasOperand(i) )
-//     {
-//         lineFields.replaceOpr ( regex_replace ( lineFields.getOperand(i), boost::regex("\$([0-9a-fA-F]+)"), "(?10x$&)"), i );
-//     }
+    if ( true == lineFields.hasOperand(i) )
+    {
+        lineFields.replaceOpr ( regex_replace ( lineFields.getOperand(i), m_dollar, "0x"), i );
+    }
 }
 
 inline unsigned int AsmTranslatorKcpsmMed::indSz() const
