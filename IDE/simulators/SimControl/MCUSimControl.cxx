@@ -446,6 +446,7 @@ std::cout << "No line record found!\n" << std::flush;
         return;
     }
 
+std::cout << "MCUSimControl::getLineNumber() [3]\n" << std::flush;
     for ( unsigned int idx : recordNumbers )
     {
 std::cout << "Line record found, idx = "<<idx<<" ... analyzing.\n" << std::flush;
