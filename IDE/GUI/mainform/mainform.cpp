@@ -814,84 +814,360 @@ void MainForm::saveProject()
 
 /**
  * @brief Slot. Compiles active project.
- * @bug Segfault if no project is active (opened).
- * @details Still not finished. Add functionality for PIC/ASM...
  */
 void MainForm::compileProject()
 {
     
     if (projectMan->getActive() == NULL)
     {
+        //should never happen, error
         error(ERR_NO_PROJECT);
         return;
     }
-    if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
-    {
-        error(ERR_UNTRACKED_PROJECT);
-        return;
-    }
-    if (projectMan->getActive()->mainFileName == "" && projectMan->getActive()->mainFilePath == "")
-    {
-        error(ERR_NO_MAINFILE);
-        return;
-    }
-
     
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
-
     CompilerOptions *options = new CompilerOptions();
-    //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);
-    options->m_sourceFiles.push_back((projectMan->getActive()->prjPath.section('/',0, -2) + "/" +  this->projectMan->getActive()->mainFilePath).toStdString());
-    QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
-    QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
     QString mainFile;
     
-    if (fileDir.relativeFilePath(prjDir.absolutePath()) == "")
+    if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
     {
-        mainFile = "./" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+        //compile actual file with global settings, not error
+        //error(ERR_UNTRACKED_PROJECT);
+        qDebug() << "MainForm: compiled untracked project, actual file";
+        options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+
+        options->m_device = this->projectMan->getActive()->family.toStdString();
+
+
+
+        QDir pathDir("./temp/");
+        if (false == pathDir.exists())
+        {
+            pathDir.mkpath(".");
+        }
+        
+        mainFile = pathDir.absolutePath()
+                 + "/"
+                 +  wDockManager->getCentralName().section('.',0,-2);
+
+        //qDebug() << "MainForm: file" << mainFile;
+
+
+        CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+        compileInfo->appendMessage("Compilation settings:",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Project:      untracked",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("File:         " + wDockManager->getCentralName(),
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Architecture: Picoblaze",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Family:       " + projectMan->getUntracked()->family,
+                                    CompilerBase::MessageType::MT_REMARK);
+        
+
+        if (projectMan->getActive()->compileOpt.at(0))
+        {
+            //options->m_symbolTable = (mainFile + ".stbl").toStdString();
+            options->m_symbolTable = ( mainFile
+                                     + ".stbl"
+                                     ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(1))
+        {
+            options->m_macroTable = ( mainFile
+                                    + ".mtbl"
+                                    ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(2))
+        {
+            options->m_mdsDebugFile = ( mainFile
+                                      + ".dbg"
+                                      ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(3))
+        {
+            options->m_codeTree = ( mainFile
+                                  + ".ctr"
+                                  ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(4))
+        {
+            options->m_lstFile = ( mainFile
+                                  + ".lst"
+                                 ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(5))
+        {
+            options->m_hexFile = ( mainFile
+                                 + ".ihex"
+                                 ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(6))
+        {
+            options->m_binFile = ( mainFile
+                                 + ".bin"
+                                 ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(7))
+        {
+            options->m_srecFile = ( mainFile
+                                  + ".srec"
+                                  ).toStdString();
+        }
+        //return;
     }
+    else if ( false == projectMan->getActive()->useMainFile )
+    {
+        //not error
+        //check if enabled, if it isnt, compile actual file
+        //(but find whether it is in act project for compile settings)
+        //error(ERR_NO_MAINFILE);
+        QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+        QDir fileDir;
+        bool found = false;
+        
+        for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
+        {
+            fileDir.setPath(prjDir.absolutePath()
+                            + "/"
+                            + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
+                           );
+            //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
+            //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
+            if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
+            {
+                found = true;
+                break;
+            }
+        }
+        if (found == true)
+        {
+            qDebug() << "MainForm: compiled actual project, actual file";
+            options->m_sourceFiles.push_back(  (projectMan->getActive()->prjPath.section('/',0, -2)
+                                                + "/"
+                                                +  wDockManager->getCentralName()
+                                                ).toStdString()
+                                            );
+
+
+            CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+            compileInfo->appendMessage("Compilation settings:",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Project:      " + projectMan->getActive()->prjName,
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("File:         " + wDockManager->getCentralName(),
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Architecture: Picoblaze",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Family:       " + projectMan->getActive()->family + "\n\n",
+                                    CompilerBase::MessageType::MT_REMARK);
+            
+
+            
+            mainFile = prjDir.absolutePath()
+                     + "/"
+                     +  wDockManager->getCentralName().section('.',0,-2);
+
+            options->m_device = this->projectMan->getActive()->family.toStdString();
+
+            if (projectMan->getActive()->compileOpt.at(0))
+            {
+                options->m_symbolTable = (mainFile + ".stbl").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(1))
+            {
+                options->m_macroTable = (mainFile + ".mtbl").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(2))
+            {
+                options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(3))
+            {
+                options->m_codeTree = (mainFile + ".ctr").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(4))
+            {
+                options->m_lstFile = (mainFile + ".lst").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(5))
+            {
+                options->m_hexFile = (mainFile + ".ihex").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(6))
+            {
+                options->m_binFile = (mainFile + ".bin").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(7))
+            {
+                options->m_srecFile = (mainFile + ".srec").toStdString();
+            }
+        }
+        else
+        {
+            qDebug() << "MainForm: compiled untracked project, actual file";
+            options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+
+            options->m_device = this->projectMan->getActive()->family.toStdString();
+
+
+            CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+            compileInfo->appendMessage("Compilation settings:",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Project:      untracked",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("File:         " + wDockManager->getCentralName(),
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Architecture: Picoblaze",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Family:       " + projectMan->getUntracked()->family + "\n\n",
+                                    CompilerBase::MessageType::MT_REMARK);
+
+            QDir pathDir("./temp/");
+            if (false == pathDir.exists())
+            {
+                pathDir.mkpath(".");
+            }
+
+            mainFile = pathDir.absolutePath() + "/" + wDockManager->getCentralName();
+
+
+            if (projectMan->getUntracked()->compileOpt.at(0))
+            {
+                //options->m_symbolTable = (mainFile + ".stbl").toStdString();
+                options->m_symbolTable = ( mainFile
+                                         + ".stbl"
+                                         ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(1))
+            {
+                options->m_macroTable = ( mainFile
+                                        + ".mtbl"
+                                        ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(2))
+            {
+                options->m_mdsDebugFile = ( mainFile
+                                        + ".dbg"
+                                        ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(3))
+            {
+                options->m_codeTree = ( mainFile
+                                      + ".ctr"
+                                      ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(4))
+            {
+                options->m_lstFile = ( mainFile
+                                     + ".lst"
+                                     ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(5))
+            {
+                options->m_hexFile = ( mainFile
+                                     + ".ihex"
+                                     ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(6))
+            {
+                options->m_binFile = ( mainFile
+                                     + ".bin"
+                                     ).toStdString();
+            }
+            if (projectMan->getUntracked()->compileOpt.at(7))
+            {
+                options->m_srecFile = ( mainFile
+                                      + ".srec"
+                                      ).toStdString();
+            }
+        }
+        //return;
+    }
+    //else compile main file of actual project
     else
     {
-        mainFile = fileDir.relativeFilePath(prjDir.absolutePath()) + "/" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+        qDebug() << "MainForm: actual project, main file";
+        if (projectMan->getActive()->mainFileName == "" && projectMan->getActive()->mainFilePath == "")
+        {
+            error(ERR_NO_MAINFILE);
+            return;
+        }
+        
+        CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+        compileInfo->appendMessage("Compilation settings:",
+                                   CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Project:      " + projectMan->getActive()->prjName,
+                                   CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("File:         " + projectMan->getActive()->mainFileName,
+                                   CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Architecture: Picoblaze",
+                                   CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Family:       " + projectMan->getActive()->family + "\n\n",
+                                   CompilerBase::MessageType::MT_REMARK);
+        
+        options->m_sourceFiles.push_back(  (projectMan->getActive()->prjPath.section('/',0, -2)
+                                          + "/"
+                                          +  this->projectMan->getActive()->mainFilePath
+                                           ).toStdString()
+                                        );
+        QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+        QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
+        if (fileDir.relativeFilePath(prjDir.absolutePath()) == "")
+        {
+            mainFile = "./" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+        }
+        else
+        {
+            mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
+                     + "/"
+                     +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+        }
+        
+        options->m_device = this->projectMan->getActive()->family.toStdString();
+
+        if (projectMan->getActive()->compileOpt.at(0))
+        {
+            options->m_symbolTable = (mainFile + ".stbl").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(1))
+        {
+            options->m_macroTable = (mainFile + ".mtbl").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(2))
+        {
+            options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(3))
+        {
+            options->m_codeTree = (mainFile + ".ctr").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(4))
+        {
+            options->m_lstFile = (mainFile + ".lst").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(5))
+        {
+            options->m_hexFile = (mainFile + ".ihex").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(6))
+        {
+            options->m_binFile = (mainFile + ".bin").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(7))
+        {
+            options->m_srecFile = (mainFile + ".srec").toStdString();
+        }
     }
+
+    
+    //QString mainFile =  this->projectMan->getActive()->mainFileName.section('.',0,-2);
     
     //qDebug() << QString::fromStdString(options->m_sourceFile);
     //qDebug() << mainFile;
 
-    options->m_device = this->projectMan->getActive()->family.toStdString();
-    
-    if (projectMan->getActive()->compileOpt.at(0))
-    {
-        options->m_symbolTable = (mainFile + ".stbl").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(1))
-    {
-        options->m_macroTable = (mainFile + ".mtbl").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(2))
-    {
-        options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(3))
-    {
-        options->m_codeTree = (mainFile + ".ctr").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(4))
-    {
-        options->m_lstFile = (mainFile + ".lst").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(5))
-    {
-        options->m_hexFile = (mainFile + ".hex").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(6))
-    {
-        options->m_binFile = (mainFile + ".bin").toStdString();
-    }
-    if (projectMan->getActive()->compileOpt.at(7))
-    {
-        options->m_srecFile = (mainFile + ".srec").toStdString();
-    }
+
     #ifdef V_RELEASE
         CompilerThread *compiler = new CompilerThread("../include/mds/");
     #else
@@ -899,8 +1175,16 @@ void MainForm::compileProject()
     #endif
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
-    connect(compiler, SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)), this, SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType)));
-    connect(compiler, SIGNAL(compilationFinished (bool)), this, SLOT(compilationFinished(bool)));
+    connect(compiler,
+            SIGNAL(compilationMessage(const std::string&, CompilerBase::MessageType)),
+            this,
+            SLOT(reloadCompileInfo(const std::string&, CompilerBase::MessageType))
+           );
+    connect(compiler,
+            SIGNAL(compilationFinished(bool)),
+            this,
+            SLOT(compilationFinished(bool))
+           );
     compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options);
     //delete options;
     /*QThread *thread = new QThread;

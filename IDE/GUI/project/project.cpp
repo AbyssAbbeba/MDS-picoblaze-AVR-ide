@@ -225,6 +225,12 @@ Project* ProjectMan::getActive()
 }
 
 
+Project* ProjectMan::getUntracked()
+{
+    return untrackedProject;
+}
+
+
 /**
  * @brief Creates makefile for active project. Used for compilation.
  * @details Not used at the moment.
