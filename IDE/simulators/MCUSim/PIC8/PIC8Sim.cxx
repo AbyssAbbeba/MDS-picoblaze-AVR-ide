@@ -15,20 +15,20 @@
 
 #include "PIC8Sim.h"
 
+#include "PIC8IO.h"
+#include "PIC8ISP.h"
+#include "PIC8Stack.h"
 #include "PIC8Config.h"
-#include "PIC8InstructionSet.h"
-#include "PIC8ProgramMemory.h"
 #include "PIC8DataMemory.h"
 #include "PIC8ConfigWord.h"
 #include "PIC8DataEEPROM.h"
-#include "PIC8InterruptController.h"
-#include "PIC8IO.h"
-#include "PIC8Stack.h"
 #include "PIC8WatchDogTimer.h"
 #include "PIC8TimerCounter0.h"
-#include "PIC8Timer0WdtPrescaller.h"
-#include "PIC8ISP.h"
+#include "PIC8ProgramMemory.h"
+#include "PIC8InstructionSet.h"
 #include "PIC8ExternalInterrupts.h"
+#include "PIC8InterruptController.h"
+#include "PIC8Timer0WdtPrescaller.h"
 
 #include <cassert>
 
@@ -392,7 +392,7 @@ int PIC8Sim::timeStep ( float timeStep )
             // Wake from sleep
             m_processorMode = MD_NORMAL;
         }
- 
+
         if ( cycles > allocatedCycles )
         {
             m_clockCycles += ( cycles - allocatedCycles );
