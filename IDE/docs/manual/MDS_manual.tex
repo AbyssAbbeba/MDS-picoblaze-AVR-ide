@@ -2348,10 +2348,10 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{OUT}        sX,@sY\\
                         \subsubsection{OUTPUTK, OUTK}
                         The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].\\
-                            \textbf{OUTPUTK}     #kk,p\\
-                            \textbf{OUTPUTK}     #kk,@sY\\
-                            \textbf{OUTK}        #kk,p\\
-                            \textbf{OUTK}        #kk,@sY\\
+                            \textbf{OUTPUTK}     \#kk,p\\
+                            \textbf{OUTPUTK}     \#kk,@sY\\
+                            \textbf{OUTK}        \#kk,p\\
+                            \textbf{OUTK}        \#kk,@sY\\
                        
         \section{Generated VHDL and Verilog files}
         As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow.
@@ -2360,14 +2360,9 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
                 \subsection{Connecting the Program ROM}
                 The PicoBlaze program ROM is used within a VHDL design flow. The PicoBlaze assembler
-                generates a VHDL file in which a block RAM and its initial contents are defined. This
-                VHDL file can be used for both logic synthesis and simulation of the processor.\\
-                Next two figures shows the component declaration for the program ROM, and the component instantiation.
-                The name of the program ROM, shown as "prog rom" in the
-                following figures, is derived from the name of the PicoBlaze assembler source file. For
-                example, if the assembler source file is named phone.psm, then the assembler generates a
-                program ROM definition file called phone.vhd.
-                You need to declare component in your VHDL design and instatntiate.
+                generates a VHDL and VERILOG file in which a block RAM and its initial contents are defined. This
+                file can be used for both logic synthesis and simulation of the processor.
+                You need to declare component in your VHDL or VERILOG design and instantiate.\\
                         
 \printindex
 
