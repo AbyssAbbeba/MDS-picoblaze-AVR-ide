@@ -69,6 +69,7 @@ class ProjectMan : public QObject
         void setActiveByIndex(int index);
         bool isActiveProject(Project *project);
         Project* getActive();
+        Project* getUntracked();
         void createActiveMakefile();
 
     signals:
