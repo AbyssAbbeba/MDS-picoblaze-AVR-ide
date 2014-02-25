@@ -295,27 +295,29 @@ the following:
                         \includegraphics [scale=0.3]{img/mensi_obrazek.png}
                         \caption{Parametr information list}
                     \end{figure}
+                    
                 \subsection{ASM translator}
                     With this tool, you can translate assembler code. The inverse
                     operation to that of an assembler.
 
                     \begin{description}
-                        \item[Section File] Here you can choose which file you want to be disassembled
-                        \item[Section Target] Architecture - Select processor architecture
-                        \item[Family] select processor family of selected architecture
-                        \item[Section Options] Indentation - Choose between Tabs or Spaces
-                        \item[TabSize] Number of spaces in one tab
-                        \item[Radix] Binary,Octal, Decima or Hexadecimal
-                        \item[Linebreak] LF,CR or CRLF
-                        \item[Case]  You can choose if you want disassemled file will be in upper or lower case
-                        \item[Generate symbols] Select which symbols should be disassembled
+                        \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
+                        \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of three choices - Xilinx, Mediatronix and OpenPicIde
+                        \item[Symbol] Case of symbols - UPPERCASE or LOWERCASE
+                        \item[End of line] Indentation - Choose between Tabs or Spaces
+                        \item[Directive] Case of Directives - UPPERCASE or LOWERCASE
+                        \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
+                        \item[Instruction] Case of instructions - UPPERCASE or LOWERCASE
+                        \item[Tab size]  Define number of inserted spaces when you press Tab.
+                        \item[Short instructions] Here you can allow short instructions like LD, RETI or others
                     \end{description}
-
+                    
                     \begin{figure}
                         \centering{}
                         \includegraphics [scale=1]{img/ASM_translator.png}
                         \caption{ASM translator}
                     \end{figure}
+                    
                 \subsection{Disassembler}
                     A disassembler is a tool that translates machine language into assembly language. The inverse
                     operation to that of an assembler.
@@ -1527,21 +1529,21 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \begin{code}[h!]
                                     { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10 }\\
-                                    { \color{highlight_directive} ; ENDF}\\
+                                    { \color{highlight_directive}  ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is from 0 to 10. Incrementing step is 1.
                             \begin{code}[h!]
                                     { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10..20 }\\
-                                    { \color{highlight_directive} ; ENDF}\\
+                                    { \color{highlight_directive}  ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is in the range 10 to 20. Incrementing step is 1.
                             \begin{code}[h!]
                                     { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10..50,10 }\\
-                                    { \color{highlight_directive} ; ENDF}\\
+                                    { \color{highlight_directive}  ENDF}\\
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).
@@ -1930,7 +1932,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 	
         \section{Suported instructions}
         MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains
-        list of all supported instructions. For more informations about those instructions, see PicoBlaze manual.\\
+        list of all supported instructions. For more informations about those instructions, see official PicoBlaze manual.\\
 
                 \subsection{Program Control Group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
@@ -1939,12 +1941,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{JUMP}
-                        Under normal conditions, the program counter (PC) increments to point to the next instruction. The address space is fixed to
-                        1024 locations (000 to 3FF hex) and therefore the program counter is 10 bits wide. It is worth noting that the top of memory is
-                        3FF hex and will increment to 000.\\
-                        The JUMP instruction may be used to modify this sequence by specifying a new address. However, the JUMP instruction may be
-                        conditional. A conditional JUMP will only be performed if a test performed on either the ZERO flag or CARRY flag is valid. The
-                        JUMP instruction has no effect on the status of the flags.\\
+                        Instruction JUMP will load PC with "aaa" address. The JUMP instruction has no effect on the status of the flags.\\
                             \textbf{JUMP} aaa\\
                             \textbf{JUMP} Z,aaa\\
                             \textbf{JUMP} NZ,aaa\\
@@ -1986,18 +1983,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \end{table}
                             
                         \subsubsection{CALL}
-                        The CALL instruction is similar in operation to the JUMP instruction in that it will modify the normal program execution sequence by
-                        specifying a new address. The CALL instruction may also be conditional. In addition to supplying a new address, the CALL
-                        instruction also causes the current program counter (PC) value to be pushed onto the program counter stack. The CALL instruction
-                        has no effect on the status of the flags.\\
-                        The program counter stack supports a depth of 31 address values. This enables nested "CALL" sequences to a depth of 31 levels
-                        to be performed. However, the stack will also be used during an interrupt operation and hence at least one of these levels should
-                        be reserved when interrupts are enabled. The stack is implemented as a separate cyclic buffer. When the stack becomes full, it
-                        simply overwrites the oldest value. Hence it is not necessary to reset the stack pointer when performing a software reset. This also
-                        explains why there are no instructions to control the stack and why no other memory needs to be reserved or provided for the
-                        stack.
-                        Each CALL instruction must specify the 10-bit address as a 3 digit hexadecimal value. The assembler supports labels to simplify
-                        this process.\\
+                        T"aaa" - call address. Instruction can be conditional.\\
                             \textbf{CALL} aaa\\
                             \textbf{CALL} Z,aaa\\
                             \textbf{CALL} NZ,aaa\\
@@ -2039,14 +2025,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \end{table}
                             
                         \subsubsection{RETURN, RET}
-                        The RETURN instruction is the complement to the CALL instruction. The RETURN instruction may also be conditional. In this case
-                        the new program counter (PC) value will be formed internally by incrementing the last value on the program address stack. This
-                        ensures that the program will execute the instruction following the CALL instruction which resulted in the subroutine. The RETURN
-                        instruction has no effect on the status of the flags.
-                        It is the responsibility of the programmer to ensure that a RETURN is only performed in response to a previous CALL instruction
-                        such that the program counter stack contains a valid address. The cyclic implementation of the stack will continue to provide
-                        values for RETURN instructions which can not be defined.\\
-
+                        Return from subroutine. Can be conditional.\\
                             \textbf{RETURN}\\
                             \textbf{RET}\\
                             \textbf{RETURN} Z\\
@@ -2101,13 +2080,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{ADD, ADDCY}
-                        The ADD instruction performs an 8-bit addition of two operands. The first operand is any register, and it is this register which will be
-                        assigned the result of the operation. A second operand may also be any register or an 8-bit constant value. Flags will be effected
-                        by this operation. Note that this instruction does not use the CARRY as an input, and hence there is no need to condition the flags
-                        before use. The ability to specify any constant is useful in forming control sequences and counters.\\
-                        Each ADD instruction must specify the first operand register as "s" followed by a hexadecimal digit. This register will also form the
-                        destination for the result. The second operand must then specify a second register value in a similar way or specify an 8-bit
-                        constant using 2 hexadecimal digits. The assembler supports register naming and constant labels to simplify the process.\\
+                        The ADD instruction performs an 8-bit addition of two operands. Can use constants or registers.\\ 
                             \textbf{ADD} sX,\#kk\\
                             \textbf{ADDCY} sX,\#kk\\
                             \textbf{ADD} sX,sY\\
@@ -2149,13 +2122,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             
                         \subsubsection{COMPARE, CMP}
                         The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is
-                        discarded and only the flags are affected. The ZERO flag is set when all the bits of the temporary result are low and indicates that
-                        both input operands were identical. The CARRY flag indicates when an underflow has occurred and indicates that the second
-                        operand was larger than the first. For example, if s05 contains 27 hex and the instruction COMPARE s05,35 is performed, then
-                        the CARRY flag will be set (35 > 27) and the ZERO flag will be reset (35 != 27).\\
-                        Each COMPARE instruction must specify the first operand register as "s" followed by a hexadecimal digit. The second operand
-                        must then specify a second register value in a similar way or specify an 8-bit constant using 2 hexadecimal digits. The assembler
-                        supports register naming and constant labels to simplify the process.\\
+                        discarded and only the flags are affected. This instruction updates flags\\
                             \textbf{COMPARE} sX,\#kk\\
                             \textbf{COMPARE} sX,sY\\
                             \textbf{CMP}     sX,\#kk\\
@@ -2185,14 +2152,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \end{description}
                         
                         \subsubsection{SUB}
-                        The SUB instruction performs an 8-bit subtraction of two operands. The first operand is any register, and it is this register which will
-                        be assigned the result of the operation. The second operand may also be any register or an 8-bit constant value. Flags will be
-                        effected by this operation. Note that this instruction does not use the CARRY as an input, and hence there is no need to condition
-                        the flags before use. The CARRY flag indicates when an underflow has occurred. For example, if "s05" contains 27 hex and the
-                        instruction SUB s05,35 is performed, then the stored result will be F2 hex and the CARRY flag will be set.\\
-                        Each SUB instruction must specify the first operand register as "s" followed by a hexadecimal digit. This register will also form the
-                        destination for the result. The second operand must then specify a second register value in a similar way or specify an 8-bit
-                        constant using 2 hexadecimal digits. The assembler supports register naming and constant labels to simplify the process.
+                        The SUB instruction performs an 8-bit subtraction of two operands. This instruction updates flags\\
                             \textbf{SUB} sX,\#kk\\
                             \textbf{SUB} sX,sY\\
                             \begin{description}
@@ -2291,52 +2251,28 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \subsubsection{LOAD, LD}
                         The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the
                         contents of any other register. The LOAD instruction has no effect on the status of the flags.\\
-                        Since the LOAD instruction does not effect the flags it may be used to reorder and assign register contents at any stage of the
-                        program execution. The ability to assign a constant with no impact to the program size or performance means that the load
-                        instruction is the most obvious way to assign a value or clear a register.\\
-                        The first operand of a LOAD instruction must specify the register to be loaded as register "s" followed by a hexadecimal digit. The
-                        second operand must then specify a second register value in a similar way or specify an 8-bit constant using 2 hexadecimal digits.
-                        The assembler supports register naming and constant labels to simplify the process.
                             \textbf{LOAD} sX,\#kk\\
                             \textbf{LOAD} sX,sY\\
                             \textbf{LD} sX,\#kk\\
                             \textbf{LD} sX,sY\\
                         \subsubsection{STAR}
                         Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the
-                        REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank. This is
-                        typically of value when creating a subroutine that implements an intense task where the use of many registers to manipulate data makes the task easier. It is
-                        also very appealing when servicing an interrupt as it can really help to ensure that the contents of registers being used anywhere else in the program at the
-                        time of the interrupt are not disturbed (this is covered in more detail in the interrupt section of this guide).
-
+                        REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.\\
                         \textbf{STAR} sX,sY\\
                         \subsubsection{OR}
-                        The "OR" instructions perform the bit-wise logical OR operation.\\
-                        The first operand must specify a register "sX" whose value provides one input to the OR operation and in to which the result is returned.
-                        The second operand defines the second input to the OR operation and can either be an 8-bit constant "kk" or a register "sY".
+                        The "OR" instructions perform the bit-wise logical OR operation.
                         The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
                         The carry flag (C) will be cleared (C=0) in all cases.\\
-
                             \textbf{OR} sX,sY\\
                             \textbf{OR} sX,\#kk\\
-                                \begin{figure}
-                                    \centering{}
-                                    \includegraphics[scale=1]{img/OR_snapshot.png}
-                                    \caption{AND instruction}
-                                \end{figure}
-                        \subsubsection{XOR}
-                                The "XOR" instructions perform the bit\-wise logical exclusive-OR operation.\\
-                                The first operand must specify a register "sX" whose value provides one input to the XOR operation and in to which the result is returned.
-                                The second operand defines the second input to the XOR operation and can either be an 8-bit constant "kk" or a register "sY".
-                                The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
-                                The carry flag (C) will be cleared (C=0) in all cases.\\
 
+                        \subsubsection{XOR}
+                                The "XOR" instructions perform the bit\-wise logical exclusive-OR operation.
+                                 The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
+                                The carry flag (C) will be cleared (C=0) in all cases.\\
                             \textbf{XOR} sX,\#kk\\
                             \textbf{XOR} sX,sY\\
-                                \begin{figure}
-                                    \centering{}
-                                    \includegraphics[scale=1]{img/XOR_snapshot.png}
-                                    \caption{AND instruction}
-                                \end{figure}
+
                         \subsubsection{AND}
                         The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned.
                         The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk\ or a register sY.
@@ -2344,32 +2280,16 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         The carry flag (C) will be cleared (C=0) in all cases.\\
                             \textbf{AND} sX,\#kk\\
                             \textbf{AND} sX,sY\\
-                                \begin{figure}
-                                    \centering{}
-                                    \includegraphics[scale=1]{img/AND_snapshot.png}
-                                    \caption{AND instruction}
-                                \end{figure}
-                                
+
                         \subsubsection{TEST}
                         The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and
-                        only the flags are updates to reflect the temporary 8-bit. The "TEST" instruction also reports then exclusive-OR of the temporary result which can be used to
-                        compute the "odd parity" of a value.\\
-                        The first operand must specify a register "sX" whose value provides one input to the AND operation (sX will not be effected by the operation).
-                        The second operand defines the second input to the AND operation and can either be an 8-bit constant "kk" or a register "sY".
-                        The zero flag (Z) will be set if all 8-bits of the temporary result are zero.
+                        only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero.
                         The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).
                             \textbf{TEST} sX,sY\\
                             \textbf{TEST} sX,\#kk\\
                         \subsubsection{TESTCY}
                         The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of
-                        values more than 8-bits. The key difference from the TEST instructions is that the zero and carry flags are also used as inputs that can influence the new
-                        states of the flags. Although each register only contains an 8-bit value, any combination of registers can be used to hold larger values segmented into bytes.
-                        For example a 32-bit value can be held in a 4 registers. Although there is no restriction on which registers, and no formal way of describing the assignment, it
-                        is common practice to assign adjacent registers and refer to them as a "register set" such as [sD, sC, sB, sA].
-                        The first operand must specify a register "sX" whose value provides one input to the AND operation (sX will not be effected by the operation).
-                        The second operand defines the second input to the AND operation and can either be an 8-bit constant "kk" or a register "sY".
-                        The zero flag (Z) will be set if all 8-bits of the temporary result are zero and the zero flag was set prior to the TESTCY instruction.
-                        The carry flag (C) will be set if the temporary result together with the previous state of the carry flag contains an odd number of bits set to "1".
+                        values more than 8-bits.
                             \textbf{TESTCY} sX,sY\\
                             \textbf{TESTCY} sX,\#kk\\
                 \subsection{Shift and Rotate Group}
@@ -2379,22 +2299,14 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{SR}
-                        These instructions all shift the contents of the specified register (sX) one bit to the right. The least significant bit (LSB) is shifted out of the register into the
-                        carry flag (C). The bit that is shifted into the most significant bit (MSB) is defined by the shift right instruction that is used. The zero flag (Z) will be set only if all
-                        8-bits of the resulting value contained in the register are zero.\\
                             \textbf{SR0} sX\\
                             \textbf{SR1} sX\\
                             \textbf{SRX} sX\\
                             \textbf{SRA} sX\\
                         \subsubsection{RR, RL}
-                        The "RL" and "RR" instructions rotate the contents of the specified register (sX) one bit to the left or right. The bit that is shifted out of on end of the register and
-                        back into the other end is also copied into the into the carry flag (C). The zero flag (Z) will be set only if all 8-bits of the register contents are zero.\\
                             \textbf{RR}  sX\\
                             \textbf{RL}  sX\\
                         \subsubsection{SL}
-                        These instructions all shift the contents of the specified register (sX) one bit to the right. The least significant bit (LSB) is shifted out of the register into the
-                        carry flag (C). The bit that is shifted into the most significant bit (MSB) is defined by the shift right instruction that is used. The zero flag (Z) will be set only if all
-                        8-bits of the resulting value contained in the register are zero.\\
                             \textbf{SL0} sX\\
                             \textbf{SL1} sX\\
                             \textbf{SLX} sX\\
@@ -2406,23 +2318,12 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{STORE}
-                        The store instructions write the contents of a register "sX" into the scratch pad memory (SPM). The location (or address) within the SPM into which the register
-contents are written can be defined by a specific address "ss" or by the contents of a second register "(sY)". The contents of the register and the states of the
-zero and carry flags are not effected by the operation.
-The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
-"scratch\_pad\_memory\_size" generic can be set to "128" or "256" to increase the size to 128\-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
-your responsibility to ensure that you only write to locations that physically exist.\\
-
+                        The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).
                             \textbf{STORE} sX,ss\\
                             \textbf{STORE} sX,@sY\\
                             
                         \subsubsection{FETCH}
-                        The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX" into The SPM location (or address) to be read can be
-                        defined by a specific address "ss" or by the contents of a second register "@sY". The contents of the SPM and the states of the zero and carry flags are not
-                        effected by the operation.
-                        The default setting of KCPSM 2,3 and 6 provides 64-bytes of scratch pad memory with locations 00 to 3F hex (0"d to 63"d). If more memory is required then the
-                        "scratch\_pad\_memory\_size" generic can be set to "128" or "256" to increase the size to 128-bytes (locations 00 to 7F) or 256 bytes (locations 00 to FF). It is
-                        your responsibility to ensure that you only read locations that physically exist.\\
+                        The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"
                             \textbf{FETCH} sX,ss\\
                             \textbf{FETCH} sX,@sY\\
                             
@@ -2433,56 +2334,30 @@ your responsibility to ensure that you only write to locations that physically e
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{INPUT, IN}
-                        An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port
-                        specified by an 8-bit constant value "pp" or the contents of another register "@sY". KCPSM6 presents the port address defined by "pp" or "(sY)" on "port\_id" and
-                        your hardware interface is then responsible for selecting and presenting the appropriate information to the "in\_port" so that it can be captured into the "sX"
-                        register. An active High ("1") synchronous pulse is also generated on the "read\_strobe" pin and may be used by the hardware interface to confirm when a
-                        particular port has been read.
-                        \\
+                        An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port.\\
                             \textbf{INPUT}      sX,pp\\
                             \textbf{INPUT}      sX,@sY\\
                             \textbf{IN}         sX,pp\\
                             \textbf{IN}         sX,@sY\\
                         \subsubsection{OUTPUT, OUT}
                         An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
-                        contents of another register "@sY". KCPSM6 presents the contents of the register "sX" on "out\_port" and the port address defined by "pp" or "@sY" is presented
-                        on "port\_id". Both pieces of information are qualified by an active High ("1")
-                        synchronous pulse on the "write\_strobe" pin. Your hardware interface is responsible for capturing the information presented
-                        \\
+                        contents of another register "@sY".\\
                             \textbf{OUTPUT}     sX,pp\\
                             \textbf{OUTPUT}     sX,@sY\\
                             \textbf{OUT}        sX,pp\\
                             \textbf{OUT}        sX,@sY\\
                         \subsubsection{OUTPUTK, OUTK}
-                        The OUTPUTK instruction has two operands. The first operand is the 8-bit constant value "kk" that will be presented on "out-port" and therefore must be in
-                        the range "00" to "FF" hex. The second operand must specify the port address that will be presented on port\_id[3:0] and therefore must be in the range "0" to
-                        "F" hex.
-                            \textbf{OUTPUTK}     sX,pp\\
-                            \textbf{OUTPUTK}     sX,@sY\\
-                            \textbf{OUTK}        sX,pp\\
-                            \textbf{OUTK}        sX,@sY\\
+                        The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].\\
+                            \textbf{OUTPUTK}     #kk,p\\
+                            \textbf{OUTPUTK}     #kk,@sY\\
+                            \textbf{OUTK}        #kk,p\\
+                            \textbf{OUTK}        #kk,@sY\\
                        
         \section{Generated VHDL and Verilog files}
         As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow.
-        However, both Verilog and black box instantiation are also supported. MDS will generate all necessary files, that are needed for
+        MDS will generate all necessary files, that are needed for
         implementation in FPGA.
-                \subsection{KCPSM3 Module}
-                The KCPSM3 module contains the PicoBlaze ALU, register file, scratchpad, RAM, etc. The
-                only function not included is the instruction store. The component declaration and instantiation for the
-                KCPSM3 module appears in the next figures.
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% declaration
-                        \begin{figure}
-                            \centering{}
-                            \includegraphics [width=300pt]{img/pico_declaration.png}
-                            \caption{VHDL Component Declaration of KCPSM3}
-                        \end{figure}
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% instantiation
-                                    \begin{figure}
-                            \centering{}
-                            \includegraphics [width=300pt]{img/pico_instantiation.png}
-                            \caption{VHDL Component Instantiation of the KCPSM3}
-                        \end{figure}
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
                 \subsection{Connecting the Program ROM}
                 The PicoBlaze program ROM is used within a VHDL design flow. The PicoBlaze assembler
                 generates a VHDL file in which a block RAM and its initial contents are defined. This
@@ -2492,18 +2367,8 @@ your responsibility to ensure that you only write to locations that physically e
                 following figures, is derived from the name of the PicoBlaze assembler source file. For
                 example, if the assembler source file is named phone.psm, then the assembler generates a
                 program ROM definition file called phone.vhd.
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% declaration
-                        \begin{figure}
-                            \centering{}
-                            \includegraphics [width=300pt]{img/rom_declaration.png}
-                            \caption{VHDL Component Declaration of Program ROM}
-                        \end{figure}
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% instantiation
-                        \begin{figure}
-                            \centering{}
-                            \includegraphics [width=300pt]{img/rom_instantiation.png}
-                            \caption{VHDL Component Instantiation of Program ROM}
-                        \end{figure}
+                You need to declare component in your VHDL design and instatntiate.
+                        
 \printindex
 
 \end{document}
