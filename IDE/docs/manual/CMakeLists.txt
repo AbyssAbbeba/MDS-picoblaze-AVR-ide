@@ -41,9 +41,9 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
         add_custom_target ( manual-pdflatex ALL
                             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                             COMMENT "Generating MDS documentation as PDF with PDF LaTeX."
-                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} MDS_manual.tex
+                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_COMPILER} MDS_manual.idx
-                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} MDS_manual.tex
+                            COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
                             VERBATIM )
 
         if ( TARGET_OS STREQUAL "Windows" )
