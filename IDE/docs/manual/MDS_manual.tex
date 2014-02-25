@@ -296,9 +296,36 @@ the following:
                         \caption{Parametr information list}
                     \end{figure}
                     
+                \subsection{DATA file convertor}
+                    With this tool, you can translate your previously written assembler code in different syntax.
+                    You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde.
+
+                    \begin{description}
+                        \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
+                        \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of three choices - Xilinx, Mediatronix and OpenPicIde
+                        \item[Symbol] Case of symbols - UPPERCASE or LOWERCASE
+                        \item[End of line] Indentation - Choose between Tabs or Spaces
+                        \item[Directive] Case of Directives - UPPERCASE or LOWERCASE
+                        \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
+                        \item[Instruction] Case of instructions - UPPERCASE or LOWERCASE
+                        \item[Tab size]  Define number of inserted spaces when you press Tab.
+                        \item[Short instructions] Here you can allow short instructions like LD, RETI or others
+                    \end{description}
+
+                    \begin{figure}
+                        \centering{}
+                        \includegraphics [scale=1]{img/DATA_convertor.png}
+                        \caption{DATA file convertor}
+                    \end{figure}
+                    
+
+
+
+
+  
                 \subsection{ASM translator}
-                    With this tool, you can translate assembler code. The inverse
-                    operation to that of an assembler.
+                    With this tool, you can translate your previously written assembler code in different syntax.
+                    You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde.
 
                     \begin{description}
                         \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
@@ -1946,41 +1973,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{JUMP} Z,aaa\\
                             \textbf{JUMP} NZ,aaa\\
                             \textbf{JUMP} C,aaa\\
-                            \textbf{JUMP} NC,aaa\\
-                                                  
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 1  & 0  &  1 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of JUMP instruction}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l|l}
-                                    \hline
-                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
-                                    0                     &          0                        &       If Zero  \\\hline
-                                    0                     &          1                        &       If NOT zero  \\\hline
-                                    1                     &          0                        &       If Carry  \\\hline
-                                    1                     &          1                        &       If NOT carry  \\\hline
-                                    \end{tabular}
-                                    \caption{Bit 11 and 10}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l}
-                                    \hline
-                                    \textbf{Bit 12}       &                     \\\hline
-                                    0                     &          Unconditional\\\hline
-                                    1                     &          Conditional\\\hline
-                                    \end{tabular}
-                                    \caption{Bit 12}
-                            \end{table}
+                            \textbf{JUMP} NC,aaa\\                                                 
                             
                         \subsubsection{CALL}
                         T"aaa" - call address. Instruction can be conditional.\\
@@ -1989,41 +1982,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{CALL} NZ,aaa\\
                             \textbf{CALL} C,aaa\\
                             \textbf{CALL} NC,aaa\\
-                            
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of CALL instruction}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l|l}
-                                    \hline
-                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
-                                    0                     &          0                        &       If Zero  \\\hline
-                                    0                     &          1                        &       If NOT zero  \\\hline
-                                    1                     &          0                        &       If Carry  \\\hline
-                                    1                     &          1                        &       If NOT carry  \\\hline
-                                    \end{tabular}
-                                    \caption{Bit 11 and 10}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l}
-                                    \hline
-                                    \textbf{Bit 12}       &                     \\\hline
-                                    0                     &          Unconditional\\\hline
-                                    1                     &          Conditional\\\hline
-                                    \end{tabular}
-                                    \caption{Bit 12}
-                            \end{table}
-                            
+                                                       
                         \subsubsection{RETURN, RET}
                         Return from subroutine. Can be conditional.\\
                             \textbf{RETURN}\\
@@ -2038,40 +1997,6 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{RET} NC\\
                             \textbf{RETURNI ENABLE}\\
                             \textbf{RETURNI DISABLE}\\
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 0  & 1  &  0 & 1  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of RETURN instruction}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l|l}
-                                    \hline
-                                    \textbf{Bit 11}       &          \textbf{Bit 10}          &       \textbf{Condition}  \\\hline
-                                    0                     &          0                        &       If Zero  \\\hline
-                                    0                     &          1                        &       If NOT zero  \\\hline
-                                    1                     &          0                        &       If Carry  \\\hline
-                                    1                     &          1                        &       If NOT carry  \\\hline
-                                    \end{tabular}
-                                    \caption{Bit 11 and 10}
-                            \end{table}
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|l}
-                                    \hline
-                                    \textbf{Bit 12}       &                     \\\hline
-                                    0                     &          Unconditional\\\hline
-                                    1                     &          Conditional\\\hline
-                                    \end{tabular}
-                                    \caption{Bit 12}
-                            \end{table}
                             
                 \subsection{Arithmetic Group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
@@ -2085,40 +2010,6 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{ADDCY} sX,\#kk\\
                             \textbf{ADD} sX,sY\\
                             \textbf{ADDCY} sX,sY\\
-                    
-                            \begin{description}
-                                \item[ADD Sx, Sx] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of ADD instruction}
-                                    \end{table}
-                                \item[ADD Sx,\#kk] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of ADD instruction}
-                                    \end{table}
-                                    \ldots
-                            \end{description}
-                                                        
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 1  & 0  &  0 & 0  & x  & x  & x  & a & a & a & a & a & a & a & a & a & a\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of ADDCY instruction}
-                            \end{table}
                             
                         \subsubsection{COMPARE, CMP}
                         The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is
@@ -2127,85 +2018,15 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{COMPARE} sX,sY\\
                             \textbf{CMP}     sX,\#kk\\
                             \textbf{CMP}     sX,sY\\
-                        \begin{description}
-                                \item[COMPARE Sx, \#kk and CMP Sx, \#kk] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                \item[COMPARE Sx, Sy and CMP Sx, Sy] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                    \ldots
-                        \end{description}
-                        
+
                         \subsubsection{SUB}
                         The SUB instruction performs an 8-bit subtraction of two operands. This instruction updates flags\\
                             \textbf{SUB} sX,\#kk\\
-                            \textbf{SUB} sX,sY\\
-                            \begin{description}
-                                \item[COMPARE Sx, \#kk and CMP Sx, \#kk] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                \item[COMPARE Sx, Sy and CMP Sx, Sy] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                    \ldots
-                            \end{description}
-                            
+                            \textbf{SUB} sX,sY\\              
                         \subsubsection{SUBCY}
                             \textbf{SUBCY} sX,\#kk\\
                             \textbf{SUBCY} sX,sY\\
-                            \begin{description}
-                                \item[SUBCY Sx, \#kk] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 0  & Sx  & Sx  & Sx & Sx & k & k & k & k & k & k & k & k\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                \item[SUBCY Sx, sY] \hfill \\
-                                    \begin{table}[h!]
-                                            \mysmallfont{}
-                                            \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                            \hline
-                                            Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                            Value   & 0  & 1  & 0  &  1 & 0  & 1  & Sx  & Sx  & Sx & Sx & Sy & Sy & Sy & Sy & 0 & 0 & 0 & 0\\\hline
-                                            \end{tabular}
-                                            \caption{OpCode of COMPARE and CMP instruction}
-                                    \end{table}
-                                    \ldots
-                        \end{description}
-                        
+
                 \subsection{Interrupt group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
                 "\#kk" represents a constant value in the range 00 to FF.\\
@@ -2214,27 +2035,6 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{RETURNI, RETIE, RETID}
                             \textbf{RETURNI ENABLE}\\
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 1  & 1  &  0 & 0  & 0  & 0  & 0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of RETURNI ENABLE instruction}
-                            \end{table}
-
-                            \textbf{RETURNI DISABLE}\\
-
-                            \begin{table}[h!]
-                                    \mysmallfont{}
-                                    \begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-                                    \hline
-                                    Bit     & 17 & 16 & 15 & 14 & 13 & 12 & 11 & 10 & 9 & 8 & 7 & 6 & 5 & 4 & 3 & 2 & 1 & 0\\\hline
-                                    Value   & 1  & 1  & 1  &  0 & 0  & 0  & 0  & 0  & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\\hline
-                                    \end{tabular}
-                                    \caption{OpCode of RETURNI DISABLE instruction}
-                            \end{table}
                             \textbf{RETIE}\\
                             \textbf{RETID}\\
                         \subsubsection{ENABLE INTERRUPT, ENA, DIS}
