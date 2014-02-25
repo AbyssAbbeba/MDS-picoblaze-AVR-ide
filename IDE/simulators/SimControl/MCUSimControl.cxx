@@ -544,7 +544,7 @@ void MCUSimControl::runProgram()
 
             m_totalMCycles += m_simulator->executeInstruction();
             m_simulatorLog->clear();
-            emit(updateRequest(0x1));
+            emit(updateRequest(0x3));
             QCoreApplication::instance()->processEvents();
         }
     }
