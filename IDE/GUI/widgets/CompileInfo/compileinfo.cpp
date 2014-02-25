@@ -27,7 +27,8 @@ void CompileInfo::mouseMoveEvent(QMouseEvent *e)
 {
     //qDebug() << "CompileInfo: mouseMoveEvent";
     QTextCursor cur = this->cursorForPosition(e->pos());
-    cur.select(QTextCursor::LineUnderCursor);
+    //qDebug() << "column:" << cur.positionInBlock();
+    cur.select(QTextCursor::BlockUnderCursor);
     QStringList list = cur.selectedText().split(':');
     //QString line = list.at(2).
     bool ok = false;
@@ -39,12 +40,17 @@ void CompileInfo::mouseMoveEvent(QMouseEvent *e)
             QWidget *viewport = this->viewport();
             viewport->setCursor(Qt::PointingHandCursor);
             this->setViewport(viewport);
-            
-            QTextCharFormat format = cur.blockCharFormat();
-            format.setFontUnderline(true);
-            format.setFontItalic(true);
-            cur.setBlockCharFormat(format);
-            setTextCursor(cur);
+
+            int start = cur.selectionStart();
+            int end = cur.selectionEnd();
+            cur.clearSelection();
+            cur.setPosition(start+1);
+            cur.setPosition(end, QTextCursor::KeepAnchor);
+            //QTextCharFormat format = cur.blockCharFormat();
+            //format.setFontUnderline(true);
+            //format.setFontItalic(true);
+            //cur.setBlockCharFormat(format);
+            this->setTextCursor(cur);
 
             /*prevCur.select(QTextCursor::LineUnderCursor);
             QTextCharFormat prevFormat = prevCur.blockCharFormat();
@@ -76,7 +82,7 @@ void CompileInfo::mouseDoubleClickEvent(QMouseEvent *e)
 {
     //qDebug() << "CompileInfo: doubleclick";
     QTextCursor cur = this->cursorForPosition(e->pos());
-    cur.select(QTextCursor::LineUnderCursor);
+    cur.select(QTextCursor::BlockUnderCursor);
     //QString selection = cur.selectedText();
     QStringList list = cur.selectedText().split(':');
     //QString line = list.at(2).
@@ -147,13 +153,13 @@ void CompileInfo::appendMessage(QString text, CompilerBase::MessageType type)
         case CompilerBase::MessageType::MT_ERROR:
         {
             //this->setTextColor(Qt::darkRed);
-            color = "rgb(80,0,0)";
+            color = "rgb(230,0,0)";
             break;
         }
         case CompilerBase::MessageType::MT_WARNING:
         {
             //this->setTextColor(Qt::red);
-            color = "rgb(255,0,0)";
+            color = "rgb(30,0,0)";
             break;
         }
         case CompilerBase::MessageType::MT_REMARK:
