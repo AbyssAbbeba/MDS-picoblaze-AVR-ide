@@ -337,11 +337,6 @@ class MCUSimControl : public QThread
         /**
          * @brief
          */
-        MCUSimCPU * m_simCpu;
-
-        /**
-         * @brief
-         */
         MCUSimEventLogger * m_simulatorLog;
 
         /**

@@ -21,7 +21,7 @@
 // Standard header files.
 #include <fstream>
 #include <string>
-#include<iostream>//debug
+
 DbgFileNative::DbgFileNative()
 {
     m_addrToLineMap = nullptr;
@@ -71,8 +71,6 @@ void DbgFileNative::openFile ( const std::string & filename )
 void DbgFileNative::getLineByAddr ( unsigned int addr,
                                     std::vector<unsigned int> & recordNumbers ) const
 {
-std::cout << "DbgFileNative::getLineByAddr(addr="<<addr<<", recordNumbers="<<((void*)&recordNumbers)<<") [ENTER]\n" << std::flush;
-std::cout << "DbgFileNative::getLineByAddr m_lastAddress="<<m_lastAddress<<"\n" << std::flush;
     if ( (int)(addr) > m_lastAddress )
     {
         recordNumbers.clear();
@@ -80,7 +78,6 @@ std::cout << "DbgFileNative::getLineByAddr m_lastAddress="<<m_lastAddress<<"\n" 
     }
 
     recordNumbers = m_addrToLineMap[addr];
-std::cout << "DbgFileNative::getLineByAddr(...) [LEAVE]\n" << std::flush;
 }
 
 int DbgFileNative::getAddrByLine ( unsigned int line,
@@ -362,7 +359,6 @@ inline void DbgFileNative::generateLineAddressMaps()
         delete[] m_addrToLineMap;
     }
     m_addrToLineMap = new std::vector<unsigned int> [ m_lastAddress + 1 ];
-std::cout << "m_addrToLineMap [ptr:"<<((void*)m_addrToLineMap)<<"] = new std::vector<unsigned int> [ "<<m_lastAddress<<" + 1 ];\n" << std::flush;
 
     if ( nullptr != m_lineToAddrMap )
     {
