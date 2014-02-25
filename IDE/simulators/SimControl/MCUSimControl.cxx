@@ -412,6 +412,7 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
         default:
             // TODO: implement a proper error handling here
             m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
+            delete dataFile;
             return false;
     }
 
@@ -439,7 +440,7 @@ std::cout << "MCUSimControl::getLineNumber() [1]\n" << std::flush;
     std::vector<unsigned int> recordNumbers;
 
 std::cout << "MCUSimControl::getLineNumber() [2]\n" << std::flush;
-    m_dbgFile->getLineByAddr(m_simCpu->getProgramCounter(), recordNumbers);
+    m_dbgFile->getLineByAddr(dynamic_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter(), recordNumbers);
 std::cout << "MCUSimControl::getLineNumber() [2.0]\n" << std::flush;
     if ( true == recordNumbers.empty() )
     {
