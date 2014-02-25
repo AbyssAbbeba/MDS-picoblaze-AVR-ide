@@ -538,13 +538,13 @@ void MCUSimControl::runProgram()
             {
                 m_abort = false;
                 m_running = false;
-                emit(updateRequest(0x3));
+                emit(updateRequest(0x7));
                 return;
             }
 
             m_totalMCycles += m_simulator->executeInstruction();
             m_simulatorLog->clear();
-            emit(updateRequest(0x3));
+            emit(updateRequest(0x1));
             QCoreApplication::instance()->processEvents();
         }
     }

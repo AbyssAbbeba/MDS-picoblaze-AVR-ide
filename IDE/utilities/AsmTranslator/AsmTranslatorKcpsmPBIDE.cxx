@@ -29,9 +29,13 @@ const boost::regex AsmTranslatorKcpsmPBIDE::m_reWord        = boost::regex ( "[_
 const boost::regex AsmTranslatorKcpsmPBIDE::m_reAndReturn   = boost::regex ( "^&[[:space:]]*return", flags );
 const boost::regex AsmTranslatorKcpsmPBIDE::m_reInstruction = boost::regex ( "^[_[:alpha:]][_[:alnum:]]+", flags );
 const boost::regex AsmTranslatorKcpsmPBIDE::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
-const boost::regex AsmTranslatorKcpsmPBIDE::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return", flags );
-const boost::regex AsmTranslatorKcpsmPBIDE::m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:", flags );
-const boost::regex AsmTranslatorKcpsmPBIDE::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)|(\\([[:space:]]*[_[:alnum:]]+[[:space:]]*\\))", flags );
+const boost::regex AsmTranslatorKcpsmPBIDE::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return",
+                                                                             flags );
+const boost::regex AsmTranslatorKcpsmPBIDE::m_reLabel       = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]*:",
+                                                                             flags );
+const boost::regex AsmTranslatorKcpsmPBIDE::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)"
+                                                                             "|(\\([[:space:]]*[_[:alnum:]]+"
+                                                                             "[[:space:]]*\\))", flags );
 
 AsmTranslatorKcpsmPBIDE::AsmTranslatorKcpsmPBIDE()
 {

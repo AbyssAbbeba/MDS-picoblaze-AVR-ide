@@ -126,6 +126,9 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
         static const boost::regex m_reAtMark;
 
         /// @brief
+        static const boost::regex m_dollar;
+
+        /// @brief
         static const boost::regex m_reAndReturn;
 
         /// @brief
