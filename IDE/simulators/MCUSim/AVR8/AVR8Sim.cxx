@@ -15,29 +15,29 @@
 
 #include "AVR8Sim.h"
 
+#include "AVR8IO.h"
+#include "AVR8Isp.h"
+#include "AVR8Spi.h"
+#include "AVR8Twi.h"
+#include "AVR8Adc.h"
+#include "AVR8Usart.h"
 #include "AVR8Config.h"
-#include "AVR8InstructionSet.h"
-#include "AVR8ProgramMemory.h"
 #include "AVR8DataMemory.h"
+#include "AVR8DataEEPROM.h"
+#include "AVR8BootLoader.h"
+#include "AVR8ClockControl.h"
+#include "AVR8ParallelProg.h"
+#include "AVR8ProgramMemory.h"
 #include "AVR8FusesAndLocks.h"
-#include "AVR8InterruptController.h"
 #include "AVR8TimerCounter0.h"
 #include "AVR8TimerCounter1.h"
 #include "AVR8TimerCounter2.h"
-#include "AVR8IO.h"
-#include "AVR8ExternalInterrupts.h"
-#include "AVR8DataEEPROM.h"
-#include "AVR8BootLoader.h"
 #include "AVR8WatchdogTimer.h"
 #include "AVR8SystemControl.h"
-#include "AVR8ClockControl.h"
-#include "AVR8Spi.h"
-#include "AVR8Usart.h"
-#include "AVR8Twi.h"
-#include "AVR8Adc.h"
+#include "AVR8InstructionSet.h"
 #include "AVR8AnalogComparator.h"
-#include "AVR8Isp.h"
-#include "AVR8ParallelProg.h"
+#include "AVR8ExternalInterrupts.h"
+#include "AVR8InterruptController.h"
 
 #include <cassert>
 
@@ -47,31 +47,31 @@ AVR8Sim::AVR8Sim()
     m_processorMode = MD_NORMAL;
     m_haltMode = HALTM_NONE;
 
-    m_eventLogger           = new MCUSimEventLogger();
     m_config                = new AVR8Config();
+    m_eventLogger           = new MCUSimEventLogger();
 
-    m_interrupts            = new AVR8InterruptController();
-    m_fusesAndLocks         = new AVR8FusesAndLocks();
-    m_programMemory         = new AVR8ProgramMemory();
+    m_io                    = new AVR8IO();
+    m_twi                   = new AVR8Twi();
+    m_adc                   = new AVR8Adc();
+    m_isp                   = new AVR8Isp();
+    m_spi                   = new AVR8Spi();
+    m_usart                 = new AVR8Usart();
     m_dataMemory            = new AVR8DataMemory();
     m_dataEEPROM            = new AVR8DataEEPROM();
     m_bootLoader            = new AVR8BootLoader();
-    m_instructionSet        = new AVR8InstructionSet();
+    m_clockControl          = new AVR8ClockControl();
+    m_pprog                 = new AVR8ParallelProg();
+    m_fusesAndLocks         = new AVR8FusesAndLocks();
+    m_programMemory         = new AVR8ProgramMemory();
     m_timerCounter0         = new AVR8TimerCounter0();
     m_timerCounter1         = new AVR8TimerCounter1();
     m_timerCounter2         = new AVR8TimerCounter2();
-    m_io                    = new AVR8IO();
-    m_externalInterrupts    = new AVR8ExternalInterrupts();
     m_watchdogTimer         = new AVR8WatchdogTimer();
     m_systemControl         = new AVR8SystemControl();
-    m_clockControl          = new AVR8ClockControl();
-    m_spi                   = new AVR8Spi();
-    m_usart                 = new AVR8Usart();
-    m_twi                   = new AVR8Twi();
-    m_adc                   = new AVR8Adc();
+    m_instructionSet        = new AVR8InstructionSet();
     m_acomp                 = new AVR8AnalogComparator();
-    m_isp                   = new AVR8Isp();
-    m_pprog                 = new AVR8ParallelProg();
+    m_externalInterrupts    = new AVR8ExternalInterrupts();
+    m_interrupts            = new AVR8InterruptController();
 
     regSubSys ( m_interrupts->link ( m_eventLogger,
                                      m_instructionSet,
