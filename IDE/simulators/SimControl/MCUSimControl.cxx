@@ -440,6 +440,7 @@ std::cout << "MCUSimControl::getLineNumber() [1]\n" << std::flush;
 
 std::cout << "MCUSimControl::getLineNumber() [2]\n" << std::flush;
     m_dbgFile->getLineByAddr(m_simCpu->getProgramCounter(), recordNumbers);
+std::cout << "MCUSimControl::getLineNumber() [2.0]\n" << std::flush;
     if ( true == recordNumbers.empty() )
     {
 std::cout << "No line record found!\n" << std::flush;
