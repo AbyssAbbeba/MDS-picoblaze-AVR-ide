@@ -425,6 +425,7 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
 
 void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, unsigned int>> & lines ) const
 {
+std::cout << "MCUSimControl::getLineNumber() [ENTER]\n" << std::flush;
     lines.clear();
 
     if ( false == initialized() )
@@ -453,6 +454,7 @@ std::cout << "Line record found, lineNumber = "<<lineNumber<<"\n" << std::flush;
         lines.push_back(std::make_pair(filename, lineNumber));
 std::cout << "Line record found, idx = "<<idx<<" ... ok.\n" << std::flush;
     }
+std::cout << "MCUSimControl::getLineNumber() [LEAVE]\n" << std::flush;
 }
 
 const DbgFile * MCUSimControl::getSourceInfo()
