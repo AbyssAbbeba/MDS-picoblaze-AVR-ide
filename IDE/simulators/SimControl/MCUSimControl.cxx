@@ -523,7 +523,35 @@ void MCUSimControl::animateProgram()
 
 void MCUSimControl::runProgram()
 {
-    qDebug("MCUSimControl::run is not implemented yet!");
+    if ( nullptr == m_simulator )
+    {
+        return;
+    }
+
+    if ( false == m_running )
+    {
+        m_abort = false;
+        m_running = true;
+        while ( true )
+        {
+            if ( true == m_abort )
+            {
+                m_abort = false;
+                m_running = false;
+                emit(updateRequest(0x3));
+                return;
+            }
+
+            m_totalMCycles += m_simulator->executeInstruction();
+            m_simulatorLog->clear();
+            emit(updateRequest(0x1));
+            QCoreApplication::instance()->processEvents();
+        }
+    }
+    else
+    {
+        m_abort = true;
+    }
 }
 
 void MCUSimControl::resetProgram()
