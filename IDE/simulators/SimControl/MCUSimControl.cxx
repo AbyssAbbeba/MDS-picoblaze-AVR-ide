@@ -427,14 +427,18 @@ void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, u
 {
 std::cout << "MCUSimControl::getLineNumber() [ENTER]\n" << std::flush;
     lines.clear();
+std::cout << "MCUSimControl::getLineNumber() [0]\n" << std::flush;
 
     if ( false == initialized() )
     {
+std::cout << "MCUSimControl::getLineNumber() [1X]\n" << std::flush;
         return;
     }
+std::cout << "MCUSimControl::getLineNumber() [1]\n" << std::flush;
 
     std::vector<unsigned int> recordNumbers;
 
+std::cout << "MCUSimControl::getLineNumber() [2]\n" << std::flush;
     m_dbgFile->getLineByAddr(m_simCpu->getProgramCounter(), recordNumbers);
     if ( true == recordNumbers.empty() )
     {
