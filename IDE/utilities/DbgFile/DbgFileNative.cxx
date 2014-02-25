@@ -79,6 +79,7 @@ std::cout << "DbgFileNative::getLineByAddr m_lastAddress="<<m_lastAddress<<"\n" 
         return;
     }
 
+std::cout << "DbgFileNative::getLineByAddr(...) [X]\n" << std::flush;
     recordNumbers = m_addrToLineMap[addr];
 std::cout << "DbgFileNative::getLineByAddr(...) [LEAVE]\n" << std::flush;
 }
