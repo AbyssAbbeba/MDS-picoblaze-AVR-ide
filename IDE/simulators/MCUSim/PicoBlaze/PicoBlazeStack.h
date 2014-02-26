@@ -205,7 +205,7 @@ inline void PicoBlazeStack::pushOnStack ( unsigned int value )
 {
     if ( (int) m_config.m_size == m_position )
     {
-        logEvent(EVENT_STACK_OVERFLOW, m_position, value);
+        logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_STACK_OVERFLOW, m_position, value);
         m_position = 0;
     }
 
@@ -224,7 +224,7 @@ inline unsigned int PicoBlazeStack::popFromStack()
     m_position--;
     if ( -1 == m_position )
     {
-        logEvent(EVENT_STACK_UNDERFLOW, m_position, -1);
+        logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_STACK_UNDERFLOW, m_position, -1 );
         m_position = (int) m_config.m_size - 1;
     }
 

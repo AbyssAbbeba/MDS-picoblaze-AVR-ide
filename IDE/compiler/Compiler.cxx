@@ -60,12 +60,12 @@ bool Compiler::compile ( CompilerBase::LangId lang,
 
     try
     {
+        m_compilerCore->setup(lang, arch, opts, genSimData);
+
         if ( false == checkOptions(lang, arch, opts) )
         {
             return false;
         }
-
-        m_compilerCore->setup(lang, arch, opts, genSimData);
 
         std::string errStr;
         ModEmplStatCode statusCode = employModule ( lang, arch, m_compilerCore, &errStr );
