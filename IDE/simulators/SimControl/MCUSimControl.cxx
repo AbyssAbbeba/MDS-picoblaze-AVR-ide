@@ -41,6 +41,7 @@
 #include "McuDeviceSpecAVR8.h"
 #include "McuDeviceSpecPIC8.h"
 
+#include <ctime>
 #include <cstring>
 
 #include <QDebug>
@@ -74,6 +75,7 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
                                       CompilerID compilerId,
                                       DataFileType dataFileType )
 {
+    m_breakPointsSet = false;
     if ( nullptr != m_dbgFile )
     {
         delete m_dbgFile;
@@ -237,6 +239,7 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
 bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
                                       DataFile * dataFile )
 {
+    m_breakPointsSet = false;
     m_dbgFile = dbgFile;
 
     // Reset the simulator
@@ -274,6 +277,7 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
                                       MCUSimControl::CompilerID compilerId,
                                       MCUSimControl::DataFileType dataFileType )
 {
+    m_breakPointsSet = false;
     if ( nullptr != m_dbgFile )
     {
         delete m_dbgFile;
@@ -496,61 +500,88 @@ void MCUSimControl::animateProgram()
         return;
     }
 
-    if ( false == m_running )
-    {
-        m_abort = false;
-        m_running = true;
-        while ( true )
-        {
-            if ( true == m_abort )
-            {
-                m_abort = false;
-                m_running = false;
-                return;
-            }
-
-            m_totalMCycles += m_simulator->executeInstruction();
-            dispatchEvents();
-            emit(updateRequest(0x3));
-            QCoreApplication::instance()->processEvents();
-        }
-    }
-    else
+    if ( true == m_running )
     {
         m_abort = true;
+        return;
+    }
+
+    m_abort = false;
+    m_running = true;
+
+    while ( true )
+    {
+        if ( true == m_breakPointsEnabled )
+        {
+            m_abort = breakpointReached();
+        }
+
+        if ( true == m_abort )
+        {
+            m_abort = false;
+            m_running = false;
+            return;
+        }
+
+        m_totalMCycles += m_simulator->executeInstruction();
+        dispatchEvents();
+        emit(updateRequest(0x3));
+        QCoreApplication::instance()->processEvents();
     }
 }
 
 void MCUSimControl::runProgram()
 {
+    constexpr unsigned int MAX_REFRESH_FREQ_HZ = 50;
+    constexpr unsigned int MIN_REFRESH_FREQ_I  = 100000;
+
     if ( nullptr == m_simulator )
     {
         return;
     }
 
-    if ( false == m_running )
-    {
-        m_abort = false;
-        m_running = true;
-        while ( true )
-        {
-            if ( true == m_abort )
-            {
-                m_abort = false;
-                m_running = false;
-                emit(updateRequest(0x7));
-                return;
-            }
-
-            m_totalMCycles += m_simulator->executeInstruction();
-            m_simulatorLog->clear();
-            emit(updateRequest(0x1));
-            QCoreApplication::instance()->processEvents();
-        }
-    }
-    else
+    if ( true == m_running )
     {
         m_abort = true;
+        return;
+    }
+
+    m_abort = false;
+    m_running = true;
+
+    clock_t t = clock();
+    unsigned int auxCounter = 0;
+
+    while ( true )
+    {
+        if ( true == m_breakPointsEnabled )
+        {
+            m_abort = breakpointReached();
+        }
+
+        if ( true == m_abort )
+        {
+            m_abort = false;
+            m_running = false;
+            emit(updateRequest(0x7));
+            return;
+        }
+
+        m_totalMCycles += m_simulator->executeInstruction();
+        m_simulatorLog->clear(); // TODO: Implement an event filter - some events might stop simulation.
+
+        if ( ++auxCounter > MIN_REFRESH_FREQ_I )
+        {
+            const clock_t t2 = clock();
+            if ( ( t2 - t ) * MAX_REFRESH_FREQ_HZ / CLOCKS_PER_SEC )
+            {
+                t = t2;
+                auxCounter = 0;
+
+                emit(updateRequest(0x1));
+                QCoreApplication::instance()->processEvents();
+            }
+        }
     }
 }
 
@@ -800,31 +831,65 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
     }
 }
 
-
-void MCUSimControl::setBreakPoints ( const std::vector<std::string> & fileNames,
-                                     const std::vector<std::vector<unsigned int>> & lineNumbers )
+void MCUSimControl::setBreakPoints(const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs)
 {
+    m_breakPointsSet = false;
+
     if ( false == initialized() )
     {
         return;
     }
 
-    m_breakpoints.clear();
-    m_breakpoints.resize(fileNames.size());
-
-    // NOTE: This algorithm has quadratic time complexity, and that's not very good...
     const std::vector<std::string> & files = m_dbgFile->getFileNames();
-    for ( size_t i = 0; i < files.size(); i++ )
+
+    m_breakpoints.clear();
+    m_breakpoints.resize(files.size());
+
+    for ( size_t i = 0; i < m_breakpoints.size(); i++ )
     {
-        for ( size_t j = 0; j < fileNames.size(); j++ )
+        for ( size_t j = 0; j < fileLinePairs.size(); j++ )
         {
-            if ( files[i] == fileNames[j] )
+            if ( files[i] == fileLinePairs[j].first )
             {
-                m_breakpoints.back() = lineNumbers[j];
+                if ( false == fileLinePairs[j].second.empty() )
+                {
+                    m_breakPointsSet = true;
+                }
+                m_breakpoints[i] = fileLinePairs[j].second;
                 break;
             }
         }
     }
+}
+
+inline bool MCUSimControl::breakpointReached()
+{
+    if ( false == m_breakPointsSet )
+    {
+        return false;
+    }
+
+    std::vector<unsigned int> recordNumbers;
+
+    m_dbgFile->getLineByAddr(static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter(),
+                             recordNumbers);
+
+    if ( true == recordNumbers.empty() )
+    {
+        return false;
+    }
+
+    for ( unsigned int idx : recordNumbers )
+    {
+        const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
+        const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
+        if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void MCUSimControl::enableBreakPoints ( bool enabled )

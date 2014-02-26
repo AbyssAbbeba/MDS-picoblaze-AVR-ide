@@ -116,6 +116,7 @@ void TestGenericSubsys::testFunction()
         useAsmFile = true;
     }
 
+    m_pic8Sim->getLog()->clear();
     m_pic8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_pic8Sim->reset(MCUSim::RSTMD_MCU_RESET);
 

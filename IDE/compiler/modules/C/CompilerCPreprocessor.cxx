@@ -130,9 +130,9 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     return outBuffer;
 }
 
-inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
-                                                 char * & line,
-                                                 size_t & bufferSize )
+inline bool CompilerCPreprocessor::processLine ( ssize_t & /*length*/,
+                                                 char * & /*line*/,
+                                                 size_t & /*bufferSize*/ )
 {
     return true;
 }

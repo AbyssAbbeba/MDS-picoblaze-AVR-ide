@@ -15,7 +15,7 @@
 
 #include "TestKcpsm6.h"
 
-// Tool for working with Intel® 16 Hex files.
+// Tool for working with Intel 16 Hex files.
 #include "HexFile.h"
 
 // PicoBlaze simulator.
@@ -134,6 +134,7 @@ void TestKcpsm6::testFunction()
         useAsmFile = true;
     }
 
+    m_picoBlazeSim->getLog()->clear();
     m_picoBlazeSim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_picoBlazeSim->reset(MCUSim::RSTMD_MCU_RESET);
 

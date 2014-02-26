@@ -24,6 +24,7 @@ class MCUSimObserver;
 
 #include "../MCUSim/MCUSim.h"
 
+#include <set>
 #include <vector>
 #include <string>
 #include <utility>
@@ -176,11 +177,9 @@ class MCUSimControl : public QThread
 
         /**
          * @brief
-         * @param[in] fileNames
-         * @param[in] lineNumbers
+         * @param[in] fileLinePairs
          */
-        void setBreakPoints ( const std::vector<std::string> & fileNames,
-                              const std::vector<std::vector<unsigned int>> & lineNumbers );
+        void setBreakPoints ( const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs );
 
         /**
          * @brief
@@ -244,6 +243,11 @@ class MCUSimControl : public QThread
          */
         inline bool unregisterSpecificObserver ( MCUSimSubsys::SubsysId subsysId,
                                                  const MCUSimObserver * observer );
+        /**
+         * @brief
+         * @return
+         */
+        inline bool breakpointReached();
 
     ////    Qt Public Slots    ////
     public slots:
@@ -319,34 +323,22 @@ class MCUSimControl : public QThread
 
     ////    Private Attributes    ////
     private:
-        /**
-         * @brief
-         */
+        /// @brief
         MCUSim::Arch m_architecture;
 
-        /**
-         * @brief
-         */
+        /// @brief
         MCUSim * m_simulator;
 
-        /**
-         * @brief
-         */
+        /// @brief
         DbgFile * m_dbgFile;
 
-        /**
-         * @brief
-         */
+        /// @brief
         MCUSimEventLogger * m_simulatorLog;
 
-        /**
-         * @brief
-         */
+        /// @brief
         const McuDeviceSpec * m_deviceSpec;
 
-        /**
-         * @brief
-         */
+        /// @brief
         std::vector<std::pair<MCUSimObserver*, uint64_t> > m_observers [ MCUSimSubsys::ID__MAX__ ];
 
         /// @brief
@@ -356,12 +348,18 @@ class MCUSimControl : public QThread
         bool m_breakPointsEnabled;
 
         /// @brief
-        std::vector<std::vector<unsigned int>> m_breakpoints;
+        bool m_breakPointsSet;
+
+        /// @brief
+        std::vector<std::set<unsigned int>> m_breakpoints;
 
         /// @brief
         unsigned long long m_totalMCycles;
 
+        /// @brief
         bool m_running;
+
+        /// @brief
         bool m_abort;
 };
 
