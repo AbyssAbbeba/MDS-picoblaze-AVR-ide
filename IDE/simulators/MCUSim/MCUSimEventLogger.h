@@ -16,6 +16,8 @@
 #ifndef MCUSIMEVENTLOGGER_H
 #define MCUSIMEVENTLOGGER_H
 
+#include<iostream>//debug
+
 /**
  * @brief This class is the observer of events occurring inside the simulator. Basically it acts as a queue.
  * @ingroup MCUSim
@@ -137,19 +139,18 @@ inline void MCUSimEventLogger::clear()
     m_inPos = 1;
     m_outPos = 0;
 }
-#include<iostream>//debug
+
 inline void MCUSimEventLogger::logEvent ( int subsysId,
                                           int eventId,
                                           int location, /* or reason */
                                           int detail,
                                           Flags flags )
 {
-std::cout << "m_eventFilter = " << m_eventFilter << ", flags = " << flags << "\n" << std::flush;
     if ( !( m_eventFilter & flags ) )
     {
         return;
     }
-
+std::cout << "("<<subsysId<<","<<eventId<<") m_eventFilter = " << m_eventFilter << ", flags = " << flags << "\n" << std::flush;
     if ( m_inPos == m_outPos )
     {
         // The queue is full -> enlarge it.

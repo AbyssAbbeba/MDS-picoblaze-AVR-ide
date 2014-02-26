@@ -537,7 +537,7 @@ void MCUSimControl::animateProgram()
 void MCUSimControl::runProgram()
 {
     constexpr unsigned int MAX_REFRESH_FREQ_HZ = 50;
-    constexpr unsigned int MIN_REFRESH_FREQ_I  = 1000;
+    constexpr unsigned int MIN_REFRESH_FREQ_I  = 100000;
 
     if ( nullptr == m_simulator )
     {
