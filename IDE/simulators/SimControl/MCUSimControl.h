@@ -215,11 +215,6 @@ class MCUSimControl : public QThread
         /**
          * @brief
          */
-        void dispatchEvents();
-
-        /**
-         * @brief
-         */
         void allObservers_deviceChanged();
 
         /**
@@ -248,6 +243,11 @@ class MCUSimControl : public QThread
          * @return
          */
         inline bool breakpointReached();
+
+        /**
+         * @brief
+         */
+        inline void dispatchEvents();
 
     ////    Qt Public Slots    ////
     public slots:

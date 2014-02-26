@@ -82,7 +82,7 @@ inline void PicoBlazeInstructionSet::mcuReset()
     m_pc = 0;
     m_actSubprogCounter = 0;
     m_lastInstruction = PicoBlazeInsNames::INS_NONE;
-    logEvent(EVENT_CPU_PC_CHANGED, m_pc);
+    logEvent(EVENT_CPU_PC_CHANGED, m_pc, 0, MCUSimEventLogger::FLAG_HI_PRIO);
 }
 
 inline void PicoBlazeInstructionSet::resetToInitialValues()
