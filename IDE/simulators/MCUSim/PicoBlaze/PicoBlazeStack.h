@@ -140,6 +140,15 @@ class PicoBlazeStack : public MCUSimMemory
         }
 
         /**
+         * @brief Get current value of stack pointer.
+         * @return SP.
+         */
+        unsigned int getSP() const
+        {
+            return (unsigned int) m_position;
+        }
+
+        /**
          * @brief Push value onto stack.
          *
          * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.
