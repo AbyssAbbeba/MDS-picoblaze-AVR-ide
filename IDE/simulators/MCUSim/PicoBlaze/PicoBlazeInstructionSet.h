@@ -225,12 +225,12 @@ inline int PicoBlazeInstructionSet::incrPc ( const int val )
     while ( m_pc > m_config.m_pcMax )
     {
         m_pc -= m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_OVERFLOW, 0, 0, MCUSimEventLogger::FLAG_HI_PRIO );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_PC_OVERFLOW );
     }
     while ( m_pc < 0 )
     {
         m_pc += m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_UNDERFLOW, 0, 0, MCUSimEventLogger::FLAG_HI_PRIO );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_PC_UNDERFLOW );
     }
     logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
     return m_pc;

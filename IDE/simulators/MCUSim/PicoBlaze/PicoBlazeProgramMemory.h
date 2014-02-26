@@ -210,7 +210,7 @@ inline unsigned int PicoBlazeProgramMemory::readRaw ( unsigned int addr )
     {
         if ( 0 == m_size )
         {
-            logEvent(EVENT_MEM_ERR_RD_NONEXISTENT, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_RD_NONEXISTENT, addr);
             return getUndefVal();
         }
         else
@@ -241,7 +241,7 @@ inline void PicoBlazeProgramMemory::write ( unsigned int addr,
     {
         if ( 0 == m_size )
         {
-            logEvent(EVENT_MEM_ERR_WR_NONEXISTENT, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_WR_NONEXISTENT, addr);
             return;
         }
         else
