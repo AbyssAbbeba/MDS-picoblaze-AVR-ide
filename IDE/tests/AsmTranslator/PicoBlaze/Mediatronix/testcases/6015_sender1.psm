@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+  
+
+
+  <head>
+    <title>
+      sender1.psm in vhdl/Picoblaze
+     – Labor Svn
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!--[if IE]><script type="text/javascript">
+      if (/^#__msie303:/.test(window.location.hash))
+        window.location.replace(window.location.hash.replace(/^#__msie303:/, '#'));
+    </script><![endif]-->
+        <link rel="search" href="/trac/search" />
+        <link rel="help" href="/trac/wiki/TracGuide" />
+        <link rel="alternate" href="/trac/export/2593/vhdl/Picoblaze/sender1.psm" type="text/plain" title="Original Format" />
+        <link rel="up" href="/trac/browser/vhdl/Picoblaze/sender1.psm" />
+        <link rel="start" href="/trac/wiki" />
+        <link rel="stylesheet" href="/trac/chrome/common/css/trac.css" type="text/css" /><link rel="stylesheet" href="/trac/chrome/common/css/code.css" type="text/css" /><link rel="stylesheet" href="/trac/pygments/trac.css" type="text/css" /><link rel="stylesheet" href="/trac/chrome/common/css/browser.css" type="text/css" />
+        <link rel="shortcut icon" href="/trac/chrome/common/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/trac/chrome/common/favicon.ico" type="image/x-icon" />
+      <link type="application/opensearchdescription+xml" rel="search" href="/trac/search/opensearch" title="Search Labor Svn" />
+    <script type="text/javascript" src="/trac/chrome/common/js/jquery.js"></script><script type="text/javascript" src="/trac/chrome/common/js/babel.js"></script><script type="text/javascript" src="/trac/chrome/common/js/messages/en_US.js"></script><script type="text/javascript" src="/trac/chrome/common/js/trac.js"></script><script type="text/javascript" src="/trac/chrome/common/js/search.js"></script>
+    <!--[if lt IE 7]>
+    <script type="text/javascript" src="/trac/chrome/common/js/ie_pre7_hacks.js"></script>
+    <![endif]-->
+    <script type="text/javascript" src="/trac/chrome/common/js/folding.js"></script>
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $(".trac-toggledeleted").show().click(function() {
+                  $(this).siblings().find(".trac-deleted").toggle();
+                  return false;
+        }).click();
+        $("#jumploc input").hide();
+        $("#jumploc select").change(function () {
+          this.parentNode.parentNode.submit();
+        });
+          $('#preview table.code').enableCollapsibleColumns($('#preview table.code thead th.content'));
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="#"><img src="/img/LaborSvn.png" alt="Das Labor Subversion" width="236" /></a>
+      </div>
+      <form id="search" action="/trac/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input type="text" id="proj-search" name="q" size="18" value="" />
+          <input type="submit" value="Search" />
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="/trac/login">Login</a></li><li><a href="/trac/wiki/TracGuide">Help/Guide</a></li><li><a href="/trac/about">About Trac</a></li><li class="last"><a href="/trac/prefs">Preferences</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first"><a href="/trac/wiki">Wiki</a></li><li><a href="/trac/timeline">Timeline</a></li><li><a href="/trac/roadmap">Roadmap</a></li><li class="active"><a href="/trac/browser">Browse Source</a></li><li><a href="/trac/report">View Tickets</a></li><li class="last"><a href="/trac/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+              <li class="first"><span class="missing">&larr; Previous Revision</span></li><li><a href="/trac/browser/vhdl/Picoblaze/sender1.psm">Latest Revision</a></li><li><span class="missing">Next Revision &rarr;</span></li><li><a href="/trac/browser/vhdl/Picoblaze/sender1.psm?annotate=blame&amp;rev=2593" title="Annotate each line with the last changed revision (this can be time consuming...)">Blame</a></li><li class="last"><a href="/trac/log/vhdl/Picoblaze/sender1.psm?rev=2593">Revision Log</a></li>
+          </ul>
+        <hr />
+      </div>
+    <div id="content" class="browser">
+          <h1>
+<a class="pathentry first" href="/trac/browser?order=name" title="Go to repository root">source:</a>
+<a class="pathentry" href="/trac/browser/vhdl?rev=2593&amp;order=name" title="View vhdl">vhdl</a><span class="pathentry sep">/</span><a class="pathentry" href="/trac/browser/vhdl/Picoblaze?rev=2593&amp;order=name" title="View Picoblaze">Picoblaze</a><span class="pathentry sep">/</span><a class="pathentry" href="/trac/browser/vhdl/Picoblaze/sender1.psm?rev=2593&amp;order=name" title="View sender1.psm">sender1.psm</a>
+<span class="pathentry sep">@</span>
+  <a class="pathentry" href="/trac/changeset/2593" title="View changeset 2593">2593</a>
+<br style="clear: both" />
+</h1>
+        <div id="jumprev">
+          <form action="" method="get">
+            <div>
+              <label for="rev" title="Hint: clear the field to view latest revision">
+                View revision:</label>
+              <input type="text" id="rev" name="rev" value="2593" size="6" />
+            </div>
+          </form>
+        </div>
+      <table id="info" summary="Revision info">
+        <tr>
+          <th scope="col">Revision <a href="/trac/changeset/2593">2593</a>,
+            <span title="2887 bytes">2.8 KB</span>
+            checked in by sauron, <a class="timeline" href="/trac/timeline?from=2009-05-15T00%3A03%3A01%2B02%3A00&amp;precision=second" title="2009-05-15T00:03:01+02:00 in Timeline">5 years</a> ago
+            (<a href="/trac/changeset/2593/vhdl/Picoblaze/sender1.psm">diff</a>)</th>
+        </tr>
+        <tr>
+          <td class="message searchable">
+          </td>
+        </tr>
+      </table>
+      <div id="preview" class="searchable">
+        
+  <table class="code"><thead><tr><th class="lineno" title="Line numbers">Line</th><th class="content"> </th></tr></thead><tbody><tr><th id="L1"><a href="#L1">1</a></th><td>; ------------------------------------------------</td></tr><tr><th id="L2"><a href="#L2">2</a></th><td>; Fehlerbehandlung FPGA Komunikation 04/2009 SAURON</td></tr><tr><th id="L3"><a href="#L3">3</a></th><td>; ------------------------------------------------</td></tr><tr><th id="L4"><a href="#L4">4</a></th><td></td></tr><tr><th id="L5"><a href="#L5">5</a></th><td>; Bei der Assemblierung wird ein ROM Baustein erstellt</td></tr><tr><th id="L6"><a href="#L6">6</a></th><td>                    VHDL      "template.vhd", "d:\\borg_sender\sender\picoblaze_rom.vhd", "pb_rom"</td></tr><tr><th id="L7"><a href="#L7">7</a></th><td></td></tr><tr><th id="L8"><a href="#L8">8</a></th><td>; Portmap für den Simulator</td></tr><tr><th id="L9"><a href="#L9">9</a></th><td></td></tr><tr><th id="L10"><a href="#L10">10</a></th><td>i0                  DSIN      0                   ; Eingangs Ports</td></tr><tr><th id="L11"><a href="#L11">11</a></th><td>i1                  DSIN      1</td></tr><tr><th id="L12"><a href="#L12">12</a></th><td>i2                  DSIN      2</td></tr><tr><th id="L13"><a href="#L13">13</a></th><td>i3                  DSIN      3</td></tr><tr><th id="L14"><a href="#L14">14</a></th><td></td></tr><tr><th id="L15"><a href="#L15">15</a></th><td>q0                  DSOUT     10                  ; Ausgangs Ports</td></tr><tr><th id="L16"><a href="#L16">16</a></th><td>q1                  DSOUT     11</td></tr><tr><th id="L17"><a href="#L17">17</a></th><td>q2                  DSOUT     12</td></tr><tr><th id="L18"><a href="#L18">18</a></th><td>q3                  DSOUT     13</td></tr><tr><th id="L19"><a href="#L19">19</a></th><td></td></tr><tr><th id="L20"><a href="#L20">20</a></th><td>int_hi              DSOUT     24                  ; segment encoding</td></tr><tr><th id="L21"><a href="#L21">21</a></th><td>int_lo              DSOUT     25                  ; .     0</td></tr><tr><th id="L22"><a href="#L22">22</a></th><td>bin0                DSOUT     26                  ; .    ---</td></tr><tr><th id="L23"><a href="#L23">23</a></th><td>bin1                DSOUT     27                  ; . 5 |   | 1</td></tr><tr><th id="L24"><a href="#L24">24</a></th><td>bin2                DSOUT     28                  ; .    ---   &lt;- 6</td></tr><tr><th id="L25"><a href="#L25">25</a></th><td>bin3                DSOUT     29                  ; . 4 |   | 2</td></tr><tr><th id="L26"><a href="#L26">26</a></th><td>hell0               DSOUT     30                  ; .    ---  *</td></tr><tr><th id="L27"><a href="#L27">27</a></th><td>hell1               DSOUT     31                  ; .     3   7</td></tr><tr><th id="L28"><a href="#L28">28</a></th><td>hell2               DSOUT     32</td></tr><tr><th id="L29"><a href="#L29">29</a></th><td>hell3               DSOUT     33</td></tr><tr><th id="L30"><a href="#L30">30</a></th><td>hex_mode            DSOUT     34</td></tr><tr><th id="L31"><a href="#L31">31</a></th><td>bin_mode            DSOUT     35</td></tr><tr><th id="L32"><a href="#L32">32</a></th><td>punkte              DSOUT     36</td></tr><tr><th id="L33"><a href="#L33">33</a></th><td></td></tr><tr><th id="L34"><a href="#L34">34</a></th><td>led                 DSOUT     40                  ; LEDS</td></tr><tr><th id="L35"><a href="#L35">35</a></th><td></td></tr><tr><th id="L36"><a href="#L36">36</a></th><td>schalter            DSIN      50                  ; Schalter und Taster</td></tr><tr><th id="L37"><a href="#L37">37</a></th><td>Taster              DSIN      51</td></tr><tr><th id="L38"><a href="#L38">38</a></th><td></td></tr><tr><th id="L39"><a href="#L39">39</a></th><td></td></tr><tr><th id="L40"><a href="#L40">40</a></th><td></td></tr><tr><th id="L41"><a href="#L41">41</a></th><td>                    LOAD      sE, 0</td></tr><tr><th id="L42"><a href="#L42">42</a></th><td>                    OUT       sE, bin_mode</td></tr><tr><th id="L43"><a href="#L43">43</a></th><td>loop: </td></tr><tr><th id="L44"><a href="#L44">44</a></th><td></td></tr><tr><th id="L45"><a href="#L45">45</a></th><td></td></tr><tr><th id="L46"><a href="#L46">46</a></th><td>                    IN        s2, schalter</td></tr><tr><th id="L47"><a href="#L47">47</a></th><td>                    OUT       s2, hex_mode</td></tr><tr><th id="L48"><a href="#L48">48</a></th><td>                    SR0       s2</td></tr><tr><th id="L49"><a href="#L49">49</a></th><td>                    OUT       s2, bin_mode</td></tr><tr><th id="L50"><a href="#L50">50</a></th><td></td></tr><tr><th id="L51"><a href="#L51">51</a></th><td>                    IN        s0, taster          ; Taster Laden</td></tr><tr><th id="L52"><a href="#L52">52</a></th><td>                    COMP      s0, sF              ; vergleichen auf änderung</td></tr><tr><th id="L53"><a href="#L53">53</a></th><td>                    LOAD      sF, s0              ; alten wert sichern in sf</td></tr><tr><th id="L54"><a href="#L54">54</a></th><td>                    CALL      NZ, wechsel         ; springe wenn flankenwechsel</td></tr><tr><th id="L55"><a href="#L55">55</a></th><td>                    OUT       sF, punkte          ; Punkte auf Display = Taster</td></tr><tr><th id="L56"><a href="#L56">56</a></th><td></td></tr><tr><th id="L57"><a href="#L57">57</a></th><td></td></tr><tr><th id="L58"><a href="#L58">58</a></th><td>                    IN        sA, schalter</td></tr><tr><th id="L59"><a href="#L59">59</a></th><td>                    OUT       sA, bin0</td></tr><tr><th id="L60"><a href="#L60">60</a></th><td>                    OUT       sE, bin1</td></tr><tr><th id="L61"><a href="#L61">61</a></th><td>                    LOAD      s0, 255</td></tr><tr><th id="L62"><a href="#L62">62</a></th><td>                    OUT       s0, bin2</td></tr><tr><th id="L63"><a href="#L63">63</a></th><td>                    OUT       sD, bin3</td></tr><tr><th id="L64"><a href="#L64">64</a></th><td></td></tr><tr><th id="L65"><a href="#L65">65</a></th><td></td></tr><tr><th id="L66"><a href="#L66">66</a></th><td>                    JUMP      loop                ; und von vorne</td></tr><tr><th id="L67"><a href="#L67">67</a></th><td>wechsel: </td></tr><tr><th id="L68"><a href="#L68">68</a></th><td>                    ADD       sE, s0</td></tr><tr><th id="L69"><a href="#L69">69</a></th><td>                    ADDC      sD, 0</td></tr><tr><th id="L70"><a href="#L70">70</a></th><td>                    OUT       sE, int_lo</td></tr><tr><th id="L71"><a href="#L71">71</a></th><td>                    OUT       sD, int_hi</td></tr><tr><th id="L72"><a href="#L72">72</a></th><td>                    IN        sA, schalter</td></tr><tr><th id="L73"><a href="#L73">73</a></th><td>                    OUT       sA, bin0</td></tr><tr><th id="L74"><a href="#L74">74</a></th><td>                    OUT       sE, bin1</td></tr><tr><th id="L75"><a href="#L75">75</a></th><td>                    OUT       sD, bin3</td></tr><tr><th id="L76"><a href="#L76">76</a></th><td>                    RET       </td></tr><tr><th id="L77"><a href="#L77">77</a></th><td></td></tr></tbody></table>
+
+      </div>
+      <div id="help"><strong>Note:</strong> See <a href="/trac/wiki/TracBrowser">TracBrowser</a>
+        for help on using the repository browser.</div>
+      <div id="anydiff">
+        <form action="/trac/diff" method="get">
+          <div class="buttons">
+            <input type="hidden" name="new_path" value="/vhdl/Picoblaze/sender1.psm" />
+            <input type="hidden" name="old_path" value="/vhdl/Picoblaze/sender1.psm" />
+            <input type="hidden" name="new_rev" value="2593" />
+            <input type="hidden" name="old_rev" value="2593" />
+            <input type="submit" value="View changes..." title="Select paths and revs for Diff" />
+          </div>
+        </form>
+      </div>
+    </div>
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="/trac/export/2593/vhdl/Picoblaze/sender1.psm">Original Format</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" lang="en" xml:lang="en"><hr />
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="/trac/chrome/common/trac_logo_mini.png" height="30" width="107" alt="Trac Powered" /></a>
+      <p class="left">Powered by <a href="/trac/about"><strong>Trac 0.12.5</strong></a><br />
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.</p>
+      <p class="right">DAS LABOR</p>
+    </div>
+  </body>
+</html>
