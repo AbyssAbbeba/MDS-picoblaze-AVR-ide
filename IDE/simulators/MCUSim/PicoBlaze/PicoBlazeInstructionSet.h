@@ -154,7 +154,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
         virtual void setProgramCounter ( unsigned int newPc ) override
         {
             m_pc = int ( newPc );
-            logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
+            logEvent ( EVENT_CPU_PC_CHANGED, m_pc, 0, MCUSimEventLogger::FLAG_HI_PRIO );
         }
 
     ////    Inline Private Operations    ////
@@ -225,14 +225,14 @@ inline int PicoBlazeInstructionSet::incrPc ( const int val )
     while ( m_pc > m_config.m_pcMax )
     {
         m_pc -= m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_OVERFLOW );
+        logEvent ( EVENT_CPU_PC_OVERFLOW, 0, 0, MCUSimEventLogger::FLAG_HI_PRIO );
     }
     while ( m_pc < 0 )
     {
         m_pc += m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_UNDERFLOW );
+        logEvent ( EVENT_CPU_PC_UNDERFLOW, 0, 0, MCUSimEventLogger::FLAG_HI_PRIO );
     }
-    logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
+    logEvent ( EVENT_CPU_PC_CHANGED, m_pc, 0, MCUSimEventLogger::FLAG_HI_PRIO );
     return m_pc;
 }
 
