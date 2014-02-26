@@ -95,28 +95,11 @@ inline void PicoBlazeInstructionSet::resetToInitialValues()
     }
 }
 
-int PicoBlazeInstructionSet::incrPc ( const int val )
-{
-    m_pc += val;
-    while ( m_pc > m_config.m_pcMax )
-    {
-        m_pc -= m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_OVERFLOW );
-    }
-    while ( m_pc < 0 )
-    {
-        m_pc += m_config.m_pcMax;
-        logEvent ( EVENT_CPU_PC_UNDERFLOW );
-    }
-    logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
-    return m_pc;
-}
-
 void PicoBlazeInstructionSet::irq()
 {
     if ( m_statusFlags->getInterrupted() > 0 )
     {
-        logEvent ( EVENT_CPU_WRN_INVALID_IRQ, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_WRN_INVALID_IRQ, m_pc );
     }
 
     logEvent ( EVENT_CPU_IRQ, m_pc );

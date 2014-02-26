@@ -118,14 +118,14 @@ class PicoBlazeInstructionSet : public MCUSimCPU
          */
         void irq();
 
-    ////    Protected Operations    ////
+    ////    Inline Protected Operations    ////
     protected:
         /**
          * @brief
          * @param[in] val
          * @return New value the program counter (PC)
          */
-        int incrPc ( const int val = 1 );
+        inline int incrPc ( const int val = 1 );
 
     ////    Inline Public Operations    ////
     public:
@@ -214,5 +214,26 @@ class PicoBlazeInstructionSet : public MCUSimCPU
             PicoBlazeStatusFlags * m_statusFlags;
         //@}
 };
+
+// -----------------------------------------------------------------------------
+// Inline Function Definitions
+// -----------------------------------------------------------------------------
+
+inline int PicoBlazeInstructionSet::incrPc ( const int val )
+{
+    m_pc += val;
+    while ( m_pc > m_config.m_pcMax )
+    {
+        m_pc -= m_config.m_pcMax;
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_PC_OVERFLOW );
+    }
+    while ( m_pc < 0 )
+    {
+        m_pc += m_config.m_pcMax;
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_PC_UNDERFLOW );
+    }
+    logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
+    return m_pc;
+}
 
 #endif // PICOBLAZEINSTRUCTIONSET_H

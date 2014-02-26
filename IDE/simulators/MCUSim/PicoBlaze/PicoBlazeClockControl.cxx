@@ -29,7 +29,7 @@ float PicoBlazeClockControl::getFrequency()
 {
     if ( ClockSource::TYPE_EXTERNAL != m_clockSource.getType() )
     {
-        logEvent ( EVENT_CLK_ERR_INCOMPATIBLE_SOURCE );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CLK_ERR_INCOMPATIBLE_SOURCE );
         return 0;
     }
 

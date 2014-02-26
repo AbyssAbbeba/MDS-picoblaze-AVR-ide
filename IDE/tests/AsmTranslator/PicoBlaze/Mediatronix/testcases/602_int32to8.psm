@@ -67,7 +67,7 @@ d32     .equ    11
 
 // convert a 32 bit value in s0..s3 to a decimal string
 // reptitively substracts 9 powers of 10, remainder is last digit
-
+puts:
 convd32:
 
         MOVE    s4, '0'                 // start with a zero

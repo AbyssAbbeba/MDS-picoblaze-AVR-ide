@@ -610,10 +610,16 @@ void AsmTranslatorKcpsmPBIDE::fixRadix ( LineFields & lineFields,
             {
                 operand.replace(0, 1, "");
             }
+
             if ( true == operand.empty() )
             {
                 operand = "0";
             }
+            else if ( 0 == isdigit(operand[0]) )
+            {
+                operand = "0" + operand;
+            }
+
             lineFields.replaceOpr ( operand, i );
         }
     }
