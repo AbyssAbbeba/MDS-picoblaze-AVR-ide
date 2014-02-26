@@ -13,7 +13,7 @@
   <File path="../../../../../../Moje_pblaze/Examply_s3starterkit/s3esk_picoblaze_pwm_control/auto_pwm.psm" name="auto_pwm.psm"/>
   <File path="010_store_fetch.asm" name="010_store_fetch.asm"/>
  </Files>
- <Mainfile enabled="false" path="demo_1_simple_prog.asm" name="demo_1_simple_prog.asm"/>
+ <Mainfile enabled="true" path="010_store_fetch.asm" name="010_store_fetch.asm"/>
  <Simulator/>
  <Compiler>
   <Options>

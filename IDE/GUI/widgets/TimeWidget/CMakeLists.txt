@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(PicoBlazeGrid)
+project(TimeWidget)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -17,12 +17,17 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
 SET( SAMPLE_SRCS
-	./picoblazegrid.cpp
+	./timewidget.cpp
 )
 
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-	./picoblazegrid.h
+	./timewidget.h
+)
+
+# some .ui files
+SET( SAMPLE_UIS
+    ./timewidget.ui
 )
 
 
@@ -30,22 +35,25 @@ SET( SAMPLE_MOC_HDRS
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
+
+# this will run uic on .ui files:
+QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator SimWidgets StackWidget RegistersWidget PortHexEdit TimeWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES})
 
 
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
+
 
 
 if ( BUILD_SHARED_LIBS )

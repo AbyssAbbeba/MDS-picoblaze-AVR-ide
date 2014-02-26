@@ -16,7 +16,6 @@
 #define PICOBLAZEGRID_H
 
 
-#include "../sim/McuMemoryView.h"
 #include <QHBoxLayout>
 #include <QScrollArea>
 #include <QMenu>
@@ -26,6 +25,7 @@
 #include <QListWidget>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QComboBox>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
@@ -35,6 +35,8 @@
 #include "../StackWidget/stackwidget.h"
 #include "../RegistersWidget/registerswidget.h"
 #include "../PortHexEdit/porthexedit.h"
+#include "../sim/McuMemoryView.h"
+#include "../TimeWidget/timewidget.h"
 
 
 class MCUSimControl;
@@ -58,6 +60,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
+        void updateWidget();
         
     private:
         MCUSimControl *controlUnit;
@@ -70,6 +73,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         McuMemoryView *memScratch;
         PortHexEdit *memPorts;
         StackWidget *memStack;
+        TimeWidget *wTime;
 
         QLabel *lblRegs;
         QLabel *lblScratch;
@@ -84,7 +88,6 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         QLineEdit *leSP;
         QLineEdit *lePC;
-        QLineEdit *leTime;
         QLineEdit *leClock;
 
         QPushButton *btnIntr;
@@ -93,9 +96,14 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QPushButton *btnZero;
         QPushButton *btnInte;
 
-        MCUSimCPU* m_cpu;
+        QComboBox *cmbClock;
+
+        MCUSimCPU *m_cpu;
         PicoBlazeStatusFlags *m_flags;
         PicoBlazeInterruptController *m_interrupt;
+        PicoBlazeStack *m_stack;
+
+        double clock;
         
 
     //signals:
