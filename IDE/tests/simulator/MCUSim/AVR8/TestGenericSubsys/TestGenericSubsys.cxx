@@ -116,6 +116,7 @@ void TestGenericSubsys::testFunction()
         useAsmFile = true;
     }
 
+    m_avr8Sim->getLog()->clear();
     m_avr8Sim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_avr8Sim->reset(MCUSim::RSTMD_MCU_RESET);
 

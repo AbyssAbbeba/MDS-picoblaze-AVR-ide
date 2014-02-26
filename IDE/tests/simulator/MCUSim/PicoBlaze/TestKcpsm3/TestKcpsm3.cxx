@@ -134,6 +134,7 @@ void TestKcpsm3::testFunction()
         useAsmFile = true;
     }
 
+    m_picoBlazeSim->getLog()->clear();
     m_picoBlazeSim->reset(MCUSim::RSTMD_INITIAL_VALUES);
     m_picoBlazeSim->reset(MCUSim::RSTMD_MCU_RESET);
 

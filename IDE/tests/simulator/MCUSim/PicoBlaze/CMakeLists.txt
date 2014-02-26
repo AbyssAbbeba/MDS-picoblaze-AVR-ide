@@ -36,6 +36,9 @@ add_subdirectory ( TestKcpsm3 )
 # Test suite: KCPSM6.
 add_subdirectory ( TestKcpsm6 )
 
+# Complexity measurement utility for PicoBlaze soft-core processor simulator.
+add_subdirectory ( MeasureComplexity )
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
