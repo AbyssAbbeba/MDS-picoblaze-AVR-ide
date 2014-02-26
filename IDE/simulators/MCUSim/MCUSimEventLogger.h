@@ -32,7 +32,7 @@ class MCUSimEventLogger
          */
         enum Flags
         {
-            FLAG_NORMAL  = 0x01,
+            FLAG_LO_PRIO = 0x01,
             FLAG_HI_PRIO = 0x02,
 
             FLAG_ALL     = 0xff

@@ -213,7 +213,7 @@ void PicoBlazeInstructionSet6::inst__ ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_NONE );
 
-    logEvent ( EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode );
 }
 
 void PicoBlazeInstructionSet6::inst_LOAD_sX_sY ( const unsigned int opCode )
@@ -1174,7 +1174,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int 
     if ( m_statusFlags->getInterrupted() <= 0 )
     {
         m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( EVENT_CPU_ERR_INVALID_RETI );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
     }
     else
     {
@@ -1198,7 +1198,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
     if ( m_statusFlags->getInterrupted() <= 0 )
     {
         m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( EVENT_CPU_ERR_INVALID_RETI );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
     }
     else
     {
@@ -1405,7 +1405,7 @@ void PicoBlazeInstructionSet6::inst_RETURN ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -1435,7 +1435,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -1465,7 +1465,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NZ ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -1495,7 +1495,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_C ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -1525,7 +1525,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NC ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -1549,7 +1549,7 @@ void PicoBlazeInstructionSet6::inst_LD_RET_sX_sY ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
