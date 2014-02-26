@@ -97,7 +97,7 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
                 case DBGFILEID_HEX:
                 {
                     dataFile = new HexFile();
-                    dataFileExt = ".hex";
+                    dataFileExt = ".ihex";
                     break;
                 }
                 default:
