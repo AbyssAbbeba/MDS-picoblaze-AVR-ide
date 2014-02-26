@@ -16,6 +16,8 @@
 #ifndef MCUSIMEVENTLOGGER_H
 #define MCUSIMEVENTLOGGER_H
 
+#include<iostream>//debug
+
 /**
  * @brief This class is the observer of events occurring inside the simulator. Basically it acts as a queue.
  * @ingroup MCUSim
@@ -23,6 +25,19 @@
  */
 class MCUSimEventLogger
 {
+    ////    Public Datatypes    ////
+    public:
+        /**
+         * @brief
+         */
+        enum Flags
+        {
+            FLAG_NORMAL  = 0x01,
+            FLAG_HI_PRIO = 0x02,
+
+            FLAG_ALL     = 0xff
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -35,7 +50,8 @@ class MCUSimEventLogger
                             m_subsysId ( new int [ m_size ] ),
                             m_eventId  ( new int [ m_size ] ),
                             m_location ( new int [ m_size ] ),
-                            m_detail   ( new int [ m_size ] )
+                            m_detail   ( new int [ m_size ] ),
+                            m_eventFilter ( FLAG_ALL )
         {
         }
 
@@ -63,11 +79,13 @@ class MCUSimEventLogger
          * @param[in] eventId
          * @param[in] location
          * @param[in] detail
+         * @param[in] flags
          */
         inline void logEvent ( int subsysId,
                                int eventId,
                                int location, /* or reason */
-                               int detail );
+                               int detail,
+                               Flags flags );
 
         /**
          * @brief This operation removes the read item.
@@ -81,6 +99,15 @@ class MCUSimEventLogger
                               int & eventId,
                               int & location,
                               int & detail );
+
+        /**
+         * @brief
+         * @param[in] eventFilter
+         */
+        void setFilter ( Flags eventFilter )
+        {
+            m_eventFilter = eventFilter;
+        }
 
     ////    Inline Private Operations    ////
     private:
@@ -99,6 +126,8 @@ class MCUSimEventLogger
         int * m_eventId;   ///<
         int * m_location;  ///< (or reason)
         int * m_detail;    ///<
+
+        Flags m_eventFilter; ///<
 };
 
 // -----------------------------------------------------------------------------
@@ -114,8 +143,14 @@ inline void MCUSimEventLogger::clear()
 inline void MCUSimEventLogger::logEvent ( int subsysId,
                                           int eventId,
                                           int location, /* or reason */
-                                          int detail )
+                                          int detail,
+                                          Flags flags )
 {
+    if ( !( m_eventFilter & flags ) )
+    {
+        return;
+    }
+std::cout << "("<<subsysId<<","<<eventId<<") m_eventFilter = " << m_eventFilter << ", flags = " << flags << "\n" << std::flush;
     if ( m_inPos == m_outPos )
     {
         // The queue is full -> enlarge it.
@@ -169,20 +204,20 @@ inline int MCUSimEventLogger::getEvent ( int & subsysId,
 inline void MCUSimEventLogger::enlargeQueue()
 {
     int newSize = m_size * 2;
-    int * m_subsysIdNew = new int [ newSize ];
-    int * m_eventIdNew  = new int [ newSize ];
-    int * m_locationNew = new int [ newSize ];
-    int * m_detailNew   = new int [ newSize ];
+    int * subsysIdNew = new int [ newSize ];
+    int * eventIdNew  = new int [ newSize ];
+    int * locationNew = new int [ newSize ];
+    int * detailNew   = new int [ newSize ];
 
     int i = 1;
     for ( int j = m_outPos + 1;
           j != m_inPos;
           j = ( ( j + 1 ) % m_size ) )
     {
-        m_subsysIdNew [ i ] = m_subsysId [ j ];
-        m_eventIdNew  [ i ] = m_eventId  [ j ];
-        m_locationNew [ i ] = m_location [ j ];
-        m_detailNew   [ i ] = m_detail   [ j ];
+        subsysIdNew [ i ] = m_subsysId [ j ];
+        eventIdNew  [ i ] = m_eventId  [ j ];
+        locationNew [ i ] = m_location [ j ];
+        detailNew   [ i ] = m_detail   [ j ];
 
         i++;
         i %= m_size;
@@ -197,10 +232,10 @@ inline void MCUSimEventLogger::enlargeQueue()
     delete [] m_location;
     delete [] m_detail;
 
-    m_subsysId = m_subsysIdNew;
-    m_eventId  = m_eventIdNew;
-    m_location = m_locationNew;
-    m_detail   = m_detailNew;
+    m_subsysId = subsysIdNew;
+    m_eventId  = eventIdNew;
+    m_location = locationNew;
+    m_detail   = detailNew;
 }
 
 #endif // MCUSIMEVENTLOGGER_H

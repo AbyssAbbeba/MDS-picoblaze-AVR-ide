@@ -153,7 +153,7 @@ void PicoBlazeInstructionSet6::inst_0x14 ( const unsigned int opCode )
         case 0x0E: inst_SR0_sX     ( opCode ); break;
         case 0x0F: inst_SR1_sX     ( opCode ); break;
         case 0x80: inst_HWBUILD_sX ( opCode ); break;
-        default:   inst__          ( opCode ); break; 
+        default:   inst__          ( opCode ); break;
     }
 }
 
