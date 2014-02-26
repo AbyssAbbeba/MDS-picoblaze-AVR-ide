@@ -513,7 +513,7 @@ void MCUSimControl::animateProgram()
     {
         if ( true == m_breakPointsEnabled )
         {
-            m_abort = breakpointReached();
+            m_abort |= breakpointReached();
         }
 
         if ( true == m_abort )
@@ -556,7 +556,7 @@ void MCUSimControl::runProgram()
     {
         if ( true == m_breakPointsEnabled )
         {
-            m_abort = breakpointReached();
+            m_abort |= breakpointReached();
         }
 
         if ( true == m_abort )
