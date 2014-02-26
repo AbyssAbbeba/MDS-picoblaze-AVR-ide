@@ -593,7 +593,7 @@ void HexEdit::setVal(int pos, unsigned char val)
 }
 
 
-char HexEdit::getVal(int pos)
+unsigned char HexEdit::getVal(int pos)
 {
     return hexByteArray->at(pos);
 }
@@ -635,7 +635,6 @@ QScrollBar* HexEdit::horizontalScrollBar()
 
 void HexEdit::setHighlighted(int pos, bool highlight)
 {
-
     if (changable == true)
     {
         changable = false;

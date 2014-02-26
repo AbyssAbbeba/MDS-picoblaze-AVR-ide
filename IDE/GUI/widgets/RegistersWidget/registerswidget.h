@@ -21,6 +21,7 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         void setReadOnly(bool readOnly);
         //void fixHeight();
         void unhighlight();
+        void updateWidget();
 
     signals:
         void stopSimSig();

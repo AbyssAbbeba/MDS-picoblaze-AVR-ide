@@ -193,13 +193,12 @@ void PortHexEdit::deviceReset()
     {
 		return;
 	}
-
+	
+    uint value;
 	for ( int i = 0; i < m_size; i++ )
     {
 
 		//uint address = i;
-
-		uint value = 0;
         value = m_plio->getInputArray()[i];
         if ( value > 255 )
         {
@@ -274,4 +273,46 @@ void PortHexEdit::unhighlight()
 {
     this->m_hexEditIn->unhighlight();
     this->m_hexEditOut->unhighlight();
+}
+
+
+void PortHexEdit::updateWidget()
+{
+    uint value;
+    for ( int i = 0; i < m_size; i++ )
+    {
+
+        //uint address = i;
+        value = m_plio->getInputArray()[i];
+        if ( value > 255 )
+        {
+            value = 255;
+        }
+        if (value != m_hexEditIn->getVal(i))
+        {
+            m_hexEditIn->setHighlighted(i, true);
+            m_hexEditIn->setVal(i, (unsigned char)value);
+        }
+        else
+        {
+            m_hexEditIn->setHighlighted(i, false);
+        }
+        //qDebug() << "PortHexEdit: in value is" << (unsigned char)value;
+
+        value = m_plio->getOutputArray()[i];
+        if ( value > 255 )
+        {
+            value = 255;
+        }
+        if (value != m_hexEditOut->getVal(i))
+        {
+            m_hexEditOut->setHighlighted(i, true);
+            m_hexEditOut->setVal(i, (unsigned char)value);
+        }
+        else
+        {
+            m_hexEditOut->setHighlighted(i, false);
+        }
+        //qDebug() << "PortHexEdit: out value is" << (unsigned char)value;
+    }
 }

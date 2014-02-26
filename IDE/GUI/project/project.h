@@ -20,6 +20,7 @@
 //#define ERR_ASSIGN 501
 //#define ERR_CONTENT 502
 
+#include <set>
 #include <QString>
 #include <QList>
 #include <QTreeWidget>
@@ -106,7 +107,7 @@ class Project : public QObject
         //~Project();
 
         void setupSim();
-        bool start();
+        bool start(QString file = "");
         void stop();
         void reset();
         void step();
@@ -177,7 +178,7 @@ class Project : public QObject
         
     private:
         ProjectMan *parentManager;
-        std::vector<std::pair<const std::string *, unsigned int>> breakPoints;
+        std::vector<std::pair<std::string, std::set<unsigned int>>> breakPoints;
         std::vector<std::pair<const std::string *, unsigned int>> currLine;
         int prevLine;
         int prevLine2;

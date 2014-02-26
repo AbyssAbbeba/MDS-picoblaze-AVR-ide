@@ -426,3 +426,102 @@ void RegistersWidget::unhighlight()
     this->update = false;
     //qDebug() << "RegistersWidget: return unhighlight()";
 }
+
+
+void RegistersWidget::updateWidget()
+{
+    this->update = true;
+    uint value;
+    QString bin;
+    for (int i = 0; i < m_size/2; i++)
+    {
+        this->m_memory->directRead(i, value);
+        //dec, hex, bin, first half, Si
+        if (value != this->item(i,1)->text().toInt(0, 10))
+        {
+            this->item(i, 1)->setBackground(Qt::yellow);
+            this->item(i, 2)->setBackground(Qt::yellow);
+            this->item(i, 3)->setBackground(Qt::yellow);
+
+            if (value < 10)
+            {
+                this->item(i, 1)->setText("00" + QString::number(value, 10));
+            }
+            else if (value < 100)
+            {
+                this->item(i, 1)->setText("0" + QString::number(value, 10));
+            }
+            else
+            {
+                this->item(i, 1)->setText(QString::number(value, 10));
+            }
+
+            if (value < 0x10)
+            {
+                this->item(i, 2)->setText("0" + QString::number(value, 16).toUpper());
+            }
+            else
+            {
+                this->item(i, 2)->setText(QString::number(value, 16).toUpper());
+            }
+
+            bin = QString::number(value, 2);
+            for (int i = bin.size(); i < 8 ; i++)
+            {
+                bin.prepend("0");
+            }
+            this->item(i, 3)->setText(bin);
+        }
+        else
+        {
+            this->item(i, 1)->setBackground(this->palette().base().color());
+            this->item(i, 2)->setBackground(this->palette().base().color());
+            this->item(i, 3)->setBackground(this->palette().base().color());
+        }
+
+        //dec, hex, bin, second half, S(i+m_size/2)
+        this->m_memory->directRead(i+m_size/2, value);
+        if (value != this->item(i,5)->text().toInt(0, 10))
+        {
+            this->item(i, 5)->setBackground(Qt::yellow);
+            this->item(i, 6)->setBackground(Qt::yellow);
+            this->item(i, 7)->setBackground(Qt::yellow);
+            
+            if (value < 10)
+            {
+                this->item(i, 5)->setText("00" + QString::number(value, 10));
+            }
+            else if (value < 100)
+            {
+                this->item(i, 5)->setText("0" + QString::number(value, 10));
+            }
+            else
+            {
+                this->item(i, 5)->setText(QString::number(value, 10));
+            }
+
+            if (value < 0x10)
+            {
+                this->item(i, 6)->setText("0" + QString::number(value, 16).toUpper());
+            }
+            else
+            {
+                this->item(i, 6)->setText(QString::number(value, 16).toUpper());
+            }
+            
+            bin = QString::number(value, 2);
+            for (int i = bin.size(); i < 8 ; i++)
+            {
+                bin.prepend("0");
+            }
+            this->item(i, 7)->setText(bin);
+        }
+        else
+        {
+            this->item(i, 5)->setBackground(this->palette().base().color());
+            this->item(i, 6)->setBackground(this->palette().base().color());
+            this->item(i, 7)->setBackground(this->palette().base().color());
+        }
+    }
+    this->update = false;
+}

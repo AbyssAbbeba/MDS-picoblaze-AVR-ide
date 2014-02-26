@@ -13,7 +13,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     this->subsys = subsys;
     this->setMinimumHeight(225);
 
-    this->width = 3;
+    this->numWidth = 3;
     
     this->leInput = new QLineEdit(this);
     this->lwStack = new QListWidget(this);
@@ -41,7 +41,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     fontLE.setPointSize(9);
     fontLE.setFamily("UbuntuMono");
     this->leInput->setFont(fontLE);
-    this->leInput->setMaxLength(this->width);
+    this->leInput->setMaxLength(this->numWidth);
     
     QFont fontLW = this->lwStack->font();
     fontLW.setPointSize(10);
@@ -85,7 +85,7 @@ void StackWidget::push()
         leInput->setStyleSheet("QLineEdit{background: none;}");
 
         QString text = "0x";
-        for (int i = this->leInput->text().length(); i < this->width; i++)
+        for (int i = this->leInput->text().length(); i < this->numWidth; i++)
         {
             text.append("0");
         }
@@ -112,7 +112,7 @@ void StackWidget::pop()
     if ( 0 != this->sp )
     {
         this->sp--;
-        this->leInput->setText(this->lwStack->item(this->sp)->text().right(this->width));
+        this->leInput->setText(this->lwStack->item(this->sp)->text().right(this->numWidth));
         this->leInput->setStyleSheet("QLineEdit{background: none;}");
         this->lwStack->item(this->sp)->setText("");
         this->m_memory->setSP(this->sp);
@@ -140,7 +140,15 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
     //int idx = locationOrReason - m_startingAddress;
     if ( (locationOrReason < 0) || (locationOrReason > m_size) )
     {
-        qDebug("StackWidget: Invalid address, event ignored.");
+        if (locationOrReason == -1 && eventId == PicoBlazeStack::EVENT_STACK_UNDERFLOW)
+        {
+            error(ErrorCode::ERR_STACK_UNDERFLOW);
+            emit stopSimSig();
+        }
+        else
+        {
+            qDebug("StackWidget: Invalid address, event ignored.");
+        }
         return;
     }
 
@@ -151,7 +159,7 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
             //qDebug() << "StackWidget: event: mem cell" << locationOrReason << "changed to" << detail;
             QString number = QString::number(detail, 16);
             QString text = "0x";
-            for (int i = number.length(); i < this->width; i++)
+            for (int i = number.length(); i < this->numWidth; i++)
             {
                 text.append("0");
             }
@@ -269,5 +277,44 @@ void StackWidget::unhighlight()
     for (int i = 0; i < m_size; i++)
     {
         this->lwStack->item(i)->setBackground(this->lwStack->palette().base());
+    }
+    if (this->sp > 0)
+    {
+        this->lwStack->item(this->sp-1)->setBackground(Qt::green);
+    }
+}
+
+
+void StackWidget::updateWidget()
+{
+    uint value;
+    this->sp = this->m_memory->getSP();
+    for (int i = 0; i < this->sp; i++)
+    {
+        this->m_memory->directRead(i, value);
+        if (value != (uint)this->lwStack->item(i)->text().toInt(0, 16))
+        {
+            this->lwStack->item(i)->setBackground(Qt::yellow);
+            QString number = QString::number(value, 16);
+            QString text = "0x";
+            for (int j = number.length(); j < this->numWidth; j++)
+            {
+                text.append("0");
+            }
+            this->lwStack->item(i)->setText(text + number.toUpper());
+        }
+        else
+        {
+            this->lwStack->item(i)->setBackground(this->lwStack->palette().base());
+        }
+    }
+    for (int i = this->sp; i < m_size; i++)
+    {
+        this->lwStack->item(i)->setBackground(this->lwStack->palette().base());
+        this->lwStack->item(i)->setText("");
+    }
+    if (this->sp > 0)
+    {
+        this->lwStack->item(this->sp-1)->setBackground(Qt::green);
     }
 }

@@ -65,7 +65,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 		return;
  	}
 
-	int idx = locationOrReason - m_startingAddress;
+	int idx = locationOrReason;// - m_startingAddress;
 	if ( (idx < 0) || (idx > m_size) )
     {
 		qDebug("Invalid address, event ignored.");
@@ -146,14 +146,14 @@ void McuMemoryView::deviceReset()
 		return;
 	}
 
+    uint value;
 	for ( int i = 0; i < m_size; i++ )
     {
 
-		uint address = i + m_startingAddress;
-		uint value;
-		m_memory->directRead(address, value);
+		//uint address = i;// + m_startingAddress;
+		m_memory->directRead(i, value);
 
- 		m_hexEdit->setVal(i, (char)value);
+ 		m_hexEdit->setVal(i, (unsigned char)value);
 	}
     m_hexEdit->fixHeight();
     //qDebug() << "McuMemoryView: return deviceReset()"; 
@@ -184,4 +184,25 @@ void McuMemoryView::fixHeight()
 void McuMemoryView::unhighlight()
 {
     m_hexEdit->unhighlight();
+}
+
+
+void McuMemoryView::updateWidget()
+{
+    uint value;
+    for ( int i = 0; i < m_size; i++ )
+    {
+        //uint address = i;// + m_startingAddress;
+        m_memory->directRead(i, value);
+
+        if (value != m_hexEdit->getVal(i))
+        {
+            m_hexEdit->setHighlighted(i, true);
+            m_hexEdit->setVal(i, (unsigned char)value);
+        }
+        else
+        {
+            m_hexEdit->setHighlighted(i, false);
+        }
+    }
 }
