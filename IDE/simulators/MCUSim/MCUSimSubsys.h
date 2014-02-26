@@ -129,12 +129,14 @@ class MCUSimSubsys
          * @param[in] eventId
          * @param[in] eventLocation
          * @param[in] eventDetail
+         * @param[in] flags
          */
         void logEvent ( int eventId,
                         int eventLocation = 0,
-                        int eventDetail = 0 )
+                        int eventDetail = 0,
+                        MCUSimEventLogger::Flags flags = MCUSimEventLogger::FLAG_NORMAL )
         {
-            m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail);
+            m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail, flags);
         }
 
     ////    Public Attributes    ////

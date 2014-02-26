@@ -97,7 +97,7 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
                 case DBGFILEID_HEX:
                 {
                     dataFile = new HexFile();
-                    dataFileExt = ".hex";
+                    dataFileExt = ".ihex";
                     break;
                 }
                 default:
@@ -488,6 +488,7 @@ void MCUSimControl::stepProgram()
         return;
     }
 
+    m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_ALL);
     m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
     emit(updateRequest(0x3));
@@ -508,6 +509,8 @@ void MCUSimControl::animateProgram()
 
     m_abort = false;
     m_running = true;
+
+    m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_ALL);
 
     while ( true )
     {
@@ -530,6 +533,7 @@ void MCUSimControl::animateProgram()
     }
 }
 
+
 void MCUSimControl::runProgram()
 {
     constexpr unsigned int MAX_REFRESH_FREQ_HZ = 50;
@@ -548,6 +552,8 @@ void MCUSimControl::runProgram()
 
     m_abort = false;
     m_running = true;
+
+    m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_HI_PRIO);
 
     clock_t t = clock();
     unsigned int auxCounter = 0;
@@ -568,7 +574,7 @@ void MCUSimControl::runProgram()
         }
 
         m_totalMCycles += m_simulator->executeInstruction();
-        m_simulatorLog->clear(); // TODO: Implement an event filter - some events might stop simulation.
+        dispatchEvents();
 
         if ( ++auxCounter > MIN_REFRESH_FREQ_I )
         {
@@ -772,11 +778,11 @@ bool MCUSimControl::unregisterObserver ( const MCUSimObserver * observer )
     return result;
 }
 
-void MCUSimControl::dispatchEvents()
+inline void MCUSimControl::dispatchEvents()
 {
     int subsysId, eventId, locationOrReason, detail;
 
-    while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail))
+    while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail) )
     {
         if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
         {
