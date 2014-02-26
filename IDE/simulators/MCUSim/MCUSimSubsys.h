@@ -134,7 +134,7 @@ class MCUSimSubsys
                         int eventLocation = 0,
                         int eventDetail = 0 )
         {
-            m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail);
+            m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail, flags);
         }
 
     ////    Public Attributes    ////

@@ -77,6 +77,7 @@ int main ( int argc, char ** argv )
             kcpsmFamily = MCUSimBase::FAMILY_KCPSM6;
             break;
         default:
+            kcpsmFamily = MCUSimBase::FAMILY_KCPSM6; // <-- Just to disable a GCC warning.
             printUsage(argv[0]);
     }
     for ( int i = (int) strlen(argv[2]) - 1; i >= 0; i-- )

@@ -114,7 +114,8 @@ inline void MCUSimEventLogger::clear()
 inline void MCUSimEventLogger::logEvent ( int subsysId,
                                           int eventId,
                                           int location, /* or reason */
-                                          int detail )
+                                          int detail,
+                                          int flags )
 {
     if ( m_inPos == m_outPos )
     {
@@ -169,20 +170,20 @@ inline int MCUSimEventLogger::getEvent ( int & subsysId,
 inline void MCUSimEventLogger::enlargeQueue()
 {
     int newSize = m_size * 2;
-    int * m_subsysIdNew = new int [ newSize ];
-    int * m_eventIdNew  = new int [ newSize ];
-    int * m_locationNew = new int [ newSize ];
-    int * m_detailNew   = new int [ newSize ];
+    int * subsysIdNew = new int [ newSize ];
+    int * eventIdNew  = new int [ newSize ];
+    int * locationNew = new int [ newSize ];
+    int * detailNew   = new int [ newSize ];
 
     int i = 1;
     for ( int j = m_outPos + 1;
           j != m_inPos;
           j = ( ( j + 1 ) % m_size ) )
     {
-        m_subsysIdNew [ i ] = m_subsysId [ j ];
-        m_eventIdNew  [ i ] = m_eventId  [ j ];
-        m_locationNew [ i ] = m_location [ j ];
-        m_detailNew   [ i ] = m_detail   [ j ];
+        subsysIdNew [ i ] = m_subsysId [ j ];
+        eventIdNew  [ i ] = m_eventId  [ j ];
+        locationNew [ i ] = m_location [ j ];
+        detailNew   [ i ] = m_detail   [ j ];
 
         i++;
         i %= m_size;
@@ -197,10 +198,10 @@ inline void MCUSimEventLogger::enlargeQueue()
     delete [] m_location;
     delete [] m_detail;
 
-    m_subsysId = m_subsysIdNew;
-    m_eventId  = m_eventIdNew;
-    m_location = m_locationNew;
-    m_detail   = m_detailNew;
+    m_subsysId = subsysIdNew;
+    m_eventId  = eventIdNew;
+    m_location = locationNew;
+    m_detail   = detailNew;
 }
 
 #endif // MCUSIMEVENTLOGGER_H
