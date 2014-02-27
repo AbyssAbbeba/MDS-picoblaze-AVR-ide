@@ -23,6 +23,7 @@ SET( SAMPLE_SRCS
         ./projectcfg_compiler.cpp
         ./projectcfg_comppaths.cpp
         ./projectcfg_memory.cpp
+        ./projectcfg_templates.cpp
 #        ./cfginterface.cpp
 )
   
@@ -33,6 +34,7 @@ SET( SAMPLE_MOC_HDRS
         ./projectcfg_filemgr.h
         ./projectcfg_comppaths.h
         ./projectcfg_memory.h
+        ./projectcfg_templates.h
 #        ./cfginterface.h
 )
 
@@ -43,6 +45,7 @@ SET( SAMPLE_UIS
         ./projectcfg_filemgr.ui
         ./projectcfg_general.ui
         ./projectcfg_memory.ui
+        ./projectcfg_templates.ui
 )
 
 
