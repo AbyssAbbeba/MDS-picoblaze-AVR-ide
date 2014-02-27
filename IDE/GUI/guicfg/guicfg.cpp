@@ -123,9 +123,9 @@ void GuiCfg::setDefaultIDEShortcuts()
 
 void GuiCfg::setDefaultEditFont()
 {
-    #ifdef Q_OS_LINUX
+    #ifdef __linux__
         this->editorFont.setFamily("Monospace");
-    #elif Q_OS_WIN32
+    #elif _WIN32
         this->editorFont.setFamily("Courier");
     #else
         qDebug() << "GuiCfg: setDefaultEditFont: Platform not supported";
@@ -266,11 +266,11 @@ void GuiCfg::setDefaultPaths(bool release)
     }
     else
     {
-        #ifdef Q_OS_LINUX
+        #ifdef __linux__
             this->configPath = "./resources/xml/config.xml";
             this->compilerPath = "../compiler/include";
         this->examplePath = "./demoprojekt";
-        #elif Q_OS_WIN32
+        #elif _WIN32
             this->configPath = "./GUI/resources/xml/config.xml";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt";
