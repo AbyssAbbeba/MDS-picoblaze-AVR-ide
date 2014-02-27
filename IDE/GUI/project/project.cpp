@@ -39,8 +39,8 @@ ProjectMan::ProjectMan(QWidget *parent)
 
 
 /**
- * @brief Opens and loads project according to opened xml (.mds_project) file.
- * @param file Opened xml (.mds_project) file.
+ * @brief Opens and loads project according to opened xml (.mds-project) file.
+ * @param file Opened xml (.mds-project) file.
  */
 void ProjectMan::openProject(QFile *file)
 {
@@ -140,9 +140,9 @@ void ProjectMan::addUntrackedProject()
 /**
  * @brief Creates new project.
  * @param name name of the new project
- * @param path path to the new project xml (.mds_project) file
+ * @param path path to the new project xml (.mds-project) file
  * @param architecture target architecture of the new project
- * @param file xml (.mds_project) file of the new project
+ * @param file xml (.mds-project) file of the new project
  */
 void ProjectMan::addProject(QString name, QString path, QString architecture, LangType langType, QFile *file)
 {
@@ -289,8 +289,8 @@ void ProjectMan::createActiveMakefile()
 
 //otevreni projektu
 /**
- * @brief Opens project from opened xml (.mds_project) file.
- * @param file Opened xml (.mds_project) file.
+ * @brief Opens project from opened xml (.mds-project) file.
+ * @param file Opened xml (.mds-project) file.
  * @param parent Project parent project manager.
  */
 Project::Project(QFile *file, ProjectMan *parent)
@@ -653,10 +653,10 @@ Project::Project(ProjectMan *parent)
 /**
  * @brief Constructor. Creates a blank new project
  * @param name The name of the project
- * @param path The path to xml (.mds_project) file
+ * @param path The path to xml (.mds-project) file
  * @param arch Compiler option, architecture
  * @param langType Compiler option, language
- * @param file Opened file for xml (.mds_project) stream
+ * @param file Opened file for xml (.mds-project) stream
  * @param parent Pointer to parent (project manager)
  */
 Project::Project(QString name, QString path, QString arch, LangType lang, QFile *file, ProjectMan *parent)

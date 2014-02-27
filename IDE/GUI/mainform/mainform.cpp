@@ -772,7 +772,7 @@ void MainForm::openProject()
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds_project)"));
+    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
     
     if (path.isEmpty() == false)
     {
@@ -1497,7 +1497,7 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example/Example.mds_project"))
+    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example/Example.mds-project"))
     {
         return;
     }
