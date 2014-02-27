@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         {
             GuiCfg::getInstance().setDefaultPaths(false);
         }
-        else if (QString::fromLocal8Bit(argv[1]).section('.',0,-2) == "mds_project")
+        else if (QString::fromLocal8Bit(argv[1]).section('.',0,-2) == "mds-project")
         {
             qDebug() << "Main: received file as argv[1] " << QString::fromLocal8Bit(argv[1]);
         }

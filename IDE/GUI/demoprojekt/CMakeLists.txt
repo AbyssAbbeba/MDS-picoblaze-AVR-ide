@@ -1,5 +1,5 @@
 # set project's name
-project ( DEMOPROJECT )
+project ( DemoProject )
 
 foreach ( extension "mds-project" "asm" "ihex" "dbg" "v" "vhd" )
     file ( GLOB files2install Example/*.${extension} )
