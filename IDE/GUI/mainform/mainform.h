@@ -21,6 +21,8 @@
 #include <QDockWidget>
 #include <QListWidget>
 #include <QTreeWidget>
+#include <QIcon>
+#include <QPixmap>
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/DockManager/wdockmanager.h"
 #include "../widgets/CompileInfo/compileinfo.h"
@@ -179,6 +181,35 @@ class MainForm : public QMainWindow
         QAction *aboutQTAct;        
         QAction *helpActionAct;
         QAction *example1Act;
+
+        QPixmap *pm_projNewAdd;
+        QPixmap *pm_projNew;
+        QPixmap *pm_projOpen;
+        QPixmap *pm_projSave;
+        QPixmap *pm_projComp;
+        QPixmap *pm_simFlowStart;
+        QPixmap *pm_simFlowStop;
+        QPixmap *pm_simRun;
+        QPixmap *pm_simAnimate;
+        QPixmap *pm_simStep;
+        QPixmap *pm_simReset;
+        QPixmap *pm_simUnhighlight;
+        QPixmap *pm_toolDis;
+        QPixmap *pm_cross;
+
+        QIcon *icon_projNewAdd;
+        QIcon *icon_projNew;
+        QIcon *icon_projOpen;
+        QIcon *icon_projSave;
+        QIcon *icon_projComp;
+        QIcon *icon_simFlow;
+        QIcon *icon_simRun;
+        QIcon *icon_simAnimate;
+        QIcon *icon_simStep;
+        QIcon *icon_simReset;
+        QIcon *icon_simUnhighlight;
+        QIcon *icon_toolDis;
+        
 
         // simulation status - start/stop
         bool simulationStatus;

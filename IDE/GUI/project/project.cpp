@@ -1726,7 +1726,39 @@ void Project::reset()
 
 void Project::handleUpdateRequest(int mask)
 {
-    if (2 & mask)
+    if (4 & mask)
+    {
+        //std::string fileName; //= new std::string();
+        m_simControlUnit->getLineNumber(currLine);
+        if (currLine.empty() == true)
+        {
+            qDebug() << "Project: currline empty, should never happen";
+            return;
+        }
+        this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+        //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
+        //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
+        //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
+        emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+        emit highlightLine(this->prevFile2, this->prevLine2, NULL);
+        emit highlightLine(this->prevFile, this->prevLine, NULL);
+        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
+
+        //emit setCentralByName(this->currFile);
+        //emit scrollToLine(this->line);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
+        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
+        this->prevLine3 = -1;
+        this->prevLine2 = -1;
+        this->prevLine = std::get<1>(this->currLine.at(0))-1;
+
+        this->prevFile3 = this->currFile;
+        this->prevFile2 = this->currFile;
+        this->prevFile = this->currFile;
+    }
+    else if (2 & mask)
     {
         //std::string fileName; //= new std::string();
         m_simControlUnit->getLineNumber(currLine);
