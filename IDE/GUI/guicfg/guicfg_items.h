@@ -149,6 +149,7 @@ class GuiCfg_Items
         //paths
         QString configPath;
         QString compilerPath;
+        QString examplePath;
         
 };
 

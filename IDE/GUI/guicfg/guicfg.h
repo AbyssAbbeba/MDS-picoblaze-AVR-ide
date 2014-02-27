@@ -127,6 +127,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         QString getCompilerPath();
 
+        QString getExamplePath();
+
         //xml parser
         void loadConfig();
         

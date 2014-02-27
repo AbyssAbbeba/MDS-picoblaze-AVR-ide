@@ -53,7 +53,7 @@ class MainForm : public QMainWindow
         WDockManager* getWDockManager();
         ProjectMan* getProjectMan();
         //bool dockWidgets;
-        void openProject(QString path);
+        bool openProject(QString path);
 
     private slots:
         //slots connected to menu actions
