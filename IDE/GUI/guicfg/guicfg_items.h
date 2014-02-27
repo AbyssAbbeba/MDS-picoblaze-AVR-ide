@@ -145,6 +145,10 @@ class GuiCfg_Items
         bool useMainFile;
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
         QList<bool> compileOpt;
+
+        //paths
+        QString configPath;
+        QString compilerPath;
         
 };
 

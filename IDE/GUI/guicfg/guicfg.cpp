@@ -249,6 +249,20 @@ void GuiCfg::setDefaultProject()
 }
 
 
+void GuiCfg::setDefaultPaths(bool release)
+{
+    if (true == release)
+    {
+        this->configPath = "./config.xml";
+        this->compilerPath = "../share/mds";
+    }
+    else
+    {
+        this->configPath = "./resources/xml/config.xml";
+        this->compilerPath = "../compiler/include/";
+    }
+}
+
 void GuiCfg::setDefaultAll()
 {
     this->setDefaultIDEGeneral();
@@ -469,6 +483,12 @@ QList<bool> GuiCfg::getProjectCompOpt()
 }
 
 
+QString GuiCfg::getCompilerPath()
+{
+    return this->compilerPath;
+}
+
+
 
 
 //xml parsers
@@ -477,7 +497,8 @@ QList<bool> GuiCfg::getProjectCompOpt()
 void GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
-    QFile cfgFile("./resources/xml/config.xml");
+    //QFile cfgFile("./resources/xml/config.xml");
+    QFile cfgFile(configPath);
     if (!cfgFile.open(QIODevice::ReadOnly))
     {
         qDebug() << "GuiCfg: config file not found";

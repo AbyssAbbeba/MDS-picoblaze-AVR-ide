@@ -26,6 +26,7 @@
 #include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
+#include "../guicfg/guicfg.h"
 
 
 
@@ -1168,11 +1169,8 @@ void MainForm::compileProject()
     //qDebug() << mainFile;
 
 
-    #ifdef V_RELEASE
-        CompilerThread *compiler = new CompilerThread("../include/mds/");
-    #else
-        CompilerThread *compiler = new CompilerThread("../compiler/include/");
-    #endif
+    CompilerThread *compiler = new CompilerThread(GuiCfg::getInstance().getCompilerPath().toStdString());
+    //    CompilerThread *compiler = new CompilerThread("../compiler/include/");
     qRegisterMetaType<std::string>("std::string");
     qRegisterMetaType<CompilerBase::MessageType>("CompilerBase::MessageType");
     connect(compiler,

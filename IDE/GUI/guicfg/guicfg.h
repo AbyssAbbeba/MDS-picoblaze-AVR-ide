@@ -57,6 +57,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setDefaultProject();
 
+        void setDefaultPaths(bool release);
+
         void setDefaultAll();
 
         void setTabWidth(int width);
@@ -122,6 +124,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         int getProjectProgMemSize();
         
         QList<bool> getProjectCompOpt();
+
+        QString getCompilerPath();
 
         //xml parser
         void loadConfig();

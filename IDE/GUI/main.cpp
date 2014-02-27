@@ -32,6 +32,17 @@ int main(int argc, char *argv[])
     fdb.addApplicationFont("./resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
 
     GuiCfg::getInstance().setDefaultAll();
+    GuiCfg::getInstance().setDefaultPaths(true);
+    if (argc > 1)
+    {
+        if (QString::fromLocal8Bit(argv[1]) == "--debug")
+        {
+            GuiCfg::getInstance().setDefaultPaths(false);
+        }
+        //else
+        //{
+        //}
+    }
     GuiCfg::getInstance().loadConfig();
 
     /*QStringList list = fdb.families();
