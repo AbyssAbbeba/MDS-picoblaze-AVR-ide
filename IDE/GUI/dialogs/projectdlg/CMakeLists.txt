@@ -23,6 +23,7 @@ SET( SAMPLE_SRCS
         ../projectcfg/projectcfg_compiler.cpp
         ../projectcfg/projectcfg_comppaths.cpp
         ../projectcfg/projectcfg_filemgr.cpp
+        ../projectcfg/projectcfg_templates.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -33,6 +34,7 @@ SET( SAMPLE_MOC_HDRS
         ../projectcfg/projectcfg_compiler.h
         ../projectcfg/projectcfg_comppaths.h
         ../projectcfg/projectcfg_filemgr.h
+        ../projectcfg/projectcfg_templates.h
 )
 
 # some .ui files
