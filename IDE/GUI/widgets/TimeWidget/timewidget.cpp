@@ -41,10 +41,10 @@ void TimeWidget::setTime(double time)
     
     if ( time >= 1.0 )
     {
-        qDebug() << "TimeWidget: time/mili = " << QString::number((unsigned int)time,10);
+        //qDebug() << "TimeWidget: time/mili = " << QString::number((unsigned int)time,10);
         ui.lblMs->setText(QString::number((unsigned int)(time), 10));
         time -= ( (unsigned int) (time) );
-        qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 10);
+        //qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 10);
     }
     else
     {
@@ -54,10 +54,10 @@ void TimeWidget::setTime(double time)
     
     if ( time >= 1.0 )
     {
-        qDebug() << "TimeWidget: time/micro = " << QString::number((unsigned int)time,10);
+        //qDebug() << "TimeWidget: time/micro = " << QString::number((unsigned int)time,10);
         ui.lblUs->setText(QString::number((unsigned int)(time), 10));
         time -=  ( (unsigned int)(time) );
-        qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 10);
+        //qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 10);
     }
     else
     {
@@ -67,10 +67,10 @@ void TimeWidget::setTime(double time)
     
     if ( time >= 1.0 )
     {
-        qDebug() << "TimeWidget: time/nano = " << QString::number((unsigned int)time,10);
+        //qDebug() << "TimeWidget: time/nano = " << QString::number((unsigned int)time,10);
         if (QString::number(time-(unsigned int)(time), 'f', 1) == "1.0")
         {
-            qDebug() << "TimeWidget: fail, recalculating";
+            //qDebug() << "TimeWidget: fail, recalculating";
             ui.lblNs->setText(QString::number((unsigned int)(time) + 1,10));
             time -=  ( (unsigned int)(time) + 1 );
         }
@@ -80,7 +80,7 @@ void TimeWidget::setTime(double time)
             //qDebug() << "TimeWidget: ns = " << QString::number(ns,10);
             time -=  ( (unsigned int)(time) );
         }
-        qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 1);
+        //qDebug() << "TimeWidget: time = " << QString::number(time, 'f', 1);
     }
     else
     {
@@ -90,7 +90,7 @@ void TimeWidget::setTime(double time)
     
     if ( time >= 1.0 )
     {
-        qDebug() << "TimeWidget: time/pico = " << QString::number((unsigned int)time, 10);
+        //qDebug() << "TimeWidget: time/pico = " << QString::number((unsigned int)time, 10);
         ui.lblPs->setText(QString::number((unsigned int)(time), 10));
         //qDebug() << "TimeWidget: ns = " << QString::number(ps,10);
     }
