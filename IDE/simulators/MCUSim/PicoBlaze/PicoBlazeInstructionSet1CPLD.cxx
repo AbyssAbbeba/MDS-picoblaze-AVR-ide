@@ -68,12 +68,14 @@ int PicoBlazeInstructionSet1CPLD::execInstruction()
 {
     const int pcOrig = m_pc;
     unsigned int opCode = m_programMemory->readRaw(m_pc);
-    incrPc();
 
     if ( opCode & 0xffff0000 )
     {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_UNDEFINED_OPCODE, m_pc );
+
         if ( true == m_config.m_ignoreUndefinedOpCodes )
         {
+            incrPc();
             return -1;
         }
         else
@@ -81,6 +83,8 @@ int PicoBlazeInstructionSet1CPLD::execInstruction()
             opCode &= 0x00ffff;
         }
     }
+
+    incrPc();
 
     // Execute instruction from dispatch table
     ( this ->* ( m_opCodeDispatchTable [ opCode >> 11 ] ) ) ( opCode );
