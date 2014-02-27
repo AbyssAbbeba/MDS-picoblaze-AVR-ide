@@ -101,26 +101,26 @@ aaa:
 
             sub         s1,#1
             load        s3,#25
-            call        _1
+           ; call        _1
 
             load        s2,#255
 zero_test:
             load        s1,#1
             sub         s2,#12
-            call        _2
+            ;call        _2
 
             load        s2,#255
 nzero_test:
             load        s2,#255
             add         s2,#10
-            call        _3
+            ;call        _3
 
 
             load        s2,#255
 c_test:
             load        s2,#255
             add         s1,#10
-            call        _4
+            ;call        _4
 
             load        s1,#1
 nc_test:
@@ -131,21 +131,21 @@ nc_test:
 _1:
             ;return      Z
 _2:
-           ; return      NZ
+            ;return      NZ
 _3:
-          ;  return      C
+            ;return      C
 _4:
-           ; return      NC
+            ;return      NC
 
               jump        main
 
 podp:
-             call        podp2
-                return
+             ;call        podp2
+                ;return
 podp2:
-                call        podp3
-                return
-podp3:        return
+                ;call        podp3
+               ; return
+podp3:       ; return
 ;
 ;                INTERRUPT SERVICE       ROUTINE
 ;
