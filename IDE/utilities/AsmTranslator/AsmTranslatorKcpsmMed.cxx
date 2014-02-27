@@ -57,6 +57,15 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
         sprintf(reg, "s%02x", i);
         m_registers.insert(reg);
     }
+
+    m_defaultSymbols.insert ( std::make_pair ( "NUL", "'\\0'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "BEL", "'\\a'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "BS",  "'\\b'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "HT",  "'\\t'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "LF",  "'\\n'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "VT",  "'\\v'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "CR",  "'\\r'" ) );
+    m_defaultSymbols.insert ( std::make_pair ( "ESC", "'\\e'" ) );
 }
 
 bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::string> > & messages,
@@ -205,6 +214,8 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
                                                                        ] ),
                                                     i );
                         }
+
+                        translateIdentifiers(lineFields);
                     }
 
                     lineFields.replaceInst ( changeLetterCase ( lineFields.getInstruction(),
@@ -292,7 +303,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
 {
     // Fix strangely formed labels, i.e. `label   :' -> `label:'.
     {
-        std::string lbl = lineFields.getLabel();
+        std::string lbl = lineFields.getLabel(true);
         if ( false == lbl.empty() )
         {
             while ( true )
@@ -308,8 +319,9 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
                 }
                 lbl.replace(pos, 1, "");
             }
-            lineFields.replaceLabel ( changeLetterCase ( lbl,
-                                                         m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ) );
+
+            lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
+            lineFields.replaceLabel(changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]) + ":");
         }
     }
 
@@ -335,9 +347,9 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     }
     else if ( "constant" == directive )
     {
+        std::string id = newIdentifier(lineFields.getOperand(0, true));
         fixRadix(lineFields, 1);
-        std::string substitute = changeLetterCase ( lineFields.getOperand(0, true),
-                                                    m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
+        std::string substitute = changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
                                  + changeLetterCase(" equ ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE])
                                  + changeLetterCase ( lineFields.getOperand(1, true),
                                                       m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] );
@@ -359,9 +371,9 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     }
     else if ( "namereg" == directive )
     {
-        m_registers.insert(lineFields.getOperand(1));
-        lineFields.replaceInstOpr ( changeLetterCase ( lineFields.getOperand(1, true),
-                                                       m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
+        std::string id = newIdentifier(lineFields.getOperand(1, true));
+        m_registers.insert(id);
+        lineFields.replaceInstOpr ( changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
                                     + changeLetterCase ( " reg ",
                                                          m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] )
                                     + changeLetterCase ( lineFields.getOperand(0, true),
@@ -520,13 +532,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
                                                          LineFields & lineFields,
                                                          unsigned int lineNumber )
 {
-    {
-        std::string op0 = lineFields.getOperand(0);
-        if ( ( "equ" == op0 ) || ( "reg" == op0 ) || ( "define" == op0 ) || ( "port" == op0 ) )
-        {
-            return true;
-        }
-    }
+    translateIdentifiers(lineFields);
 
     std::string instruction = lineFields.getInstruction();
     if ( true == instruction.empty() )
@@ -550,7 +556,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
 
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
-            lineFields.replaceOpr( "#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr( '#' + lineFields.getOperand(1, true), 1);
         }
 
         if ( ( "comparecy" == instruction ) || ( "cmpc" == instruction ) )
@@ -619,17 +625,11 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
               ( "st"    == instruction ) || ( "ft"     == instruction ) ||
               ( "store" == instruction ) || ( "fetch"  == instruction ) )
     {
-        std::string opr1 = lineFields.getOperand(1, true);
-        if ( '(' == opr1[0] )
+
+        const std::string opr1 = lineFields.getOperand(1, true);
+        if ( m_registers.end() == m_registers.find(opr1) )
         {
-            boost::smatch match;
-            boost::regex_search(opr1.cbegin(), opr1.cend(), match, m_reWord);
-            if ( true == match[0].matched )
-            {
-                int first  = std::distance ( opr1.cbegin(), match[0].first  );
-                int second = std::distance ( opr1.cbegin(), match[0].second );
-                lineFields.replaceOpr ( "@" + opr1.substr(first, second - first), 1 );
-            }
+            lineFields.replaceOpr( '@' + opr1, 1);
         }
         else
         {
@@ -683,7 +683,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(0, true), 0);
+        lineFields.replaceOpr('#' + lineFields.getOperand(0, true), 0);
         if ( true == m_config->m_shortInstructions )
         {
             lineFields.replaceInst("outk");
@@ -816,7 +816,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
                 lineFields.replaceInst("load&return");
             }
             fixRadix(lineFields, 1);
-            lineFields.replaceOpr("#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr('#' + lineFields.getOperand(1, true), 1);
         }
     }
     else
@@ -844,6 +844,85 @@ void AsmTranslatorKcpsmMed::fixRadix ( LineFields & lineFields,
     if ( true == lineFields.hasOperand(i) )
     {
         lineFields.replaceOpr ( regex_replace ( lineFields.getOperand(i), m_dollar, "0x"), i );
+    }
+}
+
+std::string AsmTranslatorKcpsmMed::newIdentifier ( const std::string & id )
+{
+    std::string idLowerCase = id;
+    std::transform(idLowerCase.begin(), idLowerCase.end(), idLowerCase.begin(), ::tolower);
+
+    if ( ( 0 == isdigit(idLowerCase[0]) ) && ( m_usedIDs.cend() == m_usedIDs.find(idLowerCase) ) )
+    {
+        m_usedIDs.insert(idLowerCase);
+        return idLowerCase;
+    }
+    else
+    {
+        std::string newId  = ( "_" + idLowerCase );
+        while ( m_usedIDs.cend() != m_usedIDs.find(newId) )
+        {
+            newId = ( "_" + newId );
+        }
+
+        m_usedIDs.insert(newId);
+        m_idTranslationMap.insert(std::make_pair(id, newId));
+
+        return newId;
+    }
+}
+
+inline void AsmTranslatorKcpsmMed::translateIdentifiers ( AsmTranslatorBase::LineFields & lineFields )
+{
+    std::string id;
+    std::map<std::string,std::string>::const_iterator it;
+    std::map<std::string,std::string>::const_iterator end = m_idTranslationMap.cend();
+
+    id = lineFields.getLabel(true);
+    id = id.substr ( 0, id.size() -1 );
+    it = m_idTranslationMap.find(id);
+    if ( end != it )
+    {
+        lineFields.replaceLabel ( it->second + ":" );
+    }
+
+    for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
+    {
+        std::string opr = lineFields.getOperand(i, true);
+        boost::smatch match;
+        std::string::const_iterator begin = opr.cbegin();
+
+        do
+        {
+            boost::regex_search(begin, opr.cend(), match, m_reWord);
+            begin = match[0].second;
+
+            size_t s = std::distance(opr.cbegin(), match[0].first);
+            size_t l = std::distance(match[0].first, match[0].second);
+
+            id = opr.substr(s, l);
+            it = m_defaultSymbols.find(id);
+
+            if ( m_defaultSymbols.cend() != it )
+            {
+                id = it->second;
+            }
+            else
+            {
+                it = m_idTranslationMap.find(id);
+                if ( end != it )
+                {
+                    id = it->second;
+                }
+            }
+
+            id = changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] );
+            opr.replace(s, l, id);
+            begin += ( id.size() - l );
+        }
+        while ( true == match[0].matched );
+
+        lineFields.replaceOpr(opr, i);
     }
 }
 

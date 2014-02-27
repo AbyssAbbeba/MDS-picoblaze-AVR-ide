@@ -34,6 +34,7 @@ class MCUSimCPU : public MCUSimSubsys
         {
             EVENT_CPU_SYS_FATAL_ERROR = 0,  ///<
 
+            EVENT_CPU_ERR_UNDEFINED_OPCODE, ///<
             EVENT_CPU_ERR_INVALID_OPCODE,   ///<
             EVENT_CPU_ERR_INVALID_JUMP,     ///<
             EVENT_CPU_ERR_INVALID_CALL,     ///<

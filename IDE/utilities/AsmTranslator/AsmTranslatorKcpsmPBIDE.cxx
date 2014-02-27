@@ -350,7 +350,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
 
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
-            lineFields.replaceOpr( "#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr( '#' + lineFields.getOperand(1, true), 1);
         }
 
         if ( "comparecy" == instruction )
@@ -428,7 +428,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
                 int second = std::distance ( opr1.cbegin(), match[0].second );
                 lineFields.replaceOpr ( opr1.substr(first, second - first), 1 );
                 fixRadix(lineFields, 1);
-                lineFields.replaceOpr ( "@" + lineFields.getOperand(1, true), 1 );
+                lineFields.replaceOpr ( '@' + lineFields.getOperand(1, true), 1 );
             }
         }
         else
@@ -477,7 +477,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(0, true), 0);
+        lineFields.replaceOpr('#' + lineFields.getOperand(0, true), 0);
         if ( true == m_config->m_shortInstructions )
         {
             lineFields.replaceInst("outk");
@@ -573,7 +573,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
             lineFields.replaceInst("load&return");
         }
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(1, true), 1);
+        lineFields.replaceOpr('#' + lineFields.getOperand(1, true), 1);
     }
     else
     {
@@ -602,7 +602,7 @@ void AsmTranslatorKcpsmPBIDE::fixRadix ( LineFields & lineFields,
         std::string operand = lineFields.getOperand(i, true);
         if ( '\\' == operand[0] )
         {
-            lineFields.replaceOpr ( "0" + lineFields.getOperand(i, true), i );
+            lineFields.replaceOpr ( '0' + lineFields.getOperand(i, true), i );
         }
         else if ( '0' == operand[0] )
         {

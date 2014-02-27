@@ -213,7 +213,7 @@ set ( CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/header.bmp" )
 slash_to_quadruple_backslach ( CPACK_PACKAGE_ICON )
  # Various images.
 set ( CPACK_NSIS_INSTALLER_MUI_ICON_CODE "
-      ; Installer program icon
+      ; Installer program icon.
       !define MUI_ICON \\\"${CMAKE_CURRENT_SOURCE_DIR}/installer.ico\\\"
 
       ; Uninstaller program icon.
@@ -271,8 +271,8 @@ set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     \\\${registerExtension} '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe' '.mds-project' '${PRODUCT_NAME} Project File'
 
     ; Create new directory for storing MDS configuration files (with MS-DOS/Windows attribute HIDDEN set on).
-    CreateDirectory \"$PROFILE/.mds\"
-    SetFileAttributes \"$PROFILE/.mds\" HIDDEN
+    CreateDirectory \\\"$PROFILE/.mds\\\"
+    SetFileAttributes \\\"$PROFILE/.mds\\\" HIDDEN
 " )
 slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the uninstall Section

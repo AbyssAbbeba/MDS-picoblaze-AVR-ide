@@ -58,11 +58,11 @@ void TestOpenPICIDEAsmTrans::fileCompare ( const std::string & fileName1,
         std::getline(file1, line1);
         std::getline(file2, line2);
 
-        if ( '\r' == line1.back() )
+        if ( ( line1.size() > 0 ) && ( '\r' == line1.back() ) )
         {
             line1.pop_back();
         }
-        if ( '\r' == line2.back() )
+        if ( ( line2.size() > 0 ) && ( '\r' == line2.back() ) )
         {
             line2.pop_back();
         }

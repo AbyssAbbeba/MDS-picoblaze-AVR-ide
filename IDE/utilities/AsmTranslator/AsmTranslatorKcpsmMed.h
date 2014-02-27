@@ -66,6 +66,13 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
         void fixRadix ( LineFields & lineFields,
                         int i );
 
+        /**
+         * @brief
+         * @param[in] id
+         * @return
+         */
+        std::string newIdentifier ( const std::string & id );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -89,6 +96,12 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
         inline bool processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
                                         LineFields & lineFields,
                                         unsigned int lineNumber );
+
+        /**
+         * @brief
+         * @param[in,out] lineFields
+         */
+        inline void translateIdentifiers ( AsmTranslatorBase::LineFields & lineFields );
 
         /**
          * @brief
@@ -141,6 +154,15 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
     private:
         /// @brief
         std::set<std::string> m_registers;
+
+        /// @brief
+        std::set<std::string> m_usedIDs;
+
+        /// @brief
+        std::map<std::string,std::string> m_idTranslationMap;
+
+        /// @brief
+        std::map<std::string,std::string> m_defaultSymbols;
 
         /// @brief
         bool m_instFlag;
