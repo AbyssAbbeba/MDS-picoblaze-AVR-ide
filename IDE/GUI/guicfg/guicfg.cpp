@@ -254,7 +254,7 @@ void GuiCfg::setDefaultPaths(bool release)
     if (true == release)
     {
         this->configPath = "./config.xml";
-        this->compilerPath = "../share/mds";
+        this->compilerPath = "../include/mds";
     }
     else
     {
