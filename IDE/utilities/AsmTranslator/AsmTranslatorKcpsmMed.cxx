@@ -550,7 +550,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
 
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
-            lineFields.replaceOpr( "#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr( '#' + lineFields.getOperand(1, true), 1);
         }
 
         if ( ( "comparecy" == instruction ) || ( "cmpc" == instruction ) )
@@ -619,17 +619,11 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
               ( "st"    == instruction ) || ( "ft"     == instruction ) ||
               ( "store" == instruction ) || ( "fetch"  == instruction ) )
     {
-        std::string opr1 = lineFields.getOperand(1, true);
-        if ( '(' == opr1[0] )
+
+        const std::string opr1 = lineFields.getOperand(1, true);
+        if ( m_registers.end() == m_registers.find(opr1) )
         {
-            boost::smatch match;
-            boost::regex_search(opr1.cbegin(), opr1.cend(), match, m_reWord);
-            if ( true == match[0].matched )
-            {
-                int first  = std::distance ( opr1.cbegin(), match[0].first  );
-                int second = std::distance ( opr1.cbegin(), match[0].second );
-                lineFields.replaceOpr ( "@" + opr1.substr(first, second - first), 1 );
-            }
+            lineFields.replaceOpr( '@' + opr1, 1);
         }
         else
         {
@@ -683,7 +677,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(0, true), 0);
+        lineFields.replaceOpr('#' + lineFields.getOperand(0, true), 0);
         if ( true == m_config->m_shortInstructions )
         {
             lineFields.replaceInst("outk");
@@ -816,7 +810,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
                 lineFields.replaceInst("load&return");
             }
             fixRadix(lineFields, 1);
-            lineFields.replaceOpr("#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr('#' + lineFields.getOperand(1, true), 1);
         }
     }
     else
