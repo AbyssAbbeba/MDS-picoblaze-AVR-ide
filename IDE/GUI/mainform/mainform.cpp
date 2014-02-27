@@ -114,6 +114,35 @@ MainForm::~MainForm()
     {
         projectMan->getActive()->stop();
     }
+
+
+    delete this->pm_projNewAdd;
+    delete this->pm_projNew;
+    delete this->pm_projOpen;
+    delete this->pm_projSave;
+    delete this->pm_projComp;
+    delete this->pm_simFlowStart;
+    delete this->pm_simFlowStop;
+    delete this->pm_simRun;
+    delete this->pm_simAnimate;
+    delete this->pm_simStep;
+    delete this->pm_simReset;
+    delete this->pm_simUnhighlight;
+    delete this->pm_toolDis;
+    delete this->pm_cross;
+
+    delete this->icon_projNewAdd;
+    delete this->icon_projNew;
+    delete this->icon_projOpen;
+    delete this->icon_projSave;
+    delete this->icon_projComp;
+    delete this->icon_simFlow;
+    delete this->icon_simRun;
+    delete this->icon_simAnimate;
+    delete this->icon_simStep;
+    delete this->icon_simReset;
+    delete this->icon_simUnhighlight;
+    delete this->icon_toolDis;
 }
 
 
@@ -196,8 +225,8 @@ void MainForm::createActions()
     addAct->setDisabled(true);*/
 
 
-    QPixmap *pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
-    QIcon *icon_projNewAdd = new QIcon(*pm_projNewAdd);
+    this->pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
+    this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
     newAddAct = new QAction(*icon_projNewAdd, tr("New project file"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
     newAddAct->setDisabled(true);
@@ -234,18 +263,18 @@ void MainForm::createActions()
 
 
     
-    QPixmap *pm_projNew = new QPixmap(":/resources//icons//projNew.png");
-    QIcon *icon_projNew = new QIcon(*pm_projNew);
+    this->pm_projNew = new QPixmap(":/resources//icons//projNew.png");
+    this->icon_projNew = new QIcon(*pm_projNew);
     newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    QPixmap *pm_projOpen = new QPixmap(":/resources//icons//projOpen.png");
-    QIcon *icon_projOpen = new QIcon(*pm_projOpen);
+    this->pm_projOpen = new QPixmap(":/resources//icons//projOpen.png");
+    this->icon_projOpen = new QIcon(*pm_projOpen);
     openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    QPixmap *pm_projSave = new QPixmap(":/resources//icons//projSave.png");
-    QIcon *icon_projSave = new QIcon(*pm_projSave);
+    this->pm_projSave = new QPixmap(":/resources//icons//projSave.png");
+    this->icon_projSave = new QIcon(*pm_projSave);
     saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
@@ -253,8 +282,8 @@ void MainForm::createActions()
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    QPixmap *pm_projComp = new QPixmap(":/resources//icons//compile.png");
-    QIcon *icon_projComp = new QIcon(*pm_projComp);
+    this->pm_projComp = new QPixmap(":/resources//icons//compile.png");
+    this->icon_projComp = new QIcon(*pm_projComp);
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
     projectCompileAct->setDisabled(true);
@@ -266,8 +295,9 @@ void MainForm::createActions()
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
 
-    QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStart.png");
-    QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+    this->pm_simFlowStart = new QPixmap(":/resources//icons//simulationStart.png");
+    this->pm_simFlowStop = new QPixmap(":/resources//icons//simulationStop.png");
+    this->icon_simFlow = new QIcon(*pm_simFlowStart);
     simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
@@ -276,42 +306,42 @@ void MainForm::createActions()
     simulationFlowAct->setDisabled(true);
     simulationFlowAct->setShortcut(Qt::Key_F6);
 
-    QPixmap *pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
-    QIcon *icon_simRun = new QIcon(*pm_simRun);
+    this->pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
+    this->icon_simRun = new QIcon(*pm_simRun);
     simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
     simulationRunAct->setDisabled(true);
     simulationRunAct->setShortcut(Qt::Key_F7);
 
-    QPixmap *pm_simAnimate = new QPixmap(":/resources//icons//simulationAnimate.png");
-    QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+    this->pm_simAnimate = new QPixmap(":/resources//icons//simulationAnimate.png");
+    this->icon_simAnimate = new QIcon(*pm_simAnimate);
     simulationAnimateAct = new QAction(*icon_simAnimate, tr("Animate"), this);
     connect(simulationAnimateAct, SIGNAL(triggered()), this, SLOT(simulationAnimateHandle()));
     simulationAnimateAct->setDisabled(true);
     simulationAnimateAct->setShortcut(Qt::Key_F8);
 
-    QPixmap *pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
-    QIcon *icon_simStep = new QIcon(*pm_simStep);
+    this->pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
+    this->icon_simStep = new QIcon(*pm_simStep);
     simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
     simulationStepAct->setDisabled(true);
     simulationStepAct->setShortcut(Qt::Key_F9);
 
-    QPixmap *pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
-    QIcon *icon_simReset = new QIcon(*pm_simReset);
+    this->pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
+    this->icon_simReset = new QIcon(*pm_simReset);
     simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
     simulationResetAct->setShortcut(Qt::Key_F10);
 
-    QPixmap *pm_simUnhighlight = new QPixmap(":/resources//icons//unhighlight.png");
-    QIcon *icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
+    this->pm_simUnhighlight = new QPixmap(":/resources//icons//unhighlight.png");
+    this->icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
     simulationUnhighlightAct = new QAction(*icon_simUnhighlight, tr("Unhighlight"), this);
     connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
     simulationUnhighlightAct->setDisabled(true);
 
-    QPixmap *pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
-    QIcon *icon_toolDis = new QIcon(*pm_toolDis);
+    this->pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
+    this->icon_toolDis = new QIcon(*pm_toolDis);
     toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassemble"), this);
     connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     toolTranslatorAct = new QAction(tr("ASM Translator"), this);
@@ -330,6 +360,8 @@ void MainForm::createActions()
     connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("Example 1"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
+
+    this->pm_cross = new QPixmap(":/resources//icons//cross.png");
     //qDebug() << "MainForm: return CreateActions()";
 }
 
@@ -1306,10 +1338,10 @@ void MainForm::simulationRunHandle()
 {
     if (true == simulationStatus)
     {
+        delete this->icon_simRun;
         if (true == simulationRunStatus)
         {
-            QPixmap *pm_simRun = new QPixmap("resources//icons//simulationRun.png");
-            QIcon *icon_simRun = new QIcon(*pm_simRun);
+            this->icon_simRun = new QIcon(*pm_simRun);
             simulationRunAct->setIcon(*icon_simRun);
             simulationRunAct->setText(tr("Run"));
             this->simulationAnimateAct->setEnabled(true);
@@ -1319,8 +1351,7 @@ void MainForm::simulationRunHandle()
         }
         else
         {
-            QPixmap *pm_simRun = new QPixmap("resources//icons//cross.png");
-            QIcon *icon_simRun = new QIcon(*pm_simRun);
+            this->icon_simRun = new QIcon(*pm_cross);
             simulationRunAct->setIcon(*icon_simRun);
             simulationRunAct->setText(tr("Stop run"));
             this->simulationAnimateAct->setDisabled(true);
@@ -1340,10 +1371,10 @@ void MainForm::simulationAnimateHandle()
 {
     if (true == simulationStatus)
     {
+        delete this->icon_simAnimate;
         if (true == simulationAnimateStatus)
         {
-            QPixmap *pm_simAnimate = new QPixmap("resources//icons//simulationAnimate.png");
-            QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+            this->icon_simAnimate = new QIcon(*pm_simAnimate);
             simulationAnimateAct->setIcon(*icon_simAnimate);
             simulationAnimateAct->setText(tr("Animate"));
             this->simulationRunAct->setEnabled(true);
@@ -1353,8 +1384,7 @@ void MainForm::simulationAnimateHandle()
         }
         else
         {
-            QPixmap *pm_simAnimate = new QPixmap("resources//icons//cross.png");
-            QIcon *icon_simAnimate = new QIcon(*pm_simAnimate);
+            this->icon_simAnimate = new QIcon(*pm_cross);
             simulationAnimateAct->setIcon(*icon_simAnimate);
             simulationAnimateAct->setText(tr("Stop animate"));
             this->simulationRunAct->setDisabled(true);
@@ -1390,8 +1420,8 @@ void MainForm::simulationFlowHandle()
         {
             if ( true == projectMan->getActive()->start() )
             {
-                QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStop.png");
-                QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+                delete this->icon_simFlow;
+                this->icon_simFlow = new QIcon(*pm_simFlowStop);
                 simulationFlowAct->setIcon(*icon_simFlow);
                 simulationFlowAct->setText(tr("Stop simulation"));
                 simulationStatus = true;
@@ -1408,8 +1438,8 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
-            QPixmap *pm_simFlow = new QPixmap(":/resources//icons//simulationStart.png");
-            QIcon *icon_simFlow = new QIcon(*pm_simFlow);
+            delete this->icon_simFlow;
+            this->icon_simFlow = new QIcon(*pm_simFlowStart);
             simulationFlowAct->setIcon(*icon_simFlow);
             simulationFlowAct->setText(tr("Start simulation"));
             if (true == simulationAnimateStatus)
