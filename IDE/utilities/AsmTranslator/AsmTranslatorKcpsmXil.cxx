@@ -365,7 +365,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
 
         if ( m_registers.end() == m_registers.find(lineFields.getOperand(1)) )
         {
-            lineFields.replaceOpr( "#" + lineFields.getOperand(1, true), 1);
+            lineFields.replaceOpr( '#' + lineFields.getOperand(1, true), 1);
         }
 
         if ( true == m_config->m_shortInstructions )
@@ -417,7 +417,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
                 {
                     opr1subst = "0x" + opr1subst;
                 }
-                lineFields.replaceOpr ( "@" + opr1subst, 1 );
+                lineFields.replaceOpr ( '@' + opr1subst, 1 );
             }
         }
         else
@@ -453,7 +453,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(0, true), 0);
+        lineFields.replaceOpr('#' + lineFields.getOperand(0, true), 0);
         if ( true == m_config->m_shortInstructions )
         {
             lineFields.replaceInst("outk");
@@ -525,7 +525,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
             lineFields.replaceInst("ldret");
         }
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr("#" + lineFields.getOperand(1, true), 1);
+        lineFields.replaceOpr('#' + lineFields.getOperand(1, true), 1);
     }
     else
     {
@@ -582,7 +582,7 @@ void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
             case 'q':
             case 'o':
                 // Octal.
-                lineFields.replaceOpr ( "0" + opr.substr(0, opr.size() - 2), i );
+                lineFields.replaceOpr ( '0' + opr.substr(0, opr.size() - 2), i );
                 break;
 
             case 'd': // Decimal.
