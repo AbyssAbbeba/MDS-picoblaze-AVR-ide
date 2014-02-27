@@ -237,7 +237,6 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::pair<uns
         std::string lbl = lineFields.getLabel(true);
         if ( false == lbl.empty() )
         {
-            bool modified = false;
             while ( true )
             {
                 size_t pos = lbl.find(' ');
@@ -250,11 +249,6 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::pair<uns
                     break;
                 }
                 lbl.replace(pos, 1, "");
-                modified = true;
-            }
-            if ( true == modified )
-            {
-                lineFields.replaceLabel(lbl);
             }
 
             lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
