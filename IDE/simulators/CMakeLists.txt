@@ -14,11 +14,6 @@
 # Set project name
 project ( Simulator )
 
-# Compile simulator with extra high compiler optimizations.
-if ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" )
-    add_definitions ( -O3 )
-endif()
-
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
