@@ -123,9 +123,9 @@ void GuiCfg::setDefaultIDEShortcuts()
 
 void GuiCfg::setDefaultEditFont()
 {
-    #ifdef __linux__
+    #ifdef Q_OS_LINUX
         this->editorFont.setFamily("Monospace");
-    #elif _WIN32
+    #elif Q_OS_WIN32
         this->editorFont.setFamily("Courier");
     #else
         qDebug() << "GuiCfg: setDefaultEditFont: Platform not supported";
@@ -253,17 +253,27 @@ void GuiCfg::setDefaultPaths(bool release)
 {
     if (true == release)
     {
-        this->configPath = "./config.xml";
+        QByteArray rootArray  = qgetenv("HOME");
+        QString root(rootArray);
+        QDir homeDir(root + "/.mds");
+        if (false == homeDir.exists())
+        {
+            homeDir.mkpath(".");
+        }   
+        this->configPath = homeDir.absolutePath() + "/config.xml";
         this->compilerPath = "../include/mds";
+        this->examplePath = "../share/mds/demoprojekt";
     }
     else
     {
-        #ifdef __linux__
+        #ifdef Q_OS_LINUX
             this->configPath = "./resources/xml/config.xml";
-            this->compilerPath = "../compiler/include/";
-        #elif _WIN32
+            this->compilerPath = "../compiler/include";
+        this->examplePath = "./demoprojekt";
+        #elif Q_OS_WIN32
             this->configPath = "./GUI/resources/xml/config.xml";
-            this->compilerPath = "./compiler/include/";
+            this->compilerPath = "./compiler/include";
+            this->examplePath = "./GUI/demoprojekt";
         #endif
     }
 }
@@ -494,6 +504,12 @@ QString GuiCfg::getCompilerPath()
 }
 
 
+QString GuiCfg::getExamplePath()
+{
+    return this->examplePath;
+}
+
+
 
 
 //xml parsers
@@ -503,7 +519,7 @@ void GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
     //QFile cfgFile("./resources/xml/config.xml");
-    QFile cfgFile(configPath);
+    QFile cfgFile(this->configPath);
     if (!cfgFile.open(QIODevice::ReadOnly))
     {
         qDebug() << "GuiCfg: config file not found";
@@ -1514,7 +1530,7 @@ void GuiCfg::saveConfig()
     xmlUpdate.setAttribute("color", this->simColorWidgetChanged.name());
     xmlSimOthers.appendChild(xmlUpdate);
     xmlRoot.appendChild(xmlSimOthers);
-    QFile cfgFile("./resources/xml/config.xml");
+    QFile cfgFile(this->configPath);
     cfgFile.open(QIODevice::WriteOnly);
     QTextStream xmlStream(&cfgFile);
     xmlStream << domDoc.toString();

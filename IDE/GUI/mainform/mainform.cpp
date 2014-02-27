@@ -765,19 +765,21 @@ void MainForm::openProject()
  * @brief Opens selected project.
  * @param path Path to the project.
  */
-void MainForm::openProject(QString path)
+bool MainForm::openProject(QString path)
 {
     //qDebug() << "MainForm: openProject()";
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         error(ERR_OPENFILE);
+        return false;
     }
     else
     {
         //nacteni obsahu do widgetu
         projectMan->openProject(&file);
         file.close();
+        return true;
     }
     //qDebug() << "MainForm: return openProject()";
 }
@@ -1465,7 +1467,10 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    this->openProject("./demoprojekt/Example/Example.mds_project");
+    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example/Example.mds_project"))
+    {
+        return;
+    }
     int count = this->projectMan->getActive()->filePaths.count();
     QDir projectDir = QFileInfo(this->projectMan->getActive()->prjPath).dir();
     QString absolutePath = projectDir.path();
