@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     QFontDatabase fdb;
     //fdb.addApplicationFont("./resources/fonts/MostlyMono/MostlyMono.ttf");
-    fdb.addApplicationFont("./resources/fonts/Ubuntu/UbuntuMono-R.ttf");
-    fdb.addApplicationFont("./resources/fonts/Ubuntu/UbuntuMono-RI.ttf");
-    fdb.addApplicationFont("./resources/fonts/Ubuntu/UbuntuMono-B.ttf");
-    fdb.addApplicationFont("./resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
+    fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-R.ttf");
+    fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-RI.ttf");
+    fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-B.ttf");
+    fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-BI.ttf");
 
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
