@@ -319,7 +319,11 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
         return true;
     }
 
-    if ( ( ".equ" == directive ) || ( "equ" == directive ) )
+    if ( "vhdl" == directive )
+    {
+        lineFields.replaceInst("; vhdl");
+    }
+    else if ( ( ".equ" == directive ) || ( "equ" == directive ) )
     {
         fixRadix(lineFields, 0);
         lineFields.replaceInst(changeLetterCase("equ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
