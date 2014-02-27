@@ -48,7 +48,7 @@ class HexEdit : public QWidget
         QPlainTextEdit* getTextEdit();
         //void setByteArray();
         void setVal(int pos, unsigned char val);
-        char getVal(int pos);
+        unsigned char getVal(int pos);
         void setReadOnly(bool readonly);
         void fixHeight();
         void setHighlighted(int pos, bool highlight);

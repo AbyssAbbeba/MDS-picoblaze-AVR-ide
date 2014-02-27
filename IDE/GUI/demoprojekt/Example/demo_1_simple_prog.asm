@@ -1,9 +1,9 @@
  
 
 ;
-; PicoBlaze kod pro pocatecniÂ­ inicializaci A/D prevodniku ADS6445 a zdroje hodin LMK4011 + SPUÅ TÄNÃ TEST SEKVENCÃ
+; PicoBlaze kod pro pocatecniÃÂ­ inicializaci A/D prevodniku ADS6445 a zdroje hodin LMK4011 + SPUÃ TÃÂNÃÂ TEST SEKVENCÃÂ
 
-; A/D pÅevodnik - 16bit registry
+; A/D pÃÂevodnik - 16bit registry
 ;				  Max 20 MHz
 ;				  A4-A0 + D10-D0	
 ;
@@ -32,8 +32,9 @@ TX_data_register_04		PORT			08h          ;  data register port ID
 ; Inicializace
 ;##############################################################################;
 					ORG		000h
+ret
 					JUMP	Start
-; ÄekÃ¡nÃ­ 1s pro inicializaci obvodÅ¯
+; ÃÂekÃÂ¡nÃÂ­ 1s pro inicializaci obvodÃÂ¯
 Start:              CALL      wait_1s             ; wait for 1s
 ; end of initialization
 

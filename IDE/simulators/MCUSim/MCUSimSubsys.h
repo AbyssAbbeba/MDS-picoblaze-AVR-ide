@@ -129,12 +129,25 @@ class MCUSimSubsys
          * @param[in] eventId
          * @param[in] eventLocation
          * @param[in] eventDetail
-         * @param[in] flags
          */
         void logEvent ( int eventId,
                         int eventLocation = 0,
-                        int eventDetail = 0,
-                        MCUSimEventLogger::Flags flags = MCUSimEventLogger::FLAG_NORMAL )
+                        int eventDetail = 0 )
+        {
+            m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail, MCUSimEventLogger::FLAG_LO_PRIO);
+        }
+
+        /**
+         * @brief
+         * @param[in] flags
+         * @param[in] eventId
+         * @param[in] eventLocation
+         * @param[in] eventDetail
+         */
+        void logEvent ( MCUSimEventLogger::Flags flags,
+                        int eventId,
+                        int eventLocation = 0,
+                        int eventDetail = 0 )
         {
             m_eventLogger->logEvent(m_id, eventId, eventLocation, eventDetail, flags);
         }

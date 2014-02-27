@@ -34,7 +34,7 @@
 // AsmTranslator header files.
 #include "AsmTranslator.h"
 
-bool TestMedAsmTrans::fileCompare ( const std::string & fileName1,
+void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
                                     const std::string & fileName2 )
 {
     std::ifstream file1(fileName1, std::ios_base::binary);
@@ -42,36 +42,41 @@ bool TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
     if ( false == file1.is_open() || false == file2.is_open() )
     {
-        return false;
+        CU_FAIL("Unable to open VHD file!");
+        return;
     }
 
-    std::string line;
+    std::string line1, line2;
     while ( false == file1.eof() && false == file2.eof() )
     {
         if ( true == file1.bad() || true == file2.bad() )
         {
-            return false;
+            CU_FAIL("Unable to read VHD file!");
+            return;
         }
 
-        line = file1.get();
-        if ( std::string::npos == line.find("INIT") )
+        std::getline(file1, line1);
+        std::getline(file2, line2);
+
+        if ( '\r' == line1.back() )
+        {
+            line1.pop_back();
+        }
+        if ( '\r' == line2.back() )
+        {
+            line2.pop_back();
+        }
+
+        if ( std::string::npos == line1.find("INIT") )
         {
             continue;
         }
 
-        if ( file1.get() != file2.get() )
+        if ( line1 != line2 )
         {
-            return false;
+            CU_FAIL("VHD files differs!");
+            return;
         }
-    }
-
-    if ( true != file1.eof() || true != file2.eof() )
-    {
-        return false;
-    }
-    else
-    {
-        return true;
     }
 }
 
@@ -243,8 +248,5 @@ void TestMedAsmTrans::test ( const std::string & suffix )
 
     std::string expectedCommonPath = system_complete( path("Mediatronix") / "expected" / testName ).string();
 
-    if ( false == fileCompare ( ( expectedCommonPath + ".vhd.exp" ), m_options->m_vhdlFile ) )
-    {
-        CU_FAIL("VHDL output differs from the expected one.");
-    }
+    fileCompare ( ( expectedCommonPath + ".vhd.exp" ), m_options->m_vhdlFile );
 }
