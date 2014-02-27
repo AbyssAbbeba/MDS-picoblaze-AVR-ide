@@ -80,6 +80,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memPorts->show();
     this->memStack->show();
 
+    this->wTime = new TimeWidget(this);
+    this->wTime->move(1080, 120);
+    this->wTime->show();
+
     this->lblRegs = new QLabel("Registers", this);
     this->lblRegs->move(40,0);
     this->lblScratch = new QLabel("Scratch", this);
@@ -102,10 +106,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblStack->move(960,0);
     this->lblPC = new QLabel("PC", this);
     this->lblPC->move(1080,0);
-    this->lblTime = new QLabel("Time", this);
-    this->lblTime->move(1080,20);
     this->lblClock = new QLabel("Clock", this);
-    this->lblClock->move(1080,40);
+    this->lblClock->move(1080,20);
+    this->lblTime = new QLabel("Time", this);
+    this->lblTime->move(1080,100);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setFixedWidth(50);
@@ -119,39 +123,43 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lePC->setFont(QFont("UbuntuMono", 10));
     this->lePC->setReadOnly(true);
     this->lePC->move(1120, 0);
-    this->leTime = new QLineEdit(this);
-    this->leTime->setFixedWidth(50);
-    this->leTime->setFixedHeight(17);
-    this->leTime->setFont(QFont("UbuntuMono", 10));
-    this->leTime->setReadOnly(true);
-    this->leTime->move(1120, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setFixedWidth(50);
     this->leClock->setFixedHeight(17);
     this->leClock->setFont(QFont("UbuntuMono", 10));
     this->leClock->setReadOnly(true);
-    this->leClock->move(1120, 40);
+    this->leClock->move(1120, 20);
+
+    this->cmbClock = new QComboBox(this);
+    this->cmbClock->setFixedHeight(17);
+    this->cmbClock->setFixedWidth(50);
+    this->cmbClock->move(1170, 20);
+    this->cmbClock->addItem("Hz");
+    this->cmbClock->addItem("KHz");
+    this->cmbClock->addItem("MHz");
+    this->cmbClock->setCurrentIndex(2);
+    this->cmbClock->setStyleSheet ("QComboBox::drop-down {border-width: 1px;} QComboBox::down-arrow {border-width: 1px;}");
 
     this->btnIntr = new QPushButton("Interrupt", this);
     this->btnIntr->setFixedHeight(17);
     this->btnIntr->setFixedWidth(90);
-    this->btnIntr->move(1080, 80);
+    this->btnIntr->move(1080, 60);
     //this->btnPorts = new QPushButton("Output", this);
     //this->btnPorts->setMaximumHeight(17);
     //this->btnPorts->setMaximumWidth(50);
     //this->btnPorts->move(615, 0);
     this->btnCarry = new QPushButton("Carry", this);
-    this->btnCarry->move(1080,60);
+    this->btnCarry->move(1080,40);
     this->btnCarry->setFixedHeight(17);
     this->btnCarry->setFixedWidth(45);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(1125,60);
+    this->btnZero->move(1125,40);
     this->btnZero->setFixedHeight(17);
     this->btnZero->setFixedWidth(45);
     this->btnInte = new QPushButton("Int enable", this);
     this->btnInte->setFixedHeight(17);
     this->btnInte->setFixedWidth(90);
-    this->btnInte->move(1080, 100);
+    this->btnInte->move(1080, 80);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
@@ -185,8 +193,19 @@ void PicoBlazeGrid::handleUpdateRequest(int mask)
 {
     if (1 & mask)
     {
-        leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
-        this->leTime->setStyleSheet("background-color: yellow");
+        //this->leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
+        //this->leTime->setStyleSheet("background-color: yellow");
+        unsigned long long cycles = m_simControlUnit->getTotalMCycles();
+        this->wTime->setTime(2*cycles/clock);
+    }
+    
+    if (4 & mask)
+    {
+        this->updateWidget();
+        this->memRegs->updateWidget();
+        this->memScratch->updateWidget();
+        this->memStack->updateWidget();
+        this->memPorts->updateWidget();
     }
 }
 
@@ -239,7 +258,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 int value = m_cpu->getProgramCounter();
                 if (value > 0xFF)
                 {
-                    this->lePC->setText("0x" + QString::number(value, 16).toUpper() + "h");
+                    this->lePC->setText("0x" + QString::number(value, 16).toUpper());
                 }
                 else if (value > 0xF)
                 {
@@ -255,6 +274,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             default:
             {
                 qDebug("PicoBlazeGrid: Invalid event (cpu) received, event ignored.");
+                qDebug() << "PicoBlazeGrid: event " << eventId;
                 break;
             }
         }
@@ -367,12 +387,21 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             case PicoBlazeStack::EVENT_STACK_SP_CHANGED:
             {
-                this->leSP->setText(QString::number(locationOrReason, 16));
+                if (locationOrReason > 0xF)
+                {
+                    this->leSP->setText("0x" + QString::number(locationOrReason, 16).toUpper());
+                }
+                else
+                {
+                    this->leSP->setText("0x0" + QString::number(locationOrReason, 16).toUpper());
+                }
                 this->leSP->setStyleSheet("background-color: yellow");
+                break;
             }
             default:
             {
                 qDebug("PicoBlazeGrid: Invalid event (stack) received, event ignored.");
+                qDebug() << "PicoBlazeGrid: stack event: " << eventId;
                 break;
             }
         }
@@ -389,6 +418,7 @@ void PicoBlazeGrid::deviceChanged()
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
     m_interrupt = dynamic_cast<PicoBlazeInterruptController*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS));
+    m_stack = dynamic_cast<PicoBlazeStack*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_STACK));
     deviceReset();
 }
 
@@ -399,18 +429,20 @@ void PicoBlazeGrid::deviceReset()
     int value = m_cpu->getProgramCounter();
     if (value > 0xFF)
     {
-        this->lePC->setText(QString::number(value, 16).toUpper() + "h");
+        this->lePC->setText("0x" + QString::number(value, 16).toUpper());
     }
     else if (value > 0xF)
     {
-        this->lePC->setText("0" + QString::number(value, 16).toUpper() + "h");
+        this->lePC->setText("0x0" + QString::number(value, 16).toUpper());
     }
     else
     {
-        this->lePC->setText("00" + QString::number(value, 16).toUpper() + "h");
+        this->lePC->setText("0x00" + QString::number(value, 16).toUpper());
     }
-    this->leSP->setText("0");
-    this->leTime->setText("0");
+    this->leSP->setText("0x00");
+    this->wTime->setTime(0);
+    this->leClock->setText("10.0");
+    this->clock = 10000000.0;
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -434,7 +466,6 @@ void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
     this->leSP->setStyleSheet("background-color: none");
-    this->leTime->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     //this->btnPorts->setStyleSheet("color: none");
@@ -480,4 +511,53 @@ void PicoBlazeGrid::interrupt()
 void PicoBlazeGrid::stopSimSlot()
 {
     emit stopSimSig();
+}
+
+
+void PicoBlazeGrid::updateWidget()
+{
+    uint value = m_cpu->getProgramCounter();
+    if (value != (uint)this->lePC->text().toInt(0, 16))
+    {
+        this->lePC->setStyleSheet("background-color: yellow");
+        if (value > 0xFF)
+        {
+            this->lePC->setText("0x" + QString::number(value, 16).toUpper());
+        }
+        else if (value > 0xF)
+        {
+            this->lePC->setText("0x0" + QString::number(value, 16).toUpper());
+        }
+        else
+        {
+            this->lePC->setText("0x00" + QString::number(value, 16).toUpper());
+        }
+    }
+    else
+    {
+        this->lePC->setStyleSheet("background-color: none");
+    }
+
+    value = m_stack->getSP();
+    if (value != (uint)this->leSP->text().toInt(0, 16))
+    {
+        this->leSP->setStyleSheet("background-color: yellow");
+        if (value > 0xF)
+        {
+            this->leSP->setText("0x" + QString::number(value, 16).toUpper());
+        }
+        else
+        {
+            this->leSP->setText("0x0" + QString::number(value, 16).toUpper());
+        }
+    }
+
+    if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: none");
+    }
 }

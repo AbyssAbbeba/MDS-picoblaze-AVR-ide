@@ -1599,7 +1599,7 @@ void Project::removeFile(QString path, QString name)
 void Project::setupSim()
 {
     //qDebug() << "Project: setupSim()";
-    McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
+    //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
     connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
@@ -1611,7 +1611,7 @@ void Project::setupSim()
 /**
  * @brief Starts simulation
  */
-bool Project::start()
+bool Project::start(QString file)
 {
     //qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
@@ -1659,14 +1659,14 @@ bool Project::start()
         //    qDebug() << "Project: m_simControlUnit->start() returned true";
         //}
     }
-    qDebug() << "Project: getLineNumber";
+    //qDebug() << "Project: getLineNumber";
     m_simControlUnit->getLineNumber(currLine);
-    qDebug() << "Project: getLineNumber check";
+    //qDebug() << "Project: getLineNumber check";
     if (currLine.empty() == true)
     {
         return false;
     }
-    qDebug() << "Project: getLineNumber done";
+    //qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
     //qDebug() << "Project: currFile";
     this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
@@ -1728,7 +1728,7 @@ void Project::handleUpdateRequest(int mask)
 {
     if (2 & mask)
     {
-        std::string fileName; //= new std::string();
+        //std::string fileName; //= new std::string();
         m_simControlUnit->getLineNumber(currLine);
         if (currLine.empty() == true)
         {

@@ -252,11 +252,11 @@ inline void PicoBlazeRegisters::write ( unsigned int addr,
     {
         if ( 0 == m_size )
         {
-            logEvent(EVENT_MEM_ERR_WR_NONEXISTENT, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_WR_NONEXISTENT, addr);
         }
         else
         {
-            logEvent(EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_WR_NOT_IMPLEMENTED, addr);
         }
 
         return;
@@ -298,11 +298,11 @@ inline unsigned int PicoBlazeRegisters::read ( unsigned int addr )
     {
         if ( 0 == m_size )
         {
-            logEvent(EVENT_MEM_ERR_RD_NONEXISTENT, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_RD_NONEXISTENT, addr);
         }
         else
         {
-            logEvent(EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
+            logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_ERR_RD_NOT_IMPLEMENTED, addr);
         }
         return getUndefVal();
     }

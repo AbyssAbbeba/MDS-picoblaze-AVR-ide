@@ -27,6 +27,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         void setReadOnly(bool readOnly);
         void fixHeight();
         void unhighlight();
+        void updateWidget();
 
     signals:
         void stopSimSig();
@@ -44,7 +45,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;
         int m_size;
-        int width;
+        int numWidth;
         QIcon *iconSP;
         int sp;
 };

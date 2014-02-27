@@ -148,7 +148,7 @@ void PicoBlazeInstructionSet2::inst__ ( const unsigned int opCode )
 {
     instructionEnter ( PicoBlazeInsNames::INS_NONE );
 
-    logEvent ( EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_OPCODE, m_pc, opCode );
 }
 
 void PicoBlazeInstructionSet2::inst_JUMP ( const unsigned int opCode )
@@ -303,7 +303,7 @@ void PicoBlazeInstructionSet2::inst_RETURN ( const unsigned int opCode )
     // Execute return from subprogram.
     if ( 0 == m_actSubprogCounter )
     {
-        logEvent ( EVENT_CPU_ERR_INVALID_RET, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
     }
     else
     {
@@ -546,7 +546,7 @@ void PicoBlazeInstructionSet2::inst_RETURNI ( const unsigned int opCode )
     if ( m_statusFlags->getInterrupted() <= 0 )
     {
         m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( EVENT_CPU_ERR_INVALID_RETI );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
     }
     else
     {
