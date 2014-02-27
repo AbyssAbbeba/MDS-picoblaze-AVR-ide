@@ -1,8 +1,7 @@
 # set project's name
-  PROJECT ( DEMOPROJECT )
+project ( DemoProject )
 
-
-foreach ( extension "asm" "prc" "v" "vhd" "mds-project" )
-    file ( GLOB files2install *.${extension} )
-    install ( FILES ${files2install} DESTINATION "${INSTALL_DIR_DEMOPROJECT}" )
+foreach ( extension "mds-project" "asm" "ihex" "dbg" "v" "vhd" )
+    file ( GLOB files2install Example/*.${extension} )
+    install ( FILES ${files2install} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )
 endforeach ( extension )
