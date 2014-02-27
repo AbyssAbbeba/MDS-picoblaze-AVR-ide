@@ -258,8 +258,13 @@ void GuiCfg::setDefaultPaths(bool release)
     }
     else
     {
-        this->configPath = "./resources/xml/config.xml";
-        this->compilerPath = "../compiler/include/";
+        #ifdef __linux__
+            this->configPath = "./resources/xml/config.xml";
+            this->compilerPath = "../compiler/include/";
+        #elif _WIN32
+            this->configPath = "./GUI/resources/xml/config.xml";
+            this->compilerPath = "./compiler/include/";
+        #endif
     }
 }
 
