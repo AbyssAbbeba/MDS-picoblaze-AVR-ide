@@ -1,5 +1,5 @@
 ; Compiler test case for Assembler
-
+.SCR   0x380, 256
 
 ;=========================================================
 ; routine: mult_soft
@@ -14,7 +14,7 @@
 ;  temp register: i
 ;========================================================
 
-device kcpsm3
+
 
 
 
@@ -72,7 +72,7 @@ LOAD s1, 75 ;ASCII "u".
 CALL xmit
 
 ;Send character.
-LOAD s1, 6Ch ;ASCII "l".
+LOAD s1,75 ;ASCII "l".
 CALL xmit
 
 ;Send character.
@@ -113,6 +113,4 @@ RETURN
 
 
 
-   
-END
 

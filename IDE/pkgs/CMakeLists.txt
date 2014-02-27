@@ -266,8 +266,13 @@ set ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS "" )
 slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the end of the install Section
 set ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    ; Associate .mds-project file extension with the mds-ide.exe executable.
     !include \\\"${CMAKE_CURRENT_SOURCE_DIR}/FileAssociation.nsh\\\"
     \\\${registerExtension} '\$INSTDIR/${INSTALL_DIR_BIN}/mds-ide.exe' '.mds-project' '${PRODUCT_NAME} Project File'
+
+    ; Create new directory for storing MDS configuration files (with MS-DOS/Windows attribute HIDDEN set on).
+    CreateDirectory \"$PROFILE/.mds\"
+    SetFileAttributes \"$PROFILE/.mds\" HIDDEN
 " )
 slash_to_quadruple_backslach ( CPACK_NSIS_EXTRA_INSTALL_COMMANDS )
  # Extra NSIS commands that will be added to the uninstall Section

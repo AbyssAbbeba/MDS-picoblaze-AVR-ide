@@ -20,7 +20,7 @@
 #include <cctype>
 #include <cstdlib>
 #include <iterator>
-#include<iostream>//debug
+
 constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 const boost::regex AsmTranslatorKcpsmMed::m_reAtMark      = boost::regex ( "^@", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_dollar        = boost::regex ( "\\$", flags );
@@ -417,8 +417,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
                                                m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) +
                             changeLetterCase ( ( " d, " + lineFields.getOperand(1, true) ),
                                                m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] );
-
-        if ( 0 == atoi(opr.c_str()) )
+        if ( 0 == strtoul (opr.c_str(), nullptr, 0) )
         {
             lineFields.replaceInstOpr(limit);
         }
