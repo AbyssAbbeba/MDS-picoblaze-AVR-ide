@@ -30,10 +30,10 @@ set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
 set ( INSTALL_DIR_BIN "bin" )
 set ( INSTALL_DIR_LIB "lib/mds" )
-set ( INSTALL_DIR_SHARE "share" )
+set ( INSTALL_DIR_SHARE "share/mds" )
 set ( INSTALL_DIR_DOC "doc/mds" )
 set ( INSTALL_DIR_INCLUDE "include/mds" )
-set ( INSTALL_DIR_DEMOPROJECT "demoproject" )
+set ( INSTALL_DIR_DEMOPROJECT "share/mds/demoproject" )
 
 set ( PRODUCT_VERSION "1.0" )
 set ( COPYRIGHT_YEARS "2013, 2014" )
