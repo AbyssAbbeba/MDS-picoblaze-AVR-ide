@@ -129,6 +129,16 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         QString getExamplePath();
 
+        QString getTemplatePath();
+
+        bool getProjectDefVHDL();
+        
+        bool getProjectDefVerilog();
+        
+        QString getProjectPathVHDL();
+        
+        QString getProjectPathVerilog();
+
         //xml parser
         void loadConfig();
         

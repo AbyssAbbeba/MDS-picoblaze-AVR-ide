@@ -874,6 +874,34 @@ void MainForm::compileProject()
         options->m_device = this->projectMan->getActive()->family.toStdString();
 
 
+        QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+        if (true == this->projectMan->getActive()->defaultVerilog)
+        {
+            options->m_verilogTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".v"
+                                        ).toStdString();
+        }
+        else
+        {
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+        }
+
+        if (true == this->projectMan->getActive()->defaultVHDL)
+        {
+            options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                    + "/"
+                                    + this->projectMan->getActive()->family
+                                    + ".vhd"
+                                    ).toStdString();
+        }
+        else
+        {
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+        }
+
+
 
         QDir pathDir("./temp/");
         if (false == pathDir.exists())
@@ -950,6 +978,30 @@ void MainForm::compileProject()
                                   + ".srec"
                                   ).toStdString();
         }
+        if (projectMan->getActive()->compileOpt.at(8))
+        {
+            options->m_memFile = ( mainFile
+                                 + ".mem"
+                                 ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(9))
+        {
+            options->m_rawHexDumpFile = ( mainFile
+                                        + ".rawhex"
+                                        ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(10))
+        {
+            options->m_verilogFile = ( mainFile
+                                     + ".v"
+                                     ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(11))
+        {
+            options->m_vhdlFile = ( mainFile
+                                  + ".vhd"
+                                  ).toStdString();
+        }
         //return;
     }
     else if ( false == projectMan->getActive()->useMainFile )
@@ -1006,6 +1058,34 @@ void MainForm::compileProject()
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
+
+            QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+            if (true == this->projectMan->getActive()->defaultVerilog)
+            {
+                options->m_verilogTemplate = ( templateDir.absolutePath()
+                                            + "/"
+                                            + this->projectMan->getActive()->family
+                                            + ".v"
+                                            ).toStdString();
+            }
+            else
+            {
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            }
+
+            if (true == this->projectMan->getActive()->defaultVHDL)
+            {
+                options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".vhd"
+                                        ).toStdString();
+            }
+            else
+            {
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            }
+
             if (projectMan->getActive()->compileOpt.at(0))
             {
                 options->m_symbolTable = (mainFile + ".stbl").toStdString();
@@ -1038,6 +1118,22 @@ void MainForm::compileProject()
             {
                 options->m_srecFile = (mainFile + ".srec").toStdString();
             }
+            if (projectMan->getActive()->compileOpt.at(8))
+            {
+                options->m_memFile = ( mainFile + ".mem").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(9))
+            {
+                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(10))
+            {
+                options->m_verilogFile = ( mainFile  + ".v").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(11))
+            {
+                options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+            }
         }
         else
         {
@@ -1045,6 +1141,34 @@ void MainForm::compileProject()
             options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
+
+
+            QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+            if (true == this->projectMan->getActive()->defaultVerilog)
+            {
+                options->m_verilogTemplate = ( templateDir.absolutePath()
+                                            + "/"
+                                            + this->projectMan->getActive()->family
+                                            + ".v"
+                                            ).toStdString();
+            }
+            else
+            {
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            }
+
+            if (true == this->projectMan->getActive()->defaultVHDL)
+            {
+                options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".vhd"
+                                        ).toStdString();
+            }
+            else
+            {
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            }
 
 
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
@@ -1117,6 +1241,30 @@ void MainForm::compileProject()
                                       + ".srec"
                                       ).toStdString();
             }
+            if (projectMan->getActive()->compileOpt.at(8))
+            {
+                options->m_memFile = ( mainFile
+                                    + ".mem"
+                                    ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(9))
+            {
+                options->m_rawHexDumpFile = ( mainFile
+                                            + ".rawhex"
+                                            ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(10))
+            {
+                options->m_verilogFile = ( mainFile
+                                        + ".v"
+                                        ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(11))
+            {
+                options->m_vhdlFile = ( mainFile
+                                    + ".vhd"
+                                    ).toStdString();
+            }
         }
         //return;
     }
@@ -1162,6 +1310,35 @@ void MainForm::compileProject()
         
         options->m_device = this->projectMan->getActive()->family.toStdString();
 
+
+        QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+        if (true == this->projectMan->getActive()->defaultVerilog)
+        {
+            options->m_verilogTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".v"
+                                        ).toStdString();
+        }
+        else
+        {
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+        }
+        
+        if (true == this->projectMan->getActive()->defaultVHDL)
+        {
+            options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                    + "/"
+                                    + this->projectMan->getActive()->family
+                                    + ".vhd"
+                                    ).toStdString();
+        }
+        else
+        {
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+        }
+
+
         if (projectMan->getActive()->compileOpt.at(0))
         {
             options->m_symbolTable = (mainFile + ".stbl").toStdString();
@@ -1193,6 +1370,22 @@ void MainForm::compileProject()
         if (projectMan->getActive()->compileOpt.at(7))
         {
             options->m_srecFile = (mainFile + ".srec").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(8))
+        {
+            options->m_memFile = ( mainFile + ".mem").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(9))
+        {
+            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(10))
+        {
+            options->m_verilogFile = ( mainFile  + ".v").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(11))
+        {
+            options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
         }
     }
 

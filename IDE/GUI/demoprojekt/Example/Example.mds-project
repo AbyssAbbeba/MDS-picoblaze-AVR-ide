@@ -4,6 +4,10 @@
   <Name name="Example"/>
   <Family family="kcpsm3"/>
   <Language language="0"/>
+  <ScratchpadSize value="64"/>
+  <ProgMemSize value="1024"/>
+  <IntVector value="1023"/>
+  <HWBuild value="-1"/>
  </General>
  <Files>
   <File path="demo_3_directives.asm" name="demo_3_directives.asm"/>
@@ -25,7 +29,15 @@
    <HexFile enable="true"/>
    <BinFile enable="false"/>
    <SRecFile enable="false"/>
+   <MemFile enable="false"/>
+   <RawHexFile enable="false"/>
+   <VerilogFile enable="true"/>
+   <VHDLFile enable="true"/>
   </Options>
+  <Templates>
+   <VHDL default="true" path=""/>
+   <Verilog default="true" path=""/>
+  </Templates>
   <IncludePaths>
    <Path path="/home/rift/Plocha/gui/localgit/mms/IDE/compiler/include/assembler/PicoBlaze"/>
   </IncludePaths>
