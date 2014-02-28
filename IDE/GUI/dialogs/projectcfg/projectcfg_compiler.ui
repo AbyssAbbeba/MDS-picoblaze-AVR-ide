@@ -187,7 +187,7 @@
     <string>SRec File</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckVerilog">
+  <widget class="QCheckBox" name="chckVerilogFile">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -200,7 +200,7 @@
     <string>Verilog File</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckVHDL">
+  <widget class="QCheckBox" name="chckVHDLFile">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -213,7 +213,7 @@
     <string>VHDL file</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckRawHex">
+  <widget class="QCheckBox" name="chckRawHexFile">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -226,7 +226,7 @@
     <string>RawHex File</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckMem">
+  <widget class="QCheckBox" name="chckMemFile">
    <property name="geometry">
     <rect>
      <x>260</x>

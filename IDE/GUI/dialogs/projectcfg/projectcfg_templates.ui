@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLineEdit" name="leVerolog">
+  <widget class="QLineEdit" name="leVerilog">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -33,7 +33,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckDefVerilog">
+  <widget class="QCheckBox" name="chckVerilog">
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -46,7 +46,7 @@
     <string>Use Default</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chckDefVHDL">
+  <widget class="QCheckBox" name="chckVHDL">
    <property name="geometry">
     <rect>
      <x>30</x>

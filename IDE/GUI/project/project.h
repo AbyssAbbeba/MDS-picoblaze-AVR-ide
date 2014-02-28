@@ -123,6 +123,7 @@ class Project : public QObject
         void setProgMem(int value);
         void setName(QString name);
         void setFamily(QString family);
+        void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -142,9 +143,15 @@ class Project : public QObject
         bool useMainFile;
         QList<QString> fileNames;
         QList<QString> filePaths;
-        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
         QList<bool> compileOpt;
         QStringList compileIncPaths;
+
+        //templates
+        bool defaultVerilog;
+        bool defaultVHDL;
+        QString templateVerilog;
+        QString templateVHDL;
 
         //simulation handle
         McuMemoryView *m_mcuMemoryView;
