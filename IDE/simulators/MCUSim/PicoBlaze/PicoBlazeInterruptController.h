@@ -1,4 +1,4 @@
-// =============================================================================
+﻿// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
@@ -16,11 +16,10 @@
 #ifndef PICOBLAZEINTERRUPTCONTROLLER_H
 #define PICOBLAZEINTERRUPTCONTROLLER_H
 
-// Forward declarations
-class PicoBlazeStatusFlags;
-class PicoBlazeInstructionSet;
-
 #include "../MCUSim.h"
+
+#include "PicoBlazeInstructionSet.h"
+#include "PicoBlazeStatusFlags.h"
 
 /**
  * @brief
@@ -82,12 +81,6 @@ class PicoBlazeInterruptController : public MCUSimSubsys
         virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
         /**
-         * @brief
-         * @return -1: system reset requested; 0: do nothing; N: interrupt executed, takes N cycles
-         */
-        int autoInterrupt();
-
-        /**
          * @brief Interrupt request.
          */
         void irq();
@@ -96,6 +89,14 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          * @brief Return from ISR.
          */
         void returni();
+
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @return -1: system reset requested; 0: do nothing; N: interrupt executed, takes N cycles
+         */
+        inline int autoInterrupt();
 
     ////    Inline Private Operations    ////
     private:
@@ -125,5 +126,30 @@ class PicoBlazeInterruptController : public MCUSimSubsys
         ///
         bool m_irq;
 };
+
+// -----------------------------------------------------------------------------
+// Inline Function Definitions
+// -----------------------------------------------------------------------------
+
+inline int PicoBlazeInterruptController::autoInterrupt()
+{
+    if ( false == m_irq )
+    {
+        return 0;
+    }
+    else if ( true == m_statusFlags->getInte() )
+    {
+        m_irq = false;
+        m_instructionSet->irq();
+        logEvent ( EVENT_INT_ENTERING_INTERRUPT );
+        return 1;
+    }
+    else
+    {
+        m_irq = false;
+        logEvent ( EVENT_INT_IRQ_DENIED );
+        return 0;
+    }
+}
 
 #endif // PICOBLAZEINTERRUPTCONTROLLER_H

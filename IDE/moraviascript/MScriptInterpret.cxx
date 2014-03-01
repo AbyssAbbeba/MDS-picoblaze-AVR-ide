@@ -579,7 +579,7 @@ inline bool MScriptInterpret::abadonCode ( ExecFlags upTo,
 
     for ( std::vector<ProgPtr>::reverse_iterator it = getProgramPointer().rbegin();
           it != getProgramPointer().rend();
-          it++ )
+          ++it )
     {
         if ( FLAG_SCOPE & it->second )
         {
