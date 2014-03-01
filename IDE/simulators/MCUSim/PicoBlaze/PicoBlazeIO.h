@@ -1,4 +1,4 @@
-// =============================================================================
+﻿// =============================================================================
 /**
  * @brief
  * C++ Interface: ...
@@ -82,11 +82,6 @@ class PicoBlazeIO : public MCUSimPureLogicIO
 
         /**
          * @brief
-         */
-        void clockCycle();
-
-        /**
-         * @brief
          * @param[in] mode
          */
         virtual void reset ( MCUSimBase::ResetMode mode ) override;
@@ -143,6 +138,13 @@ class PicoBlazeIO : public MCUSimPureLogicIO
         virtual void write ( unsigned int port,
                              unsigned int value ) override;
 
+    ////    Inline Public Operations    ////
+    public:
+        /**
+         * @brief
+         */
+        inline void clockCycle();
+
     ////    Public Attributes    ////
     public:
         /**
@@ -176,6 +178,21 @@ inline void PicoBlazeIO::output ( unsigned int portID,
     logEvent ( EVENT_PLIO_WRITE, portID, value );
     m_writeStrobe = true;
     m_outputBitArray [ portID ] = ( char ) value;
+}
+
+inline void PicoBlazeIO::clockCycle()
+{
+    if ( true == m_readStrobe )
+    {
+        m_readStrobe = false;
+        logEvent ( EVENT_PLIO_READ_END );
+    }
+
+    if ( true == m_writeStrobe )
+    {
+        m_writeStrobe = false;
+        logEvent ( EVENT_PLIO_WRITE_END );
+    }
 }
 
 #endif // PICOBLAZEIO_H

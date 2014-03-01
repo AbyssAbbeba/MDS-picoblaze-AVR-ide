@@ -895,7 +895,7 @@ void MScriptVarTable::refer ( const std::string & refName,
             refString += "B\n";
             for ( std::vector<std::string>::const_iterator it = targetIndex->m_key.cbegin();
                   it != targetIndex->m_key.cend();
-                  it++ )
+                  ++it )
             {
                 refString += *it;
                 refString += '\n';
@@ -907,7 +907,7 @@ void MScriptVarTable::refer ( const std::string & refName,
             refString += "A\n";
             for ( std::vector<unsigned int>::const_iterator it = targetIndex->m_index.cbegin();
                   it != targetIndex->m_index.cend();
-                  it++ )
+                  ++it )
             {
                 char buffer[10];
                 sprintf(buffer, "%d\n", *it);

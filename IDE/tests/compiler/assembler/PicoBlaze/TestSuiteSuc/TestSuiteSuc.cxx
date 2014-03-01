@@ -275,7 +275,7 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
         bool entryFoundInSymExpFile = false;
         for ( auto it = symExpFileVec[numberOfTable].begin();
               it != symExpFileVec[numberOfTable].end();
-              it++ )
+              ++it )
         {
             if ( line == *it )
             {

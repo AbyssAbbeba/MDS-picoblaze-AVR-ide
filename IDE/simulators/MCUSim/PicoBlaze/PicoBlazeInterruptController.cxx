@@ -1,4 +1,4 @@
-// =============================================================================
+﻿// =============================================================================
 /**
  * @brief
  * C++ Implementation: ...
@@ -14,9 +14,6 @@
 // =============================================================================
 
 #include "PicoBlazeInterruptController.h"
-
-#include "PicoBlazeStatusFlags.h"
-#include "PicoBlazeInstructionSet.h"
 
 PicoBlazeInterruptController::PicoBlazeInterruptController()
 {
@@ -52,27 +49,6 @@ void PicoBlazeInterruptController::reset ( MCUSimBase::ResetMode mode )
 inline void PicoBlazeInterruptController::mcuReset()
 {
     m_irq = false;
-}
-
-int PicoBlazeInterruptController::autoInterrupt()
-{
-    if ( false == m_irq )
-    {
-        return 0;
-    }
-    else if ( true == m_statusFlags->getInte() )
-    {
-        m_irq = false;
-        m_instructionSet->irq();
-        logEvent ( EVENT_INT_ENTERING_INTERRUPT );
-        return 1;
-    }
-    else
-    {
-        m_irq = false;
-        logEvent ( EVENT_INT_IRQ_DENIED );
-        return 0;
-    }
 }
 
 void PicoBlazeInterruptController::irq()
