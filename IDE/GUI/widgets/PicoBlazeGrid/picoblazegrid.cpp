@@ -477,6 +477,7 @@ void PicoBlazeGrid::deviceReset()
     this->wTime->setTime(0);
     this->leClock->setText("10.0");
     this->clock = 10.0;
+    this->clockMult = 1000000;
     this->leCycles->setText("0");
     this->unhighlight();
     
