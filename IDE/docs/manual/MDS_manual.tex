@@ -1490,7 +1490,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }
                     \\
                 \textbf{DESCRIPTION:}\\
-                This instruction increments given register value by one.
+                This instruction increments given register value by one.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'INC          s0' }\\
@@ -1508,7 +1508,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }
                     \\
                 \textbf{DESCRIPTION:}\\
-                This instruction decrements given register value by one.
+                This instruction decrements given register value by one.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'DEC          s0' }\\
@@ -1528,7 +1528,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0xFF }
                     \\
                 \textbf{DESCRIPTION:}\\
-                This instruction sets given register.
+                This instruction sets given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'SET          s0' }\\
@@ -1543,10 +1543,10 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0xFF }
+                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0x00 }
                     \\
                 \textbf{DESCRIPTION:}\\
-                This instruction clears given register.
+                This instruction clears given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'CLR          s0' }\\
@@ -1564,7 +1564,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
                     \\
                 \textbf{DESCRIPTION:}\\
-                This instruction execute 1\'s complement with given register.
+                This instruction execute 1\'s complement with given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'CPL          s0' }\\
@@ -1579,10 +1579,10 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
+                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }\\
                     { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#0x1 }\\
                 \textbf{DESCRIPTION:}\\
-                This execute 2\'s complement with given register.
+                This execute 2\'s complement with given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'CPL2          s0' }\\
@@ -1601,7 +1601,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#0b00000100 }
                 \textbf{DESCRIPTION:}\\
-                Sets bit in given register.
+                Sets bit in given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'SETB          s0,#3' }\\
@@ -1620,10 +1620,10 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#~0b00000100 }
                 \textbf{DESCRIPTION:}\\
-                Clears bit in given register.
+                Clears bit in given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'CLRB          s0' }\\
+                            {\color{highlight_symbol}\verb'CLRB          s0,#3' }\\
                         \end{code}
 
                 \subsection{NOTB}
@@ -1639,10 +1639,10 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#~0b00000100 }
                 \textbf{DESCRIPTION:}\\
-                Negates bit in given register.
+                Negates bit in given register.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'NOTB          s0' }\\
+                            {\color{highlight_symbol}\verb'NOTB          s0,#3' }\\
                         \end{code}
 
                 \subsection{DJNZ}
@@ -1655,14 +1655,15 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }
-                    { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }
-                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }
+                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
+                    { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }\\
+                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
                 \textbf{DESCRIPTION:}\\
-                Given register is decremented until it is zero.
+                Given register is decremented until it is zero.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'NOTB          s0' }\\
+                        {\color{highlight_symbol}\verb'loop:          ' }\\
+                        {\color{highlight_symbol}\verb'DJNZ          s0,loop' }\\
                         \end{code}
 
                 \subsection{IJNZ}
@@ -1675,11 +1676,11 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }
-                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }
-                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }
+                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
+                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }\\
+                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
                 \textbf{DESCRIPTION:}\\
-                Given register is incremented until overflow.
+                Given register is incremented until overflow.\\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                         {\color{highlight_symbol}\verb'loop:          ' }\\
