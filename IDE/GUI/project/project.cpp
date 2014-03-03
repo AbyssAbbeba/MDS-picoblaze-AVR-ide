@@ -231,6 +231,17 @@ Project* ProjectMan::getUntracked()
 }
 
 
+Project* ProjectMan::getSimulated()
+{
+    return this->simulatedProject;
+}
+
+void ProjectMan::setSimulated(Project* project)
+{
+    this->simulatedProject = project;
+}
+
+
 /**
  * @brief Creates makefile for active project. Used for compilation.
  * @details Not used at the moment.
@@ -299,7 +310,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     //qDebug() << "Project: Project()";
     mainFileName = "";
     mainFilePath = "";
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 12; i++)
     {
         compileOpt.append(false);
     }
@@ -475,8 +486,70 @@ Project::Project(QFile *file, ProjectMan *parent)
                                             compileOpt[7] = true;
                                         }
                                     }
+                                    else if (xmlCompileOptElem.tagName() == "MemFile")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[8] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "RawHexFile")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[9] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "VerilogFile")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[10] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "VHDLFile")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[11] = true;
+                                        }
+                                    }
                                     xmlCompileOptNode = xmlCompileOptNode.nextSibling();
                                     //qDebug() << "Opt";
+                                }
+                            }
+                            else if (xmlCompilerElement.tagName() == "Templates")
+                            {
+                                QDomNode xmlTemplatesNode = xmlCompilerElement.firstChild();
+                                QDomElement xmlTemplatesElement;
+                                while (!xmlTemplatesNode.isNull())
+                                {
+                                    xmlTemplatesElement = xmlTemplatesNode.toElement();
+                                    if (xmlTemplatesElement.tagName() == "VHDL")
+                                    {
+                                        if (xmlTemplatesElement.attribute("default") == "true")
+                                        {
+                                            defaultVHDL = true;
+                                        }
+                                        else
+                                        {
+                                            defaultVHDL = false;
+                                        }
+                                        templateVHDL = xmlTemplatesElement.attribute("path");
+                                    }
+                                    if (xmlTemplatesElement.tagName() == "Verilog")
+                                    {
+                                        if (xmlTemplatesElement.attribute("default") == "true")
+                                        {
+                                            defaultVerilog = true;
+                                        }
+                                        else
+                                        {
+                                            defaultVerilog = false;
+                                        }
+                                        templateVerilog = xmlTemplatesElement.attribute("path");
+                                    }
+                                    xmlTemplatesNode = xmlTemplatesNode.nextSibling();
                                 }
                             }
                             else if (xmlCompilerElement.tagName() == "IncludePaths")
@@ -609,6 +682,10 @@ Project::Project(ProjectMan *parent)
     this->mainFileName = "";
     this->mainFilePath = "";
     this->compileOpt = GuiCfg::getInstance().getProjectCompOpt();
+    this->defaultVHDL = GuiCfg::getInstance().getProjectDefVHDL();
+    this->defaultVerilog = GuiCfg::getInstance().getProjectDefVerilog();
+    this->templateVHDL =  GuiCfg::getInstance().getProjectPathVHDL();
+    this->templateVerilog = GuiCfg::getInstance().getProjectPathVerilog();
 
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -644,6 +721,7 @@ Project::Project(ProjectMan *parent)
     connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
+    setupSim();
     //qDebug() << "Project: return Project()";
 }
 
@@ -705,7 +783,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     this->treeProjOther->setText(0, "Other");
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 12; i++)
     {
         compileOpt.append(false);
     }
@@ -751,18 +829,19 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlRoot.appendChild(xmlSimulator);
 
     QDomElement xmlCompiler = domDoc.createElement("Compiler");
+    
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
-    xmlSymbolTbl.setAttribute("enable", "true");
+    xmlSymbolTbl.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
     QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
-    xmlMacroTbl.setAttribute("enable", "true");
+    xmlMacroTbl.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlMacroTbl);
     QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlDbgFile);
     QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
-    xmlCodeTree.setAttribute("enable", "true");
+    xmlCodeTree.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlCodeTree);
     QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
@@ -776,7 +855,31 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
     xmlSRecFile.setAttribute("enable", "false");
     xmlCompilerOpt.appendChild(xmlSRecFile);
+    QDomElement xmlMemFile = domDoc.createElement("MemFile");
+    xmlMemFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlMemFile);
+    QDomElement xmlRawHexFile = domDoc.createElement("RawHexFile");
+    xmlRawHexFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlRawHexFile);
+    QDomElement xmlVerilogFile = domDoc.createElement("VerilogFile");
+    xmlVerilogFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlVerilogFile);
+    QDomElement xmlVHDLFile = domDoc.createElement("VHDLFile");
+    xmlVHDLFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlVHDLFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
+    
+    QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
+    QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
+    xmlVHDLTemplate.setAttribute("default", "true");
+    xmlVHDLTemplate.setAttribute("path", "");
+    xmlCompilerTemplates.appendChild(xmlVHDLTemplate);
+    QDomElement xmlVerilogTemplate = domDoc.createElement("Verilog");
+    xmlVerilogTemplate.setAttribute("default", "true");
+    xmlVerilogTemplate.setAttribute("path", "");
+    xmlCompilerTemplates.appendChild(xmlVerilogTemplate);
+    xmlCompiler.appendChild(xmlCompilerTemplates);
+    
     QDomElement xmlCompilerInclude = domDoc.createElement("IncludePaths");
     xmlCompiler.appendChild(xmlCompilerInclude);
     xmlRoot.appendChild(xmlCompiler);
@@ -1516,6 +1619,96 @@ void Project::setFamily(QString family)
 }
 
 
+void Project::setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate)
+{
+    this->defaultVerilog = verilog;
+    this->defaultVHDL = VHDL;
+    this->templateVerilog = verilogTemplate;
+    this->templateVHDL = VHDLTemplate;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MDSProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MDSProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Compiler")
+                    {
+                        QDomNode xmlCompilerNode = xmlElement.firstChild();
+                        QDomElement xmlCompilerElement;
+                        while (!xmlCompilerNode.isNull())
+                        {
+                            xmlCompilerElement = xmlCompilerNode.toElement();
+                            if (xmlCompilerElement.tagName() == "Templates")
+                            {
+                                QDomNode xmlTemplatesNode = xmlElement.firstChild();
+                                QDomElement xmlTemplatesElement;
+                                while (!xmlTemplatesNode.isNull())
+                                {
+                                    xmlTemplatesElement = xmlTemplatesNode.toElement();
+                                    if (!xmlTemplatesElement.isNull())
+                                    {
+                                        if (xmlTemplatesElement.tagName() == "VHDLTemplate")
+                                        {
+                                            if (true == this->defaultVHDL)
+                                            {
+                                                xmlTemplatesElement.setAttribute("default", "true");
+                                            }
+                                            else
+                                            {
+                                                xmlTemplatesElement.setAttribute("default", "false");
+                                            }
+                                            xmlTemplatesElement.setAttribute("path", this->templateVHDL);
+                                        }
+                                        else if (xmlTemplatesElement.tagName() == "VerilogTemplate")
+                                        {
+                                            if (true == this->defaultVerilog)
+                                            {
+                                                xmlTemplatesElement.setAttribute("default", "true");
+                                            }
+                                            else
+                                            {
+                                                xmlTemplatesElement.setAttribute("default", "false");
+                                            }
+                                            xmlTemplatesElement.setAttribute("path", this->templateVerilog);
+                                        }
+                                    }
+                                    xmlTemplatesNode = xmlTemplatesNode.nextSibling();
+                                }
+                            }
+                            xmlCompilerNode = xmlCompilerNode.nextSibling();
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
 /**
  * @brief Removes selected file from project
  * @param path The path to the file
@@ -1613,15 +1806,23 @@ void Project::setupSim()
  */
 bool Project::start(QString file)
 {
-    //qDebug() << "Project: start()";
+    qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
-        QDir dir(prjPath.section('/',0, -2));
-        QString hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
+        QString hexPath;
+        if (file != "")
+        {
+            hexPath = file.section('.',0,-2);
+        }
+        else
+        {
+            QDir dir(prjPath.section('/',0, -2));
+            hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
+        }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
-        //qDebug() << "ASM:" << hexPath;
+        qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_NATIVE,
@@ -1636,10 +1837,10 @@ bool Project::start(QString file)
             }
             return false;
         }
-        //else
-        //{
-            //qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        //}
+        else
+        {
+            qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
+        }
     }
     else if (langType == LANG_C)
     {
@@ -2007,6 +2208,50 @@ void Project::setCompileOpt(QList<bool> opt)
                                     else if (xmlCompOptElem.tagName() == "SRecFile")
                                     {
                                         if (true == this->compileOpt.at(7))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "MemFile")
+                                    {
+                                        if (true == this->compileOpt.at(8))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "RawHexFile")
+                                    {
+                                        if (true == this->compileOpt.at(9))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "VerilogFile")
+                                    {
+                                        if (true == this->compileOpt.at(10))
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "true");
+                                        }
+                                        else
+                                        {
+                                            xmlCompOptElem.setAttribute("enable", "false");
+                                        }
+                                    }
+                                    else if (xmlCompOptElem.tagName() == "VHDLFile")
+                                    {
+                                        if (true == this->compileOpt.at(11))
                                         {
                                             xmlCompOptElem.setAttribute("enable", "true");
                                         }
