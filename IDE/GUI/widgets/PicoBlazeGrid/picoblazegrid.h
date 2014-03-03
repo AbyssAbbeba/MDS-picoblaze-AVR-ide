@@ -84,10 +84,12 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QLabel *lblWR;
         QLabel *lblPC;
         QLabel *lblTime;
+        QLabel *lblCycles;
         QLabel *lblClock;
 
         QLineEdit *leSP;
         QLineEdit *lePC;
+        QLineEdit *leCycles;
         QLineEdit *leClock;
 
         QPushButton *btnIntr;
@@ -104,6 +106,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         PicoBlazeStack *m_stack;
 
         double clock;
+        double clockMult;
         
 
     //signals:
@@ -122,6 +125,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
     private slots:
         void stopSimSlot();
+        void changeClock(const QString &text);
+        void changeClockMult(int index);
 
     signals:
         void stopSimSig();
