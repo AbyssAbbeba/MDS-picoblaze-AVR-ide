@@ -68,6 +68,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
         filePopup->addAction(removeFileAct);
         connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
     }
+    this->setAcceptDrops(true);
 }
 
 ProjectTree::~ProjectTree()
@@ -241,4 +242,11 @@ void ProjectTree::newFile()
         }
             
     }
+}
+
+
+void ProjectTree::dropEvent(QDropEvent *e)
+{
+    qDebug() << "ProjectTree: drop text" << e->mimeData()->text();
+    //qDebug() << "ProjectTree: drop data" << e->mimeData()->data();
 }

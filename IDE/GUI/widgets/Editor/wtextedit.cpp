@@ -23,6 +23,7 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     {
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
+    this->setAcceptDrops(true);
     //this->setFocusPolicy(Qt::ClickFocus);
     //qDebug() << "WTextEdit: return WTextEdit()";
 }
