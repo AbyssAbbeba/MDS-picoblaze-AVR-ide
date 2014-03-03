@@ -81,7 +81,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memStack->show();
 
     this->wTime = new TimeWidget(this);
-    this->wTime->move(1080, 90);
+    this->wTime->move(1080, 100);
     this->wTime->show();
 
     this->lblRegs = new QLabel("Registers", this);
@@ -106,10 +106,12 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblStack->move(960,0);
     this->lblPC = new QLabel("PC", this);
     this->lblPC->move(1080,0);
+    this->lblCycles = new QLabel("Cycles", this);
+    this->lblCycles->move(1080, 20);
     this->lblClock = new QLabel("Clock", this);
-    this->lblClock->move(1080,20);
+    this->lblClock->move(1080,40);
     this->lblTime = new QLabel("Time", this);
-    this->lblTime->move(1080,70);
+    this->lblTime->move(1080,80);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setFixedWidth(50);
@@ -118,23 +120,29 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leSP->setReadOnly(true);
     this->leSP->move(1010, 0);
     this->lePC = new QLineEdit(this);
-    this->lePC->setFixedWidth(85);
+    this->lePC->setFixedWidth(80);
     this->lePC->setFixedHeight(17);
     this->lePC->setFont(QFont("UbuntuMono", 10));
     this->lePC->setReadOnly(true);
-    this->lePC->move(1120, 0);
+    this->lePC->move(1125, 0);
+    this->leCycles = new QLineEdit(this);
+    this->leCycles->setFixedWidth(80);
+    this->leCycles->setFixedHeight(17);
+    this->leCycles->setFont(QFont("UbuntuMono", 10));
+    this->leCycles->setReadOnly(true);
+    this->leCycles->move(1125, 20);
     this->leClock = new QLineEdit(this);
-    this->leClock->setFixedWidth(85);
+    this->leClock->setFixedWidth(80);
     this->leClock->setFixedHeight(17);
     this->leClock->setFont(QFont("UbuntuMono", 10));
     QRegExpValidator *doubleValidator = new QRegExpValidator(QRegExp("[0-9]+(\\.[0-9]*)?"), this->leClock);
     this->leClock->setValidator(doubleValidator);
-    this->leClock->move(1120, 20);
+    this->leClock->move(1125, 40);
 
     this->cmbClock = new QComboBox(this);
     this->cmbClock->setFixedHeight(17);
-    this->cmbClock->setFixedWidth(85);
-    this->cmbClock->move(1120, 40);
+    this->cmbClock->setFixedWidth(80);
+    this->cmbClock->move(1125, 60);
     this->cmbClock->addItem("Hz");
     this->cmbClock->addItem("KHz");
     this->cmbClock->addItem("MHz");
@@ -222,6 +230,7 @@ void PicoBlazeGrid::handleUpdateRequest(int mask)
         //this->leTime->setStyleSheet("background-color: yellow");
         unsigned long long cycles = m_simControlUnit->getTotalMCycles();
         this->wTime->setTime(2*cycles/(clock*clockMult));
+        this->leCycles->setText(QString::number(2*cycles, 10));
     }
     
     if (4 & mask)
@@ -468,6 +477,7 @@ void PicoBlazeGrid::deviceReset()
     this->wTime->setTime(0);
     this->leClock->setText("10.0");
     this->clock = 10.0;
+    this->leCycles->setText("0");
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -491,6 +501,7 @@ void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
     this->leSP->setStyleSheet("background-color: none");
+    this->leCycles->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     //this->btnPorts->setStyleSheet("color: none");
