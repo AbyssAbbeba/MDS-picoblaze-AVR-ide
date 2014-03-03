@@ -42,6 +42,7 @@ ProjectCfg_Memory::ProjectCfg_Memory(QWidget *parent, Project *currProject)
     ui.sldScratchpad->setValue(ui.sldScratchpad->maximum());
     ui.sldProgMem->setValue(ui.sldProgMem->maximum());
 
+
     this->show();
 
     if (this->project != NULL)

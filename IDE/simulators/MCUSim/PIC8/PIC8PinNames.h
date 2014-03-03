@@ -50,15 +50,29 @@ namespace PIC8PinNames
         PIN_RB6,        ///<
         PIN_RB7,        ///<
 
+        PIN_RC0,        ///<
+        PIN_RC1,        ///<
+        PIN_RC2,        ///<
+        PIN_RC3,        ///<
+        PIN_RC4,        ///<
+        PIN_RC5,        ///<
+        PIN_RC6,        ///<
+        PIN_RC7,        ///<
+
+        PIN_RD0,        ///<
+        PIN_RD1,        ///<
+        PIN_RD2,        ///<
+        PIN_RD3,        ///<
+        PIN_RD4,        ///<
+        PIN_RD5,        ///<
+        PIN_RD6,        ///<
+        PIN_RD7,        ///<
+
         PIN_MCLR,       ///<
         PIN_OSC1,       ///<
         PIN_OSC2,       ///<
         PIN_VSS,        ///<
         PIN_VDD,        ///<
-
-        // Added only for compatibility with more advanced devices.
-        PIN_RC0,
-        PIN_RD0,
 
         PIN__MAX__      ///<
     };

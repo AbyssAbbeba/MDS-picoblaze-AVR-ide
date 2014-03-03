@@ -143,13 +143,20 @@ class GuiCfg_Items
         QString mainFileName;
         QString mainFilePath;
         bool useMainFile;
-        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
         QList<bool> compileOpt;
+
+        bool defaultVerilog;
+        bool defaultVHDL;
+        QString templateVerilog;
+        QString templateVHDL;
 
         //paths
         QString configPath;
         QString compilerPath;
+        QString templatePath;
         QString examplePath;
+        QString tempPath;
         
 };
 

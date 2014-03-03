@@ -30,6 +30,7 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     this->prjdlg_general = new Projectdlg_General(this);
     this->prjdlg_memory = new ProjectCfg_Memory(this, NULL);
     this->prjdlg_compiler = new ProjectCfg_Compiler(this, NULL);
+    this->prjdlg_templates = new ProjectCfg_Templates(this, NULL);
     this->prjdlg_comppaths = new ProjectCfg_CompPaths(this, NULL);
     this->prjdlg_filemgr = new ProjectCfg_FileMgr(this, NULL);
     int height = prjdlg_general->height() + tabWidget->height();
@@ -37,6 +38,7 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
     tabWidget->addTab(prjdlg_general, "General");
     tabWidget->addTab(prjdlg_memory, "Memory");
     tabWidget->addTab(prjdlg_compiler, "Compiler");
+    tabWidget->addTab(prjdlg_templates, "Templates");
     tabWidget->addTab(prjdlg_comppaths, "Paths");
     tabWidget->addTab(prjdlg_filemgr, "Files");
     
@@ -94,7 +96,7 @@ void ProjectDialog::bCreate()
         return;
     }
     //vytvoreni projektu
-    QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds_project");
+    QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds-project");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QMessageBox msgBox;

@@ -21,6 +21,7 @@
 #include "projectcfg_memory.h"
 #include "projectcfg_filemgr.h"
 #include "projectcfg_compiler.h"
+#include "projectcfg_templates.h"
 #include "projectcfg_comppaths.h"
 #include "../cfginterface/cfginterface.h"
 
@@ -57,6 +58,7 @@ class ProjectConfigDialog_Core : public QDialog
         ProjectCfg_Memory *memoryCfg;
         ProjectCfg_FileMgr *fileMgr;
         ProjectCfg_Compiler *compilerCfg;
+        ProjectCfg_Templates *templatesCfg;
         ProjectCfg_CompPaths *pathsCfg;
 
     private slots:

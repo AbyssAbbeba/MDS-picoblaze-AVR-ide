@@ -134,10 +134,12 @@ inline void PIC8Sim::deleteSubSystems()
 
 inline void PIC8Sim::checkSubSystems() const
 {
-    for ( const auto subsys : m_subSystems )
-    {
-        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
-    }
+    #ifndef NDEBUG
+        for ( const auto subsys : m_subSystems )
+        {
+            assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
+        }
+    #endif // NDEBUG
 }
 
 inline void PIC8Sim::regSubSys ( MCUSimSubsys * subSystem )

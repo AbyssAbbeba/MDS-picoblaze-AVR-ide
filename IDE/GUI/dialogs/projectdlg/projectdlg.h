@@ -23,6 +23,7 @@
 #include "../../project/project.h"
 #include "projectdlg_general.h"
 #include "../projectcfg/projectcfg_compiler.h"
+#include "../projectcfg/projectcfg_templates.h"
 #include "../projectcfg/projectcfg_comppaths.h"
 #include "../projectcfg/projectcfg_filemgr.h"
 #include "../projectcfg/projectcfg_memory.h"
@@ -51,6 +52,7 @@ class ProjectDialog : public QDialog
         Projectdlg_General *prjdlg_general;
         ProjectCfg_Memory *prjdlg_memory;
         ProjectCfg_Compiler *prjdlg_compiler;
+        ProjectCfg_Templates *prjdlg_templates;
         ProjectCfg_CompPaths *prjdlg_comppaths;
         ProjectCfg_FileMgr *prjdlg_filemgr;
         

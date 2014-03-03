@@ -304,6 +304,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
+            if (this->dockWidgets == true)
+            {
+                //emit createDockWidgets();
+                //wMainWindow->CreateDockWidgets();
+            //}
+            //else
+            //{
+                this->showDockWidgetArea(1);
+                this->showDockWidgetArea(2);
+            }
         }
         else
         {
@@ -363,6 +373,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
+            if (this->dockWidgets == true)
+            {
+            //    emit createDockWidgets();
+                //wMainWindow->CreateDockWidgets();
+            //}
+            //else
+            //{
+                this->showDockWidgetArea(1);
+                this->showDockWidgetArea(2);
+            }
         }
         else
         {
@@ -424,13 +444,13 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: Create splitter";
             if (wName != NULL && wPath != NULL)
             {
-                if (this->dockWidgets == false)
+                if (this->dockWidgets == true)
                 {
-                    emit createDockWidgets();
+                //    emit createDockWidgets();
                     //wMainWindow->CreateDockWidgets();
-                }
-                else
-                {
+                //}
+                //else
+                //{
                     this->showDockWidgetArea(1);
                     this->showDockWidgetArea(2);
                 }
@@ -504,18 +524,33 @@ void WDockManager::addSimDockWidgetP1()
 void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
 {
     //qDebug() << "WDockManager: addSimDockWidgetP2()";
-    WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
-    if (getDockWidgetArea(newWDock->getArea()) != NULL)
+    if (false == this->dockWidgets)
     {
-        emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-        //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
+        if (getDockWidgetArea(newWDock->getArea()) != NULL)
+        {
+            emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+            //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        }
+        if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+        {
+            wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+        }
+        openDockWidgets.append(newWDock);
+        connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     }
-    openDockWidgets.append(newWDock);
-    if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+    else
     {
-        wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+        PicoBlazeGrid *simWidget = new PicoBlazeGrid(this->getDockWidget(wSimulationInfo),
+                                                     simControl
+                                                    );
+        connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+        simWidget->setProjectPath(path);
+        simWidget->fixHeight();
+        connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        this->openSimWidgets.append(simWidget);
+        simWidget->hide();
     }
-    connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
@@ -765,6 +800,23 @@ void WDockManager::stopSimSlot()
 }
 
 
+void WDockManager::changeSimWidget(int index)
+{
+    qDebug() << "WDockManager: changeSimWidget index:" << index;
+    qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
+    if (this->getDockWidget(wSimulationInfo) == NULL)
+    {
+        qDebug() << "fuck, null";
+    }
+    if (this->openSimWidgets.at(index) == NULL)
+    {
+        qDebug() << "fuck, null, list";
+    }
+    this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
+    qDebug() << "WDockManager: changeSimWidget done";
+}
+
+
 
 /////
 ///// WDock
@@ -806,7 +858,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
             CompileInfo *newWidget = new CompileInfo(wDockWidget);
-            newWidget->setFont(QFont("Andale Mono", 10));
+            newWidget->setFont(QFont("UbuntuMono", 10));
             area = 2;
             newWidget->setReadOnly(true);
             wDockWidget->setWidget(newWidget);
@@ -893,11 +945,13 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             wDockWidget->show();
             newWidget->fixHeight();
             connect(newWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+            parent->openSimWidgets.append(newWidget);
             //qDebug() << "WSimulationInfo: height fixed";
             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
             break;
         }
     }
+    this->code = code;
 }
 
 
