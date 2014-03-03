@@ -1,5 +1,4 @@
 #include <QtGui>
-#include <cmath>
 #include "timewidget.h"
 
 
@@ -9,6 +8,7 @@ TimeWidget::TimeWidget(QWidget *parent)
     ui.setupUi(this);
 }
 
+
 void TimeWidget::setTime(double time)
 {
     /*double s = 0; // Seconds.
@@ -16,13 +16,6 @@ void TimeWidget::setTime(double time)
     double us = 0; // Micro-seconds.
     double ns = 0; // Nano-seconds
     double ps = 0; // Pico-seconds.*/
-
-    double intpart;
-
-    // Convert from seconds to minutes.
-    time *= 60.0;
-
-    time = modf(time, &intpart);
 
 
     if ( time >= 60.0 )
