@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <cmath>
 #include "timewidget.h"
 
 
@@ -8,7 +9,6 @@ TimeWidget::TimeWidget(QWidget *parent)
     ui.setupUi(this);
 }
 
-
 void TimeWidget::setTime(double time)
 {
     /*double s = 0; // Seconds.
@@ -16,7 +16,14 @@ void TimeWidget::setTime(double time)
     double us = 0; // Micro-seconds.
     double ns = 0; // Nano-seconds
     double ps = 0; // Pico-seconds.*/
-    
+
+    double intpart;
+
+    // Convert from seconds to minutes.
+    time *= 60.0;
+
+    time = modf(time, &intpart);
+
 
     if ( time >= 60.0 )
     {
@@ -27,7 +34,7 @@ void TimeWidget::setTime(double time)
     {
         ui.lblMin->setText(QString::number(0, 10));
     }
-    
+
     if ( time >= 1.0 )
     {
         ui.lblSec->setText(QString::number((unsigned int)(time), 10));
@@ -38,7 +45,7 @@ void TimeWidget::setTime(double time)
         ui.lblSec->setText(QString::number(0, 10));
     }
     time = time * 1000.0;
-    
+
     if ( time >= 1.0 )
     {
         //qDebug() << "TimeWidget: time/mili = " << QString::number((unsigned int)time,10);
@@ -51,7 +58,7 @@ void TimeWidget::setTime(double time)
         ui.lblMs->setText(QString::number(0, 10));
     }
     time = time * 1000.0;
-    
+
     if ( time >= 1.0 )
     {
         //qDebug() << "TimeWidget: time/micro = " << QString::number((unsigned int)time,10);
@@ -64,7 +71,7 @@ void TimeWidget::setTime(double time)
         ui.lblUs->setText(QString::number(0, 10));
     }
     time = time * 1000.0;
-    
+
     if ( time >= 1.0 )
     {
         //qDebug() << "TimeWidget: time/nano = " << QString::number((unsigned int)time,10);
@@ -87,7 +94,7 @@ void TimeWidget::setTime(double time)
         ui.lblNs->setText(QString::number(0, 10));
     }
     time = time * 1000.0;
-    
+
     if ( time >= 1.0 )
     {
         //qDebug() << "TimeWidget: time/pico = " << QString::number((unsigned int)time, 10);
