@@ -73,6 +73,7 @@ class ProjectMan : public QObject
         Project* getUntracked();
         Project* getSimulated();
         void setSimulated(Project* project);
+        bool isOpened(QString path);
         void createActiveMakefile();
 
     signals:
