@@ -109,6 +109,12 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
          */
         inline unsigned int indSz() const;
 
+        /**
+         * @brief
+         * @return
+         */
+        bool suffixHex ( const std::string & str ) const;
+
     ////    Public Attributes    ////
     public:
         /// @brief

@@ -859,7 +859,13 @@ std::string AsmTranslatorKcpsmMed::newIdentifier ( const std::string & id )
     std::string idLowerCase = id;
     std::transform(idLowerCase.begin(), idLowerCase.end(), idLowerCase.begin(), ::tolower);
 
-    if ( ( 0 == isdigit(idLowerCase[0]) ) && ( m_usedIDs.cend() == m_usedIDs.find(idLowerCase) ) )
+    if (
+           ( 0 == isdigit(idLowerCase[0]) )
+               &&
+           ( m_usedIDs.cend() == m_usedIDs.find(idLowerCase) )
+               &&
+           ( false == suffixHex(idLowerCase) )
+       )
     {
         m_usedIDs.insert(idLowerCase);
         return idLowerCase;
@@ -936,4 +942,22 @@ inline void AsmTranslatorKcpsmMed::translateIdentifiers ( AsmTranslatorBase::Lin
 inline unsigned int AsmTranslatorKcpsmMed::indSz() const
 {
     return ( ( true == m_config->m_shortInstructions ) ? 0x313 : 0x323 );
+}
+
+inline bool AsmTranslatorKcpsmMed::suffixHex ( const std::string & str ) const
+{
+    if ( ( true == str.empty() ) || ( 'h' != str.back() ) )
+    {
+        return false;
+    }
+
+    for ( size_t i = 0; i < ( str.size() - 1 ); i++ )
+    {
+        if ( 0 == isxdigit(str[i]) )
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
