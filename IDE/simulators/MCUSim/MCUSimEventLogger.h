@@ -73,6 +73,12 @@ class MCUSimEventLogger
 
         /**
          * @brief
+         * @return
+         */
+        inline bool empty() const;
+
+        /**
+         * @brief
          * @param[in] subsysId
          * @param[in] eventId
          * @param[in] location
@@ -136,6 +142,11 @@ inline void MCUSimEventLogger::clear()
 {
     m_inPos = 1;
     m_outPos = 0;
+}
+
+inline bool MCUSimEventLogger::empty() const
+{
+    return ( ( m_outPos + 1 ) == m_inPos );
 }
 
 inline void MCUSimEventLogger::logEvent ( int subsysId,

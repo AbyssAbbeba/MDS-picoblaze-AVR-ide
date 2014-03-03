@@ -28,9 +28,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar.
-/* %expect 0 */
+%expect 39
 // Expect exactly <n> reduce/reduce conflicts in this grammar.
-/* %expect-rr 0 */
+%expect-rr 0
 // Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
 // Bison declaration to request verbose, specific error message strings when yyerror is called.
@@ -252,7 +252,7 @@
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
 %type<expr>     decl            decl_list   dt      dt_attr     member_access               union       union_body
-%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    expr_comma 
+%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    expr_comma
 // Statements - general.
 %type<stmt>     statements      stmt        cases   scope       switch_body
 
@@ -701,7 +701,7 @@ enum_body:
 ;
 
 
-union:  
+union:
       "union" id "{" union_body "}"     {
                                             $$ = new CompilerExpr($id,
                                                                   CompilerExpr::OPER_DATATYPE,

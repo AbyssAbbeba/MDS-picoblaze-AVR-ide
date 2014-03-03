@@ -533,11 +533,10 @@ void MCUSimControl::animateProgram()
     }
 }
 
-
 void MCUSimControl::runProgram()
 {
-    constexpr unsigned int MAX_REFRESH_FREQ_HZ = 50;
-    constexpr unsigned int MIN_REFRESH_FREQ_I  = 100000;
+    constexpr unsigned int MAX_REFRESH_FREQ_HZ = 25;
+    constexpr unsigned int MIN_REFRESH_FREQ_I  = 1000000;
 
     if ( nullptr == m_simulator )
     {
@@ -574,7 +573,11 @@ void MCUSimControl::runProgram()
         }
 
         m_totalMCycles += m_simulator->executeInstruction();
-        dispatchEvents();
+
+        if ( false == m_simulatorLog->empty() )
+        {
+            dispatchEvents();
+        }
 
         if ( ++auxCounter > MIN_REFRESH_FREQ_I )
         {
@@ -778,7 +781,7 @@ bool MCUSimControl::unregisterObserver ( const MCUSimObserver * observer )
     return result;
 }
 
-inline void MCUSimControl::dispatchEvents()
+void MCUSimControl::dispatchEvents()
 {
     int subsysId, eventId, locationOrReason, detail;
 

@@ -320,6 +320,18 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "ret"{WS}"nc"{EWS}      { return I_RETURN_NC;   }
 "ret"                   { return I_RETURN;      }
 
+ /* Pseudo-instructions */
+"cpl"                   { return I_CPL;  }
+"cpl2"                  { return I_CPL2; }
+"inc"                   { return I_INC;  }
+"dec"                   { return I_DEC;  }
+"set"                   { return I_SET;  }
+"clr"                   { return I_CLR;  }
+"setb"                  { return I_SETB; }
+"clrb"                  { return I_CLRB; }
+"djnz"                  { return I_DJNZ; }
+"ijnz"                  { return I_IJNZ; }
+
  /* Special macros. */
 "if"                    { return M_RTIF;     }
 "elseif"                { return M_RTELSEIF; }
@@ -386,7 +398,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             yylval->array.data = (unsigned char*) malloc(yyextra->m_strMaxSize);
                         }
 '                       {
-                            // Beginning of a string, or a character literal; 
+                            // Beginning of a string, or a character literal;
                             //+ i.e. --> 'a' (char.), or --> 'some string' (str.)
                             yy_push_state(QUOTE, yyscanner);
                             yyextra->m_strMaxSize = 8;
@@ -492,7 +504,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             // Check whether the conversion was successful
                             if ( 0 == size )
                             {
-                                yyextra->lexerMessage ( yylloc, 
+                                yyextra->lexerMessage ( yylloc,
                                                         CompilerBase::MT_ERROR,
                                                         QObject::tr("unrecognized escape sequence: ").toStdString()
                                                         + "`" + yytext + "'" );
