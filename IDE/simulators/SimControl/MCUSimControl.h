@@ -228,6 +228,11 @@ class MCUSimControl : public QThread
          */
         void allObservers_setReadOnly ( bool readOnly );
 
+        /**
+         * @brief
+         */
+        void dispatchEvents();
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -243,11 +248,6 @@ class MCUSimControl : public QThread
          * @return
          */
         inline bool breakpointReached();
-
-        /**
-         * @brief
-         */
-        inline void dispatchEvents();
 
     ////    Qt Public Slots    ////
     public slots:

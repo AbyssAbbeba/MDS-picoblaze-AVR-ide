@@ -88,10 +88,12 @@ inline void PicoBlazeSim::deleteSubSystems()
 
 inline void PicoBlazeSim::checkSubSystems() const
 {
-    for ( const auto subsys : m_subSystems )
-    {
-        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
-    }
+    #ifndef NDEBUG
+        for ( const auto subsys : m_subSystems )
+        {
+            assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
+        }
+    #endif // NDEBUG
 }
 
 inline void PicoBlazeSim::regSubSys ( MCUSimSubsys * subSystem )

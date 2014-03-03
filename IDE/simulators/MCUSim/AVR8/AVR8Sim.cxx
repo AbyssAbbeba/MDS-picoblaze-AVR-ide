@@ -185,10 +185,12 @@ inline void AVR8Sim::deleteSubSystems()
 
 inline void AVR8Sim::checkSubSystems() const
 {
-    for ( const auto subsys : m_subSystems )
-    {
-        assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
-    }
+    #ifndef NDEBUG
+        for ( const auto subsys : m_subSystems )
+        {
+            assert ( MCUSimSubsys::ID_INVALID != subsys->getId() );
+        }
+    #endif // NDEBUG
 }
 
 inline void AVR8Sim::regSubSys ( MCUSimSubsys * subSystem )

@@ -71,6 +71,8 @@ class ProjectMan : public QObject
         bool isActiveProject(Project *project);
         Project* getActive();
         Project* getUntracked();
+        Project* getSimulated();
+        void setSimulated(Project* project);
         void createActiveMakefile();
 
     signals:
@@ -84,6 +86,7 @@ class ProjectMan : public QObject
         QList<Project*> openProjects;
         Project *activeProject;
         Project *untrackedProject;
+        Project *simulatedProject;
     
 };
 
@@ -123,6 +126,7 @@ class Project : public QObject
         void setProgMem(int value);
         void setName(QString name);
         void setFamily(QString family);
+        void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -142,9 +146,15 @@ class Project : public QObject
         bool useMainFile;
         QList<QString> fileNames;
         QList<QString> filePaths;
-        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
         QList<bool> compileOpt;
         QStringList compileIncPaths;
+
+        //templates
+        bool defaultVerilog;
+        bool defaultVHDL;
+        QString templateVerilog;
+        QString templateVHDL;
 
         //simulation handle
         McuMemoryView *m_mcuMemoryView;

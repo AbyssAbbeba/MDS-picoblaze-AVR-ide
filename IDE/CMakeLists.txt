@@ -41,7 +41,7 @@ set ( PRODUCT_NAME    "Multitarget Development System" )
 
 ## Set global compilation flags:
  # - for all build types:
-set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe -Drestrict=__restrict__" )
+set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe" )
  # - for debug build only:
 set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
@@ -88,8 +88,8 @@ if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
     set ( BUILD_SHARED_LIBS ON )
 else()
     set ( BUILD_SHARED_LIBS OFF )
-    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,--strip-all" )
-    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--strip-all" )
+    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,-O1 -Wl,--strip-all" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-O1 -Wl,--strip-all" )
 endif()
 
 # Optionally build with support for coverage analysis support.
@@ -112,8 +112,8 @@ if ( NOT TARGET_ARCH )
     set ( TARGET_ARCH "${HOST_ARCH}")
 endif()
 if ( TARGET_ARCH STREQUAL "x86_64" )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -march=x86-64 -mfpmath=sse" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mfpmath=sse" )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64 -mfpmath=sse" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -march=x86-64 -mfpmath=sse" )
 elseif ( TARGET_ARCH STREQUAL "x86" )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -march=i686 -msse -mfpmath=sse" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -march=i686 -msse -mfpmath=sse" )
@@ -129,6 +129,15 @@ if ( NOT TARGET_OS )
     set ( TARGET_OS "${HOST_OS}" )
 endif()
 if ( TARGET_OS STREQUAL "Linux" )
+    # Pick up one dynamic linker (program interpreter) for all 32b/64b Linux distributions.
+    if ( TARGET_ARCH STREQUAL "x86_64" )
+        set ( DYNAMIC_LINKER "/lib/ld-linux-x86-64.so.2" )
+    else()
+        set ( DYNAMIC_LINKER "/lib/ld-linux.so.2" )
+    endif()
+    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,--dynamic-linker=${DYNAMIC_LINKER}" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--dynamic-linker=${DYNAMIC_LINKER}" )
+
     # Make all code position independent.
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fPIC" )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC" )
