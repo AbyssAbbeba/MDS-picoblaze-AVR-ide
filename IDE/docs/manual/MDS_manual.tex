@@ -970,6 +970,42 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                     { \color{highlight_directive} AUTOSPR }
                                     { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
                                                                                                         counter starting adress }\\
+                                    { \color{highlight_constant} length } & { \color{highlight_comment} ; Optional attribute can define
+                                                                                                        counter starting adress }\\
+                                    \end{tabular}
+                            }
+                            \\
+            \textbf{DESCRIPTION:}\\
+            Must be used only with instructions FETCH and STORE. It will automatically assign an
+            adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
+            after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
+
+            \textbf{EXAMPLE:}\\
+                    \begin{code}[h!]
+                    \mysmallfont{}
+                            {\color{highlight_symbol}\verb'First_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
+                            {\color{highlight_comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
+                            {\color{highlight_symbol}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
+                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x01 '}\\
+                            {\color{highlight_symbol}\verb'Third_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
+                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x02 '}\\
+                            {\color{highlight_comment}\verb'; Now with optional parameter changing counting adress '}\\
+                            {\color{highlight_symbol}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
+                            {\color{highlight_symbol}\verb'10h'}\verb'  '{\color{highlight_comment}\verb'; Registers are now defined from adress 0x10 '}
+                            {\color{highlight_symbol}\verb'Fifth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
+                            {\color{highlight_comment}\verb'; Now register at adress 0x11'}\\
+                    \caption{Using AUTOREG directive}
+                \end{code}
+                
+               \subsection{INITSPR}
+                \textbf{SYNTAX:}\\
+                            \\ {
+                                    \texttt{}
+                                    \begin{tabular}[h!]{llll}
+                                    { \color{highlight_symbol} <symbol> }  &
+                                    { \color{highlight_directive} AUTOSPR }
+                                    { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
+                                                                                                        counter starting adress }\\
                                     \end{tabular}
                             }
                             \\
@@ -995,6 +1031,43 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \caption{Using AUTOREG directive}
                 \end{code}
 
+                \subsection{ORGSPR, MERGESPR}
+                \textbf{SYNTAX:}\\
+                \\ {
+                        \texttt{}
+                        \begin{tabular}[h!]{llll}
+                                { \color{highlight_directive} ORGSPR } & \verb'         '
+                                { \color{highlight_constant} <address> } & { \color{highlight_comment}  }\\
+                        \end{tabular}
+                    }\\
+                \\ {
+                        \texttt{}
+                        \begin{tabular}[h!]{llll}
+                                { \color{highlight_directive} MERGESPR } & \verb'         '
+                                { \color{highlight_constant} <address>,<size> } & { \color{highlight_comment}  }\\
+                        \end{tabular}
+                    }\\
+                \textbf{DESCRIPTION:}\\
+                When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
+                The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
+                being assembled and is incremented after each line by the number of bytes of data or code in that line.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
+                        \caption{Using ORG directive}
+                        \end{code}
+                        \begin{code}[h!]
+                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
+                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
+                        \caption{Using ADDRESS directive}
+                        \end{code}
+ 
+                
                 \subsection{DEFINE}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1025,8 +1098,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 \caption{Example of DEFINE directive}
                                 \end{code}
 
-
-                \subsection{ADDRESS,ORG}
+               \subsection{ADDRESS,ORG}
                 \textbf{SYNTAX:}\\
                 \\ {
                         \texttt{}
@@ -1061,7 +1133,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
                         \caption{Using ADDRESS directive}
                         \end{code}
-
+                      
                 \subsection{REPT}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1096,30 +1168,30 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \caption{Example of REPT directive}
                     \end{code}
 
-                \subsection{WHILE}
+                \subsection{\#WHILE}
                 \textbf{SYNTAX:}\\
                 \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} WHILE }
+                                { \color{highlight_directive} \#WHILE }
                                 { \color{highlight_constant} <expresion> }\verb'       '\\
                                 { \color{highlight_symbol} <repeated code> }\\
-                                { \color{highlight_directive} ENDW }\verb'       ' { \color{highlight_comment} ; end of while  }
+                                { \color{highlight_directive} \#ENDW }\verb'       ' { \color{highlight_comment} ; end of while  }
                             \end{tabular}
                     }\\
                     \\
                 \textbf{DESCRIPTION:}\\
-                The while construct consists of a block of code and an expresion. Following code is executed until expresion equals to zero.
+                The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'B'}\verb'    '
                             {\color{highlight_directive}\verb'SET'}\verb'    '{\color{highlight_constant}\verb'8'}\\
-                            {\color{highlight_directive}\verb'WHILE'}\verb'    '{\color{highlight_constant}\verb'B'}\verb'          '
+                            {\color{highlight_directive}\verb'#WHILE'}\verb'    '{\color{highlight_constant}\verb'B'}\verb'          '
                             {\color{highlight_comment}\verb' ; While B != 0'}\\
                             {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
                             {\color{highlight_symbol}\verb'B'}\verb'    '
                             {\color{highlight_directive}\verb'SET'}\verb'    '{\color{highlight_constant}\verb'B - 1'}\\
-                            {\color{highlight_directive}\verb'ENDW'}\\
+                            {\color{highlight_directive}\verb'#ENDW'}\\
                             \caption{WHILE directive}
                         \end{code}
 
@@ -1401,7 +1473,177 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \verb'    '{\color{highlight_directive}\verb'END'}
                         \caption{END directive}
                     \end{code}
+        \section{Pseudo Instructions}
+        MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code.
+        Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
+                \subsection{INC}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} INC    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This instruction increments given register value by one.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'INC          s0' }\\
+                        \end{code}
+                \subsection{DEC}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} DEC    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This instruction decrements given register value by one.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'DEC          s0' }\\
+                        \end{code}
+
+                        
+                \subsection{SET}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} SET    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0xFF }
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This instruction set given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'SET          s0' }\\
+                        \end{code}
+                \subsection{CLR}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} CLR    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0xFF }
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This instruction clears given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'CLR          s0' }\\
+                        \end{code}
+                \subsection{CPL}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} CPL    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
+                    \\
+                \textbf{DESCRIPTION:}\\
+                This instruction execute 1\'s complement with given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'CPL          s0' }\\
+                        \end{code}
+                \subsection{CPL2}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} CPL2    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
+                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#0x1 }\\
+                \textbf{DESCRIPTION:}\\
+                This execute 2\'s complement with given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'CPL2          s0' }\\
+                        \end{code}
+
+                \subsection{SETB}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} SETB    } { \color{highlight_symbol} <register>,<bit> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    Example for bit number 3 >\\
+                    { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#0b00000100 }
+                \textbf{DESCRIPTION:}\\
+                This execute 2\'s complement with given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'SETB          s0,#3' }\\
+                        \end{code}
+
+                \subsection{CLRB}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} CLRB    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    Example for bit number 3 >\\
+                    { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#~0b00000100 }
+                \textbf{DESCRIPTION:}\\
+                This execute 2\'s complement with given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'CLRB          s0' }\\
+                        \end{code}
+
+                \subsection{NOTB}
+                \textbf{SYNTAX:}\\
+                \\ {
+                    \texttt{}
+                    \begin{tabular}[h!]{llll}
+                            { \color{highlight_instruction} CLRB    } { \color{highlight_symbol} <register> }
+                            { \color{highlight_comment}  }\\
+                    \end{tabular}
+                    }\\
+                    \textbf{EQUAL TO:}\\
+                    Example for bit number 3 >\\
+                    { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#~0b00000100 }
+                \textbf{DESCRIPTION:}\\
+                This execute 2\'s complement with given register.
+                \textbf{EXAMPLE:}\\
+                        \begin{code}[h!]
+                            {\color{highlight_symbol}\verb'CLRB          s0' }\\
+                        \end{code}                        
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
         Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
