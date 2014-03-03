@@ -131,7 +131,7 @@ endif()
 if ( TARGET_OS STREQUAL "Linux" )
     # Pick up one dynamic linker (program interpreter) for all 32b/64b Linux distributions.
     if ( TARGET_ARCH STREQUAL "x86_64" )
-        set ( DYNAMIC_LINKER "/lib/ld-linux-x86-64.so.2" )
+        set ( DYNAMIC_LINKER "/lib64/ld-linux-x86-64.so.2" )
     else()
         set ( DYNAMIC_LINKER "/lib/ld-linux.so.2" )
     endif()
