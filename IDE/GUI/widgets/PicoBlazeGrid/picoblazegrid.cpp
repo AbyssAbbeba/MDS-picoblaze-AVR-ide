@@ -81,7 +81,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memStack->show();
 
     this->wTime = new TimeWidget(this);
-    this->wTime->move(1080, 120);
+    this->wTime->move(1080, 100);
     this->wTime->show();
 
     this->lblRegs = new QLabel("Registers", this);
@@ -106,10 +106,12 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->lblStack->move(960,0);
     this->lblPC = new QLabel("PC", this);
     this->lblPC->move(1080,0);
+    this->lblCycles = new QLabel("Cycles", this);
+    this->lblCycles->move(1080, 20);
     this->lblClock = new QLabel("Clock", this);
-    this->lblClock->move(1080,20);
+    this->lblClock->move(1080,40);
     this->lblTime = new QLabel("Time", this);
-    this->lblTime->move(1080,100);
+    this->lblTime->move(1080,80);
 
     this->leSP = new QLineEdit(this);
     this->leSP->setFixedWidth(50);
@@ -118,48 +120,55 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leSP->setReadOnly(true);
     this->leSP->move(1010, 0);
     this->lePC = new QLineEdit(this);
-    this->lePC->setFixedWidth(50);
+    this->lePC->setFixedWidth(80);
     this->lePC->setFixedHeight(17);
     this->lePC->setFont(QFont("UbuntuMono", 10));
     this->lePC->setReadOnly(true);
-    this->lePC->move(1120, 0);
+    this->lePC->move(1125, 0);
+    this->leCycles = new QLineEdit(this);
+    this->leCycles->setFixedWidth(80);
+    this->leCycles->setFixedHeight(17);
+    this->leCycles->setFont(QFont("UbuntuMono", 10));
+    this->leCycles->setReadOnly(true);
+    this->leCycles->move(1125, 20);
     this->leClock = new QLineEdit(this);
-    this->leClock->setFixedWidth(50);
+    this->leClock->setFixedWidth(80);
     this->leClock->setFixedHeight(17);
     this->leClock->setFont(QFont("UbuntuMono", 10));
-    this->leClock->setReadOnly(true);
-    this->leClock->move(1120, 20);
+    QRegExpValidator *doubleValidator = new QRegExpValidator(QRegExp("[0-9]+(\\.[0-9]*)?"), this->leClock);
+    this->leClock->setValidator(doubleValidator);
+    this->leClock->move(1125, 40);
 
     this->cmbClock = new QComboBox(this);
     this->cmbClock->setFixedHeight(17);
-    this->cmbClock->setFixedWidth(50);
-    this->cmbClock->move(1170, 20);
+    this->cmbClock->setFixedWidth(80);
+    this->cmbClock->move(1125, 60);
     this->cmbClock->addItem("Hz");
     this->cmbClock->addItem("KHz");
     this->cmbClock->addItem("MHz");
     this->cmbClock->setCurrentIndex(2);
-    this->cmbClock->setStyleSheet ("QComboBox::drop-down {border-width: 1px;} QComboBox::down-arrow {border-width: 1px;}");
+    //this->cmbClock->setStyleSheet ("QComboBox::drop-down {border-width: 1px;} QComboBox::down-arrow {border-width: 1px;}");
 
     this->btnIntr = new QPushButton("Interrupt", this);
     this->btnIntr->setFixedHeight(17);
-    this->btnIntr->setFixedWidth(90);
-    this->btnIntr->move(1080, 60);
+    this->btnIntr->setFixedWidth(125);
+    this->btnIntr->move(1080, 180);
     //this->btnPorts = new QPushButton("Output", this);
     //this->btnPorts->setMaximumHeight(17);
     //this->btnPorts->setMaximumWidth(50);
     //this->btnPorts->move(615, 0);
     this->btnCarry = new QPushButton("Carry", this);
-    this->btnCarry->move(1080,40);
+    this->btnCarry->move(1080,160);
     this->btnCarry->setFixedHeight(17);
-    this->btnCarry->setFixedWidth(45);
+    this->btnCarry->setFixedWidth(62);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(1125,40);
+    this->btnZero->move(1143,160);
     this->btnZero->setFixedHeight(17);
-    this->btnZero->setFixedWidth(45);
+    this->btnZero->setFixedWidth(62);
     this->btnInte = new QPushButton("Int enable", this);
     this->btnInte->setFixedHeight(17);
-    this->btnInte->setFixedWidth(90);
-    this->btnInte->move(1080, 80);
+    this->btnInte->setFixedWidth(125);
+    this->btnInte->move(1080, 200);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
@@ -174,9 +183,33 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //    (dynamic_cast<MCUSim::Clock*>controlUnit->getSimSubsys(MCUSim::Subsys::SubsysId::ID_CLK_CONTROL))->
     //);
     //connect(this->btnPorts, SIGNAL(clicked()), this, SLOT(switchPorts()));
-    connect(this->btnInte, SIGNAL(clicked()), this, SLOT(setIntE()));
-    connect(this->btnIntr, SIGNAL(clicked()), this, SLOT(interrupt()));
-    connect(controlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+    connect(this->btnInte,
+            SIGNAL(clicked()),
+            this,
+            SLOT(setIntE())
+           );
+    connect(this->btnIntr,
+            SIGNAL(clicked()),
+            this,
+            SLOT(interrupt())
+           );
+    connect(this->cmbClock,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(changeClockMult(int))
+           );
+    connect(this->leClock,
+            SIGNAL(textEdited(const QString &)),
+            this,
+            SLOT(changeClock(const QString &))
+           );
+    
+    
+    connect(controlUnit,
+            SIGNAL(updateRequest(int)),
+            this,
+            SLOT(handleUpdateRequest(int))
+           );
 
     connect(this->memRegs, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     connect(this->memPorts, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
@@ -196,7 +229,8 @@ void PicoBlazeGrid::handleUpdateRequest(int mask)
         //this->leTime->setText(QString::number(m_simControlUnit->getTotalMCycles()));
         //this->leTime->setStyleSheet("background-color: yellow");
         unsigned long long cycles = m_simControlUnit->getTotalMCycles();
-        this->wTime->setTime(2*cycles/clock);
+        this->wTime->setTime(2*cycles/(clock*clockMult));
+        this->leCycles->setText(QString::number(2*cycles, 10));
     }
     
     if (4 & mask)
@@ -442,7 +476,9 @@ void PicoBlazeGrid::deviceReset()
     this->leSP->setText("0x00");
     this->wTime->setTime(0);
     this->leClock->setText("10.0");
-    this->clock = 10000000.0;
+    this->clock = 10.0;
+    this->clockMult = 1000000;
+    this->leCycles->setText("0");
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -466,6 +502,7 @@ void PicoBlazeGrid::unhighlight()
 {
     this->lePC->setStyleSheet("background-color: none");
     this->leSP->setStyleSheet("background-color: none");
+    this->leCycles->setStyleSheet("background-color: none");
     this->btnZero->setStyleSheet("color: none");
     this->btnCarry->setStyleSheet("color: none");
     //this->btnPorts->setStyleSheet("color: none");
@@ -560,4 +597,16 @@ void PicoBlazeGrid::updateWidget()
     {
         this->btnInte->setStyleSheet("color: none");
     }
+}
+
+
+void PicoBlazeGrid::changeClock(const QString &text)
+{
+    this->clock = text.toDouble();
+}
+
+
+void PicoBlazeGrid::changeClockMult(int index)
+{
+    this->clockMult = qPow(1000.0, index);
 }

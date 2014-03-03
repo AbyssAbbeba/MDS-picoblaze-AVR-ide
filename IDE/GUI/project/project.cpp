@@ -236,9 +236,23 @@ Project* ProjectMan::getSimulated()
     return this->simulatedProject;
 }
 
+
 void ProjectMan::setSimulated(Project* project)
 {
     this->simulatedProject = project;
+}
+
+
+bool ProjectMan::isOpened(QString path)
+{
+    for (int i = 0; i < openProjects.size(); i++)
+    {
+        if (path == openProjects.at(i)->prjPath)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 
