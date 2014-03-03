@@ -823,6 +823,7 @@ bool MainForm::openProject(QString path)
             return true;
         }
     }
+    return false;
     //qDebug() << "MainForm: return openProject()";
 }
 

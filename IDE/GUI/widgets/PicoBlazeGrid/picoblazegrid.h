@@ -84,10 +84,12 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QLabel *lblWR;
         QLabel *lblPC;
         QLabel *lblTime;
+        QLabel *lblCycles;
         QLabel *lblClock;
 
         QLineEdit *leSP;
         QLineEdit *lePC;
+        QLineEdit *leCycles;
         QLineEdit *leClock;
 
         QPushButton *btnIntr;
