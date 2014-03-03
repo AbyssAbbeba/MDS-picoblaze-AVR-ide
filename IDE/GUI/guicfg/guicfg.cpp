@@ -273,6 +273,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->compilerPath = "../include/mds";
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
+        this->tempPath = "../share/mds/temp";
     }
     else
     {
@@ -281,11 +282,13 @@ void GuiCfg::setDefaultPaths(bool release)
             this->compilerPath = "../compiler/include";
             this->examplePath = "./demoprojekt";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
+            this->tempPath = "./temp";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
+            this->tempPath = "./GUI/temp";
         #endif
     }
 }
@@ -525,6 +528,12 @@ QString GuiCfg::getExamplePath()
 QString GuiCfg::getTemplatePath()
 {
     return this->templatePath;
+}
+
+
+QString GuiCfg::getTempPath()
+{
+    return this->tempPath;
 }
 
 

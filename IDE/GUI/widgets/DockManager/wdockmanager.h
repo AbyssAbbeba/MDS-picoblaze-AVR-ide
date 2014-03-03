@@ -93,8 +93,11 @@ class WDockManager : public QObject
         void setCentralByName(QString fileName);
         void setCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
+        void changeSimWidget(int index);
+        
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
+        QList<PicoBlazeGrid*> openSimWidgets;
 
     public slots:
         void changeLine(QListWidgetItem *item);

@@ -231,6 +231,17 @@ Project* ProjectMan::getUntracked()
 }
 
 
+Project* ProjectMan::getSimulated()
+{
+    return this->simulatedProject;
+}
+
+void ProjectMan::setSimulated(Project* project)
+{
+    this->simulatedProject = project;
+}
+
+
 /**
  * @brief Creates makefile for active project. Used for compilation.
  * @details Not used at the moment.
@@ -710,6 +721,7 @@ Project::Project(ProjectMan *parent)
     connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
     connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
     connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
+    setupSim();
     //qDebug() << "Project: return Project()";
 }
 
@@ -1794,15 +1806,23 @@ void Project::setupSim()
  */
 bool Project::start(QString file)
 {
-    //qDebug() << "Project: start()";
+    qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
-        QDir dir(prjPath.section('/',0, -2));
-        QString hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
+        QString hexPath;
+        if (file != "")
+        {
+            hexPath = file.section('.',0,-2);
+        }
+        else
+        {
+            QDir dir(prjPath.section('/',0, -2));
+            hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
+        }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
-        //qDebug() << "ASM:" << hexPath;
+        qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_NATIVE,
@@ -1817,10 +1837,10 @@ bool Project::start(QString file)
             }
             return false;
         }
-        //else
-        //{
-            //qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        //}
+        else
+        {
+            qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
+        }
     }
     else if (langType == LANG_C)
     {

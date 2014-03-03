@@ -71,6 +71,8 @@ class ProjectMan : public QObject
         bool isActiveProject(Project *project);
         Project* getActive();
         Project* getUntracked();
+        Project* getSimulated();
+        void setSimulated(Project* project);
         void createActiveMakefile();
 
     signals:
@@ -84,6 +86,7 @@ class ProjectMan : public QObject
         QList<Project*> openProjects;
         Project *activeProject;
         Project *untrackedProject;
+        Project *simulatedProject;
     
 };
 
