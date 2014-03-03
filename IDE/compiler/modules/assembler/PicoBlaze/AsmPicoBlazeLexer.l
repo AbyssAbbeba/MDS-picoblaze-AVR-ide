@@ -325,8 +325,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "cpl2"                  { return I_CPL2; }
 "inc"                   { return I_INC;  }
 "dec"                   { return I_DEC;  }
-"set"                   { return I_SET;  }
-"clr"                   { return I_CLR;  }
+"setr"                  { return I_SET;  }
+"clrr"                  { return I_CLR;  }
 "setb"                  { return I_SETB; }
 "clrb"                  { return I_CLRB; }
 "djnz"                  { return I_DJNZ; }
