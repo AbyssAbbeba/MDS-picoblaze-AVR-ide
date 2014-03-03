@@ -446,33 +446,40 @@ void MainForm::createDockWidgets()
 {
     //qDebug() << "MainForm: CreateDockWidgets()";
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
-    setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
-    setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+    if (false == wDockManager->dockWidgets)
+    {
+        setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
+        setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
 
-    //mozno stejne jako u WDockManager - ulozit si ptr na okno
-    //projectMan->addProject(NULL, NULL, NULL);
+        //mozno stejne jako u WDockManager - ulozit si ptr na okno
+        //projectMan->addProject(NULL, NULL, NULL);
 
-    //wDockManager->addDockWidget(wListCode);
-    //wDockManager->addDockWidget(wListCode2);
-    wDockManager->addDockWidget(wCompileInfo);
-    wDockManager->addDockWidget(wSimulationInfo);
-    wDockManager->addDockWidget(wBottomHide);
-    //wDockManager->addDockWidget(wBookmarkList);
-    wDockManager->addDockWidget(wBreakpointList);
-    //wDockManager->addDockWidget(wAnalysVar);
-    //wDockManager->addDockWidget(wAnalysFunc);
-    //addAct->setEnabled(true);
-    newAddAct->setEnabled(true);
-    saveProjAct->setEnabled(true);
-    projectCompileAct->setEnabled(true);
-    simulationFlowAct->setEnabled(true);
-    saveAct->setEnabled(true);
-    saveAsAct->setEnabled(true);
-    saveAllAct->setEnabled(true);
-    wDockManager->dockWidgets = true;
-    QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-    wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-    connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
+        //wDockManager->addDockWidget(wListCode);
+        //wDockManager->addDockWidget(wListCode2);
+        wDockManager->addDockWidget(wCompileInfo);
+        wDockManager->addDockWidget(wSimulationInfo);
+        wDockManager->addDockWidget(wBottomHide);
+        //wDockManager->addDockWidget(wBookmarkList);
+        wDockManager->addDockWidget(wBreakpointList);
+        //wDockManager->addDockWidget(wAnalysVar);
+        //wDockManager->addDockWidget(wAnalysFunc);
+        //addAct->setEnabled(true);
+        newAddAct->setEnabled(true);
+        saveProjAct->setEnabled(true);
+        projectCompileAct->setEnabled(true);
+        simulationFlowAct->setEnabled(true);
+        saveAct->setEnabled(true);
+        saveAsAct->setEnabled(true);
+        saveAllAct->setEnabled(true);
+        wDockManager->dockWidgets = true;
+        QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
+        wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
+    }
+    else
+    {
+        wDockManager->addDockWidget(wSimulationInfo);
+    }
     //emit dockWidgetsCreated;
     //qDebug() << "MainForm: return CreateDockWidgets()";
 }
@@ -827,6 +834,7 @@ void MainForm::projectOpened()
         projectTabConnected = true;
         connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), this, SLOT(activeProjectChanged(int)));
     }
+    this->createDockWidgets();
 }
 
 
@@ -859,6 +867,8 @@ void MainForm::compileProject()
         error(ERR_NO_PROJECT);
         return;
     }
+
+    this->saveFile(wDockManager->getCentralWidget());
     
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
     CompilerOptions *options = new CompilerOptions();
@@ -874,8 +884,36 @@ void MainForm::compileProject()
         options->m_device = this->projectMan->getActive()->family.toStdString();
 
 
+        QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+        if (true == this->projectMan->getActive()->defaultVerilog)
+        {
+            options->m_verilogTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".v"
+                                        ).toStdString();
+        }
+        else
+        {
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+        }
 
-        QDir pathDir("./temp/");
+        if (true == this->projectMan->getActive()->defaultVHDL)
+        {
+            options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                    + "/"
+                                    + this->projectMan->getActive()->family
+                                    + ".vhd"
+                                    ).toStdString();
+        }
+        else
+        {
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+        }
+
+
+
+        QDir pathDir(GuiCfg::getInstance().getTempPath());
         if (false == pathDir.exists())
         {
             pathDir.mkpath(".");
@@ -889,6 +927,8 @@ void MainForm::compileProject()
 
 
         CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+        compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
                                     CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Project:      untracked",
@@ -950,6 +990,30 @@ void MainForm::compileProject()
                                   + ".srec"
                                   ).toStdString();
         }
+        if (projectMan->getActive()->compileOpt.at(8))
+        {
+            options->m_memFile = ( mainFile
+                                 + ".mem"
+                                 ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(9))
+        {
+            options->m_rawHexDumpFile = ( mainFile
+                                        + ".rawhex"
+                                        ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(10))
+        {
+            options->m_verilogFile = ( mainFile
+                                     + ".v"
+                                     ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(11))
+        {
+            options->m_vhdlFile = ( mainFile
+                                  + ".vhd"
+                                  ).toStdString();
+        }
         //return;
     }
     else if ( false == projectMan->getActive()->useMainFile )
@@ -987,6 +1051,8 @@ void MainForm::compileProject()
 
 
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+            compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                        CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
                                     CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Project:      " + projectMan->getActive()->prjName,
@@ -1005,6 +1071,34 @@ void MainForm::compileProject()
                      +  wDockManager->getCentralName().section('.',0,-2);
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
+
+
+            QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+            if (true == this->projectMan->getActive()->defaultVerilog)
+            {
+                options->m_verilogTemplate = ( templateDir.absolutePath()
+                                            + "/"
+                                            + this->projectMan->getActive()->family
+                                            + ".v"
+                                            ).toStdString();
+            }
+            else
+            {
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            }
+
+            if (true == this->projectMan->getActive()->defaultVHDL)
+            {
+                options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".vhd"
+                                        ).toStdString();
+            }
+            else
+            {
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            }
 
             if (projectMan->getActive()->compileOpt.at(0))
             {
@@ -1038,6 +1132,22 @@ void MainForm::compileProject()
             {
                 options->m_srecFile = (mainFile + ".srec").toStdString();
             }
+            if (projectMan->getActive()->compileOpt.at(8))
+            {
+                options->m_memFile = ( mainFile + ".mem").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(9))
+            {
+                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(10))
+            {
+                options->m_verilogFile = ( mainFile  + ".v").toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(11))
+            {
+                options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+            }
         }
         else
         {
@@ -1047,7 +1157,37 @@ void MainForm::compileProject()
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
 
+            QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+            if (true == this->projectMan->getActive()->defaultVerilog)
+            {
+                options->m_verilogTemplate = ( templateDir.absolutePath()
+                                            + "/"
+                                            + this->projectMan->getActive()->family
+                                            + ".v"
+                                            ).toStdString();
+            }
+            else
+            {
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            }
+
+            if (true == this->projectMan->getActive()->defaultVHDL)
+            {
+                options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".vhd"
+                                        ).toStdString();
+            }
+            else
+            {
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            }
+
+
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+            compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                        CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
                                     CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Project:      untracked",
@@ -1059,7 +1199,7 @@ void MainForm::compileProject()
             compileInfo->appendMessage("Family:       " + projectMan->getUntracked()->family + "\n\n",
                                     CompilerBase::MessageType::MT_REMARK);
 
-            QDir pathDir("./temp/");
+            QDir pathDir(GuiCfg::getInstance().getTempPath());
             if (false == pathDir.exists())
             {
                 pathDir.mkpath(".");
@@ -1117,6 +1257,30 @@ void MainForm::compileProject()
                                       + ".srec"
                                       ).toStdString();
             }
+            if (projectMan->getActive()->compileOpt.at(8))
+            {
+                options->m_memFile = ( mainFile
+                                    + ".mem"
+                                    ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(9))
+            {
+                options->m_rawHexDumpFile = ( mainFile
+                                            + ".rawhex"
+                                            ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(10))
+            {
+                options->m_verilogFile = ( mainFile
+                                        + ".v"
+                                        ).toStdString();
+            }
+            if (projectMan->getActive()->compileOpt.at(11))
+            {
+                options->m_vhdlFile = ( mainFile
+                                    + ".vhd"
+                                    ).toStdString();
+            }
         }
         //return;
     }
@@ -1131,6 +1295,8 @@ void MainForm::compileProject()
         }
         
         CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
+        compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Project:      " + projectMan->getActive()->prjName,
@@ -1161,6 +1327,35 @@ void MainForm::compileProject()
         }
         
         options->m_device = this->projectMan->getActive()->family.toStdString();
+
+
+        QDir templateDir(GuiCfg::getInstance().getTemplatePath());
+        if (true == this->projectMan->getActive()->defaultVerilog)
+        {
+            options->m_verilogTemplate = ( templateDir.absolutePath()
+                                        + "/"
+                                        + this->projectMan->getActive()->family
+                                        + ".v"
+                                        ).toStdString();
+        }
+        else
+        {
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+        }
+        
+        if (true == this->projectMan->getActive()->defaultVHDL)
+        {
+            options->m_vhdlTemplate = ( templateDir.absolutePath()
+                                    + "/"
+                                    + this->projectMan->getActive()->family
+                                    + ".vhd"
+                                    ).toStdString();
+        }
+        else
+        {
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+        }
+
 
         if (projectMan->getActive()->compileOpt.at(0))
         {
@@ -1193,6 +1388,22 @@ void MainForm::compileProject()
         if (projectMan->getActive()->compileOpt.at(7))
         {
             options->m_srecFile = (mainFile + ".srec").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(8))
+        {
+            options->m_memFile = ( mainFile + ".mem").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(9))
+        {
+            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(10))
+        {
+            options->m_verilogFile = ( mainFile  + ".v").toStdString();
+        }
+        if (projectMan->getActive()->compileOpt.at(11))
+        {
+            options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
         }
     }
 
@@ -1414,51 +1625,97 @@ void MainForm::simulationReset()
  */
 void MainForm::simulationFlowHandle()
 {
-    if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+    QString file = "";
+    if (projectMan->getActive() == NULL)
     {
-        if (false == simulationStatus)
+        error(ERR_NO_PROJECT);
+    }
+    if (projectMan->getActive()->prjPath == "untracked")
+    {
+        file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
+    }
+    else
+    {
+        if ( false == projectMan->getActive()->useMainFile )
         {
-            if ( true == projectMan->getActive()->start() )
+            //check if enabled, if it isnt, simulate
+            QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+            QDir fileDir;
+            bool found = false;
+
+            for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
             {
-                delete this->icon_simFlow;
-                this->icon_simFlow = new QIcon(*pm_simFlowStop);
-                simulationFlowAct->setIcon(*icon_simFlow);
-                simulationFlowAct->setText(tr("Stop simulation"));
-                simulationStatus = true;
-                simulationStepAct->setEnabled(true);
-                simulationRunAct->setEnabled(true);
-                simulationAnimateAct->setEnabled(true);
-                simulationResetAct->setEnabled(true);
-                simulationUnhighlightAct->setEnabled(true);
+                fileDir.setPath(prjDir.absolutePath()
+                                + "/"
+                                + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
+                            );
+                //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
+                //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
+                if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (true == found)
+            {
+                file = wDockManager->getCentralPath();
             }
             else
             {
-                error(ERR_SIM_NOSTART);
+                projectMan->setActive(projectMan->getUntracked());
+                file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
             }
+        }
+        //else
+        //{
+            //simulate main file
+            //file = "";
+        //}
+    }
+    if (false == simulationStatus)
+    {
+        if ( true == projectMan->getActive()->start(file) )
+        {
+            delete this->icon_simFlow;
+            this->icon_simFlow = new QIcon(*pm_simFlowStop);
+            simulationFlowAct->setIcon(*icon_simFlow);
+            simulationFlowAct->setText(tr("Stop simulation"));
+            simulationStatus = true;
+            simulationStepAct->setEnabled(true);
+            simulationRunAct->setEnabled(true);
+            simulationAnimateAct->setEnabled(true);
+            simulationResetAct->setEnabled(true);
+            simulationUnhighlightAct->setEnabled(true);
+            projectMan->setSimulated(projectMan->getActive());
         }
         else
         {
-            delete this->icon_simFlow;
-            this->icon_simFlow = new QIcon(*pm_simFlowStart);
-            simulationFlowAct->setIcon(*icon_simFlow);
-            simulationFlowAct->setText(tr("Start simulation"));
-            if (true == simulationAnimateStatus)
-            {
-                this->simulationAnimateHandle();
-            }
-            else if (true == simulationRunStatus)
-            {
-                this->simulationRunHandle();
-            }
-            simulationStatus = false;
-            simulationStepAct->setDisabled(true);
-            simulationRunAct->setDisabled(true);
-            simulationAnimateAct->setDisabled(true);
-            simulationResetAct->setDisabled(true);
-            simulationUnhighlightAct->setDisabled(true);
-            projectMan->getActive()->stop();
-            this->unhighlight();
+            error(ERR_SIM_NOSTART);
         }
+    }
+    else
+    {
+        delete this->icon_simFlow;
+        this->icon_simFlow = new QIcon(*pm_simFlowStart);
+        simulationFlowAct->setIcon(*icon_simFlow);
+        simulationFlowAct->setText(tr("Start simulation"));
+        if (true == simulationAnimateStatus)
+        {
+            this->simulationAnimateHandle();
+        }
+        else if (true == simulationRunStatus)
+        {
+            this->simulationRunHandle();
+        }
+        simulationStatus = false;
+        simulationStepAct->setDisabled(true);
+        simulationRunAct->setDisabled(true);
+        simulationAnimateAct->setDisabled(true);
+        simulationResetAct->setDisabled(true);
+        simulationUnhighlightAct->setDisabled(true);
+        projectMan->getSimulated()->stop();
+        this->unhighlight();
     }
 }
 
@@ -1788,5 +2045,9 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    projectMan->setActiveByIndex(index);
+    if (false == this->simulationStatus)
+    {
+        wDockManager->changeSimWidget(index);
+        projectMan->setActiveByIndex(index);
+    }
 }

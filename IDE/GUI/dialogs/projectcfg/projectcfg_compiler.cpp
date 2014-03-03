@@ -19,6 +19,9 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     {
         this->load();
     }
+    else
+    {
+    }
 }
 
 
@@ -35,6 +38,10 @@ void ProjectCfg_Compiler::load()
     this->ui.chckHexFile->setChecked(project->compileOpt.at(5));
     this->ui.chckBinFile->setChecked(project->compileOpt.at(6));
     this->ui.chckSRecFile->setChecked(project->compileOpt.at(7));
+    this->ui.chckMemFile->setChecked(project->compileOpt.at(8));
+    this->ui.chckRawHexFile->setChecked(project->compileOpt.at(9));
+    this->ui.chckVerilogFile->setChecked(project->compileOpt.at(10));
+    this->ui.chckVHDLFile->setChecked(project->compileOpt.at(11));
     if (project->prjPath == "untracked" && project->prjName == "untracked")
     {
         this->ui.leMain->setDisabled(true);
@@ -62,6 +69,10 @@ void ProjectCfg_Compiler::save()
     opt.append(this->ui.chckHexFile->isChecked());
     opt.append(this->ui.chckBinFile->isChecked());
     opt.append(this->ui.chckSRecFile->isChecked());
+    opt.append(this->ui.chckMemFile->isChecked());
+    opt.append(this->ui.chckRawHexFile->isChecked());
+    opt.append(this->ui.chckVerilogFile->isChecked());
+    opt.append(this->ui.chckVHDLFile->isChecked());
     
     this->project->setCompileOpt(opt);
     this->project->setUseMainFile(this->ui.chckMain->isChecked());
