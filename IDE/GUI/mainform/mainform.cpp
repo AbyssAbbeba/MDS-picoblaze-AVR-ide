@@ -781,7 +781,7 @@ void MainForm::openProject()
     QFileDialog dialog;
     QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
     
-    if (path.isEmpty() == false)
+    if (path.isEmpty() == false && projectMan->isOpened(path) == false)
     {
     //nacteni projektu
         //qDebug() << path;
@@ -792,7 +792,7 @@ void MainForm::openProject()
         }
         else {
             //nacteni obsahu do widgetu
-            projectMan->openProject(&file);            
+            projectMan->openProject(&file);
             file.close();
         }
     }
@@ -807,18 +807,21 @@ void MainForm::openProject()
 bool MainForm::openProject(QString path)
 {
     //qDebug() << "MainForm: openProject()";
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (false == projectMan->isOpened(path))
     {
-        error(ERR_OPENFILE);
-        return false;
-    }
-    else
-    {
-        //nacteni obsahu do widgetu
-        projectMan->openProject(&file);
-        file.close();
-        return true;
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            error(ERR_OPENFILE);
+            return false;
+        }
+        else
+        {
+            //nacteni obsahu do widgetu
+            projectMan->openProject(&file);
+            file.close();
+            return true;
+        }
     }
     //qDebug() << "MainForm: return openProject()";
 }

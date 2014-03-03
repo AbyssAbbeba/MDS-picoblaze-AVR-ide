@@ -66,6 +66,7 @@ class ProjectTree: public QTreeWidget
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
+        void dropEvent(QDropEvent *e);
 };
         
 

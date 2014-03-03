@@ -104,6 +104,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         PicoBlazeStack *m_stack;
 
         double clock;
+        double clockMult;
         
 
     //signals:
@@ -122,6 +123,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
     private slots:
         void stopSimSlot();
+        void changeClock(const QString &text);
+        void changeClockMult(int index);
 
     signals:
         void stopSimSig();
