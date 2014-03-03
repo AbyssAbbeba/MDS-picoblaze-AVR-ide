@@ -791,7 +791,7 @@ inline void MCUSimControl::dispatchEvents()
         }
 
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
-        for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); it++ )
+        for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); ++it )
         {
             if ( (1 << eventId) & it->second )
             {
@@ -806,7 +806,7 @@ void MCUSimControl::allObservers_deviceChanged()
     for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
-        for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
+        for ( it = m_observers[i].begin(); it != m_observers[i].end(); ++it )
         {
             it->first->deviceChanged();
         }
@@ -818,7 +818,7 @@ void MCUSimControl::allObservers_deviceReset()
     for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
-        for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
+        for ( it = m_observers[i].begin(); it != m_observers[i].end(); ++it )
         {
             it->first->deviceReset();
         }
@@ -830,7 +830,7 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
     for ( int i = 0; i < MCUSimSubsys::ID__MAX__; i++ )
     {
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
-        for ( it = m_observers[i].begin(); it != m_observers[i].end(); it++ )
+        for ( it = m_observers[i].begin(); it != m_observers[i].end(); ++it )
         {
             it->first->setReadOnly(readOnly);
         }

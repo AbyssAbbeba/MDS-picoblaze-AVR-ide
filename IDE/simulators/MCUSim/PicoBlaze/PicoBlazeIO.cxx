@@ -1,4 +1,4 @@
-// =============================================================================
+﻿// =============================================================================
 /**
  * @brief
  * C++ Implementation: ...
@@ -57,21 +57,6 @@ void PicoBlazeIO::reset ( MCUSimBase::ResetMode mode )
         default:
             // Irrelevant requests are silently ignored
             break;
-    }
-}
-
-void PicoBlazeIO::clockCycle()
-{
-    if ( true == m_readStrobe )
-    {
-        m_readStrobe = false;
-        logEvent ( EVENT_PLIO_READ_END );
-    }
-
-    if ( true == m_writeStrobe )
-    {
-        m_writeStrobe = false;
-        logEvent ( EVENT_PLIO_WRITE_END );
     }
 }
 

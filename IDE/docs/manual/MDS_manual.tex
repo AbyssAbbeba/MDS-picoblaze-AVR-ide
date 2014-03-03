@@ -1,5 +1,5 @@
  \documentclass[a4paper,twosided, 15pt]{book}
-%\usepackage[czech]{babel} 
+%\usepackage[czech]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{listings}
 \usepackage[T1]{fontenc}
@@ -18,7 +18,7 @@
 
 % \setcounter{chapter}{0} 0x0xxxxx
 
-%\setcounter{chapter}{-1} 
+%\setcounter{chapter}{-1}
 \floatstyle{ruled}
 \newfloat{code}{thp}{lop}
 \floatname{code}{Code}
@@ -85,7 +85,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
-  
+
         \begin{center}
         \includegraphics[scale=0.1]{img/Moravia_Microsystems.png}
         \end{center}
@@ -97,18 +97,18 @@
 
 \chapter{Preface}
 \index{This manual} is an \index{introduction} to the \index{Moravia Microsystems} development tools designed for microcontrollers.
-It introduces the MDS Integrated Development Environment, Simulator and 
-presents a step-by-step guided tour of the numerous features and capabilities 
+It introduces the MDS Integrated Development Environment, Simulator and
+presents a step-by-step guided tour of the numerous features and capabilities
 the Moravia Microsystems embedded development tools offer.
-  
+
 \chapter{About MDS}
-MDS is a window-based software development platform that 
-combines a robust and modern editor with a project manager 
+MDS is a window-based software development platform that
+combines a robust and modern editor with a project manager
 and make facility tool. It integrates all the tools needed
 to develop embedded applications including a C/C++ compiler, macro
 assembler, linker/locator, and a HEX file generator. MDS helps
 expedite the development process of embedded applications by providing
-the following: 
+the following:
         \section{Features}
                 \begin{itemize}
                     \item Full-featured source code editor
@@ -118,7 +118,7 @@ the following:
                 \end{itemize}
 
 	\section{Requirements}
-	
+
 \chapter{Quick start}
         \section{Demonstration project}
         The aim of the demonstration project is to provide an easy way to explore
@@ -135,7 +135,7 @@ the following:
                     \caption{Demonstration project}
                 \end{figure}
         \section{Your first project}
-  
+
         \section{What is PicoBlaze?}
         PicoBlaze is the designation of a series of three free soft processor cores
         from Xilinx for use in their FPGA and CPLD products. They are based on a RISC
@@ -147,7 +147,7 @@ the following:
         set deterministic. Interrupt response is not more than five clock cycles. As a resource
         optimization, it is possible for two PicoBlaze cores to share the same 1k x 18 instruction
         PROM, taking advantage of the dual-ported implementation of this block on Xilinx FPGAs.
-        
+
                 \subsection{PicoBlaze features:}
                         \begin{itemize}
                                 \item 16 byte-wide general-purpose data registers
@@ -167,9 +167,9 @@ the following:
                                 \item Assembler, instruction-set simulator support
                         \end{itemize}
 
-\chapter{User interface}        
+\chapter{User interface}
          \section{Window Layout Concept}
-          Developers can define their working environment to fit the needs and 
+          Developers can define their working environment to fit the needs and
           preferences. For a better understanding of further comments and instructions,
           five major screen areas are defined. % popsáno v obrázku
                \begin{figure}
@@ -177,7 +177,7 @@ the following:
                       \includegraphics [scale=0.3]{img/Demonstration_project.png}
                       \caption{Window layout concept}
                \end{figure}
-                         
+
                 \subsection{Source code editor}
                 \subsection{Top panel}
                         \begin{figure}{r}{0pt}
@@ -185,7 +185,7 @@ the following:
                                 \includegraphics[width=110pt]{img/menu_file.png}
                                 \caption{File selection}
                         \end{figure}
-                        
+
                         \begin{itemize}
                             \item New file: creates a new document to enter a new source file.
                             \item Open file: allows to open an existing source file.
@@ -196,13 +196,13 @@ the following:
                             \item Save all: saves all currently open documents.
                             \item Exit: closes all open documents and closes MDS.
                         \end{itemize}
-                        
+
                         \begin{wrapfigure}{r}{0pt}
                                 \centering
                                 \includegraphics[width=110pt]{img/menu_file.png}
                                 \caption{Edit selection}
                         \end{wrapfigure}
-               
+
                         \begin{itemize}
                             \item Undo: will undo all edit actions on the open document in reverse order
                             \item Redo: will redo all undo actions
@@ -230,12 +230,12 @@ the following:
                             \item Find: find a to be given string through the open document
                             \item Replace: replace a given string in the open document by a new string
                         \end{itemize}
-              
+
                 \subsection{Bottom panel}
                 \subsection{Right panel}
                 \subsection{Left panel}
                 \subsection{Project configuration}
-                In project configuration window, you can edit project and compiler settings. 
+                In project configuration window, you can edit project and compiler settings.
                 You can open project configuration window by right clicking to project name in the left panel. See the pictures below.
                     \begin{figure}
                         \centering{}
@@ -248,7 +248,7 @@ the following:
                             \includegraphics [width=300pt]{img/mensi_obrazek.png}
                             \caption{Project window layout}
                         \end{figure}
-                    
+
                     \begin{itemize}
                         \item Undo: will undo all edit actions on the open document in reverse order
                         \item Redo: will redo all undo actions
@@ -259,7 +259,7 @@ the following:
                         \item Find: find a to be given string through the open document
                         \item Replace: replace a given string in the open document by a new string
                     \end{itemize}
-                    
+
                         \begin{figure}
                             \centering{}
                             \includegraphics [width=300pt]{img/mensi_obrazek.png}
@@ -295,10 +295,10 @@ the following:
                         \includegraphics [scale=0.3]{img/mensi_obrazek.png}
                         \caption{Parametr information list}
                     \end{figure}
-                    
+
                 \subsection{DATA file convertor}
                     This tool alows you to convert selected data file to another. Mutual conversion can be made with
-                    Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl. 
+                    Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
                     \begin{description}
                         \item[Section Input File] Here you can select desired input data file which is going to be converted
                         \item[Section Input Options] In this section, you define what type of input file is going to be converted
@@ -317,7 +317,7 @@ the following:
                         \includegraphics [scale=1]{img/DATA_convertor.png}
                         \caption{DATA file convertor}
                     \end{figure}
- 
+
                 \subsection{ASM translator}
                     With this tool, you can translate your previously written assembler code in different syntax.
                     You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code should be without
@@ -333,13 +333,13 @@ the following:
                         \item[Tab size]  Define number of inserted spaces when you press Tab.
                         \item[Short instructions] Here you can allow short instructions like LD, RETI or others
                     \end{description}
-                    
+
                     \begin{figure}
                         \centering{}
                         \includegraphics [scale=1]{img/ASM_translator.png}
                         \caption{ASM translator}
                     \end{figure}
-                    
+
                 \subsection{Disassembler}
                     A disassembler is a tool that translates machine language into assembly language. The inverse
                     operation to that of an assembler.
@@ -434,7 +434,7 @@ the following:
                 \item STEP BACK: Take back the last performed step. There is limited number
                 of step which can be taken back.
             \end{itemize}
-            
+
 \chapter{Built-in Macro assembler}
 In this chapter, we will be concerned with build-in macro assembler.
 With syntax of its statements, directives and PicoBlaze assembler instructions.
@@ -458,7 +458,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  	\section{Statements}
         Source code files for this assembler must be text files where lines are formed like these:\\
-		\\ {           
+		\\ {
                 \texttt{}
                 \begin{tabular}[h!]{llll}
                         \verb'[' { \color{highlight_label} label: } \verb']' &
@@ -475,7 +475,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         { \color{highlight_directive} directive } &
                         { \color{highlight_symbol} argument } &
                         \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
-                        
+
                         { \color{highlight_directive} directive } &
                         { \color{highlight_constant} symbol,argument } &
                          \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
@@ -498,7 +498,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
         that there cannot coexists two or more symbols in the same memory segment which differs
         only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}''
         are completely the same thing.
-                \begin{code}[h!]                        
+                \begin{code}[h!]
                         {\color{highlight_comment}\verb'; Example of symbol definition'}\\
                         {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_bin}\verb'0b100111'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
                         {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47q'}\verb'       '{\color{highlight_comment}\verb'; Octal'}\\
@@ -511,9 +511,9 @@ You need to tell compiler, that you are using constants by adding \# before seco
         As you can see in Code 1 example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well
         as constants syntax and expresions priority.
 
-	\section{Constants} 
-        MDS supports both prefix and sufix definition. 
-                \begin{code}[h!]                    
+	\section{Constants}
+        MDS supports both prefix and sufix definition.
+                \begin{code}[h!]
                             {\color{highlight_comment}\verb'; Example of constants syntax'}\\
                             {\color{highlight_constant}\verb'10'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
                             {\color{highlight_constant}\verb'10D'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
@@ -534,8 +534,8 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \caption{Syntax of various constant bases}
                 \end{code}
                 When you want to say to compiler, that you are using constant, you must add "\#" before.
-    
-		
+
+
         \section{Expressions}
         Arithmetical expressions are evaluated at compilation time and replaced by assembler
         with constant corresponding the their resulting value. Expressions comprises of arithmetical operators,
@@ -547,7 +547,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \item  \texttt{X XOR 0FF00H}
                     \item  \texttt{X * Y + X \% Y}
                 \end{itemize}
-	
+
         When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression.
         All LOGICAL operators have priorities lower than arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational
         and logical operators, the arithmetic operators are evaluated first, followed by the relational operators, followed by the logical operators.
@@ -558,7 +558,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 			\begin{tabular}{|l|l|l|l|}
 				\hline
                         Priority       &          Operator      & Description                   & Example               \\\hline
-				
+
                         1              &          +           & unary plus sign              & +12                  \\\hline
                         1              &          -           & unary minus sign             & -5                   \\\hline
                         2              &           \verb'~'         & bitwise NOT		 	& \verb'~'0a55ah		\\\hline
@@ -588,7 +588,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
         When operators with different priority levels appear in an expression, operations are performed
         according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within
         the expression.
-        
+
                 \section{Predefined Symbols}
         There are symbols which are defined by default by assembler. The aim is to
         make it a little easier to write code in assembly language for Picoblaze,
@@ -630,7 +630,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
         assembled different way, perhaps for different applications. They also
         can be used to manipulate presentation of a program to make it easier to read and maintain\\
         The specified format for most of the directives is:
-		 \\	
+		 \\
                  \\ {
                 \texttt{}
                 \begin{tabular}[h!]{llll}
@@ -642,16 +642,16 @@ You need to tell compiler, that you are using constants by adding \# before seco
                  \\
         This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, DEFINE.
         MDS also supports some other directives, with diferent syntax format, which is:
-         \\      {		
+         \\      {
                 \texttt{}
                 \begin{tabular}[h!]{llll}
                         { \color{highlight_directive} <directive> } &
                         { \color{highlight_constant}\verb`<symbol>,<expresion>`  } & { \color{highlight_comment} ; Directive syntax }\\
                 \end{tabular}
-      		 } 
+      		 }
            \\
         Those directives are CONSTANT, VARIABLE, ADRESS and NAMEREG. There are some other usefull directives like REPT or WHILE. See description below.
-        
+
                 \subsection{INCLUDE}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -670,7 +670,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \verb'    '{\color{highlight_comment}\verb' ; this will replace includes with content of "LCD_characters" and "LCD_print_routine"'}\\
                         \caption{INCLUDE directive}
                     \end{code}
-                        
+
                 \subsection{EQU}
                 \textbf{SYNTAX:}\\
                         \\ {
@@ -811,7 +811,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
             {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-            
+
                 \subsection{NAMEREG}
                 \textbf{SYNTAX:}\\
                     \\ {
@@ -841,7 +841,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
 
 
-       
+
                 \subsection{DATA}
                 \textbf{SYNTAX:}\\
                                 \\ {
@@ -855,7 +855,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 \\
                 \textbf{DESCRIPTION:}\\
                Symbols defined with the DATA directive are by compiler considered as data memory. It must be used only with instructions FETCH and STORE.
-               
+
                 \textbf{EXAMPLE:}\\
                 \begin{code}[h!]
                             {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
@@ -868,7 +868,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
             {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-             
+
                 \subsection{CODE}
                 \textbf{SYNTAX:}\\
                                 \\ {
@@ -896,7 +896,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
             {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-            
+
                 \subsection{PORT}
                 \textbf{SYNTAX:}\\
                                 \\ {
@@ -924,7 +924,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 
             In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
             {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-            
+
 
                 \subsection{AUTOREG}
                 \textbf{SYNTAX:}\\
@@ -995,7 +995,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \caption{Using AUTOREG directive}
                 \end{code}
 
-                \subsection{DEFINE} 
+                \subsection{DEFINE}
                 \textbf{SYNTAX:}\\
                 \\ {
                         \texttt{}
@@ -1006,7 +1006,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \end{tabular}
                     }\\
                     \\
-                    
+
                 \textbf{DESCRIPTION:}\\
                 You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used.
 
@@ -1025,7 +1025,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 \caption{Example of DEFINE directive}
                                 \end{code}
 
-       
+
                 \subsection{ADDRESS,ORG}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1041,7 +1041,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 { \color{highlight_directive} ADDRESS } & \verb'         '
                                 { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
                         \end{tabular}
-                    }\\    
+                    }\\
                 \textbf{DESCRIPTION:}\\
                 When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
                 The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
@@ -1152,7 +1152,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \texttt{}
                             \begin{tabular}[h!]{llll}
                                 { \color{highlight_directive} UNDEFINE }\verb`     `
-                                { \color{highlight_symbol} <symbol> } 
+                                { \color{highlight_symbol} <symbol> }
                             \end{tabular}
                     }\\{
                         \texttt{}
@@ -1201,7 +1201,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
                 with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
                 See the examples for better understanding of DB directive.
-%                 
+%
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                                 { \color{highlight_directive} DB }
@@ -1222,11 +1222,11 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 \\ {
                         \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
                         \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} LIMIT }   \verb`     ` 
+                                { \color{highlight_directive} LIMIT }   \verb`     `
                                 { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
                                 { \color{highlight_directive} LIMIT }   \verb`     `
                                 { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
-                                { \color{highlight_directive} LIMIT }  \verb`     ` 
+                                { \color{highlight_directive} LIMIT }  \verb`     `
                                 { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }
                               %  \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
                                 % of program memory}
@@ -1235,14 +1235,14 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \\
                 \textbf{DESCRIPTION:}\\
                 Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
-                
+
                 \textbf{EXAMPLE:}\\
                                 \begin{code}[h!]
                                 { \color{highlight_directive} LIMIT }   \verb`     `
                                 { \color{highlight_symbol}\verb' R,16' }  \verb`          `   { \color{highlight_comment} ; Number of registers 16 }\\
-                                { \color{highlight_directive} LIMIT }   \verb`     ` 
+                                { \color{highlight_directive} LIMIT }   \verb`     `
                                 { \color{highlight_symbol}\verb' D,07' }  \verb`          `   { \color{highlight_comment} ; Size of scratchpad ram 7B }\\
-                                { \color{highlight_directive} LIMIT }   \verb`          ` 
+                                { \color{highlight_directive} LIMIT }   \verb`          `
                                 { \color{highlight_symbol}\verb' C,0b100000000' }  \verb`     `   { \color{highlight_comment} ; Size of program memory 512}\\
                                 \caption{Example of DEFINE directive}
                                 \end{code}
@@ -1261,7 +1261,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 \textbf{DESCRIPTION:}\\
                 Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
                 This will affect predefined symbols.\\
-                
+
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM3'}\\
@@ -1307,7 +1307,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             {\color{highlight_directive}\verb'TITLE'}\verb'    '
                             {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
                         \end{code}
-                        
+
                 \subsection{MESSAGE}
                  {
                     \texttt{}
@@ -1323,7 +1323,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             {\color{highlight_directive}\verb'MESSAGE'}\verb'    '
                             {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
                         \end{code}
-                        
+
                 \subsection{ERROR}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1340,7 +1340,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             {\color{highlight_directive}\verb'ERROR'}\verb'    '
                             {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
                         \end{code}
-                        
+
                 \subsection{LOCAL}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1395,7 +1395,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 \textbf{DESCRIPTION:}\\
                 The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
                 syntactically right.
-                
+
                 \textbf{EXAMPLE:}\\
                     \begin{code}[h!]
                         \verb'    '{\color{highlight_directive}\verb'END'}
@@ -1423,7 +1423,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     \caption{Allowed conditions with IF, WHILE}
             \end{table}
-            
+
                 \subsection{IF}
                     \textbf{SYNTAX:}\\
                     \\ {
@@ -1443,7 +1443,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \textbf{DESCRIPTION:}\\
                     You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
-                    Number without \# is considered as register adress. See example for conditions syntax.                
+                    Number without \# is considered as register adress. See example for conditions syntax.
                     \textbf{EXAMPLE:}\\
                             \begin{code}[h!]
                                     { \color{highlight_directive} IF }
@@ -1529,7 +1529,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                     { \color{highlight_directive}  ENDW}\\
                                 \caption{Run time while example}
                             \end{code}
-                
+
                 \subsection{FOR}
                     \textbf{SYNTAX:}\\
                     \\ {
@@ -1569,13 +1569,13 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 \caption{Run time while example}
                             \end{code}
                     In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).
-                
+
         \section{Macro Processing}
                 Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
                 repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
                 not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported
                 by this assembler are.
-                
+
                 \subsection{MACROS}
                 \textbf{SYNTAX:}\\
                 \\ {
@@ -1593,7 +1593,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
                             { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
                         \end{tabular}
-                    }\\                    
+                    }\\
                 \begin{table}[h!]
                     \begin{tabular}{|ll|}
                             \hline
@@ -1611,8 +1611,8 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 with no parameters  or unlimited number of parameters.\\
                 \textbf{EXAMPLE:}\\
                 This can be well demonstrated on examples:
-                
-                \begin{code}[h!]                       
+
+                \begin{code}[h!]
                         {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_comment}\verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
                         \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'a'}\\
@@ -1632,7 +1632,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \caption{An exaple of simple macro without parameters}
                 \end{code}
                 \begin{code}[h!]
-                       
+
                         {\color{highlight_comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
                         {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'bar'}\\
                         \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
@@ -1680,7 +1680,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \verb'        '{\color{highlight_instruction}\verb'SUB'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
                         \caption{An exaple of named macro used with if statement}
                 \end{code}
-                    
+
         \section{Conditional Assembly}
 		The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met.
 		This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions
@@ -1727,7 +1727,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 			{\color{highlight_directive}\verb'end'}\verb'                             '{\color{highlight_comment}\verb'; End of assembly'}\\
 			\caption{An example of conditional assembly usage}
 		\end{code}
-		
+
 		\clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         \section{ERROR and WARNING messages}
@@ -1759,7 +1759,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \item[Macro not defined ] \hfill \\
                     The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
                     \item[Too many arguments given, expecting at most X arguments] \hfill \\             % lll
-                    Too many arguments, compiler tells you how many he is expecting. 
+                    Too many arguments, compiler tells you how many he is expecting.
                     \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  %llll
                     bl
                     \item[The last error was critical, compilation aborted] \hfill \\                   %llll
@@ -1784,7 +1784,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     Maximum REPEAT directive iterations reached. You can change your compiler settings and allow more iterations.
                     By default, number of iterations is unlimited.
                     \item[Instruction word is only 18 bits wide, value X trimmed to Y ] \hfill \\
-                    You have exceeded instruction word length. Value has been trimmed to  appropriate length.                    
+                    You have exceeded instruction word length. Value has been trimmed to  appropriate length.
                     \item[Symbol already defined] \hfill \\
                     The given symbol has been already defined. Symbol cannot be defined more than one time.
                     \item[Symbol not defined: X ] \hfill \\
@@ -1794,7 +1794,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \item[Undefined value ] \hfill \\
                     Undefined value. Compiler does not know this value.                       %mmmm
                     \item[Real numbers are not supported in assembler ] \hfill \\
-                    Real numbers cannot be used on 8-bit processor. 
+                    Real numbers cannot be used on 8-bit processor.
                     \item[Undefined symbol: X ] \hfill \\
                     Symbol has not been defined. Define symbol before usage.
                     \item[This value is not valid inside an expression ] \hfill \\         %mmmmm
@@ -1819,18 +1819,18 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     bl
                     \ldots
                     \end{description}
-                    
+
                  \subsection{WARNING list}
                     \begin{description}
                     \item[Maximum number of messages reached, suppressing compiler message generation] \hfill \\
-                    Source code contains big number of errors. Those errors were suppressed to prevent enormous size of code listing file. 
+                    Source code contains big number of errors. Those errors were suppressed to prevent enormous size of code listing file.
                     \item[Redefinition of macro ] \hfill \\
-                    The given macro has been already defined. 
+                    The given macro has been already defined.
                     \item[Macro X will not be expanded because macro expansion has been disabled] \hfill \\
                     The given macro cannot be expanded, because macro expansion has been disabled by NOEXPAND directive.
                     You can use EXPAND directive to allow expansion again.
                     \item[Parameter X substituted for blank value ] \hfill \\     %llll
-                    Macro expected 
+                    Macro expected
                     \item[Symbol X already declared as local ] \hfill \\
                     Symbol is already used as local inside macro.   %llll
                     \item[Reusing already reserved space in X memory at address: Y] \hfill \\  %llll
@@ -1840,13 +1840,13 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \item[Symbol X declared as local but never used, declaration ignored] \hfill \\
                     The given local symbol has been declared, but never used. Declaration will be ignored.
                     \item[Comparing two immediate constants, result is always positive] \hfill \\
-                    
+
                     \item[Comparing two immediate constants, result is always negative] \hfill \\
-                    
+
                     \item[Sign overflow. Result is negative number lower than the lowest negative number representable in two's complement arithmetic by the given number of bits ] \hfill \\
-                    
+
                     \item[Result is negative number X, this will be represented as 2-bit number in two's complement arithmetic] \hfill \\
-                    
+
                     \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ] \hfill \\
                     Value out of range. Adjust input value.                                                     %,,,,
                     \item[Maximum number of messages reached, suppressing compiler message generation ] \hfill \\
@@ -1854,12 +1854,12 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \item[File name contains a null character ] \hfill \\
                     Null character in file name is forbidden. Please change name of the given file.
                     \ldots
-                    \end{description}                   
-                
+                    \end{description}
+
         \section{List File Format}
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how were they were defined, what are their values and whether they were used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction OP codes, address space reservations, inclusion of code from another files. And all warnings, errors and notes generated during the assembly by the assembler. There are assembler control sequences which alters formatting of the code listing file. These control sequences will be discussed here. Format of code listing generated by this assembler is very similar to the one generated Metalink(R) ASM51.
                 \begin{code}[h]
-                     
+
                         \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
                         {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Picoblaze - Demostration code'}\\
                         {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
@@ -1901,7 +1901,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 \end{code}
 
                 \begin{code}[h]
-                        
+
                         \verb'complicated_lst                                                                                                         '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
                         {\color{highlight_lst_number}\verb'  001C'}{\color{highlight_lst_line}\verb'                   1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc'}\\
                         {\color{highlight_lst_line}\verb'                         2'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_unknown_base}\verb'0'}\verb'               '{\color{highlight_comment}\verb'; Start writing code at address 0'}\\
@@ -1951,7 +1951,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
 			\colorbox{GreenYellow}{\color{GreenYellow}X} Data\\
 		\colorbox{Lavender}{\color{Lavender}X} Checksum (two's complement of 8-bit sum of entire record, except for the start code and the checksum itself)
 	\end{code}
-	
+
         \section{Suported instructions}
         MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains
         list of all supported instructions. For more informations about those instructions, see official PicoBlaze manual.\\
@@ -1968,8 +1968,8 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{JUMP} Z,aaa\\
                             \textbf{JUMP} NZ,aaa\\
                             \textbf{JUMP} C,aaa\\
-                            \textbf{JUMP} NC,aaa\\                                                 
-                            
+                            \textbf{JUMP} NC,aaa\\
+
                         \subsubsection{CALL}
                         T"aaa" - call address. Instruction can be conditional.\\
                             \textbf{CALL} aaa\\
@@ -1977,7 +1977,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{CALL} NZ,aaa\\
                             \textbf{CALL} C,aaa\\
                             \textbf{CALL} NC,aaa\\
-                                                       
+
                         \subsubsection{RETURN, RET}
                         Return from subroutine. Can be conditional.\\
                             \textbf{RETURN}\\
@@ -1992,7 +1992,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{RET} NC\\
                             \textbf{RETURNI ENABLE}\\
                             \textbf{RETURNI DISABLE}\\
-                            
+
                 \subsection{Arithmetic Group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
                 "\#kk" represents a constant value in the range 00 to FF.\\
@@ -2000,12 +2000,12 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 "pp" represents a port address in the range 00 to FF.\\
                 "ss" represents an internal storage address in the range 00 to 3F.\\
                         \subsubsection{ADD, ADDCY}
-                        The ADD instruction performs an 8-bit addition of two operands. Can use constants or registers.\\ 
+                        The ADD instruction performs an 8-bit addition of two operands. Can use constants or registers.\\
                             \textbf{ADD} sX,\#kk\\
                             \textbf{ADDCY} sX,\#kk\\
                             \textbf{ADD} sX,sY\\
                             \textbf{ADDCY} sX,sY\\
-                            
+
                         \subsubsection{COMPARE, CMP}
                         The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is
                         discarded and only the flags are affected. This instruction updates flags\\
@@ -2017,7 +2017,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \subsubsection{SUB}
                         The SUB instruction performs an 8-bit subtraction of two operands. This instruction updates flags\\
                             \textbf{SUB} sX,\#kk\\
-                            \textbf{SUB} sX,sY\\              
+                            \textbf{SUB} sX,sY\\
                         \subsubsection{SUBCY}
                             \textbf{SUBCY} sX,\#kk\\
                             \textbf{SUBCY} sX,sY\\
@@ -2116,12 +2116,12 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).
                             \textbf{STORE} sX,ss\\
                             \textbf{STORE} sX,@sY\\
-                            
+
                         \subsubsection{FETCH}
                         The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"
                             \textbf{FETCH} sX,ss\\
                             \textbf{FETCH} sX,@sY\\
-                            
+
                 \subsection{Input output group}
                 "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
                 "\#kk" represents a constant value in the range 00 to FF.\\
@@ -2147,7 +2147,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             \textbf{OUTPUTK}     \#kk,@sY\\
                             \textbf{OUTK}        \#kk,p\\
                             \textbf{OUTK}        \#kk,@sY\\
-                       
+
         \section{Generated VHDL and Verilog files}
         As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow.
         MDS will generate all necessary files, that are needed for
@@ -2159,7 +2159,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                 generates a VHDL and VERILOG file in which a block RAM and its initial contents are defined. This
                 file can be used for both logic synthesis and simulation of the processor.
                 You need to declare component in your VHDL or VERILOG design and instantiate.\\
-                        
+
 \printindex
 
 \end{document}

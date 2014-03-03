@@ -1,4 +1,4 @@
-Licensing Agreement
+﻿Licensing Agreement
 Concluded in compliance with provisions of Civil Code (No. 89/2012 Collection of Laws of the Czech Republic /občanský zákoník/) and Copyright Act (No. 121/200 Collection of Laws of the Czech Republic /autorský zákon/)
 
 between grantor of the license: Moravia Microsystems, s.r.o. Třída Kpt. Jaroše 1946/35, Černá pole 602 00 Brno, Czech Republic, European Union, Company registration number: 01435655 (further referred only as “Licensor”) and you (either an individual or a legal entity, further referred only as “User”) for the software product “Multitarget Development System”
