@@ -306,6 +306,8 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
         std::string lbl = lineFields.getLabel(true);
         if ( false == lbl.empty() )
         {
+            bool colon = ( ':' == lbl.back() );
+
             while ( true )
             {
                 size_t pos = lbl.find(' ');
@@ -321,7 +323,12 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
             }
 
             lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
-            lineFields.replaceLabel(changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]) + ":");
+            lbl = changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]);
+            if ( true == colon )
+            {
+                lbl += ':';
+            }
+            lineFields.replaceLabel(lbl);
         }
     }
 
