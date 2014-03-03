@@ -45,9 +45,9 @@ set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe -
  # - for debug build only:
 set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
-set ( CMAKE_C_FLAGS_RELEASE    "-O2 -DNDEBUG" )
+set ( CMAKE_C_FLAGS_RELEASE    "-O2 -flto -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -flto -DNDEBUG" )
 
 # Set the same compilation flags for C++ as they are set for C.
 set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
@@ -112,11 +112,11 @@ if ( NOT TARGET_ARCH )
     set ( TARGET_ARCH "${HOST_ARCH}")
 endif()
 if ( TARGET_ARCH STREQUAL "x86_64" )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m64 -march=x86-64" )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -march=x86-64 -mfpmath=sse" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=x86-64 -mfpmath=sse" )
 elseif ( TARGET_ARCH STREQUAL "x86" )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -march=i686" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -march=i686" )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m32 -march=i686 -msse -mfpmath=sse" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -m32 -march=i686 -msse -mfpmath=sse" )
 else()
     message ( FATAL_ERROR "Target architecture \"${TARGET_ARCH}\" not recognized!" )
 endif()

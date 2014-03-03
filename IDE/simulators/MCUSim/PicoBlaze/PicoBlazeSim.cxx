@@ -104,7 +104,7 @@ inline void PicoBlazeSim::unregSubSys ( const MCUSimSubsys * subSystem )
 {
     for ( auto it = m_subSystems.begin();
           it != m_subSystems.end();
-          it++ )
+          ++it )
     {
         if ( subSystem == *it )
         {
