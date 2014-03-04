@@ -673,6 +673,7 @@ void MainForm::saveFile()
                 fout << wDockManager->getCentralTextEdit()->toPlainText();
                 file.close();
                 wDockManager->setTabSaved();
+                //wDockManager->getCentralWidget()->setSaved();
                 //qDebug() << "mainform: file saved";
             }
         }
@@ -719,11 +720,15 @@ void MainForm::saveFile(CodeEdit *editor)
     //if (editor->isChanged() == true)
     //{
         QString path;
-        if (editor->getPath() == NULL) {
+        if (editor->getPath() == NULL || editor->getPath() == "untracked")
+        {
             //path = QFileDialog::getSaveFileName(this, tr("Source File");
             path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-            editor->setPath(path);
-            editor->setName(path.section('/', -1));
+            if (path != NULL)
+            {
+                editor->setPath(path);
+                editor->setName(path.section('/', -1));
+            }
         }
         else
         {
@@ -894,10 +899,12 @@ void MainForm::compileProject()
 
         if (wDockManager->getCentralWidget() == NULL)
         {
+            qDebug() << "MainForm: returned";
             return;
         }
 
-        this->saveFile(wDockManager->getCentralWidget());
+        this->saveFile();
+        
         options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
         options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -1046,7 +1053,7 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveFile(wDockManager->getCentralWidget());
+        this->saveFile();
         
         QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir;
