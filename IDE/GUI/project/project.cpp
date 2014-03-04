@@ -2103,7 +2103,6 @@ void Project::setCompileOpt(QList<bool> opt)
         this->compileOpt[i] = opt.at(i);
     }
     
-
     QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
     QDomDocument domDoc("MDSProject");

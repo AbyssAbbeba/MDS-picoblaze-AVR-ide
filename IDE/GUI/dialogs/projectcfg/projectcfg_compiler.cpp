@@ -93,6 +93,10 @@ QList<bool> ProjectCfg_Compiler::getOpt()
     opt.append(this->ui.chckHexFile->isChecked());
     opt.append(this->ui.chckBinFile->isChecked());
     opt.append(this->ui.chckSRecFile->isChecked());
+    opt.append(this->ui.chckMemFile->isChecked());
+    opt.append(this->ui.chckRawHexFile->isChecked());
+    opt.append(this->ui.chckVerilogFile->isChecked());
+    opt.append(this->ui.chckVHDLFile->isChecked());
 
     return opt;
 }

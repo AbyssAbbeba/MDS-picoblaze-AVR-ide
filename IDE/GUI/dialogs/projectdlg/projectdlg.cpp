@@ -114,7 +114,7 @@ void ProjectDialog::bCreate()
     {
         //nacteni projektu do manageru otevrenych projektu
         projectMan->addProject(this->prjdlg_general->getName(),
-                               this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds_project",
+                               this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds-project",
                                this->prjdlg_general->getFamily(),
                                LANG_ASM,
                                &file);
