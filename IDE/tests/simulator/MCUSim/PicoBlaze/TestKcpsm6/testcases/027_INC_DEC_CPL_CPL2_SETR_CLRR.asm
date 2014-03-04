@@ -40,12 +40,11 @@ org     0
             ;; reg[1] == 0xff
             ;; flag[c] == false
             ;; flag[z] == false
-            clrr                s1 
+            clrr                s1
             ;; step                     # clrr
             ;; reg[1] == 0x00
             ;; flag[c] == false
             ;; flag[z] == true
-            
 
 
 
@@ -60,5 +59,5 @@ org     0
 
 
 
-            
-            
+
+

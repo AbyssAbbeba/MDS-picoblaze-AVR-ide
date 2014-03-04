@@ -321,8 +321,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "ret"                   { return I_RETURN;      }
 
  /* Pseudo-instructions */
-"cpl"                   { return I_CPL;  }
 "cpl2"                  { return I_CPL2; }
+"cpl"                   { return I_CPL;  }
 "inc"                   { return I_INC;  }
 "dec"                   { return I_DEC;  }
 "setr"                  { return I_SET;  }

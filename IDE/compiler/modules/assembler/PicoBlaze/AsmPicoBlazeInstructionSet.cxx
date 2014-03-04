@@ -299,7 +299,7 @@ std::string AsmPicoBlazeInstructionSet::getInstructionName ( const CompilerState
         case ASMPICOBLAZE_INS_OR_SX_KK:         return "OR sX, kk";
         case ASMPICOBLAZE_INS_OR_SX_SY:         return "OR sX, sY";
         case ASMPICOBLAZE_INS_XOR_SX_KK:        return "XOR sX, kk";
-        case ASMPICOBLAZE_INS_XOR_SX_SY:        return "YOR sX, sY";
+        case ASMPICOBLAZE_INS_XOR_SX_SY:        return "XOR sX, sY";
         case ASMPICOBLAZE_INS_TEST_SX_KK:       return "TEST sX, kk";
         case ASMPICOBLAZE_INS_TEST_SX_SY:       return "TEST sX, sY";
         case ASMPICOBLAZE_INS_STORE_SX_SS:      return "STORE sX, ss";

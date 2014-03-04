@@ -2115,7 +2115,7 @@ inst_cpl2:
 
                                         $$->appendLink ( new CompilerStatement ( LOC(@$),
                                                                                  ASMPICOBLAZE_INS_ADD_SX_KK,
-                                                                                 $expr->appendLink (
+                                                                                 $expr->copyEntireChain()->appendLink (
                                                                                     new CompilerExpr ( 0x01, LOC(@$) )
                                                         ) ) );
                                     }
