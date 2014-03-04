@@ -171,8 +171,10 @@ void WDockManager::closeTab(int index)
     {
         delete centralBase;
         centralBase = NULL;
+        activeCodeEdit = NULL;
         this->hideDockWidgetArea(1);
         this->hideDockWidgetArea(2);
+        emit centralClosed();
     }
     //qDebug() << "WDockManager: return closeTab()";
 }
@@ -314,6 +316,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                 this->showDockWidgetArea(1);
                 this->showDockWidgetArea(2);
             }
+            emit centralCreated();
         }
         else
         {
@@ -383,6 +386,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                 this->showDockWidgetArea(1);
                 this->showDockWidgetArea(2);
             }
+            emit centralCreated();
         }
         else
         {
@@ -455,6 +459,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
                     this->showDockWidgetArea(2);
                 }
             }
+            emit centralCreated();
         }
         else
         {

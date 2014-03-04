@@ -108,6 +108,8 @@ class MainForm : public QMainWindow
         void projectOpened();
         void stopSimSlot();
         void activeProjectChanged(int index);
+        void enableSimActs();
+        void disableSimActs();
 
     signals:
         void unhighlightSim();
