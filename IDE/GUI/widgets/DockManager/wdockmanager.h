@@ -127,6 +127,8 @@ class WDockManager : public QObject
         void getSimProjectData();
         void unhighlightSim();
         void stopSimSig();
+        void centralClosed();
+        void centralCreated();
 
     private:
         //MainForm *wMainWindow;

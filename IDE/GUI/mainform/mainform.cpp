@@ -97,6 +97,16 @@ MainForm::MainForm()
             this,
             SLOT(stopSimSlot())
            );
+    connect(wDockManager,
+            SIGNAL(centralCreated()),
+            this,
+            SLOT(enableSimActs())
+           );
+    connect(wDockManager,
+            SIGNAL(centralClosed()),
+            this,
+            SLOT(disableSimActs())
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -871,8 +881,6 @@ void MainForm::compileProject()
         error(ERR_NO_PROJECT);
         return;
     }
-
-    this->saveFile(wDockManager->getCentralWidget());
     
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
     CompilerOptions *options = new CompilerOptions();
@@ -883,6 +891,13 @@ void MainForm::compileProject()
         //compile actual file with global settings, not error
         //error(ERR_UNTRACKED_PROJECT);
         qDebug() << "MainForm: compiled untracked project, actual file";
+
+        if (wDockManager->getCentralWidget() == NULL)
+        {
+            return;
+        }
+
+        this->saveFile(wDockManager->getCentralWidget());
         options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
         options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -1026,6 +1041,13 @@ void MainForm::compileProject()
         //check if enabled, if it isnt, compile actual file
         //(but find whether it is in act project for compile settings)
         //error(ERR_NO_MAINFILE);
+        if (wDockManager->getCentralWidget() == NULL)
+        {
+            return;
+        }
+
+        this->saveFile(wDockManager->getCentralWidget());
+        
         QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir;
         bool found = false;
@@ -2053,5 +2075,31 @@ void MainForm::activeProjectChanged(int index)
     {
         wDockManager->changeSimWidget(index);
         projectMan->setActiveByIndex(index);
+    }
+}
+
+
+void MainForm::enableSimActs()
+{
+    if (false == projectCompileAct->isEnabled())
+    {
+        projectCompileAct->setEnabled(true);
+    }
+    if (false == simulationFlowAct->isEnabled())
+    {
+        simulationFlowAct->setEnabled(true);
+    }
+}
+
+
+void MainForm::disableSimActs()
+{
+    if (true == projectCompileAct->isEnabled())
+    {
+        projectCompileAct->setDisabled(true);
+    }
+    if (true == simulationFlowAct->isEnabled())
+    {
+        simulationFlowAct->setDisabled(true);
     }
 }
