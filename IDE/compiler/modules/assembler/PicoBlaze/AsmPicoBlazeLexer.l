@@ -170,6 +170,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                         }
 }
 
+ /* Special directives. */
 "#if"                   { return D_IF;         }
 "#ifn"                  { return D_IFN;        }
 "#ifdef"                { return D_IFDEF;      }
@@ -187,6 +188,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "#while"                { return D_WHILE;      }
 "#endwhile"             { return D_ENDW;       }
 "#endw"                 { return D_ENDW;       }
+
+ /* Directives. */
 \.?"failjmp"            { return D_FAILJMP;    }
 \.?"default_jump"       { return D_FAILJMP;    }
 \.?"device"             { return D_DEVICE;     }
