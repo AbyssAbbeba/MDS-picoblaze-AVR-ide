@@ -28,10 +28,10 @@ org     0
             cpl                 s4
             ;; step                     # cpl
             ;; reg[4] == 0b10101010
-            ;; flag[c] == true
+            ;; flag[c] == false
             ;; flag[z] == false
             cpl2                s4
-            ;; step                     # cpl2
+            ;; step 2                   # cpl2
             ;; reg[4] == 0b01010110
             ;; flag[c] == false
             ;; flag[z] == false
