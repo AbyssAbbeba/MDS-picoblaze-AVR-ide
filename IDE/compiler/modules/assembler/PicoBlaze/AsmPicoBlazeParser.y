@@ -2113,12 +2113,12 @@ inst_cpl2:
       I_CPL2 expr                   {
                                         $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_INS_XOR_SX_KK,
-                                                                     $expr->appendLink (
+                                                                     $expr->copyChainLink()->appendLink (
                                                                         new CompilerExpr ( 0xff, LOC(@$) ) ) );
 
                                         $$->appendLink ( new CompilerStatement ( LOC(@$),
                                                                                  ASMPICOBLAZE_INS_ADD_SX_KK,
-                                                                                 $expr->copyChainLink()->appendLink (
+                                                                                 $expr->appendLink (
                                                                                     new CompilerExpr ( 0x01, LOC(@$) )
                                                         ) ) );
                                     }
