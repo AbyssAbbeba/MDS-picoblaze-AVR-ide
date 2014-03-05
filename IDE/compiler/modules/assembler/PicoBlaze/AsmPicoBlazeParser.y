@@ -2140,14 +2140,14 @@ inst_dec:
 inst_set:
       I_SET expr                    {
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMPICOBLAZE_INS_LOAD_SX_KK,
+                                                                     ASMPICOBLAZE_INS_OR_SX_KK,
                                                                      $expr->appendLink(new CompilerExpr(0xff,LOC(@$))));
                                     }
 ;
 inst_clr:
       I_CLR expr                    {
                                         $$ = new CompilerStatement ( LOC(@$),
-                                                                     ASMPICOBLAZE_INS_LOAD_SX_KK,
+                                                                     ASMPICOBLAZE_INS_AND_SX_KK,
                                                                      $expr->appendLink(new CompilerExpr(0x00,LOC(@$))));
                                     }
 ;
@@ -2164,7 +2164,7 @@ inst_setb:
 ;
 inst_clrb:
       I_CLRB expr "," expr          {
-                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_OR_SX_KK, $2->appendLink
+                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_INS_AND_SX_KK, $2->appendLink
                                         ( new CompilerExpr ( 0xff, '^', new CompilerExpr ( 0x01, CompilerExpr::OPER_SHL,
                                         $4, LOC(@4) ), LOC(@4) ) ) );
                                     }
