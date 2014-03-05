@@ -17,9 +17,8 @@
 project ( TSP_TestKcpsm2 )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-file ( GLOB resultFiles results/*.* )
 set_directory_properties ( PROPERTIES
-                           ADDITIONAL_MAKE_CLEAN_FILES "${resultFiles}" )
+                           ADDITIONAL_MAKE_CLEAN_FILES "results" )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
