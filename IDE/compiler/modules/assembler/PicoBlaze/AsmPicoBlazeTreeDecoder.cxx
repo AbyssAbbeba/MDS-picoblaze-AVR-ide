@@ -546,7 +546,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_INITSPR ( CompilerStatement * node )
 {
     std::vector<unsigned char> initData;
 
-    for ( CompilerExpr * arg = node->args();
+    for ( CompilerExpr * arg = node->args()->next();
           nullptr != arg;
           arg = arg->next() )
     {
@@ -566,6 +566,14 @@ inline void AsmPicoBlazeTreeDecoder::dir_INITSPR ( CompilerStatement * node )
 
     int size = (int) initData.size();
     int addr = m_memoryPtr->m_data;
+
+    CompilerExpr value(addr);
+    m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
+                                 &value,
+                                 &( node->location() ),
+                                 AsmPicoBlazeSymbolTable::STYPE_DATA,
+                                 true );
+    m_codeListing->setValue(node->location(), addr);
 
     m_memoryPtr->m_data += size;
     for ( int i = 0; i < size; i++ )
