@@ -21,7 +21,6 @@
 #include "CompilerOptions.h"
 #include "CompilerStatement.h"
 #include "AsmMachineCodeGen.h"
-#include "CompilerSourceLocation.h"
 #include "CompilerSemanticInterface.h"
 
 // PicoBlaze assembler semantic analyzer header files.
@@ -330,6 +329,12 @@ void AsmPicoBlazeTreeDecoder::phase3()
                 m_dgbFile->setCode(*loc, data[i], addr);
                 m_memoryPtr->tryReserve(*loc, AsmPicoBlazeMemoryPtr::MS_CODE, addr);
             }
+            for ( int i = size; i < ( m_opts->m_processorlimits.m_iDataMemSize / 2 ); i++, addr++ )
+            {
+                m_machineCode->setCode(addr, 0);
+                m_dgbFile->setCode(m_mergeSprLoc, 0, addr);
+                m_memoryPtr->tryReserve(m_mergeSprLoc, AsmPicoBlazeMemoryPtr::MS_CODE, addr);
+            }
         }
 
         m_sprInit.clear();
@@ -586,6 +591,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_INITSPR ( CompilerStatement * node )
 
 inline void AsmPicoBlazeTreeDecoder::dir_MERGESPR ( CompilerStatement * node )
 {
+    m_mergeSprLoc = node->location();
     m_mergeAddr = m_symbolTable->resolveExpr(node->args());
 
     if ( m_mergeAddr <= 0 )
