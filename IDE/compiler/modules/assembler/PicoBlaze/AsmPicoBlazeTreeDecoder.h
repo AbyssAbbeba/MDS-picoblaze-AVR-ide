@@ -19,7 +19,6 @@
 // Forward declarations (Compiler common).
 class CompilerOptions;
 class CompilerStatement;
-class CompilerSourceLocation;
 class CompilerSemanticInterface;
 
 // Forward declarations (PicoBlaze Assembler common).
@@ -33,6 +32,7 @@ class AsmPicoBlazeSpecialMacros;
 class AsmPicoBlazeInstructionSet;
 
 // PicoBlaze assembler semantic analyzer header files.
+#include "CompilerSourceLocation.h"
 #include "AsmPicoBlazeSemanticAnalyzer.h"
 
 // Standard headers.
@@ -425,6 +425,9 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         int m_mergeAddr;
+
+        ///
+        CompilerSourceLocation m_mergeSprLoc;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H
