@@ -105,7 +105,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
-    hexTextEdit->setFont(QFont("UbuntuMono", fontSize));
+    hexTextEdit->setFont(QFont("Ubuntu Mono", fontSize));
     //qDebug() << "HexEdit: font size" << fontSize;
     //hexTextEdit->resize((columns*2-1)*10,5);
     QFontMetrics metrics(hexTextEdit->font());
@@ -116,7 +116,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     if (AsciiPanel == true)
     {
         hexAsciiEdit = new QPlainTextEdit(this);
-        hexAsciiEdit->setFont(QFont("UbuntuMono", fontSize));
+        hexAsciiEdit->setFont(QFont("Ubuntu Mono", fontSize));
         //hexAsciiEdit->resize(columns*15,250);
         hexAsciiEdit->setFixedWidth(columns*3*fontSize);
         hexAsciiEdit->setMinimumHeight(175);
