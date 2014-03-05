@@ -1473,6 +1473,26 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \verb'    '{\color{highlight_directive}\verb'END'}
                         \caption{END directive}
                     \end{code}
+
+                \subsection{FAILJMP,DEFAULT\_JUMP}
+                \textbf{SYNTAX:}\\
+                \\ {
+                        \texttt{}
+                        \begin{tabular}[h!]{llll}
+                                { \color{highlight_directive} FAILJMP }\verb`       `{ \color{highlight_string} <"label"> }\\
+                                { \color{highlight_directive} DEFAULT\_JUMP }\verb`       `{ \color{highlight_string} <"label"> }\\
+                        \end{tabular}
+                    }\\
+                    \\
+                \textbf{DESCRIPTION:}\\
+                Fills program memory with jump to the specified address. Simple protection against error.
+
+                \textbf{EXAMPLE:}\\
+                    \begin{code}[h!]
+                        \verb'    '{\color{highlight_directive}\verb'FAILJMP'}\verb`       `{ \color{highlight_string} start }
+                        \verb'    '{\color{highlight_directive}\verb'DEFAULT\_JUMP'}\verb`       `{ \color{highlight_string} 0x000> }
+                        \caption{END directive}
+                    \end{code}
         \section{Pseudo Instructions}
         MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code.
         Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
@@ -1515,7 +1535,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \end{code}
 
                         
-                \subsection{SET}
+                \subsection{SETR}
                 \textbf{SYNTAX:}\\
                 \\ {
                     \texttt{}
@@ -1525,7 +1545,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0xFF }
+                    { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#0xFF }
                     \\
                 \textbf{DESCRIPTION:}\\
                 This instruction sets given register.\\
@@ -1533,7 +1553,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \begin{code}[h!]
                             {\color{highlight_symbol}\verb'SET          s0' }\\
                         \end{code}
-                \subsection{CLR}
+                \subsection{CLRR}
                 \textbf{SYNTAX:}\\
                 \\ {
                     \texttt{}
@@ -1543,7 +1563,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     \end{tabular}
                     }\\
                     \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} LOAD    } { \color{highlight_symbol}      sX,\#0x00 }
+                    { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#0x00 }
                     \\
                 \textbf{DESCRIPTION:}\\
                 This instruction clears given register.\\
