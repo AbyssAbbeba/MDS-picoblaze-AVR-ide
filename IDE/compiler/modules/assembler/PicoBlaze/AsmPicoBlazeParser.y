@@ -1588,8 +1588,11 @@ dir_orgspr:
                                     }
 ;
 dir_initspr:
-      D_INITSPR args_str            { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_INITSPR, $args_str); }
-    | D_INITSPR                     { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_INITSPR, "INITSPR"); }
+      id D_INITSPR args_str         {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_INITSPR,
+                                                                     $id->appendLink($args_str) );
+                                    }
 ;
 dir_mergespr:
       D_MERGESPR expr               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_MERGESPR, $expr); }
