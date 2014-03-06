@@ -1,0 +1,6 @@
+MT_WARNING: 2044_test.asm:6.17-6.20: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2044_test.asm:8.14-8.17: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2044_test.asm:12.17-12.20: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2044_test.asm:18.17-18.20: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2044_test.asm:20.14-20.17: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2044_test.asm:24.17-24.20: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.

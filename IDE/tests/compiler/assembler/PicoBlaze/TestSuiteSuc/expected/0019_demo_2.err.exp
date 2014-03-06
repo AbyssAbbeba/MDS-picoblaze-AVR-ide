@@ -1,0 +1,6 @@
+MT_WARNING: 0019_demo_2.asm:29.38-29.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0019_demo_2.asm:31.38-31.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0019_demo_2.asm:33.38-33.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0019_demo_2.asm:40.38-40.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0019_demo_2.asm:42.38-42.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0019_demo_2.asm:44.38-44.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

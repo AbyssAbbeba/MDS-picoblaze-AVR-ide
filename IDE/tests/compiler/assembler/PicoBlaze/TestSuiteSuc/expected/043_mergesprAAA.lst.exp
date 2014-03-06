@@ -1,0 +1,129 @@
+                   1     device  kcpsm3
+                   2     failjmp 0x000
+W: jump address is not specified by a label.
+                   3     mergespr        1A9h
+                   4
+  00000            5     string          initspr   'A','B','A','B','A','B','A','B','A','B','A','B','A','B','A','B','A','B'
+  00000            6     org 0
+                   7
+                   8
+000 34001          9     jump start
+                  10
+  00001           11     start:
+                  12     REPT                    5
+                  13     load            s0,#44
+                  14     load            s0,#44
+                  15     load            s0,#44
+                  16     load            s0,#44
+                  17     load            s0,#44
+                  18     load            s0,#44
+                  19     load            s0,#44
+                  20     load            s0,#44
+                  21     load            s0,#44
+                  22     load            s0,#44
+                  23     load            s0,#44
+                  24     load            s0,#44
+                  25     load            s0,#44
+                  26     load            s0,#44
+                  27     load            s0,#44
+                  28     load            s0,#44
+                  29     load            s0,#44
+                  30     load            s0,#44
+                  31     load            s0,#44
+                  32     ENDR
+001 0002C         33 +1  load            s0,#44
+002 0002C         34 +1  load            s0,#44
+003 0002C         35 +1  load            s0,#44
+004 0002C         36 +1  load            s0,#44
+005 0002C         37 +1  load            s0,#44
+006 0002C         38 +1  load            s0,#44
+007 0002C         39 +1  load            s0,#44
+008 0002C         40 +1  load            s0,#44
+009 0002C         41 +1  load            s0,#44
+00A 0002C         42 +1  load            s0,#44
+00B 0002C         43 +1  load            s0,#44
+00C 0002C         44 +1  load            s0,#44
+00D 0002C         45 +1  load            s0,#44
+00E 0002C         46 +1  load            s0,#44
+00F 0002C         47 +1  load            s0,#44
+010 0002C         48 +1  load            s0,#44
+011 0002C         49 +1  load            s0,#44
+012 0002C         50 +1  load            s0,#44
+013 0002C         51 +1  load            s0,#44
+014 0002C         52 +1  load            s0,#44
+015 0002C         53 +1  load            s0,#44
+016 0002C         54 +1  load            s0,#44
+017 0002C         55 +1  load            s0,#44
+018 0002C         56 +1  load            s0,#44
+019 0002C         57 +1  load            s0,#44
+01A 0002C         58 +1  load            s0,#44
+01B 0002C         59 +1  load            s0,#44
+01C 0002C         60 +1  load            s0,#44
+01D 0002C         61 +1  load            s0,#44
+01E 0002C         62 +1  load            s0,#44
+01F 0002C         63 +1  load            s0,#44
+020 0002C         64 +1  load            s0,#44
+021 0002C         65 +1  load            s0,#44
+022 0002C         66 +1  load            s0,#44
+023 0002C         67 +1  load            s0,#44
+024 0002C         68 +1  load            s0,#44
+025 0002C         69 +1  load            s0,#44
+026 0002C         70 +1  load            s0,#44
+027 0002C         71 +1  load            s0,#44
+028 0002C         72 +1  load            s0,#44
+029 0002C         73 +1  load            s0,#44
+02A 0002C         74 +1  load            s0,#44
+02B 0002C         75 +1  load            s0,#44
+02C 0002C         76 +1  load            s0,#44
+02D 0002C         77 +1  load            s0,#44
+02E 0002C         78 +1  load            s0,#44
+02F 0002C         79 +1  load            s0,#44
+030 0002C         80 +1  load            s0,#44
+031 0002C         81 +1  load            s0,#44
+032 0002C         82 +1  load            s0,#44
+033 0002C         83 +1  load            s0,#44
+034 0002C         84 +1  load            s0,#44
+035 0002C         85 +1  load            s0,#44
+036 0002C         86 +1  load            s0,#44
+037 0002C         87 +1  load            s0,#44
+038 0002C         88 +1  load            s0,#44
+039 0002C         89 +1  load            s0,#44
+03A 0002C         90 +1  load            s0,#44
+03B 0002C         91 +1  load            s0,#44
+03C 0002C         92 +1  load            s0,#44
+03D 0002C         93 +1  load            s0,#44
+03E 0002C         94 +1  load            s0,#44
+03F 0002C         95 +1  load            s0,#44
+040 0002C         96 +1  load            s0,#44
+041 0002C         97 +1  load            s0,#44
+042 0002C         98 +1  load            s0,#44
+043 0002C         99 +1  load            s0,#44
+044 0002C        100 +1  load            s0,#44
+045 0002C        101 +1  load            s0,#44
+046 0002C        102 +1  load            s0,#44
+047 0002C        103 +1  load            s0,#44
+048 0002C        104 +1  load            s0,#44
+049 0002C        105 +1  load            s0,#44
+04A 0002C        106 +1  load            s0,#44
+04B 0002C        107 +1  load            s0,#44
+04C 0002C        108 +1  load            s0,#44
+04D 0002C        109 +1  load            s0,#44
+04E 0002C        110 +1  load            s0,#44
+04F 0002C        111 +1  load            s0,#44
+050 0002C        112 +1  load            s0,#44
+051 0002C        113 +1  load            s0,#44
+052 0002C        114 +1  load            s0,#44
+053 0002C        115 +1  load            s0,#44
+054 0002C        116 +1  load            s0,#44
+055 0002C        117 +1  load            s0,#44
+056 0002C        118 +1  load            s0,#44
+057 0002C        119 +1  load            s0,#44
+058 0002C        120 +1  load            s0,#44
+059 0002C        121 +1  load            s0,#44
+05A 0002C        122 +1  load            s0,#44
+05B 0002C        123 +1  load            s0,#44
+05C 0002C        124 +1  load            s0,#44
+05D 0002C        125 +1  load            s0,#44
+05E 0002C        126 +1  load            s0,#44
+05F 0002C        127 +1  load            s0,#44
+                 128

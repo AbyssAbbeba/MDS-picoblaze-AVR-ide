@@ -1,0 +1,32 @@
+MT_WARNING: 6011_directives.asm:18.17-18.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 6011_directives.asm:31.17-31.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 6011_directives.asm:83.1-83.18: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 6011_directives.asm:84.1-84.18: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 6011_directives.asm:85.1-85.18: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 6011_directives.asm:86.1-86.18: Warning: reusing already reserved space in register file memory at address: 0x4.
+MT_WARNING: 6011_directives.asm:87.1-87.18: Warning: reusing already reserved space in register file memory at address: 0x5.
+MT_WARNING: 6011_directives.asm:88.1-88.18: Warning: reusing already reserved space in register file memory at address: 0x6.
+MT_WARNING: 6011_directives.asm:89.1-89.18: Warning: reusing already reserved space in register file memory at address: 0x7.
+MT_WARNING: 6011_directives.asm:90.1-90.18: Warning: reusing already reserved space in register file memory at address: 0x8.
+MT_WARNING: 6011_directives.asm:91.1-91.18: Warning: reusing already reserved space in register file memory at address: 0x9.
+MT_WARNING: 6011_directives.asm:92.1-92.19: Warning: reusing already reserved space in register file memory at address: 0xa.
+MT_WARNING: 6011_directives.asm:93.1-93.19: Warning: reusing already reserved space in register file memory at address: 0xb.
+MT_WARNING: 6011_directives.asm:94.1-94.19: Warning: reusing already reserved space in register file memory at address: 0xc.
+MT_WARNING: 6011_directives.asm:96.1-96.19: Warning: reusing already reserved space in scratch pad memory at address: 0x1.
+MT_WARNING: 6011_directives.asm:97.1-97.19: Warning: reusing already reserved space in scratch pad memory at address: 0x2.
+MT_WARNING: 6011_directives.asm:98.1-98.19: Warning: reusing already reserved space in scratch pad memory at address: 0x3.
+MT_WARNING: 6011_directives.asm:99.1-99.19: Warning: reusing already reserved space in scratch pad memory at address: 0x4.
+MT_WARNING: 6011_directives.asm:100.1-100.19: Warning: reusing already reserved space in scratch pad memory at address: 0x5.
+MT_WARNING: 6011_directives.asm:101.1-101.19: Warning: reusing already reserved space in scratch pad memory at address: 0x6.
+MT_WARNING: 6011_directives.asm:102.1-102.19: Warning: reusing already reserved space in scratch pad memory at address: 0x7.
+MT_WARNING: 6011_directives.asm:103.1-103.19: Warning: reusing already reserved space in scratch pad memory at address: 0x8.
+MT_WARNING: 6011_directives.asm:104.1-104.19: Warning: reusing already reserved space in scratch pad memory at address: 0x9.
+MT_WARNING: 6011_directives.asm:107.1-107.22: Warning: reusing already reserved space in scratch pad memory at address: 0x4.
+MT_WARNING: 6011_directives.asm:110.18-110.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 6011_directives.asm:123.18-123.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_REMARK: 6011_directives.asm:137.17-137.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 6011_directives.asm:139.17-139.21: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 6011_directives.asm:141.17-141.29: Remark: result is negative number: 0xffffffffffffffeb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffeb.
+MT_REMARK: 6011_directives.asm:142.17-142.22: Remark: result is negative number: 0xffffffffffffff00, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ff00.
+MT_REMARK: 6011_directives.asm:146.17-146.24: Remark: result is negative number: 0xffffffffffffffe7, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffe7.
+MT_REMARK: 6011_directives.asm:151.17-151.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.

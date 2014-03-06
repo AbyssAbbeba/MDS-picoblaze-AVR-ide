@@ -1,0 +1,73 @@
+MT_WARNING: 0027_demo_5_UART.asm:45.40-45.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:59.21-59.36: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:140.21-140.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:46.37-46.42: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:59.21-59.36: Warning: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:140.21-140.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:140.31-140.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:141.21-141.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:141.21-141.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:141.31-141.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:142.21-142.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:142.21-142.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:142.31-142.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:143.21-143.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:143.21-143.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:143.31-143.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:144.21-144.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:144.21-144.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:144.31-144.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:145.21-145.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:145.21-145.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:145.31-145.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:146.21-146.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:146.21-146.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:146.31-146.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:147.21-147.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:147.21-147.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:147.31-147.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:148.21-148.34: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:148.21-148.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:148.31-148.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:76.21-76.35: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:149.21-149.29: Warning: ==> ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:76.21-76.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:149.21-149.29: Warning: ==> ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:76.31-76.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:149.21-149.29: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:77.21-77.35: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:77.21-77.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:77.31-77.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:51.40-51.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:68.21-68.38: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:157.21-157.28: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0027_demo_5_UART.asm:52.37-52.42: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:68.21-68.38: Warning: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:157.21-157.28: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0027_demo_5_UART.asm:140.31-140.34: Warning: value out of range: 0x49, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x49, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0027_demo_5_UART.asm:141.31-141.34: Warning: value out of range: 0x4e, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x4e, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0027_demo_5_UART.asm:142.31-142.34: Warning: value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0027_demo_5_UART.asm:143.31-143.34: Warning: value out of range: 0x45, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x45, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:144.31-144.34: Warning: value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:145.31-145.34: Warning: value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:146.31-146.34: Warning: value out of range: 0x55, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x55, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:147.31-147.34: Warning: value out of range: 0x50, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> value out of range: 0x50, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0027_demo_5_UART.asm:148.31-148.34: Warning: value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0027_demo_5_UART.asm:76.31-76.35: Warning: value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:149.21-149.29: Warning: ==> value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> ==> value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0027_demo_5_UART.asm:77.31-77.35: Warning: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:149.21-149.29: Warning: ==> value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:60.40-60.44: Warning: ==> ==> value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0027_demo_5_UART.asm:51.40-51.41: Warning: value out of range: 0x8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0027_demo_5_UART.asm:68.21-68.38: Warning: ==> value out of range: 0x8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0027_demo_5_UART.asm:157.21-157.28: Warning: ==> ==> value out of range: 0x8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.

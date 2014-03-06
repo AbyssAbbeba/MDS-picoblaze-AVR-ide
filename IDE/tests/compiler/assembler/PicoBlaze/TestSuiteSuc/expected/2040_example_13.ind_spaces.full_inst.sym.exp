@@ -81,8 +81,8 @@ DAYH . . . . . . . . . . . . . . . . NUMBER 0x0001D USED     CONSTANT    2040_ex
 DAYL . . . . . . . . . . . . . . . . NUMBER 0x0001E USED     CONSTANT    2040_example_13.ind_spaces.full_inst.asm:97.1-97.45
 DAY_P  . . . . . . . . . . . . . . . LABEL  0x003EB NOT USED CONSTANT    2040_example_13.ind_spaces.full_inst.asm:1505.1-1505.7
 DAY_UP . . . . . . . . . . . . . . . NUMBER 0x0001F USED     CONSTANT    2040_example_13.ind_spaces.full_inst.asm:98.1-98.45
-DEC  . . . . . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    2040_example_13.ind_spaces.full_inst.asm:118.1-118.45
 DEC2 . . . . . . . . . . . . . . . . NUMBER 0x0003F NOT USED CONSTANT    2040_example_13.ind_spaces.full_inst.asm:130.1-130.45
+DECEMBR  . . . . . . . . . . . . . . NUMBER 0x00033 NOT USED CONSTANT    2040_example_13.ind_spaces.full_inst.asm:118.1-118.49
 DELAY_1MS  . . . . . . . . . . . . . LABEL  0x002AC USED     CONSTANT    2040_example_13.ind_spaces.full_inst.asm:1017.1-1017.11
 DELAY_1S . . . . . . . . . . . . . . LABEL  0x002B6 NOT USED CONSTANT    2040_example_13.ind_spaces.full_inst.asm:1039.1-1039.10
 DELAY_1US  . . . . . . . . . . . . . LABEL  0x002A3 USED     CONSTANT    2040_example_13.ind_spaces.full_inst.asm:997.1-997.11

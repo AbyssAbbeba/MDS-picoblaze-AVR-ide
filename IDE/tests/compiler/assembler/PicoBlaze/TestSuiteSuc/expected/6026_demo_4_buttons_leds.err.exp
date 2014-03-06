@@ -1,0 +1,2 @@
+MT_WARNING: 6026_demo_4_buttons_leds.asm:95.23-95.24: Warning: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6026_demo_4_buttons_leds.asm:97.23-97.24: Warning: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

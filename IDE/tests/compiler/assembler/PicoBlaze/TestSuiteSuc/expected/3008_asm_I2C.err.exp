@@ -1,0 +1,8 @@
+MT_WARNING: 3008_asm_I2C.asm:98.29-98.36: Warning: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 3008_asm_I2C.asm:101.29-101.34: Warning: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3008_asm_I2C.asm:104.29-104.34: Warning: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3008_asm_I2C.asm:106.29-106.36: Warning: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 3008_asm_I2C.asm:110.29-110.34: Warning: instruction `TEST sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_REMARK: 3008_asm_I2C.asm:98.29-98.36: Remark: result is negative number: 0xfffffffffffffffe, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xe.
+MT_REMARK: 3008_asm_I2C.asm:106.29-106.36: Remark: result is negative number: 0xfffffffffffffffd, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xd.
+MT_WARNING: 3008_asm_I2C.asm:110.29-110.34: Warning: value out of range: 0x80, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.

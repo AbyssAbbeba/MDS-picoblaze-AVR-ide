@@ -1,0 +1,22 @@
+MT_WARNING: 2011_directives.asm:8.17-8.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2011_directives.asm:21.17-21.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2011_directives.asm:73.1-73.18: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 2011_directives.asm:74.1-74.18: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 2011_directives.asm:75.1-75.18: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 2011_directives.asm:76.1-76.18: Warning: reusing already reserved space in register file memory at address: 0x4.
+MT_WARNING: 2011_directives.asm:77.1-77.18: Warning: reusing already reserved space in register file memory at address: 0x5.
+MT_WARNING: 2011_directives.asm:78.1-78.18: Warning: reusing already reserved space in register file memory at address: 0x6.
+MT_WARNING: 2011_directives.asm:79.1-79.18: Warning: reusing already reserved space in register file memory at address: 0x7.
+MT_WARNING: 2011_directives.asm:80.1-80.18: Warning: reusing already reserved space in register file memory at address: 0x8.
+MT_WARNING: 2011_directives.asm:81.1-81.18: Warning: reusing already reserved space in register file memory at address: 0x9.
+MT_WARNING: 2011_directives.asm:82.1-82.19: Warning: reusing already reserved space in register file memory at address: 0xa.
+MT_WARNING: 2011_directives.asm:83.1-83.19: Warning: reusing already reserved space in register file memory at address: 0xb.
+MT_WARNING: 2011_directives.asm:84.1-84.19: Warning: reusing already reserved space in register file memory at address: 0xc.
+MT_WARNING: 2011_directives.asm:100.18-100.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2011_directives.asm:113.18-113.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_REMARK: 2011_directives.asm:127.17-127.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 2011_directives.asm:129.17-129.21: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 2011_directives.asm:131.17-131.29: Remark: result is negative number: 0xffffffffffffffeb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffeb.
+MT_REMARK: 2011_directives.asm:132.17-132.22: Remark: result is negative number: 0xffffffffffffff00, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ff00.
+MT_REMARK: 2011_directives.asm:136.17-136.24: Remark: result is negative number: 0xffffffffffffffe7, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffe7.
+MT_REMARK: 2011_directives.asm:141.17-141.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.

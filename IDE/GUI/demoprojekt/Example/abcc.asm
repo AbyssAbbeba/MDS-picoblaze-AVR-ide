@@ -1,14 +1,14 @@
 ; MDS PicoBlaze IDE - Demonstration code
-;°TEST code
+;Â°TEST code
 ; --------------------
 ; DIRECTIVES
 ;----------------------
 fff						set				09d
-h						SET				((10101011 & 0xF0) >> 4) | 0xF0
-b						SET				(10101011 & 0xF0)
-n						SET				(10101011 & 0xF0) >> 4
-m						SET				(10101011 >> 4) | 0xF0
-vv						SET				(10101011 >> 4)
+h						SET				((0b10101011 & 0xF0) >> 4) | 0xF0
+b						SET				(0b10101011 & 0xF0)
+n						SET				(0b10101011 & 0xF0) >> 4
+m						SET				(0b10101011 >> 4) | 0xF0
+vv						SET				(0b10101011 >> 4)
 Leds					PORT			0x02
 Btns					PORT			0x01
 LCD_interface			PORT			0x04
@@ -42,11 +42,11 @@ LCD_send_command		MACRO			cmd	; ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
 										;D7	D6	D5	D4
 										;D3	D2	D1	D0
 						LOAD			LCD_port,#0b00000000
-						AND				LCD_port,#((10101011 & 0xF0) >> 4) | 0xF0
+						AND				LCD_port,#((0b10101011 & 0xF0) >> 4) | 0xF0
 						OUT				LCD_port,LCD_interface
 						LCD_pulse_E
 						LOAD			LCD_port,#0b00000000
-						AND				LCD_port,#(10101011 | 0xF0)
+						AND				LCD_port,#(0b10101011 | 0xF0)
 						OUT				LCD_port,LCD_interface
 						LCD_pulse_E
 						CALL			wait_40us

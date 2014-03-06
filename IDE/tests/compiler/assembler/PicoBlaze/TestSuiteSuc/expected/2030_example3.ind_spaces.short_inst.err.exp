@@ -1,0 +1,14 @@
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:295.39-295.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:390.39-390.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:391.39-391.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:407.39-407.58: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:408.39-408.58: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:452.39-452.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:488.39-488.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:489.39-489.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:547.40-547.42: Warning: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:578.40-578.42: Warning: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:910.40-910.42: Warning: instruction `LOAD sX, kk' requires operand #2 to be of type(s): number, or expression; while the given operand is of type: register.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:2137.39-2137.54: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:2139.39-2139.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2030_example3.ind_spaces.short_inst.asm:2160.39-2160.54: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

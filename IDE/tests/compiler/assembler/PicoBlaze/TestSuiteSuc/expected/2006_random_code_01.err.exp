@@ -1,0 +1,4 @@
+MT_WARNING: 2006_random_code_01.asm:8.24-8.29: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2006_random_code_01.asm:9.24-9.29: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2006_random_code_01.asm:10.24-10.29: Warning: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2006_random_code_01.asm:11.24-11.29: Warning: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.

@@ -1,0 +1,100 @@
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:22.33-22.42: Warning: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:24.33-24.44: Warning: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:32.33-32.44: Warning: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:38.33-38.44: Warning: instruction `CALL aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:55.33-55.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:56.33-56.39: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:65.33-65.37: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:66.33-66.39: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:71.33-71.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:72.33-72.39: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:78.33-78.37: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:79.33-79.39: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:83.39-83.45: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:84.33-84.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:85.33-85.39: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:97.37-97.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:98.37-98.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:99.37-99.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:100.37-100.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:101.37-101.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:103.37-103.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:105.37-105.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:112.37-112.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:114.37-114.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:116.37-116.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:118.37-118.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:120.37-120.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:122.37-122.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:124.33-124.37: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:129.39-129.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:130.33-130.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:134.39-134.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:135.33-135.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:139.39-139.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:140.33-140.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:144.39-144.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:145.33-145.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:156.39-156.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:157.33-157.37: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:164.33-164.39: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:169.39-169.45: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:170.33-170.39: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:204.37-204.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:205.37-205.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:231.39-231.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:232.39-232.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:233.39-233.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:234.39-234.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:240.39-240.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:241.39-241.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:242.39-242.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:243.39-243.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:249.39-249.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:250.39-250.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:251.39-251.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:252.39-252.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:264.39-264.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:265.39-265.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:266.39-266.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:267.39-267.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:274.39-274.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:275.39-275.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:276.39-276.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:277.39-277.52: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:284.39-284.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:285.39-285.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:286.39-286.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:287.39-287.56: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:294.39-294.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:295.39-295.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:296.39-296.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:297.39-297.60: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:302.37-302.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:304.37-304.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:306.37-306.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:309.37-309.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:317.37-317.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:324.37-324.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:332.37-332.39: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:232.39-232.52: Warning: value out of range: 0x9, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:233.39-233.56: Warning: value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:234.39-234.60: Warning: value out of range: 0x11, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:241.39-241.52: Warning: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:242.39-242.56: Warning: value out of range: 0xe, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:243.39-243.60: Warning: value out of range: 0x12, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:250.39-250.52: Warning: value out of range: 0xb, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x3.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:251.39-251.56: Warning: value out of range: 0xf, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x7.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:252.39-252.60: Warning: value out of range: 0x13, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x3.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:274.39-274.52: Warning: value out of range: 0x8, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:275.39-275.52: Warning: value out of range: 0x9, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:276.39-276.52: Warning: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:277.39-277.52: Warning: value out of range: 0xb, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x3.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:284.39-284.56: Warning: value out of range: 0xc, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:285.39-285.56: Warning: value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:286.39-286.56: Warning: value out of range: 0xe, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:287.39-287.56: Warning: value out of range: 0xf, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x7.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:294.39-294.60: Warning: value out of range: 0x10, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:295.39-295.60: Warning: value out of range: 0x11, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:296.39-296.60: Warning: value out of range: 0x12, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0014_AES_sourcecode.ind_spaces.short_inst.asm:297.39-297.60: Warning: value out of range: 0x13, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x3.

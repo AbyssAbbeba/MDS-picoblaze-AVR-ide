@@ -1,0 +1,6 @@
+MT_WARNING: 3003_interrupt.asm:11.24-11.29: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 3003_interrupt.asm:12.24-12.29: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 3003_interrupt.asm:13.24-13.29: Warning: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 3003_interrupt.asm:14.24-14.29: Warning: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 3003_interrupt.asm:24.31-24.33: Warning: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3003_interrupt.asm:26.31-26.32: Warning: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

@@ -1,0 +1,74 @@
+MT_WARNING: 2012_REPT_and_WHILE.asm:7.17-7.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2012_REPT_and_WHILE.asm:20.17-20.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2012_REPT_and_WHILE.asm:72.1-72.18: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 2012_REPT_and_WHILE.asm:73.1-73.18: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 2012_REPT_and_WHILE.asm:74.1-74.18: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 2012_REPT_and_WHILE.asm:75.1-75.18: Warning: reusing already reserved space in register file memory at address: 0x4.
+MT_WARNING: 2012_REPT_and_WHILE.asm:76.1-76.18: Warning: reusing already reserved space in register file memory at address: 0x5.
+MT_WARNING: 2012_REPT_and_WHILE.asm:77.1-77.18: Warning: reusing already reserved space in register file memory at address: 0x6.
+MT_WARNING: 2012_REPT_and_WHILE.asm:78.1-78.18: Warning: reusing already reserved space in register file memory at address: 0x7.
+MT_WARNING: 2012_REPT_and_WHILE.asm:79.1-79.18: Warning: reusing already reserved space in register file memory at address: 0x8.
+MT_WARNING: 2012_REPT_and_WHILE.asm:80.1-80.18: Warning: reusing already reserved space in register file memory at address: 0x9.
+MT_WARNING: 2012_REPT_and_WHILE.asm:81.1-81.19: Warning: reusing already reserved space in register file memory at address: 0xa.
+MT_WARNING: 2012_REPT_and_WHILE.asm:82.1-82.19: Warning: reusing already reserved space in register file memory at address: 0xb.
+MT_WARNING: 2012_REPT_and_WHILE.asm:83.1-83.19: Warning: reusing already reserved space in register file memory at address: 0xc.
+MT_WARNING: 2012_REPT_and_WHILE.asm:100.18-100.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2012_REPT_and_WHILE.asm:113.18-113.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.17-148.19: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.20-148.22: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.23-148.25: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.26-148.28: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.29-148.31: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.32-148.34: Warning: macro parameter `S5' eclipses global symbol `S5'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.35-148.37: Warning: macro parameter `S6' eclipses global symbol `S6'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.38-148.40: Warning: macro parameter `S7' eclipses global symbol `S7'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.41-148.43: Warning: macro parameter `S8' eclipses global symbol `S8'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.44-148.46: Warning: macro parameter `S9' eclipses global symbol `S9'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:148.47-148.49: Warning: macro parameter `S9' eclipses global symbol `S9'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:155.17-155.19: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:162.18-162.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:162.21-162.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:169.18-169.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:169.21-169.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:169.24-169.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:176.18-176.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:176.21-176.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:176.24-176.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:176.27-176.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:182.18-182.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:182.21-182.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:182.24-182.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:182.27-182.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:182.30-182.32: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.18-188.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.21-188.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.24-188.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.27-188.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.30-188.32: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:188.33-188.35: Warning: macro parameter `S5' eclipses global symbol `S5'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.18-194.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.21-194.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.24-194.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.27-194.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.30-194.32: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.33-194.35: Warning: macro parameter `S5' eclipses global symbol `S5'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:194.36-194.38: Warning: macro parameter `S6' eclipses global symbol `S6'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.18-200.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.21-200.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.24-200.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.27-200.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.30-200.32: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.33-200.35: Warning: macro parameter `S5' eclipses global symbol `S5'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.36-200.38: Warning: macro parameter `S6' eclipses global symbol `S6'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:200.39-200.41: Warning: macro parameter `S7' eclipses global symbol `S7'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.18-206.20: Warning: macro parameter `S0' eclipses global symbol `S0'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.21-206.23: Warning: macro parameter `S1' eclipses global symbol `S1'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.24-206.26: Warning: macro parameter `S2' eclipses global symbol `S2'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.27-206.29: Warning: macro parameter `S3' eclipses global symbol `S3'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.30-206.32: Warning: macro parameter `S4' eclipses global symbol `S4'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.33-206.35: Warning: macro parameter `S5' eclipses global symbol `S5'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.36-206.38: Warning: macro parameter `S6' eclipses global symbol `S6'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.39-206.41: Warning: macro parameter `S7' eclipses global symbol `S7'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:206.42-206.44: Warning: macro parameter `S8' eclipses global symbol `S8'.
+MT_WARNING: 2012_REPT_and_WHILE.asm:145.20-145.22: Warning: value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
+MT_WARNING: 2012_REPT_and_WHILE.asm:146.9-146.13: Warning: ==> value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.

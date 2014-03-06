@@ -1,0 +1,22 @@
+MT_WARNING: 0005_subroutine.asm:51.33-51.36: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:53.33-53.36: Warning: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:67.1-67.31: Warning: reusing already reserved space in register file memory at address: 0x7.
+MT_WARNING: 0005_subroutine.asm:69.29-69.31: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:76.1-76.33: Warning: reusing already reserved space in register file memory at address: 0x0.
+MT_WARNING: 0005_subroutine.asm:79.1-79.31: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 0005_subroutine.asm:81.1-81.29: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 0005_subroutine.asm:83.1-83.31: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 0005_subroutine.asm:91.27-91.30: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:93.29-93.32: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:95.29-95.32: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:153.1-153.30: Warning: reusing already reserved space in register file memory at address: 0x0.
+MT_WARNING: 0005_subroutine.asm:155.1-155.29: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 0005_subroutine.asm:157.1-157.30: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 0005_subroutine.asm:159.1-159.31: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 0005_subroutine.asm:165.29-165.32: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:167.28-167.31: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:182.28-182.30: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:193.18-193.20: Warning: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:193.22-193.25: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:198.22-198.25: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0005_subroutine.asm:167.28-167.31: Warning: value out of range: 0x80, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
