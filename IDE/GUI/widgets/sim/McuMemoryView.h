@@ -4,13 +4,14 @@
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2012
- * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>, (C) 2012
- * @ingroup SimWidgets
- * @file McuMemoryView.h
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup GUI
+ * @file mcumemoryview.h
  */
+
 
 #ifndef MCUMEMORYVIEW_H
 #define MCUMEMORYVIEW_H

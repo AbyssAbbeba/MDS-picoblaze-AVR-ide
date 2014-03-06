@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup PluginMan_GUI
+ * @file pluginman_gui.cpp
+ */
+
+
 #include <QtGui>
 #include <QtNetwork/QNetworkReply>
 #include <QtNetwork/QNetworkAccessManager>
