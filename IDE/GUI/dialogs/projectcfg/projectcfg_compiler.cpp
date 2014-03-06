@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup ProjectCfg_Compiler
+ * @file projectcfg_compiler.cpp
+ */
+
+
 #include <QtGui>
 #include "projectcfg_compiler.h"
 

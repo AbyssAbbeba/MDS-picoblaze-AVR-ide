@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup GUI
+ * @file highlighter.h
+ */
+
+
 #ifndef HIGHLIGHTER_H  
 #define HIGHLIGHTER_H
 

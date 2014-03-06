@@ -4,12 +4,14 @@
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2012
- * @ingroup SimWidgets
- * @file RegDisplay.h
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup GUI
+ * @file regdisplay.h
  */
+
 
 #ifndef REGDISPLAY_H
 #define REGDISPLAY_H

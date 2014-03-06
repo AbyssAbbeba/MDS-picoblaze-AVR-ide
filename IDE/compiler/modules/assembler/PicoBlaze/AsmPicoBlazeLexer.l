@@ -332,6 +332,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "clrr"                  { return I_CLR;  }
 "setb"                  { return I_SETB; }
 "clrb"                  { return I_CLRB; }
+"notb"                  { return I_NOTB; }
 "djnz"                  { return I_DJNZ; }
 "ijnz"                  { return I_IJNZ; }
 

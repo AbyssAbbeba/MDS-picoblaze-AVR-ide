@@ -1,14 +1,14 @@
 /**
- * @brief Header for file manager class
+ * @brief
  * C++ Interface: ...
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
  * @ingroup GUI
- * @file filemgr.h
+ * @file projectcfg_filemgr.h
  */
 
 

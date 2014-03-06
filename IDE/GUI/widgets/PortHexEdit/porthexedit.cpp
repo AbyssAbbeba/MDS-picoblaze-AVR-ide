@@ -4,11 +4,13 @@
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author: Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2012
- *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup PortHexEdit
+ * @file porthexedit.cpp
  */
+
 
 #include "porthexedit.h"
 
