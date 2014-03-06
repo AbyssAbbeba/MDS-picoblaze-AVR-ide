@@ -1,0 +1,55 @@
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:183.14-183.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:191.28-191.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:198.14-198.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:203.25-203.38: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:211.28-211.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:214.14-214.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:221.14-221.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:229.28-229.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:232.14-232.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:240.14-240.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:248.28-248.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:251.14-251.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:258.14-258.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:266.28-266.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:269.14-269.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:276.14-276.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:284.28-284.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:287.14-287.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:294.14-294.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:299.25-299.38: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:307.28-307.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:314.14-314.27: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:322.28-322.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:523.14-523.30: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:528.14-528.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:531.14-531.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:534.14-534.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:537.14-537.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:540.14-540.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:543.14-543.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:546.14-546.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:549.14-549.26: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:183.14-183.27: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:191.28-191.41: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:198.14-198.27: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:203.25-203.38: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:211.28-211.41: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:214.14-214.27: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:221.14-221.27: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:229.28-229.41: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:232.14-232.27: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:240.14-240.27: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:248.28-248.41: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:251.14-251.27: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:258.14-258.27: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:266.28-266.41: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:269.14-269.27: Warning: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:276.14-276.27: Warning: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:284.28-284.41: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:287.14-287.27: Warning: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:294.14-294.27: Warning: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:299.25-299.38: Warning: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:307.28-307.41: Warning: value out of range: 0x15, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x5.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:314.14-314.27: Warning: value out of range: 0x17, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x7.
+MT_WARNING: 1029_s3kit_example2.ind_tabs.full_inst.asm:322.28-322.41: Warning: value out of range: 0x16, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x6.

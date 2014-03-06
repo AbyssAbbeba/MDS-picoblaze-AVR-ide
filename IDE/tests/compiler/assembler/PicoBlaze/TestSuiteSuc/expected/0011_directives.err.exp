@@ -1,0 +1,15 @@
+MT_WARNING: 0011_directives.asm:7.17-7.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 0011_directives.asm:20.17-20.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 0011_directives.asm:67.1-67.18: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 0011_directives.asm:68.1-68.18: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 0011_directives.asm:69.1-69.18: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 0011_directives.asm:70.1-70.18: Warning: reusing already reserved space in register file memory at address: 0x4.
+MT_WARNING: 0011_directives.asm:71.1-71.18: Warning: reusing already reserved space in register file memory at address: 0x5.
+MT_WARNING: 0011_directives.asm:72.1-72.18: Warning: reusing already reserved space in register file memory at address: 0x6.
+MT_WARNING: 0011_directives.asm:90.18-90.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_REMARK: 0011_directives.asm:104.17-104.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 0011_directives.asm:106.17-106.21: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.
+MT_REMARK: 0011_directives.asm:108.17-108.29: Remark: result is negative number: 0xffffffffffffffeb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffeb.
+MT_REMARK: 0011_directives.asm:109.17-109.22: Remark: result is negative number: 0xffffffffffffff00, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ff00.
+MT_REMARK: 0011_directives.asm:113.17-113.24: Remark: result is negative number: 0xffffffffffffffe7, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3ffe7.
+MT_REMARK: 0011_directives.asm:118.17-118.19: Remark: result is negative number: 0xfffffffffffffffb, this will represented as 18-bit number in two's complement arithmetic which makes it: 0x3fffb.

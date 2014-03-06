@@ -1,0 +1,9 @@
+MT_WARNING: 2000_Instruction_opcodes.asm:33.23-33.28: Warning: instruction `JUMP aaa' requires operand #1 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:35.24-35.29: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:36.24-36.29: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:37.24-37.29: Warning: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:38.24-38.29: Warning: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:84.28-84.38: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:85.29-85.31: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:86.29-86.39: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2000_Instruction_opcodes.asm:87.29-87.30: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

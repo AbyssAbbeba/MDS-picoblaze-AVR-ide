@@ -1,0 +1,2 @@
+MT_WARNING: 1026_demo_4_buttons_leds.asm:98.23-98.24: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1026_demo_4_buttons_leds.asm:100.23-100.24: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

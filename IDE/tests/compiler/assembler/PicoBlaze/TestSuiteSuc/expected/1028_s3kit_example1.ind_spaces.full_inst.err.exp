@@ -1,0 +1,14 @@
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:196.44-196.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:203.44-203.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:208.44-208.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:216.44-216.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:219.44-219.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:234.44-234.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:237.44-237.57: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:196.44-196.57: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:203.44-203.57: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:208.44-208.57: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:216.44-216.57: Warning: value out of range: 0x10, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:219.44-219.57: Warning: value out of range: 0x12, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x2.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:234.44-234.57: Warning: value out of range: 0x11, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x1.
+MT_WARNING: 1028_s3kit_example1.ind_spaces.full_inst.asm:237.44-237.57: Warning: value out of range: 0x13, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x3.

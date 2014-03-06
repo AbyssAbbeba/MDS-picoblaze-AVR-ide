@@ -1,0 +1,9 @@
+MT_WARNING: 0012_REPT_and_WHILE.asm:7.17-7.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 0012_REPT_and_WHILE.asm:20.17-20.25: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 0012_REPT_and_WHILE.asm:66.1-66.18: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 0012_REPT_and_WHILE.asm:67.1-67.18: Warning: reusing already reserved space in register file memory at address: 0x2.
+MT_WARNING: 0012_REPT_and_WHILE.asm:68.1-68.18: Warning: reusing already reserved space in register file memory at address: 0x3.
+MT_WARNING: 0012_REPT_and_WHILE.asm:69.1-69.18: Warning: reusing already reserved space in register file memory at address: 0x4.
+MT_WARNING: 0012_REPT_and_WHILE.asm:88.18-88.26: Warning: value out of range: 0xffffff, allowed range is [0x0,0x3ffff] (trimmed to 18 bits) which makes it 0x3ffff.
+MT_WARNING: 0012_REPT_and_WHILE.asm:120.20-120.22: Warning: value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.
+MT_WARNING: 0012_REPT_and_WHILE.asm:121.9-121.13: Warning: ==> value out of range: 0x244, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0x44.

@@ -1,0 +1,23 @@
+MT_WARNING: 1008_asm_I2C.asm:20.29-20.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:23.29-23.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:32.29-32.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:35.29-35.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:42.29-42.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:45.29-45.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:52.29-52.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:55.29-55.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:62.29-62.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:65.29-65.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:70.29-70.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:73.29-73.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:97.29-97.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:98.29-98.36: Warning: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 1008_asm_I2C.asm:101.29-101.34: Warning: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1008_asm_I2C.asm:103.29-103.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:104.29-104.34: Warning: instruction `OR sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1008_asm_I2C.asm:105.29-105.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:106.29-106.36: Warning: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 1008_asm_I2C.asm:107.29-107.31: Warning: instruction `OUTPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_WARNING: 1008_asm_I2C.asm:109.29-109.31: Warning: instruction `INPUT sX, pp' requires operand #2 to be of type(s): number, or port, or expression; while the given operand is of type: register.
+MT_REMARK: 1008_asm_I2C.asm:98.29-98.36: Remark: result is negative number: 0xfffffffffffffffe, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xe.
+MT_REMARK: 1008_asm_I2C.asm:106.29-106.36: Remark: result is negative number: 0xfffffffffffffffd, this will represented as 4-bit number in two's complement arithmetic which makes it: 0xd.

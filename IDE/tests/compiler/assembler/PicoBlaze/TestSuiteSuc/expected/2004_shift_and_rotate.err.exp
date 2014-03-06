@@ -1,0 +1,2 @@
+MT_WARNING: 2004_shift_and_rotate.asm:49.20-49.23: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 2004_shift_and_rotate.asm:51.20-51.23: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.

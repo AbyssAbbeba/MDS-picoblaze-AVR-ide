@@ -1,0 +1,35 @@
+MT_WARNING: 1015_PicoBlaze_SDR.asm:49.31-49.36: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:51.31-51.36: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:67.31-67.36: Warning: instruction `OUTPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:77.31-77.36: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:86.38-86.43: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:87.31-87.36: Warning: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:88.31-88.36: Warning: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:89.31-89.36: Warning: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:90.31-90.36: Warning: instruction `SR0 sX' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:93.31-93.36: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:95.31-95.36: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:98.31-98.36: Warning: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:99.31-99.36: Warning: instruction `AND sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:101.31-101.36: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:103.31-103.36: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:112.31-112.36: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:114.31-114.36: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:134.38-134.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:135.38-135.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:136.38-136.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:137.38-137.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:139.38-139.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:141.38-141.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:145.38-145.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:146.38-146.41: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:147.38-147.40: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:148.38-148.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:150.38-150.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:152.38-152.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:134.38-134.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:135.38-135.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:136.38-136.41: Warning: value out of range: 0xc8, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:145.38-145.41: Warning: value out of range: 0xfa, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xa.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:146.38-146.41: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 1015_PicoBlaze_SDR.asm:147.38-147.40: Warning: value out of range: 0x14, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x4.

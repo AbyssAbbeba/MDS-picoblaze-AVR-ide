@@ -1,0 +1,5 @@
+MT_WARNING: 6040_example_13.ind_spaces.full_inst.asm:266.45-266.50: Warning: value out of range: 0xdec, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xec.
+MT_WARNING: 6040_example_13.ind_spaces.full_inst.asm:273.45-273.50: Warning: value out of range: 0xfeb, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xeb.
+MT_WARNING: 6040_example_13.ind_spaces.full_inst.asm:278.45-278.51: Warning: value out of range: 0xfeb2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xb2.
+MT_WARNING: 6040_example_13.ind_spaces.full_inst.asm:292.45-292.51: Warning: value out of range: 0xdec2, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xc2.
+MT_WARNING: 6040_example_13.ind_spaces.full_inst.asm:647.46-647.51: Warning: value out of range: 0xdec, allowed range is [0x0,0xff] (trimmed to 8 bits) which makes it 0xec.

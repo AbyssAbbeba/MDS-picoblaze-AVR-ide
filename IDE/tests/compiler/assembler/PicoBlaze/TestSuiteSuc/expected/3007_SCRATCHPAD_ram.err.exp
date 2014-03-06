@@ -1,0 +1,17 @@
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:15.35-15.48: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:16.38-16.51: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:19.38-19.40: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:42.1-42.41: Warning: reusing already reserved space in register file memory at address: 0x0.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:44.1-44.39: Warning: reusing already reserved space in register file memory at address: 0x1.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:47.37-47.42: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:51.37-51.42: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:56.37-56.42: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:64.39-64.42: Warning: instruction `AND sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:78.29-78.32: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:90.36-90.38: Warning: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:95.36-95.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:16.38-16.51: Warning: value out of range: 0x28, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x8.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:47.37-47.42: Warning: value out of range: 0xc0, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:51.37-51.42: Warning: value out of range: 0xf9, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x9.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:56.37-56.42: Warning: value out of range: 0x8e, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0xe.
+MT_WARNING: 3007_SCRATCHPAD_ram.asm:78.29-78.32: Warning: value out of range: 0x20, allowed range is [0x0,0xf] (trimmed to 4 bits) which makes it 0x0.

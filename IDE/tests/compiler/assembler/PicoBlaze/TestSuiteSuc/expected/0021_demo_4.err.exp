@@ -1,0 +1,62 @@
+MT_WARNING: 0021_demo_4.asm:44.37-44.42: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:57.21-57.36: Warning: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:156.21-156.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:156.31-156.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:157.21-157.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:157.31-157.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:158.21-158.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:158.31-158.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:159.21-159.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:159.31-159.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:160.21-160.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:160.31-160.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:161.21-161.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:161.31-161.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:162.21-162.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:162.31-162.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:163.21-163.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:163.31-163.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:164.21-164.34: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:164.31-164.34: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:74.21-74.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:165.21-165.29: Warning: ==> ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:74.31-74.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:165.21-165.29: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:75.21-75.35: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:75.31-75.35: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:99.38-99.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:169.21-169.32: Warning: ==> instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:101.38-101.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:103.38-103.39: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:50.37-50.42: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:66.21-66.38: Warning: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:173.21-173.28: Warning: ==> ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 0021_demo_4.asm:67.33-67.39: Warning: instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 0021_demo_4.asm:173.21-173.28: Warning: ==> instruction `INPUT sX, pp' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_REMARK: 0021_demo_4.asm:44.37-44.42: Remark: result is negative number: 0xffffffffffffffff, this will represented as 8-bit number in two's complement arithmetic which makes it: 0xff.
+MT_REMARK: 0021_demo_4.asm:57.21-57.36: Remark: ==> result is negative number: 0xffffffffffffffff, this will represented as 8-bit number in two's complement arithmetic which makes it: 0xff.
+MT_REMARK: 0021_demo_4.asm:156.21-156.34: Remark: ==> ==> result is negative number: 0xffffffffffffffff, this will represented as 8-bit number in two's complement arithmetic which makes it: 0xff.
+MT_WARNING: 0021_demo_4.asm:156.31-156.34: Warning: value out of range: 0x49, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x49, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x1.
+MT_WARNING: 0021_demo_4.asm:157.31-157.34: Warning: value out of range: 0x4e, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x4e, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x6.
+MT_WARNING: 0021_demo_4.asm:158.31-158.34: Warning: value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0021_demo_4.asm:159.31-159.34: Warning: value out of range: 0x45, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x45, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:160.31-160.34: Warning: value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0021_demo_4.asm:161.31-161.34: Warning: value out of range: 0x52, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0021_demo_4.asm:162.31-162.34: Warning: value out of range: 0x55, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x55, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:163.31-163.34: Warning: value out of range: 0x50, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> value out of range: 0x50, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x0.
+MT_WARNING: 0021_demo_4.asm:164.31-164.34: Warning: value out of range: 0x54, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x4.
+MT_WARNING: 0021_demo_4.asm:74.31-74.35: Warning: value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:165.21-165.29: Warning: ==> value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> ==> value out of range: 0xd, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x5.
+MT_WARNING: 0021_demo_4.asm:75.31-75.35: Warning: value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0021_demo_4.asm:165.21-165.29: Warning: ==> value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.
+MT_WARNING: 0021_demo_4.asm:58.40-58.44: Warning: ==> ==> value out of range: 0xa, allowed range is [0x0,0x7] (trimmed to 3 bits) which makes it 0x2.

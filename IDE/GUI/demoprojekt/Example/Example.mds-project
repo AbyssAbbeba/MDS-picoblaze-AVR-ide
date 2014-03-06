@@ -17,7 +17,7 @@
   <File path="abcc.asm" name="abcc.asm"/>
   <File path="010_store_fetch.asm" name="010_store_fetch.asm"/>
  </Files>
- <Mainfile enabled="false" path="010_store_fetch.asm" name="010_store_fetch.asm"/>
+ <Mainfile enabled="false" path="demo_5_UART.asm" name="demo_5_UART.asm"/>
  <Simulator/>
  <Compiler>
   <Options>
