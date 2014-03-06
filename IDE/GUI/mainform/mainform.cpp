@@ -816,7 +816,8 @@ void MainForm::openProject()
         {
             error(ERR_OPENFILE);
         }
-        else {
+        else
+        {
             //nacteni obsahu do widgetu
             projectMan->openProject(&file);
             file.close();
