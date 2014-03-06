@@ -232,8 +232,15 @@ void TestMedAsmTrans::test ( const std::string & suffix )
             return;
     }
 
-    m_options->m_verilogTemplate = (current_path() / (m_options->m_device + ".v"  )).string();
-    m_options->m_vhdlTemplate    = (current_path() / (m_options->m_device + ".vhd")).string();
+    const path vhdTemplate = ( path("Mediatronix") / "testcases" / (testName + ".vhd") );
+    if ( true == is_regular_file(vhdTemplate) )
+    {
+        m_options->m_vhdlTemplate = vhdTemplate.string();
+    }
+    else
+    {
+        m_options->m_vhdlTemplate = (current_path() / (m_options->m_device + ".vhd")).string();
+    }
 
     const std::string errFile = (path("Mediatronix") / "results" / (testName + suffix + ".err")).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
