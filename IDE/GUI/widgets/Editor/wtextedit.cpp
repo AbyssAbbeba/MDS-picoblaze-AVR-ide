@@ -221,7 +221,8 @@ bool WTextEdit::highlightLine(int line, QColor *color)
         QTextCursor cursor(lineBlock);
         //qDebug() << "position: " << cursor.position();
         cursor.setBlockFormat(lineFormat);
-        //this->setTextCursor(cursor);
+        this->setTextCursor(cursor);
+        this->ensureCursorVisible();
         return true;
     }
     /*else
@@ -255,7 +256,11 @@ void WTextEdit::scrollToLine(int line)
     //qDebug() << "WTextEdit: scrollToLine()";
     //qDebug() << "WTextEdit: curr value:" <<  this->verticalScrollBar()->value() << "max value:" <<  this->verticalScrollBar()->maximum() << "calculated value:" << (line / this->document()->lineCount()) * this->verticalScrollBar()->maximum();
     //qDebug() << "WTextEdit: line" << line << "line count:" << this->document()->lineCount() << "value:" << (double)line / (double)this->document()->lineCount();
-    this->verticalScrollBar()->setValue((int)(((double)line / (double)this->document()->lineCount()) * this->verticalScrollBar()->maximum()));
+    //this->ensureCursorVisible();
+    this->verticalScrollBar()->setValue((int)
+                                            (((double)line / (double)this->document()->lineCount())
+                                            * this->verticalScrollBar()->maximum())
+                                        );
     //qDebug() << "WTextEdit: return scrollToLine()";
 }
 

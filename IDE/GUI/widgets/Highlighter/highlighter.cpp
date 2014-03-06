@@ -596,12 +596,12 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         }
 
         QStringList macroPatterns;
-        macroPatterns << "[^#]if"
-                      << "[^#]elseif"
-                      << "[^#]else"
-                      << "[^#]endif"
-                      << "[^#]while"
-                      << "[^#]endw"
+        macroPatterns << "([^#]?)if"
+                      << "([^#]?)elseif"
+                      << "([^#]?)else"
+                      << "([^#]?)endif"
+                      << "([^#]?)while"
+                      << "([^#]?)endw"
                       << "for"
                       << "endf";
 
@@ -647,22 +647,34 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         }
 
         QStringList operatorsPatterns;
-        operatorsPatterns << "\\bhigh\\b" << "\\blow\\b"
-            << "\\bat\\b" << "\\b@\\b"
-            << "\\b(\\b" << "\\b)\\b"
-            << "\\b#\\b" << "\\b,\\b"
-            << "\\b\\.\\.\\b"
-            << "\\b\\+\\b" << "\\b/\\b"
-            << "\\b\\-\\b" << "\\b\\*\\b"
-            << "\\b!\\b" << "\\b%\\b"
-            << "\\b<<\\b" << "\\b>>\\b"
-            << "\\b&&\\b" << "\\b\\|\\|\\b"
-            << "\\b&\\b" << "\\b\\|\\b"
-            << "\\b\\^\\b" << "\\b==\\b"
-            << "\\b<>\\b" << "\\b!=\\b"
-            << "\\b<\\b" << "\\b<=\\b"
-            << "\\b>\\b" << "\\b>=\\b"
-            << "\\b~\\b" << "\\b\\$\\b";
+        operatorsPatterns << "\\bhigh\\b"
+                          << "\\blow\\b"
+                          << "\\bat\\b"
+                          << "@"
+                          << "#"
+                          << "\\.\\."
+                          << "\\+"
+                          << "/"
+                          << "\\-"
+                          << "\\*"
+                          << "!"
+                          << "%"
+                          << "<<"
+                          << ">>"
+                          << "&&"
+                          << "\\|\\|"
+                          << "&"
+                          << "\\|"
+                          << "\\^"
+                          << "=="
+                          << "<>"
+                          << "!="
+                          << "<"
+                          << "<="
+                          << ">"
+                          << ">="
+                          << "~"
+                          << "\\$";
 
         operatorsFormat.setForeground(Qt::blue);
 
@@ -677,26 +689,26 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
         
         hexaNumbersFormat.setForeground(Qt::darkMagenta);
-        rule.pattern = QRegExp("\\b(0x[0-9A-F]*)\\b|\\b([0-9A-F]*((h)|(H)))\\b");
+        rule.pattern = QRegExp("\\b(0(x|X)[0-9A-Fa-f]+)\\b|\\b([0-9A-F]+((h)|(H)))\\b");
         rule.format = hexaNumbersFormat;
         rule.tag = "hexadecimal";
         highlightingRules.append(rule);
         
         octaNumbersFormat.setForeground(Qt::darkMagenta);
-        rule.pattern = QRegExp("\\b(0[1-9]*)\\b|\\b([0-9]*((q)|(Q)))\\b");
+        rule.pattern = QRegExp("\\b(0[1-9]*)\\b|\\b([0-9]+((q)|(Q)))\\b");
         rule.format = octaNumbersFormat;
         rule.tag = "octal";
         highlightingRules.append(rule);
 
         
         decNumbersFormat.setForeground(Qt::darkMagenta);
-        rule.pattern = QRegExp("\\b([1-9][0-9]*)\\b|\\b([0-9]*((d)|(D)))\\b");
+        rule.pattern = QRegExp("\\b([1-9][0-9]*)\\b|\\b([0-9]+((d)|(D)))\\b");
         rule.format = decNumbersFormat;
         rule.tag = "decimal";
         highlightingRules.append(rule);
 
         binNumbersFormat.setForeground(Qt::darkMagenta);
-        rule.pattern = QRegExp("\\b(0b[0-1]*)\\b|\\b([0-1]*((b)|(B)))\\b");
+        rule.pattern = QRegExp("\\b(0(b|B)[0-1]+)\\b|\\b([0-1]+((b)|(B)))\\b");
         rule.format = binNumbersFormat;
         rule.tag = "binary";
         highlightingRules.append(rule);

@@ -1,5 +1,5 @@
 ; MDS PicoBlaze IDE - Demonstration code
-;°TEST code
+;Â°TEST code
 ; --------------------
 ; DIRECTIVES
 ;----------------------

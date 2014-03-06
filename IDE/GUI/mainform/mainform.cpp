@@ -1856,7 +1856,7 @@ void MainForm::connectProjectSlot(Project *project)
 {
     connect(project, SIGNAL(highlightLine(QString, int, QColor*)), this, SLOT(highlightLine(QString, int, QColor*)));
     connect(project, SIGNAL(setCentralByName(QString)), this, SLOT(setCentralByName(QString)));
-    connect(project, SIGNAL(scrollToLine(int)), this, SLOT(scrollCentralToLine(int)));
+    //connect(project, SIGNAL(scrollToLine(int)), this, SLOT(scrollCentralToLine(int)));
     connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
     connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
@@ -1878,10 +1878,11 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
-        if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
-        {
-            this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
-        }
+        this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
+        //if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
+        //{
+        //    this->getWDockManager()->getCentralTextEdit()->scrollToLine(line, false);
+        //}
         /*else
         {
             qDebug() << "MainForm: highlightLine failed";
@@ -1904,6 +1905,7 @@ void MainForm::setCentralByName(QString file)
 /**
  * @brief
  * @param
+ * @details currently unused
  */
 void MainForm::scrollCentralToLine(int line)
 {

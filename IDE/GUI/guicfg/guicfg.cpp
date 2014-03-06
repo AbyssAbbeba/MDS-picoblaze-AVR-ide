@@ -246,8 +246,8 @@ void GuiCfg::setDefaultProject()
     this->compileOpt.append(true);
     this->compileOpt.append(false);
     this->compileOpt.append(false);
-    this->compileOpt.append(true);
-    this->compileOpt.append(true);
+    this->compileOpt.append(false);
+    this->compileOpt.append(false);
     this->compileOpt.append(true);
     this->compileOpt.append(true);
 
@@ -291,7 +291,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
-            this->helpPath = "./doc/manual"
+            this->helpPath = "./doc/manual";
         #endif
     }
 }
