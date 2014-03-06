@@ -115,7 +115,7 @@
   00030          115     sep                     EQU             0x30                    ;
   00031          116     oct                     EQU             0x31                    ;
   00032          117     nov                     EQU             0x32                    ;
-  00033          118     dec                     EQU             0x33                    ;
+  00033          118     decembr                     EQU             0x33                    ;
   00034          119     jan2                    EQU             0x34                    ;
   00035          120     feb2                    EQU             0x35                    ;
   00036          121     mar2                    EQU             0x36                    ;

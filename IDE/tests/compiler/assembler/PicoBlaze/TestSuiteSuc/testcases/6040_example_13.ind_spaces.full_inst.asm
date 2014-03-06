@@ -115,7 +115,7 @@ aug                     EQU             0x2f                    ;
 sep                     EQU             0x30                    ;
 oct                     EQU             0x31                    ;
 nov                     EQU             0x32                    ;
-dec                     EQU             0x33                    ;
+decembr                     EQU             0x33                    ;
 jan2                    EQU             0x34                    ;
 feb2                    EQU             0x35                    ;
 mar2                    EQU             0x36                    ;
