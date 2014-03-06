@@ -40,7 +40,9 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setColumnWidth(7, 65);
     
     //QFont font = this->font();
-    this->setFont(QFont("Ubuntu Mono", 10));
+    QFont font("Ubuntu Mono");
+    font.setPixelSize(13);
+    this->setFont(font);
     //font.setPointSize(9);
     //this->setFont(font);
 
