@@ -18,11 +18,13 @@ project ( manual )
 # GENERATE MDS MANUAL.
 # ------------------------------------------------------------------------------
 
-# Path to MDS manual as PDF file, and as Qt Help Collection File.
+# Path to MDS manual as PDF file, and as Qt Help Collection Files.
 set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
 set ( MANUAL_QHC "MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
+set ( MANUAL_QCH "MDS_manual.qch" CACHE STRING "Path to MDS manual as QCH file." )
 mark_as_advanced ( MANUAL_PDF )
 mark_as_advanced ( MANUAL_QHC )
+mark_as_advanced ( MANUAL_QCH )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # Set some configuration variables.
@@ -86,6 +88,6 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
 endif()
 
 install ( FILES "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_PDF}"
-          DESTINATION ${INSTALL_DIR_DOC} )
-install ( FILES "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_QHC}"
+                "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_QHC}"
+                "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_QCH}"
           DESTINATION ${INSTALL_DIR_DOC} )
