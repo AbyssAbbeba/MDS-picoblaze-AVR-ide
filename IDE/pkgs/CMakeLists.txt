@@ -81,7 +81,7 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     get_filename_component ( COMPILER_DIRECTORY ${CMAKE_CXX_COMPILER} PATH )
 
     find_library ( LIB_GCC
-                   NAMES gcc_s_sjlj-1 gcc_s_seh-1
+                   NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1
                    DOC "GCC library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
