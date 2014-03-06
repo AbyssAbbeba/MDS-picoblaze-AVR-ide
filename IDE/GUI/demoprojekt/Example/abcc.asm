@@ -1,5 +1,5 @@
 ; MDS PicoBlaze IDE - Demonstration code
-;ÃÂ°TEST code
+;ÃÂÃÂ°TEST code
 ; --------------------
 ; DIRECTIVES
 ;----------------------
@@ -94,7 +94,21 @@ ENDM
         JUMP    start                   				; Jump to code initialization
 
 
+
 Start:
+			SETB				s1,5
+			SETB				s1,4
+			CLRB				s1,5
+			
+			SETR				s8
+			CLRR				s8
+
+			load				s8,#0b10101011
+			CPL2				s8
+			CPL					s8
+	
+			DJNZ				s1,start
+
 			LCD_send_command		0x11
 			;CALL				waitfor100ms			; wait for logic to be initialized
 			LCD_init

@@ -61,7 +61,6 @@ MAIN:
                         ADD       s3,#15 + cnt
                       	cnt       SET                cnt + 1
               ENDF
-;
                ena                                                        ; enable interrupt
        		   load        uart_byte,#1
 ;
@@ -69,7 +68,6 @@ MAIN:
                    		LOAD       s7,#12
                         ADD        s7,#14 + cnt
                         SR0                                sB
-
          	   ELSEIF       uart_byte == #2
              			SendChar  'H'
              			SendChar  'E'
