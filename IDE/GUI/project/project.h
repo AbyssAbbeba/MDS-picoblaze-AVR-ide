@@ -185,6 +185,7 @@ class Project : public QObject
         //void setCentralChanged();
         void fileCountSignal(int fileCount);
         void startConfig(Project *project);
+        void changeFamily(QString family);
         
     private:
         ProjectMan *parentManager;

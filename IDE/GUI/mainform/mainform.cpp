@@ -858,12 +858,18 @@ bool MainForm::openProject(QString path)
 void MainForm::projectOpened()
 {
     //qDebug() << "MainForm: projectOpened";
-    projectConfigAct->setEnabled(true);
-    QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-    if (false == projectTabConnected && tabList.size() > 1)
+    if (false == projectConfigAct->isEnabled())
     {
-        projectTabConnected = true;
-        connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), this, SLOT(activeProjectChanged(int)));
+        projectConfigAct->setEnabled(true);
+    }
+    if (false == projectTabConnected)
+    {
+        QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
+        if (tabList.size() > 1)
+        {
+            projectTabConnected = true;
+            connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), this, SLOT(activeProjectChanged(int)));
+        }
     }
     this->createDockWidgets();
 }
@@ -1582,7 +1588,7 @@ void MainForm::simulationStep()
 {
     if (true == simulationStatus)
     {
-        projectMan->getActive()->step();
+        projectMan->getSimulated()->step();
     }
 }
 
@@ -1615,7 +1621,7 @@ void MainForm::simulationRunHandle()
             this->simulationResetAct->setDisabled(true);
             this->simulationRunStatus = true;
         }
-        projectMan->getActive()->run();
+        projectMan->getSimulated()->run();
     }
 }
 
@@ -1648,7 +1654,7 @@ void MainForm::simulationAnimateHandle()
             this->simulationResetAct->setDisabled(true);
             this->simulationAnimateStatus = true;
         }
-        projectMan->getActive()->animate();
+        projectMan->getSimulated()->animate();
     }
 }
 
@@ -1660,7 +1666,7 @@ void MainForm::simulationReset()
 {
     if (true == simulationStatus)
     {
-        projectMan->getActive()->reset();
+        projectMan->getSimulated()->reset();
     }
 }
 
@@ -1670,56 +1676,57 @@ void MainForm::simulationReset()
  */
 void MainForm::simulationFlowHandle()
 {
-    QString file = "";
-    if (projectMan->getActive() == NULL)
-    {
-        error(ERR_NO_PROJECT);
-    }
-    if (projectMan->getActive()->prjPath == "untracked")
-    {
-        file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
-    }
-    else
-    {
-        if ( false == projectMan->getActive()->useMainFile )
-        {
-            //check if enabled, if it isnt, simulate
-            QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
-            QDir fileDir;
-            bool found = false;
 
-            for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
-            {
-                fileDir.setPath(prjDir.absolutePath()
-                                + "/"
-                                + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
-                            );
-                //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
-                //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
-                if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
-                {
-                    found = true;
-                    break;
-                }
-            }
-            if (true == found)
-            {
-                file = wDockManager->getCentralPath();
-            }
-            else
-            {
-                projectMan->setActive(projectMan->getUntracked());
-                file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
-            }
-        }
-        //else
-        //{
-            //simulate main file
-            //file = "";
-        //}
-    }
     if (false == simulationStatus)
     {
+        QString file = "";
+        if (projectMan->getActive() == NULL)
+        {
+            error(ERR_NO_PROJECT);
+        }
+        if (projectMan->getActive()->prjPath == "untracked")
+        {
+            file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
+        }
+        else
+        {
+            if ( false == projectMan->getActive()->useMainFile )
+            {
+                //check if enabled, if it isnt, simulate
+                QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
+                QDir fileDir;
+                bool found = false;
+
+                for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
+                {
+                    fileDir.setPath(prjDir.absolutePath()
+                                    + "/"
+                                    + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
+                                );
+                    //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
+                    //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
+                    if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (true == found)
+                {
+                    file = wDockManager->getCentralPath();
+                }
+                else
+                {
+                    projectMan->setActive(projectMan->getUntracked());
+                    file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
+                }
+            }
+            //else
+            //{
+                //simulate main file
+                //file = "";
+            //}
+        }
         if ( true == projectMan->getActive()->start(file) )
         {
             delete this->icon_simFlow;
@@ -1862,6 +1869,7 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
     connect(project, SIGNAL(startConfig(Project*)), this, SLOT(startProjectConfig(Project*)));
+    connect(project, SIGNAL(changeFamily(QString)), this, SLOT(changeProjectFamily(QString)));
 }
 
 
@@ -2092,11 +2100,11 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    if (false == this->simulationStatus)
-    {
+    //if (false == this->simulationStatus)
+    //{
         wDockManager->changeSimWidget(index);
         projectMan->setActiveByIndex(index);
-    }
+    //}
 }
 
 
@@ -2123,4 +2131,11 @@ void MainForm::disableSimActs()
     {
         simulationFlowAct->setDisabled(true);
     }
+}
+
+
+void MainForm::changeProjectFamily(QString family)
+{
+    
+    //projectMan->getActive()->setupSim();
 }
