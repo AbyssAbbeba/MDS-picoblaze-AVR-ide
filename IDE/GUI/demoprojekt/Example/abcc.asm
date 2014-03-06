@@ -24,12 +24,12 @@ hlp						REG				s5
 
 LCD_port				REG				s7				; bit 7 dummy
 
-LCD_E					SET			    10	
-LCD_RS					SET			    20	
-LCD_RW					SET			    40	
+LCD_E					SET			    10
+LCD_RS					SET			    20
+LCD_RW					SET			    40
 ;# LCD , 4bit datam RW, E, RS
 ;NET "LCD_interface<0>"  LOC = "AF13"  | IOSTANDARD = LVCMOS33 ;   # D4 upper nible
-;NET "LCD_interface<1>"  LOC = "AF14"  | IOSTANDARD = LVCMOS33 ; #	
+;NET "LCD_interface<1>"  LOC = "AF14"  | IOSTANDARD = LVCMOS33 ; #
 ;NET "LCD_interface<2>"  LOC = "AF15"  | IOSTANDARD = LVCMOS33 ; #
 ;NET "LCD_interface<3>"  LOC = "AE15"  | IOSTANDARD = LVCMOS33 ; # D7
 ;NET "LCD_interface<4>"  LOC = "AC14"  | IOSTANDARD = LVCMOS33 ; # E
@@ -39,7 +39,7 @@ LCD_RW					SET			    40
 ; MACROS
 ;----------------------------------------------------
 LCD_send_command		MACRO			cmd	; ;Enable=0 RS=0 Instruction, RW=0 Write, E=0
-										;D7	D6	D5	D4	
+										;D7	D6	D5	D4
 										;D3	D2	D1	D0
 						LOAD			LCD_port,#0b00000000
 						AND				LCD_port,#((10101011 & 0xF0) >> 4) | 0xF0
@@ -82,11 +82,11 @@ LCD_pulse_E				MACRO
             OUT					LCD_port, LCD_interface
             CALL				delay_1us
             XOR 				LCD_port, #LCD_E                       ;E=0
-            OUTPUT				LCD_port, LCD_interface	
+            OUTPUT				LCD_port, LCD_interface
 ENDM
 
-LCD_init				MACRO			
-						
+LCD_init				MACRO
+
 ENDM
 
 ;----------------------------------------------------
@@ -94,15 +94,15 @@ ENDM
         JUMP    start                   				; Jump to code initialization
 
 
-Start:		
+Start:
 			LCD_send_command		0x11
 			;CALL				waitfor100ms			; wait for logic to be initialized
 			LCD_init
 			load				led_data,#0b10101010
 			load				Task_time,#255
-			ENABLE INTERRUPT	
+			ENABLE INTERRUPT
 loop:
-			LCD_pulse_E	
+			LCD_pulse_E
 			CALL				buttons
 			CALL				leds_
 			CALL				LCD_rut
@@ -110,12 +110,12 @@ loop:
 			ADD					hlp,#1
 			;CALL				waitfor100ms
 			JUMP		loop
-		
+
 ; -----------------------------------------
 ; subroutines
 ;--------------------------------------------
-leds_:		
-			CMP					hlp,task_time	
+leds_:
+			CMP					hlp,task_time
 			RET					NZ
 			load				hlp,#0
 ; speed grade 1-5
@@ -127,26 +127,26 @@ buttons:
 			IF					cnt1 !=	#255
 				ret
 			ENDIF
-			
-			IN					btn,btns					
+
+			IN					btn,btns
 			IF					btn != #0
 			ADD					task_time,#50
 			endif
-			
-			RET		
+
+			RET
 ;----------------------------------------------------------
 LCD_rut:
-			
+
 			ret
-		
+
 
 ;-------------------------------------------------------
-LCD_write_inst4: 
+LCD_write_inst4:
 			;AND 				LCD_port, #F8h               ;Enable=1 RS=0 Instruction, RW=0 																 			 ;Write, E=0
             OUT 				LCD_port, LCD_interface          ;set up RS and RW >40ns before enable 																			;pulse
             LCD_pulse_E
             RET
-							
+
 ; wait subroutine
 delay_1us:
 			load				sF,#24
@@ -158,7 +158,7 @@ wait_1us_i:
 waitfor100ms:
 			load				sF,#0xFF
 			load				sE,#0x20
-wait_i:		
+wait_i:
 			sub					sF,#1
 			JUMP				NZ,wait_i
 			sub					sE,#1
@@ -168,7 +168,7 @@ wait_i:
 wait_40us:
 			load				sF,#0xFF
 			load				sE,#0x05
-wait_i_40u:		
+wait_i_40u:
 			sub					sF,#1
 			JUMP				NZ,wait_i_40u
 			sub					sE,#1
@@ -187,4 +187,3 @@ ISR:
 ;-------------------------------------------------
 			ORG					0x3FF
 			JUMP				ISR
-			
