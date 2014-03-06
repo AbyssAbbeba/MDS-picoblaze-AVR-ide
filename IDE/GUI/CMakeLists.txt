@@ -55,7 +55,7 @@ windres_rc ( OUTPUT_VAR         RC_FILE
         set ( TARGET_OS "${HOST_OS}" )
   endif()
   if ( TARGET_OS STREQUAL "Windows" )
-        ADD_EXECUTABLE( mds-ide [WIN32] ${RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
+        ADD_EXECUTABLE( mds-ide WIN32 ${RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   else()
         ADD_EXECUTABLE( mds-ide ${RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
   endif()
