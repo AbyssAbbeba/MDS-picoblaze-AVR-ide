@@ -17,6 +17,22 @@ endif
 
 ; <-- Bookmark   (ctrl + shift + M)
 ; <-- Breakpoint (ctrl + shift + B)
+; Pseudo instructions
+			SETB				s1,5
+			CLRB				s1,5
+; Set bit and clear bit
+			NOTB				s1,4
+; Negation of selected bit			
+			SETR				s8
+			CLRR				s8
+; Set register and clear register
+			CPL2				s8
+; Twos complement
+			CPL					s8
+; Ones complement	
+			DJNZ				s1,start
+; Decrement until zero
+			IJNZ				s1,loop
      
 ; Here you can see syntax of some important directives
 ; Those directives may significantly improve quality and readability of your code
