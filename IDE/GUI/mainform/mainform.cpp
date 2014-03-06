@@ -476,15 +476,22 @@ void MainForm::createDockWidgets()
         //addAct->setEnabled(true);
         newAddAct->setEnabled(true);
         saveProjAct->setEnabled(true);
-        projectCompileAct->setEnabled(true);
-        simulationFlowAct->setEnabled(true);
+        //projectCompileAct->setEnabled(true);
+        //simulationFlowAct->setEnabled(true);
         saveAct->setEnabled(true);
         saveAsAct->setEnabled(true);
         saveAllAct->setEnabled(true);
         wDockManager->dockWidgets = true;
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
         wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), wDockManager, SLOT(handleShowHideBottom(int)));
+        connect(tabList.at(tabList.size()-1),
+                SIGNAL(currentChanged(int)),
+                wDockManager,
+                SLOT(handleShowHideBottom(int))
+               );
+
+        wDockManager->hideDockWidgetArea(1);
+        wDockManager->hideDockWidgetArea(2);
     }
     else
     {
@@ -560,7 +567,8 @@ void MainForm::openFile()
         {
             error(ERR_OPENFILE);
         }
-        else {
+        else
+        {
             //wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
@@ -616,13 +624,16 @@ void MainForm::addFile()
     if (wDockManager->isEmpty() == false)
     {
         QString path;
-        if (wDockManager->getCentralPath() == NULL) {
+        if (wDockManager->getCentralPath() == NULL)
+        {
             path = QFileDialog::getSaveFileName(this, tr("Source File"));
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
         }
         else
+        {
             path = wDockManager->getCentralPath();
+        }
 
         //je sice prehlednejsi zavolat saveFile(), ale
         //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
@@ -1787,7 +1798,7 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example/Example.mds-project"))
+    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example.mds-project"))
     {
         return;
     }
@@ -1845,7 +1856,7 @@ void MainForm::connectProjectSlot(Project *project)
 {
     connect(project, SIGNAL(highlightLine(QString, int, QColor*)), this, SLOT(highlightLine(QString, int, QColor*)));
     connect(project, SIGNAL(setCentralByName(QString)), this, SLOT(setCentralByName(QString)));
-    connect(project, SIGNAL(scrollToLine(int)), this, SLOT(scrollCentralToLine(int)));
+    //connect(project, SIGNAL(scrollToLine(int)), this, SLOT(scrollCentralToLine(int)));
     connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
     connect(project, SIGNAL(openFilePath(QString)), this, SLOT(openFilePath(QString)));
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
@@ -1867,10 +1878,11 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
-        if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
-        {
-            this->getWDockManager()->getCentralTextEdit()->scrollToLine(line);
-        }
+        this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
+        //if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
+        //{
+        //    this->getWDockManager()->getCentralTextEdit()->scrollToLine(line, false);
+        //}
         /*else
         {
             qDebug() << "MainForm: highlightLine failed";
@@ -1893,6 +1905,7 @@ void MainForm::setCentralByName(QString file)
 /**
  * @brief
  * @param
+ * @details currently unused
  */
 void MainForm::scrollCentralToLine(int line)
 {

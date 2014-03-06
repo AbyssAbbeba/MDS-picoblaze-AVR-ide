@@ -20,6 +20,7 @@ project ( manual )
 
 # Path to MDS manual as PDF file.
 set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
+set ( MANUAL_QHC "MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
 mark_as_advanced ( MANUAL_PDF )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
@@ -84,4 +85,6 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
 endif()
 
 install ( FILES "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_PDF}"
+          DESTINATION ${INSTALL_DIR_DOC} )
+install ( FILES "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_QHC}"
           DESTINATION ${INSTALL_DIR_DOC} )

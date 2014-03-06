@@ -37,7 +37,7 @@
     <rect>
      <x>30</x>
      <y>40</y>
-     <width>341</width>
+     <width>331</width>
      <height>27</height>
     </rect>
    </property>
@@ -110,6 +110,9 @@
    </property>
   </widget>
   <widget class="QCheckBox" name="chckDbgFile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>30</x>
@@ -120,6 +123,12 @@
    </property>
    <property name="text">
     <string>Debug File</string>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QCheckBox" name="chckCodeTree">
@@ -149,6 +158,9 @@
    </property>
   </widget>
   <widget class="QCheckBox" name="chckHexFile">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -159,6 +171,9 @@
    </property>
    <property name="text">
     <string>Hex File</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QCheckBox" name="chckBinFile">

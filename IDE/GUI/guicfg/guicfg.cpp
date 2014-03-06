@@ -246,8 +246,8 @@ void GuiCfg::setDefaultProject()
     this->compileOpt.append(true);
     this->compileOpt.append(false);
     this->compileOpt.append(false);
-    this->compileOpt.append(true);
-    this->compileOpt.append(true);
+    this->compileOpt.append(false);
+    this->compileOpt.append(false);
     this->compileOpt.append(true);
     this->compileOpt.append(true);
 
@@ -274,21 +274,24 @@ void GuiCfg::setDefaultPaths(bool release)
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
+        this->helpPath = "../doc/mds";
     }
     else
     {
         #ifdef Q_OS_LINUX
             this->configPath = "./resources/xml/config.xml";
             this->compilerPath = "../compiler/include";
-            this->examplePath = "./demoprojekt";
+            this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./temp";
+            this->helpPath = "../doc/manual";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->compilerPath = "./compiler/include";
-            this->examplePath = "./GUI/demoprojekt";
+            this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
+            this->helpPath = "./doc/manual";
         #endif
     }
 }
@@ -534,6 +537,12 @@ QString GuiCfg::getTemplatePath()
 QString GuiCfg::getTempPath()
 {
     return this->tempPath;
+}
+
+
+QString GuiCfg::getHelpPath()
+{
+    return this->helpPath;
 }
 
 
