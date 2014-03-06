@@ -1,5 +1,5 @@
 ; MDS PicoBlaze IDE - Demonstration code
-;Â°TEST code
+;ÃÂ°TEST code
 ; --------------------
 ; DIRECTIVES
 ;----------------------
@@ -156,8 +156,8 @@ wait_1us_i:
 			RET
 ;------------------------------------------------
 waitfor100ms:
-			load				sF,#0xFF
-			load				sE,#0x20
+			load				sF,#0xF
+			load				sE,#0x1
 wait_i:
 			sub					sF,#1
 			JUMP				NZ,wait_i
@@ -166,8 +166,8 @@ wait_i:
 			RET
 ;-----------------------------------------------------
 wait_40us:
-			load				sF,#0xFF
-			load				sE,#0x05
+			load				sF,#0xF
+			load				sE,#0x1
 wait_i_40u:
 			sub					sF,#1
 			JUMP				NZ,wait_i_40u
