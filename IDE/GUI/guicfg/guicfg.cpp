@@ -293,7 +293,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
-        this->helpPath = "../doc/mds";
+        this->helpPath = "../docs/mds";
     }
     else
     {
@@ -303,14 +303,14 @@ void GuiCfg::setDefaultPaths(bool release)
             this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./temp";
-            this->helpPath = "../doc/manual";
+            this->helpPath = "../docs/manual";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
-            this->helpPath = "./doc/manual";
+            this->helpPath = "./docs/manual";
         #endif
     }
 }
