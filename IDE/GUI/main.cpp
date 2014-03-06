@@ -26,19 +26,19 @@ int main(int argc, char *argv[])
     QDir::setCurrent(QCoreApplication::applicationDirPath());
     QFontDatabase fdb;
     //fdb.addApplicationFont("./resources/fonts/MostlyMono/MostlyMono.ttf");
-    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-R.ttf") == -1)
+    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-R.ttf") < 0 )
     {
         qDebug() << "Main: already loaded";
     }
-    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-RI.ttf") == -1)
+    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-RI.ttf") < 0 )
     {
         qDebug() << "Main: already loaded";
     }
-    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-B.ttf") == -1)
+    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-B.ttf") < 0 )
     {
         qDebug() << "Main: already loaded";
     }
-    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-BI.ttf") == -1)
+    if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-BI.ttf") < 0 )
     {
         qDebug() << "Main: already loaded";
     }
