@@ -192,7 +192,7 @@ endif()
 set ( QT_MIN_VER "4.8.1" )
 set ( QT_IS_STATIC OFF )
 find_package ( Qt4 ${QT_MIN_VER} REQUIRED
-               COMPONENTS QtGui QtXml QtHelp ) # QtCore
+               COMPONENTS QtCore QtGui QtXml QtHelp )
 include ( ${QT_USE_FILE} )
 
 # Find Boost include directories and libraries.
