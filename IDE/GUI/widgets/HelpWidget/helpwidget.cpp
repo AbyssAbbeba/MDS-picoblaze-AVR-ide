@@ -1,12 +1,13 @@
 #include <QtGui>
 #include "helpwidget.h"
+#include "../../guicfg/guicfg.h"
 
 
 
 HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     : QWidget(parent)
 {
-    QHelpEngine *helpEngine = new QHelpEngine("../docs/manual/MDS_manual.qhc", this);
+    QHelpEngine *helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     helpEngine->setupData();
     this->textBrowser = new HelpBrowser(this);
 

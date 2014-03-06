@@ -278,7 +278,76 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
     {
         //qDebug() << "PICOBLAZEASM-----------------------------";
         QStringList keywordPatterns;
-        keywordPatterns << "\\bequ\\b" << "\\bEQU\\b"
+        keywordPatterns << "#if"
+                        << "#ifn"
+                        << "#ifdef"
+                        << "#ifndef"
+                        << "#elseifb"
+                        << "#elseifnb"
+                        << "#else"       
+                        << "#elseif"
+                        << "#elseifn"
+                        << "#elseifdef"
+                        << "#elseifndef"
+                        << "#endif"
+                        << "#ifnb"
+                        << "#ifb"
+                        << "#while"
+                        << "#endwhile"
+                        << "(\\.)?failjmp"
+                        << "(\\.)?default_jump"
+                        << "(\\.)?device"
+                        << "(\\.)?limit"
+                        << "(\\.)?reg"
+                        << "(\\.)?namereg"
+                        << "(\\.)?address"
+                        << "(\\.)?org"
+                        << "(\\.)?define"
+                        << "(\\.)?undefine"
+                        << "(\\.)?undef"
+                        << "(\\.)?equ"
+                        << "(\\.)?constant"
+                        << "(\\.)?set"
+                        << "(\\.)?variable"
+                        << "(\\.)?port"
+                        << "(\\.)?data"
+                        << "(\\.)?code"
+                        << "(\\.)?db"
+                        << "(\\.)?error"
+                        << "(\\.)?warning"
+                        << "(\\.)?list"
+                        << "(\\.)?messg"
+                        << "(\\.)?nolist"
+                        << "(\\.)?skip"
+                        << "(\\.)?title"
+                        << "(\\.)?expand"
+                        << "(\\.)?noexpand"
+                        << "(\\.)?local"
+                        << "(\\.)?endmacro"
+                        << "(\\.)?endm"
+                        << "(\\.)?exitm"
+                        << "(\\.)?repeat"
+                        << "(\\.)?rept"
+                        << "(\\.)?endrepeat"
+                        << "(\\.)?endr"
+                        << "(\\.)?autoreg"
+                        << "(\\.)?autospr"
+                        << "(\\.)?orgspr"
+                        << "(\\.)?initspr"
+                        << "(\\.)?mergespr"
+                        << "(\\.)?macro"
+                        << "(\\.)?end"
+                        << "(\\.)?include";
+                        
+        QStringList keywordPatternsFinal;
+        foreach (const QString &pattern, keywordPatterns)
+        {
+            keywordPatternsFinal << "\\b" + pattern + "\\b";
+            keywordPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
+        }
+
+                        
+        /*<< "\\bequ\\b" <<"#endw"        "\\bEQU\\b"
             << "\\badd\\b" << "\\baddcy\\b" << "\\band\\b"
             << "\\bcall\\b" << "\\bcompare\\b" << "\\bcomparecy\\b"
             << "\\bdisable interrupt\\b" << "\\benable interrupt\\b" << "\\bfetch\\b"
@@ -384,19 +453,173 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             << "\\bORGSPR\\b" << "\\borgspr\\b"
             << "\\bINITSPR\\b" << "\\binitspr\\b"
             << "\\bMERGESPR\\b" << "\\bmergespr\\b"
-            << "\\bINCLUDE\\b" << "\\binclude\\b";
+            << "\\bINCLUDE\\b" << "\\binclude\\b";*/
             //vsechny s {WS}
             //RETURNI_ENABLE_INST predelat na returni{WS}enable
             //ENA_INT_INST predelat na enable{WS}interrupt
 
-        keywordFormat.setForeground(Qt::darkBlue);
+        keywordFormat.setForeground(Qt::darkGreen);
         keywordFormat.setFontWeight(QFont::Bold);
 
-        foreach (const QString &pattern, keywordPatterns)
+        foreach (const QString &pattern, keywordPatternsFinal)
         {
             rule.pattern = QRegExp(pattern);
             rule.format = keywordFormat;
-            rule.tag = "keyword";
+            rule.tag = "directive";
+            highlightingRules.append(rule);
+            //qDebug() << "Added " << pattern;
+        }
+
+        QStringList functionPatterns;
+        functionPatterns << "add"
+                         << "addcy"
+                         << "sub"
+                         << "subcy"
+                         << "compare"
+                         << "load"
+                         << "and"
+                         << "or"
+                         << "xor"
+                         << "test"
+                         << "store"
+                         << "fetch"
+                         << "sr0"
+                         << "sr1"
+                         << "srx"
+                         << "sra"
+                         << "rr"
+                         << "sl0"
+                         << "sl1"
+                         << "slx"
+                         << "sla"
+                         << "rl"
+                         << "input"
+                         << "output"
+                         << "hwbuild"
+                         << "star"
+                         << "testcy"
+                         << "comparecy"
+                         << "outputk"
+                         << "jump([ \\t]|\\u00A0)+z"
+                         << "jump([ \\t]|\\u00A0)+nz"
+                         << "jump([ \\t]|\\u00A0)+c"
+                         << "jump([ \\t]|\\u00A0)+nc"
+                         << "call([ \\t]|\\u00A0)+z"
+                         << "call([ \\t]|\\u00A0)+nz"
+                         << "call([ \\t]|\\u00A0)+c"
+                         << "call([ \\t]|\\u00A0)+nc"
+                         << "return([ \\t]|\\u00A0)+z"
+                         << "return([ \\t]|\\u00A0)+nz"
+                         << "return([ \\t]|\\u00A0)+c"
+                         << "return([ \\t]|\\u00A0)+nc"
+                         << "return"
+                         << "jump"
+                         << "call"
+                         << "regbank([ \\t]|\\u00A0)+A"
+                         << "regbank([ \\t]|\\u00A0)+B"
+                         << "returni([ \\t]|\\u00A0)+enable"
+                         << "returni([ \\t]|\\u00A0)+disable"
+                         << "enable([ \\t]|\\u00A0)+interrupt"
+                         << "disable([ \\t]|\\u00A0)+interrupt";
+
+        QStringList functionPatternsFinal;
+        foreach (const QString &pattern, functionPatterns)
+        {
+            functionPatternsFinal << "\\b" + pattern + "\\b";
+            functionPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
+        }
+        
+        functionFormat.setForeground(Qt::darkBlue);
+        functionFormat.setFontWeight(QFont::Bold);
+
+        foreach (const QString &pattern, functionPatternsFinal)
+        {
+            rule.pattern = QRegExp(pattern);
+            rule.format = functionFormat;
+            rule.tag = "instruction";
+            highlightingRules.append(rule);
+            //qDebug() << "Added " << pattern;
+        }
+
+        
+        QStringList specFunctionPatterns;
+        specFunctionPatterns << "ldret"      
+                             << "ena"
+                             << "dis"
+                             << "retie"
+                             << "retid"
+                             << "cmp"
+                             << "in"
+                             << "out"
+                             << "outk"
+                             << "ld"
+                             << "cmpcy"
+                             << "st"
+                             << "ft"
+                             << "rb([ \\t]|\\u00A0)+A"
+                             << "rb([ \\t]|\\u00A0)+B"
+                             << "ret([ \\t]|\\u00A0)+z"
+                             << "ret([ \\t]|\\u00A0)+nz"
+                             << "ret([ \\t]|\\u00A0)+c"
+                             << "ret([ \\t]|\\u00A0)+nc"
+                             << "ret"
+                             << "cpl2"
+                             << "cpl"
+                             << "inc"
+                             << "dec"
+                             << "setr"
+                             << "clrr"
+                             << "setb"
+                             << "clrb"
+                             << "djnz"
+                             << "ijnz";
+
+        QStringList specFunctionPatternsFinal;
+        foreach (const QString &pattern, specFunctionPatterns)
+        {
+            specFunctionPatternsFinal << "\\b" + pattern + "\\b";
+            specFunctionPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
+        }
+
+                             
+                             
+        specFunctionFormat.setForeground(Qt::darkBlue);
+        specFunctionFormat.setFontWeight(QFont::Bold);
+
+        foreach (const QString &pattern, specFunctionPatternsFinal)
+        {
+            rule.pattern = QRegExp(pattern);
+            rule.format = specFunctionFormat;
+            rule.tag = "specinstruction";
+            highlightingRules.append(rule);
+            //qDebug() << "Added " << pattern;
+        }
+
+        QStringList macroPatterns;
+        macroPatterns << "([^#]?)if"
+                      << "([^#]?)elseif"
+                      << "([^#]?)else"
+                      << "([^#]?)endif"
+                      << "([^#]?)while"
+                      << "([^#]?)endw"
+                      << "for"
+                      << "endf";
+
+        QStringList macroPatternsFinal;
+        foreach (const QString &pattern, macroPatterns)
+        {
+            macroPatternsFinal << "\\b" + pattern + "\\b";
+            macroPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
+        }
+                      
+        macroFormat.setForeground(Qt::darkRed);
+        macroFormat.setFontWeight(QFont::Bold);
+
+        foreach (const QString &pattern, macroPatternsFinal)
+        {
+            rule.pattern = QRegExp(pattern);
+            rule.format = macroFormat;
+            rule.tag = "macro";
             highlightingRules.append(rule);
             //qDebug() << "Added " << pattern;
         }
@@ -409,11 +632,11 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
         QStringList operandsPatterns;
         //pridat do keywords s {WS}
-        operandsPatterns << "\\bz\\b" << "\\bnz\\b"
-            << "\\bc\\b" << "\\bnc\\b";
+        operandsPatterns << "\\bS[0-9A-F]+\\b"
+                         << "\\bs[0-9A-F]+\\b";
 
         operandsFormat.setFontWeight(QFont::Bold);
-        //operandsFormat.setForeground(Qt::gray);
+        operandsFormat.setForeground(Qt::darkBlue);
 
         foreach (const QString &pattern, operandsPatterns)
         {
@@ -423,23 +646,35 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             highlightingRules.append(rule);
         }
 
-        /*QStringList operatorsPatterns;
-        operatorsPatterns << "\\bhigh\\b" << "\\blow\\b"
-            << "\\bat\\b" << "\\b@\\b"
-            << "\\b(\\b" << "\\b)\\b"
-            << "\\b#\\b" << "\\b,\\b"
-            << "\\b..\\b"
-            << "\\b+\\b" << "\\b\/\\b"
-            << "\\b-\\b" << "\\b*\\b"
-            << "\\b!\\b" << "\\b%\\b"
-            << "\\b<<\\b" << "\\b>>\\b"
-            << "\\b&&\\b" << "\\b||\\b"
-            << "\\b&\\b" << "\\b|\\b"
-            << "\\b^\\b" << "\\b==\\b"
-            << "\\b<>\\b" << "\\b!=\\b"
-            << "\\b<\\b" << "\\b<=\\b"
-            << "\\b>\\b" << "\\b>=\\b"
-            << "\\b~\\b";
+        QStringList operatorsPatterns;
+        operatorsPatterns << "\\bhigh\\b"
+                          << "\\blow\\b"
+                          << "\\bat\\b"
+                          << "@"
+                          << "#"
+                          << "\\.\\."
+                          << "\\+"
+                          << "/"
+                          << "\\-"
+                          << "\\*"
+                          << "!"
+                          << "%"
+                          << "<<"
+                          << ">>"
+                          << "&&"
+                          << "\\|\\|"
+                          << "&"
+                          << "\\|"
+                          << "\\^"
+                          << "=="
+                          << "<>"
+                          << "!="
+                          << "<"
+                          << "<="
+                          << ">"
+                          << ">="
+                          << "~"
+                          << "\\$";
 
         operatorsFormat.setForeground(Qt::blue);
 
@@ -449,17 +684,44 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             rule.format = operatorsFormat;
             rule.tag = "operator";
             highlightingRules.append(rule);
-        }*/
+        }
+
+
+        
+        hexaNumbersFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegExp("\\b(0(x|X)[0-9A-Fa-f]+)\\b|\\b([0-9A-F]+((h)|(H)))\\b");
+        rule.format = hexaNumbersFormat;
+        rule.tag = "hexadecimal";
+        highlightingRules.append(rule);
+        
+        octaNumbersFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegExp("\\b(0[1-9]*)\\b|\\b([0-9]+((q)|(Q)))\\b");
+        rule.format = octaNumbersFormat;
+        rule.tag = "octal";
+        highlightingRules.append(rule);
+
+        
+        decNumbersFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegExp("\\b([1-9][0-9]*)\\b|\\b([0-9]+((d)|(D)))\\b");
+        rule.format = decNumbersFormat;
+        rule.tag = "decimal";
+        highlightingRules.append(rule);
+
+        binNumbersFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegExp("\\b(0(b|B)[0-1]+)\\b|\\b([0-1]+((b)|(B)))\\b");
+        rule.format = binNumbersFormat;
+        rule.tag = "binary";
+        highlightingRules.append(rule);
             
 
         labelFormat.setFontItalic(true);
-        rule.pattern = QRegExp("[a-zA-Z][0-9a-zA-Z]*:");
+        rule.pattern = QRegExp("[a-zA-Z][0-9a-zA-Z_]*:");
         rule.format = labelFormat;
         rule.tag = "label";
         highlightingRules.append(rule);
         
         singleLineCommentFormat.setForeground(Qt::gray);
-        rule.pattern = QRegExp(";[^\n]*");
+        rule.pattern = QRegExp(";[^\r\n]*");
         rule.format = singleLineCommentFormat;
         rule.tag = "lineComment";
         highlightingRules.append(rule);
