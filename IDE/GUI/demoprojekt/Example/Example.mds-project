@@ -17,7 +17,7 @@
   <File path="abcc.asm" name="abcc.asm"/>
   <File path="010_store_fetch.asm" name="010_store_fetch.asm"/>
  </Files>
- <Mainfile enabled="false" path="abcc.asm" name="abcc.asm"/>
+ <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
  <Simulator/>
  <Compiler>
   <Options>
