@@ -8,7 +8,7 @@
  <IDEShortcuts/>
  <EditorGeneral>
   <Option param="4" name="tabwidth"/>
-  <Option param="true" name="spaces"/>
+  <Option param="false" name="spaces"/>
   <Option param="4" name="spaceswidth"/>
   <Option param="utf-8" name="encoding"/>
   <Option param="lf" name="eol"/>

@@ -71,7 +71,7 @@
     <string>Insert spaces instead of tabs</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="lblSpaces">
    <property name="enabled">
     <bool>false</bool>
    </property>
