@@ -141,7 +141,6 @@ class WDockManager : public QObject
         CodeEdit *activeCodeEdit;
         QList<CodeEdit*> codeEditList;
         QString tmpPrjPath;
-        MCUSimControl* tmpSimControl;
         
         //widgets
         BookmarkList *bookmarkList;
