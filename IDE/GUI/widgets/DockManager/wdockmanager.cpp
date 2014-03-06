@@ -807,18 +807,20 @@ void WDockManager::stopSimSlot()
 
 void WDockManager::changeSimWidget(int index)
 {
-    qDebug() << "WDockManager: changeSimWidget index:" << index;
-    qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
+    //qDebug() << "WDockManager: changeSimWidget index:" << index;
+    //qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
     if (this->getDockWidget(wSimulationInfo) == NULL)
     {
-        qDebug() << "fuck, null";
+        //qDebug() << "fuck, null";
+        return;
     }
     if (this->openSimWidgets.at(index) == NULL)
     {
-        qDebug() << "fuck, null, list";
+        //qDebug() << "fuck, null, list";
+        return;
     }
     this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
-    qDebug() << "WDockManager: changeSimWidget done";
+    //qDebug() << "WDockManager: changeSimWidget done";
 }
 
 

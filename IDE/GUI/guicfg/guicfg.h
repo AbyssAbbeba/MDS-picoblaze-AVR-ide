@@ -133,6 +133,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         QString getTempPath();
 
+        QString getHelpPath();
+
         bool getProjectDefVHDL();
         
         bool getProjectDefVerilog();

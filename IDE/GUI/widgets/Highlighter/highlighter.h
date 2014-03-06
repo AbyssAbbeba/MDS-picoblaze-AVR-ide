@@ -30,15 +30,25 @@ class Highlighter : public QSyntaxHighlighter
         QRegExp commentStartExpression;
         QRegExp commentEndExpression;
 
-        QTextCharFormat keywordFormat;
         QTextCharFormat labelFormat;
         //QTextCharFormat classFormat;
         QTextCharFormat singleLineCommentFormat;
         QTextCharFormat multiLineCommentFormat;
         QTextCharFormat quotationFormat;
+        //directive
+        QTextCharFormat keywordFormat;
+        //instruction
         QTextCharFormat functionFormat;
+        QTextCharFormat specFunctionFormat;
+        //macro
+        QTextCharFormat macroFormat;
         QTextCharFormat operandsFormat;
         QTextCharFormat operatorsFormat;
+        //numbers
+        QTextCharFormat hexaNumbersFormat;
+        QTextCharFormat octaNumbersFormat;
+        QTextCharFormat decNumbersFormat;
+        QTextCharFormat binNumbersFormat;
 
         SourceType type;
  };

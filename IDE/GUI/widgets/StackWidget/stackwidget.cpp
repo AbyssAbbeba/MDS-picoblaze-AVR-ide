@@ -39,13 +39,13 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
 
     QFont fontLE = this->leInput->font();
     fontLE.setPointSize(9);
-    fontLE.setFamily("UbuntuMono");
+    fontLE.setFamily("Ubuntu Mono");
     this->leInput->setFont(fontLE);
     this->leInput->setMaxLength(this->numWidth);
     
     QFont fontLW = this->lwStack->font();
     fontLW.setPointSize(10);
-    fontLW.setFamily("UbuntuMono");
+    fontLW.setFamily("Ubuntu Mono");
     this->lwStack->setFont(fontLW);
 
     //QPixmap pixSP(10,10);
