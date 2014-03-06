@@ -24,6 +24,7 @@ MT_ERROR: 040_example_13.asm:111.32-111.34: Error: identifier cannot start with 
 MT_ERROR: 040_example_13.asm:111.55-112.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:112.32-112.34: Error: identifier cannot start with a digit: `2F'.
 MT_ERROR: 040_example_13.asm:112.55-113.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:116.27-116.30: Error: unexpected instruction DEC.
 MT_ERROR: 040_example_13.asm:123.33-123.35: Error: identifier cannot start with a digit: `3A'.
 MT_ERROR: 040_example_13.asm:123.55-124.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:124.33-124.35: Error: identifier cannot start with a digit: `3B'.
@@ -80,6 +81,7 @@ MT_ERROR: 040_example_13.asm:255.27-255.29: Error: identifier cannot start with 
 MT_ERROR: 040_example_13.asm:255.27-256.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:257.27-257.29: Error: identifier cannot start with a digit: `1F'.
 MT_ERROR: 040_example_13.asm:257.27-258.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:264.28-264.31: Error: unexpected instruction DEC.
 MT_ERROR: 040_example_13.asm:265.27-265.29: Error: identifier cannot start with a digit: `1E'.
 MT_ERROR: 040_example_13.asm:265.27-266.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:270.27-270.29: Error: identifier cannot start with a digit: `1C'.
@@ -100,6 +102,7 @@ MT_ERROR: 040_example_13.asm:458.27-458.29: Error: identifier cannot start with 
 MT_ERROR: 040_example_13.asm:458.27-459.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:570.27-570.29: Error: identifier cannot start with a digit: `2C'.
 MT_ERROR: 040_example_13.asm:570.27-571.1: Error: unexpected end of line.
+MT_ERROR: 040_example_13.asm:645.27-645.30: Error: unexpected instruction DEC.
 MT_ERROR: 040_example_13.asm:727.26-727.28: Error: identifier cannot start with a digit: `0A'.
 MT_ERROR: 040_example_13.asm:727.26-728.1: Error: unexpected end of line.
 MT_ERROR: 040_example_13.asm:1127.25-1127.27: Error: identifier cannot start with a digit: `0C'.
