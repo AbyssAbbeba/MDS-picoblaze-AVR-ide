@@ -1,11 +1,26 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup HelpBrowser
+ * @file helpbrowser.cpp
+ */
+
+
 #include <QtGui>
 #include "helpbrowser.h"
+#include "../../guicfg/guicfg.h"
 
 
 HelpBrowser::HelpBrowser(QWidget *parent)
     : QTextBrowser(parent)
 {
-    helpEngine = new QHelpEngine("../docs/manual/MDS_manual.qhc", this);
+    helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     helpEngine->setupData();
 }
 

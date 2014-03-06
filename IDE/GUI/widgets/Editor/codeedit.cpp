@@ -4,12 +4,12 @@
  *
  * ...
  *
- * Copyright: See COPYING file that comes with this distribution.
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author: Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2012
- *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup CodeEdit
+ * @file codeedit.cpp
  */
-
 
 
 #include <QtGui>
@@ -69,7 +69,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
-    textEdit->setTabStopWidth(4*fontMetrics.width(' '));
+    textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
@@ -156,6 +156,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     }
     textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
+    QFontMetrics fontMetrics(textEdit->font());
+    textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);

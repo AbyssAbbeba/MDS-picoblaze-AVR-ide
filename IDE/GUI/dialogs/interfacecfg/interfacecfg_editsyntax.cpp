@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup InterfaceCfg_EditSyntax
+ * @file interfacecfg_editsyntax.cpp
+ */
+
+
 #include <QtGui>
 #include "interfacecfg_editsyntax.h"
 #include "../../guicfg/guicfg.h"

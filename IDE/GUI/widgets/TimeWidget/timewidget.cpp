@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
+ * @ingroup TimeWidget
+ * @file timewidget.cpp
+ */
+
+
 #include <QtGui>
 #include <cmath>
 #include "timewidget.h"
