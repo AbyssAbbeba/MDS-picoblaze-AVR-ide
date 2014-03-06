@@ -18,10 +18,11 @@ project ( manual )
 # GENERATE MDS MANUAL.
 # ------------------------------------------------------------------------------
 
-# Path to MDS manual as PDF file.
+# Path to MDS manual as PDF file, and as Qt Help Collection File.
 set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
 set ( MANUAL_QHC "MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
 mark_as_advanced ( MANUAL_PDF )
+mark_as_advanced ( MANUAL_QHC )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # Set some configuration variables.
