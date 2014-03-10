@@ -110,6 +110,7 @@ class MainForm : public QMainWindow
         void enableSimActs();
         void disableSimActs();
         void changeProjectFamily(QString family);
+        void closeProject();
 
     signals:
         void unhighlightSim();

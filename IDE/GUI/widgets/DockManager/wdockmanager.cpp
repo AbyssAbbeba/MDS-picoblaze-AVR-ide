@@ -824,6 +824,55 @@ void WDockManager::changeSimWidget(int index)
 }
 
 
+void WDockManager::deleteActiveSimWidget()
+{
+    PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(wSimulationInfo)->widget());
+    int index = openSimWidgets.indexOf(tempGrid);
+    if (openSimWidgets.count() > 1)
+    {
+        this->openSimWidgets.removeAt(index);
+        if (index == this->openSimWidgets.count())
+        {
+            this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index -1 ));
+        }
+        else
+        {
+            this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
+        }
+        delete tempGrid;
+    }
+    else
+    {
+        this->openSimWidgets.removeAt(index);
+        delete tempGrid;
+        while (this->openDockWidgets.count() > 0)
+        {
+            WDock *tmpDock = this->openDockWidgets.at(0);
+            this->openDockWidgets.removeAt(0);
+            delete tmpDock;
+        }
+        this->breakpointList = NULL;
+        this->bookmarkList = NULL;
+        this->dockWidgets = false;
+    }
+}
+
+
+void WDockManager::closeFile(QString path)
+{
+    //qDebug() << "WDockManager: path " << path;
+    for (int i = 0; i < this->wTab->count(); i++)
+    {
+        //qDebug() << "WDockManager: tooltip (" << i << ") " << this->wTab->tabToolTip(i);
+        if (path == this->wTab->tabToolTip(i))
+        {
+            this->closeTab(i);
+            break;
+        }
+    }
+}
+
+
 
 /////
 ///// WDock
@@ -963,10 +1012,10 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
 
 
 
-/*WDock::~WDock()
+WDock::~WDock()
 {
     delete wDockWidget;
-}*/
+}
 
 
 
