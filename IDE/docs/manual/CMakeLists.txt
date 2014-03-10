@@ -22,9 +22,7 @@ project ( manual )
 set ( MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
 set ( MANUAL_QHC "MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
 set ( MANUAL_QCH "MDS_manual.qch" CACHE STRING "Path to MDS manual as QCH file." )
-mark_as_advanced ( MANUAL_PDF )
-mark_as_advanced ( MANUAL_QHC )
-mark_as_advanced ( MANUAL_QCH )
+mark_as_advanced ( MANUAL_PDF MANUAL_QHC MANUAL_QCH )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # Set some configuration variables.

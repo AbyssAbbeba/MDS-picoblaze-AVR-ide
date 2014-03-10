@@ -1,14 +1,3 @@
-//
-// C++ Interface: Programmer plugin
-//
-// Description:
-//
-//
-// Author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2009
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 
 #ifndef AVR8USBPROGPLUGIN_H
 #define AVR8USBPROGPLUGIN_H
