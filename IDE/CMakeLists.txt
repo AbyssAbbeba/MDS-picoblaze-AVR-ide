@@ -175,7 +175,7 @@ if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
                    ARGS --version
                    OUTPUT_VARIABLE gccOutput )
     string ( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" gccVersion "${gccOutput}" )
-    message ( STATUS "Found GCC compiler: ${CMAKE_CXX_COMPILER} (version: \"${gccVersion}\", required is: \"${GCC_MIN_VER}\")" )
+    message ( STATUS "Found GCC compiler: ${CMAKE_CXX_COMPILER} (version: \"${gccVersion}\", minimum required is: \"${GCC_MIN_VER}\")" )
 
     if ( "${gccVersion}" VERSION_LESS "${GCC_MIN_VER}" )
         message ( SEND_ERROR "Minimum required version of GCC compiler is \"${GCC_MIN_VER}\"." )

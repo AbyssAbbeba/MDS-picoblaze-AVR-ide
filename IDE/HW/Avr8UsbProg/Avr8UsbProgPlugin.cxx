@@ -1,15 +1,3 @@
-//
-// C++ implementation: Programmer plugin
-//
-// Description:
-//
-//
-// Author: Martin Ošmera <martin.osmera@gmail.com>, (C) 2009
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-
 #include <QDebug>
 
 #include "Avr8UsbProgPlugin.h"
