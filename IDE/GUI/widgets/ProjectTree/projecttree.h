@@ -54,6 +54,7 @@ class ProjectTree: public QTreeWidget
         void setMainFile();
         void removeFile();
         void config();
+        void closeProjectSlot();
         //void reloadFiles();
         void contextP2(int fileCount);
 
@@ -63,6 +64,7 @@ class ProjectTree: public QTreeWidget
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
         void addFile(QString path, QString name);
+        void closeProject();
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

@@ -74,6 +74,7 @@ class ProjectMan : public QObject
         void setSimulated(Project* project);
         bool isOpened(QString path);
         void createActiveMakefile();
+        void closeProject(Project* project);
 
     signals:
         void connectProject(Project *project);
@@ -173,6 +174,7 @@ class Project : public QObject
         void emitFileCount();
         void startCfgDlgCore();
         void handleUpdateRequest(int mask);
+        void closeProjectSlot();
 
     signals:
         void highlightLine(QString file, int line, QColor *color);
@@ -186,6 +188,7 @@ class Project : public QObject
         void fileCountSignal(int fileCount);
         void startConfig(Project *project);
         void changeFamily(QString family);
+        void closeProject();
         
     private:
         ProjectMan *parentManager;

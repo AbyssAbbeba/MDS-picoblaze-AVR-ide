@@ -92,6 +92,8 @@ class WDockManager : public QObject
         void setCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         void changeSimWidget(int index);
+        void deleteActiveSimWidget();
+        void closeFile(QString path);
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
@@ -164,7 +166,7 @@ class WDock : public QObject
     public:
         WDock(WDockManager *parent, int code, QWidget *parentWindow);
         WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
-        //~WDock();
+        ~WDock();
         bool cmpCode(int code);
         bool cmpArea(int area);
         int getArea();

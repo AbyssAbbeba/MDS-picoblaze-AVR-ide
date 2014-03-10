@@ -27,17 +27,21 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     QAction *addFileAct;
     QAction *newFileAct;
     QAction *projectConfigAct;
+    QAction *closeProjectAct;
     //if (project == true)
     //{
         newFileAct = new QAction("New File", projectPopup);
         addFileAct = new QAction("Add File", projectPopup);
         projectConfigAct = new QAction("Configuration", projectPopup);
+        closeProjectAct = new QAction("Close project", projectPopup);
         projectPopup->addAction(newFileAct);
         projectPopup->addAction(addFileAct);
         projectPopup->addAction(projectConfigAct);
+        projectPopup->addAction(closeProjectAct);
         connect(newFileAct, SIGNAL(triggered()), this, SLOT(newFile()));
         connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
         connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
+        connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProjectSlot()));
     /*}
     else
     {
@@ -249,4 +253,10 @@ void ProjectTree::dropEvent(QDropEvent *e)
 {
     qDebug() << "ProjectTree: drop text" << e->mimeData()->text();
     //qDebug() << "ProjectTree: drop data" << e->mimeData()->data();
+}
+
+
+void ProjectTree::closeProjectSlot()
+{
+    emit closeProject();
 }
