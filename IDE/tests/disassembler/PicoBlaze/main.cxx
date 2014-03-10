@@ -26,7 +26,7 @@
 int main ( int argc, char ** argv )
 {
     AutoTest autoTest ( "Integration testing environment for the MDS MCU disassembler for PicoBlaze.\n"
-                        "(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.\n"
+                        "(C) copyright 2014 Moravia Microsystems, s.r.o., Brno, CZ, European Union.\n"
                         "All rights reserved." );
 
     autoTest.addTestSuite ( "KCPSM1CPLD",

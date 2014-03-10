@@ -17,10 +17,10 @@
 #define PIC8ISP_H
 
 // Forward declarations
-class PIC8ProgramMemory;
-class PIC8DataEEPROM;
 class PIC8IO;
 class PIC8ConfigWord;
+class PIC8DataEEPROM;
+class PIC8ProgramMemory;
 
 #include "../MCUSim.h"
 
