@@ -276,19 +276,24 @@ void GuiCfg::setDefaultPaths(bool release)
 {
     if (true == release)
     {
-        QByteArray rootArray  = qgetenv("HOME");
+        QByteArray rootArray;
+        #ifdef Q_OS_LINUX
+            rootArray = qgetenv("HOME");
+        #elif defined(Q_OS_WIN32)
+            rootArray = qgetenv("USERPROFILE");
+        #endif
         QString root(rootArray);
         QDir homeDir(root + "/.mds");
-        if (false == homeDir.exists())
-        {
-            homeDir.mkpath(".");
-        }   
+        //if (false == homeDir.exists())
+        //{
+        //    homeDir.mkpath(".");
+        //}   
         this->configPath = homeDir.absolutePath() + "/config.xml";
         this->compilerPath = "../include/mds";
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
-        this->helpPath = "../doc/mds";
+        this->helpPath = "../docs/mds";
     }
     else
     {
@@ -298,14 +303,14 @@ void GuiCfg::setDefaultPaths(bool release)
             this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./temp";
-            this->helpPath = "../doc/manual";
+            this->helpPath = "../docs/manual";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
-            this->helpPath = "./doc/manual";
+            this->helpPath = "./docs/manual";
         #endif
     }
 }

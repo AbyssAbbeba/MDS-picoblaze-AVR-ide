@@ -58,7 +58,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     this->leInput->setMaxLength(this->numWidth);
     
     QFont fontLW = this->lwStack->font();
-    fontLW.setPointSize(10);
+    fontLW.setPixelSize(13);
     fontLW.setFamily("Ubuntu Mono");
     this->lwStack->setFont(fontLW);
 

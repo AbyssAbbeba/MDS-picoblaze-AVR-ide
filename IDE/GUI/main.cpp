@@ -51,15 +51,17 @@ int main(int argc, char *argv[])
     
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
+    bool openFile = false;
     if (argc > 1)
     {
         if (QString::fromLocal8Bit(argv[1]) == "--debug")
         {
             GuiCfg::getInstance().setDefaultPaths(false);
         }
-        else if (QString::fromLocal8Bit(argv[1]).section('.',0,-2) == "mds-project")
+        else if (QString::fromLocal8Bit(argv[1]).section('.',-1) == "mds-project")
         {
             qDebug() << "Main: received file as argv[1] " << QString::fromLocal8Bit(argv[1]);
+            openFile = true;
         }
         else
         {
@@ -77,6 +79,11 @@ int main(int argc, char *argv[])
     //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();
+    
+    if (true == openFile)
+    {
+        MainGUI.openProject(QString::fromLocal8Bit(argv[1]));
+    }
     
     return app.exec();
     

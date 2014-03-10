@@ -97,7 +97,9 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
-    this->fontSize = 10;
+    this->fontSize = 13;
+    QFont font("Ubuntu Mono");
+    font.setPixelSize(fontSize);
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -105,8 +107,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
-    hexTextEdit->setFont(QFont("Ubuntu Mono", fontSize));
-    //qDebug() << "HexEdit: font size" << fontSize;
+    hexTextEdit->setFont(font);
+    qDebug() << "HexEdit: font point size" << hexTextEdit->fontInfo().pointSize();
+    qDebug() << "HexEdit: font pixel size" << hexTextEdit->fontInfo().pixelSize();
     //hexTextEdit->resize((columns*2-1)*10,5);
     QFontMetrics metrics(hexTextEdit->font());
     hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
@@ -116,9 +119,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     if (AsciiPanel == true)
     {
         hexAsciiEdit = new QPlainTextEdit(this);
-        hexAsciiEdit->setFont(QFont("Ubuntu Mono", fontSize));
+        hexAsciiEdit->setFont(font);
         //hexAsciiEdit->resize(columns*15,250);
-        hexAsciiEdit->setFixedWidth(columns*3*fontSize);
+        hexAsciiEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
         hexAsciiEdit->setMinimumHeight(175);
         hexAsciiEdit->setOverwriteMode(true);
         hexAsciiEdit->setWordWrapMode(QTextOption::NoWrap);
