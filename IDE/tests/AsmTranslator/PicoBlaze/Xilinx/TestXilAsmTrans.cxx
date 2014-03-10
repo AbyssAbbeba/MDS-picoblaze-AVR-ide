@@ -232,7 +232,7 @@ void TestXilAsmTrans::test ( const std::string & suffix )
             return;
     }
 
-    const path vhdTemplate = ( path("Xilinx") / "testcases" / (testName + ".vhd") );
+    const path vhdTemplate = system_complete( path("Xilinx") / "testcases" / (testName + ".vhd") );
     if ( true == is_regular_file(vhdTemplate) )
     {
         m_options->m_vhdlTemplate = vhdTemplate.string();

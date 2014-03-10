@@ -19,9 +19,6 @@ if ( NOT ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR ) )
                    PATHS $ENV{PATH}
                    DOC "path to the qcollectiongenerator executable" )
 
-    mark_as_advanced ( Q_HELP_GENERATOR )
-    mark_as_advanced ( Q_COLLECTION_GENERATOR )
-
     if ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR )
         set ( Q_HELP_TOOLS_FOUND TRUE CACHE BOOL "" )
         message ( STATUS "Found qhelpgenerator: ${Q_HELP_GENERATOR}" )
@@ -36,7 +33,7 @@ if ( NOT ( Q_HELP_GENERATOR AND Q_COLLECTION_GENERATOR ) )
         endif()
     endif()
 
-    mark_as_advanced ( Q_HELP_TOOLS_FOUND )
+    mark_as_advanced ( Q_HELP_GENERATOR Q_COLLECTION_GENERATOR Q_HELP_TOOLS_FOUND )
 endif()
 
 # QtHelpTools.cmake ends here

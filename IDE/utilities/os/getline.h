@@ -41,6 +41,7 @@ inline int getstr ( char ** lineptr,
     {
         *n = MIN_CHUNK;
         *lineptr = (char*) malloc (*n);
+
         if (!*lineptr)
         {
             errno = ENOMEM;
@@ -48,66 +49,72 @@ inline int getstr ( char ** lineptr,
         }
     }
 
-  nchars_avail = *n - offset;
-  read_pos = *lineptr + offset;
+    nchars_avail = *n - offset;
+    read_pos = *lineptr + offset;
 
-  while ( true )
+    while ( true )
     {
-      int save_errno;
-      register int c = getc (stream);
+        int save_errno;
+        register int c = getc (stream);
 
-      save_errno = errno;
+        save_errno = errno;
 
-      assert((*lineptr + *n) == (read_pos + nchars_avail));
-      if (nchars_avail < 2)
+        assert ( (*lineptr + *n) == (read_pos + nchars_avail) );
+        if ( nchars_avail < 2 )
         {
-          if (*n > MIN_CHUNK)
-            *n *= 2;
-          else
-            *n += MIN_CHUNK;
-
-          nchars_avail = *n + *lineptr - read_pos;
-          *lineptr = (char*) realloc (*lineptr, *n);
-          if (!*lineptr)
+            if (* n > MIN_CHUNK )
             {
-              errno = ENOMEM;
-              return -1;
+                *n *= 2;
             }
-          read_pos = *n - nchars_avail + *lineptr;
-          assert((*lineptr + *n) == (read_pos + nchars_avail));
+            else
+            {
+                *n += MIN_CHUNK;
+            }
+
+            nchars_avail = *n + *lineptr - read_pos;
+            *lineptr = (char*) realloc (*lineptr, *n);
+
+            if ( nullptr == *lineptr )
+            {
+                errno = ENOMEM;
+                return -1;
+            }
+
+            read_pos = *n - nchars_avail + *lineptr;
+            assert((*lineptr + *n) == (read_pos + nchars_avail));
         }
 
-      if (ferror (stream))
+        if ( 0 != ferror (stream) )
         {
-          /* Might like to return partial line, but there is no
-             place for us to store errno.  And we don't want to just
-             lose errno.  */
-          errno = save_errno;
-          return -1;
-        }
-
-      if ( EOF == c )
-        {
-          if (read_pos == *lineptr)
+            errno = save_errno;
             return -1;
-          else
-            break;
         }
 
-      *read_pos++ = c;
-      nchars_avail--;
+        if ( EOF == c )
+        {
+            if ( read_pos == *lineptr )
+            {
+                return -1;
+            }
+            else
+            {
+                break;
+            }
+        }
 
-      if ( terminator == c )
-      {
+        *read_pos++ = c;
+        nchars_avail--;
+
+        if ( terminator == c )
+        {
             break;
-      }
+        }
     }
 
-  /* Done - NUL terminate and return the number of chars read.  */
-  *read_pos = '\0';
+    *read_pos = '\0';
 
-  ret = read_pos - (*lineptr + offset);
-  return ret;
+    ret = read_pos - ( *lineptr + offset );
+    return ret;
 }
 
 inline int getline ( char **lineptr,

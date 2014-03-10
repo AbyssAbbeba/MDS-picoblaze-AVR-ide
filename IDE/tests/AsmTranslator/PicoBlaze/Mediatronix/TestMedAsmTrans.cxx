@@ -232,7 +232,7 @@ void TestMedAsmTrans::test ( const std::string & suffix )
             return;
     }
 
-    const path vhdTemplate = ( path("Mediatronix") / "testcases" / (testName + ".vhd") );
+    const path vhdTemplate = system_complete( path("Mediatronix") / "testcases" / (testName + ".vhd") );
     if ( true == is_regular_file(vhdTemplate) )
     {
         m_options->m_vhdlTemplate = vhdTemplate.string();
