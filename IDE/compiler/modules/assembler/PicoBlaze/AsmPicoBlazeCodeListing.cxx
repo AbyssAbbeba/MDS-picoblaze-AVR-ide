@@ -568,6 +568,8 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
 
     m_numberOfMacros++;
 
+int origin = m_compilerCore->locationTrack().add(location);
+
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
@@ -586,8 +588,9 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
         m_listing[index].push_back(LstLine());
         m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
         node->m_location.m_fileNumber = index;
-        node->m_location.m_lineStart = lineNumber;
-        node->m_location.m_lineEnd   = lineNumber;
+        node->m_location.m_lineStart  = lineNumber;
+        node->m_location.m_lineEnd    = lineNumber;
+node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
         lineNumber++;
     }
 }

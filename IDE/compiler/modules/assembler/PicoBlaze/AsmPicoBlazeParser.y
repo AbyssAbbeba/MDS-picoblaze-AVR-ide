@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 126
+%expect 125
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -293,7 +293,7 @@
 // Statements - special macros
 %type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
 %type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif     dir_rtwhile     dir_rtendw
-%type<stmt>     dir_rtfor       dir_rtendf      dir_rtwhile_b   dir_rtfor_b
+%type<stmt>     dir_rtfor       dir_rtendf      dir_rtwhile_b   dir_rtfor_b     dir_rt_cond_a
 
 /*
  * Symbol destructors:
@@ -752,6 +752,10 @@ dir_elseifnb_a:
                                     }
 ;
 dir_rt_cond:
+      dir_rt_cond_a                 { $$ = $dir_rt_cond_a; }
+    | label dir_rt_cond_a           { $$ = $label->appendLink($dir_rt_cond_a); }
+;
+dir_rt_cond_a:
       rtif_block rtelseif_block
       rtelse_block dir_rtendif      {
                                         $$ = new CompilerStatement ( CompilerSourceLocation(), ASMPICOBLAZE_RT_COND );
@@ -799,18 +803,6 @@ dir_rtif:
                                         /* Syntax Error */
                                         $$ = nullptr;
                                         ARG_REQUIRED_D(@M_RTIF, "RTIF");
-                                    }
-    | label M_RTIF expr             {
-                                        /* Syntax Error */
-                                        $$ = nullptr;
-                                        NO_LABEL_EXPECTED(@label, "RTIF", $label);
-                                        $expr->completeDelete();
-                                    }
-    | label M_RTIF                  {
-                                        /* Syntax Error */
-                                        $$ = nullptr;
-                                        ARG_REQUIRED_D(@M_RTIF, "RTIF");
-                                        NO_LABEL_EXPECTED(@label, "RTIF", $label);
                                     }
 ;
 dir_rtelseif:
