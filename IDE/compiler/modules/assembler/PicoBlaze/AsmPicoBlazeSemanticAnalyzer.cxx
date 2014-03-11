@@ -152,7 +152,7 @@ void AsmPicoBlazeSemanticAnalyzer::setDevice ( const std::string & deviceName )
         m_device = DEV_KCPSM6;
         m_memoryPtr->m_hardLimits.m_reg  = 32;
         m_memoryPtr->m_hardLimits.m_data = 256;
-        m_memoryPtr->m_hardLimits.m_code = 4095;
+        m_memoryPtr->m_hardLimits.m_code = 4096;
         m_instructionSet->setStrategy ( new AsmPicoBlazeInstructionSet6() );
     }
 }
