@@ -293,7 +293,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
-        this->helpPath = "../docs/mds";
+        this->helpPath = "../doc/mds";
     }
     else
     {
