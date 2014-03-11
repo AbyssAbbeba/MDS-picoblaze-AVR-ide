@@ -1870,6 +1870,7 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(setEditorReadOnly(bool)), this, SLOT(setEditorReadOnly(bool)));
     connect(project, SIGNAL(startConfig(Project*)), this, SLOT(startProjectConfig(Project*)));
     connect(project, SIGNAL(changeFamily(QString)), this, SLOT(changeProjectFamily(QString)));
+    connect(project, SIGNAL(closeProject()), this, SLOT(closeProject()));
 }
 
 
@@ -2074,7 +2075,10 @@ void MainForm::unhighlight()
 
 void MainForm::projectConfig()
 {
-    this->startProjectConfig(this->projectMan->getActive());
+    if (false == simulationStatus)
+    {
+        this->startProjectConfig(this->projectMan->getActive());
+    }
 }
 
 
@@ -2136,6 +2140,24 @@ void MainForm::disableSimActs()
 
 void MainForm::changeProjectFamily(QString family)
 {
-    
+    qDebug() << "MainForm: changeFamily not yep implemented";
     //projectMan->getActive()->setupSim();
+}
+
+
+void MainForm::closeProject()
+{
+    if (false == this->simulationStatus || projectMan->getActive() != projectMan->getSimulated())
+    {
+        Project *project = projectMan->getActive();
+        QDir path;
+        for (int i = 0; i < project->filePaths.count(); i++)
+        {
+            path.setPath(project->prjPath.section('/',0,-2));
+            wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))));
+        }
+        wDockManager->deleteActiveSimWidget();
+        this->removeDockWidget(project->prjDockWidget);
+        projectMan->closeProject(project);
+    }
 }
