@@ -29,6 +29,8 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
+    this->verticalScrollBar()->hide();
+    this->horizontalScrollBar()->hide();
     this->setShowGrid(false);
     this->setColumnWidth(0, 30);
     this->setColumnWidth(1, 30);

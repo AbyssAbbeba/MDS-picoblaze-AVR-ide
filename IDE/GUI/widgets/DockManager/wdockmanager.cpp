@@ -849,13 +849,14 @@ void WDockManager::deleteActiveSimWidget()
         {
             WDock *tmpDock = this->openDockWidgets.at(0);
             this->openDockWidgets.removeAt(0);
+            delete tmpDock->getQDockWidget();
             delete tmpDock;
         }
         this->breakpointList = NULL;
         this->bookmarkList = NULL;
         this->dockWidgets = false;
-        delete tempGrid;
-        tempGrid = NULL;
+        //delete tempGrid;
+        //tempGrid = NULL;
     }
 }
 
