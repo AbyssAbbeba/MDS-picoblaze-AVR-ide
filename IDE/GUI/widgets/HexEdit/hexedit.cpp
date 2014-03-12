@@ -114,6 +114,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     QFontMetrics metrics(hexTextEdit->font());
     hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
     hexTextEdit->setMinimumHeight(175);
+    qDebug() << "HexEdit: text edit width" << hexTextEdit->width();
+    qDebug() << "HexEdit: average char width" << metrics.averageCharWidth();
     //hexTextEdit->setMaximumHeight(175);
 
     if (AsciiPanel == true)
