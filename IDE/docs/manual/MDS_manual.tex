@@ -854,7 +854,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                                 }
                                 \\
                 \textbf{DESCRIPTION:}\\
-               Symbols defined with the DATA directive are by compiler considered as data memory. It must be used only with instructions FETCH and STORE.
+               Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
 
                 \textbf{EXAMPLE:}\\
                 \begin{code}[h!]
@@ -1010,7 +1010,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                             }
                             \\
             \textbf{DESCRIPTION:}\\
-            Another time saving directive. Must be used only with instructions FETCH and STORE. It will automatically assign an
+            Must be used only with instructions FETCH and STORE. It will automatically assign an
             adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
             after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
 
@@ -1338,6 +1338,8 @@ You need to tell compiler, that you are using constants by adding \# before seco
                         \begin{code}[h!]
                             {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM3'}\\
                             {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM2'}\\
+                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM1'}\\
+                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM1cpld'}\\
                             {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM6'}\\
                             \caption{DEVICE directive}
                         \end{code}
@@ -1373,7 +1375,7 @@ You need to tell compiler, that you are using constants by adding \# before seco
                     }\\
                     \\
                 \textbf{DESCRIPTION:}\\
-                This will put title into coresponding line in codelisting.  \\
+                This will put a title into coresponding line in codelisting.  \\
                 \textbf{EXAMPLE:}\\
                         \begin{code}[h!]
                             {\color{highlight_directive}\verb'TITLE'}\verb'    '
