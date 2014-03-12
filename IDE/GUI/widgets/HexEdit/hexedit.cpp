@@ -101,6 +101,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     QFont font("Ubuntu Mono");
     font.setPixelSize(fontSize);
     font.setHintingPreference(QFont::PreferNoHinting);
+    font.setFixedPitch(true);
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -111,16 +112,16 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setFont(font);
     qDebug() << "HexEdit: font point size" << hexTextEdit->fontInfo().pointSize();
     qDebug() << "HexEdit: font pixel size" << hexTextEdit->fontInfo().pixelSize();
-    qDebug() << "HexEdit: font fixed pitch" << hexTextEdit->font().fixedPitch();
-    qDebug() << "HexEdit: font hint" << hexTextEdit->font().hintingPreference();
-    qDebug() << "HexEdit: font spacing" << hexTextEdit->font().letterSpacing();
-    qDebug() << "HexEdit: font word spacing" << hexTextEdit->font().wordSpacing();
+    //qDebug() << "HexEdit: font fixed pitch" << hexTextEdit->font().fixedPitch();
+    //qDebug() << "HexEdit: font hint" << hexTextEdit->font().hintingPreference();
+    //qDebug() << "HexEdit: font spacing" << hexTextEdit->font().letterSpacing();
+    //qDebug() << "HexEdit: font word spacing" << hexTextEdit->font().wordSpacing();
     //hexTextEdit->resize((columns*2-1)*10,5);
     QFontMetrics metrics(hexTextEdit->font());
     hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
     hexTextEdit->setMinimumHeight(175);
-    qDebug() << "HexEdit: text edit width" << hexTextEdit->width();
-    qDebug() << "HexEdit: average char width" << metrics.averageCharWidth();
+    //qDebug() << "HexEdit: text edit width" << hexTextEdit->width();
+    //qDebug() << "HexEdit: average char width" << metrics.averageCharWidth();
     //hexTextEdit->setMaximumHeight(175);
 
     if (AsciiPanel == true)
@@ -237,7 +238,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
     //this->show();
     //this->hexLineCount->getWidget()->changeHeight();
-    qDebug() << "HexEdit: width" << this->width();
+    //qDebug() << "HexEdit: width" << this->width();
 }
 
 
@@ -683,4 +684,12 @@ void HexEdit::unhighlight()
     {
         this->setHighlighted(i, false);
     }
+}
+
+
+void HexEdit::scrollToTop()
+{
+    QTextCursor txtCursor = hexTextEdit->textCursor();
+    txtCursor.setPosition(0);
+    hexTextEdit->setTextCursor(txtCursor);
 }

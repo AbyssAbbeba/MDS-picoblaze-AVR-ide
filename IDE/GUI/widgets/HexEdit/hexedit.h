@@ -54,6 +54,7 @@ class HexEdit : public QWidget
         QScrollBar* verticalScrollBar();
         QScrollBar* horizontalScrollBar();
         void unhighlight();
+        void scrollToTop();
 
     public slots:
         void changeAscii(int position);

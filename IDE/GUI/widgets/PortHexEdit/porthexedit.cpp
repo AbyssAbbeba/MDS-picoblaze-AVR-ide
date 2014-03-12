@@ -219,6 +219,8 @@ void PortHexEdit::deviceReset()
 	}
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
+    m_hexEditIn->scrollToTop();
+    m_hexEditOut->scrollToTop();
    //qDebug() << "PortHexEdit: return deviceReset()";
 }
 
