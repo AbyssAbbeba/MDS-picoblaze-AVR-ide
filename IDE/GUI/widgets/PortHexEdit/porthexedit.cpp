@@ -219,6 +219,9 @@ void PortHexEdit::deviceReset()
 	}
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
+    qDebug() << "PortHexEdit: hex width" << m_hexEditIn->width();
+    qDebug() << "PortHexEdit: hex text width" << m_hexEditIn->getTextEdit()->width();
+    qDebug() << "PortHexEdit: hex text pixel size" << m_hexEditIn->getTextEdit()->fontInfo().pixelSize();
    //qDebug() << "PortHexEdit: return deviceReset()";
 }
 
