@@ -840,11 +840,11 @@ void WDockManager::deleteActiveSimWidget()
             this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
         }
         delete tempGrid;
+        tempGrid = NULL;
     }
     else
     {
         this->openSimWidgets.removeAt(index);
-        delete tempGrid;
         while (this->openDockWidgets.count() > 0)
         {
             WDock *tmpDock = this->openDockWidgets.at(0);
@@ -854,6 +854,8 @@ void WDockManager::deleteActiveSimWidget()
         this->breakpointList = NULL;
         this->bookmarkList = NULL;
         this->dockWidgets = false;
+        delete tempGrid;
+        tempGrid = NULL;
     }
 }
 
@@ -1014,7 +1016,10 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
 
 WDock::~WDock()
 {
-    delete wDockWidget;
+    /*if (wDockWidget != NULL)
+    {
+        delete wDockWidget;
+    }*/
 }
 
 
