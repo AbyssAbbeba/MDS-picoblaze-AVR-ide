@@ -40,7 +40,7 @@ LineEditConvert::LineEditConvert(QWidget *parent, int base)
     else
     {
         //this->setInputMask("HH");
-        QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-F]{2}"), this);
+        QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{2}"), this);
         this->setValidator(hexValidator);
         this->setText("");
         this->setMaximumWidth(metrics.width("DD")+10);

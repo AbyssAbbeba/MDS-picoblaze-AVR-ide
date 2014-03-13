@@ -49,6 +49,7 @@ class Highlighter : public QSyntaxHighlighter
         QTextCharFormat singleLineCommentFormat;
         QTextCharFormat multiLineCommentFormat;
         QTextCharFormat quotationFormat;
+        QTextCharFormat simpleQuotationFormat;
         //directive
         QTextCharFormat keywordFormat;
         //instruction

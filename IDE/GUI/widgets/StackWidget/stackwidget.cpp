@@ -26,6 +26,7 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     
     this->subsys = subsys;
     this->setMinimumHeight(225);
+    this->setFixedWidth(100);
 
     this->numWidth = 3;
     
@@ -61,6 +62,21 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     fontLW.setPixelSize(13);
     fontLW.setFamily("Ubuntu Mono");
     this->lwStack->setFont(fontLW);
+    this->lwStack->setFixedWidth(100);
+    this->lwStack->setStyleSheet(QString(
+                                         "QScrollBar:vertical"
+                                         "{"
+                                             "border: 0px; "
+                                             "background: white;"
+                                             "width: 2px;"
+                                             "margin: 0px 0 0px 0;"
+                                         "}"
+                                         "QScrollBar::handle:vertical"
+                                         "{"
+                                             "background: black;"
+                                         "}"
+                                        )
+                                );
 
     //QPixmap pixSP(10,10);
     //pixSP.fill(Qt::green);

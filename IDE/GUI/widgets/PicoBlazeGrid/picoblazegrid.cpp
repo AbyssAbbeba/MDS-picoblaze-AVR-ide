@@ -73,7 +73,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->memPorts->move(520,19);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
     this->memStack->move(960, 20);
-    this->memStack->setMaximumWidth(100);
+    this->memStack->setFixedWidth(100);
     this->memStack->setMaximumHeight(225);
     this->memRegs->show();
     this->memScratch->show();

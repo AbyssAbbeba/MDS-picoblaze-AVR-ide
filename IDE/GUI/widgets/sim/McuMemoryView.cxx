@@ -131,6 +131,16 @@ void McuMemoryView::deviceChanged()
 	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
+    if (0 == m_size)
+    {
+        this->hide();
+        this->m_hexEdit->hide();
+    }
+    else
+    {
+        this->show();
+        this->m_hexEdit->show();
+    }
     //qDebug() << "McuMemoryView: return deviceChanged()";
 }
 
