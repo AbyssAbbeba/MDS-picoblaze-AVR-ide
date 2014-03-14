@@ -202,7 +202,7 @@ inline int MCUSimEventLogger::getEvent ( int & subsysId,
     location = m_location [ m_outPos ];
     detail   = m_detail   [ m_outPos ];
 
-    int result = m_inPos - m_outPos - 1;
+    int result = m_inPos - m_outPos;
     if ( result < 0 )
     {
         result += m_size;
