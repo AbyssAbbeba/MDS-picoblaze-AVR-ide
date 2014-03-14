@@ -37,6 +37,7 @@
 #include "../PortHexEdit/porthexedit.h"
 #include "../sim/McuMemoryView.h"
 #include "../TimeWidget/timewidget.h"
+#include "../../errordialog/errordlg.h"
 
 
 class MCUSimControl;
@@ -115,7 +116,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         //void focusOutSignal();
 
     private slots:
-        void switchPorts();
+        //void switchPorts();
         void setIntE();
         void interrupt();
         void handleUpdateRequest(int mask);

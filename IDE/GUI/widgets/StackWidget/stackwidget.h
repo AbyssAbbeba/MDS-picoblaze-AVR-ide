@@ -20,7 +20,7 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLineEdit>
-#include <QIcon>
+//#include <QIcon>
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
@@ -60,7 +60,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         int m_startingAddress;
         int m_size;
         int numWidth;
-        QIcon *iconSP;
+        //QIcon *iconSP;
         int sp;
 };
 

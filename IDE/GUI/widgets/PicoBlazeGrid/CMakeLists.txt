@@ -40,7 +40,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator SimWidgets StackWidget RegistersWidget PortHexEdit TimeWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator SimWidgets StackWidget RegistersWidget PortHexEdit TimeWidget ErrorDialog)
 
 
 # ------------------------------------------------------------------------------

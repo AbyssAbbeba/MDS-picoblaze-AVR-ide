@@ -111,6 +111,7 @@ class Project : public QObject
         //~Project();
 
         void setupSim();
+        void setupSim(QString family);
         bool start(QString file = "");
         void stop();
         void reset();

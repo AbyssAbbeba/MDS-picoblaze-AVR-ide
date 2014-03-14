@@ -1,9 +1,9 @@
  
 
 ;
-; PicoBlaze kod pro pocatecniÃÂÃÂÃÂÃÂ­ inicializaci A/D prevodniku ADS6445 a zdroje hodin LMK4011 + SPUÃÂÃÂ TÃÂÃÂÃÂÃÂNÃÂÃÂÃÂÃÂ TEST SEKVENCÃÂÃÂÃÂÃÂ
+; PicoBlaze kod pro pocatecniÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ inicializaci A/D prevodniku ADS6445 a zdroje hodin LMK4011 + SPUÃÂÃÂÃÂÃÂ TÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂNÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ TEST SEKVENCÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ
 
-; A/D pÃÂÃÂÃÂÃÂevodnik - 16bit registry
+; A/D pÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂevodnik - 16bit registry
 ;				  Max 20 MHz
 ;				  A4-A0 + D10-D0	
 ;
@@ -33,7 +33,7 @@ TX_data_register_04		PORT			08h          ;  data register port ID
 ;##############################################################################;
 					ORG		000h
 					JUMP	Start
-; ÃÂÃÂÃÂÃÂekÃÂÃÂÃÂÃÂ¡nÃÂÃÂÃÂÃÂ­ 1s pro inicializaci obvodÃÂÃÂÃÂÃÂ¯
+; ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂekÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¡nÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ­ 1s pro inicializaci obvodÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ¯
 Start:              CALL      wait_1s             ; wait for 1s
 ; end of initialization
 
@@ -51,13 +51,13 @@ config_done:
 
 ; Basic output procedures (CALLs)
 AD_busy_check:      INPUT     RXdata, Read_data    ; checking SPI status
-                    TEST      RXdata, #01h            ; test bit 1 
+                    ;TEST      RXdata, #01h            ; test bit 1 
                     RETURN    NZ                    ; wait for SPI controler to be ready
                     JUMP	  AD_busy_check        ; Return from procedure
 
 ;==============================================================================;
 LMK_busy_check:		INPUT     RXdata, Read_data    ; checking SPI status
-                    TEST      RXdata, #01h            ; test bit 1 
+                    ;TEST      RXdata, #01h            ; test bit 1 
                     RETURN    NZ                    ; wait for SPI controler to be ready
                     JUMP	  LMK_busy_check        ; Return from procedure	
 ;==============================================================================;
