@@ -97,11 +97,13 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
 HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     :QWidget(parent)
 {
-    this->fontSize = 13;
+    this->fontSize = 10;
     QFont font("Ubuntu Mono");
-    font.setPixelSize(fontSize);
-    font.setHintingPreference(QFont::PreferNoHinting);
+    font.setPointSize(fontSize);
+    font.setHintingPreference(QFont::PreferFullHinting);
     font.setFixedPitch(true);
+    font.setKerning(false);
+    font.setStyleStrategy(QFont::ForceIntegerMetrics);
     this->columns=columns;
     this->ascii = AsciiPanel;
     hexLayout = new QGridLayout(this);
@@ -110,19 +112,46 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(font);
-    qDebug() << "HexEdit: font point size" << hexTextEdit->fontInfo().pointSize();
-    qDebug() << "HexEdit: font pixel size" << hexTextEdit->fontInfo().pixelSize();
+    //qDebug() << "HexEdit: font point size" << hexTextEdit->fontInfo().pointSize();
+    //qDebug() << "HexEdit: font point size float" << hexTextEdit->fontInfo().pointSizeF();
+    //qDebug() << "HexEdit: font pixel size" << hexTextEdit->fontInfo().pixelSize();
     //qDebug() << "HexEdit: font fixed pitch" << hexTextEdit->font().fixedPitch();
     //qDebug() << "HexEdit: font hint" << hexTextEdit->font().hintingPreference();
     //qDebug() << "HexEdit: font spacing" << hexTextEdit->font().letterSpacing();
     //qDebug() << "HexEdit: font word spacing" << hexTextEdit->font().wordSpacing();
     //hexTextEdit->resize((columns*2-1)*10,5);
     QFontMetrics metrics(hexTextEdit->font());
-    hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
+    hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth()+5);
     hexTextEdit->setMinimumHeight(175);
+    //qDebug() << "HexEdit: metrics '0' width" << metrics.width('0');
+    //qDebug() << "HexEdit: metrics '1' width" << metrics.width('1');
+    //qDebug() << "HexEdit: metrics ' ' width" << metrics.width(' ');
     //qDebug() << "HexEdit: text edit width" << hexTextEdit->width();
     //qDebug() << "HexEdit: average char width" << metrics.averageCharWidth();
     //hexTextEdit->setMaximumHeight(175);
+    //hexTextEdit->verticalScrollBar()->hide();
+    //hexTextEdit->setStyleSheet("QScrollBar:vertical {border: none; width: 2px} ");
+    hexTextEdit->setStyleSheet(QString(
+                                    "QScrollBar:vertical"
+                                    "{"
+                                        "border: 0px; "
+                                        "background: white;"
+                                        "width: 2px;"
+                                        "margin: 0px 0 0px 0;"
+                                    "}"
+                                    "QScrollBar:horizontal"
+                                    "{"
+                                        "border: 0px; "
+                                        "background: white;"
+                                        "width: 0px;"
+                                        "margin: 0px 0 0px 0;"
+                                    "}"
+                                    "QScrollBar::handle:vertical"
+                                    "{"
+                                        "background: black;"
+                                    "}"
+                                    )
+                              );
 
     if (AsciiPanel == true)
     {
@@ -133,7 +162,8 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexAsciiEdit->setMinimumHeight(175);
         hexAsciiEdit->setOverwriteMode(true);
         hexAsciiEdit->setWordWrapMode(QTextOption::NoWrap);
-        hexAsciiEdit->verticalScrollBar()->hide();
+        //hexAsciiEdit->verticalScrollBar()->hide();
+        //hexAsciiEdit->verticalScrollBar()->setStyleSheet("QScrollBar {width:0px;}");
     }
 
     hexColumnCount = new WColumnCounter((QPlainTextEdit*)hexTextEdit, this->hexTextEdit->font(), columns);
@@ -180,6 +210,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexLayout->addWidget(hexColumnCount, 0, 1);
     hexLayout->addWidget(hexTextEdit, 1, 1);
     hexLayout->addWidget(hexStatusLabel, 2, 1);
+    
     if (AsciiPanel == true)
     {
         hexLayout->addWidget(hexAsciiEdit, 1, 2);
@@ -193,6 +224,11 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
              SIGNAL(cursorPositionChanged()),
              this,
              SLOT(moveCursor())
+           );
+    connect( hexTextEdit->horizontalScrollBar(),
+             SIGNAL(valueChanged(int)),
+             this,
+             SLOT(resetHorizontalScrollBar())
            );
     if (AsciiPanel == true)
     {
@@ -228,17 +264,23 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     prevPosition = 0;
     asciiPrevPosition = 0;
 
-    if (AsciiPanel == false)
-    {
-        this->setFixedWidth(hexTextEdit->width()+hexLineCount->width());
-    }
-    else
-    {
-        this->setFixedWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
-    }
+    //if (AsciiPanel == false)
+    //{
+        //this->setFixedWidth(hexTextEdit->width()+hexLineCount->width());
+    //}
+    //else
+    //{
+        //this->setFixedWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
+    //}
     //this->show();
     //this->hexLineCount->getWidget()->changeHeight();
     //qDebug() << "HexEdit: width" << this->width();
+    //qDebug() << "HexEdit: text edit in grid" << hexTextEdit->width();
+    //qDebug() << "HexEdit: column count in grid" << hexColumnCount->width();
+    //qDebug() << "HexEdit: line count in grid" << hexLineCount->width();
+    //qDebug() << "HexEdit: label in grid" << hexStatusLabel->width();
+    //this->hexTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->hexTextEdit->horizontalScrollBar()->setMaximum(0);
 }
 
 
@@ -589,7 +631,6 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
         }
     }
     this->hexByteArray = byteArray;
-    this->hexTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //this->hexTextEdit->verticalScrollBar()->setValue(0);
 }
 
@@ -621,8 +662,7 @@ void HexEdit::fixHeight()
 {
     //if (this->hexTextEdit->verticalScrollBar()->isVisible())
     //{
-        hexTextEdit->setMinimumWidth((columns*3-4)*fontSize+20);
-        hexTextEdit->setMaximumWidth((columns*3-4)*fontSize+20);
+        //hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth());
         this->hexLineCount->getWidget()->changeHeight();
     //}
     //else
@@ -692,4 +732,10 @@ void HexEdit::scrollToTop()
     QTextCursor txtCursor = hexTextEdit->textCursor();
     txtCursor.setPosition(0);
     hexTextEdit->setTextCursor(txtCursor);
+}
+
+
+void HexEdit::resetHorizontalScrollBar()
+{
+    this->hexTextEdit->horizontalScrollBar()->setValue(0);
 }

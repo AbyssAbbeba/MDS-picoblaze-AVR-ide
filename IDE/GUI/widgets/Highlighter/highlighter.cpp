@@ -638,11 +638,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
             //qDebug() << "Added " << pattern;
         }
 
-        quotationFormat.setForeground(Qt::darkRed);
-        rule.pattern = QRegExp("\".*\"");
-        rule.format = quotationFormat;
-        rule.tag = "quotation";
-        highlightingRules.append(rule);
+
 
         QStringList operandsPatterns;
         //pridat do keywords s {WS}
@@ -703,7 +699,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
         
         hexaNumbersFormat.setForeground(Qt::darkMagenta);
-        rule.pattern = QRegExp("\\b(0(x|X)[0-9A-Fa-f]+)\\b|\\b([0-9A-F]+((h)|(H)))\\b");
+        rule.pattern = QRegExp("\\b(0(x|X)[0-9A-Fa-f]+)\\b|\\b([0-9A-Fa-f]+((h)|(H)))\\b");
         rule.format = hexaNumbersFormat;
         rule.tag = "hexadecimal";
         highlightingRules.append(rule);
@@ -732,6 +728,18 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         rule.pattern = QRegExp("[a-zA-Z][0-9a-zA-Z_]*:");
         rule.format = labelFormat;
         rule.tag = "label";
+        highlightingRules.append(rule);
+
+        simpleQuotationFormat.setForeground(Qt::darkMagenta);
+        rule.pattern = QRegExp("'.*'");
+        rule.format = simpleQuotationFormat;
+        rule.tag = "simplequotation";
+        highlightingRules.append(rule);
+
+        quotationFormat.setForeground(Qt::darkRed);
+        rule.pattern = QRegExp("\".*\"");
+        rule.format = quotationFormat;
+        rule.tag = "quotation";
         highlightingRules.append(rule);
         
         singleLineCommentFormat.setForeground(Qt::gray);

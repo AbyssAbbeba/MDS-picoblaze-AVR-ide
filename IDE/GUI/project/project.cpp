@@ -1873,6 +1873,19 @@ bool Project::start(QString file)
             hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
+        QFileInfo infoAsm(file);
+        QFileInfo infoHex(hexPath + ".ihex");
+        QFileInfo infoDbg(hexPath + ".dbg");
+        if ( false == infoHex.exists() || false == infoDbg.exists())
+        {
+            qDebug() << "Project: files do not exist";
+            return false;
+        }
+        if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
+        {
+            qDebug() << "Project: files modified";
+            return false;
+        }
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->startSimulation(stdPath,
@@ -1888,10 +1901,10 @@ bool Project::start(QString file)
             }
             return false;
         }
-        else
-        {
-            qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        }
+        //else
+        //{
+        //    qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
+        //}
     }
     else if (langType == LANG_C)
     {
