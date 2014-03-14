@@ -52,6 +52,8 @@ typedef enum ErrorCode
     
     ERR_UNTRACKED_PROJECT,
     ERR_SIM_NOSTART,
+    ERR_SIM_NOT_COMPILED,
+    ERR_SIM_NOT_COMPILED_MODIFIED,
     ERR_NO_MAINFILE
 } ErrorCode;
 

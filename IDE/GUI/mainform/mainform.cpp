@@ -1344,6 +1344,8 @@ void MainForm::compileProject()
             error(ERR_NO_MAINFILE);
             return;
         }
+
+        this->saveProject();
         
         CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
@@ -1686,6 +1688,8 @@ void MainForm::simulationFlowHandle()
         }
         if (projectMan->getActive()->prjPath == "untracked")
         {
+            this->saveFile();
+            
             file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
         }
         else
@@ -1693,6 +1697,8 @@ void MainForm::simulationFlowHandle()
             if ( false == projectMan->getActive()->useMainFile )
             {
                 //check if enabled, if it isnt, simulate
+                this->saveFile();
+                
                 QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
                 QDir fileDir;
                 bool found = false;
@@ -1721,13 +1727,15 @@ void MainForm::simulationFlowHandle()
                     file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
                 }
             }
-            //else
-            //{
+            else
+            {
+                this->saveProject();
                 //simulate main file
                 //file = "";
-            //}
+            }
         }
-        if ( true == projectMan->getActive()->start(file) )
+        int start = projectMan->getActive()->start(file);
+        if ( 0 == start )
         {
             delete this->icon_simFlow;
             this->icon_simFlow = new QIcon(*pm_simFlowStop);
@@ -1743,7 +1751,49 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
-            error(ERR_SIM_NOSTART);
+            switch (start)
+            {
+                case 1:
+                {
+                    error(ERR_SIM_NOSTART);
+                    break;
+                }
+                case 2:
+                {
+                    error(ERR_SIM_NOSTART);
+                    break;
+                }
+                case 3:
+                {
+                    error(ERR_SIM_NOT_COMPILED);
+                    break;
+                }
+                case 4:
+                {
+                    //error(ERR_SIM_NOT_COMPILED_MODIFIED);
+                    QMessageBox msgBox;
+                    msgBox.setText("The source files have been modified.");
+                    msgBox.setInformativeText("Do you want to recompile?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    msgBox.setIcon(QMessageBox::Question);
+                    int ret = msgBox.exec();
+                    switch (ret)
+                    {
+                        case QMessageBox::Yes:
+                        {
+                            this->compileProject();
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+           
         }
     }
     else
