@@ -891,14 +891,6 @@ inline void AsmTranslatorKcpsmMed::translateIdentifiers ( AsmTranslatorBase::Lin
     std::map<std::string,std::string>::const_iterator it;
     std::map<std::string,std::string>::const_iterator end = m_idTranslationMap.cend();
 
-    id = lineFields.getLabel(true);
-    id = id.substr ( 0, id.size() -1 );
-    it = m_idTranslationMap.find(id);
-    if ( end != it )
-    {
-        lineFields.replaceLabel ( it->second + ":" );
-    }
-
     for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
     {
         std::string opr = lineFields.getOperand(i, true);
