@@ -326,7 +326,7 @@ void HexEdit::moveCursor()
 
         if (position % 3 == 2)
         {
-            if (prevPosition == position - 1)
+            if (prevPosition == position - 1 && position != hexTextEdit->document()->characterCount() - 1)
             {
                position++;
                txtCursor.setPosition(position);
@@ -616,14 +616,17 @@ void HexEdit::setData(QList<unsigned char> *byteArray)
             }
         }
         line++;
-        if (line == this->columns && i != byteArray->size()-1)
+        if (line == this->columns)
         {
-            hexTextEdit->insertPlainText("\n");
-            if (ascii == true)
+            if (i != byteArray->size()-1)
             {
-                hexAsciiEdit->insertPlainText("\n");
+                hexTextEdit->insertPlainText("\n");
+                if (ascii == true)
+                {
+                    hexAsciiEdit->insertPlainText("\n");
+                }
+                line = 0;
             }
-            line = 0;
         }
         else
         {

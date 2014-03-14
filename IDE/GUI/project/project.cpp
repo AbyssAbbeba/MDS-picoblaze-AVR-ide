@@ -1841,12 +1841,26 @@ void Project::setupSim()
     //qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
-    if (this->m_simControlUnit != NULL)
+    if (this->m_simControlUnit == NULL)
     {
-        delete this->m_simControlUnit;
+        this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
+        connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     }
-    this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
-    connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+    //qDebug() << architecture;
+    //qDebug() << "Project: return setupSim()";
+}
+
+
+
+/**
+ * @brief Inits simulation control unit
+ */
+void Project::setupSim(QString family)
+{
+    //qDebug() << "Project: setupSim()";
+    //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
+    //"kcpsm3"
+    this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
     //qDebug() << "Project: return setupSim()";
 }

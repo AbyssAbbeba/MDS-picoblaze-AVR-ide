@@ -26,6 +26,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 {
     //qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
 
+    if ( NULL == controlUnit )
+    {
+        qDebug() << "PicoBlazeGrid: controlUnit is NULL";
+    }
+
     std::vector<int> mask;
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
     mask.push_back(MCUSimCPU::EVENT_CPU_PC_OVERFLOW);
@@ -59,59 +64,76 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     mask.clear();
     mask.push_back(PicoBlazeStack::EVENT_STACK_SP_CHANGED);
     controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
-    
-    if ( NULL == controlUnit )
-    {
-        qDebug() << "PicoBlazeGrid: controlUnit is NULL";
-    }
+
+    int offsetMove = 0;
     
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(10, 42);
-    this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
-    this->memScratch->move(305,10);
+    
+    if ((dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size() > 0)
+    {
+        this->memScratch = new McuMemoryView(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
+        this->memScratch->move(305,10);
+    }
+    else
+    {
+        this->memScratch = NULL;
+        offsetMove = 215;
+    }
+    
     this->memPorts = new PortHexEdit(this, controlUnit, MCUSimSubsys::SubsysId::ID_PLIO);
-    this->memPorts->move(520,19);
+    this->memPorts->move(520 - offsetMove, 19);
     this->memStack = new StackWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_STACK);
-    this->memStack->move(960, 20);
+    this->memStack->move(960 - offsetMove, 20);
     this->memStack->setFixedWidth(100);
     this->memStack->setMaximumHeight(225);
     this->memRegs->show();
-    this->memScratch->show();
+    if (NULL != this->memScratch)
+    {
+        this->memScratch->show();
+    }
     this->memPorts->show();
     this->memStack->show();
 
     this->wTime = new TimeWidget(this);
-    this->wTime->move(1080, 100);
+    this->wTime->move(1080 - offsetMove, 100);
     this->wTime->show();
 
     this->lblRegs = new QLabel("Registers", this);
     this->lblRegs->move(40,0);
-    this->lblScratch = new QLabel("Scratch", this);
-    this->lblScratch->move(345,0);
+    if (NULL != this->memScratch)
+    {
+        this->lblScratch = new QLabel("Scratchpad RAM", this);
+        this->lblScratch->move(345,0);
+    }
+    else
+    {
+        this->lblScratch = NULL;
+    }
     this->lblPortsIn = new QLabel("Input Ports", this);
-    this->lblPortsIn->move(560,0);
+    this->lblPortsIn->move(560 - offsetMove, 0);
     this->lblPortsOut = new QLabel("Output Ports", this);
-    this->lblPortsOut->move(770,0);
+    this->lblPortsOut->move(770 - offsetMove, 0);
     this->lblRD = new QLabel("RD", this);
-    this->lblRD->move(680, 0);
+    this->lblRD->move(710 - offsetMove, 0);
     //this->lblRD->setMaximumWidth(25);
     //this->lblRD->setFrameRect(QRect(0,0,0,0));
     //this->lblRD->setFrameShape(QFrame::Box);
     this->lblWR = new QLabel("WR", this);
-    this->lblWR->move(705, 0);
+    this->lblWR->move(925 - offsetMove, 0);
     //this->lblWR->setMaximumWidth(25);
     //this->lblWR->setFrameRect(QRect(0,0,0,0));
     //this->lblWR->setFrameShape(QFrame::NoFrame);
     this->lblStack = new QLabel("Stack", this);
-    this->lblStack->move(960,0);
+    this->lblStack->move(960 - offsetMove, 0);
     this->lblPC = new QLabel("PC", this);
-    this->lblPC->move(1080,0);
+    this->lblPC->move(1080 - offsetMove, 0);
     this->lblCycles = new QLabel("Cycles", this);
-    this->lblCycles->move(1080, 20);
+    this->lblCycles->move(1080 - offsetMove, 20);
     this->lblClock = new QLabel("Clock", this);
-    this->lblClock->move(1080,40);
+    this->lblClock->move(1080 - offsetMove, 40);
     this->lblTime = new QLabel("Time", this);
-    this->lblTime->move(1080,80);
+    this->lblTime->move(1080 - offsetMove, 80);
 
     QFont leFont("Ubuntu Mono");
     leFont.setPixelSize(13);
@@ -120,31 +142,31 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leSP->setFixedHeight(17);
     this->leSP->setFont(leFont);
     this->leSP->setReadOnly(true);
-    this->leSP->move(1010, 0);
+    this->leSP->move(1010 - offsetMove, 0);
     this->lePC = new QLineEdit(this);
     this->lePC->setFixedWidth(80);
     this->lePC->setFixedHeight(17);
     this->lePC->setFont(leFont);
     this->lePC->setReadOnly(true);
-    this->lePC->move(1125, 0);
+    this->lePC->move(1125 - offsetMove, 0);
     this->leCycles = new QLineEdit(this);
     this->leCycles->setFixedWidth(80);
     this->leCycles->setFixedHeight(17);
     this->leCycles->setFont(leFont);
     this->leCycles->setReadOnly(true);
-    this->leCycles->move(1125, 20);
+    this->leCycles->move(1125 - offsetMove, 20);
     this->leClock = new QLineEdit(this);
     this->leClock->setFixedWidth(80);
     this->leClock->setFixedHeight(17);
     this->leClock->setFont(leFont);
     QRegExpValidator *doubleValidator = new QRegExpValidator(QRegExp("[0-9]+(\\.[0-9]*)?"), this->leClock);
     this->leClock->setValidator(doubleValidator);
-    this->leClock->move(1125, 40);
+    this->leClock->move(1125 - offsetMove, 40);
 
     this->cmbClock = new QComboBox(this);
     this->cmbClock->setFixedHeight(17);
     this->cmbClock->setFixedWidth(80);
-    this->cmbClock->move(1125, 60);
+    this->cmbClock->move(1125 - offsetMove, 60);
     this->cmbClock->addItem("Hz");
     this->cmbClock->addItem("KHz");
     this->cmbClock->addItem("MHz");
@@ -154,23 +176,23 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->btnIntr = new QPushButton("Interrupt", this);
     this->btnIntr->setFixedHeight(17);
     this->btnIntr->setFixedWidth(125);
-    this->btnIntr->move(1080, 180);
+    this->btnIntr->move(1080 - offsetMove, 180);
     //this->btnPorts = new QPushButton("Output", this);
     //this->btnPorts->setMaximumHeight(17);
     //this->btnPorts->setMaximumWidth(50);
     //this->btnPorts->move(615, 0);
     this->btnCarry = new QPushButton("Carry", this);
-    this->btnCarry->move(1080,160);
+    this->btnCarry->move(1080 - offsetMove, 160);
     this->btnCarry->setFixedHeight(17);
     this->btnCarry->setFixedWidth(62);
     this->btnZero = new QPushButton("Zero", this);
-    this->btnZero->move(1143,160);
+    this->btnZero->move(1143 - offsetMove, 160);
     this->btnZero->setFixedHeight(17);
     this->btnZero->setFixedWidth(62);
     this->btnInte = new QPushButton("Int enable", this);
     this->btnInte->setFixedHeight(17);
     this->btnInte->setFixedWidth(125);
-    this->btnInte->move(1080, 200);
+    this->btnInte->move(1080 - offsetMove, 200);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
@@ -216,7 +238,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     connect(this->memRegs, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     connect(this->memPorts, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     connect(this->memStack, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-    connect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    if (NULL != this->memScratch)
+    {
+        connect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    }
 
     deviceChanged();
     
@@ -239,7 +264,10 @@ void PicoBlazeGrid::handleUpdateRequest(int mask)
     {
         this->updateWidget();
         this->memRegs->updateWidget();
-        this->memScratch->updateWidget();
+        if (NULL != this->memScratch)
+        {
+            this->memScratch->updateWidget();
+        }
         this->memStack->updateWidget();
         this->memPorts->updateWidget();
     }
@@ -257,7 +285,7 @@ void PicoBlazeGrid::setProjectPath(QString prjPath)
 }
 
 
-void PicoBlazeGrid::switchPorts()
+/*void PicoBlazeGrid::switchPorts()
 {
     if ( true == this->memPorts->visibleIn )
     {
@@ -271,7 +299,7 @@ void PicoBlazeGrid::switchPorts()
         this->btnPorts->setText("Output");
         this->btnPorts->setStyleSheet("color: none");
     }
-}
+}*/
 
 
 void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
@@ -305,6 +333,78 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                     this->lePC->setText("0x00" + QString::number(value, 16).toUpper());
                 }
                 this->lePC->setStyleSheet("background-color: yellow");
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_PC_OVERFLOW:
+            {
+                error(ErrorCode::ERR_CPU_PC_OVERFLOW);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_PC_UNDERFLOW:
+            {
+                error(ErrorCode::ERR_CPU_PC_UNDERFLOW);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR:
+            {
+                error(ErrorCode::ERR_CPU_SYS_FATAL);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_OPCODE);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_JUMP);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_CALL);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_IRQ);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_RET:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_RET);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_RETI);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET:
+            {
+                error(ErrorCode::ERR_CPU_INVALID_OPSET);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST:
+            {
+                error(ErrorCode::ERR_CPU_UNSUPPORTED_INST);
+                emit stopSimSig();
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_INST_IGNORED:
+            {
+                error(ErrorCode::ERR_CPU_INST_IGNORED);
+                emit stopSimSig();
                 break;
             }
             default:
@@ -451,11 +551,96 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void PicoBlazeGrid::deviceChanged()
 {
+    //qDebug() << "PicoBlazeGrid: deviceChanged";
+    /*if (NULL == this->memScratch)
+    {
+        qDebug() << "PicoBlazeGrid: null scratch";
+    }
+    else
+    {
+        qDebug() << "PicoBlazeGrid: not null scratch";
+    }*/
+    //qDebug() << "PicoBlazeGrid: size" << (dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size();
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
     m_interrupt = dynamic_cast<PicoBlazeInterruptController*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS));
     m_stack = dynamic_cast<PicoBlazeStack*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_STACK));
+
+    if (  this->memScratch == NULL
+       && (dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size() > 0 )
+    {
+        //qDebug() << "PicoBlazeGrid: new scratch";
+        this->memPorts->move(520, 19);
+        this->memStack->move(960, 20);
+        this->wTime->move(1080, 100);
+        this->lblPortsIn->move(560, 0);
+        this->lblPortsOut->move(770, 0);
+        this->lblRD->move(710, 0);
+        this->lblWR->move(925, 0);
+        this->lblStack->move(960, 0);
+        this->lblPC->move(1080, 0);
+        this->lblCycles->move(1080, 20);
+        this->lblClock->move(1080, 40);
+        this->lblTime->move(1080, 80);
+        this->leSP->move(1010, 0);
+        this->lePC->move(1125, 0);
+        this->leCycles->move(1125, 20);
+        this->leClock->move(1125, 40);
+        this->cmbClock->move(1125, 60);
+        this->btnIntr->move(1080, 180);
+        this->btnCarry->move(1080, 160);
+        this->btnZero->move(1143, 160);
+        this->btnInte->move(1080, 200);
+
+
+        this->lblScratch = new QLabel("Scratchpad RAM", this);
+        this->lblScratch->move(345,0);
+        this->memScratch = new McuMemoryView(this, m_simControlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
+        this->memScratch->move(305,10);
+        this->memScratch->show();
+
+        connect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    }
+    else
+    {
+        if (this->memScratch != NULL
+           && (dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size() == 0 )
+        {
+            //qDebug() << "PicoBlazeGrid: delete scratch";
+            disconnect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+            delete this->memScratch;
+            this->memScratch = NULL;
+            delete this->lblScratch;
+            this->lblScratch = NULL;
+
+
+            this->memPorts->move(520 - 215, 19);
+            this->memStack->move(960 - 215, 20);
+            this->wTime->move(1080 - 215, 100);
+            this->lblPortsIn->move(560 - 215, 0);
+            this->lblPortsOut->move(770 - 215, 0);
+            this->lblRD->move(710 - 215, 0);
+            this->lblWR->move(925 - 215, 0);
+            this->lblStack->move(960 - 215, 0);
+            this->lblPC->move(1080 - 215, 0);
+            this->lblCycles->move(1080 - 215, 20);
+            this->lblClock->move(1080 - 215, 40);
+            this->lblTime->move(1080 - 215, 80);
+            this->leSP->move(1010 - 215, 0);
+            this->lePC->move(1125 - 215, 0);
+            this->leCycles->move(1125 - 215, 20);
+            this->leClock->move(1125 - 215, 40);
+            this->cmbClock->move(1125 - 215, 60);
+            this->btnIntr->move(1080 - 215, 180);
+            this->btnCarry->move(1080 - 215, 160);
+            this->btnZero->move(1143 - 215, 160);
+            this->btnInte->move(1080 - 215, 200);
+        }
+    }
+    
+    
     deviceReset();
+    qDebug() << "PicoBlazeGrid: return deviceChanged";
 }
 
 
@@ -495,8 +680,11 @@ void PicoBlazeGrid::setReadOnly(bool readOnly)
 
 void PicoBlazeGrid::fixHeight()
 {
-    memScratch->fixHeight();
-    memPorts->fixHeight();
+    if (NULL != this->memScratch)
+    {
+        this->memScratch->fixHeight();
+    }
+    this->memPorts->fixHeight();
 }
 
 
@@ -520,7 +708,10 @@ void PicoBlazeGrid::unhighlight()
     this->lblRD->setStyleSheet("color: none");
     this->lblWR->setStyleSheet("color: none");
     this->memRegs->unhighlight();
-    this->memScratch->unhighlight();
+    if (NULL != this->memScratch)
+    {
+        this->memScratch->unhighlight();
+    }
     this->memPorts->unhighlight();
     this->memStack->unhighlight();
 }

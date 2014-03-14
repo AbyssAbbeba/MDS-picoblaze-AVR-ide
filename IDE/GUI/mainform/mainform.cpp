@@ -2091,12 +2091,15 @@ void MainForm::interfaceConfig()
 
 void MainForm::stopSimSlot()
 {
+    //qDebug() << "MainForm: stopSimSlot";
     if (true == simulationRunStatus)
     {
+        //qDebug() << "MainForm: stop run";
         this->simulationRunHandle();
     }
     else if (true == simulationAnimateStatus)
     {
+        //qDebug() << "MainForm: stop animate";
         this->simulationAnimateHandle();
     }
 }
@@ -2140,8 +2143,8 @@ void MainForm::disableSimActs()
 
 void MainForm::changeProjectFamily(QString family)
 {
-    qDebug() << "MainForm: changeFamily not yep implemented";
-    //projectMan->getActive()->setupSim();
+    //qDebug() << "MainForm: changeFamily";
+    projectMan->getActive()->setupSim(family);
 }
 
 
