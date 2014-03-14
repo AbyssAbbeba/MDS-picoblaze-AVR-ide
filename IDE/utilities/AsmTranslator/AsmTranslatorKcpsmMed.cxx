@@ -322,7 +322,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
                 lbl.replace(pos, 1, "");
             }
 
-            lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
+            lbl = newIdentifier(lbl.substr ( 0, lbl.size() - ( true == colon ? 1 : 0 ) ));
             lbl = changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]);
             if ( true == colon )
             {
