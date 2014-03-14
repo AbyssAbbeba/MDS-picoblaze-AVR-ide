@@ -42,6 +42,8 @@ MainForm::MainForm()
     this->simulationStatus = false;
     this->simulationRunStatus = false;
     this->simulationAnimateStatus = false;
+    this->simulationRequest = false;
+    
     projectMan = new ProjectMan(this);
     connect(projectMan,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
@@ -1540,10 +1542,20 @@ void MainForm::compilationFinished(bool success)
     if ( true == success )
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
+        if (true == this->simulationRequest)
+        {
+            this->simulationFlowHandle();
+            this->simulationRequest = false;
+        }
     }
     else
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(false);
+        if (true == this->simulationRequest)
+        {
+            error(ErrorCode::ERR_SIM_RECOMPILE_FAILED);
+            this->simulationRequest = false;
+        }
     }
 }
 
@@ -1755,17 +1767,17 @@ void MainForm::simulationFlowHandle()
             {
                 case 1:
                 {
-                    error(ERR_SIM_NOSTART);
+                    error(ErrorCode::ERR_SIM_NOSTART);
                     break;
                 }
                 case 2:
                 {
-                    error(ERR_SIM_NOSTART);
+                    error(ErrorCode::ERR_SIM_NOSTART);
                     break;
                 }
                 case 3:
                 {
-                    error(ERR_SIM_NOT_COMPILED);
+                    error(ErrorCode::ERR_SIM_NOT_COMPILED);
                     break;
                 }
                 case 4:
@@ -1782,6 +1794,7 @@ void MainForm::simulationFlowHandle()
                     {
                         case QMessageBox::Yes:
                         {
+                            this->simulationRequest = true;
                             this->compileProject();
                             break;
                         }

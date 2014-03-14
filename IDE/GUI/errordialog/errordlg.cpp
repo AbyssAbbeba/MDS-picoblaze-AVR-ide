@@ -162,6 +162,11 @@ void error(int errCode)
             msgBox.setText("Error: Simulation could not start, source files modified");
             break;
         }
+        case ERR_SIM_RECOMPILE_FAILED:
+        {
+            msgBox.setText("Error: Simulation could not start, recompilation failed");
+            break;
+        }
         case ERR_NO_MAINFILE:
         {
             msgBox.setText("Error: Project main file not set");

@@ -4,7 +4,7 @@
 ; Press Start simulation and Animate to run the program
 ;
 ;;
-;      ;;; ; ;        SYMBOL DEFINITIONS
+;      ;;; ; ;      ;  SYMBOL DEFINITIONS
 ;
 numero               EQU                0b01010101
 cnt                  SET                1
