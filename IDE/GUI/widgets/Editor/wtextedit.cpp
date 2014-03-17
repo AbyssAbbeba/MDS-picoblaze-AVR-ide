@@ -22,8 +22,6 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     this->sourceType = type;
     this->undoRequest = false;
     this->redoRequest = false;
-    this->pasteRequest = false;
-    this->cutRequest = false;
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
     {
@@ -156,25 +154,43 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             this->textCursor().insertText(QApplication::clipboard()->text());
             return true;
         }
-        //undo ctrl+z
+        //cut ctrl+x
+        if ( (keyEvent->modifiers() & Qt::ControlModifier)
+          && (keyEvent->key() == Qt::Key_X)
+           )
+        {
+            if (true == this->textCursor().hasSelection())
+            {
+                QApplication::clipboard()->setText(this->textCursor().selectedText());
+                emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
+                this->textCursor().removeSelectedText();
+            }
+            return true;
+        }
+        //undo/redo ctrl+z (+shift)
         if ( (keyEvent->modifiers() & Qt::ControlModifier)
           && (keyEvent->key() == Qt::Key_Z)
            )
         {
-            this->editedUndo();
-            return true;
-        }
-        //redo ctrl+shift+z
-        if ( (keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
-          && (keyEvent->key() == Qt::Key_Z)
-           )
-        {
-            this->editedRedo();
+            //redo ctrl+shift+z
+            if ((keyEvent->modifiers() & Qt::ShiftModifier))
+            {
+                this->redoRequest = true;
+                this->redo();
+                this->redoRequest = false;
+            }
+            //undo ctrl+z
+            else
+            {
+                this->undoRequest = true;
+                this->undo();
+                this->undoRequest = false;
+            }
             return true;
         }
         //other keys
-        if ( (keyEvent->key() >= Qt::Key_Space && keyEvent->key() <= Qt::Key_Z)
-          && (!(keyEvent->modifiers() & Qt::ControlModifier))
+        if ( ((keyEvent->key() >= Qt::Key_Space && keyEvent->key() <= Qt::Key_Z)
+          && (!(keyEvent->modifiers() & Qt::ControlModifier)))
           || (keyEvent->key() == Qt::Key_Backspace)
           || (keyEvent->key() == Qt::Key_Tab)
           || (keyEvent->key() == Qt::Key_Delete)
@@ -319,41 +335,84 @@ void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
     if (true == this->undoRequest)
     {
         this->undoRequest = false;
-        qDebug() << "WTextEdit: undo request";
+        qDebug() << "WTextEdit: >>> undo request";
         qDebug() << "WTextEdit: position" << position;
         qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
         qDebug() << "WTextEdit: charsAdded" << charsAdded;
-        for (int i = 0; i < charsRemoved; i++)
+        qDebug() << "WTextEdit: cursor prev position" << this->textCursor().position();
+        if (charsAdded > 0)
         {
-            emit textChangedSignal(QString(QChar(127)), position);
+            QTextCursor cursor(this->textCursor());
+            if (position == cursor.position())
+            {
+                cursor.setPosition(position+charsAdded, QTextCursor::KeepAnchor);
+            }
+            else
+            {
+                cursor.setPosition(position, QTextCursor::KeepAnchor);
+            }
+            qDebug() << "WTextEdit: has selection" << cursor.hasSelection();
+            qDebug() << "WTextEdit: undo selection" << cursor.selectedText();
+            qDebug() << "WTextEdit: cursor anchor" << cursor.anchor();
+            qDebug() << "WTextEdit: cursor position" << cursor.position();
+            emit textChangedSignal(cursor.selectedText(), position);
+            if (charsRemoved > 0)
+            {
+                for (int i = 0; i < charsRemoved; i++)
+                {
+                    emit textChangedSignal("\177", cursor.position());
+                }
+            }
         }
+        else if (charsRemoved > 0)
+        {
+            for (int i = 0; i < charsRemoved; i++)
+            {
+                emit textChangedSignal("\177", position);
+            }
+        }
+        return;
     }
-    //TODO
     if (true == this->redoRequest)
     {
         this->redoRequest = false;
-        qDebug() << "WTextEdit: redo request";
+        qDebug() << "WTextEdit: >>> redo request";
         qDebug() << "WTextEdit: position" << position;
         qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
         qDebug() << "WTextEdit: charsAdded" << charsAdded;
-    }
-    //TODO
-    if (true == this->pasteRequest)
-    {
-        this->pasteRequest = false;
-        qDebug() << "WTextEdit: paste request";
-        qDebug() << "WTextEdit: position" << position;
-        qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
-        qDebug() << "WTextEdit: charsAdded" << charsAdded;
-    }
-    //TODO
-    if (true == this->cutRequest)
-    {
-        this->cutRequest = false;
-        qDebug() << "WTextEdit: cut request";
-        qDebug() << "WTextEdit: position" << position;
-        qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
-        qDebug() << "WTextEdit: charsAdded" << charsAdded;
+        qDebug() << "WTextEdit: cursor prev position" << this->textCursor().position();
+        if (charsAdded > 0)
+        {
+            QTextCursor cursor(this->textCursor());
+            if (position == cursor.position())
+            {
+                cursor.setPosition(position+charsAdded, QTextCursor::KeepAnchor);
+            }
+            else
+            {
+                cursor.setPosition(position, QTextCursor::KeepAnchor);
+            }
+            qDebug() << "WTextEdit: has selection" << cursor.hasSelection();
+            qDebug() << "WTextEdit: redo selection" << cursor.selectedText();
+            qDebug() << "WTextEdit: cursor anchor" << cursor.anchor();
+            qDebug() << "WTextEdit: cursor position" << cursor.position();
+            emit textChangedSignal(cursor.selectedText(), position);
+            if (charsRemoved > 0)
+            {
+                for (int i = 0; i < charsRemoved; i++)
+                {
+                    emit textChangedSignal("\177", cursor.position());
+                }
+            }
+        }
+        else if (charsRemoved > 0)
+        {
+            for (int i = 0; i < charsRemoved; i++)
+            {
+                emit textChangedSignal("\177", position);
+            }
+        }
+        return;
     }
 }
 
@@ -376,15 +435,22 @@ void WTextEdit::editedRedo()
 
 void WTextEdit::editedPaste()
 {
-    this->pasteRequest = true;
-    this->paste();
-    this->pasteRequest = false;
+    if (true == this->textCursor().hasSelection())
+    {
+        emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
+        this->textCursor().removeSelectedText();
+    }
+    emit textChangedSignal(QApplication::clipboard()->text(), this->textCursor().position());
+    this->textCursor().insertText(QApplication::clipboard()->text());
 }
 
 
 void WTextEdit::editedCut()
 {
-    this->cutRequest = true;
-    this->cut();
-    this->cutRequest = false;
+    if (true == this->textCursor().hasSelection())
+    {
+        QApplication::clipboard()->setText(this->textCursor().selectedText());
+        emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
+        this->textCursor().removeSelectedText();
+    }
 }

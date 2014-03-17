@@ -70,8 +70,6 @@ class WTextEdit : public QPlainTextEdit
         SourceType sourceType;
         bool undoRequest;
         bool redoRequest;
-        bool pasteRequest;
-        bool cutRequest;
 
 
     protected:
