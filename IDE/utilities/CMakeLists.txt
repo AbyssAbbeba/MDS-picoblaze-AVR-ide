@@ -33,7 +33,7 @@ add_subdirectory ( os )
 add_subdirectory ( AsmTranslator )
 
 # Library for validating license certificates.
-add_subdirectory ( LicenseCertificates )
+# add_subdirectory ( LicenseCertificates )
 
 # Library for automated testing environment using libCUnit.
 if ( BUILD_TESTING )
