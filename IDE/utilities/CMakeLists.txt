@@ -32,6 +32,9 @@ add_subdirectory ( os )
 # Assembly language support library.
 add_subdirectory ( AsmTranslator )
 
+# Library for validating license certificates.
+add_subdirectory ( LicenseCertificates )
+
 # Library for automated testing environment using libCUnit.
 if ( BUILD_TESTING )
     add_subdirectory ( AutoTest )
