@@ -1868,10 +1868,12 @@ void Project::setupSim(QString family)
 
 /**
  * @brief Starts simulation
+ * @return 0 - started; >0 - not started;
+ * @details  1 - sim not started; 2 - getLineNumber error; 3 - files do not exist; 4 - files modified;
  */
-bool Project::start(QString file)
+int Project::start(QString file)
 {
-    qDebug() << "Project: start()";
+    //qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
@@ -1893,12 +1895,12 @@ bool Project::start(QString file)
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
             qDebug() << "Project: files do not exist";
-            return false;
+            return 3;
         }
         if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
         {
             qDebug() << "Project: files modified";
-            return false;
+            return 4;
         }
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
@@ -1913,7 +1915,7 @@ bool Project::start(QString file)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
-            return false;
+            return 1;
         }
         //else
         //{
@@ -1931,7 +1933,7 @@ bool Project::start(QString file)
            )
         {
             qDebug() << "Project: return false start()";
-            return false;
+            return 1;
         }
         //else
         //{
@@ -1943,7 +1945,7 @@ bool Project::start(QString file)
     //qDebug() << "Project: getLineNumber check";
     if (currLine.empty() == true)
     {
-        return false;
+        return 2;
     }
     //qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
@@ -1963,7 +1965,7 @@ bool Project::start(QString file)
     this->prevFile2 = this->currFile;
     this->prevFile3 = this->currFile;
     //qDebug() << "Project: return start()";
-    return true;
+    return 0;
 }
 
 

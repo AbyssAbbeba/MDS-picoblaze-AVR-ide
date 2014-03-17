@@ -223,6 +223,8 @@ class MainForm : public QMainWindow
         bool simulationAnimateStatus;
 
         bool projectTabConnected;
+
+        bool simulationRequest;
 };
 
 

@@ -99,13 +99,40 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             file.close();
         }
     }
-    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
-    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
-    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
-    connect(textEdit, SIGNAL(selectionRemovedSignal(int, int)), this, SLOT(selectionRemovedOut(int, int)));
-    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
-    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
+    connect(textEdit,
+            SIGNAL(focusIn()),
+            this,
+            SLOT(getFocus())
+           );
+    connect(textEdit,
+            SIGNAL(breakpoint(int)),
+            this,
+            SLOT(manageBreakpointEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(bookmark(int)),
+            this,
+            SLOT(manageBookmarkEmit(int)));
+    connect(textEdit,
+            SIGNAL(textChangedSignal(const QString&, int)),
+            this,
+            SLOT(updateTextSlotOut(const QString&, int))
+           );
+    connect(textEdit,
+            SIGNAL(selectionRemovedSignal(int, int)),
+            this,
+            SLOT(selectionRemovedOut(int, int))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(editorFontChanged(QFont)),
+            this,
+            SLOT(changeFont(QFont))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(editorFontChanged(QFont)),
+            this->lineCount,
+            SLOT(changeFont(QFont))
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
@@ -184,13 +211,41 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             file.close();
         }
     }
-    connect(textEdit, SIGNAL(focusIn()), this, SLOT(getFocus()));
-    connect(textEdit, SIGNAL(breakpoint(int)), this, SLOT(manageBreakpointEmit(int)));
-    connect(textEdit, SIGNAL(bookmark(int)), this, SLOT(manageBookmarkEmit(int)));
-    connect(textEdit, SIGNAL(textChangedSignal(const QString&, int)), this, SLOT(updateTextSlotOut(const QString&, int)));
-    connect(textEdit, SIGNAL(selectionRemovedSignal(int, int)), this, SLOT(selectionRemovedOut(int, int)));
-    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this, SLOT(changeFont(QFont)));
-    connect(&GuiCfg::getInstance(), SIGNAL(editorFontChanged(QFont)), this->lineCount, SLOT(changeFont(QFont)));
+    connect(textEdit,
+            SIGNAL(focusIn()),
+            this,
+            SLOT(getFocus())
+           );
+    connect(textEdit,
+            SIGNAL(breakpoint(int)),
+            this,
+            SLOT(manageBreakpointEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(bookmark(int)),
+            this,
+            SLOT(manageBookmarkEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(textChangedSignal(const QString&, int)),
+            this,
+            SLOT(updateTextSlotOut(const QString&, int))
+           );
+    connect(textEdit,
+            SIGNAL(selectionRemovedSignal(int, int)),
+            this,
+            SLOT(selectionRemovedOut(int, int))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(editorFontChanged(QFont)),
+            this,
+            SLOT(changeFont(QFont))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(editorFontChanged(QFont)),
+            this->lineCount,
+            SLOT(changeFont(QFont))
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
@@ -214,30 +269,64 @@ void CodeEdit::makeMenu()
     cutAct = new QAction("Cut", editorPopup);
     copyAct = new QAction("Copy", editorPopup);
     QAction *pasteAct = new QAction("Paste", editorPopup);
+    QAction *undoAct = new QAction("Undo", editorPopup);
+    QAction *redoAct = new QAction("Redo", editorPopup);
     QAction *selectAllAct = new QAction("Select All", editorPopup);
     deselectAct = new QAction("Deselect", editorPopup);
-    QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
-    QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
+    //QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
+    //QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
 
 
     editorPopup->addAction(cutAct);
     editorPopup->addAction(copyAct);
     editorPopup->addAction(pasteAct);
     editorPopup->addSeparator();
+    editorPopup->addAction(undoAct);
+    editorPopup->addAction(redoAct);
+    editorPopup->addSeparator();
     editorPopup->addAction(selectAllAct);
     editorPopup->addAction(deselectAct);
-    editorPopup->addSeparator();
-    editorPopup->addAction(splitHorizontalAct);
-    editorPopup->addAction(splitVerticalAct);
+    //editorPopup->addSeparator();
+    //editorPopup->addAction(splitHorizontalAct);
+    //editorPopup->addAction(splitVerticalAct);
     
 
-    connect(cutAct, SIGNAL(triggered()), this->textEdit, SLOT(cut()));
-    connect(copyAct, SIGNAL(triggered()), this->textEdit, SLOT(copy()));
-    connect(pasteAct, SIGNAL(triggered()), this->textEdit, SLOT(paste()));
-    connect(selectAllAct, SIGNAL(triggered()), this->textEdit, SLOT(selectAll()));
-    connect(deselectAct, SIGNAL(triggered()), this->textEdit, SLOT(deselect()));
-    connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
-    connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
+    connect(cutAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(editedCut())
+           );
+    connect(copyAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(copy()));
+    connect(pasteAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(editedPaste())
+           );
+    connect(undoAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(editedUndo())
+           );
+    connect(redoAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(editedRedo())
+           );
+    connect(selectAllAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(selectAll())
+           );
+    connect(deselectAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(deselect())
+           );
+    //connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
+    //connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
     //qDebug() << "CodeEdit: return makeMenu()";
 }
 

@@ -42,6 +42,8 @@ MainForm::MainForm()
     this->simulationStatus = false;
     this->simulationRunStatus = false;
     this->simulationAnimateStatus = false;
+    this->simulationRequest = false;
+    
     projectMan = new ProjectMan(this);
     connect(projectMan,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
@@ -1344,6 +1346,8 @@ void MainForm::compileProject()
             error(ERR_NO_MAINFILE);
             return;
         }
+
+        this->saveProject();
         
         CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
@@ -1538,10 +1542,20 @@ void MainForm::compilationFinished(bool success)
     if ( true == success )
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
+        if (true == this->simulationRequest)
+        {
+            this->simulationFlowHandle();
+            this->simulationRequest = false;
+        }
     }
     else
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(false);
+        if (true == this->simulationRequest)
+        {
+            error(ErrorCode::ERR_SIM_RECOMPILE_FAILED);
+            this->simulationRequest = false;
+        }
     }
 }
 
@@ -1686,6 +1700,8 @@ void MainForm::simulationFlowHandle()
         }
         if (projectMan->getActive()->prjPath == "untracked")
         {
+            this->saveFile();
+            
             file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
         }
         else
@@ -1693,6 +1709,8 @@ void MainForm::simulationFlowHandle()
             if ( false == projectMan->getActive()->useMainFile )
             {
                 //check if enabled, if it isnt, simulate
+                this->saveFile();
+                
                 QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
                 QDir fileDir;
                 bool found = false;
@@ -1721,13 +1739,15 @@ void MainForm::simulationFlowHandle()
                     file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
                 }
             }
-            //else
-            //{
+            else
+            {
+                this->saveProject();
                 //simulate main file
                 //file = "";
-            //}
+            }
         }
-        if ( true == projectMan->getActive()->start(file) )
+        int start = projectMan->getActive()->start(file);
+        if ( 0 == start )
         {
             delete this->icon_simFlow;
             this->icon_simFlow = new QIcon(*pm_simFlowStop);
@@ -1743,7 +1763,50 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
-            error(ERR_SIM_NOSTART);
+            switch (start)
+            {
+                case 1:
+                {
+                    error(ErrorCode::ERR_SIM_NOSTART);
+                    break;
+                }
+                case 2:
+                {
+                    error(ErrorCode::ERR_SIM_NOSTART);
+                    break;
+                }
+                case 3:
+                {
+                    error(ErrorCode::ERR_SIM_NOT_COMPILED);
+                    break;
+                }
+                case 4:
+                {
+                    //error(ERR_SIM_NOT_COMPILED_MODIFIED);
+                    QMessageBox msgBox;
+                    msgBox.setText("The source files have been modified.");
+                    msgBox.setInformativeText("Do you want to recompile?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    msgBox.setIcon(QMessageBox::Question);
+                    int ret = msgBox.exec();
+                    switch (ret)
+                    {
+                        case QMessageBox::Yes:
+                        {
+                            this->simulationRequest = true;
+                            this->compileProject();
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+           
         }
     }
     else

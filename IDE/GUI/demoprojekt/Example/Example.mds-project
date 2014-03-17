@@ -6,7 +6,7 @@
   <Language language="0"/>
   <ScratchpadSize value="64"/>
   <ProgMemSize value="1024"/>
-  <IntVector value="1023"/>
+  <IntVector value="255"/>
   <HWBuild value="-1"/>
  </General>
  <Files>

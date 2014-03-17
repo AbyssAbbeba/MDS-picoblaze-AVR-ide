@@ -149,7 +149,22 @@ void error(int errCode)
         }
         case ERR_SIM_NOSTART:
         {
-            msgBox.setText("Error: Simulation could not start");
+            msgBox.setText("Error: Simulation could not start, internal error");
+            break;
+        }
+        case ERR_SIM_NOT_COMPILED:
+        {
+            msgBox.setText("Error: Simulation could not start, project not compiled");
+            break;
+        }
+        case ERR_SIM_NOT_COMPILED_MODIFIED:
+        {
+            msgBox.setText("Error: Simulation could not start, source files modified");
+            break;
+        }
+        case ERR_SIM_RECOMPILE_FAILED:
+        {
+            msgBox.setText("Error: Simulation could not start, recompilation failed");
             break;
         }
         case ERR_NO_MAINFILE:

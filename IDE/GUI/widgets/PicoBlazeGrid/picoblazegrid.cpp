@@ -640,7 +640,7 @@ void PicoBlazeGrid::deviceChanged()
     
     
     deviceReset();
-    qDebug() << "PicoBlazeGrid: return deviceChanged";
+    //qDebug() << "PicoBlazeGrid: return deviceChanged";
 }
 
 
