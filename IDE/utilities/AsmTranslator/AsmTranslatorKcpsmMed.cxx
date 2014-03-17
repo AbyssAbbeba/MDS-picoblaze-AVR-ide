@@ -322,7 +322,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
                 lbl.replace(pos, 1, "");
             }
 
-            lbl = newIdentifier(lbl.substr ( 0, lbl.size() -1 ));
+            lbl = newIdentifier(lbl.substr ( 0, lbl.size() - ( true == colon ? 1 : 0 ) ));
             lbl = changeLetterCase(lbl, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL]);
             if ( true == colon )
             {
@@ -890,14 +890,6 @@ inline void AsmTranslatorKcpsmMed::translateIdentifiers ( AsmTranslatorBase::Lin
     std::string id;
     std::map<std::string,std::string>::const_iterator it;
     std::map<std::string,std::string>::const_iterator end = m_idTranslationMap.cend();
-
-    id = lineFields.getLabel(true);
-    id = id.substr ( 0, id.size() -1 );
-    it = m_idTranslationMap.find(id);
-    if ( end != it )
-    {
-        lineFields.replaceLabel ( it->second + ":" );
-    }
 
     for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
     {

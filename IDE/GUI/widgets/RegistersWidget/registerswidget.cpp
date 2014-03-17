@@ -22,15 +22,13 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     {
         qDebug() << "RegistersWidget: controlUnit is NULL, this should never happen";
     }
-    
     this->setMaximumWidth(305);
     this->setMinimumWidth(305);
     this->setColumnCount(8);
     this->setSelectionMode(QAbstractItemView::SingleSelection);
     this->verticalHeader()->hide();
     this->horizontalHeader()->hide();
-    this->verticalScrollBar()->hide();
-    this->horizontalScrollBar()->hide();
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setShowGrid(false);
     this->setColumnWidth(0, 30);
     this->setColumnWidth(1, 30);
@@ -47,6 +45,21 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setFont(font);
     //font.setPointSize(9);
     //this->setFont(font);
+
+    this->setStyleSheet(QString(
+                                "QScrollBar:vertical"
+                                "{"
+                                    "border: 0px; "
+                                    "background: white;"
+                                    "width: 2px;"
+                                    "margin: 0px 0 0px 0;"
+                                "}"
+                                "QScrollBar::handle:vertical"
+                                "{"
+                                    "background: black;"
+                                "}"
+                                )
+                        );
 
     this->update = false;
     this->subsys = subsys;

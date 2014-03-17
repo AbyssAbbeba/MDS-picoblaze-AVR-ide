@@ -31,6 +31,10 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
     std::vector<int> mask;
     this->subsys = subsys;
     mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_WR_NONEXISTENT);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED);
 	controlUnit->registerObserver(
 		this,
 		subsys,
@@ -57,6 +61,7 @@ inline void McuMemoryView::deleteHexEdit()
 	if ( NULL != m_hexEdit )
     {
 		delete m_hexEdit;
+        m_hexEdit = NULL;
 	}
 }
 
@@ -88,6 +93,30 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 			break;
 		}
+        case MCUSimMemory::EVENT_MEM_ERR_WR_NONEXISTENT:
+        {
+            error(ErrorCode::ERR_MEM_WR_NONEXISTENT);
+            emit stopSimSig();
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT:
+        {
+            error(ErrorCode::ERR_MEM_RD_NONEXISTENT);
+            emit stopSimSig();
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED:
+        {
+            error(ErrorCode::ERR_MEM_WR_NOT_IMPLEMENTED);
+            emit stopSimSig();
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED:
+        {
+            error(ErrorCode::ERR_MEM_RD_NOT_IMPLEMENTED);
+            emit stopSimSig();
+            break;
+        }
 		default:
 			qDebug("Invalid event received, event ignored.");
 			break;
@@ -131,6 +160,16 @@ void McuMemoryView::deviceChanged()
 	m_layout->addWidget(m_hexEdit);
 
 	deviceReset();
+    /*if (0 == m_size)
+    {
+        this->hide();
+        this->m_hexEdit->hide();
+    }*/
+    /*else
+    {
+        this->show();
+        this->m_hexEdit->show();
+    }*/
     //qDebug() << "McuMemoryView: return deviceChanged()";
 }
 
@@ -208,4 +247,10 @@ void McuMemoryView::updateWidget()
             m_hexEdit->setHighlighted(i, false);
         }
     }
+}
+
+
+int McuMemoryView::getSize()
+{
+    return m_size;
 }
