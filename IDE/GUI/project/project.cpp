@@ -1841,12 +1841,26 @@ void Project::setupSim()
     //qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
-    if (this->m_simControlUnit != NULL)
+    if (this->m_simControlUnit == NULL)
     {
-        delete this->m_simControlUnit;
+        this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
+        connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
     }
-    this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
-    connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+    //qDebug() << architecture;
+    //qDebug() << "Project: return setupSim()";
+}
+
+
+
+/**
+ * @brief Inits simulation control unit
+ */
+void Project::setupSim(QString family)
+{
+    //qDebug() << "Project: setupSim()";
+    //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
+    //"kcpsm3"
+    this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
     //qDebug() << "Project: return setupSim()";
 }
@@ -1854,10 +1868,12 @@ void Project::setupSim()
 
 /**
  * @brief Starts simulation
+ * @return 0 - started; >0 - not started;
+ * @details  1 - sim not started; 2 - getLineNumber error; 3 - files do not exist; 4 - files modified;
  */
-bool Project::start(QString file)
+int Project::start(QString file)
 {
-    qDebug() << "Project: start()";
+    //qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
@@ -1873,6 +1889,19 @@ bool Project::start(QString file)
             hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
+        QFileInfo infoAsm(file);
+        QFileInfo infoHex(hexPath + ".ihex");
+        QFileInfo infoDbg(hexPath + ".dbg");
+        if ( false == infoHex.exists() || false == infoDbg.exists())
+        {
+            qDebug() << "Project: files do not exist";
+            return 3;
+        }
+        if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
+        {
+            qDebug() << "Project: files modified";
+            return 4;
+        }
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
         if ( false == m_simControlUnit->startSimulation(stdPath,
@@ -1886,12 +1915,12 @@ bool Project::start(QString file)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
-            return false;
+            return 1;
         }
-        else
-        {
-            qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        }
+        //else
+        //{
+        //    qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
+        //}
     }
     else if (langType == LANG_C)
     {
@@ -1904,7 +1933,7 @@ bool Project::start(QString file)
            )
         {
             qDebug() << "Project: return false start()";
-            return false;
+            return 1;
         }
         //else
         //{
@@ -1916,7 +1945,7 @@ bool Project::start(QString file)
     //qDebug() << "Project: getLineNumber check";
     if (currLine.empty() == true)
     {
-        return false;
+        return 2;
     }
     //qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
@@ -1936,7 +1965,7 @@ bool Project::start(QString file)
     this->prevFile2 = this->currFile;
     this->prevFile3 = this->currFile;
     //qDebug() << "Project: return start()";
-    return true;
+    return 0;
 }
 
 

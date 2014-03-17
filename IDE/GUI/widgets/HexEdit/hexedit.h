@@ -61,6 +61,7 @@ class HexEdit : public QWidget
         void changeText(int position);
         void moveCursor();
         void moveAsciiCursor();
+        void resetHorizontalScrollBar();
 
     signals:
         void textChanged(int position);

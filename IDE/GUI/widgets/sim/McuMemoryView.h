@@ -29,6 +29,7 @@ class QHBoxLayout;
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
+#include "../../errordialog/errordlg.h"
 
 class McuMemoryView : public QWidget, public MCUSimObserver  {
 	Q_OBJECT
@@ -43,6 +44,7 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         void fixHeight();
         void unhighlight();
         void updateWidget();
+        int getSize();
 
     signals:
         void stopSimSig();
