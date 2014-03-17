@@ -33,11 +33,11 @@ add_custom_target ( test_analysis
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Unit tests for Assembly language support library.
-add_subdirectory ( AsmTranslator )
-
 # Tests for compiler
 add_subdirectory ( compiler )
+
+# Unit tests for Assembly language support library.
+add_subdirectory ( AsmTranslator )
 
 # Tests for disassembler
 add_subdirectory ( disassembler )
