@@ -32,7 +32,7 @@ loop2:
             ;; flag[z] == false
             ;; flag[c] == false
             ;; step                     #jump
-            ;; step 8
+            ;; step 10
             ;; flag[z] == true
             ;; flag[c] == true
             load                 s1,#55
