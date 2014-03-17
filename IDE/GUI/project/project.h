@@ -75,6 +75,7 @@ class ProjectMan : public QObject
         bool isOpened(QString path);
         void createActiveMakefile();
         void closeProject(Project* project);
+        QList<Project*> getOpenProjects();
 
     signals:
         void connectProject(Project *project);

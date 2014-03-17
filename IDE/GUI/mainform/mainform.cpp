@@ -155,6 +155,24 @@ MainForm::~MainForm()
     delete this->icon_simReset;
     delete this->icon_simUnhighlight;
     delete this->icon_toolDis;
+
+    if (projectMan->getOpenProjects().count() > 0)
+    {
+        qDebug() << "Mainform: prepare to project session restoration";
+        for (int i = 0; i < projectMan->getOpenProjects().count(); i++)
+        {
+            qDebug() << "Mainform: saving project" << projectMan->getOpenProjects().at(i)->prjName;
+        }
+    }
+
+    if (wDockManager->getTabCount() > 0)
+    {
+        qDebug() << "Mainform: prepare to files session restoration";
+        for (int i = 0; i < wDockManager->getTabCount(); i++)
+        {
+            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(i)->getPath();
+        }
+    }
 }
 
 
