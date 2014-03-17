@@ -322,6 +322,12 @@ void ProjectMan::closeProject(Project *project)
 }
 
 
+QList<Project*> ProjectMan::getOpenProjects()
+{
+    return this->openProjects;
+}
+
+
 
 
 
