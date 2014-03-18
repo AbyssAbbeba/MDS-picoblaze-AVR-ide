@@ -15,26 +15,27 @@
 #ifndef BREAKPOINTLIST_H
 #define BREAKPOINTLIST_H
 
-#include <QListWidget>
+#include <QTreeWidget>
 
 
 
 /**
- * @brief QListWidget of breakpoints added in CodeEdit
+ * @brief QTreeWidget of breakpoints added in Project
  * @ingroup GUI
  * @class BreakpointList
  */
-class BreakpointList : public QListWidget
+class BreakpointList : public QTreeWidget
 {
     Q_OBJECT   
     public:
         BreakpointList(QWidget *parent);
-        void reload(QList<int> breakpointList);
+        void reload(QList<QPair<QString, unsigned int>> breakpointList);
 
 
-    private slots:
-        void breakpointListAddSlot(int line);
-        void breakpointListRemoveSlot(int line);
+    public slots:
+        void breakpointListAddSlot(QString file, int line);
+        void breakpointListRemoveSlot(QString file, int line);
+        void breakpointListUpdateSlot(QString file, int linesAdded);
 
 };
 

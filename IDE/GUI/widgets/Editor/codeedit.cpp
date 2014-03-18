@@ -135,6 +135,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
            );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
+    //this->show();
     this->changeHeight();
     //qDebug() << "CodeEdit: return CodeEdit()";
 }
@@ -584,12 +585,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
     disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
     //disconnect(this, SIGNAL(), 0, 0);
-    disconnect(this, SIGNAL(bookmarkListAdd(int)), 0, 0);
-    disconnect(this, SIGNAL(bookmarkListRemove(int)), 0, 0);
-    disconnect(this, SIGNAL(breakpointListAdd(int)), 0, 0);
-    disconnect(this, SIGNAL(breakpointListRemove(int)), 0, 0);
-    this->breakpointList.clear();
-    this->bookmarkList.clear();
+    //disconnect(this, SIGNAL(bookmarkListAdd(QString,int)), 0, 0);
+    //disconnect(this, SIGNAL(bookmarkListRemove(QString,int)), 0, 0);
+    disconnect(this, SIGNAL(breakpointListAdd(QString,int)), 0, 0);
+    disconnect(this, SIGNAL(breakpointListRemove(QString,int)), 0, 0);
+    //this->breakpointList.clear();
+    //this->bookmarkList.clear();
     if (editor->getTextEdit()->toPlainText().isEmpty() == false)
     {
         this->textEdit->setPlainText(editor->getTextEdit()->toPlainText());
@@ -656,19 +657,15 @@ void CodeEdit::getFocus()
 void CodeEdit::manageBreakpointEmit(int line)
 {
     //qDebug() << "CodeEdit: manageBreakpointEmit()";
-    int index;
-    index = breakpointList.indexOf(line);
-    if (index == -1)
+    if (false == textEdit->isLineHighlighted(line, breakpointColor))
     {
         textEdit->highlightLine(line, breakpointColor);
-        breakpointList.append(line);
-        emit breakpointListAdd(line);
+        emit breakpointListAdd(this->path, line);
     }
     else
     {
         textEdit->highlightLine(line, NULL);
-        breakpointList.removeAt(index);
-        emit breakpointListRemove(line);
+        emit breakpointListRemove(this->path, line);
     }
     //qDebug() << "CodeEdit: return manageBreakpointEmit()";
 }
@@ -676,30 +673,19 @@ void CodeEdit::manageBreakpointEmit(int line)
 void CodeEdit::manageBookmarkEmit(int line)
 {
     //qDebug() << "CodeEdit: manageBookmarkEmit()";
-    int index;
-    index = bookmarkList.indexOf(line);
-    if (index == -1)
-    {
-        bookmarkList.append(line);
-        emit bookmarkListAdd(line);
-    }
-    else
-    {
-        bookmarkList.removeAt(index);
-        emit bookmarkListRemove(line);
-    }
+    emit bookmarkListStateChanged(this->path, line);
     //qDebug() << "CodeEdit: return manageBookmarkEmit()";
 }
 
-QList<int> CodeEdit::getBreakpointList()
+/*QList<int> CodeEdit::getBreakpointList()
 {
     return breakpointList;
-}
+}*/
 
-QList<int> CodeEdit::getBookmarkList()
+/*QList<int> CodeEdit::getBookmarkList()
 {
     return bookmarkList;
-}
+}*/
 
 
 CodeEdit* CodeEdit::getParentCodeEdit()

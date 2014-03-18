@@ -84,6 +84,14 @@ class GuiCfg : public QObject, public GuiCfg_Items
         void setEncoding(QString encoding);
 
         void setEOL(QString eol);
+
+        void setSessionRestoration(bool enabled);
+
+        void sessionAppendProject(QString path);
+
+        void sessionAppendFile(QString path);
+
+        void sessionClear();
         
         
         //getters
@@ -108,6 +116,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         bool getSplash();
         
         bool getTipsOnStart();
+
+        bool getSessionRestoration();
 
         QString getLanguage();
 
@@ -157,10 +167,18 @@ class GuiCfg : public QObject, public GuiCfg_Items
         
         QString getProjectPathVerilog();
 
+        QList<QString> getSessionProjectPaths();
+
+        QList<QString> getSessionFilePaths();
+
         //xml parser
         void loadConfig();
         
         void saveConfig();
+
+        void saveSession();
+
+        bool loadSession();
 };
 
 

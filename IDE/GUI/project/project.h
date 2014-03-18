@@ -194,7 +194,7 @@ class Project : public QObject
         
     private:
         ProjectMan *parentManager;
-        std::vector<std::pair<std::string, std::set<unsigned int>>> breakPoints;
+        QList<QPair<QString, unsigned int>> breakPoints;
         std::vector<std::pair<const std::string *, unsigned int>> currLine;
         int prevLine;
         int prevLine2;
