@@ -56,6 +56,9 @@ class MainForm : public QMainWindow
         //bool dockWidgets;
         bool openProject(QString path);
 
+    public slots:
+        void openFilePath(QString path);
+
     private slots:
         //slots connected to menu actions
         void newFile();
@@ -93,7 +96,6 @@ class MainForm : public QMainWindow
         void scrollCentralToLine(int line);
         void setEditorReadOnly(bool readOnly);
         void addUntrackedFile(QString name, QString path);
-        void openFilePath(QString path);
         void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
         void compilationFinished(bool success);
         void startProjectConfig(Project *project);
@@ -111,6 +113,8 @@ class MainForm : public QMainWindow
         void disableSimActs();
         void changeProjectFamily(QString family);
         void closeProject();
+        void manageBreakpointAdd(QString file, int line);
+        void manageBreakpointRemove(QString file, int line);
 
     signals:
         void unhighlightSim();
