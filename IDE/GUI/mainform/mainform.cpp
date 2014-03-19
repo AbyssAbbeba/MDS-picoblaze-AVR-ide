@@ -2264,10 +2264,20 @@ void MainForm::closeProject()
 void MainForm::manageBreakpointAdd(QString file, int line)
 {
     qDebug() << "MainForm: breakpoint add:" << file << ":" << line;
+    QList<Project*> projects = projectMan->getOpenProjects();
+    for (int i = 0; i < projects.count(); i++)
+    {
+        projects.at(i)->handleBreakpoint(file, line, true);
+    }
 }
 
 
 void MainForm::manageBreakpointRemove(QString file, int line)
 {
     qDebug() << "MainForm: breakpoint remove:" << file << ":" << line;
+    QList<Project*> projects = projectMan->getOpenProjects();
+    for (int i = 0; i < projects.count(); i++)
+    {
+        projects.at(i)->handleBreakpoint(file, line, false);
+    }
 }
