@@ -80,6 +80,12 @@ std::cout << "line2='"<<line2<<"'\n";
             CU_FAIL("VHD files differs!");
             return;
         }
+        else
+        {
+std::cout << "MATCH:\n";
+std::cout << "line1='"<<line1<<"'\n";
+std::cout << "line2='"<<line2<<"'\n";
+        }
     }
 }
 
