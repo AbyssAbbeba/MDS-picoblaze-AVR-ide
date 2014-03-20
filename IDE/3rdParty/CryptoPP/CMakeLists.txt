@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Crypto++ modified by Moravia Microsystems.
+# Crypto++ version 5.6.2 modified by Moravia Microsystems, s.r.o.
 # C++ library Crypto++ was written and placed in the public domain by Wei Dai.
 #
 # ==============================================================================
