@@ -109,6 +109,16 @@ MainForm::MainForm()
             this,
             SLOT(disableSimActs())
            );
+    connect(wDockManager,
+            SIGNAL(breakpointListAdd(QString, int)),
+            this,
+            SLOT(manageBreakpointAdd(QString, int))
+           );
+    connect(wDockManager,
+            SIGNAL(breakpointListRemove(QString, int)),
+            this,
+            SLOT(manageBreakpointRemove(QString, int))
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -155,6 +165,28 @@ MainForm::~MainForm()
     delete this->icon_simReset;
     delete this->icon_simUnhighlight;
     delete this->icon_toolDis;
+
+    if (projectMan->getOpenProjects().count() > 0)
+    {
+        QList<Project*> projects = projectMan->getOpenProjects();
+        qDebug() << "Mainform: prepare to project session restoration";
+        for (int i = 0; i < projects.count(); i++)
+        {
+            qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+            GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
+            
+        }
+        if (wDockManager->getTabCount() > 0)
+        {
+            qDebug() << "Mainform: prepare to files session restoration";
+            for (int i = 0; i < wDockManager->getTabCount(); i++)
+            {
+                qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(i)->getName();
+                GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(i)->getPath());
+            }
+        }
+    }
+    GuiCfg::getInstance().saveSession();
 }
 
 
@@ -2225,5 +2257,27 @@ void MainForm::closeProject()
         wDockManager->deleteActiveSimWidget();
         this->removeDockWidget(project->prjDockWidget);
         projectMan->closeProject(project);
+    }
+}
+
+
+void MainForm::manageBreakpointAdd(QString file, int line)
+{
+    qDebug() << "MainForm: breakpoint add:" << file << ":" << line;
+    QList<Project*> projects = projectMan->getOpenProjects();
+    for (int i = 0; i < projects.count(); i++)
+    {
+        projects.at(i)->handleBreakpoint(file, line, true);
+    }
+}
+
+
+void MainForm::manageBreakpointRemove(QString file, int line)
+{
+    qDebug() << "MainForm: breakpoint remove:" << file << ":" << line;
+    QList<Project*> projects = projectMan->getOpenProjects();
+    for (int i = 0; i < projects.count(); i++)
+    {
+        projects.at(i)->handleBreakpoint(file, line, false);
     }
 }

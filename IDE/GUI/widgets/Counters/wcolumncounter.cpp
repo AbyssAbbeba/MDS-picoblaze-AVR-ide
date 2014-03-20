@@ -30,10 +30,8 @@ WColumnCounter::WColumnCounter(QPlainTextEdit *parent, QFont font, int columns)
     this->parent = parent;
     QFontMetrics fontMetrics(font);
     int height = fontMetrics.height();
-    this->setMaximumHeight(height);
-    this->setMinimumHeight(height);
-    this->setMinimumWidth(columns*((int)fontMetrics.width("0 0")));
-    this->setMaximumWidth(columns*((int)fontMetrics.width("0 0")));
+    this->setFixedHeight(height);
+    this->setFixedWidth(columns*((int)fontMetrics.width("0 0")));
     //this->setMinimumWidth(parent->width());
     //this->setMaximumWidth(parent->width());
     widget = new WColumnCounterWidget(this, font, columns);

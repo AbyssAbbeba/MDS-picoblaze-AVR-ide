@@ -35,8 +35,7 @@ WLineCounter::WLineCounter(QPlainTextEdit *parent, bool icons, bool hex, int off
     //this->setMinimumHeight(this->parent->height());
     QFontMetrics fontMetrics(font);
     int fontWidth = fontMetrics.width("0000");
-    this->setMaximumWidth(fontWidth);
-    this->setMinimumWidth(fontWidth);
+    this->setFixedWidth(fontWidth);
     widget = new WLineCounterWidget(this, icons, hex, offset, font);
     this->setWidget(widget);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -87,8 +86,7 @@ void WLineCounter::changeFont(QFont font)
 {
     QFontMetrics fontMetrics(font);
     int fontWidth = fontMetrics.width("0000");
-    this->setMaximumWidth(fontWidth);
-    this->setMinimumWidth(fontWidth);
+    this->setFixedWidth(fontWidth);
     this->widget->changeFont(font);
     this->widget->update();
 }

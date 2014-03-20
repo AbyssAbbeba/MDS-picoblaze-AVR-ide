@@ -127,6 +127,7 @@ void GuiCfg::setDefaultIDEGeneral()
 {
     this->splash = false;
     this->tipsOnStart = false;
+    this->sessionRestoration = true;
     this->language = "English";
 }
 
@@ -289,6 +290,7 @@ void GuiCfg::setDefaultPaths(bool release)
         //    homeDir.mkpath(".");
         //}   
         this->configPath = homeDir.absolutePath() + "/config.xml";
+        this->sessionPath = homeDir.absolutePath() + "/session.xml";
         this->compilerPath = "../include/mds";
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -299,6 +301,7 @@ void GuiCfg::setDefaultPaths(bool release)
     {
         #ifdef Q_OS_LINUX
             this->configPath = "./resources/xml/config.xml";
+            this->sessionPath = "./resources/xml/session.xml";
             this->compilerPath = "../compiler/include";
             this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -306,6 +309,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->helpPath = "../docs/manual";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
+            this->sessionPath = "./GUI/resources/xml/session.xml";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -356,6 +360,42 @@ void GuiCfg::setEOL(QString eol)
 {
     this->eol = eol;
 }
+
+
+void GuiCfg::setSessionRestoration(bool enabled)
+{
+    this->sessionRestoration = enabled;
+}
+
+
+void GuiCfg::sessionAppendProject(QString path)
+{
+    this->sessionProjectPaths.append(path);
+}
+
+
+void GuiCfg::sessionAppendFile(QString path)
+{
+    this->sessionFilePaths.append(path);
+}
+
+
+void GuiCfg::sessionClear()
+{
+    this->sessionProjectPaths.clear();
+    this->sessionFilePaths.clear();
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 //getters
@@ -439,6 +479,11 @@ bool GuiCfg::getSplash()
 bool GuiCfg::getTipsOnStart()
 {
     return this->tipsOnStart;
+}
+
+bool GuiCfg::getSessionRestoration()
+{
+    return this->sessionRestoration;
 }
 
 QString GuiCfg::getLanguage()
@@ -589,6 +634,27 @@ QString GuiCfg::getProjectPathVerilog()
 }
 
 
+QList<QString> GuiCfg::getSessionProjectPaths()
+{
+    return this->sessionProjectPaths;
+}
+
+
+QList<QString> GuiCfg::getSessionFilePaths()
+{
+    return this->sessionFilePaths;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 //xml parsers
@@ -642,6 +708,10 @@ void GuiCfg::loadConfig()
                                 else if (xmlIDEGeneralElement.attribute("name", "") == "tips")
                                 {
                                     this->tipsOnStart = (xmlIDEGeneralElement.attribute("param", "") == "true");
+                                }
+                                else if (xmlIDEGeneralElement.attribute("name", "") == "session")
+                                {
+                                    this->sessionRestoration = (xmlIDEGeneralElement.attribute("param", "") == "true");
                                 }
                                 else if (xmlIDEGeneralElement.attribute("name", "") == "language")
                                 {
@@ -988,6 +1058,17 @@ void GuiCfg::saveConfig()
         xmlTips.setAttribute("param", "false");
     }
     xmlIDEGeneral.appendChild(xmlTips);
+    QDomElement xmlSession = domDoc.createElement("Option");
+    xmlSession.setAttribute("name", "session");
+    if (this->sessionRestoration == true)
+    {
+        xmlSession.setAttribute("param", "true");
+    }
+    else
+    {
+        xmlSession.setAttribute("param", "false");
+    }
+    xmlIDEGeneral.appendChild(xmlSession);
     QDomElement xmlLanguage = domDoc.createElement("Option");
     xmlLanguage.setAttribute("name", "language");
     xmlLanguage.setAttribute("param", this->language);
@@ -1614,4 +1695,113 @@ void GuiCfg::saveConfig()
     QTextStream xmlStream(&cfgFile);
     xmlStream << domDoc.toString();
     cfgFile.close();
+}
+
+
+void GuiCfg::saveSession()
+{
+    if (this->sessionProjectPaths.count() > 0)
+    {
+        QDomDocument domDoc("sessionRestoration");
+        QDomElement xmlRoot = domDoc.createElement("sessionRestoration");
+        domDoc.appendChild(xmlRoot);
+
+        QDomElement xmlProjects = domDoc.createElement("Projects");
+        for (int i = 0; i < this->sessionProjectPaths.count(); i++)
+        {
+            QDomElement xmlProject = domDoc.createElement("Project");
+            xmlProject.setAttribute("path", this->sessionProjectPaths.at(i));
+            xmlProjects.appendChild(xmlProject);
+        }
+        xmlRoot.appendChild(xmlProjects);
+
+        QDomElement xmlFiles = domDoc.createElement("Files");
+        for (int i = 0; i < this->sessionFilePaths.count(); i++)
+        {
+            QDomElement xmlFile = domDoc.createElement("File");
+            xmlFile.setAttribute("path", this->sessionFilePaths.at(i));
+            xmlFiles.appendChild(xmlFile);
+        }
+        xmlRoot.appendChild(xmlFiles);
+
+        QFile sessionFile(this->sessionPath);
+        sessionFile.open(QIODevice::WriteOnly);
+        QTextStream xmlStream(&sessionFile);
+        xmlStream << domDoc.toString();
+        sessionFile.close();
+    }
+    else
+    {
+        QFile sessionFile(this->sessionPath);
+        sessionFile.open(QIODevice::WriteOnly);
+        sessionFile.close();
+    }
+}
+
+
+bool GuiCfg::loadSession()
+{
+    QDomDocument domDoc("sessionRestoration");
+    QFile sessionFile(this->sessionPath);
+    if (!sessionFile.open(QIODevice::ReadOnly))
+    {
+        return false;
+    }
+    if (!domDoc.setContent(&sessionFile))
+    {
+        return false;
+    }
+    else
+    {
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "sessionRestoration")
+        {
+            return false;
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Projects")
+                    {
+                        QDomNode xmlProjectsNode = xmlElement.firstChild();
+                        QDomElement xmlProjectsElement;
+                        while (!xmlProjectsNode.isNull())
+                        {
+                            xmlProjectsElement = xmlProjectsNode.toElement();
+                            if (xmlProjectsElement.tagName() == "Project")
+                            {
+
+                                this->sessionProjectPaths.append(xmlProjectsElement.attribute("path", ""));
+
+                            }
+                            xmlProjectsNode = xmlProjectsNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "Files")
+                    {
+                        QDomNode xmlFilesNode = xmlElement.firstChild();
+                        QDomElement xmlFilesElement;
+                        while (!xmlFilesNode.isNull())
+                        {
+                            xmlFilesElement = xmlFilesNode.toElement();
+                            if (xmlFilesElement.tagName() == "File")
+                            {
+                                this->sessionFilePaths.append(xmlFilesElement.attribute("path", ""));
+                            }
+                            xmlFilesNode = xmlFilesNode.nextSibling();
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+        }
+    }
+    sessionFile.close();
+    return true;
 }

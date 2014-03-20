@@ -322,6 +322,12 @@ void ProjectMan::closeProject(Project *project)
 }
 
 
+QList<Project*> ProjectMan::getOpenProjects()
+{
+    return this->openProjects;
+}
+
+
 
 
 
@@ -1904,6 +1910,8 @@ int Project::start(QString file)
         }
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
+
+        
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_NATIVE,
                                                         m_simControlUnit->DBGFILEID_HEX)
@@ -1917,10 +1925,36 @@ int Project::start(QString file)
             }
             return 1;
         }
-        //else
-        //{
+        else
+        {
+            if (this->breakPoints.count() > 0)
+            {
+                std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+                for (int i = 0; i < this->breakPoints.count(); i++)
+                {
+                    //qDebug() << "Project: breakpoint list at" << i;
+                    std::set<unsigned int> breakpointsSet;
+                    foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                    {
+                        breakpointsSet.insert(value);
+                    }
+                    std::pair<std::string, std::set<unsigned int>> breakpointsPair;
+                    breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
+                    breakpointsPair.second = breakpointsSet;
+                    breakpointsVector.push_back(breakpointsPair);
+                }
+                for (int i = 0; i < breakpointsVector.size(); i++)
+                {
+                    qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                    foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                    {
+                        qDebug() << "Project: breakpoint line" << value;
+                    }
+                }
+                m_simControlUnit->setBreakPoints(breakpointsVector);
+            }
         //    qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        //}
+        }
     }
     else if (langType == LANG_C)
     {
@@ -2339,7 +2373,6 @@ void Project::setCompileOpt(QList<bool> opt)
                                             xmlCompOptElem.setAttribute("enable", "false");
                                         }
                                     }
-                                    
                                     xmlCompOptNode = xmlCompOptNode.nextSibling();
                                 }
                             }
@@ -2430,4 +2463,69 @@ void Project::setCompileIncPaths(QList<QString> paths)
 void Project::closeProjectSlot()
 {
     emit closeProject();
+}
+
+
+void Project::handleBreakpoint(QString file, int line, bool add)
+{
+    QDir prjDir(this->prjPath.section('/', 0, -2));
+    QString fileRelative = prjDir.relativeFilePath(file);
+    for (int i = 0; i < this->filePaths.count(); i++)
+    {
+        //qDebug() << "Project: compare" << this->filePaths.at(i) << "and" << fileRelative;
+        if (this->filePaths.at(i) == fileRelative)
+        {
+            //qDebug() << "Project:" << this->prjName << "contains file" << fileRelative;
+            if (true == add)
+            {
+                int found = -1;
+                for (int j = 0; j < this->breakPoints.count() && found == -1; j++)
+                {
+                    //qDebug() << "Project: matching file" << file << "with" << this->breakPoints.at(j).first;
+                    if (this->breakPoints.at(j).first == file)
+                    {
+                        found = j;
+                    }
+                }
+                if (found > -1)
+                {
+                    if (false == this->breakPoints.at(found).second.contains(line))
+                    {
+                        //qDebug() << "Project: breakpoint file found, added";
+                        QSet<unsigned int> set = this->breakPoints.at(found).second;
+                        set.insert(line);
+                        this->breakPoints.removeAt(found);
+                        QPair<QString, QSet<unsigned int>> pair(file, set);
+                        this->breakPoints.append(pair);
+                    }
+                    //this->breakPoints.at(found).second;
+                }
+                else
+                {
+                    //qDebug() << "Project: breakpoint file not found, added";
+                    QSet<unsigned int> set;
+                    set.insert(line);
+                    QPair<QString, QSet<unsigned int>> pair(file, set);
+                    this->breakPoints.append(pair);
+                }
+            }
+            else
+            {
+                for (int j = 0; j < this->breakPoints.count(); j++)
+                {
+                    if (this->breakPoints.at(j).first == file && true == this->breakPoints.at(j).second.contains(line))
+                    {
+                        //qDebug() << "Project: breakpoint file found, removed";
+                        QSet<unsigned int> set = this->breakPoints.at(j).second;
+                        set.remove(line);
+                        this->breakPoints.removeAt(j);
+                        QPair<QString, QSet<unsigned int>> pair(file, set);
+                        this->breakPoints.append(pair);
+                        return;
+                    }
+                }
+            }
+            return;
+        }
+    }
 }
