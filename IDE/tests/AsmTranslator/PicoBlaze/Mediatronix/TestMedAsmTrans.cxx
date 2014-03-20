@@ -69,6 +69,7 @@ i++;
 
         if ( std::string::npos == line1.find("INIT") )
         {
+std::cout << i << ": INIT NOT FOUND\n";
             continue;
         }
 
@@ -82,7 +83,7 @@ std::cout << "line2='"<<line2<<"'\n";
         }
         else
         {
-std::cout << "MATCH:\n";
+std::cout << "MATCH, line "<<i<<":\n";
 std::cout << "line1='"<<line1<<"'\n";
 std::cout << "line2='"<<line2<<"'\n";
         }
