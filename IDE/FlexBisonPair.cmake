@@ -65,7 +65,7 @@ macro ( FLEX_BISON_PAIR LexerTarget ParserTarget libraryTarget )
     # and disable compiler warnings for it.
     set_target_properties ( ${libraryTarget} PROPERTIES
                                              LINKER_LANGUAGE "CXX"
-                                             COMPILE_FLAGS "-w -fPIC" )
+                                             COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -w" )
 
 endmacro()
 
