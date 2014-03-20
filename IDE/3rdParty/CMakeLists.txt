@@ -23,8 +23,8 @@ if ( BUILD_TESTING )
     add_subdirectory ( CUnit )
 endif()
 
+# Build Crypto++ library.
+add_subdirectory ( CryptoPP )
+
 # Build hidapi library.
 # add_subdirectory ( hidapi )
-
-# Build Crypto++ library.
-# add_subdirectory ( CryptoPP )
