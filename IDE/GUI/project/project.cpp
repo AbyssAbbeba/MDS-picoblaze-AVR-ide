@@ -1892,7 +1892,7 @@ int Project::start(QString file)
         else
         {
             QDir dir(prjPath.section('/',0, -2));
-            hexPath = dir.absoluteFilePath(mainFileName.section('.',0,-2));
+            hexPath = dir.absoluteFilePath(mainFilePath.section('.',0,-2));
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         QFileInfo infoAsm(file);
@@ -1925,36 +1925,11 @@ int Project::start(QString file)
             }
             return 1;
         }
-        else
-        {
-            if (this->breakPoints.count() > 0)
-            {
-                std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
-                for (int i = 0; i < this->breakPoints.count(); i++)
-                {
-                    //qDebug() << "Project: breakpoint list at" << i;
-                    std::set<unsigned int> breakpointsSet;
-                    foreach (const unsigned int &value, this->breakPoints.at(i).second)
-                    {
-                        breakpointsSet.insert(value);
-                    }
-                    std::pair<std::string, std::set<unsigned int>> breakpointsPair;
-                    breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
-                    breakpointsPair.second = breakpointsSet;
-                    breakpointsVector.push_back(breakpointsPair);
-                }
-                for (int i = 0; i < breakpointsVector.size(); i++)
-                {
-                    qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
-                    foreach (const unsigned int &value, breakpointsVector.at(i).second)
-                    {
-                        qDebug() << "Project: breakpoint line" << value;
-                    }
-                }
-                m_simControlUnit->setBreakPoints(breakpointsVector);
-            }
+        //else
+        //{
+
         //    qDebug() << "Project: m_simControlUnit->startSimulation() returned true";
-        }
+        //}
     }
     else if (langType == LANG_C)
     {
@@ -1973,6 +1948,41 @@ int Project::start(QString file)
         //{
         //    qDebug() << "Project: m_simControlUnit->start() returned true";
         //}
+    }
+    /*if (file != "")
+    {
+        this->simulatedFile = file;
+    }
+    else
+    {
+        QDir dir(prjPath.section('/',0, -2));
+        this->simulatedFile = dir.absoluteFilePath(mainFilePath);
+    }*/
+    if (this->breakPoints.count() > 0)
+    {
+        std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+        for (int i = 0; i < this->breakPoints.count(); i++)
+        {
+            //qDebug() << "Project: breakpoint list at" << i;
+            std::set<unsigned int> breakpointsSet;
+            foreach (const unsigned int &value, this->breakPoints.at(i).second)
+            {
+                breakpointsSet.insert(value);
+            }
+            std::pair<std::string, std::set<unsigned int>> breakpointsPair;
+            breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
+            breakpointsPair.second = breakpointsSet;
+            breakpointsVector.push_back(breakpointsPair);
+        }
+        for (int i = 0; i < breakpointsVector.size(); i++)
+        {
+            qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+            foreach (const unsigned int &value, breakpointsVector.at(i).second)
+            {
+                qDebug() << "Project: breakpoint line" << value;
+            }
+        }
+        m_simControlUnit->setBreakPoints(breakpointsVector);
     }
     //qDebug() << "Project: getLineNumber";
     m_simControlUnit->getLineNumber(currLine);
@@ -2018,9 +2028,9 @@ void Project::stop()
     }
     this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     m_simControlUnit->stopSimulation();
-    emit highlightLine(this->prevFile, this->prevLine, NULL);
-    emit highlightLine(this->prevFile2, this->prevLine2, NULL);
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+    emit highlightLine(this->prevFile2, this->prevLine2, NULL);
+    emit highlightLine(this->prevFile, this->prevLine, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
