@@ -896,6 +896,7 @@ inline bool MCUSimControl::checkBreakpoint()
 std::cout<<"position in program: FILE=#"<<lineRecord.m_fileNumber<<", LINE=#"<<lineRecord.m_lineNumber<<'\n';
         if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
         {
+            emit(breakpointReached());
             return true;
         }
     }
