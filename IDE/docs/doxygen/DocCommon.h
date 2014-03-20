@@ -21,7 +21,7 @@
  *   - SDCC's .cdb files (http://sourceforge.net/apps/trac/sdcc/wiki/CDB%20File%20Format)
  *   - \<in future others\>
  *
- * @defgroup LicenseCertificates License certificates
+ * @defgroup LicenseCertificate License certificate
  * @ingroup Util
  * Library for validating license certificates.
  */

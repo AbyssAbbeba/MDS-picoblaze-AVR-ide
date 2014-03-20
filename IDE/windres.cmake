@@ -36,8 +36,7 @@ macro ( WINDRES_RC )
         set ( rcFile "${CMAKE_CURRENT_SOURCE_DIR}/${WINDRES_RC_TARGET}.rc" )
 
         get_directory_property ( cleanFiles ADDITIONAL_MAKE_CLEAN_FILES )
-        list ( APPEND cleanFiles ${rcFile} )
-        set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${cleanFiles}" )
+        set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${rcFile};${cleanFiles}" )
 
         file ( WRITE  ${rcFile} "#include <winver.h>\n" )
         if ( NOT "${WINDRES_RC_ICON}" STREQUAL "" )

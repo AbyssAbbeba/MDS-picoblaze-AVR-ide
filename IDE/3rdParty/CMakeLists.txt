@@ -25,3 +25,6 @@ endif()
 
 # Build hidapi library.
 # add_subdirectory ( hidapi )
+
+# Build Crypto++ library.
+# add_subdirectory ( CryptoPP )
