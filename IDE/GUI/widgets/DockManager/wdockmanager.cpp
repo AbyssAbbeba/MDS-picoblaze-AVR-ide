@@ -60,7 +60,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
  */
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 {
-    //qDebug() << "WDockManager: changeActiveCodeEdit()";
+    qDebug() << "WDockManager: changeActiveCodeEdit()";
     if (this->activeCodeEdit != editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
@@ -88,7 +88,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
         //    updateAnalysersSlot(this->activeCodeEdit);
         wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
-    //qDebug() << "WDockManager: return changeActiveCodeEdit()";
+    qDebug() << "WDockManager: return changeActiveCodeEdit()";
 }
 
 
@@ -98,7 +98,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
  */
 void WDockManager::changeCodeEditor(int index)
 {
-    //qDebug() << "WDockManager: changeCodeEditor()";
+    qDebug() << "WDockManager: changeCodeEditor()";
     if (activeCodeEdit != NULL && index >= 0)
     {
         //qDebug() << "wdockmanager - change Code Editor";
@@ -126,7 +126,7 @@ void WDockManager::changeCodeEditor(int index)
         }*/
         //    updateAnalysersSlot(this->activeCodeEdit);
     }
-    //qDebug() << "WDockManager: return changeCodeEditor()";
+    qDebug() << "WDockManager: return changeCodeEditor()";
 }
 
 
@@ -138,7 +138,7 @@ void WDockManager::changeCodeEditor(int index)
  */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
-    //qDebug() << "WDockManager: changeTabStatusSlot()";
+    qDebug() << "WDockManager: changeTabStatusSlot()";
     //wTab->setTabText(wTab->indexOf(editor), name);
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -150,7 +150,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
             break;
         }
     }
-    //qDebug() << "WDockManager: return changeTabStatusSlot()";
+    qDebug() << "WDockManager: return changeTabStatusSlot()";
 }
 
 
@@ -177,19 +177,21 @@ void WDockManager::closeTab(int index)
 
 void WDockManager::setTabChanged()
 {
-    //qDebug() << "WDockManager: setTabChanged()";
+    qDebug() << "WDockManager: setTabChanged()";
     //openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();
     codeEditList.at(wTab->currentIndex())->setChanged();
-    //qDebug() << "WDockManager: return setTabChanged()";
+    activeCodeEdit->setChanged();
+    qDebug() << "WDockManager: return setTabChanged()";
 }
 
 
 void WDockManager::setTabSaved()
 {
-    //qDebug() << "WDockManager: setTabSaved()";
+    qDebug() << "WDockManager: setTabSaved()";
     //qDebug() << "wdockmanager: set tab saved";
     codeEditList.at(wTab->currentIndex())->setSaved();
-    //qDebug() << "WDockManager: return setTabSaved()";
+    activeCodeEdit->setSaved();
+    qDebug() << "WDockManager: return setTabSaved()";
 }
 
 
@@ -786,6 +788,25 @@ void WDockManager::setCentralByPath(QString filePath)
                     //this->changeCodeEditor(i);
                 }
                 return;
+            }
+        }
+    }
+    //qDebug() << "WDockManager: return setCentralByName()";
+}
+
+
+CodeEdit* WDockManager::getCentralByPath(QString filePath)
+{
+    //qDebug() << "WDockManager: setCentralByName()";
+    if (filePath != "")
+    {
+        for (int i = 0; i < this->getTabCount(); i++)
+        {
+            //qDebug() << "WDockManager: tabtooltip" << wTab->tabToolTip(i) << "filePath" << filePath;
+            if (this->wTab->tabToolTip(i) == filePath)
+            {
+                //qDebug() << "WDockManager: CodeEdit found";
+                return this->codeEditList.at(this->wTab->currentIndex());
             }
         }
     }

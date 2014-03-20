@@ -21,7 +21,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()";
+    qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
     /*if (this->parentCodeEdit == NULL)
     {
@@ -77,7 +77,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     setLayout(layout);
     name = wName;
     path = wPath;
-    changed = false;
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = NULL;
@@ -99,6 +98,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             file.close();
         }
     }
+    changed = false;
     connect(textEdit,
             SIGNAL(focusIn()),
             this,
@@ -137,7 +137,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
     this->changeHeight();
-    //qDebug() << "CodeEdit: return CodeEdit()";
+    qDebug() << "CodeEdit: return CodeEdit()";
 }
 
 
@@ -193,7 +193,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     setLayout(layout);
     name = wName;
     path = wPath;
-    changed = false;
     parentWidget = parent;
     this->tabs = tabs;
     parentProject = parentPrj;
@@ -212,6 +211,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             file.close();
         }
     }
+    changed = false;
     connect(textEdit,
             SIGNAL(focusIn()),
             this,
@@ -336,16 +336,16 @@ void CodeEdit::makeMenu()
 
 void CodeEdit::connectAct()
 {
-    //qDebug() << "CodeEdit: connectAct()";
+    qDebug() << "CodeEdit: connectAct()";
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(setChanged()));
-    //qDebug() << "CodeEdit: return connectAct()";
+    qDebug() << "CodeEdit: return connectAct()";
 }
 
 
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    //qDebug() << "CodeEdit: setChanged()";
+    qDebug() << "CodeEdit: setChanged()";
     if (changed == false)
     {
         changed = true;
@@ -357,13 +357,13 @@ void CodeEdit::setChanged()
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         }
     }
-    //qDebug() << "CodeEdit: return setChanged()";
+    qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    //qDebug() << "CodeEdit: setSaved()";
+    qDebug() << "CodeEdit: setSaved()";
     if (changed == true)
     {
         changed = false;
@@ -383,7 +383,7 @@ void CodeEdit::setSaved()
     {
         qDebug() << "codeedit: not changed";
     }*/
-    //qDebug() << "CodeEdit: return setSaved()";
+    qDebug() << "CodeEdit: return setSaved()";
 }
 
 
@@ -519,7 +519,7 @@ void CodeEdit::selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor)
 
 void CodeEdit::updateTextSlotOut(const QString& text, int pos)
 {
-    //qDebug() << "CodeEdit: updateTextSlotOut()";
+    qDebug() << "CodeEdit: updateTextSlotOut()";
     emit updateText(text, pos, this);
     emit updateAnalysers(this);
     if (prevBlockCount != this->textEdit->document()->blockCount())
@@ -527,12 +527,12 @@ void CodeEdit::updateTextSlotOut(const QString& text, int pos)
         this->changeHeight();
         prevBlockCount = this->textEdit->document()->blockCount();
     }
-    //qDebug() << "CodeEdit: return updateTextSlotOut()";
+    qDebug() << "CodeEdit: return updateTextSlotOut()";
 }
 
 void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor)
 {
-    //qDebug() << "CodeEdit: updateTextSlotIn()";
+    qDebug() << "CodeEdit: updateTextSlotIn()";
     //qDebug() << "Code Edit: update";
     if ( this != editor )
     {
@@ -574,13 +574,13 @@ void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor
         }
         prevBlockCount = this->textEdit->document()->blockCount();
     }
-    //qDebug() << "CodeEdit: return updateTextSlotIn()";
+    qDebug() << "CodeEdit: return updateTextSlotIn()";
 }
 
 
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
-    //qDebug() << "CodeEdit: loadCodeEditor()";
+    qDebug() << "CodeEdit: loadCodeEditor()";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
     disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
@@ -633,7 +633,17 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     }
     emit CodeEditChanged(editor);
     this->changeHeight();
-    //qDebug() << "CodeEdit: return loadCodeEditor()";
+    if (true == editor->isChanged())
+    {
+        qDebug() << "CodeEdit: loadcodeedit is changed";
+        this->changed = true;
+    }
+    else
+    {
+        qDebug() << "CodeEdit: loadcodeedit is saved";
+        this->changed = false;
+    }
+    qDebug() << "CodeEdit: return loadCodeEditor()";
 }
 
 
@@ -646,17 +656,22 @@ QWidget* CodeEdit::getParent()
 
 void CodeEdit::getFocus()
 {
-    //qDebug() << "CodeEdit: getFocus()";
+    qDebug() << "CodeEdit: getFocus()";
     if (parentWidget != NULL)
     {
         ((BaseEditor*)parentWidget)->focusIn();
     }
-    //qDebug() << "CodeEdit: return getFocus()";
+    qDebug() << "CodeEdit: return getFocus()";
 }
 
 void CodeEdit::manageBreakpointEmit(int line)
 {
-    //qDebug() << "CodeEdit: manageBreakpointEmit()";
+    qDebug() << "CodeEdit: manageBreakpointEmit()";
+    bool prevChanged = this->changed;
+    if (prevChanged == true)
+    {
+        qDebug() << "CodeEdit: already changed";
+    }
     if (false == textEdit->isLineHighlighted(line, breakpointColor))
     {
         textEdit->highlightLine(line, breakpointColor);
@@ -667,7 +682,11 @@ void CodeEdit::manageBreakpointEmit(int line)
         textEdit->highlightLine(line, NULL);
         emit breakpointListRemove(this->path, line);
     }
-    //qDebug() << "CodeEdit: return manageBreakpointEmit()";
+    if (false == prevChanged)
+    {
+        this->setSaved();
+    }
+    qDebug() << "CodeEdit: return manageBreakpointEmit()";
 }
 
 void CodeEdit::manageBookmarkEmit(int line)
