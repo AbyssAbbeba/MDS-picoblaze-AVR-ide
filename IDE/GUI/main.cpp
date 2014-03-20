@@ -84,6 +84,26 @@ int main(int argc, char *argv[])
     {
         MainGUI.openProject(QString::fromLocal8Bit(argv[1]));
     }
+    else
+    {
+        //if session restore == true - restore
+        if (true == GuiCfg::getInstance().loadSession())
+        {
+            qDebug() << "Main: session restoration";
+            //open projects and files
+            QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
+            QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
+            for (int i = 0; i < projectPaths.count(); i++)
+            {
+                MainGUI.openProject(projectPaths.at(i));
+            }
+            for (int i = 0; i < filePaths.count(); i++)
+            {
+                MainGUI.openFilePath(filePaths.at(i));
+            }
+            GuiCfg::getInstance().sessionClear();
+        }
+    }
     
     return app.exec();
     

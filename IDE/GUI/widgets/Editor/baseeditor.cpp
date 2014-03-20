@@ -98,6 +98,16 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
                        editor1,
                        SLOT(manageBookmarkEmit(int))
                       );
+            disconnect(editor1->getTextEdit(),
+                       SIGNAL(breakpoint(int)),
+                       editor1->getParentCodeEdit(),
+                       SLOT(manageBreakpointEmit(int))
+                      );
+            disconnect(editor1->getParentCodeEdit()->getTextEdit(),
+                       SIGNAL(breakpoint(int)),
+                       editor1,
+                       SLOT(manageBreakpointEmit(int))
+                      );
             disconnect(editor1->getParentCodeEdit(),
                        SIGNAL(updateText(const QString&, int, CodeEdit*)),
                        editor1,

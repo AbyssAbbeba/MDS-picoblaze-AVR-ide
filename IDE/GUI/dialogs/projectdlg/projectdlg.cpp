@@ -96,18 +96,30 @@ void ProjectDialog::bCreate()
         return;
     }
     //vytvoreni projektu
+    if (true == this->prjdlg_general->getPath().isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid project path");
+        msgBox.exec();
+        return;
+    }
+    if (true == this->prjdlg_general->getName().isEmpty())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Enter valid project name");
+        msgBox.exec();
+        return;
+    }
+    QDir prjDir(this->prjdlg_general->getPath());
+    if (false == prjDir.exists())
+    {
+        prjDir.mkpath(".");
+    }
     QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds-project");
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QMessageBox msgBox;
-        if (this->prjdlg_general->getName().isEmpty() == true)
-        {
-            msgBox.setText("Enter valid project name");
-        }
-        else
-        {
-            msgBox.setText("Error opening file");
-        }
+        msgBox.setText("Error opening file");
         msgBox.exec();
     }
     else

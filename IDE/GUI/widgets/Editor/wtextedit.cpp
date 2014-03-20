@@ -33,6 +33,8 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
             this,
             SLOT(updateUndoRedo(int,int,int))
            );
+
+    this->show();
     //this->setFocusPolicy(Qt::ClickFocus);
     //qDebug() << "WTextEdit: return WTextEdit()";
 }
@@ -280,6 +282,25 @@ bool WTextEdit::highlightLine(int line, QColor *color)
     }*/
     return false;
     //qDebug() << "WTextEdit: return highlightLine()";
+}
+
+
+bool WTextEdit::isLineHighlighted(int line, QColor *color)
+{
+    if (line >= 0 && line <= this->document()->lineCount())
+    {
+        QTextBlock lineBlock = this->document()->findBlockByNumber(line);
+        QTextBlockFormat lineFormat = lineBlock.blockFormat();
+        if (lineFormat.background().color().rgb() == color->rgb())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    return false;
 }
 
 
