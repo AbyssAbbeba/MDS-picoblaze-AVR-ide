@@ -621,7 +621,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -635,17 +635,22 @@ void MainForm::openFilePath(QString path)
         }
         else
         {
+            file.close();
             //qDebug() << "MainForm: addCentralWidget";
             wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
-            file.close();
             //qDebug() << "MainForm: connect";
             wDockManager->getCentralWidget()->connectAct();
             //qDebug() << "MainForm: set parent";
             wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+            //wDockManager->getCentralWidget()->setSaved();
+            if (true == wDockManager->getCentralWidget()->isChanged())
+            {
+                qDebug() << "MainForm: openfilepath - some error here";
+            }
         }
     }
-    //qDebug() << "MainForm: return openFilePath()";
+    qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -689,6 +694,11 @@ void MainForm::saveFile()
     //qDebug() << "MainForm: saveFile()";
     if (wDockManager->getCentralWidget()->isChanged() == true || wDockManager->getCentralPath() == "untracked")
     {
+        if (wDockManager->getCentralWidget()->isChanged() == true )
+        {
+            qDebug() << "MainForm: central is changed";
+        }
+        qDebug() << "Mainform: saving file";
         QString path;
         if (wDockManager->getCentralPath() == NULL || wDockManager->getCentralPath() == "untracked")
         {
@@ -718,7 +728,7 @@ void MainForm::saveFile()
                 fout << wDockManager->getCentralTextEdit()->toPlainText();
                 file.close();
                 wDockManager->setTabSaved();
-                //wDockManager->getCentralWidget()->setSaved();
+                wDockManager->getCentralWidget()->setSaved();
                 //qDebug() << "mainform: file saved";
             }
         }
@@ -917,7 +927,8 @@ void MainForm::saveProject()
     //qDebug() << "MainForm: saveProject()";
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
-        if (wDockManager->getTabWidget(i)->isChild(projectMan->getActive()) == true)
+        if (wDockManager->getTabWidget(i)->isChild(projectMan->getActive()) == true
+            && true == wDockManager->getTabWidget(i)->isChanged())
         {
             saveFile(wDockManager->getTabWidget(i));
         }
@@ -1740,7 +1751,7 @@ void MainForm::simulationFlowHandle()
         {
             if ( false == projectMan->getActive()->useMainFile )
             {
-                //check if enabled, if it isnt, simulate
+                //check if enabled, if it isnt, simulate current file
                 this->saveFile();
                 
                 QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
@@ -1979,11 +1990,12 @@ void MainForm::connectProjectSlot(Project *project)
  */
 void MainForm::highlightLine(QString file, int line, QColor *color)
 {
-    //qDebug() << "MainForm: highlightLine";
+    qDebug() << "MainForm: highlightLine";
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
         this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
+        this->getWDockManager()->getCentralWidget()->setSaved();
         //if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
         //{
         //    this->getWDockManager()->getCentralTextEdit()->scrollToLine(line, false);
@@ -1993,7 +2005,7 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
             qDebug() << "MainForm: highlightLine failed";
         }*/
     }
-    //qDebug() << "MainForm: return highlightLine";
+    qDebug() << "MainForm: return highlightLine";
 }
 
 
