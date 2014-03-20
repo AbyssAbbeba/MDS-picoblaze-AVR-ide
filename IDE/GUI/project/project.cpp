@@ -1851,6 +1851,7 @@ void Project::setupSim()
     {
         this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
         connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
+        connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
     }
     //qDebug() << architecture;
     //qDebug() << "Project: return setupSim()";
@@ -2538,4 +2539,10 @@ void Project::handleBreakpoint(QString file, int line, bool add)
             return;
         }
     }
+}
+
+
+void Project::breakpointReachedSlot()
+{
+    emit breakpointReached();
 }

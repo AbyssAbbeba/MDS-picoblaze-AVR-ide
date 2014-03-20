@@ -610,8 +610,8 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     //disconnect(this, SIGNAL(), 0, 0);
     //disconnect(this, SIGNAL(bookmarkListAdd(QString,int)), 0, 0);
     //disconnect(this, SIGNAL(bookmarkListRemove(QString,int)), 0, 0);
-    disconnect(this, SIGNAL(breakpointListAdd(QString,int)), 0, 0);
-    disconnect(this, SIGNAL(breakpointListRemove(QString,int)), 0, 0);
+    //disconnect(this, SIGNAL(breakpointListAdd(QString,int)), 0, 0);
+    //disconnect(this, SIGNAL(breakpointListRemove(QString,int)), 0, 0);
     //this->breakpointList.clear();
     //this->bookmarkList.clear();
     /*if (editor->getTextEdit()->toPlainText().isEmpty() == false)

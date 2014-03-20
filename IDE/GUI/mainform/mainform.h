@@ -117,6 +117,7 @@ class MainForm : public QMainWindow
         void closeProject();
         void manageBreakpointAdd(QString file, int line);
         void manageBreakpointRemove(QString file, int line);
+        void pauseSimulation();
 
     signals:
         void unhighlightSim();

@@ -179,6 +179,7 @@ class Project : public QObject
         void startCfgDlgCore();
         void handleUpdateRequest(int mask);
         void closeProjectSlot();
+        void breakpointReachedSlot();
 
     signals:
         void highlightLine(QString file, int line, QColor *color);
@@ -193,6 +194,7 @@ class Project : public QObject
         void startConfig(Project *project);
         void changeFamily(QString family);
         void closeProject();
+        void breakpointReached();
         
     private:
         ProjectMan *parentManager;
