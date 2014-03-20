@@ -257,7 +257,6 @@ void TestMedAsmTrans::test ( const std::string & suffix )
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
 
-
     if ( false == result )
     {
         CU_FAIL("Compilation failed!");
