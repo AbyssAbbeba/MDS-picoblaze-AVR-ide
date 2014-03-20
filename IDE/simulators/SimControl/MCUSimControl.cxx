@@ -840,7 +840,7 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
     }
 }
 
-void MCUSimControl::setBreakPoints(const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs)
+void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs )
 {
     m_breakPointsSet = false;
 
