@@ -16,7 +16,7 @@ loop:
             ;; flag[z] == false
             ;; flag[c] == false
             ;; step                     #jump
-            ;; step 10
+            ;; step 8
             ;; flag[z] == true
             ;; flag[c] == false
             load                 s3,#45
@@ -38,13 +38,6 @@ loop2:
             load                 s1,#55
             ;; step                     # load
             ;; reg[1] == 55
-
-
-
-
-
-
-
 
 
 
