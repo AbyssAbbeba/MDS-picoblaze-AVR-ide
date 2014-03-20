@@ -47,6 +47,7 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     connect(codeEdit, SIGNAL(splitSignal(Qt::Orientation, int)), this, SLOT(split(Qt::Orientation, int)));
     connect(codeEdit, SIGNAL(CodeEditChanged(CodeEdit*)), this, SLOT(reconnect(CodeEdit*)));
     connectCodeEdits(this->codeEdit, this->codeEdit->getParentCodeEdit());
+    //this->show();
     //qDebug() << "BaseEditor: codeedit connected";
     //qDebug() << "BaseEditor: return BaseEditor()";
 }
@@ -80,6 +81,7 @@ CodeEdit* BaseEditor::getCodeEdit()
     return codeEdit;
 }
 
+
 void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 {
     //qDebug() << "BaseEditor: connectCodeEdits()";
@@ -88,7 +90,7 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
 
         //if (editor1->getParentCodeEdit() != editor2)
         //{
-            disconnect(editor1->getTextEdit(),
+            /*disconnect(editor1->getTextEdit(),
                        SIGNAL(bookmark(int)),
                        editor1->getParentCodeEdit(),
                        SLOT(manageBookmarkEmit(int))
@@ -127,14 +129,14 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
                        SIGNAL(updateText(const QString&, int, CodeEdit*)),
                        editor1->getParentCodeEdit(),
                        SLOT(selectionRemovedIn(int, int, CodeEdit*))
-                      );
+                      );*/
 
             editor1->setParentCodeEdit(editor2);
         //}
 
         //connect(editor1->getTextEdit(), SIGNAL(textChanged()), editor1, SLOT(updateTextSlotOut()));
         //connect(editor2->getTextEdit(), SIGNAL(textChanged()), editor2, SLOT(updateTextSlotOut()));
-        connect(editor1,
+        /*connect(editor1,
                 SIGNAL(updateText(const QString&, int, CodeEdit*)),
                 editor2,
                 SLOT(updateTextSlotIn(const QString&, int, CodeEdit*))
@@ -173,7 +175,7 @@ void BaseEditor::connectCodeEdits(CodeEdit* editor1, CodeEdit* editor2)
                 SIGNAL(breakpoint(int)),
                 editor1,
                 SLOT(manageBreakpointEmit(int))
-               );
+               );*/
         
     }
     //qDebug() << "BaseEditor: return connectCodeEdits()";
