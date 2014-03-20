@@ -62,10 +62,10 @@ class CodeEdit : public QWidget
         void setChanged();
         void splitHorizontal();
         void splitVertical();
-        void updateTextSlotOut(const QString& text, int pos);
-        void updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor);
-        void selectionRemovedOut(int posStart, int posEnd);
-        void selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor);
+        //void updateTextSlotOut(const QString& text, int pos);
+        //void updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor);
+        //void selectionRemovedOut(int posStart, int posEnd);
+        //void selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor);
         void getFocus();
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
