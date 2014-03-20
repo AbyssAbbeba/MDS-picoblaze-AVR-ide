@@ -1,6 +1,6 @@
 
 #include "LicenseCertificate.h"
-
+#if 0
 #include "rsa.h"
 using CryptoPP::RSA;
 using CryptoPP::RSASS;
@@ -35,10 +35,11 @@ using std::string;
 #include <iostream>
 using std::cout;
 using std::endl;
-
+#endif
 int main ( int argc, char ** argv )
 {    /*try
     {*/
+#if 0
         AutoSeededRandomPool rng;
 
 // RSA::PrivateKey privateKey;
@@ -164,6 +165,6 @@ bool result = false;
 //     {
 //         std::cerr << "Error: " << e.what() << std::endl;
 //     }
-
+#endif
     return 0;
 }
