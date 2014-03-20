@@ -65,18 +65,16 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
         this->activeCodeEdit = editor;
-        if (breakpointList != NULL && editor->getParentProject() != NULL)
+        /*if (breakpointList != NULL && editor->getParentProject() != NULL)
         {
-            //breakpointList->disconnect();
-            breakpointList->reload(editor->getBreakpointList());
             connect(this->activeCodeEdit,
                       SIGNAL(breakpointListAdd(int)),
-                      breakpointList,
+                      this,
                       SLOT(breakpointListAddSlot(int))
                      );
             connect(this->activeCodeEdit,
                     SIGNAL(breakpointListRemove(int)),
-                    breakpointList,
+                    this,
                     SLOT(breakpointListRemoveSlot(int))
                    );
         }
@@ -86,7 +84,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
             bookmarkList->reload(editor->getBookmarkList());
             connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
             connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
-        }
+        }*/
         //    updateAnalysersSlot(this->activeCodeEdit);
         wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
@@ -108,28 +106,24 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "size: " << openCentralWidgets.count();
         CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
         activeCodeEdit->loadCodeEdit(editor);
-        if (breakpointList != NULL)
+        /*if (breakpointList != NULL)
         {
-            breakpointList->disconnect();
-            breakpointList->reload(editor->getBreakpointList());
             connect(this->activeCodeEdit,
-                    SIGNAL(breakpointListAdd(int)),
-                    breakpointList,
-                    SLOT(breakpointListAddSlot(int))
+                    SIGNAL(breakpointListAdd(QString, int)),
+                    this,
+                    SLOT(breakpointListAddSlot(QString, int))
                    );
             connect(this->activeCodeEdit,
-                    SIGNAL(breakpointListRemove(int)),
-                    breakpointList,
-                    SLOT(breakpointListRemoveSlot(int))
+                    SIGNAL(breakpointListRemove(QString, int)),
+                    this,
+                    SLOT(breakpointListRemoveSlot(QString, int))
                    );
         }
         if (bookmarkList != NULL)
         {
-            bookmarkList->disconnect();
-            bookmarkList->reload(editor->getBookmarkList());
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), bookmarkList, SLOT(bookmarkListAddSlot(int)));
-            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
-        }
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListAdd(int)), this, SLOT(bookmarkListAddSlot(int)));
+            connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), this, SLOT(bookmarkListRemoveSlot(int)));
+        }*/
         //    updateAnalysersSlot(this->activeCodeEdit);
     }
     //qDebug() << "WDockManager: return changeCodeEditor()";
@@ -333,7 +327,21 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         //add tab tooltip with path
         newEditor->connectAct();
         activeCodeEdit->connectAct();
-        connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(newEditor,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
+        connect(newEditor,
+                SIGNAL(breakpointListAdd(QString, int)),
+                this,
+                SLOT(breakpointListAddSlot(QString, int))
+               );
+        connect(newEditor,
+                SIGNAL(breakpointListRemove(QString, int)),
+                this,
+                SLOT(breakpointListRemoveSlot(QString, int))
+               );
         //connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
         if (wPath == "untracked")
         {
@@ -400,11 +408,29 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
         newEditor->connectAct();
         activeCodeEdit->connectAct();
+        connect(newEditor,
+                SIGNAL(breakpointListAdd(QString, int)),
+                this,
+                SLOT(breakpointListAddSlot(QString, int))
+               );
+        connect(newEditor,
+                SIGNAL(breakpointListRemove(QString, int)),
+                this,
+                SLOT(breakpointListRemoveSlot(QString, int))
+               );
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
-        connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
-        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(newEditor,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
+        connect(activeCodeEdit,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
         newEditor->setChanged();
     }
     //qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
@@ -477,8 +503,26 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
-        connect(newEditor, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
-        connect(activeCodeEdit, SIGNAL(changedTabStatus(QString, QString, bool)), this, SLOT(changeTabStatusSlot(QString, QString, bool)));
+        connect(newEditor,
+                SIGNAL(breakpointListAdd(QString, int)),
+                this,
+                SLOT(breakpointListAddSlot(QString, int))
+               );
+        connect(newEditor,
+                SIGNAL(breakpointListRemove(QString, int)),
+                this,
+                SLOT(breakpointListRemoveSlot(QString, int))
+               );
+        connect(newEditor,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
+        connect(activeCodeEdit,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
         //connect(newEditor, SIGNAL(updateAnalysers(CodeEdit*)), this, SLOT(updateAnalysersSlot(CodeEdit*)));
     }
     else
@@ -625,8 +669,7 @@ void WDockManager::showDockWidgetArea(int area)
         if ((*i)->cmpArea(area) == true)
         {
             //vybira si automaticky nejmensi
-            (*i)->getQDockWidget()->setMaximumHeight(wDockBotPrevHeight);
-            (*i)->getQDockWidget()->setMinimumHeight(wDockBotPrevHeight);
+            (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
             (*i)->getQDockWidget()->setMaximumHeight(999);
             (*i)->getQDockWidget()->setMinimumHeight(1);
             //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
@@ -874,6 +917,25 @@ void WDockManager::closeFile(QString path)
         }
     }
 }
+
+
+void WDockManager::breakpointListAddSlot(QString file, int line)
+{
+    emit breakpointListAdd(file, line);
+}
+
+
+void WDockManager::breakpointListRemoveSlot(QString file, int line)
+{
+    emit breakpointListRemove(file, line);
+}
+
+
+
+
+
+
+
 
 
 

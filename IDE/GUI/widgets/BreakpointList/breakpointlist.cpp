@@ -22,9 +22,12 @@
  * @param parent Parent QWidget.
  */
 BreakpointList::BreakpointList(QWidget *parent)
-    : QListWidget(parent)
+    : QTreeWidget(parent)
 {
-    this->setSortingEnabled(true);
+    //this->setSortingEnabled(true);
+    QStringList labels;
+    labels << "File" << "Line";
+    this->setHeaderLabels(labels);
 }
 
 
@@ -32,14 +35,15 @@ BreakpointList::BreakpointList(QWidget *parent)
  * @brief Reloads list (clear and load).
  * @param breakpointList QList of breakpoints' line numbers.
  */
-void BreakpointList::reload(QList<int> breakpointList)
+void BreakpointList::reload(QList<QPair<QString, unsigned int>> breakpointList)
 {
     this->clear();
-    QList<int>::iterator i;
-    for (i = breakpointList.begin(); i != breakpointList.end(); i++)
+    for (int i = 0; i != breakpointList.count(); i++)
     {
-        QListWidgetItem *newItem = new QListWidgetItem(QString::number(*i+1, 10), this);
-        this->addItem(newItem);
+        QTreeWidgetItem *newItem = new QTreeWidgetItem(this);
+        newItem->setText(0, breakpointList.at(i).first);
+        newItem->setText(1, QString::number(breakpointList.at(i).second+1, 10));
+        this->addTopLevelItem(newItem);
     }
     //qDebug() << "breakpointlist - reload";
 }
@@ -49,11 +53,13 @@ void BreakpointList::reload(QList<int> breakpointList)
  * @brief Adds breakpoint to the list.
  * @param line Line number of added breakpoint.
  */
-void BreakpointList::breakpointListAddSlot(int line)
+void BreakpointList::breakpointListAddSlot(QString file, int line)
 {
-    QListWidgetItem *newItem = new QListWidgetItem(QString::number(line+1, 10), this);
-    this->addItem(newItem);
-    this->sortItems();
+    QTreeWidgetItem *newItem = new QTreeWidgetItem(this);
+    this->addTopLevelItem(newItem);
+    newItem->setText(0, file);
+    newItem->setText(1, QString::number(line+1, 10));
+    this->sortItems(0, Qt::AscendingOrder);
     //qDebug() << "breakpointlist - add";
 }
 
@@ -62,15 +68,30 @@ void BreakpointList::breakpointListAddSlot(int line)
  * @brief Removes breakpoint from the list.
  * @param line Line number of removed breakpoint.
  */
-void BreakpointList::breakpointListRemoveSlot(int line)
+void BreakpointList::breakpointListRemoveSlot(QString file, int line)
 {
-    QList<QListWidgetItem*> list = this->findItems(QString::number(line+1, 10), Qt::MatchExactly);
-    QList<QListWidgetItem*>::iterator i;
+    QList<QTreeWidgetItem*> list = this->findItems(file, Qt::MatchExactly);
+    QList<QTreeWidgetItem*>::iterator i;
     for (i = list.begin(); i != list.end(); i++)
     {
-        this->removeItemWidget(*i);
+        this->removeItemWidget(*i, 0);
         delete *i;
         *i = NULL;
+    }
+    //qDebug() << "breakpointlist - remove";
+}
+
+
+/**
+ * @brief Updates breakpoints for selected file on linecount change
+ */
+void BreakpointList::breakpointListUpdateSlot(QString file, int linesAdded)
+{
+    QList<QTreeWidgetItem*> list = this->findItems(file, Qt::MatchExactly);
+    QList<QTreeWidgetItem*>::iterator i;
+    for (i = list.begin(); i != list.end(); i++)
+    {
+        (*i)->setText(1, QString::number((*i)->text(1).toInt() + linesAdded, 10));
     }
     //qDebug() << "breakpointlist - remove";
 }

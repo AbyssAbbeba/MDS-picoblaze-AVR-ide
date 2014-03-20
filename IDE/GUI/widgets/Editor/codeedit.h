@@ -77,10 +77,9 @@ class CodeEdit : public QWidget
         void changedTabStatus(QString name, QString path, bool changed);
         void updateText(const QString& text, int pos, CodeEdit *editor);
         void CodeEditChanged(CodeEdit* editor);
-        void bookmarkListAdd(int line);
-        void bookmarkListRemove(int line);
-        void breakpointListAdd(int line);
-        void breakpointListRemove(int line);
+        void bookmarkListStateChanged(QString file, int line);
+        void breakpointListAdd(QString file, int line);
+        void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
 
@@ -101,8 +100,8 @@ class CodeEdit : public QWidget
         QAction *cutAct;
         QAction *copyAct;
         QAction *deselectAct;
-        QList<int> breakpointList;
-        QList<int> bookmarkList;
+        //QList<int> breakpointList;
+        //QList<int> bookmarkList;
         CodeEdit *parentCodeEdit;
         QColor *breakpointColor;
         int prevBlockCount;

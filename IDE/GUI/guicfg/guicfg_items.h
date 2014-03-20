@@ -117,6 +117,7 @@ class GuiCfg_Items
         //ide general
         bool splash;
         bool tipsOnStart;
+        bool sessionRestoration;
         QString language;
 
         //editor general
@@ -172,6 +173,11 @@ class GuiCfg_Items
         QString examplePath;
         QString tempPath;
         QString helpPath;
+        QString sessionPath;
+
+        //session
+        QList<QString> sessionProjectPaths;
+        QList<QString> sessionFilePaths;
         
 };
 
