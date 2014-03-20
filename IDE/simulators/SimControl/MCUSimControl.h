@@ -247,7 +247,7 @@ class MCUSimControl : public QThread
          * @brief
          * @return
          */
-        inline bool breakpointReached();
+        inline bool checkBreakpoint();
 
     ////    Qt Public Slots    ////
     public slots:
@@ -318,8 +318,17 @@ class MCUSimControl : public QThread
         bool changeDevice ( const char * deviceName );
 
     ////    Qt Signals    ////
-        signals:
-            void updateRequest(int);
+    signals:
+        /**
+         * @brief
+         * @param[in]
+         */
+        void updateRequest(int);
+
+        /**
+         * @brief
+         */
+        void breakpointReached();
 
     ////    Private Attributes    ////
     private:

@@ -18,7 +18,8 @@ project ( LicenseCertificate )
 # Convert RSA public key from PEM to ASN.1 DER in form of C++ code.
 # ------------------------------------------------------------------------------
 
-set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "LicenseCertificateKey.h" )
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "LicenseCertificateKey.h" )
 
 if ( "${CMAKE_CURRENT_SOURCE_DIR}/LicenseKey.pem" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/LicenseCertificateKey.h" )
     add_custom_target ( ${PROJECT_NAME}-key ALL
@@ -36,9 +37,6 @@ endif()
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-include_directories ( "/usr/include/crypto++" )
-link_directories ( "/usr/lib64" )
-
 # Add include directories to the build.
 include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty" )
 
@@ -53,7 +51,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 add_dependencies ( ${PROJECT_NAME} ${PROJECT_NAME}-key )
 
 add_executable ( main main.cxx )
-target_link_libraries ( main ${PROJECT_NAME} crypto++ )
+target_link_libraries ( main ${PROJECT_NAME} CryptoPP )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
