@@ -3,12 +3,12 @@
     PUBLIC "-//Moravia Microsystems//License Certificate File 1.0//EN"
     "http://www.moravia-microsystems.com/LicenseCertificate.dtd">
 
-<certificate userid="0123abcd"
+<certificate version="1.0"
+             userid="0123abcd"
              licenseid="000d1234"
              products="1,4,4a,f8,1b,c"
              date="5322F8F7"
-             expiry=""
-             signature="0x0123abcd0d120d12123abcd0d120d120d12">
+             expiry="">
 
     <address street1="4 avenue Saint Granier"
              street2="BP 3009"
@@ -23,7 +23,7 @@
     <details>
         <type>legal entity</type>
         <contact email="overlord@nsa.gov" address="38°52′16″N 77°3′21″W" phone=""/>
-        <department>Department of secret illegal bio-weapons &amp; military espionage.</department>
+        <department>Department of military espionage.</department>
     </details>
 
 </certificate>

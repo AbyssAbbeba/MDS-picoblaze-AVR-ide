@@ -126,18 +126,18 @@ c_test:
 nc_test:
             load        s1,#1
 
-
+			jump 		main
 
 _1:
-            ;return      Z
+            return      
 _2:
-            ;return      NZ
+            return      
 _3:
-            ;return      C
+            return      
 _4:
-            ;return      NC
+            return      
 
-              jump        main
+
 
 podp:
              ;call        podp2

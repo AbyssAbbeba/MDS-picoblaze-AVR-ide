@@ -229,7 +229,6 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
             }
         }
         else if ( ( "load" == lineFields.getInstruction() ) ||
-                  ( "ld"   == lineFields.getInstruction() ) ||
                   ( "move" == lineFields.getInstruction() ) )
         {
             boost::regex_search(begin, end, match, m_reAndReturn);
@@ -557,7 +556,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
          ( "comparecy" == instruction ) || ( "cmpc"    == instruction ) ||
          ( "move"      == instruction ) || ( "addc"    == instruction ) ||
          ( "subc"      == instruction ) || ( "tstc"    == instruction ) ||
-         ( "comp"      == instruction ) || ( "ld"      == instruction ) )
+         ( "comp"      == instruction ) )
     {
         fixRadix(lineFields, 1);
 
@@ -629,12 +628,11 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
     }
     else if ( ( "input" == instruction ) || ( "output" == instruction ) ||
               ( "in"    == instruction ) || ( "out"    == instruction ) ||
-              ( "st"    == instruction ) || ( "ft"     == instruction ) ||
+              ( "st"    == instruction ) || ( "ld"     == instruction ) ||
               ( "store" == instruction ) || ( "fetch"  == instruction ) )
     {
-
         const std::string opr1 = lineFields.getOperand(1, true);
-        if ( m_registers.end() == m_registers.find(opr1) )
+        if ( m_registers.end() != m_registers.find(opr1) )
         {
             lineFields.replaceOpr( '@' + opr1, 1);
         }
@@ -660,7 +658,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
                 // Instruction store'.
                 lineFields.replaceInst("st");
             }
-            else if ( ( 'f' == instruction[0] ) || ( 'e' == instruction[1] ) )
+            else if ( ( "ld" == instruction ) || ( ( 'f' == instruction[0] ) && ( 'e' == instruction[1] ) ) )
             {
                 // Instruction `fetch' or `ld'.
                 lineFields.replaceInst("ft");
@@ -680,7 +678,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
             {
                 lineFields.replaceInst("store");
             }
-            else if ( "ft" == instruction )
+            else if ( "ld" == instruction )
             {
                 lineFields.replaceInst("fetch");
             }
