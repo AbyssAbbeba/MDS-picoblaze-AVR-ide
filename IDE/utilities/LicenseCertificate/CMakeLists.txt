@@ -18,7 +18,8 @@ project ( LicenseCertificate )
 # Convert RSA public key from PEM to ASN.1 DER in form of C++ code.
 # ------------------------------------------------------------------------------
 
-set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "LicenseCertificateKey.h" )
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "LicenseCertificateKey.h" )
 
 if ( "${CMAKE_CURRENT_SOURCE_DIR}/LicenseKey.pem" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/LicenseCertificateKey.h" )
     add_custom_target ( ${PROJECT_NAME}-key ALL
