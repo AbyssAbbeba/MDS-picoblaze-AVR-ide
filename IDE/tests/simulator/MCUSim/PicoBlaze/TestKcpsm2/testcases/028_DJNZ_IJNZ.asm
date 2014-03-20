@@ -19,9 +19,9 @@ loop:
             ;; step 8
             ;; flag[z] == true
             ;; flag[c] == false
-            load                 s1,#45
+            load                 s3,#45
             ;; step                     # load
-            ;; reg[1] == 45
+            ;; reg[3] == 45
 
 
 loop2:
@@ -32,13 +32,12 @@ loop2:
             ;; flag[z] == false
             ;; flag[c] == false
             ;; step                     #jump
-            ;; step 8
+            ;; step 10
             ;; flag[z] == true
             ;; flag[c] == true
             load                 s1,#55
             ;; step                     # load
             ;; reg[1] == 55
-
 
 
 

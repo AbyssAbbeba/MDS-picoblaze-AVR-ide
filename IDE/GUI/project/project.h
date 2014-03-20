@@ -75,6 +75,7 @@ class ProjectMan : public QObject
         bool isOpened(QString path);
         void createActiveMakefile();
         void closeProject(Project* project);
+        QList<Project*> getOpenProjects();
 
     signals:
         void connectProject(Project *project);
@@ -129,6 +130,7 @@ class Project : public QObject
         void setName(QString name);
         void setFamily(QString family);
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
+        void handleBreakpoint(QString file, int line, bool add);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -193,7 +195,7 @@ class Project : public QObject
         
     private:
         ProjectMan *parentManager;
-        std::vector<std::pair<std::string, std::set<unsigned int>>> breakPoints;
+        QList<QPair<QString, QSet<unsigned int>>> breakPoints;
         std::vector<std::pair<const std::string *, unsigned int>> currLine;
         int prevLine;
         int prevLine2;

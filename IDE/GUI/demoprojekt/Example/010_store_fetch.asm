@@ -2,8 +2,8 @@
 ; See manual for more info
 
 ; Press Start simulation and Animate to run the program
-;
-;
+;sdffg
+;s
 ; SYMBOL DEFINITIONS
 ;
 numero               EQU                0b01010101
@@ -51,6 +51,11 @@ SendCRLF            MACRO
 ;
 ;
 MAIN:
+                       load                s0,#5
+                       load                s1,#250
+            loop:
+                        DJNZ                s0,loop
+                        load                 s3,#45
                add                S0, #2
                add                S1, #1
                store        	  S0, @S1
@@ -121,18 +126,18 @@ c_test:
 nc_test:
             load        s1,#1
 
-
+			jump 		main
 
 _1:
-            ;return      Z
+            return      
 _2:
-            ;return      NZ
+            return      
 _3:
-            ;return      C
+            return      
 _4:
-            ;return      NC
+            return      
 
-              jump        main
+
 
 podp:
              ;call        podp2
