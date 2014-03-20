@@ -43,7 +43,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
 ## Disable compiler warnings for this library.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                                        COMPILE_FLAGS "-w"
+                                        COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -w"
                                         LINKER_LANGUAGE "CXX" )
 
 # Link the target to given libraries.
