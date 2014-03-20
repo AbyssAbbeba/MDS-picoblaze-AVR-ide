@@ -54,3 +54,6 @@ This example should work basically on arbitrary POSIX complaint operating system
 2) run: openssl dgst -sha256 -binary -keyform PEM -sign LicenseKey.pem < certificate.xml > certificate.sgn
 3) concatenate and gzip compress files certificate.xml and certificate.sgn (in this order), i.e.
    run: cat certificate.xml certificate.sgn | gzip --stdout --fast > certificate.cert
+
+=== Random remarks ===
+Private key is expected to be PEM encoded RSA key in this directory in file named `LicenseKey.pem'.
