@@ -17,8 +17,7 @@ project ( CryptoPP )
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-## Add a library to the project using the specified source files,
- # in this case it will produce dynamic C++ library.
+# Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}
               3way.cpp      ccm.cpp           elgamal.cpp   idea.cpp      polynomi.cpp  serpent.cpp    twofish.cpp
               adhoc.cpp     channels.cpp      emsa2.cpp     integer.cpp   pssr.cpp      sha3.cpp       validat1.cpp
@@ -41,6 +40,9 @@ add_library ( ${PROJECT_NAME}
               casts.cpp     eccrypto.cpp      hrtimer.cpp   pch.cpp       seal.cpp      trdlocal.cpp   ecp.cpp
               dlltest.cpp )
 
-## Disable compiler warnings for this library.
+# Disable compiler warnings for this library.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES
                                         COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -w" )
+
+# Link a target to given libraries.
+target_link_libraries ( ${PROJECT_NAME} pthread )
