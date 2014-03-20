@@ -75,7 +75,7 @@ public:
 
 protected:
 	virtual void WritePrestreamHeader() {}
-	virtual void ProcessUncompressedData(const byte *string, size_t length) {}
+	virtual void ProcessUncompressedData(const byte */*string*/, size_t /*length*/) {}
 	virtual void WritePoststreamTail() {}
 
 	enum {STORED = 0, STATIC = 1, DYNAMIC = 2};

@@ -101,7 +101,7 @@ struct NewObject
 };
 
 /*! This function safely initializes a static object in a multithreaded environment without using locks (for portability).
-	Note that if two threads call Ref() at the same time, they may get back different references, and one object 
+	Note that if two threads call Ref() at the same time, they may get back different references, and one object
 	may end up being memory leaked. This is by design.
 */
 template <class T, class F = NewObject<T>, int instance=0>
@@ -264,9 +264,9 @@ inline unsigned int TrailingZeros(word32 v)
 	return result;
 #else
 	// from http://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightMultLookup
-	static const int MultiplyDeBruijnBitPosition[32] = 
+	static const int MultiplyDeBruijnBitPosition[32] =
 	{
-	  0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 
+	  0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8,
 	  31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9
 	};
 	return MultiplyDeBruijnBitPosition[((word32)((v & -v) * 0x077CB531U)) >> 27];
@@ -360,7 +360,7 @@ inline T1 RoundUpToMultipleOf(const T1 &n, const T2 &m)
 }
 
 template <class T>
-inline unsigned int GetAlignmentOf(T *dummy=NULL)	// VC60 workaround
+inline unsigned int GetAlignmentOf(T */*dummy*/=NULL)	// VC60 workaround
 {
 #ifdef CRYPTOPP_ALLOW_UNALIGNED_DATA_ACCESS
 	if (sizeof(T) < 16)
@@ -544,28 +544,28 @@ inline void SecureWipeArray(T *buf, size_t n)
 		SecureWipeBuffer((byte *)buf, n * sizeof(T));
 }
 
-// this function uses wcstombs(), which assumes that setlocale() has been called
-static std::string StringNarrow(const wchar_t *str, bool throwOnError = true)
-{
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable: 4996)	//  'wcstombs': This function or variable may be unsafe.
-#endif
-	size_t size = wcstombs(NULL, str, 0);
-	if (size == size_t(0)-1)
-	{
-		if (throwOnError)
-			throw InvalidArgument("StringNarrow: wcstombs() call failed");
-		else
-			return std::string();
-	}
-	std::string result(size, 0);
-	wcstombs(&result[0], str, size);
-	return result;
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
-}
+// // this function uses wcstombs(), which assumes that setlocale() has been called
+// static std::string StringNarrow(const wchar_t *str, bool throwOnError = true)
+// {
+// #ifdef _MSC_VER
+// #pragma warning(push)
+// #pragma warning(disable: 4996)	//  'wcstombs': This function or variable may be unsafe.
+// #endif
+// 	size_t size = wcstombs(NULL, str, 0);
+// 	if (size == size_t(0)-1)
+// 	{
+// 		if (throwOnError)
+// 			throw InvalidArgument("StringNarrow: wcstombs() call failed");
+// 		else
+// 			return std::string();
+// 	}
+// 	std::string result(size, 0);
+// 	wcstombs(&result[0], str, size);
+// 	return result;
+// #ifdef _MSC_VER
+// #pragma warning(pop)
+// #endif
+// }
 
 #if CRYPTOPP_BOOL_ALIGN16_ENABLED
 CRYPTOPP_DLL void * CRYPTOPP_API AlignedAllocate(size_t size);

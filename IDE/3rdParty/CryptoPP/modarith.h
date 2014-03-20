@@ -27,7 +27,7 @@ public:
 		: m_modulus(modulus), m_result((word)0, modulus.reg.size()) {}
 
 	ModularArithmetic(const ModularArithmetic &ma)
-		: m_modulus(ma.m_modulus), m_result((word)0, m_modulus.reg.size()) {}
+		: AbstractRing<Integer>(), m_modulus(ma.m_modulus), m_result((word)0, m_modulus.reg.size()) {}
 
 	ModularArithmetic(BufferedTransformation &bt);	// construct from BER encoded parameters
 
@@ -98,11 +98,11 @@ public:
 	unsigned int MaxElementByteLength() const
 		{return (m_modulus-1).ByteCount();}
 
-	Element RandomElement( RandomNumberGenerator &rng , const RandomizationParameter &ignore_for_now = 0 ) const
+	Element RandomElement( RandomNumberGenerator &rng , const RandomizationParameter &/*ignore_for_now*/ = 0 ) const
 		// left RandomizationParameter arg as ref in case RandomizationParameter becomes a more complicated struct
-	{ 
-		return Element( rng , Integer( (long) 0) , m_modulus - Integer( (long) 1 )   ) ; 
-	}   
+	{
+		return Element( rng , Integer( (long) 0) , m_modulus - Integer( (long) 1 )   ) ;
+	}
 
 	bool operator==(const ModularArithmetic &rhs) const
 		{return m_modulus == rhs.m_modulus;}

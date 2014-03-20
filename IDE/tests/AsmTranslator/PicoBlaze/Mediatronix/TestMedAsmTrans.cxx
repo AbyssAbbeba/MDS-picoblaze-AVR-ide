@@ -74,6 +74,9 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
         if ( line1 != line2 )
         {
+std::cout << "VHD files differs:\n";
+std::cout << "line1='"<<line1<<"'\n";
+std::cout << "line2='"<<line2<<"'\n";
             CU_FAIL("VHD files differs!");
             return;
         }

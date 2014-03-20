@@ -1,5 +1,7 @@
 
 #include "LicenseCertificate.h"
+
+#include <iostream>
 #if 0
 #include "rsa.h"
 using CryptoPP::RSA;
@@ -36,7 +38,7 @@ using std::string;
 using std::cout;
 using std::endl;
 #endif
-int main ( int argc, char ** argv )
+int main ( int /*argc*/, char ** argv )
 {    /*try
     {*/
 #if 0
@@ -155,16 +157,16 @@ bool result = false;
 //             cout << "Verified signature on message" << endl;
 //             cout << signature;
         }
-#if 1
-        std::ifstream f(argv[1], std::ios_base::binary);
-        LicenseCertificate crt(f);
-        cout<<std::boolalpha<<"verified="<<crt.isValid()<<"\n";
-#endif
 //     }
 //     catch( CryptoPP::Exception& e )
 //     {
 //         std::cerr << "Error: " << e.what() << std::endl;
 //     }
+#endif
+#if 1
+        std::ifstream f(argv[1], std::ios_base::binary);
+        LicenseCertificate crt(f);
+        std::cout<<std::boolalpha<<"verified="<<crt.isValid()<<"\n";
 #endif
     return 0;
 }

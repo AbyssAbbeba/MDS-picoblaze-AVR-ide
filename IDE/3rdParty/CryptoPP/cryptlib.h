@@ -216,7 +216,7 @@ struct CRYPTOPP_DLL DecodingResult
 	and to read values from keys and crypto parameters.
 	\note To obtain an object that implements NameValuePairs for the purpose of parameter
 	passing, use the MakeParameters() function.
-	\note To get a value from NameValuePairs, you need to know the name and the type of the value. 
+	\note To get a value from NameValuePairs, you need to know the name and the type of the value.
 	Call GetValueNames() on a NameValuePairs object to obtain a list of value names that it supports.
 	Then look at the Name namespace documentation to see what the type of each value is, or
 	alternatively, call GetIntValue() with the value name, and if the type is not int, a
@@ -399,10 +399,10 @@ public:
 	//! returns maximal length of IVs accepted by this object
 	virtual unsigned int MaxIVLength() const {return IVSize();}
 	//! resynchronize with an IV. ivLength=-1 means use IVSize()
-	virtual void Resynchronize(const byte *iv, int ivLength=-1) {throw NotImplemented(GetAlgorithm().AlgorithmName() + ": this object doesn't support resynchronization");}
+	virtual void Resynchronize(const byte */*iv*/, int /*ivLength*/=-1) {throw NotImplemented(GetAlgorithm().AlgorithmName() + ": this object doesn't support resynchronization");}
 	//! get a secure IV for the next message
 	/*! This method should be called after you finish encrypting one message and are ready to start the next one.
-		After calling it, you must call SetKey() or Resynchronize() before using this object again. 
+		After calling it, you must call SetKey() or Resynchronize() before using this object again.
 		This method is not implemented on decryption objects. */
 	virtual void GetNextIV(RandomNumberGenerator &rng, byte *IV);
 
@@ -508,7 +508,7 @@ public:
 	//! returns whether this cipher supports random access
 	virtual bool IsRandomAccess() const =0;
 	//! for random access ciphers, seek to an absolute position
-	virtual void Seek(lword n)
+	virtual void Seek(lword /*n*/)
 	{
 		assert(!IsRandomAccess());
 		throw NotImplemented("StreamTransformation: this object doesn't support random access");
@@ -656,7 +656,7 @@ public:
 
 protected:
 	const Algorithm & GetAlgorithm() const {return *static_cast<const MessageAuthenticationCode *>(this);}
-	virtual void UncheckedSpecifyDataLengths(lword headerLength, lword messageLength, lword footerLength) {}
+	virtual void UncheckedSpecifyDataLengths(lword /*headerLength*/, lword /*messageLength*/, lword /*footerLength*/) {}
 };
 
 #ifdef CRYPTOPP_MAINTAIN_BACKWARDS_COMPATIBILITY
@@ -670,7 +670,7 @@ class CRYPTOPP_DLL CRYPTOPP_NO_VTABLE RandomNumberGenerator : public Algorithm
 {
 public:
 	//! update RNG state with additional unpredictable values
-	virtual void IncorporateEntropy(const byte *input, size_t length) {throw NotImplemented("RandomNumberGenerator: IncorporateEntropy not implemented");}
+	virtual void IncorporateEntropy(const byte */*input*/, size_t /*length*/) {throw NotImplemented("RandomNumberGenerator: IncorporateEntropy not implemented");}
 
 	//! returns true if IncorporateEntropy is implemented
 	virtual bool CanIncorporateEntropy() const {return false;}
@@ -830,9 +830,9 @@ public:
 
 	//!	\name SIGNALS
 	//@{
-		virtual void IsolatedInitialize(const NameValuePairs &parameters) {throw NotImplemented("BufferedTransformation: this object can't be reinitialized");}
+		virtual void IsolatedInitialize(const NameValuePairs &/*parameters*/) {throw NotImplemented("BufferedTransformation: this object can't be reinitialized");}
 		virtual bool IsolatedFlush(bool hardFlush, bool blocking) =0;
-		virtual bool IsolatedMessageSeriesEnd(bool blocking) {return false;}
+		virtual bool IsolatedMessageSeriesEnd(bool /*blocking*/) {return false;}
 
 		//! initialize or reinitialize this object
 		virtual void Initialize(const NameValuePairs &parameters=g_nullNameValuePairs, int propagation=-1);
@@ -854,7 +854,7 @@ public:
 
 		//! set propagation of automatically generated and transferred signals
 		/*! propagation == 0 means do not automaticly generate signals */
-		virtual void SetAutoSignalPropagation(int propagation) {}
+		virtual void SetAutoSignalPropagation(int /*propagation*/) {}
 
 		//!
 		virtual int GetAutoSignalPropagation() const {return 0;}
@@ -926,7 +926,7 @@ public:
 		virtual bool AnyMessages() const;
 		//! start retrieving the next message
 		/*!
-			Returns false if no more messages exist or this message 
+			Returns false if no more messages exist or this message
 			is not completely retrieved.
 		*/
 		virtual bool GetNextMessage();
@@ -1013,7 +1013,7 @@ public:
 		virtual const BufferedTransformation *AttachedTransformation() const
 			{return const_cast<BufferedTransformation *>(this)->AttachedTransformation();}
 		//! delete the current attachment chain and replace it with newAttachment
-		virtual void Detach(BufferedTransformation *newAttachment = 0)
+		virtual void Detach(BufferedTransformation */*newAttachment*/ = 0)
 			{assert(!Attachable()); throw NotImplemented("BufferedTransformation: this object is not attachable");}
 		//! add newAttachment to the end of attachment chain
 		virtual void Attach(BufferedTransformation *newAttachment);
@@ -1062,14 +1062,14 @@ public:
 //	virtual std::vector<std::string> GetSupportedFormats(bool includeSaveOnly=false, bool includeLoadOnly=false);
 
 	//! save key into a BufferedTransformation
-	virtual void Save(BufferedTransformation &bt) const
+	virtual void Save(BufferedTransformation &/*bt*/) const
 		{throw NotImplemented("CryptoMaterial: this object does not support saving");}
 
 	//! load key from a BufferedTransformation
 	/*! \throws KeyingErr if decode fails
 		\note Generally does not check that the key is valid.
 			Call ValidateKey() or ThrowIfInvalidKey() to check that. */
-	virtual void Load(BufferedTransformation &bt)
+	virtual void Load(BufferedTransformation &/*bt*/)
 		{throw NotImplemented("CryptoMaterial: this object does not support loading");}
 
 	//! \return whether this object supports precomputation
@@ -1078,13 +1078,13 @@ public:
 	/*! The exact semantics of Precompute() is varies, but
 		typically it means calculate a table of n objects
 		that can be used later to speed up computation. */
-	virtual void Precompute(unsigned int n)
+	virtual void Precompute(unsigned int /*n*/)
 		{assert(!SupportsPrecomputation()); throw NotImplemented("CryptoMaterial: this object does not support precomputation");}
 	//! retrieve previously saved precomputation
-	virtual void LoadPrecomputation(BufferedTransformation &storedPrecomputation)
+	virtual void LoadPrecomputation(BufferedTransformation &/*storedPrecomputation*/)
 		{assert(!SupportsPrecomputation()); throw NotImplemented("CryptoMaterial: this object does not support precomputation");}
 	//! save precomputation for later use
-	virtual void SavePrecomputation(BufferedTransformation &storedPrecomputation) const
+	virtual void SavePrecomputation(BufferedTransformation &/*storedPrecomputation*/) const
 		{assert(!SupportsPrecomputation()); throw NotImplemented("CryptoMaterial: this object does not support precomputation");}
 
 	// for internal library use
@@ -1104,7 +1104,7 @@ public:
 	//! generate a random key or crypto parameters
 	/*! \throws KeyingErr if algorithm parameters are invalid, or if a key can't be generated
 		(e.g., if this is a public key object) */
-	virtual void GenerateRandom(RandomNumberGenerator &rng, const NameValuePairs &params = g_nullNameValuePairs)
+	virtual void GenerateRandom(RandomNumberGenerator &/*rng*/, const NameValuePairs &/*params*/ = g_nullNameValuePairs)
 		{throw NotImplemented("GeneratableCryptoMaterial: this object does not support key/parameter generation");}
 
 	//! calls the above function with a NameValuePairs object that just specifies "KeySize"
@@ -1235,15 +1235,15 @@ public:
 	/*! \pre CiphertextLength(plaintextLength) != 0 (i.e., plaintext isn't too long)
 		\pre size of ciphertext == CiphertextLength(plaintextLength)
 	*/
-	virtual void Encrypt(RandomNumberGenerator &rng, 
-		const byte *plaintext, size_t plaintextLength, 
+	virtual void Encrypt(RandomNumberGenerator &rng,
+		const byte *plaintext, size_t plaintextLength,
 		byte *ciphertext, const NameValuePairs &parameters = g_nullNameValuePairs) const =0;
 
 	//! create a new encryption filter
 	/*! \note The caller is responsible for deleting the returned pointer.
 		\note Encoding parameters should be passed in the "EP" channel.
 	*/
-	virtual BufferedTransformation * CreateEncryptionFilter(RandomNumberGenerator &rng, 
+	virtual BufferedTransformation * CreateEncryptionFilter(RandomNumberGenerator &rng,
 		BufferedTransformation *attachment=NULL, const NameValuePairs &parameters = g_nullNameValuePairs) const;
 };
 
@@ -1256,14 +1256,14 @@ public:
 	/*! \pre size of plaintext == MaxPlaintextLength(ciphertextLength) bytes.
 		\return the actual length of the plaintext, indication that decryption failed.
 	*/
-	virtual DecodingResult Decrypt(RandomNumberGenerator &rng, 
-		const byte *ciphertext, size_t ciphertextLength, 
+	virtual DecodingResult Decrypt(RandomNumberGenerator &rng,
+		const byte *ciphertext, size_t ciphertextLength,
 		byte *plaintext, const NameValuePairs &parameters = g_nullNameValuePairs) const =0;
 
 	//! create a new decryption filter
 	/*! \note caller is responsible for deleting the returned pointer
 	*/
-	virtual BufferedTransformation * CreateDecryptionFilter(RandomNumberGenerator &rng, 
+	virtual BufferedTransformation * CreateDecryptionFilter(RandomNumberGenerator &rng,
 		BufferedTransformation *attachment=NULL, const NameValuePairs &parameters = g_nullNameValuePairs) const;
 
 	//! decrypt a fixed size ciphertext
@@ -1305,7 +1305,7 @@ public:
 	virtual size_t SignatureLength() const =0;
 
 	//! maximum signature length produced for a given length of recoverable message part
-	virtual size_t MaxSignatureLength(size_t recoverablePartLength = 0) const {return SignatureLength();}
+	virtual size_t MaxSignatureLength(size_t /*recoverablePartLength*/ = 0) const {return SignatureLength();}
 
 	//! length of longest message that can be recovered, or 0 if this signature scheme does not support message recovery
 	virtual size_t MaxRecoverableLength() const =0;
@@ -1338,7 +1338,7 @@ public:
 	unsigned int DigestSize() const
 		{throw NotImplemented("PK_MessageAccumulator: DigestSize() should not be called");}
 	//! should not be called on PK_MessageAccumulator
-	void TruncatedFinal(byte *digest, size_t digestSize) 
+	void TruncatedFinal(byte */*digest*/, size_t /*digestSize*/)
 		{throw NotImplemented("PK_MessageAccumulator: TruncatedFinal() should not be called");}
 };
 
@@ -1374,7 +1374,7 @@ public:
 	/*! \pre size of signature == MaxSignatureLength(recoverableMessageLength)
 		\return actual signature length
 	*/
-	virtual size_t SignMessageWithRecovery(RandomNumberGenerator &rng, const byte *recoverableMessage, size_t recoverableMessageLength, 
+	virtual size_t SignMessageWithRecovery(RandomNumberGenerator &rng, const byte *recoverableMessage, size_t recoverableMessageLength,
 		const byte *nonrecoverableMessage, size_t nonrecoverableMessageLength, byte *signature) const;
 };
 
@@ -1401,7 +1401,7 @@ public:
 	virtual bool VerifyAndRestart(PK_MessageAccumulator &messageAccumulator) const =0;
 
 	//! check whether input signature is a valid signature for input message
-	virtual bool VerifyMessage(const byte *message, size_t messageLen, 
+	virtual bool VerifyMessage(const byte *message, size_t messageLen,
 		const byte *signature, size_t signatureLength) const;
 
 	//! recover a message from its signature
@@ -1417,8 +1417,8 @@ public:
 	//! recover a message from its signature
 	/*! \pre size of recoveredMessage == MaxRecoverableLengthFromSignatureLength(signatureLength)
 	*/
-	virtual DecodingResult RecoverMessage(byte *recoveredMessage, 
-		const byte *nonrecoverableMessage, size_t nonrecoverableMessageLength, 
+	virtual DecodingResult RecoverMessage(byte *recoveredMessage,
+		const byte *nonrecoverableMessage, size_t nonrecoverableMessageLength,
 		const byte *signature, size_t signatureLength) const;
 };
 
@@ -1599,9 +1599,9 @@ public:
 class PasswordAuthenticatedKeyAgreementSession : public KeyAgreementSession
 {
 public:
-	void InitializePasswordAuthenticatedKeyAgreementSession(RandomNumberGenerator &rng, 
-		const byte *myId, unsigned int myIdLength, 
-		const byte *counterPartyId, unsigned int counterPartyIdLength, 
+	void InitializePasswordAuthenticatedKeyAgreementSession(RandomNumberGenerator &rng,
+		const byte *myId, unsigned int myIdLength,
+		const byte *counterPartyId, unsigned int counterPartyIdLength,
 		const byte *passwordOrVerifier, unsigned int passwordOrVerifierLength);
 };
 
@@ -1625,7 +1625,7 @@ public:
 //! BER Decode Exception Class, may be thrown during an ASN1 BER decode operation
 class CRYPTOPP_DLL BERDecodeErr : public InvalidArgument
 {
-public: 
+public:
 	BERDecodeErr() : InvalidArgument("BER decode error") {}
 	BERDecodeErr(const std::string &s) : InvalidArgument(s) {}
 };
