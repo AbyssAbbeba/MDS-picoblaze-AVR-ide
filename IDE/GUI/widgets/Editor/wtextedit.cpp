@@ -18,7 +18,7 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)
 {
-    //qDebug() << "WTextEdit: WTextEdit()";
+    qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
     this->undoRequest = false;
     this->redoRequest = false;
@@ -28,15 +28,15 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
     this->setAcceptDrops(true);
-    connect(this->document(),
+    /*connect(this->document(),
             SIGNAL(contentsChange(int,int,int)),
             this,
             SLOT(updateUndoRedo(int,int,int))
-           );
+           );*/
 
     this->show();
     //this->setFocusPolicy(Qt::ClickFocus);
-    //qDebug() << "WTextEdit: return WTextEdit()";
+    qDebug() << "WTextEdit: return WTextEdit()";
 }
 
 void WTextEdit::reloadHighlighter(SourceType type)
@@ -144,7 +144,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             return true;
         }
         //paste ctrl+v
-        if ( (keyEvent->modifiers() & Qt::ControlModifier)
+        /*if ( (keyEvent->modifiers() & Qt::ControlModifier)
           && (keyEvent->key() == Qt::Key_V)
            )
         {
@@ -169,30 +169,30 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 this->textCursor().removeSelectedText();
             }
             return true;
-        }
+        }*/
         //undo/redo ctrl+z (+shift)
-        if ( (keyEvent->modifiers() & Qt::ControlModifier)
+        /*if ( (keyEvent->modifiers() & Qt::ControlModifier)
           && (keyEvent->key() == Qt::Key_Z)
            )
         {
             //redo ctrl+shift+z
             if ((keyEvent->modifiers() & Qt::ShiftModifier))
             {
-                this->redoRequest = true;
+                //this->redoRequest = true;
                 this->redo();
-                this->redoRequest = false;
+                //this->redoRequest = false;
             }
             //undo ctrl+z
             else
             {
-                this->undoRequest = true;
+                //this->undoRequest = true;
                 this->undo();
-                this->undoRequest = false;
+                //this->undoRequest = false;
             }
             return true;
-        }
+        }*/
         //other keys
-        if ( ((keyEvent->key() >= Qt::Key_Space && keyEvent->key() <= Qt::Key_Z)
+        /*if ( ((keyEvent->key() >= Qt::Key_Space && keyEvent->key() <= Qt::Key_Z)
           && (!(keyEvent->modifiers() & Qt::ControlModifier)))
           || (keyEvent->key() == Qt::Key_Backspace)
           || (keyEvent->key() == Qt::Key_Tab)
@@ -222,7 +222,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     return true;
                 }
             }
-        }
+        }*/
     }
     //qDebug() << "WTextEdit: return eventFilter()";
     return QWidget::eventFilter(target, event);

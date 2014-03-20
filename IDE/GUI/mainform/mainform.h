@@ -55,9 +55,11 @@ class MainForm : public QMainWindow
         ProjectMan* getProjectMan();
         //bool dockWidgets;
         bool openProject(QString path);
+        //void emitSessionRestorationSignal();
 
     public slots:
         void openFilePath(QString path);
+        void sessionRestorationSlot();
 
     private slots:
         //slots connected to menu actions
@@ -118,6 +120,7 @@ class MainForm : public QMainWindow
 
     signals:
         void unhighlightSim();
+        //void sessionRestorationSignal();
 
     private:
         //init functions

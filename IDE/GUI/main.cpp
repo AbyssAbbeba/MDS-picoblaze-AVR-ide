@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();
+    qDebug() << "Main: height" << MainGUI.height();
     
     if (true == openFile)
     {
@@ -89,20 +90,8 @@ int main(int argc, char *argv[])
         //if session restore == true - restore
         if (true == GuiCfg::getInstance().loadSession())
         {
-            qDebug() << "Main: session restoration";
-            //open projects and files
-            QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
-            QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
-            for (int i = 0; i < projectPaths.count(); i++)
-            {
-                MainGUI.openProject(projectPaths.at(i));
-            }
-            for (int i = 0; i < filePaths.count(); i++)
-            {
-                MainGUI.openFilePath(filePaths.at(i));
-            }
-            GuiCfg::getInstance().sessionClear();
-            qDebug() << "Main: session loaded";
+            //MainGUI.emitSessionRestorationSignal();
+            QTimer::singleShot(300, &MainGUI, SLOT(sessionRestorationSlot()));
         }
     }
     
