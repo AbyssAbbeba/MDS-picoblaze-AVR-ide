@@ -36,22 +36,27 @@ LicenseCertificate::LicenseCertificate ( std::ifstream & certificate )
         data.push_back ( (char)(byte) );
     }
 
-    readAndVerifyCertificate(data);
+    loadCertificate(data);
 }
 
 LicenseCertificate::LicenseCertificate ( const std::string & certificate )
 {
-    readAndVerifyCertificate(certificate);
+    loadCertificate(certificate);
 }
 
-void LicenseCertificate::readAndVerifyCertificate ( const std::string & certificate )
+void LicenseCertificate::loadCertificate ( const std::string & certificate )
+{
+    char * data;
+    size_t size;
+
+    m_isValid = ( inflate(data, size, certificate) && verify(data, size) && parseXML(data) );
+}
+
+inline bool LicenseCertificate::inflate ( char * & data,
+                                          size_t & size,
+                                          const std::string & certificate )
 {
     using namespace CryptoPP;
-
-    size_t size;
-    byte * data;
-
-    m_isValid = false;
 
     try
     {
@@ -59,31 +64,54 @@ void LicenseCertificate::readAndVerifyCertificate ( const std::string & certific
         unzipper.Put ( (const byte*) certificate.data(), certificate.size() );
         unzipper.Flush(true);
         size = unzipper.MaxRetrievable();
-        data = new byte [ size ];
-        unzipper.Get ( data, size );
+        data = new char [ size ];
+        unzipper.Get ( (byte*) data, size );
     }
     catch ( const Inflator::Err & e )
     {
         std::cerr << "Decompression error: " << e.what() << std::endl;
-        return;
+        delete [] data;
+        return false;
     }
 
+    return true;
+}
+
+inline bool LicenseCertificate::verify ( const char * data,
+                                         size_t size )
+{
+    using namespace CryptoPP;
+
+    bool successul;
     RSA::PublicKey publicKey;
+
     publicKey.Load ( StringSource ( (const byte*) LicenseCertificateKey,
                                     sizeof(LicenseCertificateKey),
                                     true ) . Ref() );
 
     StringSource (
-        data,
+        (const byte*) data,
         size,
         true,
         new SignatureVerificationFilter (
             RSASS<PKCS1v15, SHA256>::Verifier ( publicKey ),
             new ArraySink (
-                ( byte* ) ( &m_isValid ),
+                ( byte* ) ( &successul ),
                 sizeof ( m_isValid )
             ),
             ( SignatureVerificationFilter::PUT_RESULT | SignatureVerificationFilter::SIGNATURE_AT_END )
         )
     );
+
+    if ( false == successul )
+    {
+        delete [] data;
+    }
+
+    return successul;
+}
+
+inline bool LicenseCertificate::parseXML ( const char * data )
+{
+    return true;
 }

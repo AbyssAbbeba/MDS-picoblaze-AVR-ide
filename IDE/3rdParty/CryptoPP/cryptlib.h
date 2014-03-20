@@ -415,8 +415,11 @@ protected:
 	void ThrowIfInvalidIV(const byte *iv);	// check for NULL IV if it can't be used
 	size_t ThrowIfInvalidIVLength(int size);
 	const byte * GetIVAndThrowIfInvalid(const NameValuePairs &params, size_t &size);
-	inline void AssertValidKeyLength(size_t length) const
-		{assert(IsValidKeyLength(length));}
+	inline void AssertValidKeyLength(size_t
+#ifndef NDEBUG
+	length
+#endif
+        ) const {assert(IsValidKeyLength(length));}
 };
 
 //! interface for the data processing part of block ciphers
