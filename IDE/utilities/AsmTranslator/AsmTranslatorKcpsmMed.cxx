@@ -634,7 +634,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
     {
 
         const std::string opr1 = lineFields.getOperand(1, true);
-        if ( m_registers.end() == m_registers.find(opr1) )
+        if ( m_registers.end() != m_registers.find(opr1) )
         {
             lineFields.replaceOpr( '@' + opr1, 1);
         }
