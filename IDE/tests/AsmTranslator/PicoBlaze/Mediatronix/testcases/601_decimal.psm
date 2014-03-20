@@ -90,7 +90,6 @@ convd32_1G:				// try to divide by 1G
 	ADDC	s3, C1Ghh
 	
 	ST	s4, s5			// save string
-	st      s4, 10
 	ADD	s5, 1
 	
 	MOVE	s4, '0'			// start with a zero
