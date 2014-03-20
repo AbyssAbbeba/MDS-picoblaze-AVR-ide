@@ -164,6 +164,7 @@ class Project : public QObject
         McuMemoryView *m_mcuMemoryView;
         RegDisplayList *m_regList;
         MCUSimControl *m_simControlUnit;
+        //QString simulatedFile;
 
     public slots:
         void setMainFile(QString path, QString name);
