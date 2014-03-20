@@ -1987,6 +1987,7 @@ void MainForm::connectProjectSlot(Project *project)
     connect(project, SIGNAL(startConfig(Project*)), this, SLOT(startProjectConfig(Project*)));
     connect(project, SIGNAL(changeFamily(QString)), this, SLOT(changeProjectFamily(QString)));
     connect(project, SIGNAL(closeProject()), this, SLOT(closeProject()));
+    connect(project, SIGNAL(breakpointReached()), this, SLOT(pauseSimulation()));
 }
 
 
@@ -2330,4 +2331,36 @@ void MainForm::sessionRestorationSlot()
     GuiCfg::getInstance().sessionClear();
     qDebug() << "MainForm: height" << this->height();
     qDebug() << "MainForm: session loaded";
+}
+
+
+void MainForm::pauseSimulation()
+{
+    if (true == simulationStatus)
+    {
+        if (true == simulationAnimateStatus)
+        {
+            delete this->icon_simAnimate;
+            this->icon_simAnimate = new QIcon(*pm_simAnimate);
+            simulationAnimateAct->setIcon(*icon_simAnimate);
+            simulationAnimateAct->setText(tr("Animate"));
+            this->simulationRunAct->setEnabled(true);
+            this->simulationStepAct->setEnabled(true);
+            this->simulationResetAct->setEnabled(true);
+            this->simulationAnimateStatus = false;
+            return;
+        }
+        if (true == simulationRunStatus)
+        {
+            delete this->icon_simRun;
+            this->icon_simRun = new QIcon(*pm_simRun);
+            simulationRunAct->setIcon(*icon_simRun);
+            simulationRunAct->setText(tr("Run"));
+            this->simulationAnimateAct->setEnabled(true);
+            this->simulationStepAct->setEnabled(true);
+            this->simulationResetAct->setEnabled(true);
+            this->simulationRunStatus = false;
+            return;
+        }
+    }
 }
