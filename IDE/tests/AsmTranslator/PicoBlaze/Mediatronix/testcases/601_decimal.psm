@@ -63,10 +63,12 @@ C1Glh	.EQU	1000000000 / 256 % 256
 C1Ghl	.EQU	1000000000 / 256 / 256 % 256
 C1Ghh	.EQU	1000000000 / 256 / 256 / 256 % 256
 d32	.EQU	11
-
+ahoj    .EQU    10
+AHOJ    .EQU    20
 // convert a 32 bit value in s0..s3 to a decimal string
 // reptitively substracts 9 powers of 10, remainder is last digit
 puts:
+PUTS:
 
 convd32:
 
@@ -88,6 +90,7 @@ convd32_1G:				// try to divide by 1G
 	ADDC	s3, C1Ghh
 	
 	ST	s4, s5			// save string
+	st      s4, 10
 	ADD	s5, 1
 	
 	MOVE	s4, '0'			// start with a zero
