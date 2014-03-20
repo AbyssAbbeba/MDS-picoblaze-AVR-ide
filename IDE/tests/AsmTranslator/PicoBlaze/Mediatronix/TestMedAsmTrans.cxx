@@ -45,7 +45,7 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
         CU_FAIL("Unable to open VHD file!");
         return;
     }
-
+int i=0;
     std::string line1, line2;
     while ( false == file1.eof() && false == file2.eof() )
     {
@@ -57,7 +57,7 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
         std::getline(file1, line1);
         std::getline(file2, line2);
-
+i++;
         if ( ( line1.size() > 0 ) && ( '\r' == line1.back() ) )
         {
             line1.pop_back();
@@ -74,7 +74,7 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
         if ( line1 != line2 )
         {
-std::cout << "VHD files differs:\n";
+std::cout << "VHD files differs, line "<<i<<":\n";
 std::cout << "line1='"<<line1<<"'\n";
 std::cout << "line2='"<<line2<<"'\n";
             CU_FAIL("VHD files differs!");

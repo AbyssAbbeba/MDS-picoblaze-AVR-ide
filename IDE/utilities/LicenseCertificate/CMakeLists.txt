@@ -36,9 +36,6 @@ endif()
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-include_directories ( "/usr/include/crypto++" )
-link_directories ( "/usr/lib64" )
-
 # Add include directories to the build.
 include_directories ( "${CMAKE_SOURCE_DIR}/3rdParty" )
 
@@ -53,7 +50,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 add_dependencies ( ${PROJECT_NAME} ${PROJECT_NAME}-key )
 
 add_executable ( main main.cxx )
-target_link_libraries ( main ${PROJECT_NAME} crypto++ )
+target_link_libraries ( main ${PROJECT_NAME} CryptoPP )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
