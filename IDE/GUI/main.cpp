@@ -102,6 +102,7 @@ int main(int argc, char *argv[])
                 MainGUI.openFilePath(filePaths.at(i));
             }
             GuiCfg::getInstance().sessionClear();
+            qDebug() << "Main: session loaded";
         }
     }
     
