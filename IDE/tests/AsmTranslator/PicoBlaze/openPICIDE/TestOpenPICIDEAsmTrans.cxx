@@ -35,7 +35,7 @@
 #include "AsmTranslator.h"
 
 void TestOpenPICIDEAsmTrans::fileCompare ( const std::string & fileName1,
-                                    const std::string & fileName2 )
+                                           const std::string & fileName2 )
 {
     std::ifstream file1(fileName1, std::ios_base::binary);
     std::ifstream file2(fileName2, std::ios_base::binary);
@@ -46,6 +46,7 @@ void TestOpenPICIDEAsmTrans::fileCompare ( const std::string & fileName1,
         return;
     }
 
+    bool comparisonMade = false;
     std::string line1, line2;
     while ( false == file1.eof() && false == file2.eof() )
     {
@@ -55,28 +56,38 @@ void TestOpenPICIDEAsmTrans::fileCompare ( const std::string & fileName1,
             return;
         }
 
-        std::getline(file1, line1);
-        std::getline(file2, line2);
+        do
+        {
+            std::getline(file1, line1);
+            if ( ( line1.size() > 0 ) && ( '\r' == line1.back() ) )
+            {
+                line1.pop_back();
+            }
+        }
+        while ( ( std::string::npos == line1.find("INIT") ) && ( false == file1.eof() ) );
 
-        if ( ( line1.size() > 0 ) && ( '\r' == line1.back() ) )
+        do
         {
-            line1.pop_back();
+            std::getline(file2, line2);
+            if ( ( line2.size() > 0 ) && ( '\r' == line2.back() ) )
+            {
+                line2.pop_back();
+            }
         }
-        if ( ( line2.size() > 0 ) && ( '\r' == line2.back() ) )
-        {
-            line2.pop_back();
-        }
+        while ( ( std::string::npos == line2.find("INIT") ) && ( false == file2.eof() ) );
 
-        if ( std::string::npos == line1.find("INIT") )
-        {
-            continue;
-        }
+        comparisonMade = true;
 
         if ( line1 != line2 )
         {
             CU_FAIL("VHD files differs!");
             return;
         }
+    }
+
+    if ( false == comparisonMade )
+    {
+        CU_FAIL("No VHD comparison made!");
     }
 }
 
