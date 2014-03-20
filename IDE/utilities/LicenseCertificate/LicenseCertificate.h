@@ -58,12 +58,41 @@ class LicenseCertificate
         }
 
     ////    Private Operations    ////
-    public:
+    private:
         /**
          * @brief
          * @param[in] certificate
          */
-        void readAndVerifyCertificate ( const std::string & certificate );
+        void loadCertificate ( const std::string & certificate );
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[out] data
+         * @param[out] size
+         * @param[in] certificate
+         * @return
+         */
+        inline bool inflate ( char * & data,
+                              size_t & size,
+                              const std::string & certificate );
+
+        /**
+         * @brief
+         * @param[in] data
+         * @param[in] size
+         * @return
+         */
+        inline bool verify ( const char * data,
+                             size_t size );
+
+        /**
+         * @brief
+         * @param[in] data
+         * @return
+         */
+        inline bool parseXML ( const char * data );
 
     ////    Private Attributes    ////
     private:
