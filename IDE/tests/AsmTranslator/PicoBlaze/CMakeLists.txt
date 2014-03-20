@@ -56,3 +56,6 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
 # ------------------------------------------------------------------------------
 
 add_test_subject ( "AsmTranslator_PicoBlaze" ${PROJECT_NAME} )
+
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "Mediatronix/results;openPICIDE/results;Xilinx/results" )

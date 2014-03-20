@@ -46,7 +46,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
-
+#include<iostream>//debug
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
@@ -514,9 +514,10 @@ void MCUSimControl::animateProgram()
 
     while ( true )
     {
+std::cout<<"m_breakPointsEnabled="<<m_breakPointsEnabled<<'\n';
         if ( true == m_breakPointsEnabled )
         {
-            m_abort |= breakpointReached();
+            m_abort |= checkBreakpoint();
         }
 
         if ( true == m_abort )
@@ -561,7 +562,7 @@ void MCUSimControl::runProgram()
     {
         if ( true == m_breakPointsEnabled )
         {
-            m_abort |= breakpointReached();
+            m_abort |= checkBreakpoint();
         }
 
         if ( true == m_abort )
@@ -871,7 +872,7 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     }
 }
 
-inline bool MCUSimControl::breakpointReached()
+inline bool MCUSimControl::checkBreakpoint()
 {
     if ( false == m_breakPointsSet )
     {
@@ -892,6 +893,7 @@ inline bool MCUSimControl::breakpointReached()
     {
         const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
         const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
+std::cout<<"position in program: FILE=#"<<lineRecord.m_fileNumber<<", LINE=#"<<lineRecord.m_lineNumber<<'\n';
         if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
         {
             return true;

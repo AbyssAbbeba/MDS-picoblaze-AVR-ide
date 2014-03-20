@@ -544,28 +544,28 @@ inline void SecureWipeArray(T *buf, size_t n)
 		SecureWipeBuffer((byte *)buf, n * sizeof(T));
 }
 
-// // this function uses wcstombs(), which assumes that setlocale() has been called
-// static std::string StringNarrow(const wchar_t *str, bool throwOnError = true)
-// {
-// #ifdef _MSC_VER
-// #pragma warning(push)
-// #pragma warning(disable: 4996)	//  'wcstombs': This function or variable may be unsafe.
-// #endif
-// 	size_t size = wcstombs(NULL, str, 0);
-// 	if (size == size_t(0)-1)
-// 	{
-// 		if (throwOnError)
-// 			throw InvalidArgument("StringNarrow: wcstombs() call failed");
-// 		else
-// 			return std::string();
-// 	}
-// 	std::string result(size, 0);
-// 	wcstombs(&result[0], str, size);
-// 	return result;
-// #ifdef _MSC_VER
-// #pragma warning(pop)
-// #endif
-// }
+// this function uses wcstombs(), which assumes that setlocale() has been called
+inline static std::string StringNarrow(const wchar_t *str, bool throwOnError = true)
+{
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4996)	//  'wcstombs': This function or variable may be unsafe.
+#endif
+	size_t size = wcstombs(NULL, str, 0);
+	if (size == size_t(0)-1)
+	{
+		if (throwOnError)
+			throw InvalidArgument("StringNarrow: wcstombs() call failed");
+		else
+			return std::string();
+	}
+	std::string result(size, 0);
+	wcstombs(&result[0], str, size);
+	return result;
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+}
 
 #if CRYPTOPP_BOOL_ALIGN16_ENABLED
 CRYPTOPP_DLL void * CRYPTOPP_API AlignedAllocate(size_t size);
