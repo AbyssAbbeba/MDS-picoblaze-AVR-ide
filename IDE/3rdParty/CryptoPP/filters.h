@@ -48,7 +48,7 @@ protected:
 
 private:
 	member_ptr<BufferedTransformation> m_attachment;
-	
+
 protected:
 	size_t m_inputPosition;
 	int m_continueAt;
@@ -91,7 +91,7 @@ public:
 	void SetTransparent(bool transparent) {m_transparent = transparent;}
 	void AddRangeToSkip(unsigned int message, lword position, lword size, bool sortNow = true);
 	void ResetMeter();
-	void IsolatedInitialize(const NameValuePairs &parameters) {ResetMeter();}
+	void IsolatedInitialize(const NameValuePairs &/*parameters*/) {ResetMeter();}
 
 	lword GetCurrentMessageBytes() const {return m_currentMessageBytes;}
 	lword GetTotalBytes() {return m_totalBytes;}
@@ -171,14 +171,14 @@ public:
 protected:
 	bool DidFirstPut() {return m_firstInputDone;}
 
-	virtual void InitializeDerivedAndReturnNewSizes(const NameValuePairs &parameters, size_t &firstSize, size_t &blockSize, size_t &lastSize)
+	virtual void InitializeDerivedAndReturnNewSizes(const NameValuePairs &parameters, size_t &/*firstSize*/, size_t &/*blockSize*/, size_t &/*lastSize*/)
 		{InitializeDerived(parameters);}
-	virtual void InitializeDerived(const NameValuePairs &parameters) {}
+	virtual void InitializeDerived(const NameValuePairs &/*parameters*/) {}
 	// FirstPut() is called if (firstSize != 0 and totalLength >= firstSize)
 	// or (firstSize == 0 and (totalLength > 0 or a MessageEnd() is received))
 	virtual void FirstPut(const byte *inString) =0;
 	// NextPut() is called if totalLength >= firstSize+blockSize+lastSize
-	virtual void NextPutSingle(const byte *inString) {assert(false);}
+	virtual void NextPutSingle(const byte */*inString*/) {assert(false);}
 	// Same as NextPut() except length can be a multiple of blockSize
 	// Either NextPut() or NextPutMultiple() must be overriden
 	virtual void NextPutMultiple(const byte *inString, size_t length);
@@ -202,7 +202,7 @@ protected:
 
 	// This function should no longer be used, put this here to cause a compiler error
 	// if someone tries to override NextPut().
-	virtual int NextPut(const byte *inString, size_t length) {assert(false); return 0;}
+	virtual int NextPut(const byte */*inString*/, size_t /*length*/) {assert(false); return 0;}
 
 	class BlockQueue
 	{
@@ -236,7 +236,7 @@ public:
 	{
 		if (!blocking)
 			throw BlockingInputOnly("FilterWithInputQueue");
-		
+
 		m_inQueue.Put(inString, length);
 		if (messageEnd)
 		{
@@ -248,7 +248,7 @@ public:
 
 protected:
 	virtual bool IsolatedMessageEnd(bool blocking) =0;
-	void IsolatedInitialize(const NameValuePairs &parameters) {m_inQueue.Clear();}
+	void IsolatedInitialize(const NameValuePairs &/*parameters*/) {m_inQueue.Clear();}
 
 	ByteQueue m_inQueue;
 };
@@ -606,7 +606,7 @@ public:
 		return 0;
 	}
 
-private:	
+private:
 	T *m_output;
 };
 
@@ -697,7 +697,7 @@ public:
 	lword MaxRetrievable() const {return m_length-m_count;}
 
 	size_t TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel=DEFAULT_CHANNEL, bool blocking=true);
-	size_t CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end=LWORD_MAX, const std::string &channel=DEFAULT_CHANNEL, bool blocking=true) const
+	size_t CopyRangeTo2(BufferedTransformation &/*target*/, lword &/*begin*/, lword /*end*/=LWORD_MAX, const std::string &/*channel*/=DEFAULT_CHANNEL, bool /*blocking*/=true) const
 	{
 		throw NotImplemented("RandomNumberStore: CopyRangeTo2() is not supported by this store");
 	}
@@ -714,7 +714,7 @@ class CRYPTOPP_DLL NullStore : public Store
 {
 public:
 	NullStore(lword size = ULONG_MAX) : m_size(size) {}
-	void StoreInitialize(const NameValuePairs &parameters) {}
+	void StoreInitialize(const NameValuePairs &/*parameters*/) {}
 	lword MaxRetrievable() const {return m_size;}
 	size_t TransferTo2(BufferedTransformation &target, lword &transferBytes, const std::string &channel=DEFAULT_CHANNEL, bool blocking=true);
 	size_t CopyRangeTo2(BufferedTransformation &target, lword &begin, lword end=LWORD_MAX, const std::string &channel=DEFAULT_CHANNEL, bool blocking=true) const;
@@ -801,7 +801,7 @@ class CRYPTOPP_DLL RandomNumberSource : public SourceTemplate<RandomNumberStore>
 {
 public:
 	RandomNumberSource(RandomNumberGenerator &rng, int length, bool pumpAll, BufferedTransformation *attachment = NULL)
-		: SourceTemplate<RandomNumberStore>(attachment) 
+		: SourceTemplate<RandomNumberStore>(attachment)
 		{SourceInitialize(pumpAll, MakeParameters("RandomNumberGeneratorPointer", &rng)("RandomNumberStoreSize", length));}
 };
 

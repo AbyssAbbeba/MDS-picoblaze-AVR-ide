@@ -23,7 +23,7 @@ public:
 	}
 	template <class T> ConstByteArrayParameter(const T &string, bool deepCopy = false)
 	{
-        CRYPTOPP_COMPILE_ASSERT(sizeof(CPP_TYPENAME T::value_type) == 1);
+//         CRYPTOPP_COMPILE_ASSERT(sizeof(CPP_TYPENAME T::value_type) == 1);
 		Assign((const byte *)string.data(), string.size(), deepCopy);
 	}
 
@@ -107,7 +107,7 @@ public:
 
 		if (!m_found && searchFirst)
 			m_found = searchFirst->GetVoidValue(m_name, valueType, pValue);
-		
+
 		if (!m_found && typeid(T) != typeid(BASE))
 			m_found = pObject->BASE::GetVoidValue(m_name, valueType, pValue);
 	}
@@ -250,7 +250,7 @@ class CRYPTOPP_DLL AlgorithmParametersBase
 public:
 	class ParameterNotUsed : public Exception
 	{
-	public: 
+	public:
 		ParameterNotUsed(const char *name) : Exception(OTHER_ERROR, std::string("AlgorithmParametersBase: parameter \"") + name + "\" not used") {}
 	};
 
@@ -284,7 +284,7 @@ public:
 	}
 
 	bool GetVoidValue(const char *name, const std::type_info &valueType, void *pValue) const;
-	
+
 protected:
 	friend class AlgorithmParameters;
 	void operator=(const AlgorithmParametersBase& rhs);	// assignment not allowed, declare this for VC60
@@ -319,7 +319,7 @@ public:
 
 	void MoveInto(void *buffer) const
 	{
-		AlgorithmParametersTemplate<T>* p = new(buffer) AlgorithmParametersTemplate<T>(*this);
+		/*AlgorithmParametersTemplate<T>* p =*/ new(buffer) AlgorithmParametersTemplate<T>(*this);
 	}
 
 protected:

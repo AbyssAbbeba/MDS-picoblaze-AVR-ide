@@ -140,13 +140,13 @@ class NullAllocator : public AllocatorBase<T>
 public:
 	CRYPTOPP_INHERIT_ALLOCATOR_TYPES
 
-	pointer allocate(size_type n, const void * = NULL)
+	pointer allocate(size_type /*n*/, const void * = NULL)
 	{
 		assert(false);
 		return NULL;
 	}
 
-	void deallocate(void *p, size_type n)
+	void deallocate(void */*p*/, size_type /*n*/)
 	{
 		assert(false);
 	}

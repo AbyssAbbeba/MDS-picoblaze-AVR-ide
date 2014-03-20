@@ -151,7 +151,7 @@ protected:
 
 private:
 	void Init(byte asnTag);
-	void StoreInitialize(const NameValuePairs &parameters) {assert(false);}
+	void StoreInitialize(const NameValuePairs &/*parameters*/) {assert(false);}
 	lword ReduceLength(lword delta);
 };
 

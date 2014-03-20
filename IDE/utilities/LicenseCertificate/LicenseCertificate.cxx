@@ -16,6 +16,9 @@
 #include "LicenseCertificate.h"
 #include "LicenseCertificateKey.h"
 
+// Standard header files.
+#include <iostream>
+
 // Crypto++
 #include <CryptoPP/rsa.h>
 #include <CryptoPP/sha.h>
@@ -48,6 +51,9 @@ void LicenseCertificate::readAndVerifyCertificate ( const std::string & certific
     size_t size;
     byte * data;
 
+    m_isValid = false;
+
+    try
     {
         Gunzip unzipper;
         unzipper.Put ( (const byte*) certificate.data(), certificate.size() );
@@ -55,6 +61,11 @@ void LicenseCertificate::readAndVerifyCertificate ( const std::string & certific
         size = unzipper.MaxRetrievable();
         data = new byte [ size ];
         unzipper.Get ( data, size );
+    }
+    catch ( const Inflator::Err & e )
+    {
+        std::cerr << "Decompression error: " << e.what() << std::endl;
+        return;
     }
 
     RSA::PublicKey publicKey;

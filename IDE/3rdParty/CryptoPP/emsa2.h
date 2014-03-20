@@ -60,11 +60,11 @@ class CRYPTOPP_DLL EMSA2Pad : public EMSA2HashIdLookup<PK_DeterministicSignature
 {
 public:
 	static const char * CRYPTOPP_API StaticAlgorithmName() {return "EMSA2";}
-	
-	size_t MinRepresentativeBitLength(size_t hashIdentifierLength, size_t digestLength) const
+
+	size_t MinRepresentativeBitLength(size_t /*hashIdentifierLength*/, size_t digestLength) const
 		{return 8*digestLength + 31;}
 
-	void ComputeMessageRepresentative(RandomNumberGenerator &rng, 
+	void ComputeMessageRepresentative(RandomNumberGenerator &rng,
 		const byte *recoverableMessage, size_t recoverableMessageLength,
 		HashTransformation &hash, HashIdentifier hashIdentifier, bool messageEmpty,
 		byte *representative, size_t representativeBitLength) const;
