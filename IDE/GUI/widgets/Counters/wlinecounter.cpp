@@ -238,16 +238,24 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
 void WLineCounterWidget::changeHeight()
 {
     //qDebug() << "WLineCounterWidget: changeHeight()";
-    QPlainTextEdit* textEdit = parent->getTextEdit();
+    //QPlainTextEdit* textEdit = parent->getTextEdit();
     //this->setMinimumHeight(textEdit->document()->size().height());
     //this->setMaximumHeight(textEdit->document()->size().height());
-    this->setFixedHeight(textEdit->height());
+    if (parent->getTextEdit()->height() < 0)
+    {
+        this->setFixedHeight(1000);
+    }
+    else
+    {
+        this->setFixedHeight(parent->getTextEdit()->height());
+    }
     //this->parent->setMaximumHeight(this->height());
     //this->parent->setMinimumHeight(this->height());
     //qDebug() << "WLineCounterWidget: height" << this->height();
-    //qDebug() << "WLineCounterWidget: parent doc height:" << textEdit->document()->size().height();
-    //qDebug() << "WLineCounterWidget: parent height:" << textEdit->height();
-    //qDebug() << "WLineCounterWidget: parent block count:" << textEdit->document()->blockCount();
+    //qDebug() << "WLineCounterWidget: parent doc height:" << parent->getTextEdit()->document()->size().height();
+    //qDebug() << "WLineCounterWidget: parent textedit height:" << parent->getTextEdit()->height();
+    //qDebug() << "WLineCounterWidget: parent height:" << parent->height();
+    //qDebug() << "WLineCounterWidget: parent block count:" << parent->getTextEdit()->document()->blockCount();
     this->update();
     //qDebug() << "WLineCounterWidget: return changeHeight()";
 }

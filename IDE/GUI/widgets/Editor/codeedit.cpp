@@ -145,7 +145,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()";
+    qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
     /*if (this->parentCodeEdit == NULL) //&& parentCodeEdit == NULL)
     {
@@ -250,7 +250,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
-    //qDebug() << "CodeEdit: return CodeEdit()";
+    qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
 
@@ -292,7 +292,7 @@ void CodeEdit::makeMenu()
     //editorPopup->addAction(splitVerticalAct);
     
 
-    connect(cutAct,
+    /*connect(cutAct,
             SIGNAL(triggered()),
             this->textEdit,
             SLOT(editedCut())
@@ -315,6 +315,29 @@ void CodeEdit::makeMenu()
             SIGNAL(triggered()),
             this->textEdit,
             SLOT(editedRedo())
+           );connect(cutAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(editedCut())
+           );*/
+    connect(copyAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(copy()));
+    connect(pasteAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(paste())
+           );
+    connect(undoAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(undo())
+           );
+    connect(redoAct,
+            SIGNAL(triggered()),
+            this->textEdit,
+            SLOT(redo())
            );
     connect(selectAllAct,
             SIGNAL(triggered()),
@@ -479,7 +502,7 @@ void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
 }
 
 
-void CodeEdit::selectionRemovedOut(int posStart, int posEnd)
+/*void CodeEdit::selectionRemovedOut(int posStart, int posEnd)
 {
     emit updateRemoveSelection(posStart, posEnd, this);
     emit updateAnalysers(this);
@@ -575,15 +598,15 @@ void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor
         prevBlockCount = this->textEdit->document()->blockCount();
     }
     qDebug() << "CodeEdit: return updateTextSlotIn()";
-}
+}*/
 
 
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
     qDebug() << "CodeEdit: loadCodeEditor()";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
-    disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
-    disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
+    //disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
+    //disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
     //disconnect(this, SIGNAL(), 0, 0);
     //disconnect(this, SIGNAL(bookmarkListAdd(QString,int)), 0, 0);
     //disconnect(this, SIGNAL(bookmarkListRemove(QString,int)), 0, 0);
@@ -591,13 +614,20 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     disconnect(this, SIGNAL(breakpointListRemove(QString,int)), 0, 0);
     //this->breakpointList.clear();
     //this->bookmarkList.clear();
-    if (editor->getTextEdit()->toPlainText().isEmpty() == false)
+    /*if (editor->getTextEdit()->toPlainText().isEmpty() == false)
     {
         this->textEdit->setPlainText(editor->getTextEdit()->toPlainText());
     }
+    else
+    {
+        this->textEdit->setPlainText(" ");
+    }*/
+    this->textEdit->setDocument(editor->getTextEdit()->document());
+    //this->show();
+    //this->update();
     this->setName(editor->getName());
     this->setPath(editor->getPath());
-    if (name != NULL)
+    /*if (name != NULL)
     {
         int index = this->name.lastIndexOf(".");
         if (index > 0)
@@ -630,7 +660,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         {
                 this->textEdit->reloadHighlighter(PLAIN);
         }
-    }
+    }*/
     emit CodeEditChanged(editor);
     this->changeHeight();
     if (true == editor->isChanged())

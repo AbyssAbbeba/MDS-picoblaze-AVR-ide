@@ -104,8 +104,8 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "wdockmanager - change Code Editor";
         //qDebug() << "index: " << index;
         //qDebug() << "size: " << openCentralWidgets.count();
-        CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
-        activeCodeEdit->loadCodeEdit(editor);
+        //CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
+        activeCodeEdit->loadCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
         /*if (breakpointList != NULL)
         {
             connect(this->activeCodeEdit,
@@ -255,6 +255,7 @@ void WDockManager::setCentralName(QString wName)
 {
     //qDebug() << "WDockManager: setCentralName()";
     openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setName(wName);
+    activeCodeEdit->setName(wName);
     wTab->setTabText(wTab->currentIndex(), wName);
     //qDebug() << "WDockManager: return setCentralName()";
 }
@@ -268,6 +269,7 @@ void WDockManager::setCentralPath(QString wPath)
 {
     //qDebug() << "WDockManager: setCentralPath()";
     openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setPath(wPath);
+    activeCodeEdit->setPath(wPath);
     wTab->setTabToolTip(wTab->currentIndex(), wPath);
     //qDebug() << "WDockManager: return setCentralPath()";
 }
@@ -276,7 +278,7 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 {
-    //qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: addUntrackedCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -350,13 +352,13 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             newEditor->setChanged();
         }
     }
-    //qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
 
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStringList text)
 {
-    //qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
+    qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -435,7 +437,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                );
         newEditor->setChanged();
     }
-    //qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
+    qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
 }
 
 
@@ -443,7 +445,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    //qDebug() << "WDockManager: addCentralWidget()";
+    qDebug() << "WDockManager: addCentralWidget()";
     bool found = false;
     int tab;
     for (tab = 0; tab < wTab->count(); tab++)
@@ -462,10 +464,12 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            //qDebug() << "WDockManager: Create centralBase";
+            qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
+            qDebug() << "WDockManager: base1 height" << newBaseEditor->height();
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
+            qDebug() << "WDockManager: base2 height" << centralBase->height();
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
             /*QPalette palette = activeCodeEdit->palette();
@@ -473,6 +477,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             activeCodeEdit->setPalette(palette);*/
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
+            qDebug() << "WDockManager: splitter height" << splitter->height();
             //qDebug() << "WDockManager: Create splitter";
             if (wName != NULL && wPath != NULL)
             {
@@ -531,7 +536,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
     {
         wTab->setCurrentIndex(tab);
     }
-    //qDebug() << "WDockManager: return addCentralWidget()";
+    qDebug() << "WDockManager: return addCentralWidget()";
 }
 
 
@@ -811,6 +816,7 @@ CodeEdit* WDockManager::getCentralByPath(QString filePath)
         }
     }
     //qDebug() << "WDockManager: return setCentralByName()";
+    return NULL;
 }
 
 

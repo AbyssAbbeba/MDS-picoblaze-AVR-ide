@@ -13,6 +13,7 @@
 
 
 #include <QtGui>
+#include <unistd.h>
 //#include <QtHelp/QHelpEngineCore>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
@@ -68,6 +69,8 @@ MainForm::MainForm()
     QWidget *centralWidget = new QWidget(this);
     wDockManager = new WDockManager(this, centralWidget);
     this->setCentralWidget(centralWidget);
+    centralWidget->show();
+    qDebug() << "MainForm: central widget height" << centralWidget->height();
     //connect(this, SIGNAL(dockWidgetsCreated()), wDockManager, SLOT(dockWidgetsCreated()));
     connect(wDockManager,
             SIGNAL(createDockWidgets()),
@@ -119,6 +122,13 @@ MainForm::MainForm()
             this,
             SLOT(manageBreakpointRemove(QString, int))
            );
+
+    
+    /*connect(this,
+            SIGNAL(sessionRestorationSignal()),
+            this,
+            SLOT(sessionRestorationSlot())
+           );*/
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -2292,4 +2302,32 @@ void MainForm::manageBreakpointRemove(QString file, int line)
     {
         projects.at(i)->handleBreakpoint(file, line, false);
     }
+}
+
+
+/*void MainForm::emitSessionRestorationSignal()
+{
+    emit sessionRestorationSignal();
+}*/
+
+
+void MainForm::sessionRestorationSlot()
+{
+    qDebug() << "MainForm: session restoration";
+    QApplication::processEvents();
+    //qDebug() << "MainForm: height" << this->height();
+    //open projects and files
+    QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
+    QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
+    for (int i = 0; i < projectPaths.count(); i++)
+    {
+        this->openProject(projectPaths.at(i));
+    }
+    for (int i = 0; i < filePaths.count(); i++)
+    {
+        this->openFilePath(filePaths.at(i));
+    }
+    GuiCfg::getInstance().sessionClear();
+    qDebug() << "MainForm: height" << this->height();
+    qDebug() << "MainForm: session loaded";
 }
