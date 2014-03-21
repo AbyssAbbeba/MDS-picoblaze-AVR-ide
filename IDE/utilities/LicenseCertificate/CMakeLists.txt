@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Library for validating license certificates.
+# Library for validating and reading license certificates.
 #
 # (C) copyright 2014 Moravia Microsystems, s.r.o.
 #
@@ -50,8 +50,9 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 # Add a dependency between top-level targets.
 add_dependencies ( ${PROJECT_NAME} ${PROJECT_NAME}-key )
 
-add_executable ( main main.cxx )
-target_link_libraries ( main ${PROJECT_NAME} CryptoPP )
+# Build certificate validation utility.
+add_executable ( mds-certutil main.cxx )
+target_link_libraries ( mds-certutil ${PROJECT_NAME} CryptoPP )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

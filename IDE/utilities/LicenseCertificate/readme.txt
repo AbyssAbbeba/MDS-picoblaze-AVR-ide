@@ -4,11 +4,13 @@
 === File format ===
 MDS licence certifate is a gzip compressed digitally signed XML file containing information about licensee.
 
-+-gzip----------+
++-gzip----------+  <-- Entire certificate is deflated using GZIP Compression (RFC 1952).
 | +-----------+ |
-| |    XML    | |
+| |    XML    | |  <-- XML data, see LicenseCertificate.dtd and CertificateExample.xml
 | +-----------+ |
-| | signature | |
+| |     0     | |  <-- Binary 0 (NULL), this is mandatory.
+| +-----------+ |
+| | signature | |  <-- RSA digital signature.
 | +-----------+ |
 +---------------+
 
@@ -51,6 +53,7 @@ RSA Cryptography Standard: http://www.emc.com/collateral/white-papers/h11300-pkc
 This example should work basically on arbitrary POSIX complaint operating system (e.g. any Linux, Unix, BSD, etc.).
 
 1) Take file CertificateExample.xml, copy it as certificate.xml, and modify its contents to fit your needs
+2) append binary NULL to the certificate, i.e. run: printf "\x0" >> certificate.xml
 2) run: openssl dgst -sha256 -binary -keyform PEM -sign LicenseKey.pem < certificate.xml > certificate.sgn
 3) concatenate and gzip compress files certificate.xml and certificate.sgn (in this order), i.e.
    run: cat certificate.xml certificate.sgn | gzip --stdout --fast > certificate.cert

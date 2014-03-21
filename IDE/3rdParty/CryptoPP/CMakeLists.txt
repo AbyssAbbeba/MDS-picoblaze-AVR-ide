@@ -44,5 +44,17 @@ add_library ( ${PROJECT_NAME}
 set_target_properties ( ${PROJECT_NAME} PROPERTIES
                                         COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -w" )
 
-# Link a target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} pthread )
+# On POSIX link to the pthread library.
+if ( NOT TARGET_OS STREQUAL "Windows" )
+    target_link_libraries ( ${PROJECT_NAME} pthread )
+endif()
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
+
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
