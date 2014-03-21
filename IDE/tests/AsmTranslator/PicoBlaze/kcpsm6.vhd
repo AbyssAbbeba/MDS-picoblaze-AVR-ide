@@ -1,3 +1,4 @@
+{begin template}
 package jtag_loader_pkg is
  function addr_width_calc (size_in_k: integer) return integer;
 end jtag_loader_pkg;
