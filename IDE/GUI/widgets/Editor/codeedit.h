@@ -56,6 +56,9 @@ class CodeEdit : public QWidget
         CodeEdit* getParentCodeEdit();
         void setParentCodeEdit(CodeEdit *parentCodeEdit);
         Project *getParentProject();
+        void addBreakpointLine(unsigned int line);
+        void removeBreakpointLine(unsigned int line);
+        QList<unsigned int>* getBreakpointsLines();
 
     public slots:
         void setChanged();
@@ -105,6 +108,7 @@ class CodeEdit : public QWidget
         CodeEdit *parentCodeEdit;
         QColor *breakpointColor;
         int prevBlockCount;
+        QList<unsigned int> *breakpointsLines;
 
     protected:
         void contextMenuEvent(QContextMenuEvent *event);

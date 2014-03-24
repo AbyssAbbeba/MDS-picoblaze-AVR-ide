@@ -23,10 +23,18 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 {
     //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
-    /*if (this->parentCodeEdit == NULL)
-    {
-        qDebug() << "PARENT CODE EDIT: NULL";
-    }*/
+    //if (this->parentCodeEdit == NULL)
+    //{
+        //qDebug() << "parentCodeEdit is NULL";
+        this->breakpointsLines = new QList<unsigned int>();
+    //}
+    //else
+    //{
+        //?
+        //qDebug() << "parentCodeEdit is not NULL";
+        //this->breakpointsLines = NULL;
+        //this->breakpointsLines = new QList<unsigned int>();
+    //}
     if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
         //qDebug() << "CodeEdit: untracked";
@@ -70,7 +78,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
+    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -147,10 +155,18 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
 {
     //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
-    /*if (this->parentCodeEdit == NULL) //&& parentCodeEdit == NULL)
-    {
-        qDebug() << "PARENT CODE EDIT: NULL";
-    }*/
+    //if (this->parentCodeEdit == NULL)
+    //{
+        //qDebug() << "parentCodeEdit is NULL";
+        this->breakpointsLines = new QList<unsigned int>();
+    //}
+    //else
+    //{
+        //?
+        //qDebug() << "parentCodeEdit is not NULL";
+        //this->breakpointsLines = NULL;
+        //this->breakpointsLines = new QList<unsigned int>();
+    //}
     
     int index = wName.lastIndexOf(".");
     if (index > 0)
@@ -186,7 +202,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
+    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -256,10 +272,10 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
 
 CodeEdit::~CodeEdit()
 {
-    /*if (parentCodeEdit == NULL)
+    if (parentCodeEdit == NULL)
     {
-        qDebug() << "DELETING PARENT CODE EDIT!";
-    }*/
+        delete this->breakpointsLines;
+    }
 }
 
 
@@ -627,6 +643,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     //this->update();
     this->setName(editor->getName());
     this->setPath(editor->getPath());
+    this->breakpointsLines = editor->getBreakpointsLines();
+    if (this->breakpointsLines == NULL)
+    {
+        qDebug() << "CodeEdit: breakpointsLines == NULL";
+    }
+    this->lineCount->getWidget()->setBreakpointList(this->breakpointsLines);
     /*if (name != NULL)
     {
         int index = this->name.lastIndexOf(".");
@@ -777,4 +799,24 @@ void CodeEdit::changeFont(QFont font)
 Project* CodeEdit::getParentProject()
 {
     return this->parentProject;
+}
+
+
+void CodeEdit::addBreakpointLine(unsigned int line)
+{
+    this->breakpointsLines->append(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+void CodeEdit::removeBreakpointLine(unsigned int line)
+{
+    this->breakpointsLines->removeAll(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+QList<unsigned int>* CodeEdit::getBreakpointsLines()
+{
+    return this->breakpointsLines;
 }
