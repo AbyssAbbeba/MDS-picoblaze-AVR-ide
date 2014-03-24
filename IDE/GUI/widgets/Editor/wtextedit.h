@@ -50,10 +50,10 @@ class WTextEdit : public QPlainTextEdit
 
     public slots:
         void deselect();
-        void editedUndo();
-        void editedRedo();
-        void editedCut();
-        void editedPaste();
+        //void editedUndo();
+        //void editedRedo();
+        //void editedCut();
+        //void editedPaste();
 
 
     signals:
@@ -63,8 +63,8 @@ class WTextEdit : public QPlainTextEdit
         void textChangedSignal(const QString& text, int pos);
         void selectionRemovedSignal(int posStart, int posEnd);
 
-    private slots:
-        void updateUndoRedo(int position, int charsRemoved, int charsAdded);
+    //private slots:
+    //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
 
     private:
         Highlighter *highlighter;

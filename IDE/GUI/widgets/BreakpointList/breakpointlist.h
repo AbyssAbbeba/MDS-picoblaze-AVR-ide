@@ -29,13 +29,13 @@ class BreakpointList : public QTreeWidget
     Q_OBJECT   
     public:
         BreakpointList(QWidget *parent);
-        void reload(QList<QPair<QString, unsigned int>> breakpointList);
+        void reload(QList<QPair<QString, QSet<unsigned int>>> *breakpointList);
 
 
     public slots:
-        void breakpointListAddSlot(QString file, int line);
-        void breakpointListRemoveSlot(QString file, int line);
-        void breakpointListUpdateSlot(QString file, int linesAdded);
+        void breakpointListAdd(QString file, int line);
+        void breakpointListRemove(QString file, int line);
+        void breakpointListUpdate(QString file, int fromLine, int linesAdded);
 
 };
 

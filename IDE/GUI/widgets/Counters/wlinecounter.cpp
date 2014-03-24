@@ -241,14 +241,14 @@ void WLineCounterWidget::changeHeight()
     //QPlainTextEdit* textEdit = parent->getTextEdit();
     //this->setMinimumHeight(textEdit->document()->size().height());
     //this->setMaximumHeight(textEdit->document()->size().height());
-    if (parent->getTextEdit()->height() < 0)
-    {
-        this->setFixedHeight(1000);
-    }
-    else
-    {
+    //if (parent->getTextEdit()->height() < 0)
+    //{
+    //    this->setFixedHeight(1000);
+    //}
+    //else
+    //{
         this->setFixedHeight(parent->getTextEdit()->height());
-    }
+    //}
     //this->parent->setMaximumHeight(this->height());
     //this->parent->setMinimumHeight(this->height());
     //qDebug() << "WLineCounterWidget: height" << this->height();

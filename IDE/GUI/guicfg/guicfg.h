@@ -91,6 +91,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void sessionAppendFile(QString path);
 
+        void sessionAppendFileParentProject(QString path);
+
         void sessionClear();
         
         
@@ -170,6 +172,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         QList<QString> getSessionProjectPaths();
 
         QList<QString> getSessionFilePaths();
+
+        QList<QString> getSessionFileParentProjects();
 
         //xml parser
         void loadConfig();
