@@ -148,14 +148,13 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     QPainter paint;
     paint.begin(this);
     QRectF rect(0,0,this->fontWidth,this->fontHeight);
-    QRectF iconRect(0,0,8,this->fontHeight);
     QPointF point;
     point.setX(0);
-    QBrush brush(Qt::darkCyan);
-    paint.setBackground(brush);
+    //QBrush brush(Qt::red);
+    //paint.setBackground(brush);
     //QPen pen(Qt::darkCyan);
     QPen pen(Qt::black);
-    paint.setBrush(brush);
+    //paint.setBrush(brush);
     paint.setPen(pen);
     //pen.setColor(Qt::black);
     //paint.setPen(pen);
@@ -176,19 +175,10 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         //point.setY(i*(size+7)+size/3);
         point.setX(0);
         rect.moveTopLeft(point);
-        /*if (icons == true && breakpointList->at(i) == true)
+        if (icons == true && breakpointList->contains(i+1) == true)
         {
-            pen.setColor(Qt::green);
-            paint.setPen(pen);
-            paint.drawRect(iconRect);
+            paint.fillRect(rect, Qt::red);
         }
-        if (icons == true && bookmarkList->at(i) == true)
-        {
-            point.setX(8);
-            pen.setColor(Qt::yellow);
-            paint.setPen(pen);
-            paint.drawRect(iconRect);
-        }*/
         //paint.drawRect(rect);
         //pen.setColor(Qt::black);
         //paint.setPen(pen);
@@ -272,4 +262,10 @@ void WLineCounterWidget::changeFont(QFont font)
     this->fontWidth = fontMetrics.width("0000");
     this->fontHeight = fontMetrics.height();
     this->setFixedWidth(fontWidth*2);
+}
+
+
+void WLineCounterWidget::setBreakpointList(QList<unsigned int> *list)
+{
+    this->breakpointList = list;
 }

@@ -2322,11 +2322,13 @@ void MainForm::manageBreakpointEmit(QString file, int line)
     if (0 == result)
     {
         wDockManager->getBreakpointList()->breakpointListAdd(file, line + 1);
+        wDockManager->getCentralWidget()->addBreakpointLine(line + 1);
     }
     //remove
     else if (1 == result)
     {
         wDockManager->getBreakpointList()->breakpointListRemove(file, line + 1);
+        wDockManager->getCentralWidget()->removeBreakpointLine(line + 1);
     }
     //else project doesnt contain current file - result == -1
     /*QList<Project*> projects = projectMan->getOpenProjects();
