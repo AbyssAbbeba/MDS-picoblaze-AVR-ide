@@ -1,6 +1,6 @@
 #! /bin/bash
 
-openssl rsa -in "${1}" -pubout -outform DER 2>/dev/null | od --format=x1 --address-radix=n | gawk '
+openssl rsa -in "${1}" -pubout -outform DER 2>/dev/null | od --format=x1 --address-radix=n | gawk -O '
     BEGIN {
         size = 0
     }

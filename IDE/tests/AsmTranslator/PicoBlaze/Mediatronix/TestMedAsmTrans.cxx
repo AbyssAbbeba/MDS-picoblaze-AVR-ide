@@ -76,11 +76,33 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
         }
         while ( ( std::string::npos == line2.find("INIT") ) && ( false == file2.eof() ) );
 
+        size_t pos;
+        std::string * line = &line1;
+        for ( int i = 0; i < 2; i++ )
+        {
+            pos = line->find("X\"");
+            if ( std::string::npos != pos )
+            {
+                line->assign(line->substr(pos + 2));
+                pos = line->find('"');
+                if ( std::string::npos != pos )
+                {
+                    line->assign(line->substr(0, pos));
+                }
+            }
+            line = &line2;
+        }
+
+        if ( ( true == line1.empty() ) || ( true == line2.empty() ) )
+        {
+            continue;
+        }
+
         comparisonMade = true;
 
         if ( line1 != line2 )
         {
-            CU_FAIL("VHD files differs!");
+            CU_FAIL((std::string("VHD files (")+fileName1+", "+fileName2+") differs!").c_str());
             return;
         }
     }
