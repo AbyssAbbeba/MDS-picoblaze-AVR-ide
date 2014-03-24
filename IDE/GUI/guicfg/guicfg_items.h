@@ -178,6 +178,7 @@ class GuiCfg_Items
         //session
         QList<QString> sessionProjectPaths;
         QList<QString> sessionFilePaths;
+        QList<QString> sessionFileParentProjects;
         
 };
 

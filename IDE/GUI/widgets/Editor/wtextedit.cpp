@@ -18,7 +18,7 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)
 {
-    qDebug() << "WTextEdit: WTextEdit()";
+    //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
     this->undoRequest = false;
     this->redoRequest = false;
@@ -34,14 +34,14 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
             SLOT(updateUndoRedo(int,int,int))
            );*/
 
-    this->show();
+    //this->show();
     //this->setFocusPolicy(Qt::ClickFocus);
-    qDebug() << "WTextEdit: return WTextEdit()";
+    //qDebug() << "WTextEdit: return WTextEdit()";
 }
 
 void WTextEdit::reloadHighlighter(SourceType type)
 {
-    qDebug() << "WTextEdit: reloadHighlighter()";
+    //qDebug() << "WTextEdit: reloadHighlighter()";
     if (this->sourceType != PLAIN)
     {
         delete highlighter;
@@ -51,7 +51,7 @@ void WTextEdit::reloadHighlighter(SourceType type)
         highlighter = new Highlighter(this->document(), type);
     }
     this->sourceType = type;
-    qDebug() << "WTextEdit: return reloadHighlighter()";
+    //qDebug() << "WTextEdit: return reloadHighlighter()";
 }
 
 
@@ -250,7 +250,7 @@ void WTextEdit::highlightCurrentLine()
 
 bool WTextEdit::highlightLine(int line, QColor *color)
 {
-    qDebug() << "WTextEdit: highlightLine()";
+    //qDebug() << "WTextEdit: highlightLine()";
     //qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
     if (line >= 0 && line <= this->document()->lineCount())
@@ -275,14 +275,14 @@ bool WTextEdit::highlightLine(int line, QColor *color)
         cursor.setBlockFormat(lineFormat);
         this->setTextCursor(cursor);
         this->ensureCursorVisible();
-        qDebug() << "WTextEdit: return highlightLine()";
+        //qDebug() << "WTextEdit: return highlightLine()";
         return true;
     }
     /*else
     {
         qDebug() << "WTextEdit: highlight failed----";
     }*/
-    qDebug() << "WTextEdit: return highlightLine()";
+    //qDebug() << "WTextEdit: return highlightLine()";
     return false;
 }
 
@@ -308,12 +308,12 @@ bool WTextEdit::isLineHighlighted(int line, QColor *color)
 
 void WTextEdit::setPosition(int pos)
 {
-    qDebug() << "WTextEdit: setPosition()";
+    //qDebug() << "WTextEdit: setPosition()";
     QTextCursor cursor(this->textCursor());
     cursor.setPosition(pos);
     this->setTextCursor(cursor);
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->value());
-    qDebug() << "WTextEdit: return setPosition()";
+    //qDebug() << "WTextEdit: return setPosition()";
 }
 
 
@@ -325,7 +325,7 @@ int WTextEdit::getPosition()
 
 void WTextEdit::scrollToLine(int line)
 {
-    qDebug() << "WTextEdit: scrollToLine()";
+    //qDebug() << "WTextEdit: scrollToLine()";
     //qDebug() << "WTextEdit: curr value:" <<  this->verticalScrollBar()->value() << "max value:" <<  this->verticalScrollBar()->maximum() << "calculated value:" << (line / this->document()->lineCount()) * this->verticalScrollBar()->maximum();
     //qDebug() << "WTextEdit: line" << line << "line count:" << this->document()->lineCount() << "value:" << (double)line / (double)this->document()->lineCount();
     //this->ensureCursorVisible();
@@ -333,7 +333,7 @@ void WTextEdit::scrollToLine(int line)
                                             (((double)line / (double)this->document()->lineCount())
                                             * this->verticalScrollBar()->maximum())
                                         );
-    qDebug() << "WTextEdit: return scrollToLine()";
+    //qDebug() << "WTextEdit: return scrollToLine()";
 }
 
 
@@ -353,7 +353,7 @@ void WTextEdit::selectLine(int line)
 }
 
 
-void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
+/*void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
 {
     if (true == this->undoRequest)
     {
@@ -476,4 +476,4 @@ void WTextEdit::editedCut()
         emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
         this->textCursor().removeSelectedText();
     }
-}
+}*/

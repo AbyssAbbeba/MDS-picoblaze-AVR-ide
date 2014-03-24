@@ -55,7 +55,6 @@ class CodeEdit : public QWidget
         QList<int> getBreakpointList();
         CodeEdit* getParentCodeEdit();
         void setParentCodeEdit(CodeEdit *parentCodeEdit);
-        void changeHeight();
         Project *getParentProject();
 
     public slots:
@@ -70,6 +69,7 @@ class CodeEdit : public QWidget
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
         void changeFont(QFont font);
+        void changeHeight();
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -78,8 +78,8 @@ class CodeEdit : public QWidget
         void updateText(const QString& text, int pos, CodeEdit *editor);
         void CodeEditChanged(CodeEdit* editor);
         void bookmarkListStateChanged(QString file, int line);
-        void breakpointListAdd(QString file, int line);
-        void breakpointListRemove(QString file, int line);
+        void breakpointEmit(QString file, int line);
+        //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
 
