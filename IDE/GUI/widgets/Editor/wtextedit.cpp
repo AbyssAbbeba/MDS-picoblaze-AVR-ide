@@ -20,14 +20,19 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
 {
     //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
-    this->undoRequest = false;
-    this->redoRequest = false;
+    this->prevBlock = 0;
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
     {
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
     this->setAcceptDrops(true);
+
+    connect(this,
+            SIGNAL(cursorPositionChanged()),
+            this,
+            SLOT(cursorPositionChangedSlot())
+           );
     /*connect(this->document(),
             SIGNAL(contentsChange(int,int,int)),
             this,
@@ -117,28 +122,29 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 {
                     a = "/*" + a + "*/";
                 }
-                emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
+                //emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
                 cursor.removeSelectedText();
-                emit textChangedSignal(a, cursor.position());
+                //emit textChangedSignal(a, cursor.position());
                 cursor.insertText(a);
             }
             else
             {
                 int linePos = cursor.positionInBlock();
                 cursor.setPosition(cursor.position() - linePos);
-                if (cursor.block().text().startsWith("//"))
+                if (cursor.block().text().startsWith(";"))
                 {
-                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
                     cursor.deleteChar();
-                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-                    cursor.deleteChar();
+                    cursor.setPosition(cursor.position() + linePos - 1);
+                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+                    //cursor.deleteChar();
                 }
                 else
                 {
-                    emit textChangedSignal("//", cursor.position());
-                    cursor.insertText("//");
+                    //emit textChangedSignal(";", cursor.position());
+                    cursor.insertText(";");
+                    cursor.setPosition(cursor.position() + linePos);
                 }
-                cursor.setPosition(cursor.position() + linePos);
             }
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
@@ -477,3 +483,13 @@ void WTextEdit::editedCut()
         this->textCursor().removeSelectedText();
     }
 }*/
+
+
+void WTextEdit::cursorPositionChangedSlot()
+{
+    if (this->textCursor().blockNumber() != this->prevBlock)
+    {
+        this->prevBlock = this->textCursor().blockNumber();
+        emit updateLineCounter();
+    }
+}

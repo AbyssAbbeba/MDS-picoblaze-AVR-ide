@@ -86,6 +86,7 @@ class HexEdit : public QWidget
         int fontSize;
         bool changable;
         bool ascii;
+        int prevBlock;
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);

@@ -120,7 +120,18 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit,
             SIGNAL(bookmark(int)),
             this,
-            SLOT(manageBookmarkEmit(int)));
+            SLOT(manageBookmarkEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(updateLineCounter()),
+            this,
+            SLOT(updateLineCounter())
+           );
+    /*connect(textEdit,
+            SIGNAL(blockCountChanged(int)),
+            this,
+            SLOT(changeHeight())
+           );*/
     /*connect(textEdit,
             SIGNAL(textChangedSignal(const QString&, int)),
             this,
@@ -243,6 +254,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             this,
             SLOT(manageBookmarkEmit(int))
            );
+    connect(textEdit,
+            SIGNAL(updateLineCounter()),
+            this,
+            SLOT(updateLineCounter())
+           );
+    /*connect(textEdit,
+            SIGNAL(blockCountChanged(int)),
+            this,
+            SLOT(changeHeight())
+           );*/
     /*connect(textEdit,
             SIGNAL(textChangedSignal(const QString&, int)),
             this,
@@ -787,6 +808,12 @@ void CodeEdit::changeHeight()
     this->lineCount->getWidget()->changeHeight();
     //this->lineCount->getWidget()->update();
     //qDebug() << "CodeEdit: return changeHeight()";
+}
+
+
+void CodeEdit::updateLineCounter()
+{
+    this->lineCount->getWidget()->update();
 }
 
 

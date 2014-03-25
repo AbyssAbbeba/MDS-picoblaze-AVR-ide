@@ -73,6 +73,7 @@ class CodeEdit : public QWidget
         void manageBookmarkEmit(int line);
         void changeFont(QFont font);
         void changeHeight();
+        void updateLineCounter();
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
