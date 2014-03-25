@@ -106,6 +106,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     font.setStyleStrategy(QFont::ForceIntegerMetrics);
     this->columns=columns;
     this->ascii = AsciiPanel;
+    this->prevBlock = 0;
     hexLayout = new QGridLayout(this);
     hexTextEdit = new QPlainTextEdit(this);
     //hexTextEdit->setReadOnly(true);
@@ -390,6 +391,11 @@ void HexEdit::moveCursor()
                 asciiCursor.setPosition(asciiPosition);
                 asciiPrevPosition = asciiPosition;
             }
+        }
+        if (hexTextEdit->textCursor().blockNumber() != this->prevBlock)
+        {
+            this->prevBlock = hexTextEdit->textCursor().blockNumber();
+            this->hexLineCount->getWidget()->update();
         }
         changable = true;
     }
