@@ -115,3 +115,8 @@ void BreakpointList::breakpointListUpdate(QString file, int fromLine, int linesA
     }
     //qDebug() << "breakpointlist - remove";
 }
+
+
+void BreakpointList::breakpointClickedSlot(QTreeWidgetItem *item, int column)
+{
+}
