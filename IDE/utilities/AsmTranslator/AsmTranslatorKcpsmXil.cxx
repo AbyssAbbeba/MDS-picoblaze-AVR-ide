@@ -505,7 +505,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
     {
         if ( true == m_config->m_shortInstructions )
         {
-            lineFields.replaceInstOpr("ret");
+            lineFields.replaceInst("ret");
         }
     }
     else if ( "hwbuild" == instruction )
