@@ -1975,7 +1975,7 @@ int Project::start(QString file)
             breakpointsPair.second = breakpointsSet;
             breakpointsVector.push_back(breakpointsPair);
         }
-        for (int i = 0; i < breakpointsVector.size(); i++)
+        for (unsigned int i = 0; i < breakpointsVector.size(); i++)
         {
             qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
             foreach (const unsigned int &value, breakpointsVector.at(i).second)
@@ -2563,6 +2563,7 @@ int Project::handleBreakpoint(QString file, int line)
 
 void Project::breakpointReachedSlot()
 {
+    qDebug() << "Project: breakpoint reached";
     emit breakpointReached();
 }
 

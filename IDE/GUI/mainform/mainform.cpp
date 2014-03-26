@@ -220,6 +220,17 @@ void MainForm::createMenu()
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
+    editMenu->addSeparator();
+    editMenu->addAction(cutAct);
+    editMenu->addAction(copyAct);
+    editMenu->addAction(pasteAct);
+    editMenu->addSeparator();
+    editMenu->addAction(selectAllAct);
+    editMenu->addAction(deselectAct);
+
+    
     interfaceMenu = menuBar()->addMenu(tr("&Interface"));
     interfaceMenu->addAction(interfaceConfigAct);
     //interfaceMenu->addAction(pluginAct);
@@ -308,6 +319,22 @@ void MainForm::createActions()
     saveAllAct->setDisabled(true);
 
 
+    //EDIT
+    undoAct = new QAction(tr("Undo"), this);
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undoSlot()));
+    redoAct = new QAction(tr("Redo"), this);
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redoSlot()));
+    cutAct = new QAction(tr("Cut"), this);
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSlot()));
+    copyAct = new QAction(tr("Copy"), this);
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copySlot()));
+    pasteAct = new QAction(tr("Paste"), this);
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(pasteSlot()));
+    selectAllAct = new QAction(tr("Select All"), this);
+    connect(selectAllAct, SIGNAL(triggered()), this, SLOT(selectAllSlot()));
+    deselectAct = new QAction(tr("Deselect"), this);
+    connect(deselectAct, SIGNAL(triggered()), this, SLOT(deselectSlot()));
+
 
 
     //INTERFACE
@@ -336,7 +363,7 @@ void MainForm::createActions()
     saveProjAct->setDisabled(true);
 
     exitAct = new QAction(tr("Exit"), this);
-    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
+    connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
     this->pm_projComp = new QPixmap(":/resources//icons//compile.png");
     this->icon_projComp = new QIcon(*pm_projComp);
@@ -398,7 +425,7 @@ void MainForm::createActions()
 
     this->pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
     this->icon_toolDis = new QIcon(*pm_toolDis);
-    toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassemble"), this);
+    toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassembler"), this);
     connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     toolTranslatorAct = new QAction(tr("ASM Translator"), this);
     connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
@@ -535,6 +562,11 @@ void MainForm::createDockWidgets()
                 wDockManager,
                 SLOT(handleShowHideBottom(int))
                );
+        connect(wDockManager->getBreakpointList(),
+                SIGNAL(breakpointClicked(QString, int)),
+                this,
+                SLOT(scrollToBreakpoint(QString, int))
+               );
 
         wDockManager->hideDockWidgetArea(1);
         wDockManager->hideDockWidgetArea(2);
@@ -554,7 +586,7 @@ void MainForm::createDockWidgets()
  */
 void MainForm::createWelcome()
 {
-    wDockManager->addCentralWidget("Welcome", "Tips from developers.");
+    wDockManager->setCentralWelcome();
 }
 
 
@@ -2424,4 +2456,53 @@ void MainForm::pauseSimulation()
             return;
         }
     }
+}
+
+
+
+void MainForm::closeEvent(QCloseEvent *event)
+{
+    QApplication::closeAllWindows();
+}
+
+
+void MainForm::undoSlot()
+{
+}
+
+
+void MainForm::redoSlot()
+{
+}
+
+
+void MainForm::cutSlot()
+{
+}
+
+
+void MainForm::copySlot()
+{
+}
+
+
+void MainForm::pasteSlot()
+{
+}
+
+
+void MainForm::selectAllSlot()
+{
+}
+
+
+void MainForm::deselectSlot()
+{
+}
+
+
+void MainForm::scrollToBreakpoint(QString file, int line)
+{
+    wDockManager->setCentralByPath(file);
+    wDockManager->getCentralTextEdit()->scrollToLine(line);
 }

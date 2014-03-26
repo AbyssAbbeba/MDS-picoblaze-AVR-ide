@@ -56,6 +56,7 @@ class MainForm : public QMainWindow
         //bool dockWidgets;
         bool openProject(QString path);
         //void emitSessionRestorationSignal();
+        void createWelcome();
 
         int startHeight;
 
@@ -88,6 +89,13 @@ class MainForm : public QMainWindow
         void toolConvertor();
         void toolDisplay();
         void exampleOpen();
+        void undoSlot();
+        void redoSlot();
+        void cutSlot();
+        void copySlot();
+        void pasteSlot();
+        void selectAllSlot();
+        void deselectSlot();
         //void showPlugins();
         //void writeToWCompileInfo(QString text);
         void createDockWidgets();
@@ -120,6 +128,7 @@ class MainForm : public QMainWindow
         void manageBreakpointEmit(QString file, int line);
         //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();
+        void scrollToBreakpoint(QString file, int line);
 
     signals:
         void unhighlightSim();
@@ -131,7 +140,6 @@ class MainForm : public QMainWindow
         void createActions();
         void createShortcuts();
         void createToolbar();
-        void createWelcome();
         //project manager
         ProjectMan *projectMan;
         //dock widgets manager
@@ -164,7 +172,9 @@ class MainForm : public QMainWindow
         QAction *redoAct;
         QAction *copyAct;
         QAction *cutAct;
-        QAction *pasteAct;        
+        QAction *pasteAct;
+        QAction *selectAllAct;
+        QAction *deselectAct;
 
         QAction *interfaceConfigAct;
         QAction *pluginAct;
@@ -235,6 +245,9 @@ class MainForm : public QMainWindow
         bool projectTabConnected;
 
         bool simulationRequest;
+
+    protected:
+        void closeEvent(QCloseEvent *event);
 };
 
 
