@@ -45,9 +45,9 @@ set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe" 
  # - for debug build only:
 set ( CMAKE_C_FLAGS_DEBUG      "-O0 -g" )
  # - for release build only:
-set ( CMAKE_C_FLAGS_RELEASE    "-O2 -flto -DNDEBUG" )
+set ( CMAKE_C_FLAGS_RELEASE    "-O2 -DNDEBUG" )
  # - for minimum size release build only:
-set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -flto -DNDEBUG" )
+set ( CMAKE_C_FLAGS_MINSIZEREL "-Os -DNDEBUG" )
 
 # Set the same compilation flags for C++ as they are set for C.
 set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
@@ -82,15 +82,6 @@ if ( NOT CMAKE_BUILD_TYPE )
         FORCE )
 endif()
 message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}." )
-
-# When in Debug build mode, build all libraries as shared by default.
-if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
-    set ( BUILD_SHARED_LIBS ON )
-else()
-    set ( BUILD_SHARED_LIBS OFF )
-    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,-O1 -Wl,--strip-all" )
-    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-O1 -Wl,--strip-all" )
-endif()
 
 # Optionally build with support for coverage analysis support.
 option ( TEST_COVERAGE "Configure build for coverage analysis." OFF )
@@ -153,6 +144,23 @@ else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
 endif()
 message ( STATUS "Target operating system for this build: ${TARGET_OS}." )
+
+# When in Debug build mode, build all libraries as shared by default.
+if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+    set ( BUILD_SHARED_LIBS ON )
+else()
+    set ( BUILD_SHARED_LIBS OFF )
+    set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -Wl,-O1 -Wl,--as-needed -Wl,--strip-all" )
+    set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-O1 -Wl,--as-needed -Wl,--strip-all" )
+
+    # Enable LTO optimizations for POSIX operating systems (on Windows, these optimizations cause errors).
+    if ( NOT TARGET_OS STREQUAL "Windows" )
+        set ( CMAKE_C_FLAGS             "${CMAKE_C_FLAGS}             -flto" )
+        set ( CMAKE_CXX_FLAGS           "${CMAKE_CXX_FLAGS}           -flto" )
+        set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -fuse-linker-plugin" )
+        set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-linker-plugin" )
+    endif()
+endif()
 
 # ----------------------------------------------------------------------------------------------------------------------
 # CROSS COMPILATION

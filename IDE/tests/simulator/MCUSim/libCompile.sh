@@ -48,7 +48,6 @@ function runBuild()
             continue
         fi
 
-        echo -n "Building $i ... "
         if ! output="$( LC_ALL="C" ${COMPILER_EXEC}                 \
                                    --dev="${DEV}"                   \
                                    --arch="${ARCH}"                 \
@@ -58,11 +57,9 @@ function runBuild()
                                    --base-inc-dir="${BASE_INC_DIR}" \
                                    "${i}" 2>&1 )"
         then
-            echo "[ERROR]"
+            echo "Building $i ... [ERROR]"
             rm "${1}/${i%%.asm}.hex"
             echo "${output}" > /dev/stderr
-        else
-            echo "[OK]"
         fi
 
     done

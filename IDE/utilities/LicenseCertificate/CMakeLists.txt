@@ -45,14 +45,14 @@ add_library ( ${PROJECT_NAME}
               LicenseCertificate.cxx )
 
 # Link a target to given libraries
-target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} CryptoPP )
 
 # Add a dependency between top-level targets.
 add_dependencies ( ${PROJECT_NAME} ${PROJECT_NAME}-key )
 
 # Build certificate validation utility.
 add_executable ( mds-certutil main.cxx )
-target_link_libraries ( mds-certutil ${PROJECT_NAME} CryptoPP )
+target_link_libraries ( mds-certutil ${PROJECT_NAME} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
