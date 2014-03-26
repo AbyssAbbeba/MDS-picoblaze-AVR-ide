@@ -842,6 +842,7 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
 
 void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs )
 {
+std::cout << "MCUSimControl::setBreakPoints():\n";
     m_breakPointsSet = false;
 
     if ( false == initialized() )
@@ -858,6 +859,7 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     {
         for ( size_t j = 0; j < fileLinePairs.size(); j++ )
         {
+std::cout << "( files[i] == fileLinePairs[j].first ): ( '"<<files[i]<<"' == '"<<fileLinePairs[j].first<<"' )\n";
             if ( files[i] == fileLinePairs[j].first )
             {
                 if ( false == fileLinePairs[j].second.empty() )
