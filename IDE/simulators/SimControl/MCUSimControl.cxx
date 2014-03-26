@@ -46,7 +46,7 @@
 
 #include <QDebug>
 #include <QCoreApplication>
-
+#include<iostream>//debug
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
@@ -892,11 +892,16 @@ inline bool MCUSimControl::checkBreakpoint()
     {
         const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
         const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
-
+std::cout << "MCUSimControl::checkBreakpoint() [file=#"<<lineRecord.m_fileNumber<<",line="<<lineRecord.m_lineNumber<<"]";
         if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
         {
+std::cout << "--> true\n";
             emit(breakpointReached());
             return true;
+        }
+        else
+        {
+std::cout << "--> false\n";
         }
     }
 
