@@ -19,9 +19,14 @@ class Xxx : public QWidget
         ~Xxx();
 
         // variables
+        int operand1_base, operand2_base;
+        int flag_result,flag_operand1, flag_operand2, flag_equals;
+        long long int operand_long1,operand_long2;
+        QString operator_out;
         int base_indicator;
         int operator_;
         long long int end_result;
+        enum {Start, prvni, druhy, treti, result, reset};
         enum { nop, add, sub, mul, xor_, or_, not_, and_, bshift,div_ };
         enum { dec_, hex_, bin_ };
         enum {prev_hex, prev_dec, prev_bin};
@@ -34,9 +39,11 @@ class Xxx : public QWidget
         float digit_1;
         bool flag_op;
         // functions
+        void calc_reset();
+        void textChange2();
         void equals(QString s_result);
         void get_result(void);
-        void Cursor_textedit();//const char Number_char);
+        void Cursor_textedit(int stav);//const char Number_char);
         // events
         void keyPressEvent(QKeyEvent *);
 

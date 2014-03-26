@@ -19,15 +19,29 @@ Xxx::Xxx()
 
     ui.setupUi(this);
     flag_op = false;
+    flag_result = 0;
+    flag_operand1 = 0;
+    flag_operand2 = 0;
+    flag_equals   = 0;
+
+    operand1_base = 0;
+    operand2_base = 0;
+
+    operator_out = QString("");
     operator_ = 0;
     ui.Vystup4->setReadOnly ( true );
     ui.Vystup4->setCursorWidth(0);
+    ui.Vystup4->setOverwriteMode(true);
+
+
     base_indicator = 10;
-    operand1 = QString("0");
-    operand2 = QString("0");
-    operator_string = QString("0");
+    operand1 = QString("");
+    operand2 = QString("");
+    operator_string = QString("");
     prev_state = prev_dec;
-    QRegExpValidator *decValidator = new QRegExpValidator(QRegExp("[0-9]{99}"), this);
+    Cursor_textedit(Start);
+
+    QRegExpValidator *decValidator = new QRegExpValidator(QRegExp("[0-9]{18}"), this);
         ui.Vystup->setValidator(decValidator);
         equals(operand1);
 
@@ -93,20 +107,26 @@ Xxx::Xxx()
     connect(ui.buttondec,       SIGNAL(clicked(bool)), this, SLOT(base_set_dec(bool)));
     connect(ui.button_hex,      SIGNAL(clicked(bool)), this, SLOT(base_set_hex(bool)));
 
-
     connect(ui.Vystup,         SIGNAL(textEdited(QString)), this, SLOT( textChange2(QString)));
     // buttons
     connect(signalMapper, SIGNAL(mapped(int)),this, SLOT(read_button(int)));
     connect(signalMapper, SIGNAL(mapped(int)),this, SLOT(Operator(int)));
-
-
 }
 
 Xxx::~Xxx()
 {
 
 }
-
+void Xxx::textChange2()
+{
+    if ( flag_result == 1)
+    {
+        qDebug() << "done reset?";
+        Cursor_textedit(reset);
+        flag_result = 0;
+    }
+    equals(ui.Vystup->text());
+}
 void Xxx::textChange2(QString s)
 {
     // display in bin
@@ -115,9 +135,16 @@ void Xxx::textChange2(QString s)
 
     // check set base and adjust input characters
     // decimal
+    qDebug() << "flag result" << flag_result ;
+    if ( flag_result == 1)
+    {
+        qDebug() << "done reset? in textchange";
+        Cursor_textedit(reset);
+        flag_result = 0;
+    }
     s_perm = s;
     qDebug() << "nechcu : "<< s_perm;
-    equals(s_perm);
+    equals(ui.Vystup->text());
 
 }
 void Xxx::keyPressEvent(QKeyEvent *event)
@@ -126,44 +153,120 @@ void Xxx::keyPressEvent(QKeyEvent *event)
    if(event->key() == Qt::Key_0)
    {
        read_button(0);
+       textChange2();
    }
    if(event->key() == Qt::Key_1)
    {
+
        read_button(1);
+       textChange2();
+
    }
    if(event->key() == Qt::Key_2)
    {
        read_button(2);
+       textChange2();
    }
    if(event->key() == Qt::Key_3)
    {
        read_button(3);
+       textChange2();
    }
    if(event->key() == Qt::Key_4)
    {
        read_button(4);
+       textChange2();
    }
    if(event->key() == Qt::Key_5)
    {
        read_button(5);
+       textChange2();
    }
    if(event->key() == Qt::Key_6)
    {
        read_button(6);
+       textChange2();
    }
    if(event->key() == Qt::Key_7)
    {
        read_button(7);
+       textChange2();
    }
    if(event->key() == Qt::Key_8)
    {
        read_button(8);
+       textChange2();
    }
    if(event->key() == Qt::Key_9)
    {
        read_button(9);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_Enter)
+   {
+       Operator(11);
+
+   }
+   if(event->key() == Qt::Key_Return)
+   {
+       Operator(11);
+   }
+   if(event->key() == Qt::Key_Plus)
+   {
+       Operator(10);
+   }
+   if(event->key() == Qt::Key_Minus)
+   {
+       Operator(13);
+   }
+   if(event->key() == Qt::Key_Slash)
+   {
+       Operator(19);
+   }
+   if(event->key() == Qt::Key_Equal)
+   {
+       Operator(11);
+   }
+   if(event->key() == Qt::Key_A)
+   {
+       read_button(20);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_B)
+   {
+       read_button(21);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_C)
+   {
+       read_button(22);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_D)
+   {
+       read_button(23);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_E)
+   {
+       read_button(24);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_F)
+   {
+       read_button(25);
+       textChange2();
+   }
+   if(event->key() == Qt::Key_Asterisk)
+   {
+       Operator(12);
+   }
+   if(event->key() == Qt::Key_division)
+   {
+       Operator(19);
    }
 }
+
 
 void Xxx::equals(QString s_result)
 {
@@ -280,24 +383,75 @@ void Xxx::equals(QString s_result)
     return;
 }
 
-void Xxx::Cursor_textedit()//const char Number_char)
+void Xxx::Cursor_textedit(int stav)//const char Number_char)
 {
-    qDebug() << " uvnitr cursor edit?:" << end_result;
-    // first block
     QTextCursor cursor(this->ui.Vystup4->textCursor());
-    cursor.movePosition(QTextCursor::Start);
-    cursor.insertText(QString::number(end_result,10));
-    ui.Vystup4->setTextCursor(cursor);
-    // second block
-    //cursor.movePosition(QTextCursor::Down);
-   // cursor.movePosition(QTextCursor::StartOfLine);
-   // cursor.insertText(QString::number(end_result,10));
-    //ui.Vystup4->setTextCursor(cursor);
-    // third block
-   // cursor.movePosition(QTextCursor::Down);
-   // cursor.movePosition(QTextCursor::StartOfLine);
-   // cursor.insertText(QString::number(end_result,10));
-   // ui.Vystup4->setTextCursor(cursor);
+
+    if (  Start == stav)
+    {
+        ui.Vystup4->clear();
+       // cursor.insertBlock();
+       // cursor.insertBlock();
+        //cursor.insertBlock();
+        ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
+    if ( reset == stav)
+    {
+        ui.Vystup4->clear();
+        //cursor.movePosition(QTextCursor::Start);
+        //ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
+
+    if( prvni == stav)
+    {
+    // FIRST BLOCK
+        cursor.movePosition(QTextCursor::Start);
+        cursor.select(QTextCursor::BlockUnderCursor);
+        cursor.clearSelection();
+        cursor.insertText(QString::number(operand1.toLongLong(0,operand1_base),10) + '\n');
+        ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
+
+    if ( druhy == stav)
+    {
+     // SECOND BLOCK
+
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.select(QTextCursor::BlockUnderCursor);
+        cursor.clearSelection();
+        cursor.insertText(operator_out + '\n');
+        ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
+
+    if ( treti == stav)
+    {
+     // THIRD BLOLOCK
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.select(QTextCursor::BlockUnderCursor);
+        cursor.clearSelection();
+        cursor.insertText(QString::number(operand1.toLongLong(0,operand2_base),10) + '\n');
+        ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
+    if ( result == stav)
+    {
+        cursor.movePosition(QTextCursor::Start);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.movePosition(QTextCursor::Down);
+        cursor.select(QTextCursor::BlockUnderCursor);
+        cursor.clearSelection();
+        cursor.insertText(QString::number(end_result,10) + '\n');
+        ui.Vystup4->setTextCursor(cursor);
+        return;
+    }
     return;
 }
 
@@ -308,77 +462,184 @@ void Xxx::Operator(int i)
     {
         return;
     }
-    flag_op = true;
+    //
+    if ( 1 == flag_equals)
+    {
+        calc_reset();
+    }
 
     switch (i)
     {
-        case 19: ui.Vystup3->setText("    /");
-                    operand1 = ui.Vystup->text();
+        case 19:    // display text of operand
+                    ui.Vystup3->setText("    /");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     ui.Vystup->setText("");
                     operator_ = div_;
+                    operator_out = QString(" / ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
-        case 10: ui.Vystup3->setText("    +");
-
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
+        case 10: // display text of operand
+                    ui.Vystup3->setText("    +");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     operator_ = add;
+                    operator_out = QString(" + ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
 
-        case 12: ui.Vystup3->setText("    *");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
+        case 12: // display text of operand
+                    ui.Vystup3->setText("    *");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     operator_ = mul;
+                    operator_out = QString(" * ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
-        case 13: ui.Vystup3->setText("    -");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
+        case 13: // display text of operand
+                    ui.Vystup3->setText("    -");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     operator_ = sub;
+                    operator_out = QString(" - ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
-        case 14: ui.Vystup3->setText("   AND");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
+        case 14: // display text of operand
+                    ui.Vystup3->setText("    AND");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     operator_ = and_;
-        break;
+                    operator_out = QString(" AND ");
 
-        case 15: ui.Vystup3->setText("   OR");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
+        break;
+//OR
+        case 15:
+                    ui.Vystup3->setText("    OR");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
                     operator_ = or_;
+                    operator_out = QString(" OR ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
-        case 16: ui.Vystup3->setText("   XOR");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
-                        operator_ = xor_;
+        case 16:
+                    ui.Vystup3->setText("    XOR");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
+                    operator_ = xor_;
+                    operator_out = QString(" XOR ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
-        case 17: ui.Vystup3->setText("   NOT");
-                    operand1 = ui.Vystup->text();
-                    ui.Vystup->setText("");
-                        operator_ = not_;
+        case 17:
+                    ui.Vystup3->setText("    NOT");
+                    // if op1 doesnt exist, create one
+                    if ( 0 == flag_operand1)
+                    {
+                        operand1 = ui.Vystup->text();
+                        operand1_base = base_indicator;
+                        flag_operand1 = 1;
+                        ui.Vystup->setText("");
+                    }
+                    // set operator
+                    operator_ = xor_;
+                    operator_out = QString(" NOT ");
+
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
         break;
 
         case 18: ui.Vystup3->setText("   >>");
                     operand1 = ui.Vystup->text();
                     ui.Vystup->setText("");
+                    Cursor_textedit(prvni);
+                    Cursor_textedit(druhy);
                     break;
 
 // special button
         case 11:
-            if ( operator_ == 0 || operand1 == 0)
+       // flag_result,flag_operand1, flag_operand2, flag_equals;
+            flag_equals = 1;
+            if ( operator_ == NULL || operand1 == NULL)
             {
                 return;
             }
             operand2 = ui.Vystup->text();
+            operand1_base = base_indicator;
+            flag_operand2 = 1;
+            Cursor_textedit(treti);
             qDebug() << " pred result 1 :" << operand1;
             qDebug() << " pred result 2 :" << operand2;
             get_result();
             // dodelat pocatecni status here
-            Cursor_textedit();
+            Cursor_textedit(result);
         break;
      //
         default:
@@ -389,8 +650,11 @@ void Xxx::Operator(int i)
 }
 void Xxx::get_result()
 {
-    long long int operand_long1 = 0, operand_long2 = 0;
+
+    operand_long1 = 0;
+    operand_long2 = 0;
     end_result = 0;
+
     // get operands in longlong int
     operand_long1   =   operand1.toLongLong(0, base_indicator);
     operand_long2   =   operand2.toLongLong(0, base_indicator);
@@ -441,17 +705,24 @@ void Xxx::get_result()
             default:
                 return;
             break;
-                return;
         }
+    qDebug() << "nastavi se flag ? :";
+    flag_result = 1;
+    return;
 }
 
 void Xxx::read_button(int i)
 {
+    if ( 1 == flag_equals)
+    {
+        calc_reset();
+    }
 
     switch  (i)
     {
         case 0:
                     ui.Vystup->setText(ui.Vystup->text() + "0");
+                  //  textChange2(QString (ui.Vystup->text() + "0"));
             break;
         case 1:
                     ui.Vystup->setText(ui.Vystup->text() + "1");
@@ -502,6 +773,8 @@ void Xxx::read_button(int i)
     default:
             return;
         break;
+            // translation to other bases
+            equals(ui.Vystup->text());
     }
 }
 
@@ -511,9 +784,8 @@ void Xxx:: CA_C()
     ui.Vystup->clear();
     ui.Vystup3->clear();
     ui.Vystup4->clear();
-    ui.VystupOct->clear();
-    ui.VystupOct->clear();
-    ui.VystupOct->clear();
+    ui.VystupHex->clear();
+    ui.VystupDec->clear();
     ui.VystupOct->clear();
     //qDebug() << "LineEditConvert: Text set:" << Number_int;
 }
@@ -521,14 +793,20 @@ void Xxx:: CA_C()
 void Xxx:: Myredo()
 {
     ui.Vystup->redo();
-    ui.Vystup3->undo();
-    ui.Vystup4->undo();
+    ui.Vystup3->redo();
+    ui.Vystup4->redo();
+    ui.VystupHex->redo();
+    ui.VystupDec->redo();
+    ui.VystupOct->redo();
 }
 void Xxx:: Myundo()
 {
     ui.Vystup->undo();
     ui.Vystup3->undo();
     ui.Vystup4->undo();
+    ui.VystupHex->undo();
+    ui.VystupDec->undo();
+    ui.VystupOct->undo();
 }
 
 void Xxx::base_set_bin(bool b)
@@ -540,8 +818,8 @@ void Xxx::base_set_bin(bool b)
     qDebug() << "sperm u bin: "<< s_perm;
 
 
-    //QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01]{99}"), this);
-   // ui.Vystup->setValidator(binValidator);
+    QRegExpValidator *binValidator = new QRegExpValidator(QRegExp("[01]{63}"), this);
+    ui.Vystup->setValidator(binValidator);
 
     if ( prev_state == prev_hex)
     {
@@ -570,7 +848,7 @@ void Xxx::base_set_hex(bool h)
     qDebug() << "sperm u hex: "<< s_perm;
 
 
-    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{99}"), this);
+    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{16}"), this);
     ui.Vystup->setValidator(hexValidator);
     if ( prev_state == prev_hex)
     {
@@ -598,8 +876,9 @@ void Xxx::base_set_dec(bool d)
     s_perm = ui.Vystup->text();
     qDebug() << "sperm u dec: "<< s_perm;
 
-    QRegExpValidator *decValidator = new QRegExpValidator(QRegExp("[0-9]{99}"), this);
-        ui.Vystup->setValidator(decValidator);
+    QRegExpValidator *decValidator = new QRegExpValidator(QRegExp("[0-9]{18}"), this);
+    ui.Vystup->setValidator(decValidator);
+
         if ( prev_state == prev_hex)
         {
             ui.Vystup->setText(QString::number(s_perm.toLongLong(0,16),10));
@@ -615,6 +894,28 @@ void Xxx::base_set_dec(bool d)
     }
     equals(s_perm);
     prev_state = prev_dec;
+}
+
+void Xxx::calc_reset(void)
+{
+    flag_op = false;
+    flag_result = 0;
+    flag_operand1 = 0;
+    flag_operand2 = 0;
+    flag_equals   = 0;
+
+
+    operand1_base = 0;
+    operand2_base = 0;
+
+    operator_out = QString("");
+    operator_ = 0;
+
+    operand1 = QString("");
+    operand2 = QString("");
+    operator_string = QString("");
+    Cursor_textedit(reset);
+    return;
 }
 
 void Xxx::display_bin(QString bin_string)
