@@ -57,8 +57,10 @@ class MainForm : public QMainWindow
         bool openProject(QString path);
         //void emitSessionRestorationSignal();
 
+        int startHeight;
+
     public slots:
-        void openFilePath(QString path);
+        void openFilePath(QString path, QString parentProjectName = "");
         void sessionRestorationSlot();
 
     private slots:
@@ -115,8 +117,8 @@ class MainForm : public QMainWindow
         void disableSimActs();
         void changeProjectFamily(QString family);
         void closeProject();
-        void manageBreakpointAdd(QString file, int line);
-        void manageBreakpointRemove(QString file, int line);
+        void manageBreakpointEmit(QString file, int line);
+        //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();
 
     signals:

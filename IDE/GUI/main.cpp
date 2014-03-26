@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
     MainForm MainGUI;
     MainGUI.showMaximized();
     qDebug() << "Main: height" << MainGUI.height();
+    MainGUI.startHeight = MainGUI.height();
     
     if (true == openFile)
     {
@@ -91,7 +92,7 @@ int main(int argc, char *argv[])
         if (true == GuiCfg::getInstance().loadSession())
         {
             //MainGUI.emitSessionRestorationSignal();
-            QTimer::singleShot(300, &MainGUI, SLOT(sessionRestorationSlot()));
+            QTimer::singleShot(50, &MainGUI, SLOT(sessionRestorationSlot()));
         }
     }
     

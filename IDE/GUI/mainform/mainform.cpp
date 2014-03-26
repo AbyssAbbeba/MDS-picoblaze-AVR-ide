@@ -70,7 +70,6 @@ MainForm::MainForm()
     wDockManager = new WDockManager(this, centralWidget);
     this->setCentralWidget(centralWidget);
     centralWidget->show();
-    qDebug() << "MainForm: central widget height" << centralWidget->height();
     //connect(this, SIGNAL(dockWidgetsCreated()), wDockManager, SLOT(dockWidgetsCreated()));
     connect(wDockManager,
             SIGNAL(createDockWidgets()),
@@ -113,15 +112,15 @@ MainForm::MainForm()
             SLOT(disableSimActs())
            );
     connect(wDockManager,
-            SIGNAL(breakpointListAdd(QString, int)),
+            SIGNAL(breakpointEmit(QString, int)),
             this,
-            SLOT(manageBreakpointAdd(QString, int))
+            SLOT(manageBreakpointEmit(QString, int))
            );
-    connect(wDockManager,
+    /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
             SLOT(manageBreakpointRemove(QString, int))
-           );
+           );*/
 
     
     /*connect(this,
@@ -184,15 +183,18 @@ MainForm::~MainForm()
         {
             qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
             GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
-            
-        }
-        if (wDockManager->getTabCount() > 0)
-        {
-            qDebug() << "Mainform: prepare to files session restoration";
-            for (int i = 0; i < wDockManager->getTabCount(); i++)
+            if (wDockManager->getTabCount() > 0)
             {
-                qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(i)->getName();
-                GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(i)->getPath());
+                qDebug() << "Mainform: prepare to files session restoration";
+                for (int j = 0; j < wDockManager->getTabCount(); j++)
+                {
+                    if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
+                    {
+                        qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                        GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
+                        GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
+                    }
+                }
             }
         }
     }
@@ -619,6 +621,8 @@ void MainForm::openFile()
             //wDockManager->getCentralWidget()->connectAct();
             projectMan->addUntrackedFile(path, path.section('/', -1));
             wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
+            wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
+            wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
         }
     }
     //qDebug() << "MainForm: return openFile()";
@@ -629,7 +633,7 @@ void MainForm::openFile()
  * @brief Opens file selected by programmer.
  * @param path Path to the file.
  */
-void MainForm::openFilePath(QString path)
+void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
     qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
@@ -652,7 +656,27 @@ void MainForm::openFilePath(QString path)
             //qDebug() << "MainForm: connect";
             wDockManager->getCentralWidget()->connectAct();
             //qDebug() << "MainForm: set parent";
-            wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+            if (parentProjectPath != "")
+            {
+                for (int i = 0; i < projectMan->getOpenProjects().count(); i++)
+                {
+                    if (projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
+                    {
+                        wDockManager->getCentralWidget()->setParentProject(projectMan->getOpenProjects().at(i));
+                        wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getOpenProjects().at(i));
+                        break;
+                    }
+                }
+                if (parentProjectPath == "untracked")
+                {
+                    
+                }
+            }
+            else
+            {
+                wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+                wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getActive());
+            }
             //wDockManager->getCentralWidget()->setSaved();
             if (true == wDockManager->getCentralWidget()->isChanged())
             {
@@ -2001,7 +2025,7 @@ void MainForm::connectProjectSlot(Project *project)
  */
 void MainForm::highlightLine(QString file, int line, QColor *color)
 {
-    qDebug() << "MainForm: highlightLine";
+    //qDebug() << "MainForm: highlightLine";
     if (file != "")
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
@@ -2016,7 +2040,7 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
             qDebug() << "MainForm: highlightLine failed";
         }*/
     }
-    qDebug() << "MainForm: return highlightLine";
+    //qDebug() << "MainForm: return highlightLine";
 }
 
 
@@ -2063,7 +2087,9 @@ void MainForm::addUntrackedFile(QString name, QString path)
     //qDebug() << "MainForm: addUntrackedFile";
     if (name != NULL && path != NULL)
     {
-        getWDockManager()->addUntrackedCentralWidget(name, path);
+        wDockManager->addUntrackedCentralWidget(name, path);
+        wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
+        wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
         saveAct->setEnabled(true);
         saveAsAct->setEnabled(true);
         saveAllAct->setEnabled(true);
@@ -2227,8 +2253,12 @@ void MainForm::activeProjectChanged(int index)
 {
     //if (false == this->simulationStatus)
     //{
-        wDockManager->changeSimWidget(index);
         projectMan->setActiveByIndex(index);
+        wDockManager->changeSimWidget(index);
+        if (wDockManager->getBreakpointList() != NULL)
+        {
+            wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
+        }
     //}
 }
 
@@ -2284,18 +2314,32 @@ void MainForm::closeProject()
 }
 
 
-void MainForm::manageBreakpointAdd(QString file, int line)
+void MainForm::manageBreakpointEmit(QString file, int line)
 {
-    qDebug() << "MainForm: breakpoint add:" << file << ":" << line;
-    QList<Project*> projects = projectMan->getOpenProjects();
+    qDebug() << "MainForm: breakpoint:" << file << ":" << line + 1;
+    int result = projectMan->getActive()->handleBreakpoint(file, line + 1);
+    //add
+    if (0 == result)
+    {
+        wDockManager->getBreakpointList()->breakpointListAdd(file, line + 1);
+        wDockManager->getCentralWidget()->addBreakpointLine(line + 1);
+    }
+    //remove
+    else if (1 == result)
+    {
+        wDockManager->getBreakpointList()->breakpointListRemove(file, line + 1);
+        wDockManager->getCentralWidget()->removeBreakpointLine(line + 1);
+    }
+    //else project doesnt contain current file - result == -1
+    /*QList<Project*> projects = projectMan->getOpenProjects();
     for (int i = 0; i < projects.count(); i++)
     {
-        projects.at(i)->handleBreakpoint(file, line, true);
-    }
+        projects.at(i)->handleBreakpoint(file, line + 1);
+    }*/
 }
 
 
-void MainForm::manageBreakpointRemove(QString file, int line)
+/*void MainForm::manageBreakpointRemove(QString file, int line)
 {
     qDebug() << "MainForm: breakpoint remove:" << file << ":" << line;
     QList<Project*> projects = projectMan->getOpenProjects();
@@ -2303,7 +2347,7 @@ void MainForm::manageBreakpointRemove(QString file, int line)
     {
         projects.at(i)->handleBreakpoint(file, line, false);
     }
-}
+}*/
 
 
 /*void MainForm::emitSessionRestorationSignal()
@@ -2318,17 +2362,34 @@ void MainForm::sessionRestorationSlot()
     QApplication::processEvents();
     //qDebug() << "MainForm: height" << this->height();
     //open projects and files
+    if (this->height() == this->startHeight)
+    {
+        //qDebug() << "Mainform not visible";
+        qDebug() << "MainForm: session not loaded, Mainform not visible";
+        QTimer::singleShot(50, this, SLOT(sessionRestorationSlot()));
+        return;
+    }
     QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
     QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
+    QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
     for (int i = 0; i < projectPaths.count(); i++)
     {
-        this->openProject(projectPaths.at(i));
+        if (projectPaths.at(i) == "untracked")
+        {
+            this->projectMan->addUntrackedProject();
+        }
+        else
+        {
+            this->openProject(projectPaths.at(i));
+        }
     }
     for (int i = 0; i < filePaths.count(); i++)
     {
-        this->openFilePath(filePaths.at(i));
+        this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
     }
     GuiCfg::getInstance().sessionClear();
+    //hack for fixing the linecount height (bigger at start)
+    QTimer::singleShot(50, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
     qDebug() << "MainForm: height" << this->height();
     qDebug() << "MainForm: session loaded";
 }

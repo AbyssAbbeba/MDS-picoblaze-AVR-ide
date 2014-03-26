@@ -380,6 +380,12 @@ void GuiCfg::sessionAppendFile(QString path)
 }
 
 
+void GuiCfg::sessionAppendFileParentProject(QString path)
+{
+    this->sessionFileParentProjects.append(path);
+}
+
+
 void GuiCfg::sessionClear()
 {
     this->sessionProjectPaths.clear();
@@ -643,6 +649,12 @@ QList<QString> GuiCfg::getSessionProjectPaths()
 QList<QString> GuiCfg::getSessionFilePaths()
 {
     return this->sessionFilePaths;
+}
+
+
+QList<QString> GuiCfg::getSessionFileParentProjects()
+{
+    return this->sessionFileParentProjects;
 }
 
 
@@ -1720,6 +1732,7 @@ void GuiCfg::saveSession()
         {
             QDomElement xmlFile = domDoc.createElement("File");
             xmlFile.setAttribute("path", this->sessionFilePaths.at(i));
+            xmlFile.setAttribute("parent", this->sessionFileParentProjects.at(i));
             xmlFiles.appendChild(xmlFile);
         }
         xmlRoot.appendChild(xmlFiles);
@@ -1793,6 +1806,7 @@ bool GuiCfg::loadSession()
                             if (xmlFilesElement.tagName() == "File")
                             {
                                 this->sessionFilePaths.append(xmlFilesElement.attribute("path", ""));
+                                this->sessionFileParentProjects.append(xmlFilesElement.attribute("parent", ""));
                             }
                             xmlFilesNode = xmlFilesNode.nextSibling();
                         }

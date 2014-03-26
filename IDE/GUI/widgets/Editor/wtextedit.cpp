@@ -18,30 +18,35 @@
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)
 {
-    qDebug() << "WTextEdit: WTextEdit()";
+    //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
-    this->undoRequest = false;
-    this->redoRequest = false;
+    this->prevBlock = 0;
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
     {
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
     this->setAcceptDrops(true);
+
+    connect(this,
+            SIGNAL(cursorPositionChanged()),
+            this,
+            SLOT(cursorPositionChangedSlot())
+           );
     /*connect(this->document(),
             SIGNAL(contentsChange(int,int,int)),
             this,
             SLOT(updateUndoRedo(int,int,int))
            );*/
 
-    this->show();
+    //this->show();
     //this->setFocusPolicy(Qt::ClickFocus);
-    qDebug() << "WTextEdit: return WTextEdit()";
+    //qDebug() << "WTextEdit: return WTextEdit()";
 }
 
 void WTextEdit::reloadHighlighter(SourceType type)
 {
-    qDebug() << "WTextEdit: reloadHighlighter()";
+    //qDebug() << "WTextEdit: reloadHighlighter()";
     if (this->sourceType != PLAIN)
     {
         delete highlighter;
@@ -51,7 +56,7 @@ void WTextEdit::reloadHighlighter(SourceType type)
         highlighter = new Highlighter(this->document(), type);
     }
     this->sourceType = type;
-    qDebug() << "WTextEdit: return reloadHighlighter()";
+    //qDebug() << "WTextEdit: return reloadHighlighter()";
 }
 
 
@@ -117,28 +122,29 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 {
                     a = "/*" + a + "*/";
                 }
-                emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
+                //emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
                 cursor.removeSelectedText();
-                emit textChangedSignal(a, cursor.position());
+                //emit textChangedSignal(a, cursor.position());
                 cursor.insertText(a);
             }
             else
             {
                 int linePos = cursor.positionInBlock();
                 cursor.setPosition(cursor.position() - linePos);
-                if (cursor.block().text().startsWith("//"))
+                if (cursor.block().text().startsWith(";"))
                 {
-                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
                     cursor.deleteChar();
-                    emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-                    cursor.deleteChar();
+                    cursor.setPosition(cursor.position() + linePos - 1);
+                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+                    //cursor.deleteChar();
                 }
                 else
                 {
-                    emit textChangedSignal("//", cursor.position());
-                    cursor.insertText("//");
+                    //emit textChangedSignal(";", cursor.position());
+                    cursor.insertText(";");
+                    cursor.setPosition(cursor.position() + linePos);
                 }
-                cursor.setPosition(cursor.position() + linePos);
             }
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
@@ -250,7 +256,7 @@ void WTextEdit::highlightCurrentLine()
 
 bool WTextEdit::highlightLine(int line, QColor *color)
 {
-    qDebug() << "WTextEdit: highlightLine()";
+    //qDebug() << "WTextEdit: highlightLine()";
     //qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
     if (line >= 0 && line <= this->document()->lineCount())
@@ -275,14 +281,14 @@ bool WTextEdit::highlightLine(int line, QColor *color)
         cursor.setBlockFormat(lineFormat);
         this->setTextCursor(cursor);
         this->ensureCursorVisible();
-        qDebug() << "WTextEdit: return highlightLine()";
+        //qDebug() << "WTextEdit: return highlightLine()";
         return true;
     }
     /*else
     {
         qDebug() << "WTextEdit: highlight failed----";
     }*/
-    qDebug() << "WTextEdit: return highlightLine()";
+    //qDebug() << "WTextEdit: return highlightLine()";
     return false;
 }
 
@@ -308,12 +314,12 @@ bool WTextEdit::isLineHighlighted(int line, QColor *color)
 
 void WTextEdit::setPosition(int pos)
 {
-    qDebug() << "WTextEdit: setPosition()";
+    //qDebug() << "WTextEdit: setPosition()";
     QTextCursor cursor(this->textCursor());
     cursor.setPosition(pos);
     this->setTextCursor(cursor);
     this->verticalScrollBar()->setValue(this->verticalScrollBar()->value());
-    qDebug() << "WTextEdit: return setPosition()";
+    //qDebug() << "WTextEdit: return setPosition()";
 }
 
 
@@ -325,7 +331,7 @@ int WTextEdit::getPosition()
 
 void WTextEdit::scrollToLine(int line)
 {
-    qDebug() << "WTextEdit: scrollToLine()";
+    //qDebug() << "WTextEdit: scrollToLine()";
     //qDebug() << "WTextEdit: curr value:" <<  this->verticalScrollBar()->value() << "max value:" <<  this->verticalScrollBar()->maximum() << "calculated value:" << (line / this->document()->lineCount()) * this->verticalScrollBar()->maximum();
     //qDebug() << "WTextEdit: line" << line << "line count:" << this->document()->lineCount() << "value:" << (double)line / (double)this->document()->lineCount();
     //this->ensureCursorVisible();
@@ -333,7 +339,7 @@ void WTextEdit::scrollToLine(int line)
                                             (((double)line / (double)this->document()->lineCount())
                                             * this->verticalScrollBar()->maximum())
                                         );
-    qDebug() << "WTextEdit: return scrollToLine()";
+    //qDebug() << "WTextEdit: return scrollToLine()";
 }
 
 
@@ -353,7 +359,7 @@ void WTextEdit::selectLine(int line)
 }
 
 
-void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
+/*void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
 {
     if (true == this->undoRequest)
     {
@@ -475,5 +481,15 @@ void WTextEdit::editedCut()
         QApplication::clipboard()->setText(this->textCursor().selectedText());
         emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
         this->textCursor().removeSelectedText();
+    }
+}*/
+
+
+void WTextEdit::cursorPositionChangedSlot()
+{
+    if (this->textCursor().blockNumber() != this->prevBlock)
+    {
+        this->prevBlock = this->textCursor().blockNumber();
+        emit updateLineCounter();
     }
 }
