@@ -130,7 +130,8 @@ class Project : public QObject
         void setName(QString name);
         void setFamily(QString family);
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
-        void handleBreakpoint(QString file, int line, bool add);
+        int handleBreakpoint(QString file, int line);
+        QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;

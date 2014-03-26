@@ -116,8 +116,8 @@ class WDockManager : public QObject
         void updateAnalysersSlot(CodeEdit *editor);
         void moveEditorsSlot(int from, int to);
         void stopSimSlot();
-        void breakpointListAddSlot(QString file, int line);
-        void breakpointListRemoveSlot(QString file, int line);
+        void breakpointEmitSlot(QString file, int line);
+        //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
         //void dockWidgetsCreated();
@@ -132,8 +132,8 @@ class WDockManager : public QObject
         void stopSimSig();
         void centralClosed();
         void centralCreated();
-        void breakpointListAdd(QString file, int line);
-        void breakpointListRemove(QString file, int line);
+        void breakpointEmit(QString file, int line);
+        //void breakpointListRemove(QString file, int line);
 
     private:
         //MainForm *wMainWindow;

@@ -21,12 +21,20 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    qDebug() << "CodeEdit: CodeEdit()";
+    //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
-    /*if (this->parentCodeEdit == NULL)
-    {
-        qDebug() << "PARENT CODE EDIT: NULL";
-    }*/
+    //if (this->parentCodeEdit == NULL)
+    //{
+        //qDebug() << "parentCodeEdit is NULL";
+        this->breakpointsLines = new QList<unsigned int>();
+    //}
+    //else
+    //{
+        //?
+        //qDebug() << "parentCodeEdit is not NULL";
+        //this->breakpointsLines = NULL;
+        //this->breakpointsLines = new QList<unsigned int>();
+    //}
     if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
         //qDebug() << "CodeEdit: untracked";
@@ -70,7 +78,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
+    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -112,17 +120,28 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     connect(textEdit,
             SIGNAL(bookmark(int)),
             this,
-            SLOT(manageBookmarkEmit(int)));
+            SLOT(manageBookmarkEmit(int))
+           );
     connect(textEdit,
+            SIGNAL(updateLineCounter()),
+            this,
+            SLOT(updateLineCounter())
+           );
+    /*connect(textEdit,
+            SIGNAL(blockCountChanged(int)),
+            this,
+            SLOT(changeHeight())
+           );*/
+    /*connect(textEdit,
             SIGNAL(textChangedSignal(const QString&, int)),
             this,
             SLOT(updateTextSlotOut(const QString&, int))
-           );
-    connect(textEdit,
+           );*/
+    /*connect(textEdit,
             SIGNAL(selectionRemovedSignal(int, int)),
             this,
             SLOT(selectionRemovedOut(int, int))
-           );
+           );*/
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
             this,
@@ -137,7 +156,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
     this->changeHeight();
-    qDebug() << "CodeEdit: return CodeEdit()";
+    //qDebug() << "CodeEdit: return CodeEdit()";
 }
 
 
@@ -145,12 +164,20 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    qDebug() << "CodeEdit: CodeEdit()2";
+    //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
-    /*if (this->parentCodeEdit == NULL) //&& parentCodeEdit == NULL)
-    {
-        qDebug() << "PARENT CODE EDIT: NULL";
-    }*/
+    //if (this->parentCodeEdit == NULL)
+    //{
+        //qDebug() << "parentCodeEdit is NULL";
+        this->breakpointsLines = new QList<unsigned int>();
+    //}
+    //else
+    //{
+        //?
+        //qDebug() << "parentCodeEdit is not NULL";
+        //this->breakpointsLines = NULL;
+        //this->breakpointsLines = new QList<unsigned int>();
+    //}
     
     int index = wName.lastIndexOf(".");
     if (index > 0)
@@ -186,7 +213,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    lineCount = new WLineCounter(textEdit, false, false, 0, textEdit->font());
+    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
@@ -228,6 +255,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SLOT(manageBookmarkEmit(int))
            );
     connect(textEdit,
+            SIGNAL(updateLineCounter()),
+            this,
+            SLOT(updateLineCounter())
+           );
+    /*connect(textEdit,
+            SIGNAL(blockCountChanged(int)),
+            this,
+            SLOT(changeHeight())
+           );*/
+    /*connect(textEdit,
             SIGNAL(textChangedSignal(const QString&, int)),
             this,
             SLOT(updateTextSlotOut(const QString&, int))
@@ -236,7 +273,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SIGNAL(selectionRemovedSignal(int, int)),
             this,
             SLOT(selectionRemovedOut(int, int))
-           );
+           );*/
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
             this,
@@ -250,16 +287,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
-    qDebug() << "CodeEdit: return CodeEdit()2";
+    //qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
 
 CodeEdit::~CodeEdit()
 {
-    /*if (parentCodeEdit == NULL)
+    if (parentCodeEdit == NULL)
     {
-        qDebug() << "DELETING PARENT CODE EDIT!";
-    }*/
+        delete this->breakpointsLines;
+    }
 }
 
 
@@ -359,16 +396,16 @@ void CodeEdit::makeMenu()
 
 void CodeEdit::connectAct()
 {
-    qDebug() << "CodeEdit: connectAct()";
+    //qDebug() << "CodeEdit: connectAct()";
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(setChanged()));
-    qDebug() << "CodeEdit: return connectAct()";
+    //qDebug() << "CodeEdit: return connectAct()";
 }
 
 
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    qDebug() << "CodeEdit: setChanged()";
+    //qDebug() << "CodeEdit: setChanged()";
     if (changed == false)
     {
         changed = true;
@@ -380,13 +417,13 @@ void CodeEdit::setChanged()
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         }
     }
-    qDebug() << "CodeEdit: return setChanged()";
+    //qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    qDebug() << "CodeEdit: setSaved()";
+    //qDebug() << "CodeEdit: setSaved()";
     if (changed == true)
     {
         changed = false;
@@ -406,7 +443,7 @@ void CodeEdit::setSaved()
     {
         qDebug() << "codeedit: not changed";
     }*/
-    qDebug() << "CodeEdit: return setSaved()";
+    //qDebug() << "CodeEdit: return setSaved()";
 }
 
 
@@ -603,7 +640,7 @@ void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor
 
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
-    qDebug() << "CodeEdit: loadCodeEditor()";
+    //qDebug() << "CodeEdit: loadCodeEditor()";
     //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
     //disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
     //disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
@@ -627,6 +664,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     //this->update();
     this->setName(editor->getName());
     this->setPath(editor->getPath());
+    this->breakpointsLines = editor->getBreakpointsLines();
+    if (this->breakpointsLines == NULL)
+    {
+        qDebug() << "CodeEdit: breakpointsLines == NULL";
+    }
+    this->lineCount->getWidget()->setBreakpointList(this->breakpointsLines);
     /*if (name != NULL)
     {
         int index = this->name.lastIndexOf(".");
@@ -663,17 +706,18 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     }*/
     emit CodeEditChanged(editor);
     this->changeHeight();
-    if (true == editor->isChanged())
+    this->changed = editor->isChanged();
+    /*if (true == editor->isChanged())
     {
-        qDebug() << "CodeEdit: loadcodeedit is changed";
+        //qDebug() << "CodeEdit: loadcodeedit is changed";
         this->changed = true;
     }
     else
     {
-        qDebug() << "CodeEdit: loadcodeedit is saved";
+        //qDebug() << "CodeEdit: loadcodeedit is saved";
         this->changed = false;
-    }
-    qDebug() << "CodeEdit: return loadCodeEditor()";
+    }*/
+    //qDebug() << "CodeEdit: return loadCodeEditor()";
 }
 
 
@@ -686,18 +730,18 @@ QWidget* CodeEdit::getParent()
 
 void CodeEdit::getFocus()
 {
-    qDebug() << "CodeEdit: getFocus()";
+    //qDebug() << "CodeEdit: getFocus()";
     if (parentWidget != NULL)
     {
         ((BaseEditor*)parentWidget)->focusIn();
     }
-    qDebug() << "CodeEdit: return getFocus()";
+    //qDebug() << "CodeEdit: return getFocus()";
 }
 
 void CodeEdit::manageBreakpointEmit(int line)
 {
-    qDebug() << "CodeEdit: manageBreakpointEmit()";
-    bool prevChanged = this->changed;
+    //qDebug() << "CodeEdit: manageBreakpointEmit()";
+    /*bool prevChanged = this->changed;
     if (prevChanged == true)
     {
         qDebug() << "CodeEdit: already changed";
@@ -705,18 +749,18 @@ void CodeEdit::manageBreakpointEmit(int line)
     if (false == textEdit->isLineHighlighted(line, breakpointColor))
     {
         textEdit->highlightLine(line, breakpointColor);
-        emit breakpointListAdd(this->path, line);
+        emit breakpointEmit(this->path, line);
     }
     else
     {
         textEdit->highlightLine(line, NULL);
-        emit breakpointListRemove(this->path, line);
     }
     if (false == prevChanged)
     {
         this->setSaved();
-    }
-    qDebug() << "CodeEdit: return manageBreakpointEmit()";
+    }*/
+    emit breakpointEmit(this->path, line);
+    //qDebug() << "CodeEdit: return manageBreakpointEmit()";
 }
 
 void CodeEdit::manageBookmarkEmit(int line)
@@ -767,6 +811,12 @@ void CodeEdit::changeHeight()
 }
 
 
+void CodeEdit::updateLineCounter()
+{
+    this->lineCount->getWidget()->update();
+}
+
+
 void CodeEdit::changeFont(QFont font)
 {
     this->textEdit->setFont(font);
@@ -776,4 +826,24 @@ void CodeEdit::changeFont(QFont font)
 Project* CodeEdit::getParentProject()
 {
     return this->parentProject;
+}
+
+
+void CodeEdit::addBreakpointLine(unsigned int line)
+{
+    this->breakpointsLines->append(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+void CodeEdit::removeBreakpointLine(unsigned int line)
+{
+    this->breakpointsLines->removeAll(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+QList<unsigned int>* CodeEdit::getBreakpointsLines()
+{
+    return this->breakpointsLines;
 }

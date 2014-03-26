@@ -60,7 +60,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
  */
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
 {
-    qDebug() << "WDockManager: changeActiveCodeEdit()";
+    //qDebug() << "WDockManager: changeActiveCodeEdit()";
     if (this->activeCodeEdit != editor)
     {
         //qDebug() << "wdockmanager - change active Code Editor";
@@ -88,7 +88,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
         //    updateAnalysersSlot(this->activeCodeEdit);
         wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
     }
-    qDebug() << "WDockManager: return changeActiveCodeEdit()";
+    //qDebug() << "WDockManager: return changeActiveCodeEdit()";
 }
 
 
@@ -98,7 +98,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
  */
 void WDockManager::changeCodeEditor(int index)
 {
-    qDebug() << "WDockManager: changeCodeEditor()";
+    //qDebug() << "WDockManager: changeCodeEditor()";
     if (activeCodeEdit != NULL && index >= 0)
     {
         //qDebug() << "wdockmanager - change Code Editor";
@@ -126,7 +126,7 @@ void WDockManager::changeCodeEditor(int index)
         }*/
         //    updateAnalysersSlot(this->activeCodeEdit);
     }
-    qDebug() << "WDockManager: return changeCodeEditor()";
+    //qDebug() << "WDockManager: return changeCodeEditor()";
 }
 
 
@@ -138,7 +138,7 @@ void WDockManager::changeCodeEditor(int index)
  */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
-    qDebug() << "WDockManager: changeTabStatusSlot()";
+    //qDebug() << "WDockManager: changeTabStatusSlot()";
     //wTab->setTabText(wTab->indexOf(editor), name);
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -150,7 +150,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
             break;
         }
     }
-    qDebug() << "WDockManager: return changeTabStatusSlot()";
+    //qDebug() << "WDockManager: return changeTabStatusSlot()";
 }
 
 
@@ -177,21 +177,21 @@ void WDockManager::closeTab(int index)
 
 void WDockManager::setTabChanged()
 {
-    qDebug() << "WDockManager: setTabChanged()";
+    //qDebug() << "WDockManager: setTabChanged()";
     //openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();
     codeEditList.at(wTab->currentIndex())->setChanged();
     activeCodeEdit->setChanged();
-    qDebug() << "WDockManager: return setTabChanged()";
+    //qDebug() << "WDockManager: return setTabChanged()";
 }
 
 
 void WDockManager::setTabSaved()
 {
-    qDebug() << "WDockManager: setTabSaved()";
+    //qDebug() << "WDockManager: setTabSaved()";
     //qDebug() << "wdockmanager: set tab saved";
     codeEditList.at(wTab->currentIndex())->setSaved();
     activeCodeEdit->setSaved();
-    qDebug() << "WDockManager: return setTabSaved()";
+    //qDebug() << "WDockManager: return setTabSaved()";
 }
 
 
@@ -278,7 +278,7 @@ void WDockManager::setCentralPath(QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: addUntrackedCentralWidget()";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -307,15 +307,15 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                     SLOT(changeTabStatusSlot(QString, QString, bool))
                 );
             connect(activeCodeEdit,
-                    SIGNAL(breakpointListAdd(QString, int)),
+                    SIGNAL(breakpointEmit(QString, int)),
                     this,
-                    SLOT(breakpointListAddSlot(QString, int))
+                    SLOT(breakpointEmitSlot(QString, int))
                 );
-            connect(activeCodeEdit,
+            /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
                     SLOT(breakpointListRemoveSlot(QString, int))
-                );
+                );*/
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
@@ -367,7 +367,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             newEditor->setChanged();
         }
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget()";
+    //qDebug() << "WDockManager: return addUntrackedCentralWidget()";
 }
 
 
@@ -406,15 +406,15 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                     SLOT(changeTabStatusSlot(QString, QString, bool))
                 );
             connect(activeCodeEdit,
-                    SIGNAL(breakpointListAdd(QString, int)),
+                    SIGNAL(breakpointEmit(QString, int)),
                     this,
-                    SLOT(breakpointListAddSlot(QString, int))
+                    SLOT(breakpointEmitSlot(QString, int))
                 );
-            connect(activeCodeEdit,
+            /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
                     SLOT(breakpointListRemoveSlot(QString, int))
-                );
+                );*/
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
             //qDebug() << "WDockManager: Create splitter";
@@ -475,7 +475,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
 
 void WDockManager::addCentralWidget(QString wName, QString wPath)
 {
-    qDebug() << "WDockManager: addCentralWidget()";
+    //qDebug() << "WDockManager: addCentralWidget()";
     bool found = false;
     int tab;
     for (tab = 0; tab < wTab->count(); tab++)
@@ -494,12 +494,12 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            qDebug() << "WDockManager: Create centralBase";
+            //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
-            qDebug() << "WDockManager: base1 height" << newBaseEditor->height();
+            //qDebug() << "WDockManager: base1 height" << newBaseEditor->height();
             //qDebug() << "WDockManager: Created BaseEditor1";
             centralBase = new BaseEditor(splitter, this, newEditor, false);
-            qDebug() << "WDockManager: base2 height" << centralBase->height();
+            //qDebug() << "WDockManager: base2 height" << centralBase->height();
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
             connect(activeCodeEdit,
@@ -508,21 +508,21 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
                     SLOT(changeTabStatusSlot(QString, QString, bool))
                 );
             connect(activeCodeEdit,
-                    SIGNAL(breakpointListAdd(QString, int)),
+                    SIGNAL(breakpointEmit(QString, int)),
                     this,
-                    SLOT(breakpointListAddSlot(QString, int))
+                    SLOT(breakpointEmitSlot(QString, int))
                 );
-            connect(activeCodeEdit,
+            /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
                     SLOT(breakpointListRemoveSlot(QString, int))
-                );
+                );*/
             /*QPalette palette = activeCodeEdit->palette();
             palette.setColor(QPalette::Base, QColor::fromRgbF(1, 1, 0, 0.05));
             activeCodeEdit->setPalette(palette);*/
             //qDebug() << "WDockManager: activeCodeEdit assigned";
             splitter->addWidget(centralBase);
-            qDebug() << "WDockManager: splitter height" << splitter->height();
+            //qDebug() << "WDockManager: splitter height" << splitter->height();
             //qDebug() << "WDockManager: Create splitter";
             if (wName != NULL && wPath != NULL)
             {
@@ -581,7 +581,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
     {
         wTab->setCurrentIndex(tab);
     }
-    qDebug() << "WDockManager: return addCentralWidget()";
+    //qDebug() << "WDockManager: return addCentralWidget()";
 }
 
 
@@ -991,16 +991,16 @@ void WDockManager::closeFile(QString path)
 }
 
 
-void WDockManager::breakpointListAddSlot(QString file, int line)
+void WDockManager::breakpointEmitSlot(QString file, int line)
 {
-    emit breakpointListAdd(file, line);
+    emit breakpointEmit(file, line);
 }
 
 
-void WDockManager::breakpointListRemoveSlot(QString file, int line)
+/*void WDockManager::breakpointListRemoveSlot(QString file, int line)
 {
     emit breakpointListRemove(file, line);
-}
+}*/
 
 
 

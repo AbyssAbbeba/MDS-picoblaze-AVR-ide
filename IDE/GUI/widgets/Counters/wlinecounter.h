@@ -58,6 +58,7 @@ class WLineCounterWidget : public QWidget
         WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font);
         void changeHeight();
         void changeFont(QFont font);
+        void setBreakpointList(QList<unsigned int> *list);
         
     private:
         WLineCounter *parent;
@@ -69,6 +70,7 @@ class WLineCounterWidget : public QWidget
         //QList<bool> *breakpointList;
         //QList<bool> *errorList;
         //QList<bool> *bookmarkList;
+        QList<unsigned int> *breakpointList;
 
     protected:
         void paintEvent(QPaintEvent *);
