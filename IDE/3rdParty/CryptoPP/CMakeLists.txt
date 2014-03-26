@@ -16,37 +16,35 @@ project ( CryptoPP )
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
-# bench.o bench2.o test.o validat1.o validat2.o validat3.o adhoc.o datatest.o regtest.o fipsalgt.o dlltest.o
+
 # Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}
-              3way.cpp      ccm.cpp           elgamal.cpp   idea.cpp      polynomi.cpp  serpent.cpp    twofish.cpp
-                   channels.cpp      emsa2.cpp     integer.cpp   pssr.cpp      sha3.cpp
-              adler32.cpp   cmac.cpp          eprecomp.cpp  iterhash.cpp  pubkey.cpp    shacal2.cpp
-              algebra.cpp   cpu.cpp           esign.cpp     luc.cpp       queue.cpp     sha.cpp
-              algparam.cpp  crc.cpp           files.cpp     mars.cpp      rabin.cpp     sharkbox.cpp   vmac.cpp
-              arc4.cpp      cryptlib_bds.cpp  filters.cpp   marss.cpp     randpool.cpp  shark.cpp      wait.cpp
-              asn.cpp       cryptlib.cpp      fips140.cpp   md2.cpp       rc2.cpp       simple.cpp     wake.cpp
-              authenc.cpp         fipsalgt.cpp  md4.cpp       rc5.cpp       skipjack.cpp   whrlpool.cpp
-              base32.cpp    default.cpp       fipstest.cpp  md5.cpp       rc6.cpp       socketft.cpp   winpipes.cpp
-              base64.cpp    des.cpp           gcm.cpp       misc.cpp      rdtables.cpp  sosemanuk.cpp  xtr.cpp
-              basecode.cpp  dessp.cpp         gf2_32.cpp    modes.cpp        square.cpp     xtrcrypt.cpp
-                  dh2.cpp           gf256.cpp     mqueue.cpp    rijndael.cpp  squaretb.cpp   zdeflate.cpp
-                   dh.cpp            gf2n.cpp      mqv.cpp       ripemd.cpp    strciphr.cpp   zinflate.cpp
-              bfinit.cpp    dll.cpp           gfpcrypt.cpp  nbtheory.cpp  rng.cpp       tea.cpp        zlib.cpp
-              blowfish.cpp  cbcmac.cpp        gost.cpp      network.cpp   rsa.cpp       ttmac.cpp
-              blumshub.cpp  dsa.cpp           gzip.cpp      oaep.cpp      rw.cpp        tftables.cpp   seed.cpp
-              camellia.cpp  eax.cpp           hex.cpp       osrng.cpp     safer.cpp     tiger.cpp      pkcspad.cpp
-              cast.cpp      ec2n.cpp          hmac.cpp      panama.cpp    salsa.cpp     tigertab.cpp   ida.cpp
-              casts.cpp     eccrypto.cpp      hrtimer.cpp   pch.cpp       seal.cpp      trdlocal.cpp   ecp.cpp
-               )
+              3way.cpp      adler32.cpp       algebra.cpp   algparam.cpp  arc4.cpp       asn.cpp       authenc.cpp
+              base32.cpp    base64.cpp        basecode.cpp  bfinit.cpp    blowfish.cpp   blumshub.cpp  camellia.cpp
+              cast.cpp      casts.cpp         cbcmac.cpp    ccm.cpp       channels.cpp   cmac.cpp      cpu.cpp
+              crc.cpp       cryptlib_bds.cpp  cryptlib.cpp  default.cpp   des.cpp        dessp.cpp     dh2.cpp
+              dh.cpp        dll.cpp           dsa.cpp       eax.cpp       ec2n.cpp       eccrypto.cpp  ecp.cpp
+              elgamal.cpp   emsa2.cpp         eprecomp.cpp  esign.cpp     files.cpp      filters.cpp   fips140.cpp
+              fipstest.cpp  gcm.cpp           gf2_32.cpp    gf256.cpp     gf2n.cpp       gfpcrypt.cpp  gost.cpp
+              gzip.cpp      hex.cpp           hmac.cpp      hrtimer.cpp   ida.cpp        idea.cpp      integer.cpp
+              iterhash.cpp  luc.cpp           mars.cpp      marss.cpp     md2.cpp        md4.cpp       md5.cpp
+              misc.cpp      modes.cpp         mqueue.cpp    mqv.cpp       nbtheory.cpp   network.cpp   oaep.cpp
+              osrng.cpp     panama.cpp        pch.cpp       pkcspad.cpp   polynomi.cpp   pssr.cpp      pubkey.cpp
+              queue.cpp     rabin.cpp         randpool.cpp  rc2.cpp       rc5.cpp        rc6.cpp       rdtables.cpp
+              rijndael.cpp  ripemd.cpp        rng.cpp       rsa.cpp       rw.cpp         safer.cpp     salsa.cpp
+              seal.cpp      seed.cpp          serpent.cpp   sha3.cpp      shacal2.cpp    sha.cpp       sharkbox.cpp
+              shark.cpp     simple.cpp        skipjack.cpp  socketft.cpp  sosemanuk.cpp  square.cpp    squaretb.cpp
+              strciphr.cpp  tea.cpp           tftables.cpp  tiger.cpp     tigertab.cpp   trdlocal.cpp  ttmac.cpp
+              twofish.cpp   vmac.cpp          wait.cpp      wake.cpp      whrlpool.cpp   winpipes.cpp  xtr.cpp
+              xtrcrypt.cpp  zdeflate.cpp      zinflate.cpp  zlib.cpp )
 
 # Disable compiler warnings for this library.
 set_target_properties ( ${PROJECT_NAME} PROPERTIES
-                                        COMPILE_FLAGS "${CMAKE_CXX_FLAGS} -w" )
+                                        COMPILE_FLAGS "-w" )
 
 # On POSIX link to the pthread library.
 if ( TARGET_OS STREQUAL "Windows" )
-    target_link_libraries ( ${PROJECT_NAME} lws2_32 )
+    target_link_libraries ( ${PROJECT_NAME} ws2_32 )
 else()
     target_link_libraries ( ${PROJECT_NAME} pthread )
 endif()
