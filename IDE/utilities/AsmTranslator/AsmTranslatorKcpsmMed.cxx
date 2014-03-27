@@ -38,8 +38,9 @@ const boost::regex AsmTranslatorKcpsmMed::m_reLabel       = boost::regex ( "^[_[
 const boost::regex AsmTranslatorKcpsmMed::m_reUNumber     = boost::regex ( "(^|[[:space:]])(0[xb])?[_[:xdigit:]]+"
                                                                            "([[:space:]]|$)", flags );
 const boost::regex AsmTranslatorKcpsmMed::m_reSymDef      = boost::regex ( "^[_[:alpha:]][_[:alnum:]]*[[:space:]]+"
-                                                                           "([dD][sS](([iI][nN])|([oO][uU][tT]))?)"
-                                                                           "|(\\.?[eE][qQ][uU])", flags );
+                                                                           "(ds(in)|(out))?)|(\\.equ)|(\\.txt)|"
+                                                                           "(\\.byt)|(\\.wbe)|(\\.wle)|(\\.lbe)|"
+                                                                           "(\\.lle)|(\\.buf)|(\\.def)", flags );
 
 AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
 {
