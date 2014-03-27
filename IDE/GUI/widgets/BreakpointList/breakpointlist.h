@@ -30,12 +30,15 @@ class BreakpointList : public QTreeWidget
     public:
         BreakpointList(QWidget *parent);
         void reload(QList<QPair<QString, QSet<unsigned int>>> *breakpointList);
-
-
-    public slots:
         void breakpointListAdd(QString file, int line);
         void breakpointListRemove(QString file, int line);
         void breakpointListUpdate(QString file, int fromLine, int linesAdded);
+
+    private slots:
+        void breakpointClickedSlot(QTreeWidgetItem *item, int column);
+
+    signals:
+        void breakpointClicked(QString file, int line);
 
 };
 

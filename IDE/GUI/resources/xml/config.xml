@@ -3,6 +3,7 @@
  <IDEGeneral>
   <Option param="false" name="splash"/>
   <Option param="false" name="tips"/>
+  <Option param="true" name="session"/>
   <Option param="English" name="language"/>
  </IDEGeneral>
  <IDEShortcuts/>

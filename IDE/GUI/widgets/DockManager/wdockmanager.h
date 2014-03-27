@@ -42,6 +42,7 @@
 #include "../AnalyserWidget/analyserwidget.h"
 #include "../Analyser/analys.h"
 //#include "../ShowHideWidget/showhidewidget.h"
+#include "../WelcomeScr/welcomescr.h"
 
 class WDock;
 class CodeEdit;
@@ -95,6 +96,7 @@ class WDockManager : public QObject
         void changeSimWidget(int index);
         void deleteActiveSimWidget();
         void closeFile(QString path);
+        void setCentralWelcome(); //welcome screen
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
@@ -152,6 +154,10 @@ class WDockManager : public QObject
         //widgets
         BookmarkList *bookmarkList;
         BreakpointList *breakpointList;
+
+        //welcome screen
+        WelcomeScr *welcomeScr;
+       
 
         //wdockwidgets previous height
         int wDockBotPrevHeight;

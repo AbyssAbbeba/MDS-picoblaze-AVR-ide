@@ -94,6 +94,10 @@ int main(int argc, char *argv[])
             //MainGUI.emitSessionRestorationSignal();
             QTimer::singleShot(50, &MainGUI, SLOT(sessionRestorationSlot()));
         }
+        else
+        {
+            MainGUI.createWelcome();
+        }
     }
     
     return app.exec();
