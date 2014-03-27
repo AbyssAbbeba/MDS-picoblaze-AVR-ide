@@ -38,6 +38,7 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     bookmarkList = NULL;
     breakpointList = NULL;
     activeCodeEdit = NULL;
+    welcomeScr = NULL;
     centralBase = NULL;
     this->dockWidgets = false;
     wDockBotPrevHeight = 0;
@@ -295,6 +296,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
+            if (this->welcomeScr != NULL)
+            {
+                delete this->welcomeScr;
+                this->welcomeScr = NULL;
+            }
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
@@ -394,6 +400,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
+            if (this->welcomeScr != NULL)
+            {
+                delete this->welcomeScr;
+                this->welcomeScr = NULL;
+            }
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
@@ -494,6 +505,11 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
+            if (this->welcomeScr != NULL)
+            {
+                delete this->welcomeScr;
+                this->welcomeScr = NULL;
+            }
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: base1 height" << newBaseEditor->height();
@@ -1001,6 +1017,16 @@ void WDockManager::breakpointEmitSlot(QString file, int line)
 {
     emit breakpointListRemove(file, line);
 }*/
+
+
+void WDockManager::setCentralWelcome()
+{
+    if (this->splitter->count() == 0)
+    {
+        this->welcomeScr = new WelcomeScr(this->splitter);
+        this->splitter->addWidget(this->welcomeScr);
+    }
+}
 
 
 

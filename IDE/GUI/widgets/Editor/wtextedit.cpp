@@ -97,7 +97,6 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             return true;
         }
         //comment ctrl+shift+c
-        //TODO: edit for assembler/c (now c only)
         if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
           && keyEvent->key() == Qt::Key_C)
         {
