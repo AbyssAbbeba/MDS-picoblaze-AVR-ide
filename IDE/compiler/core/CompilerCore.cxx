@@ -512,7 +512,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
     {
         if ( true == is_regular_file(basePath / filenamePath) )
         {
-            absoluteFileName = (basePath / filenamePath).string();
+            absoluteFileName = system_complete(basePath / filenamePath).string();
         }
         else
         {
@@ -527,11 +527,32 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
                 if ( ( true == is_directory(includePath) ) && ( true == is_regular_file(includePath / filenamePath) ) )
                 {
-                    absoluteFileName = (includePath / filenamePath).string();
+                    absoluteFileName = system_complete(includePath / filenamePath).string();
                     break;
                 }
             }
-            return nullptr;
+
+            if ( true == absoluteFileName.empty() )
+            {
+                std::string ipats;
+                for ( const auto & iPath : m_opts->m_includePath )
+                {
+                    if ( false == ipats.empty() )
+                    {
+                        ipats += ", ";
+                    }
+                    ipats += '`';
+                    ipats += iPath;
+                    ipats += '\'';
+                }
+                coreMessage ( MT_ERROR, QObject::tr ( "unable to locate file `%1' in base path `%2', or include "
+                                                      "path(s): %3" )
+                                                    . arg ( filenamePath.c_str() )
+                                                    . arg ( basePath.c_str() )
+                                                    . arg ( ipats.c_str() )
+                                                    . toStdString() );
+                return nullptr;
+            }
         }
     }
 
