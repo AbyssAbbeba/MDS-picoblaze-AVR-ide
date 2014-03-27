@@ -512,7 +512,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
     {
         if ( true == is_regular_file(basePath / filenamePath) )
         {
-            absoluteFileName = system_complete(basePath / filenamePath).string();
+            absoluteFileName = canonical(basePath / filenamePath).string();
         }
         else
         {
@@ -527,7 +527,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
                 if ( ( true == is_directory(includePath) ) && ( true == is_regular_file(includePath / filenamePath) ) )
                 {
-                    absoluteFileName = system_complete(includePath / filenamePath).string();
+                    absoluteFileName = canonical(includePath / filenamePath).string();
                     break;
                 }
             }
