@@ -110,7 +110,7 @@ void CompilerOptions::normalizeFilePaths()
             continue;
         }
 
-        *files[i] = canonical(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
+        *files[i] = absolute(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
     }
 }
 
