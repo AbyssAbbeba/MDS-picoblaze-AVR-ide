@@ -1,0 +1,88 @@
+; -------------------------------------------------------------------------------
+; UART routines
+; -------------------------------------------------------------------------------
+
+_UART_CS	.EQU    0xEC				// UART status register
+_UART_DA	.EQU    0xED				// UART data in.out registers
+
+puts :							// put a string pointed at by s1, to the UART
+		LD	s0, s1
+		ADD	s1, 1
+		COMP	s0, 0
+		RET	Z
+		CALL	putc
+		JUMP	puts
+
+put2hex :						// put an (8-bit) value in s0 in 2 hex character to the UART
+		MOVE	sE, s0
+		SR0	s0
+		SR0	s0
+		SR0	s0
+		SR0	s0
+		CALL	put1hex
+		MOVE	s0, sE
+put1hex :						// put a (4-bit) value in s0 in 1 hex character to the UART
+		AND	s0, 0x0F
+		COMP	s0, 10
+		JUMP	C, put1hex1
+		ADD	s0, 'A' - 10 - '0'
+put1hex1 :
+		ADD	s0, '0'
+		JUMP	putc
+
+putsp :							// put a space char to the UART
+		MOVE	s0, ' '
+		JUMP	putc
+
+putnl :							// put CR and LF characters to the UART
+		MOVE	s0, '\r'
+		CALL	putc
+		MOVE	s0, '\n'
+
+putc :							// put a character in s0 to the UART
+		IN	sF, _UART_CS
+		TEST	sF, 0b00000001			// space for one in the buffer?
+		JUMP	NZ, putc
+		OUT	s0, _UART_DA
+		RET
+		
+get1hex:						// get a character from the UART and interpret as a hex value ('D' => 00001101)
+get2hex10:	CALL	getc
+		MOVE	sE, s0
+		SUB	sE, '0'
+		COMP	sE, '9' - '0' + 1
+		JUMP	C, get2hex20
+		SUB	sE, 'A' - '0'
+		COMP	sE, 'F' - 'A' + 1
+		JUMP	NC, get2hex10
+		ADD	sE, 10
+get2hex20:	CALL	putc
+		MOVE	s0, sE
+		RET
+		
+		
+get2hex:						// get 2 characters from the UART and interpret as a hex value ('2D' => 00101101)
+		CALL	get1hex
+		MOVE	sD, s0
+		SL0	sD
+		SL0	sD
+		SL0	sD
+		SL0	sD
+		CALL	get1hex
+		OR	s0, sD
+		RET
+		
+poll :							// check the status of the UART buffer and report in C
+		IN	sF, _UART_CS
+		TEST	sF, 0b00100000			// some char in the buffer?
+		RET
+
+getc :							// wait for a character from the UART and return in s0
+		IN	sF, _UART_CS
+		TEST	sF, 0b00100000			// some char in the buffer?
+		JUMP	Z, getc
+		IN	s0, _UART_DA
+		RET
+
+; -----------UART Subroutines end-------------------------------------------------
+
