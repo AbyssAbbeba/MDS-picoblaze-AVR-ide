@@ -2,7 +2,7 @@
     Developers can define their working environment to fit the needs and preferences. For a better understanding of further comments and instructions, five major screen areas are defined. % popsáno v obrázku
     \begin{figure}[h]
         \centering
-        \includegraphics [width=.9\textwidth]{img/Demonstration_project.png}
+        \includegraphics[width=.9\textwidth]{img/Demonstration_project.png}
         \caption{Window layout concept}
     \end{figure}
 
@@ -42,24 +42,17 @@
         \item Replace: replace a given string in the open document by a new string
     \end{itemize}
 
-    \begin{tabular}[h!]
-        \begin{table}{ccc}
-            \begin{wrapfigure}{r}{0pt}
-                \includegraphics[width=110pt]{img/menu_file.png}
-                \caption{Project selection}
-            \end{wrapfigure}
-
-            \begin{wrapfigure}{r}{0pt}
-                \includegraphics[width=110pt]{img/menu_file.png}
-                \caption{Edit selection}
-            \end{wrapfigure}
-
-            \begin{figure}{r}{0pt}
-                \includegraphics[width=110pt]{img/menu_file.png}
-                \caption{File selection}
-            \end{figure}
-        \end{table}
-    \end{tabular}
+    \begin{table}[h!]
+        \begin{tabular}{ccc}
+            \includegraphics[width=.25\textwidth]{img/menu_file.png}
+                &
+            \includegraphics[width=.25\textwidth]{img/menu_file.png}
+                &
+            \includegraphics[width=.25\textwidth]{img/menu_file.png}
+                \\
+            Project selection & Edit selection & File selection
+        \end{tabular}
+    \end{table}
 
 \subsection{Bottom panel}
 
@@ -67,20 +60,24 @@
 
 \subsection{Left panel}
 
+\clearpage
+\enlargethispage{6\baselineskip}
 \subsection{Project configuration}
     In project configuration window, you can edit project and compiler settings. You can open project configuration window by right clicking to project name in the left panel. See the pictures below.
-    \begin{figure}
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [width=300pt]{img/mensi_obrazek.png}
-        \caption{Opening project configuration window from main screen}
+        \includegraphics[width=.9\textwidth]{img/mensi_obrazek.png}
+        \caption{Opening project configuration window from main screen.}
     \end{figure}
 
     This will open main configuration window with multiple tabs on the left side.
-    \begin{figure}
+    \begin{figure}[h!]
         \centering{}
-        \includegraphics [width=300pt]{img/mensi_obrazek.png}
-        \caption{Project window layout}
+        \includegraphics[width=.9\textwidth]{img/mensi_obrazek.png}
+        \caption{Project window layout.}
     \end{figure}
+
+    \clearpage
 
     \begin{itemize}
         \item Undo: will undo all edit actions on the open document in reverse order
@@ -92,12 +89,6 @@
         \item Find: find a to be given string through the open document
         \item Replace: replace a given string in the open document by a new string
     \end{itemize}
-
-        \begin{figure}
-            \centering{}
-            \includegraphics [width=300pt]{img/mensi_obrazek.png}
-            \caption{Project window layout}
-        \end{figure}
 
     \begin{itemize}
         \item Undo: will undo all edit actions on the open document in reverse order
@@ -111,27 +102,26 @@
     \end{itemize}
 
 \section{Other tools}
-\subsection{Code Completion list}
-The Code Completion List shows program symbols that contain
-the characters you are currently typing.
-        \begin{figure}
-            \centering{}
-            \includegraphics [scale=0.3]{img/mensi_obrazek.png}
-            \caption{Code completion list}
-        \end{figure}
 
-\subsection{Parameter Information}
-    Parameter Information shows the names, amount of, and parameter types of a function or method. The
-    parameter in bold indicates the next parameter that is required as you are typing.
-    \begin{figure}
+\subsection{Code Completion list}
+    The Code Completion List shows program symbols that contain the characters you are currently typing.
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [scale=0.3]{img/mensi_obrazek.png}
+        \includegraphics[width=.3\textwidth]{img/mensi_obrazek.png}
+        \caption{Code completion list}
+    \end{figure}
+
+\clearpage
+\subsection{Parameter Information}
+    Parameter Information shows the names, amount of, and parameter types of a function or method. The parameter in bold indicates the next parameter that is required as you are typing.
+    \begin{figure}[h]
+        \centering{}
+        \includegraphics[width=.3\textwidth]{img/mensi_obrazek.png}
         \caption{Parametr information list}
     \end{figure}
 
 \subsection{DATA file convertor}
-    This tool alows you to convert selected data file to another. Mutual conversion can be made with
-    Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+    This tool alows you to convert selected data file to another. Mutual conversion can be made with Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
     \begin{description}
         \item[Section Input File] Here you can select desired input data file which is going to be converted
         \item[Section Input Options] In this section, you define what type of input file is going to be converted
@@ -145,9 +135,9 @@ the characters you are currently typing.
         \item[Short instructions] Here you can allow short instructions like LD, RETI or others
     \end{description}
 
-    \begin{figure}
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [scale=1]{img/DATA_convertor.png}
+        \includegraphics[width=.5\textwidth]{img/DATA_convertor.png}
         \caption{DATA file convertor}
     \end{figure}
 
@@ -167,9 +157,9 @@ the characters you are currently typing.
         \item[Short instructions] Here you can allow short instructions like LD, RETI or others
     \end{description}
 
-    \begin{figure}
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [scale=1]{img/ASM_translator.png}
+        \includegraphics[width=.5\textwidth]{img/ASM_translator.png}
         \caption{ASM translator}
     \end{figure}
 
@@ -189,58 +179,48 @@ the characters you are currently typing.
         \item[Generate symbols] Select which symbols should be disassembled
     \end{description}
 
-    \begin{figure}
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [scale=1]{img/disassembler_window.png}
+        \includegraphics[width=.5\textwidth]{img/disassembler_window.png}
         \caption{Disassembler}
     \end{figure}
 
 \subsection{Syntax Checking}
-    Syntax Checking validates the program syntax while you are typing
-    the code and provides real-time alerts to potential code violations
-    before compilation. This enhances productivity and greatly reduces
-    edit, compile, and correction cycles.
-    \begin{figure}
+    Syntax Checking validates the program syntax while you are typing the code and provides real-time alerts to potential code violations before compilation. This enhances productivity and greatly reduces edit, compile, and correction cycles.
+    \begin{figure}[h]
         \centering{}
-        \includegraphics [scale=0.3]{img/mensi_obrazek.png}
+        \includegraphics[scale=0.3]{img/mensi_obrazek.png}
         \caption{Syntax checking picture}
     \end{figure}
 
 \subsection{Instruction details}
+
 \subsection{Subprograms call monitor}
+
 \subsection{ASCII chart}
+
 \subsection{PicoBlaze Instruction Table}
+
 \subsection{Symbol viewer}
+
 \subsection{Stopwatch}
 
-\subsection{Hexadecimal editors }
+\subsection{Hexadecimal editors}
+
 \subsection{Interrupt monitor}
 
-\subsection{Number base converter}
-This tool is very usefull, when you want to find out the representation of given number in other
-number bases.
-
-        \begin{wrapfigure}{r}{0pt}
-                \centering
-                \includegraphics[width=110pt]{img/convertor.png}
-                \caption{Convertor}
-        \end{wrapfigure}
-
 \subsection{8-segment editor}
-With this tool you can easily determine what
-value you have to set on a port to display a digit
-on a numerical LED display. In the left part of
-the dialog window, you can find numerical val
-ues corresponding to the digit displayed in the
-middle part. These values are represented for
-both common cathode and anode and in three
-numerical bases, hexadecimal, decimal and oc
-tal. Buttons on left side from entry boxes copies
-value from adjacent entry box into clipboard.
-In the right part of the window you can set what port pin is connected to
-what LED segment.
-        \begin{wrapfigure}{r}{0pt}
-            \centering{}
-            \includegraphics[width=110pt]{img/8segment.png}
-            \caption{8-segment editor}
-        \end{wrapfigure}
+    \begin{wrapfigure}{r}{0pt}
+        \centering{}
+        \includegraphics[width=110pt]{img/8segment.png}
+        \caption{8-segment editor}
+    \end{wrapfigure}
+    With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED display. In the left part of the dialog window, you can find numerical val ues corresponding to the digit displayed in the middle part. These values are represented for both common cathode and anode and in three numerical bases, hexadecimal, decimal and oc tal. Buttons on left side from entry boxes copies value from adjacent entry box into clipboard. In the right part of the window you can set what port pin is connected to what LED segment.
+
+\subsection{Number base converter}
+    \begin{wrapfigure}{r}{0pt}
+            \centering
+            \includegraphics[width=90pt]{img/convertor.png}
+            \caption{Convertor}
+    \end{wrapfigure}
+    This tool is very usefull, when you want to find out the representation of given number in other number bases.
