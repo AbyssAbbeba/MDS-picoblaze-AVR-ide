@@ -9,12 +9,6 @@
 \subsection{Source code editor}
 
 \subsection{Top panel}
-    \begin{figure}{r}{0pt}
-        \centering
-        \includegraphics[width=110pt]{img/menu_file.png}
-        \caption{File selection}
-    \end{figure}
-
     \begin{itemize}
         \item New file: creates a new document to enter a new source file.
         \item Open file: allows to open an existing source file.
@@ -26,11 +20,16 @@
         \item Exit: closes all open documents and closes MDS.
     \end{itemize}
 
-    \begin{wrapfigure}{r}{0pt}
-            \centering
-            \includegraphics[width=110pt]{img/menu_file.png}
-            \caption{Edit selection}
-    \end{wrapfigure}
+    \begin{itemize}
+        \item Undo: will undo all edit actions on the open document in reverse order
+        \item Redo: will redo all undo actions
+        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+        \item Copy: copies all selected parts of the open document to the clipboard
+        \item Paste: pastes the text contents of the clipboard in the open document
+        \item Select: All selects all text in the open document
+        \item Find: find a to be given string through the open document
+        \item Replace: replace a given string in the open document by a new string
+    \end{itemize}
 
     \begin{itemize}
         \item Undo: will undo all edit actions on the open document in reverse order
@@ -43,22 +42,24 @@
         \item Replace: replace a given string in the open document by a new string
     \end{itemize}
 
-    \begin{wrapfigure}{r}{0pt}
-        \centering
-        \includegraphics[width=110pt]{img/menu_file.png}
-        \caption{Project selection}
-    \end{wrapfigure}
+    \begin{tabular}[h!]
+        \begin{table}{ccc}
+            \begin{wrapfigure}{r}{0pt}
+                \includegraphics[width=110pt]{img/menu_file.png}
+                \caption{Project selection}
+            \end{wrapfigure}
 
-    \begin{itemize}
-        \item Undo: will undo all edit actions on the open document in reverse order
-        \item Redo: will redo all undo actions
-        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
-        \item Copy: copies all selected parts of the open document to the clipboard
-        \item Paste: pastes the text contents of the clipboard in the open document
-        \item Select: All selects all text in the open document
-        \item Find: find a to be given string through the open document
-        \item Replace: replace a given string in the open document by a new string
-    \end{itemize}
+            \begin{wrapfigure}{r}{0pt}
+                \includegraphics[width=110pt]{img/menu_file.png}
+                \caption{Edit selection}
+            \end{wrapfigure}
+
+            \begin{figure}{r}{0pt}
+                \includegraphics[width=110pt]{img/menu_file.png}
+                \caption{File selection}
+            \end{figure}
+        \end{table}
+    \end{tabular}
 
 \subsection{Bottom panel}
 
