@@ -95,12 +95,12 @@ void CompilerOptions::normalizeFilePaths()
         nullptr
     };
 
-    m_sourceFiles[0] = system_complete(path(makeHomeSafe(m_sourceFiles[0])).make_preferred()).string();
-    const path basePath = system_complete(path(makeHomeSafe(m_sourceFiles[0])).parent_path().make_preferred());
+    m_sourceFiles[0] = canonical(path(makeHomeSafe(m_sourceFiles[0])).make_preferred()).string();
+    const path basePath = canonical(path(makeHomeSafe(m_sourceFiles[0])).parent_path().make_preferred());
 
     for ( std::string & srcFile : m_sourceFiles )
     {
-        srcFile = absolute(path(makeHomeSafe(srcFile)).make_preferred(), basePath).string();
+        srcFile = canonical(path(makeHomeSafe(srcFile)).make_preferred(), basePath).string();
     }
 
     for ( int i = 0; nullptr != files[i]; i++ )
@@ -110,7 +110,7 @@ void CompilerOptions::normalizeFilePaths()
             continue;
         }
 
-        *files[i] = absolute(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
+        *files[i] = canonical(path(makeHomeSafe(*files[i])).make_preferred(), basePath).string();
     }
 }
 
