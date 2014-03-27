@@ -1,0 +1,25 @@
+.SCR   0x380, 256
+
+prompt          .TXT            "\n\n>>ahojahoj"
+ver             .BYT            0x55
+ver2             .BYT            0xAA
+
+val1            .WBE            0xBB44
+val2            .WLE            0xBB44
+
+val3            .LBE            0xBB44
+val4            .LLE            0xBB44
+
+puts:
+MOVE    s4, '0' 
+convd32:
+
+        MOVE    s4, '0'                 // start with a zero
+
+        JUMP    puts
+
+putd32_10:
+        LD      s0, s1
+        COMP    s0, '0'
+        ADD     s1, 1
+        JUMP    putd32_10
