@@ -1,240 +1,205 @@
+In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-In this chapter, we will be concerned with build-in macro assembler.
-With syntax of its statements, directives and PicoBlaze assembler instructions.
-It is assumed, that the reader is familiar with general concepts of assembly
-language programming and PicoBlaze architecture.\\\\
-MDS has the most advanced macro assembler on the market. Its suports a lot of various
-types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of
-input parameters.\\
-Then each list element is beeing parsed and splitted into an address reference, a command and an argument list.
-After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.\\
-\textbf{Important changes}\\
-You need to tell compiler, that you are using constants by adding \# before second operand.
+MDS has the most advanced macro assembler on the market. Its suports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
 
-                \begin{code}[h!]
-                        {\color{highlight_comment}\verb'; Example of instructions operating with constants'}\\
-                        {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb's0,'}{\color{highlight_bin}\verb'#0b100111'}\verb'       '{\color{highlight_comment}\verb'; compiler now know, that this number is constant'}\\
-                        {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb's0,'}{\color{highlight_bin}\verb'0b100'}\verb'       '{\color{highlight_comment}\verb'; and this compiler takes as an adrress'}\\
-                        % Caption
-                \end{code}
+Then each list element is beeing parsed and splitted into an address reference, a command and an argument list. After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        \section{Statements}
-        Source code files for this assembler must be text files where lines are formed like these:\\
-                \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        \verb'[' { \color{highlight_label} label: } \verb']' &
-                        \verb'[' { \color{highlight_instruction} instruction } &
-                        \verb'[' { \color{highlight_symbol} operand } \verb'[' , { \color{highlight_symbol} operand } \verb'[' , { \color{highlight_symbol} operand } \verb']' \verb']' \verb']' &
-                        \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
+\paragraph{Important changes}
+    You need to tell compiler, that you are using constants by adding \# before second operand.
 
-                        \verb'[' { \color{highlight_label} label: } \verb']' &
-                        { \color{highlight_directive} directive } &
-                        \verb'[' { \color{highlight_symbol} argument } \verb']' &
-                        \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
+    {
+        ~\\
+        \usecodefont
+        \verb'; Example of instructions operating with constants'\\
+        \verb'LOAD    s0, #0b000111   ; compiler now know, that this number is constant'\\
+        \verb'LOAD    s0,  0b000111   ; and this compiler takes as an adrress'\\
+    }
 
-                        { \color{highlight_constant} symbol } &
-                        { \color{highlight_directive} directive } &
-                        { \color{highlight_symbol} argument } &
-                        \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
+\section{Statements}
+    Source code files for this assembler must be text files where lines are formed like these:
 
-                        { \color{highlight_directive} directive } &
-                        { \color{highlight_constant} symbol,argument } &
-                         \verb'[' { \color{highlight_comment} ;comment } \verb']' \\
-                \end{tabular}
-                    }
-                \bigskip
-        Everything in square brackets is optional. Compilation does not go be-
-        yond line containing "end" directive, so after that directive the code do not
-        have to be syntactically valid. Empty lines are allowed as well as line contain-
-        ing only comment or label. Statements can be separated by spaces, NBSP
-        characters and tabs. Statements are case insensitive and their length is not
-        limited, overall line length is also not limited.
+    {
+        ~\\
+        \usecodefont
+        \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
+        \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
+        \verb'            symbol         directive argument                       [ ;comment ]'\\
+        \verb'            directive      symbol, argument                         [ ;comment ]'\\
+    }
 
-        \section{Symbols}
-        Symbol names for numbers, macros or addresses defined by user in the code using
-        appropriate directive. Like with ``\texttt{equ}'' directive you can define a new
-        symbol and assign a value to it right away. Symbols may consist of upper and lower
-        case letter, digits and underscore character (``\_''), their length is not limited,
-        they are case insensitive and they can be the same as language keywords. Be aware of
-        that there cannot coexists two or more symbols in the same memory segment which differs
-        only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}''
-        are completely the same thing.
-                \begin{code}[h!]
-                        {\color{highlight_comment}\verb'; Example of symbol definition'}\\
-                        {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_bin}\verb'0b100111'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                        {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47q'}\verb'       '{\color{highlight_comment}\verb'; Octal'}\\
-                        {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'39d'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                        {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_hex}\verb'27h'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                        {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_hex}\verb'27h'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                        % Caption
-                        \caption{An example of symbol definitons}
-                \end{code}
-        As you can see in Code 1 example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well
-        as constants syntax and expresions priority.
+    Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive, so after that directive the code do not have to be syntactically valid. Empty lines are allowed as well as line containing only comment or label. Statements can be separated by spaces, NBSP characters and tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
-        \section{Constants}
-        MDS supports both prefix and sufix definition.
-                \begin{code}[h!]
-                            {\color{highlight_comment}\verb'; Example of constants syntax'}\\
-                            {\color{highlight_constant}\verb'10'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'10D'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'0xFE'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'FEh'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'O52'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Octal'}\\
-                            {\color{highlight_constant}\verb'52q'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Octal'}\\
-                            {\color{highlight_constant}\verb'01011110b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
-                            {\color{highlight_constant}\verb'0b00100001'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary'}\\
-                            {\color{highlight_constant}\verb'0b01'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers left side of byte zeroes'}\\
-                            {\color{highlight_constant}\verb'01b'}\verb' '\verb'   '{\color{highlight_comment}\verb'; Binary, considers right side of byte zeroes'}\\
-                            '\\\\s' ; Character
-                            '\\\\n' ; Character
-%                           {\color{highlight_constant}\verb'\'\s\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
-%                           {\color{highlight_constant}\verb'\'\n\''}\verb' '\verb'   '{\color{highlight_comment}\verb'; Character'}\\
-                                    % Caption
+\section{Symbols}
+    Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
 
-                    \caption{Syntax of various constant bases}
-                \end{code}
-                When you want to say to compiler, that you are using constant, you must add "\#" before.
+    \begin{code}[h!]
+    {
+        \usecodefont
 
+        \verb'First_symb      EQU     0b100111 ; Number in binary'\\
+        \verb'Second_symb     SET     47q      ; Octal'\\
+        \verb'Third_symb      REG     39d      ; Decimal'\\
+        \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
+        \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
 
-        \section{Expressions}
-        Arithmetical expressions are evaluated at compilation time and replaced by assembler
-        with constant corresponding the their resulting value. Expressions comprises of arithmetical operators,
-        constants, symbols and another expressions. An example of such expression might be
-                \begin{itemize}
-                    \item  \texttt{2+1}
-                    \item  \texttt{(2 + 4) - ABC}
-                    \item  \texttt{A \&\& B)} (
-                    \item  \texttt{X XOR 0FF00H}
-                    \item  \texttt{X * Y + X \% Y}
-                \end{itemize}
+        \caption{Example of symbol definitons.}
+        \label{code:esd}
+    }
+    \end{code}
 
-        When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression.
-        All LOGICAL operators have priorities lower than arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational
-        and logical operators, the arithmetic operators are evaluated first, followed by the relational operators, followed by the logical operators.
-        The following table shows the priority of all the operators used in expressions.
-                \begin{table}[h!]
-                        \mysmallfont{}
-                        \centering{}
-                        \begin{tabular}{|l|l|l|l|}
-                                \hline
-                        Priority       &          Operator      & Description                   & Example               \\\hline
+    As you can see in Code \ref{code:esd} example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
 
-                        1              &          +           & unary plus sign              & +12                  \\\hline
-                        1              &          -           & unary minus sign             & -5                   \\\hline
-                        2              &           \verb'~'         & bitwise NOT                       & \verb'~'0a55ah                \\\hline
-                        2              &           !         & logical NOT                      & !0a55ah               \\\hline
-                        3              &           *            & unsigned multiplication       & 11 * 12               \\\hline
-                        3              &           /            & unsigned divisiono            & 11 / 12               \\\hline
-                        3              &           \%           & unsigned remainder            & 13 \% 11              \\\hline
-                        4              &           +            & unsigned addition             & 3 + 5                 \\\hline
-                        4              &           -            & unsigned substraction         & 20 - 4                \\\hline
-                        5              &           <<           & binary shift left             & 21 << 4               \\\hline
-                        5              &           >>           & binary shift right            & 32 >> 2               \\\hline
-                        6              &           <          & less than                    & 11 < 12              \\\hline
-                        6              &           <=         & less or equal than           & 11 <= 11             \\\hline
-                        6              &            >         & greater than                 & 12 > 11              \\\hline
-                        6              &           >=         & greater or equal than        & 12 >= 11             \\\hline
-                        7              &           ==         & equal to                     & 11 == 11             \\\hline
-                        7              &           !=         & not equal to                 &  A != B              \\\hline
-                        8              &           \&         & bitwise and                  & 48 \& 16              \\\hline
-                        8              &           \verb'|'         & bitwise or                   & 370q \verb'|' 7             \\\hline
-                        9              &           \&\&       & logical and                  & 48 \&\& 16           \\\hline
-                        9              &           ||         & logical or                   & 370q || 7            \\\hline
-                        9              &           \verb'^'             & exclusive or                  & 00fh \verb'^' 005h            \\\hline
-                        \end{tabular}
-                        \caption{Expression operators priority}
-                \end{table}
-        A priority of 1 is the highest priority a priority of 9 is the lowest priority.
-        When operators with different priority levels appear in an expression, operations are performed
-        according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within
-        the expression.
+\section{Constants}
+    MDS supports both prefix and sufix definition.
 
-                \section{Predefined Symbols}
-        There are symbols which are defined by default by assembler. The aim is to
-        make it a little easier to write code in assembly language for Picoblaze,
-        because user do not have to define all these symbols in his or her code.
-                \begin{table}[h!]
-                        \centering{}
-                        \mysmallfont{}
-                        \caption{Code addresses}
-                        \begin{tabular}{|ll|}
-                                \hline
-                            \textbf{Symbol} & \textbf{Value} \\
-                                \hline
-                                s0      & 000h \\\hline
-                                s1      & 001h  \\\hline
-                               s2      & 002h \\\hline
-                               s3      & 003h  \\\hline
-                               s4      & 004h \\\hline
-                               s5      & 005h  \\\hline
-                               s6      & 006h \\\hline
-                               s7      & 007h  \\\hline
-                               s8      & 008h \\\hline
-                               s9      & 009h  \\\hline
-                               sA      & 00Ah \\\hline
-                               sB      & 00Bh  \\\hline
-                               sC      & 00Ch \\\hline
-                               sD      & 00Dh  \\\hline
-                               sE      & 00Eh \\\hline
-                               sF      & 00Fh  \\\hline
-                                \hline
-                        \end{tabular}
-                \end{table}
+    \begin{code}[h!]
+    {
+        \usecodefont
 
+        \verb'x       equ     10         ; Decimal'\\
+        \verb'x       equ     10D        ; Decimal'\\
+        \verb'x       equ     0xFE       ; Hexadecimal'\\
+        \verb'x       equ     FEh        ; Hexadecimal'\\
+        \verb'x       equ     O52        ; Octal'\\
+        \verb'x       equ     52q        ; Octal'\\
+        \verb'x       equ     01011110b  ; Binary'\\
+        \verb'x       equ     0b00100001 ; Binary'\\
+        \verb'x       equ     0b01       ; Binary, considers left side of byte zeroes'\\
+        \verb'x       equ     01b        ; Binary, considers right side of byte zeroes'
 
-        \section{Assembler directives}
-        Assembly directives are instructions
-        that are executed by an assembler at assembly time,
-        not by a CPU at run time. They can make the assembly of the program
-        dependent on parameters input by a programmer, so that one program can be
-        assembled different way, perhaps for different applications. They also
-        can be used to manipulate presentation of a program to make it easier to read and maintain\\
-        The specified format for most of the directives is:
-                 \\
-                 \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                { \color{highlight_symbol} <symbol> }  &
-                    { \color{highlight_directive} <directive> } &
-                    { \color{highlight_constant} <expresion> } & { \color{highlight_comment} ; Directive syntax }\\
-                \end{tabular}
-                 }
-                 \\
-        This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, DEFINE.
-        MDS also supports some other directives, with diferent syntax format, which is:
-         \\      {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} <directive> } &
-                        { \color{highlight_constant}\verb`<symbol>,<expresion>`  } & { \color{highlight_comment} ; Directive syntax }\\
-                \end{tabular}
-                 }
-           \\
-        Those directives are CONSTANT, VARIABLE, ADRESS and NAMEREG. There are some other usefull directives like REPT or WHILE. See description below.
+        \caption{Syntax of various constant bases.}
+        \label{code:svcb}
+    }
+    \end{code}
 
-                \subsection{INCLUDE}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} INCLUDE } & \verb`    ` &{ \color{highlight_symbol}\verb`"< file name >"`  }\\
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Compiler basicaly copies content of included file to line, where the directive is used. Include files can include other files.\\
-                \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                        {\color{highlight_directive}\verb'INCLUDE'} \verb'    ' {\color{highlight_symbol}\verb' "LCD_characters"'}\\
-                        {\color{highlight_directive}\verb'INCLUDE'} \verb'    ' {\color{highlight_symbol}\verb' "LCD_print_routine"'}\\
-                        \verb'    '{\color{highlight_comment}\verb' ; this will replace includes with content of "LCD_characters" and "LCD_print_routine"'}\\
-                        \caption{INCLUDE directive}
-                    \end{code}
+    When you want to say to compiler, that you are using constant, you must add "\#" before.
 
-                \subsection{EQU}
+\clearpage
+\section{Expressions}
+    Arithmetical expressions are evaluated at compilation time and replaced by assembler with constant corresponding the their resulting value. Expressions comprises of arithmetical operators, constants, symbols and another expressions. An example of such expression might be:
+
+    \begin{itemize}
+        \item \texttt{2+1}
+        \item \texttt{(2 + 4) - ABC}
+        \item \texttt{A \&\& B)} (
+        \item \texttt{X XOR 0FF00H}
+        \item \texttt{X * Y + X \% Y}
+    \end{itemize}
+
+    When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression. All logical operators have priorities lower than arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational and logical operators, the arithmetic operators are evaluated first, followed by the relational operators, followed by the logical operators.
+
+    The following table shows the priority of all the operators used in expressions.
+
+    \begin{table}[h!]
+        \centering{}
+        \mysmallfont{}
+
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            Priority & Operator & Description             & Example         \\\hline
+            1        & +        & unary plus sign         & +12             \\\hline
+            1        & -        & unary minus sign        & -5              \\\hline
+            2        & \~{}     & bitwise NOT             & \~{}0a55ah      \\\hline
+            2        & !        & logical NOT             & !0a55ah         \\\hline
+            3        & *        & unsigned multiplication & 11 * 12         \\\hline
+            3        & /        & unsigned divisiono      & 11 / 12         \\\hline
+            3        & \%       & unsigned remainder      & 13 \% 11        \\\hline
+            4        & +        & unsigned addition       & 3 + 5           \\\hline
+            4        & -        & unsigned substraction   & 20 - 4          \\\hline
+            5        & <{}<     & binary shift left       & 21 << 4         \\\hline
+            5        & >{}>     & binary shift right      & 32 >> 2         \\\hline
+            6        & <        & less than               & 11 < 12         \\\hline
+            6        & <=       & less or equal than      & 11 <= 11        \\\hline
+            6        &  >       & greater than            & 12 > 11         \\\hline
+            6        & >=       & greater or equal than   & 12 >= 11        \\\hline
+            7        & ==       & equal to                & 11 == 11        \\\hline
+            7        & !=       & not equal to            &  A != B         \\\hline
+            8        & \&       & bitwise and             & 48 \& 16        \\\hline
+            8        & |        & bitwise or              & 370q | 7        \\\hline
+            9        & \&\&     & logical and             & 48 \&\& 16      \\\hline
+            9        & ||       & logical or              & 370q || 7       \\\hline
+            9        & \^{}     & exclusive or            & 00fh \^{} 005h  \\\hline
+        \end{tabular}
+
+        \caption{Expression operators priority}
+    \end{table}
+
+    A priority of 1 is the highest priority a priority of 9 is the lowest priority. When operators with different priority levels appear in an expression, operations are performed according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within the expression.
+
+\section{Predefined Symbols}
+    There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for Picoblaze, because user do not have to define all these symbols in his or her code.
+
+    \begin{table}[h!]
+        \centering{}
+        \mysmallfont{}
+
+        \begin{tabular}{|cc|}
+            \hline
+            Symbol & Value \\\hline
+            s0     & 000h  \\\hline
+            s1     & 001h  \\\hline
+            s2     & 002h  \\\hline
+            s3     & 003h  \\\hline
+            s4     & 004h  \\\hline
+            s5     & 005h  \\\hline
+            s6     & 006h  \\\hline
+            s7     & 007h  \\\hline
+            s8     & 008h  \\\hline
+            s9     & 009h  \\\hline
+            sA     & 00Ah  \\\hline
+            sB     & 00Bh  \\\hline
+            sC     & 00Ch  \\\hline
+            sD     & 00Dh  \\\hline
+            sE     & 00Eh  \\\hline
+            sF     & 00Fh  \\\hline
+        \end{tabular}
+
+        \caption{Code addresses}
+    \end{table}
+
+\section{Assembler directives}
+    Assembly directives are instructions that are executed by an assembler at assembly time, not by a CPU at run time. They can make the assembly of the program dependent on parameters input by a programmer, so that one program can be assembled different way, perhaps for different applications. They also can be used to manipulate presentation of a program to make it easier to read and maintain.
+
+    The specified format for most of the directives is:
+    {
+        ~\\
+        \usecodefont
+        \verb'<symbol> <directive> <expresion>'
+    }
+
+    \bigskip
+
+    This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, and DEFINE. MDS also supports some other directives, with diferent syntax format, which is:
+    {
+        ~\\
+        \usecodefont
+        \verb'<directive> <symbol>, <expresion>'
+    }
+
+    \bigskip
+
+    Those directives are CONSTANT, VARIABLE, ADRESS, and NAMEREG. There are some other usefull directives like REPT or WHILE. See description below.
+
+    \clearpage
+    \subsection{INCLUDE}
+        \subsubsection{Syntax}
+            \verb'INCLUDE "file_name.asm"'
+
+        \subsubsection{Description}
+            Compiler basicaly copies content of included file to line, where the directive is used. Include files can include other files.
+
+        \subsubsection{Examples}
+        {
+            ~\\
+            \usecodefont
+            \verb'INCLUDE "some_file.asm"'\\
+            \verb'INCLUDE "sub_dir/another_file.asm"'\\
+            \verb'INCLUDE "C:/my_dir/my_file.asm"'\\
+            \verb'INCLUDE "C:\\my_dir\\my_file.asm"'\\
+            \verb'INCLUDE "/home/AlanTuring/my_project/cool_file.asm"'\\
+        }
+
+    \subsection{EQU}
                 \textbf{SYNTAX:}\\
                         \\ {
                             \texttt{}
