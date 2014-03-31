@@ -116,6 +116,11 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     //this->setMinimumHeight(parent->parent->height());
     this->hex = hex;
     this->offset = offset;
+
+    
+    pen.setColor(Qt::black);
+    gradient.setColorAt(0, Qt::red);
+    gradient.setColorAt(1, Qt::yellow);
     //this->show();
     /*if (parent->getTextEdit()->verticalScrollBar()->maximum() > 0)
     {
@@ -148,18 +153,15 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
     QPainter paint;
     paint.begin(this);
     QRectF rect(0,0,this->fontWidth,this->fontHeight);
-    QPointF point;
     point.setX(0);
     //QBrush brush(Qt::red);
     //paint.setBackground(brush);
     //QPen pen(Qt::darkCyan);
-    QPen pen(Qt::black);
+    //QPen pen(Qt::black);
     //paint.setBrush(brush);
     paint.setPen(pen);
     //pen.setColor(Qt::black);
     //paint.setPen(pen);
-    QTextBlock lineBlock;
-    QRect cursorRect;
     for (int i = 0; i < textEdit->document()->blockCount(); i++)
     {
         lineBlock = textEdit->document()->findBlockByNumber(i);
@@ -175,9 +177,25 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         //point.setY(i*(size+7)+size/3);
         point.setX(0);
         rect.moveTopLeft(point);
-        if (icons == true && breakpointList->contains(i+1) == true)
+        if (icons == true)
         {
-            paint.fillRect(rect, Qt::red);
+            if (breakpointList->contains(i+1) == true && bookmarkList->contains(i+1) == true)
+            {
+                gradient.setStart(rect.topLeft());
+                gradient.setFinalStop(rect.topRight());
+                paint.fillRect(rect, gradient);
+            }
+            else
+            {
+                if (bookmarkList->contains(i+1))
+                {
+                    paint.fillRect(rect, Qt::yellow);
+                }
+                if (breakpointList->contains(i+1))
+                {
+                    paint.fillRect(rect, Qt::red);
+                }
+            }
         }
         //paint.drawRect(rect);
         //pen.setColor(Qt::black);
@@ -195,10 +213,10 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         }
         else
         {
-            QString decDraw = "";
-            int doneZeros = i+1;
-            int len = textEdit->document()->blockCount();
-            int zeros = 0;
+            decDraw = "";
+            doneZeros = i+1;
+            len = textEdit->document()->blockCount();
+            zeros = 0;
             while (len >= 10)
             {
                 len = len / 10;
@@ -268,4 +286,10 @@ void WLineCounterWidget::changeFont(QFont font)
 void WLineCounterWidget::setBreakpointList(QList<unsigned int> *list)
 {
     this->breakpointList = list;
+}
+
+
+void WLineCounterWidget::setBookmarkList(QList<unsigned int> *list)
+{
+    this->bookmarkList = list;
 }

@@ -126,9 +126,10 @@ class MainForm : public QMainWindow
         void changeProjectFamily(QString family);
         void closeProject();
         void manageBreakpointEmit(QString file, int line);
+        void manageBookmarkEmit(QString file, int line);
         //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();
-        void scrollToBreakpoint(QString file, int line);
+        void scrollToFileLine(QString file, int line);
 
     signals:
         void unhighlightSim();
