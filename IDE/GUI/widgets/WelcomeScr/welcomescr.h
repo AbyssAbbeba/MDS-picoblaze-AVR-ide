@@ -15,13 +15,21 @@ class WelcomeScr : public QWidget
         
     private slots:
         //slots
-        void listClick(QListWidgetItem* item);
+        void listClickSlot(QListWidgetItem* item);
+        void exampleSlot();
+        void openProjectSlot();
+        void newProjectSlot();
+        void manualSlot();
+        void quickGuideSlot();
+
+    signals:
         void example();
         void openProject();
         void newProject();
         void manual();
         void quickGuide();
-    
+        void recentProject(QString path);
+        
     private:
         Ui_WelcomeScr ui;
 };
