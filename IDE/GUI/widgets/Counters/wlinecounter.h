@@ -18,6 +18,9 @@
 #include <QPlainTextEdit>
 #include <QScrollArea>
 #include <QFont>
+#include <QTextBlock>
+#include <QLinearGradient>
+#include <QString>
 
 class WLineCounterWidget;
 
@@ -59,6 +62,7 @@ class WLineCounterWidget : public QWidget
         void changeHeight();
         void changeFont(QFont font);
         void setBreakpointList(QList<unsigned int> *list);
+        void setBookmarkList(QList<unsigned int> *list);
         
     private:
         WLineCounter *parent;
@@ -71,6 +75,16 @@ class WLineCounterWidget : public QWidget
         //QList<bool> *errorList;
         //QList<bool> *bookmarkList;
         QList<unsigned int> *breakpointList;
+        QList<unsigned int> *bookmarkList;
+        QLinearGradient gradient;
+        QPointF point;
+        QPen pen;
+        QTextBlock lineBlock;
+        QRect cursorRect;
+        QString decDraw;
+        int doneZeros;
+        int len;
+        int zeros;
 
     protected:
         void paintEvent(QPaintEvent *);

@@ -44,8 +44,16 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
         edit=NULL;
     }
     this->isSplit = false;
-    connect(codeEdit, SIGNAL(splitSignal(Qt::Orientation, int)), this, SLOT(split(Qt::Orientation, int)));
-    connect(codeEdit, SIGNAL(CodeEditChanged(CodeEdit*)), this, SLOT(reconnect(CodeEdit*)));
+    connect(codeEdit,
+            SIGNAL(splitSignal(Qt::Orientation, int)),
+            this,
+            SLOT(split(Qt::Orientation, int))
+           );
+    connect(codeEdit,
+            SIGNAL(CodeEditChanged(CodeEdit*)),
+            this,
+            SLOT(reconnect(CodeEdit*))
+           );
     connectCodeEdits(this->codeEdit, this->codeEdit->getParentCodeEdit());
     //this->show();
     //qDebug() << "BaseEditor: codeedit connected";
