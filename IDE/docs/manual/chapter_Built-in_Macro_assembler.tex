@@ -202,8 +202,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
                 
         \subsubsection{Examples:}
-            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39.
-        {
+       {
             ~\\
             \usecodefont
             \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
@@ -221,8 +220,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
         \subsubsection{Examples:}
-            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39.
-        {
+      {
             ~\\
             \usecodefont
             \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
@@ -239,7 +237,8 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \subsubsection{Description:}
             The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
 
-        \subsubsection{Examples:}
+        \subsubsection{Examples:
+        {
             ~\\
             \usecodefont
             \verb'First_symb    SET     0b10011100              ;Number in binary'\\
@@ -464,12 +463,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
         {
             ~\\
             \usecodefont
-            
-                \verb'; With REPT'}\\
+                \verb'; With REPT'\\
                 \verb'REPT              8'\\
-                \verb'SR0               sF'}\\
+                \verb'SR0               sF'\\
                 \verb'ENDR'\\
-                \verb'; Without REPT'}\\
+                \verb'; Without REPT'\\
                 \verb'SR0           sF'\\
                 \verb'SR0           sF'\\
                 \verb'SR0           sF'\\
@@ -479,7 +477,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 \verb'SR0           sF'\\
                 \verb'SR0           sF'\\
         }        
-        \subsection{\#WHILE}
+    \subsection{\#WHILE}
         \subsubsection{Syntax:}
             \verb'#WHILE  <symbol>'\\
             \verb'<code>'\\
@@ -492,109 +490,75 @@ Then each list element is beeing parsed and splitted into an address reference, 
             {
                 ~\\
                 \usecodefont
-                        \verb'B             SET             8'\\
-                        \verb'#WHILE        B                       ; while B != 0'\\
-                        \verb'SR0           sF'\\
-                        \verb'B             SET             B - 1'\\
-                        \verb'#ENDW'
-            }
+                \verb'B             SET             8'\\
+                \verb'#WHILE        B                       ; while B != 0'\\
+                \verb'SR0           sF'\\
+                \verb'B             SET             B - 1'\\
+                \verb'#ENDW'
+    }
     \subsection{SKIP}
-            \verb'REPT  <NumberOfInstructions>'
 
         \subsubsection{Syntax:}
-        \\ {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                { \color{highlight_directive} SKIP }\verb`       `{ \color{highlight_constant} <expresion> }
-                { \color{highlight_comment} ; expresion determines number of skipped lines of code  }\\
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.\\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'SKIP'}\verb'    '
-                    constant}\verb'3'}\verb'    \verb' ; this will skip first three SR0, performing only one SR0'}\\
-                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
-                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
-                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
-                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
-                    \caption{SKIP directive}
-                \end{code}
+            \verb'SKIP  <NumberOfInstructions>'
+            
+        \subsubsection{Description:}
+        SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.
+        
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'SKIP          3        ; this will skip first three SR0, performing only one SR0'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+        }
 
-        \subsection{UNDEFINE, UNDEF}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} UNDEFINE }\verb`     `
-                        { \color{highlight_symbol} <symbol> }
-                    \end{tabular}
-            }\\{
-                \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} UNDEF }\verb`     `
-                        { \color{highlight_symbol} <symbol> }
-                    \end{tabular}
-            \\
-            \\
-        \subsubsection{Description:}\\
-        All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.\\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    symbol}\verb'my_symbol'}\verb'    '
-                    directive}\verb'SET'}\verb'    'constant}\verb'15'}\\
-                    comment}\verb` ; my_symbol declared, can be used`}\\
-                    instruction}\verb'LOAD'}\verb'    'symbol}\verb'sF,my_symbol'}\\
-                    directive}\verb'UNDEFINE'}\verb'    '
-                    symbol}\verb'my_symbol'}\\
-                    comment}\verb' ; my_symbol undeclared, cannot be used'}\\
-                    instruction}\verb'LOAD'}\verb'    'symbol}\verb'sF,my_symbol'}
-                    comment}\verb'; this will cause an error now'}
-                    \caption{UNDEFINE directive}
-                \end{code}
+    \subsection{UNDEFINE, UNDEF}
 
-        \subsection{DB}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_comment} ; Expresion syntax}\\
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   <expresion1>  [,<expresion2>,..]}\\
-                        { \color{highlight_comment} ; String syntax}\\
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   <"string">}\\
-                        { \color{highlight_comment} ; Combination of string and expresions}\\
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
-                        { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
-                \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
-        so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
-        with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
-        See the examples for better understanding of DB directive.
-%
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   24828 }\\
-                        { \color{highlight_comment} ; hexadecimal 0060FC}\\
-                        { \color{highlight_comment} ; String syntax}\\
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   "my string"}\\
-                        { \color{highlight_comment} ; Combination of string and expresions}\\
-                        { \color{highlight_directive} DB }
-                        { \color{highlight_symbol}   "my string",2+1,3...}\\
-                        { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
-                    \caption{DB directive}
-                \end{code}
+        \subsubsection{Syntax:}
+        \verb'UNDEFINE          <symbol>'\\
+        \verb'UNDEF             <symbol>'
+        \subsubsection{Description:}
+        All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
 
-        \subsection{LIMIT}
+        \subsubsection{Examples:}\\
+        {
+            ~\\
+            \usecodefont
+            \verb'My_symbol             SET             15'\\
+            \verb'LOAD                  s0, #My_symbol'\\
+            \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be use'\\
+            \verb'LOAD                  s0, #My_symbol          ; this will cause an error'\\
+        }
+
+    \subsection{DB}
+        \subsubsection{Syntax:}
+            \verb '; Expresion syntax'\\
+            \verb'DB                 <expresion1>  [,<expresion2>,..]'\\
+            \verb' ; String syntax'\\
+            \verb'DB                <"string">'\\
+            \verb'; Combination of string and expresions'\\
+            \verb'DB                <"string"> [,<expresion1>,..]'\\
+            \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
+
+        \subsubsection{Description:}\\
+            The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
+            so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
+            with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
+            See the examples for better understanding of DB directive.
+
+        \subsubsection{Examples:}\\
+        {
+            ~\\
+            \usecodefont
+            \verb'DB      24828                   ; hexadecimal 0x0060FC'\\
+            \verb'DB      "my string"             ; String syntax'\\
+            \verb'DB      "my string",2+1,3...    ; Combination of string and expresions'\\
+            \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
+        }
+    \subsection{LIMIT}
         \subsubsection{Syntax:}\\
         \\ {
                 \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
