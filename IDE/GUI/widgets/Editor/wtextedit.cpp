@@ -21,12 +21,14 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     //qDebug() << "WTextEdit: WTextEdit()";
     this->sourceType = type;
     this->prevBlock = 0;
+    this->cursorLineColor = new QColor(0xE9, 0xE9, 0xE9);
     this->installEventFilter(this);
     if (this->sourceType != PLAIN)
     {
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
     this->setAcceptDrops(true);
+    this->makeMenu();
 
     connect(this,
             SIGNAL(cursorPositionChanged()),
@@ -255,6 +257,7 @@ void WTextEdit::highlightCurrentLine()
 
 bool WTextEdit::highlightLine(int line, QColor *color)
 {
+    
     //qDebug() << "WTextEdit: highlightLine()";
     //qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
@@ -488,7 +491,135 @@ void WTextEdit::cursorPositionChangedSlot()
 {
     if (this->textCursor().blockNumber() != this->prevBlock)
     {
+        if (this->isReadOnly() == false)
+        {
+            QTextBlockFormat lineFormat;
+            if (this->prevBlock <= this->document()->blockCount())
+            {
+                QTextBlock lineBlock = this->document()->findBlockByNumber(this->prevBlock);
+                lineFormat = lineBlock.blockFormat();
+                lineFormat.clearBackground();
+                QTextCursor cursor(lineBlock);
+                cursor.setBlockFormat(lineFormat);
+            }
+            QTextCursor curCursor(this->textCursor().block());
+            lineFormat = curCursor.blockFormat();
+            lineFormat.setBackground(*cursorLineColor);
+            curCursor.setBlockFormat(lineFormat);
+        }
         this->prevBlock = this->textCursor().blockNumber();
         emit updateLineCounter();
     }
+}
+
+
+void WTextEdit::contextMenuEvent(QContextMenuEvent *event)
+{
+    //if (target == textEdit)
+    qDebug() << "WTextEdit: contextMenuEvent";
+    if (this->textCursor().selectedText() == NULL)
+    {
+        cutAct->setEnabled(false);
+        copyAct->setEnabled(false);
+        deselectAct->setEnabled(false);
+    }
+    else
+    {
+        cutAct->setEnabled(true);
+        copyAct->setEnabled(true);
+        deselectAct->setEnabled(true);
+    }
+    editorPopup->popup(event->globalPos());
+}
+
+
+void WTextEdit::makeMenu()
+{
+    //qDebug() << "CodeEdit: makeMenu()";
+    editorPopup = new QMenu(this);
+    cutAct = new QAction("Cut", editorPopup);
+    copyAct = new QAction("Copy", editorPopup);
+    QAction *pasteAct = new QAction("Paste", editorPopup);
+    QAction *undoAct = new QAction("Undo", editorPopup);
+    QAction *redoAct = new QAction("Redo", editorPopup);
+    QAction *selectAllAct = new QAction("Select All", editorPopup);
+    deselectAct = new QAction("Deselect", editorPopup);
+    //QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
+    //QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
+
+
+    editorPopup->addAction(cutAct);
+    editorPopup->addAction(copyAct);
+    editorPopup->addAction(pasteAct);
+    editorPopup->addSeparator();
+    editorPopup->addAction(undoAct);
+    editorPopup->addAction(redoAct);
+    editorPopup->addSeparator();
+    editorPopup->addAction(selectAllAct);
+    editorPopup->addAction(deselectAct);
+    //editorPopup->addSeparator();
+    //editorPopup->addAction(splitHorizontalAct);
+    //editorPopup->addAction(splitVerticalAct);
+
+
+    /*connect(cutAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(editedCut())
+           );
+    connect(copyAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(copy()));
+    connect(pasteAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(editedPaste())
+           );
+    connect(undoAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(editedUndo())
+           );
+    connect(redoAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(editedRedo())
+           );connect(cutAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(editedCut())
+           );*/
+    connect(copyAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(copy()));
+    connect(pasteAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(paste())
+           );
+    connect(undoAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(undo())
+           );
+    connect(redoAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(redo())
+           );
+    connect(selectAllAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(selectAll())
+           );
+    connect(deselectAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(deselect())
+           );
+    //connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
+    //connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
+    //qDebug() << "CodeEdit: return makeMenu()";
 }

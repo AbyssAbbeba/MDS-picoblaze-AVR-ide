@@ -88,6 +88,7 @@ class WLineCounterWidget : public QWidget
 
     protected:
         void paintEvent(QPaintEvent *);
+        void mousePressEvent(QMouseEvent *event);
 };
 
 #endif
