@@ -2,10 +2,10 @@
 
 Avr8UsbProgIsp::Avr8UsbProgIsp()
 {
-	tWD_FUSE=0;
-	tWD_FLASH=0;
-	tWD_EEPROM=0;
-	tWD_ERASE=0;
+    tWD_FUSE=0;
+    tWD_FLASH=0;
+    tWD_EEPROM=0;
+    tWD_ERASE=0;
 }
 
 void Avr8UsbProgIsp::findProgrammers ( QStringList & result )
@@ -14,15 +14,15 @@ void Avr8UsbProgIsp::findProgrammers ( QStringList & result )
 }
 
 void Avr8UsbProgIsp::setDelays(
-	const int _tWD_FUSE,
-	const int _tWD_FLASH,
-	const int _tWD_EEPROM,
-	const int _tWD_ERASE)
+    const int _tWD_FUSE,
+    const int _tWD_FLASH,
+    const int _tWD_EEPROM,
+    const int _tWD_ERASE)
 {
-	tWD_FUSE=_tWD_FUSE;
-	tWD_FLASH=_tWD_FLASH;
-	tWD_EEPROM=_tWD_EEPROM;
-	tWD_ERASE=_tWD_ERASE;
+    tWD_FUSE=_tWD_FUSE;
+    tWD_FLASH=_tWD_FLASH;
+    tWD_EEPROM=_tWD_EEPROM;
+    tWD_ERASE=_tWD_ERASE;
 }
 
 
@@ -31,14 +31,14 @@ void Avr8UsbProgIsp::setDelays(
  */
 bool Avr8UsbProgIsp::ProgrammingEnable()
 {
-// 	bool result;
+//      bool result;
 // 
-// 	readWrite(0xAC);
-// 	readWrite(0x53);
-// 	result=(readWrite() == 0x53);
-// 	readWrite();
+//      readWrite(0xAC);
+//      readWrite(0x53);
+//      result=(readWrite() == 0x53);
+//      readWrite();
 // 
-// 	return result;
+//      return result;
 return true;
 }
 
@@ -47,18 +47,18 @@ return true;
  */
 void Avr8UsbProgIsp::chipErase()
 {
-// 	readWrite(0xAC);
-// 	readWrite(0x80);
-// 	readWrite();
-// 	readWrite();
+//      readWrite(0xAC);
+//      readWrite(0x80);
+//      readWrite();
+//      readWrite();
 // 
-// 	usleep(tWD_ERASE);
+//      usleep(tWD_ERASE);
 }
 
 /* Read Program Memory */
 unsigned char Avr8UsbProgIsp::readProgramMemory(int address)
 {
-	return readProgramMemoryLowLevel(address & 0x1, address >> 9, (address & 0x1fe) >> 1);
+    return readProgramMemoryLowLevel(address & 0x1, address >> 9, (address & 0x1fe) >> 1);
 }
 
 /* Read Program Memory
@@ -66,10 +66,10 @@ unsigned char Avr8UsbProgIsp::readProgramMemory(int address)
  */
 unsigned char Avr8UsbProgIsp::readProgramMemoryLowLevel(bool h, unsigned char a, unsigned char b)
 {
-// 	readWrite(0x20 | (h ? 0x08 : 0x00));
-// 	readWrite(a);
-// 	readWrite(b);
-// 	return readWrite();
+//      readWrite(0x20 | (h ? 0x08 : 0x00));
+//      readWrite(a);
+//      readWrite(b);
+//      return readWrite();
 
 return 0;
 }
@@ -77,7 +77,7 @@ return 0;
 /* Load Program Memory Page */
 void Avr8UsbProgIsp::loadProgramMemoryPage(int address, unsigned char data)
 {
-// 	loadProgramMemoryPageLowLevel(address & 0x1, address >> 1, data);
+//      loadProgramMemoryPageLowLevel(address & 0x1, address >> 1, data);
 }
 
 /* Load Program Memory Page
@@ -85,10 +85,10 @@ void Avr8UsbProgIsp::loadProgramMemoryPage(int address, unsigned char data)
  */
 void Avr8UsbProgIsp::loadProgramMemoryPageLowLevel(bool h, unsigned char b, unsigned char i)
 {
-// 	readWrite(0x40 | (h ? 0x08 : 0x00));
-// 	readWrite();
-// 	readWrite(b);
-// 	readWrite(i);
+//      readWrite(0x40 | (h ? 0x08 : 0x00));
+//      readWrite();
+//      readWrite(b);
+//      readWrite(i);
 }
 
 /* Write Program Memory Page
@@ -96,8 +96,8 @@ void Avr8UsbProgIsp::loadProgramMemoryPageLowLevel(bool h, unsigned char b, unsi
  */
 void Avr8UsbProgIsp::writeProgramMemoryPage(int address)
 {
-	address>>=1;
-	writeProgramMemoryPageLowLevel((unsigned char)(address >> 8), (unsigned char)(address & 0xff));
+    address>>=1;
+    writeProgramMemoryPageLowLevel((unsigned char)(address >> 8), (unsigned char)(address & 0xff));
 }
 
 /* Write Program Memory Page
@@ -105,12 +105,12 @@ void Avr8UsbProgIsp::writeProgramMemoryPage(int address)
  */
 void Avr8UsbProgIsp::writeProgramMemoryPageLowLevel(unsigned char a, unsigned char b)
 {
-// 	readWrite(0x4C);
-// 	readWrite(a);
-// 	readWrite(b);
-// 	readWrite();
+//      readWrite(0x4C);
+//      readWrite(a);
+//      readWrite(b);
+//      readWrite();
 // 
-// 	usleep(tWD_FLASH);
+//      usleep(tWD_FLASH);
 }
 
 /* Read EEPROM Memory
@@ -118,10 +118,10 @@ void Avr8UsbProgIsp::writeProgramMemoryPageLowLevel(unsigned char a, unsigned ch
  */
 unsigned char Avr8UsbProgIsp::readEepromMemory(unsigned int b)
 {
-// 	readWrite(0xA0);
-// 	readWrite(b >> 8);
-// 	readWrite(b & 0x0ff);
-// 	return readWrite();
+//      readWrite(0xA0);
+//      readWrite(b >> 8);
+//      readWrite(b & 0x0ff);
+//      return readWrite();
 return 0;
 }
 
@@ -130,12 +130,12 @@ return 0;
  */
 void Avr8UsbProgIsp::writeEepromMemory(unsigned int b, unsigned char i)
 {
-// 	readWrite(0xC0);
-// 	readWrite(b >> 8);
-// 	readWrite(b & 0xff);
-// 	readWrite(i);
+//      readWrite(0xC0);
+//      readWrite(b >> 8);
+//      readWrite(b & 0xff);
+//      readWrite(i);
 // 
-// 	usleep(tWD_EEPROM);
+//      usleep(tWD_EEPROM);
 }
 
 /* Load EEPROM Memory Page (page access)
@@ -143,10 +143,10 @@ void Avr8UsbProgIsp::writeEepromMemory(unsigned int b, unsigned char i)
  */
 void Avr8UsbProgIsp::loadEepromMemoryPage(unsigned int b, unsigned char i)
 {
-// 	readWrite(0xC1);
-// 	readWrite(b >> 8);
-// 	readWrite(b & 0xff);
-// 	readWrite(i);
+//      readWrite(0xC1);
+//      readWrite(b >> 8);
+//      readWrite(b & 0xff);
+//      readWrite(i);
 }
 
 /* Write EEPROM Memory Page (page access)
@@ -154,12 +154,12 @@ void Avr8UsbProgIsp::loadEepromMemoryPage(unsigned int b, unsigned char i)
  */
 void Avr8UsbProgIsp::writeEepromMemoryPage(unsigned int b)
 {
-// 	readWrite(0xC2);
-// 	readWrite(b >> 8);
-// 	readWrite(b & 0xff);
-// 	readWrite();
+//      readWrite(0xC2);
+//      readWrite(b >> 8);
+//      readWrite(b & 0xff);
+//      readWrite();
 // 
-// 	usleep(tWD_EEPROM);
+//      usleep(tWD_EEPROM);
 }
 
 /* Read Lock bits
@@ -167,10 +167,10 @@ void Avr8UsbProgIsp::writeEepromMemoryPage(unsigned int b)
  */
 unsigned char Avr8UsbProgIsp::readLockBits()
 {
-// 	readWrite(0x58);
-// 	readWrite();
-// 	readWrite();
-// 	return readWrite();
+//      readWrite(0x58);
+//      readWrite();
+//      readWrite();
+//      return readWrite();
 return 0;
 }
 
@@ -179,10 +179,10 @@ return 0;
  */
 void Avr8UsbProgIsp::writelockbits(unsigned char i)
 {
-// 	readWrite(0xAC);
-// 	readWrite(0xE0);
-// 	readWrite();
-// 	readWrite(i);
+//      readWrite(0xAC);
+//      readWrite(0xE0);
+//      readWrite();
+//      readWrite(i);
 }
 
 /* Read Signature Byte
@@ -190,10 +190,10 @@ void Avr8UsbProgIsp::writelockbits(unsigned char i)
  */
 unsigned char Avr8UsbProgIsp::readSignatureByte(unsigned char b)
 {
-// 	readWrite(0x30);
-// 	readWrite();
-// 	readWrite(b);
-// 	return readWrite();
+//      readWrite(0x30);
+//      readWrite();
+//      readWrite(b);
+//      return readWrite();
 return 0;
 }
 
@@ -202,12 +202,12 @@ return 0;
  */
 void Avr8UsbProgIsp::writeFuseBits(unsigned char i)
 {
-// 	readWrite(0xAC);
-// 	readWrite(0xA0);
-// 	readWrite();
-// 	readWrite(i);
+//      readWrite(0xAC);
+//      readWrite(0xA0);
+//      readWrite();
+//      readWrite(i);
 // 
-// 	usleep(tWD_FUSE);
+//      usleep(tWD_FUSE);
 }
 
 /* Write Fuse High bits
@@ -215,12 +215,12 @@ void Avr8UsbProgIsp::writeFuseBits(unsigned char i)
  */
 void Avr8UsbProgIsp::writeFuseHighBits(unsigned char i)
 {
-// 	readWrite(0xAC);
-// 	readWrite(0xA8);
-// 	readWrite();
-// 	readWrite(i);
+//      readWrite(0xAC);
+//      readWrite(0xA8);
+//      readWrite();
+//      readWrite(i);
 // 
-// 	usleep(tWD_FUSE);
+//      usleep(tWD_FUSE);
 }
 
 /* Write Extended Fuse Bits
@@ -228,12 +228,12 @@ void Avr8UsbProgIsp::writeFuseHighBits(unsigned char i)
  */
 void Avr8UsbProgIsp::writeExtendedFuseBits(unsigned char i)
 {
-// 	readWrite(0xAC);
-// 	readWrite(0xA4);
-// 	readWrite();
-// 	readWrite(i);
+//      readWrite(0xAC);
+//      readWrite(0xA4);
+//      readWrite();
+//      readWrite(i);
 // 
-// 	usleep(tWD_FUSE);
+//      usleep(tWD_FUSE);
 }
 
 /* Read Fuse bits
@@ -241,10 +241,10 @@ void Avr8UsbProgIsp::writeExtendedFuseBits(unsigned char i)
  */
 unsigned char Avr8UsbProgIsp::readFuseBits()
 {
-// 	readWrite(0x50);
-// 	readWrite();
-// 	readWrite();
-// 	return readWrite();
+//      readWrite(0x50);
+//      readWrite();
+//      readWrite();
+//      return readWrite();
 return 0;
 }
 
@@ -253,10 +253,10 @@ return 0;
  */
 unsigned char Avr8UsbProgIsp::readFuseHighBits()
 {
-// 	readWrite(0x58);
-// 	readWrite(0x08);
-// 	readWrite();
-// 	return readWrite();
+//      readWrite(0x58);
+//      readWrite(0x08);
+//      readWrite();
+//      return readWrite();
 return 0;
 }
 
@@ -265,10 +265,10 @@ return 0;
  */
 unsigned char Avr8UsbProgIsp::readExtendedFuseBits()
 {
-// 	readWrite(0x50);
-// 	readWrite(0x08);
-// 	readWrite();
-// 	return readWrite();
+//      readWrite(0x50);
+//      readWrite(0x08);
+//      readWrite();
+//      return readWrite();
 return 0;
 }
 
@@ -277,10 +277,10 @@ return 0;
  */
 unsigned char Avr8UsbProgIsp::readCalibrationByte(unsigned char b)
 {
-// 	readWrite(0x38);
-// 	readWrite();
-// 	readWrite(b);
-// 	return readWrite();
+//      readWrite(0x38);
+//      readWrite();
+//      readWrite(b);
+//      return readWrite();
 return 0;
 }
 
@@ -289,9 +289,9 @@ return 0;
  */
 bool Avr8UsbProgIsp::pollRDYBSY()
 {
-// 	readWrite(0xF0);
-// 	readWrite();
-// 	readWrite();
-// 	return bool(readWrite());
+//      readWrite(0xF0);
+//      readWrite();
+//      readWrite();
+//      return bool(readWrite());
 return false;
 }
