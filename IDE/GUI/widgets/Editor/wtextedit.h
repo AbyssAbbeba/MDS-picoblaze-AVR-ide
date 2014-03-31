@@ -69,14 +69,22 @@ class WTextEdit : public QPlainTextEdit
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
 
     private:
+        void makeMenu();
+        
         Highlighter *highlighter;
         SourceType sourceType;
         int prevBlock;
+        QColor *cursorLineColor;
+        QMenu *editorPopup;
+        QAction *cutAct;
+        QAction *copyAct;
+        QAction *deselectAct;
         
 
 
     protected:
         bool eventFilter(QObject *target, QEvent *event);
+        void contextMenuEvent(QContextMenuEvent *event);
 };
 
 

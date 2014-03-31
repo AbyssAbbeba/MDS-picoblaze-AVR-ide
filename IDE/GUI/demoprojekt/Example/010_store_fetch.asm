@@ -2,8 +2,8 @@
 ; See manual for more info
 
 ; Press Start simulation and Animate to run the program
-;sdffg
-;s
+;
+;
 ; SYMBOL DEFINITIONS
 ;
 numero               EQU                0b01010101
