@@ -200,836 +200,730 @@ Then each list element is beeing parsed and splitted into an address reference, 
         }
 
     \subsection{EQU}
-                \textbf{SYNTAX:}\\
-                        \\ {
-                            \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                    { \color{highlight_symbol} <symbol> }  &
-                                    { \color{highlight_directive} EQU } &
-                                    { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                            \end{tabular}
-                        }\\
-                        \\
-                \textbf{DESCRIPTION:}\\
+        \subsubsection{Syntax}
+            \verb'<symbol>      EQU             <expresion> '
+            
+        \subsubsection{Description:}
                 The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
-                \\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                                {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                                {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                                {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                                {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                                {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'EQU'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                        \caption{Using EQU directive}
-                    \end{code}
+                
+        \subsubsection{Examples:}
+            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39.
+        {
+            ~\\
+            \usecodefont
+            \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
+            \verb'Second_symb   EQU     47                      ;Number in decimal'\\
+            \verb'Third_symb    EQU     0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   EQU     (A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'Fifth_symb    EQU     0x09 << 2               ;'\\
+        }
 
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+    \subsection{CONSTANT}
+        \subsubsection{Syntax}
+            \verb'CONSTANT             <symbol>,<expresion> '
 
-                \subsection{CONSTANT}
-                \textbf{SYNTAX:}\\
-                    \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} CONSTANT } &
-                                { \color{highlight_symbol} <symbol> }  &
-                                \verb',' &
-                                { \color{highlight_constant} <expresion> }\\
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                The directive CONSTANT allows you to give a numerical value to a symbol. It is same like EQU, but with diferent syntax. Cannot be redefined.\\
+        \subsubsection{Description:}
+                The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
-                \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                        %\mysmallfont{}
-                                {\color{highlight_directive}\verb'CONSTANT'}\verb'    '{\color{highlight_symbol}\verb'First_symb'}\verb','{\color{highlight_constant}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                                {\color{highlight_directive}\verb'CONSTANT'}\verb'    '{\color{highlight_symbol}\verb'Second_symb'}\verb','{\color{highlight_constant}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                                {\color{highlight_directive}\verb'CONSTANT'}\verb'    '{\color{highlight_symbol}\verb'Third_symb'}\verb','{\color{highlight_constant}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                        \caption{Using CONSTANT directive}
-                    \end{code}
+        \subsubsection{Examples:}
+            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39.
+        {
+            ~\\
+            \usecodefont
+            \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
+            \verb'CONSTANT     Second_symb,47                      ;Number in decimal'\\
+            \verb'CONSTANT     Third_symb,0x39                     ;Number in hexadecimal'\\
+            \verb'CONSTANT     Fourth_symb,(A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'CONSTANT     Fifth_symb,0x09 << 2                ;'\\
+        }
 
-                In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-                {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
+    \subsection{SET}
+        \subsubsection{Syntax}
+            \verb'<symbol>      SET             <expresion>'
 
-            \subsection{SET}
-            \textbf{SYNTAX:}\\
-                    \\ {
-                            \texttt{}
-                            \begin{tabular}[h!]{llll}
-                            { \color{highlight_symbol} <symbol> }  &
-                            { \color{highlight_directive} SET } &
-                            { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                            \end{tabular}
-                    }
-                    \\
+        \subsubsection{Description:}
+            The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
 
-            \textbf{DESCRIPTION:}\\
-            Directive SET is quite similar to EQU, but symbols defined with the SET(and Variable) directive can be redefined with another value in your source
-            code, but those defined with EQU cannot.\\
+        \subsubsection{Examples:}
+            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39 etc.
+            {
+            ~\\
+            \usecodefont
+            \verb'First_symb    SET     0b10011100              ;Number in binary'\\
+            \verb'Second_symb   SET     47                      ;Number in decimal'\\
+            \verb'Third_symb    SET     0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   SET     (A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'Fifth_symb    SET     0x09 << 2               ;'\\
+        }
+        
+    \subsection{VARIABLE}
+        \subsubsection{Syntax:}
+            \verb'VARIABLE            <symbol>,<expresion>'
 
-            \textbf{EXAMPLE:}\\
-                \begin{code}[h!]
-                \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'SET'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                \caption{Using SET directive}
-                \end{code}
-
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-
-            \subsection{VARIABLE}
-            \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} VARIABLE } &
-                            { \color{highlight_symbol} <symbol> }  &
-                            \verb',' &
-                            { \color{highlight_constant} <expresion> }\\
-                    \end{tabular}
-                }\\
-                \\
-            \textbf{DESCRIPTION:}\\
+        \subsubsection{Description:}
             Directive VARIABLE is similar to SET, but with diferent syntax. Symbols defined with VARIABLE can be redefined with another value in your source
             code, but those defined with EQU cannot.
 
-            \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                            %\mysmallfont{}
-                                    {\color{highlight_directive}\verb'VARIABLE'}\verb'    '{\color{highlight_symbol}\verb'First_symb'}\verb','{\color{highlight_constant}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                                    {\color{highlight_directive}\verb'VARIABLE'}\verb'    '{\color{highlight_symbol}\verb'Second_symb'}\verb','{\color{highlight_constant}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                                    {\color{highlight_directive}\verb'VARIABLE'}\verb'    '{\color{highlight_symbol}\verb'Third_symb'}\verb','{\color{highlight_constant}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            \caption{Using CONSTANT directive}
-                    \end{code}
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'VARIABLE     First_symb,0b10011100               ;Number in binary'\\
+            \verb'VARIABLE     Second_symb,47                      ;Number in decimal'\\
+            \verb'VARIABLE     Third_symb,0x39                     ;Number in hexadecimal'\\
+            \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'VARIABLE     Fifth_symb,0x09 << 2                ;'\\
+        }
+            
+    \subsection{REG}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      REG             <reg name/address>'
+        \subsubsection{Description:}
+        Symbols defined with the REG directive are by compiler considered as work registers.
 
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
+        \subsubsection{Examples:}
+            {
+            ~\\
+            \usecodefont
+            \verb'First_symb    REG     s1'\\
+            \verb'Second_symb   REG     s2'\\
+            \verb'Third_symb    REG     s3'\\
+            \verb'Fourth_symb   REG     s4'\\
+            \verb'Fifth_symb    REG     s5'\\
+            }
+            
+        \subsection{NAMEREG}
+            \verb'NAMEREG            <symbol>,<reg name or address> '
+            
+        \subsubsection{Description:}
+        Directive NAMEREG is similar to REG, but with diferent syntax. Symbols defined with NAMEREG can be redefined with another value in your source
+        code.
 
-                \subsection{REG}
-                \textbf{SYNTAX:}\\
-                                \\ {
-                                        \texttt{}
-                                        \begin{tabular}[h!]{llll}
-                                        { \color{highlight_symbol} <symbol> }  &
-                                        { \color{highlight_directive} REG } &
-                                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment} }\\
-                                        \end{tabular}
-                                }
-                                \\
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'NAMEREG     s1'\\
+            \verb'NAMEREG     s2'\\
+            \verb'NAMEREG     s3'\\
+            \verb'NAMEREG     4         ; Address'\\
+            \verb'NAMEREG     0xA       ; Address'\\
+        }
 
-                \textbf{DESCRIPTION:}\\
-                Symbols defined with the REG directive are by compiler considered as work registers.
 
-                \textbf{EXAMPLE:}\\
-                       \begin{code}[h!]
-                \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'REG'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-              \caption{Using REG directive}
-                \end{code}
+    \subsection{DATA}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      DATA             <expresion>'
+            
+        \subsubsection{Description:}
+            Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
 
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'First_symb    DATA                0b10011100              ;Number in binary'\\
+                \verb'Second_symb   DATA                47                      ;Number in decimal'\\
+                \verb'Third_symb    DATA                0x39                    ;Number in hexadecimal'\\
+                \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expresion'\\
+                \verb'Fifth_symb    DATA                0x09 << 2               ;'\\
+            }
+            
+    \subsection{CODE}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      CODE             <expresion>'
+        \subsubsection{Description:}
+        Symbols defined with the CODE directive are by compiler considered as program memory.
 
-                \subsection{NAMEREG}
-                \textbf{SYNTAX:}\\
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'First_symb    CODE                0b10011100              ;Number in binary'\\
+                \verb'Second_symb   CODE                47                      ;Number in decimal'\\
+                \verb'Third_symb    CODE                0x39                    ;Number in hexadecimal'\\
+                \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expresion'\\
+                \verb'Fifth_symb    CODE                0x09 << 2               ;'\\
+            }
+            
+    \subsection{PORT}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      PORT             <expresion>'
+
+        \subsubsection{Description:}
+        Symbol defined with this directive is considered to be PORT\_ID identificator.
+
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'First_symb    PORT                0x10    '\\
+                \verb'Second_symb   PORT                10      '\\
+                \verb'Third_symb    PORT                0x2     '\\
+                \verb'Fourth_symb   PORT                0x5     '\\
+                \verb'Fifth_symb    PORT                0x09 + 2'\\
+            }
+    \subsection{AUTOREG}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      AUTOREG         [<cnt address>]'
+            
+        \subsubsection{Description:}
+        This directive saves time. You can use it, when you dont care which work register will be used. It will automatically assign a register
+        at adress 0x00, which is incremented with every other AUTOREG directive. Optionaly, you can change starting address counter by adding a parameter
+        after AUTOREG directive. You can check assigned registers in codelisting (file .lst) and symbol table (file .sym).
+
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'First_symb    AUTOREG             ; Automaticaly assigned, register at adress 0x00'\\
+                \verb'Second_symb   AUTOREG'\\
+                \verb'Third_symb    AUTOREG'\\
+                \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting adress to 0x05'\\
+                \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'\\
+            }
+            
+    \subsection{AUTOSPR}
+        \subsubsection{Syntax:}\\
                     \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} NAMEREG } &
-                                { \color{highlight_symbol} <symbol> }  &
-                                \verb',' &
-                                { \color{highlight_constant} <expresion> }\\
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Directive NAMEREG is similar to REG, but with diferent syntax. Symbols defined with NAMEREG can be redefined with another value in your source
-                code.
-
-                \textbf{EXAMPLE:}\\
-                \begin{code}[h!]
-                        %\mysmallfont{}
-                                {\color{highlight_directive}\verb'NAMEREG'}\verb'    '{\color{highlight_symbol}\verb'First_symb'}\verb','{\color{highlight_constant}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                                {\color{highlight_directive}\verb'NAMEREG'}\verb'    '{\color{highlight_symbol}\verb'Second_symb'}\verb','{\color{highlight_constant}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                                {\color{highlight_directive}\verb'NAMEREG'}\verb'    '{\color{highlight_symbol}\verb'Third_symb'}\verb','{\color{highlight_constant}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                        \caption{Using CONSTANT directive}
-                    \end{code}
-
-                In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-                {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39.
-
-
-
-                \subsection{DATA}
-                \textbf{SYNTAX:}\\
-                                \\ {
-                                        \texttt{}
-                                        \begin{tabular}[h!]{llll}
-                                        { \color{highlight_symbol} <symbol> }  &
-                                        { \color{highlight_directive} DATA } &
-                                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                                        \end{tabular}
-                                }
-                                \\
-                \textbf{DESCRIPTION:}\\
-               Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
-
-                \textbf{EXAMPLE:}\\
-                \begin{code}[h!]
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'DATA'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-              \caption{Using DATA directive}
-                \end{code}
-
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-
-                \subsection{CODE}
-                \textbf{SYNTAX:}\\
-                                \\ {
-                                        \texttt{}
-                                        \begin{tabular}[h!]{llll}
-                                        { \color{highlight_symbol} <symbol> }  &
-                                        { \color{highlight_directive} CODE } &
-                                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                                        \end{tabular}
-                                }
-                                \\
-                \textbf{DESCRIPTION:}\\
-                Symbols defined with the CODE directive are by compiler considered as program memory.
-
-                \textbf{EXAMPLE:}\\
-                \begin{code}[h!]
-                \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'CODE'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            \caption{Using CODE directive}
-                \end{code}
-
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-
-                \subsection{PORT}
-                \textbf{SYNTAX:}\\
-                                \\ {
-                                        \texttt{}
-                                        \begin{tabular}[h!]{llll}
-                                        { \color{highlight_symbol} <symbol> }  &
-                                        { \color{highlight_directive} PORT } &
-                                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                                        \end{tabular}
-                                }
-                                \\
-                \textbf{DESCRIPTION:}\\
-                Symbol defined with this directive is considered to be PORT\_ID identificator.
-
-                \textbf{EXAMPLE:}\\
-                \begin{code}[h!]
-                \mysmallfont{}
-                            {\color{highlight_constant}\verb'First_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_bin}\verb'0b10011100'}\verb'   '{\color{highlight_comment}\verb'; Number in binary'}\\
-                            {\color{highlight_constant}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_oct}\verb'47'}\verb'       '{\color{highlight_comment}\verb'; Decimal'}\\
-                            {\color{highlight_constant}\verb'Third_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'0x39'}\verb'       '{\color{highlight_comment}\verb'; Hexadecimal'}\\
-                            {\color{highlight_constant}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'(A -4)+ 18 / B)'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-                            {\color{highlight_constant}\verb'Fifth_symb'}\verb'    '{\color{highlight_directive}\verb'PORT'}\verb' '{\color{highlight_dec}\verb'0x09 << 2'}\verb'       '{\color{highlight_comment}\verb'; Expresion'}\\
-              \caption{Using PORT directive}
-                \end{code}
-
-            In this example, the assembler would always replace {\color{highlight_symbol}\verb'First_symb'} with 0x9C,
-            {\color{highlight_symbol}\verb'Second_symb'} with 0x2F and {\color{highlight_symbol}\verb'Third_symb'} with 0x39 etc.
-
-
-                \subsection{AUTOREG}
-                \textbf{SYNTAX:}\\
-                        \\ {
-                                \texttt{}
-                                \begin{tabular}[h!]{llll}
-                                { \color{highlight_symbol} <symbol> }  &
-                                { \color{highlight_directive} AUTOREG }
-                                { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                    counter starting adress }\\
-                                \end{tabular}
-                        }
-                        \\
-
-                \textbf{DESCRIPTION:}\\
-                This directive saves time. You can use it, when you dont care which work register will be used. It will automatically assign a register
-                at adress 0x00, which is incremented with every other AUTOREG directive. Optionaly, you can change starting address counter by adding a parameter
-                after AUTOREG directive. You can check assigned registers in codelisting (file .lst) and symbol table (file .sym).
-
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                        \mysmallfont{}
-                                {\color{highlight_symbol}\verb'First_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOREG'}\verb'   '
-                                {\color{highlight_comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
-                                {\color{highlight_symbol}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOREG'}\verb'   '
-                                \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x01 '}\\
-                                {\color{highlight_symbol}\verb'Third_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOREG'}\verb'   '
-                                \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x02 '}\\
-                                {\color{highlight_comment}\verb'; Now with optional parameter changing counting adress '}\\
-                                {\color{highlight_symbol}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOREG'}\verb'   '
-                                {\color{highlight_symbol}\verb'AT 10h'}\verb'  '{\color{highlight_comment}\verb'; Registers are now defined from adress 0x10 '}
-                                {\color{highlight_symbol}\verb'Fifth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOREG'}\verb'   '
-                                {\color{highlight_comment}\verb'; Now register at adress 0x11'}\\
-                        \caption{Using AUTOREG directive}
-                    \end{code}
-
-                \subsection{AUTOSPR}
-                \textbf{SYNTAX:}\\
-                            \\ {
-                                    \texttt{}
-                                    \begin{tabular}[h!]{llll}
-                                    { \color{highlight_symbol} <symbol> }  &
-                                    { \color{highlight_directive} AUTOSPR }
-                                    { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                        counter starting adress }\\
-                                    { \color{highlight_constant} length } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                        counter starting adress }\\
-                                    \end{tabular}
-                            }
-                            \\
-            \textbf{DESCRIPTION:}\\
-            Must be used only with instructions FETCH and STORE. It will automatically assign an
-            adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
-            after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
-
-            \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                    \mysmallfont{}
-                            {\color{highlight_symbol}\verb'First_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
-                            {\color{highlight_symbol}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x01 '}\\
-                            {\color{highlight_symbol}\verb'Third_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x02 '}\\
-                            {\color{highlight_comment}\verb'; Now with optional parameter changing counting adress '}\\
-                            {\color{highlight_symbol}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_symbol}\verb'10h'}\verb'  '{\color{highlight_comment}\verb'; Registers are now defined from adress 0x10 '}
-                            {\color{highlight_symbol}\verb'Fifth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_comment}\verb'; Now register at adress 0x11'}\\
-                    \caption{Using AUTOREG directive}
-                \end{code}
-
-               \subsection{INITSPR}
-                \textbf{SYNTAX:}\\
-                            \\ {
-                                    \texttt{}
-                                    \begin{tabular}[h!]{llll}
-                                    { \color{highlight_symbol} <symbol> }  &
-                                    { \color{highlight_directive} AUTOSPR }
-                                    { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                        counter starting adress }\\
-                                    \end{tabular}
-                            }
-                            \\
-            \textbf{DESCRIPTION:}\\
-            Must be used only with instructions FETCH and STORE. It will automatically assign an
-            adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
-            after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
-
-            \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                    \mysmallfont{}
-                            {\color{highlight_symbol}\verb'First_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
-                            {\color{highlight_symbol}\verb'Second_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x01 '}\\
-                            {\color{highlight_symbol}\verb'Third_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            \verb'  '{\color{highlight_comment}\verb'; Adress incremented, register at adress 0x02 '}\\
-                            {\color{highlight_comment}\verb'; Now with optional parameter changing counting adress '}\\
-                            {\color{highlight_symbol}\verb'Fourth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_symbol}\verb'10h'}\verb'  '{\color{highlight_comment}\verb'; Registers are now defined from adress 0x10 '}
-                            {\color{highlight_symbol}\verb'Fifth_symb'}\verb'   '{\color{highlight_directive}\verb'AUTOSPR'}\verb'   '
-                            {\color{highlight_comment}\verb'; Now register at adress 0x11'}\\
-                    \caption{Using AUTOREG directive}
-                \end{code}
-
-                \subsection{ORGSPR, MERGESPR}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} ORGSPR } & \verb'         '
-                                { \color{highlight_constant} <address> } & { \color{highlight_comment}  }\\
-                        \end{tabular}
-                    }\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} MERGESPR } & \verb'         '
-                                { \color{highlight_constant} <address>,<size> } & { \color{highlight_comment}  }\\
-                        \end{tabular}
-                    }\\
-                \textbf{DESCRIPTION:}\\
-                When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
-                The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
-                being assembled and is incremented after each line by the number of bytes of data or code in that line.
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
-                        \caption{Using ORG directive}
-                        \end{code}
-                        \begin{code}[h!]
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
-                        \caption{Using ADDRESS directive}
-                        \end{code}
-
-
-                \subsection{DEFINE}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_symbol} <symbol> }  &
-                                { \color{highlight_directive} DEFINE } &
-                                { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                        \end{tabular}
-                    }\\
-                    \\
-
-                \textbf{DESCRIPTION:}\\
-                You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used.
-
-                \textbf{EXAMPLE:}\\
-                                \begin{code}[h!]
-                                    {\color{highlight_symbol}\verb'A'}\verb'   '{\color{highlight_directive}\verb'EQU'}\verb' '
-                                    {\color{highlight_oct}\verb'10'}\verb'       '{\color{highlight_comment}\verb'; First symbol'}\\
-                                    {\color{highlight_symbol}\verb'B'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '
-                                    {\color{highlight_oct}\verb'5'}\verb'       '{\color{highlight_comment}\verb'; Second  symbol, redefinable'}\\
-                                    {\color{highlight_symbol}\verb'C'}\verb'    '{\color{highlight_directive}\verb'DEFINE'}\verb' '
-                                    {\color{highlight_constant}\verb'(A + B) * 2'}\verb'   '{\color{highlight_comment}\verb'; Defined expresion'}\\
-                                    {\color{highlight_symbol}\verb'C = '}{\color{highlight_constant}\verb'30'}\\
-                                    {\color{highlight_symbol}\verb'B'}\verb'   '{\color{highlight_directive}\verb'SET'}\verb' '
-                                    {\color{highlight_oct}\verb'10'}\verb'       '{\color{highlight_comment}\verb'; B redefined'}\\
-                                    {\color{highlight_symbol}\verb'C = '}{\color{highlight_constant}\verb'40'}\verb'   '{\color{highlight_comment}\verb'; C is now different'}\\\\
-                                \caption{Example of DEFINE directive}
-                                \end{code}
-
-               \subsection{ADDRESS,ORG}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} ORG } & \verb'         '
-                                { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                        \end{tabular}
-                    }\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} ADDRESS } & \verb'         '
-                                { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                        \end{tabular}
-                    }\\
-                \textbf{DESCRIPTION:}\\
-                When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
-                The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
-                being assembled and is incremented after each line by the number of bytes of data or code in that line.
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ORG'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
-                        \caption{Using ORG directive}
-                        \end{code}
-                        \begin{code}[h!]
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'0x3FF'}\verb'                  '{\color{highlight_comment}\verb'; Number'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'START:'}\verb'                    '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_label}\verb'INTERRUPT'}\verb'                 '{\color{highlight_comment}\verb'; Symbol'}\\
-                                \verb'    '{\color{highlight_directive}\verb'ADDRESS'}\verb'   '{\color{highlight_constant}\verb'($ + 15) AND 0xFFEE'}\verb'    '{\color{highlight_comment}\verb'; Expresion'}\\
-                        \caption{Using ADDRESS directive}
-                        \end{code}
-
-                \subsection{REPT}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} REPT }
-                                { \color{highlight_constant} <expresion> }\verb'       ' { \color{highlight_comment} ; expresion determines number of repetion  }\\
-                                { \color{highlight_symbol} <repeated code> }\\
-                                { \color{highlight_directive} ENDR } { \color{highlight_comment} ; end of repetion  }
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Directive REPT is able to repeatedly execute a block of code.
-
-                \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                        {\color{highlight_comment}\verb'; With REPT'}\\\\
-                        {\color{highlight_directive}\verb'REPT'}\verb'    '{\color{highlight_constant}\verb'8'}\verb'   '
-                        {\color{highlight_comment}\verb'; Number of repetions'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_directive}\verb'ENDR'}\\
-                        {\color{highlight_comment}\verb'; Without REPT'}\\\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                        \caption{Example of REPT directive}
-                    \end{code}
-
-                \subsection{\#WHILE}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
+                            \texttt{}
                             \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} \#WHILE }
-                                { \color{highlight_constant} <expresion> }\verb'       '\\
-                                { \color{highlight_symbol} <repeated code> }\\
-                                { \color{highlight_directive} \#ENDW }\verb'       ' { \color{highlight_comment} ; end of while  }
+                            { \color{highlight_symbol} <symbol> }  &
+                            { \color{highlight_directive} AUTOSPR }
+                            { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
+                                                                                                counter starting adress }\\
+                            { \color{highlight_constant} length } & { \color{highlight_comment} ; Optional attribute can define
+                                                                                                counter starting adress }\\
                             \end{tabular}
-                    }\\
+                    }
                     \\
-                \textbf{DESCRIPTION:}\\
-                The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
-                \textbf{EXAMPLE:}\\
+    \subsubsection{Description:}\\
+    Must be used only with instructions FETCH and STORE. It will automatically assign an
+    adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
+    after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
+
+    \subsubsection{Examples:}\\
+            \begin{code}[h!]
+            \mysmallfont{}
+                    symbol}\verb'First_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
+                    symbol}\verb'Second_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    \verb'  \verb'; Adress incremented, register at adress 0x01 '}\\
+                    symbol}\verb'Third_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    \verb'  \verb'; Adress incremented, register at adress 0x02 '}\\
+                    comment}\verb'; Now with optional parameter changing counting adress '}\\
+                    symbol}\verb'Fourth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    symbol}\verb'10h'}\verb'  \verb'; Registers are now defined from adress 0x10 '}
+                    symbol}\verb'Fifth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    comment}\verb'; Now register at adress 0x11'}\\
+            \caption{Using AUTOREG directive}
+        \end{code}
+
+        \subsection{INITSPR}
+        \subsubsection{Syntax:}\\
+                    \\ {
+                            \texttt{}
+                            \begin{tabular}[h!]{llll}
+                            { \color{highlight_symbol} <symbol> }  &
+                            { \color{highlight_directive} AUTOSPR }
+                            { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
+                                                                                                counter starting adress }\\
+                            \end{tabular}
+                    }
+                    \\
+    \subsubsection{Description:}\\
+    Must be used only with instructions FETCH and STORE. It will automatically assign an
+    adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
+    after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
+
+    \subsubsection{Examples:}\\
+            \begin{code}[h!]
+            \mysmallfont{}
+                    symbol}\verb'First_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
+                    symbol}\verb'Second_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    \verb'  \verb'; Adress incremented, register at adress 0x01 '}\\
+                    symbol}\verb'Third_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    \verb'  \verb'; Adress incremented, register at adress 0x02 '}\\
+                    comment}\verb'; Now with optional parameter changing counting adress '}\\
+                    symbol}\verb'Fourth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    symbol}\verb'10h'}\verb'  \verb'; Registers are now defined from adress 0x10 '}
+                    symbol}\verb'Fifth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
+                    comment}\verb'; Now register at adress 0x11'}\\
+            \caption{Using AUTOREG directive}
+        \end{code}
+
+        \subsection{ORGSPR, MERGESPR}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} ORGSPR } & \verb'         '
+                        { \color{highlight_constant} <address> } & { \color{highlight_comment}  }\\
+                \end{tabular}
+            }\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} MERGESPR } & \verb'         '
+                        { \color{highlight_constant} <address>,<size> } & { \color{highlight_comment}  }\\
+                \end{tabular}
+            }\\
+        \subsubsection{Description:}\\
+        When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
+        The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
+        being assembled and is incremented after each line by the number of bytes of data or code in that line.
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
+                \caption{Using ORG directive}
+                \end{code}
+                \begin{code}[h!]
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
+                \caption{Using ADDRESS directive}
+                \end{code}
+
+
+        \subsection{DEFINE}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_symbol} <symbol> }  &
+                        { \color{highlight_directive} DEFINE } &
+                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
+                \end{tabular}
+            }\\
+            \\
+
+        \subsubsection{Description:}\\
+        You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used.
+
+        \subsubsection{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'B'}\verb'    '
-                            {\color{highlight_directive}\verb'SET'}\verb'    '{\color{highlight_constant}\verb'8'}\\
-                            {\color{highlight_directive}\verb'#WHILE'}\verb'    '{\color{highlight_constant}\verb'B'}\verb'          '
-                            {\color{highlight_comment}\verb' ; While B != 0'}\\
-                            {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb'sF'}\\
-                            {\color{highlight_symbol}\verb'B'}\verb'    '
-                            {\color{highlight_directive}\verb'SET'}\verb'    '{\color{highlight_constant}\verb'B - 1'}\\
-                            {\color{highlight_directive}\verb'#ENDW'}\\
-                            \caption{WHILE directive}
+                            symbol}\verb'A'}\verb'   'directive}\verb'EQU'}\verb' '
+                            \verb'10'}\verb'       \verb'; First symbol'}\\
+                            symbol}\verb'B'}\verb'   'directive}\verb'SET'}\verb' '
+                            \verb'5'}\verb'       \verb'; Second  symbol, redefinable'}\\
+                            symbol}\verb'C'}\verb'    'directive}\verb'DEFINE'}\verb' '
+                            constant}\verb'(A + B) * 2'}\verb'   \verb'; Defined expresion'}\\
+                            symbol}\verb'C = '}constant}\verb'30'}\\
+                            symbol}\verb'B'}\verb'   'directive}\verb'SET'}\verb' '
+                            \verb'10'}\verb'       \verb'; B redefined'}\\
+                            symbol}\verb'C = '}constant}\verb'40'}\verb'   \verb'; C is now different'}\\\\
+                        \caption{Example of DEFINE directive}
                         \end{code}
 
-                \subsection{SKIP}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
+        \subsection{ADDRESS,ORG}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} ORG } & \verb'         '
+                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
+                \end{tabular}
+            }\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} ADDRESS } & \verb'         '
+                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
+                \end{tabular}
+            }\\
+        \subsubsection{Description:}\\
+        When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
+        The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
+        being assembled and is incremented after each line by the number of bytes of data or code in that line.
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
+                \caption{Using ORG directive}
+                \end{code}
+                \begin{code}[h!]
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
+                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
+                \caption{Using ADDRESS directive}
+                \end{code}
+
+        \subsection{REPT}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} REPT }
+                        { \color{highlight_constant} <expresion> }\verb'       ' { \color{highlight_comment} ; expresion determines number of repetion  }\\
+                        { \color{highlight_symbol} <repeated code> }\\
+                        { \color{highlight_directive} ENDR } { \color{highlight_comment} ; end of repetion  }
+                \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        Directive REPT is able to repeatedly execute a block of code.
+
+        \subsubsection{Examples:}\\
+            \begin{code}[h!]
+                comment}\verb'; With REPT'}\\\\
+                directive}\verb'REPT'}\verb'    'constant}\verb'8'}\verb'   '
+                comment}\verb'; Number of repetions'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                directive}\verb'ENDR'}\\
+                comment}\verb'; Without REPT'}\\\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                \caption{Example of REPT directive}
+            \end{code}
+
+        \subsection{\#WHILE}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
                     \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} SKIP }\verb`       `{ \color{highlight_constant} <expresion> }
-                        { \color{highlight_comment} ; expresion determines number of skipped lines of code  }\\
+                        { \color{highlight_directive} \#WHILE }
+                        { \color{highlight_constant} <expresion> }\verb'       '\\
+                        { \color{highlight_symbol} <repeated code> }\\
+                        { \color{highlight_directive} \#ENDW }\verb'       ' { \color{highlight_comment} ; end of while  }
                     \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.\\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'SKIP'}\verb'    '
-                            {\color{highlight_constant}\verb'3'}\verb'    '{\color{highlight_comment}\verb' ; this will skip first three SR0, performing only one SR0'}\\
-                            {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb's5'}\\
-                            {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb's5'}\\
-                            {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb's5'}\\
-                            {\color{highlight_instruction}\verb'SR0'}\verb'    '{\color{highlight_symbol}\verb's5'}\\
-                            \caption{SKIP directive}
-                        \end{code}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    symbol}\verb'B'}\verb'    '
+                    directive}\verb'SET'}\verb'    'constant}\verb'8'}\\
+                    directive}\verb'#WHILE'}\verb'    'constant}\verb'B'}\verb'          '
+                    comment}\verb' ; While B != 0'}\\
+                    instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
+                    symbol}\verb'B'}\verb'    '
+                    directive}\verb'SET'}\verb'    'constant}\verb'B - 1'}\\
+                    directive}\verb'#ENDW'}\\
+                    \caption{WHILE directive}
+                \end{code}
 
-                \subsection{UNDEFINE, UNDEF}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} UNDEFINE }\verb`     `
-                                { \color{highlight_symbol} <symbol> }
-                            \end{tabular}
-                    }\\{
-                        \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} UNDEF }\verb`     `
-                                { \color{highlight_symbol} <symbol> }
-                            \end{tabular}
-                    \\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.\\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'my_symbol'}\verb'    '
-                            {\color{highlight_directive}\verb'SET'}\verb'    '{\color{highlight_constant}\verb'15'}\\
-                            {\color{highlight_comment}\verb` ; my_symbol declared, can be used`}\\
-                            {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb'sF,my_symbol'}\\
-                            {\color{highlight_directive}\verb'UNDEFINE'}\verb'    '
-                            {\color{highlight_symbol}\verb'my_symbol'}\\
-                            {\color{highlight_comment}\verb' ; my_symbol undeclared, cannot be used'}\\
-                            {\color{highlight_instruction}\verb'LOAD'}\verb'    '{\color{highlight_symbol}\verb'sF,my_symbol'}
-                            {\color{highlight_comment}\verb'; this will cause an error now'}
-                            \caption{UNDEFINE directive}
-                        \end{code}
+        \subsection{SKIP}
+        \subsubsection{Syntax:}\\
+        \\ {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                { \color{highlight_directive} SKIP }\verb`       `{ \color{highlight_constant} <expresion> }
+                { \color{highlight_comment} ; expresion determines number of skipped lines of code  }\\
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.\\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'SKIP'}\verb'    '
+                    constant}\verb'3'}\verb'    \verb' ; this will skip first three SR0, performing only one SR0'}\\
+                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
+                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
+                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
+                    instruction}\verb'SR0'}\verb'    'symbol}\verb's5'}\\
+                    \caption{SKIP directive}
+                \end{code}
 
-                \subsection{DB}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_comment} ; Expresion syntax}\\
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   <expresion1>  [,<expresion2>,..]}\\
-                                { \color{highlight_comment} ; String syntax}\\
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   <"string">}\\
-                                { \color{highlight_comment} ; Combination of string and expresions}\\
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
-                                { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
-                so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
-                with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
-                See the examples for better understanding of DB directive.
+        \subsection{UNDEFINE, UNDEF}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} UNDEFINE }\verb`     `
+                        { \color{highlight_symbol} <symbol> }
+                    \end{tabular}
+            }\\{
+                \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} UNDEF }\verb`     `
+                        { \color{highlight_symbol} <symbol> }
+                    \end{tabular}
+            \\
+            \\
+        \subsubsection{Description:}\\
+        All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.\\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    symbol}\verb'my_symbol'}\verb'    '
+                    directive}\verb'SET'}\verb'    'constant}\verb'15'}\\
+                    comment}\verb` ; my_symbol declared, can be used`}\\
+                    instruction}\verb'LOAD'}\verb'    'symbol}\verb'sF,my_symbol'}\\
+                    directive}\verb'UNDEFINE'}\verb'    '
+                    symbol}\verb'my_symbol'}\\
+                    comment}\verb' ; my_symbol undeclared, cannot be used'}\\
+                    instruction}\verb'LOAD'}\verb'    'symbol}\verb'sF,my_symbol'}
+                    comment}\verb'; this will cause an error now'}
+                    \caption{UNDEFINE directive}
+                \end{code}
+
+        \subsection{DB}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_comment} ; Expresion syntax}\\
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   <expresion1>  [,<expresion2>,..]}\\
+                        { \color{highlight_comment} ; String syntax}\\
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   <"string">}\\
+                        { \color{highlight_comment} ; Combination of string and expresions}\\
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   <"string"> [,<expresion1>,..]}\\
+                        { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
+                \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
+        so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
+        with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
+        See the examples for better understanding of DB directive.
 %
-                \textbf{EXAMPLE:}\\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   24828 }\\
+                        { \color{highlight_comment} ; hexadecimal 0060FC}\\
+                        { \color{highlight_comment} ; String syntax}\\
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   "my string"}\\
+                        { \color{highlight_comment} ; Combination of string and expresions}\\
+                        { \color{highlight_directive} DB }
+                        { \color{highlight_symbol}   "my string",2+1,3...}\\
+                        { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
+                    \caption{DB directive}
+                \end{code}
+
+        \subsection{LIMIT}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} LIMIT }   \verb`     `
+                        { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
+                        { \color{highlight_directive} LIMIT }   \verb`     `
+                        { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
+                        { \color{highlight_directive} LIMIT }  \verb`     `
+                        { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }
+                        %  \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
+                        % of program memory}
+                \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
+
+        \subsubsection{Examples:}\\
                         \begin{code}[h!]
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   24828 }\\
-                                { \color{highlight_comment} ; hexadecimal 0060FC}\\
-                                { \color{highlight_comment} ; String syntax}\\
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   "my string"}\\
-                                { \color{highlight_comment} ; Combination of string and expresions}\\
-                                { \color{highlight_directive} DB }
-                                { \color{highlight_symbol}   "my string",2+1,3...}\\
-                                { \color{highlight_comment} ; parameter can be unlimited number of string characters, or expresions divided by comma}\\
-                            \caption{DB directive}
+                        { \color{highlight_directive} LIMIT }   \verb`     `
+                        { \color{highlight_symbol}\verb' R,16' }  \verb`          `   { \color{highlight_comment} ; Number of registers 16 }\\
+                        { \color{highlight_directive} LIMIT }   \verb`     `
+                        { \color{highlight_symbol}\verb' D,07' }  \verb`          `   { \color{highlight_comment} ; Size of scratchpad ram 7B }\\
+                        { \color{highlight_directive} LIMIT }   \verb`          `
+                        { \color{highlight_symbol}\verb' C,0b100000000' }  \verb`     `   { \color{highlight_comment} ; Size of program memory 512}\\
+                        \caption{Example of DEFINE directive}
                         \end{code}
+        In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
 
-                \subsection{LIMIT}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} LIMIT }   \verb`     `
-                                { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
-                                { \color{highlight_directive} LIMIT }   \verb`     `
-                                { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
-                                { \color{highlight_directive} LIMIT }  \verb`     `
-                                { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }
-                              %  \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
-                                % of program memory}
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
+        \subsection{DEVICE}
+        \subsubsection{Syntax:}\\
+        \\ {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} DEVICE } { \color{highlight_symbol} <device name> }
+                    { \color{highlight_comment}  }\\
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
+        This will affect predefined symbols.\\
 
-                \textbf{EXAMPLE:}\\
-                                \begin{code}[h!]
-                                { \color{highlight_directive} LIMIT }   \verb`     `
-                                { \color{highlight_symbol}\verb' R,16' }  \verb`          `   { \color{highlight_comment} ; Number of registers 16 }\\
-                                { \color{highlight_directive} LIMIT }   \verb`     `
-                                { \color{highlight_symbol}\verb' D,07' }  \verb`          `   { \color{highlight_comment} ; Size of scratchpad ram 7B }\\
-                                { \color{highlight_directive} LIMIT }   \verb`          `
-                                { \color{highlight_symbol}\verb' C,0b100000000' }  \verb`     `   { \color{highlight_comment} ; Size of program memory 512}\\
-                                \caption{Example of DEFINE directive}
-                                \end{code}
-                In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM3'}\\
+                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM2'}\\
+                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM1'}\\
+                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM1cpld'}\\
+                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM6'}\\
+                    \caption{DEVICE directive}
+                \end{code}
 
-                \subsection{DEVICE}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} DEVICE } { \color{highlight_symbol} <device name> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
-                This will affect predefined symbols.\\
+        \subsection{LIST, NOLIST}
+        \subsubsection{Syntax:}\\
+        \\ {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} LIST }
+                    { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
+            \end{tabular}
+            }\\
 
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM3'}\\
-                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM2'}\\
-                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM1'}\\
-                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM1cpld'}\\
-                            {\color{highlight_directive}\verb'DEVICE'}\verb`    `{\color{highlight_symbol}\verb'KCPSM6'}\\
-                            \caption{DEVICE directive}
-                        \end{code}
+        {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} NOLIST }
+                    { \color{highlight_comment} ; Printing to code listing turned off  }\\
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        You can turn on/off printing to code listing in some parts of your code.\\
 
-                \subsection{LIST, NOLIST}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} LIST }
-                            { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
-                    \end{tabular}
-                    }\\
+        \subsection{TITLE}
+        \subsubsection{Syntax:}\\
+            {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                { \color{highlight_directive} TITLE }\verb`       `{ \color{highlight_string} <"title text"> }
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        This will put a title into coresponding line in codelisting.  \\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'TITLE'}\verb'    '
+                    constant}\verb'"Text, that will show up in the codelisting"'}
+                \end{code}
 
-                {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} NOLIST }
-                            { \color{highlight_comment} ; Printing to code listing turned off  }\\
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                You can turn on/off printing to code listing in some parts of your code.\\
+        \subsection{MESSAGE}
+            {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                { \color{highlight_directive} MESSAGE }\verb`       `{ \color{highlight_string} <"message text"> }
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        You can define message, that will show up after compilation.  \\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'MESSAGE'}\verb'    '
+                    constant}\verb'"Text, that will show up in the codelisting"'}
+                \end{code}
 
-                \subsection{TITLE}
-                \textbf{SYNTAX:}\\
-                 {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} TITLE }\verb`       `{ \color{highlight_string} <"title text"> }
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                This will put a title into coresponding line in codelisting.  \\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'TITLE'}\verb'    '
-                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
-                        \end{code}
+        \subsection{ERROR}
+        \subsubsection{Syntax:}\\
+        \\ {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                { \color{highlight_directive} ERROR }\verb`       `{ \color{highlight_string} <"error text"> }
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        You can define an error report, which aborts compilation, when is executed.  \\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'ERROR'}\verb'    '
+                    constant}\verb'"Text, that will show up in the codelisting"'}
+                \end{code}
 
-                \subsection{MESSAGE}
-                 {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} MESSAGE }\verb`       `{ \color{highlight_string} <"message text"> }
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                You can define message, that will show up after compilation.  \\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'MESSAGE'}\verb'    '
-                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
-                        \end{code}
+        \subsection{LOCAL}
+        \subsubsection{Syntax:}\\
+        \\ {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} LOCAL } { \color{highlight_symbol} <name> }
+                    { \color{highlight_comment}  }\\
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels
+        or symbols.
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'MACRO'}\verb'     '\verb'name_of_macro'\\
+                    directive}\verb'LOCAL'}\verb`    `symbol}\verb'wait'}\\
+                    directive}\verb'wait:'}\\
+                    symbol}\verb'SUBCY        s0,#10h'}\\
+                    symbol}\verb'SUB          s0,#1h' }\\
+                    symbol}\verb'LOAD         s0,#F0h'}\\
+                    symbol}\verb'JUMP         C,wait'}\\
+                    directive}\verb'ENDM'}\\
+                \end{code}
 
-                \subsection{ERROR}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} ERROR }\verb`       `{ \color{highlight_string} <"error text"> }
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                You can define an error report, which aborts compilation, when is executed.  \\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'ERROR'}\verb'    '
-                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
-                        \end{code}
+        \subsection{WARNING}
+            {
+            \texttt{}
+            \begin{tabular}[h!]{llll}
+                { \color{highlight_directive} WARNING }\verb`       `{ \color{highlight_string} <"warning text"> }
+            \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        This will put title into coresponding line in codelisting.  \\
+        \subsubsection{Examples:}\\
+                \begin{code}[h!]
+                    directive}\verb'WARNING'}\verb'    '
+                    constant}\verb'"Text, that will show up in the codelisting"'}
+                \end{code}
 
-                \subsection{LOCAL}
-                \textbf{SYNTAX:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} LOCAL } { \color{highlight_symbol} <name> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels
-                or symbols.
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'MACRO'}\verb'     '\verb'name_of_macro'\\
-                            {\color{highlight_directive}\verb'LOCAL'}\verb`    `{\color{highlight_symbol}\verb'wait'}\\
-                            {\color{highlight_directive}\verb'wait:'}\\
-                            {\color{highlight_symbol}\verb'SUBCY        s0,#10h'}\\
-                            {\color{highlight_symbol}\verb'SUB          s0,#1h' }\\
-                            {\color{highlight_symbol}\verb'LOAD         s0,#F0h'}\\
-                            {\color{highlight_symbol}\verb'JUMP         C,wait'}\\
-                            {\color{highlight_directive}\verb'ENDM'}\\
-                        \end{code}
+        \subsection{END}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} END } &
+                        { \color{highlight_comment} ; Just END, no parameters }\\
+                \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
+        syntactically right.
 
-                \subsection{WARNING}
-                 {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} WARNING }\verb`       `{ \color{highlight_string} <"warning text"> }
-                    \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                This will put title into coresponding line in codelisting.  \\
-                \textbf{EXAMPLE:}\\
-                        \begin{code}[h!]
-                            {\color{highlight_directive}\verb'WARNING'}\verb'    '
-                            {\color{highlight_constant}\verb'"Text, that will show up in the codelisting"'}
-                        \end{code}
+        \subsubsection{Examples:}\\
+            \begin{code}[h!]
+                \verb'    'directive}\verb'END'}
+                \caption{END directive}
+            \end{code}
 
-                \subsection{END}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} END } &
-                               { \color{highlight_comment} ; Just END, no parameters }\\
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
-                syntactically right.
+        \subsection{FAILJMP,DEFAULT\_JUMP}
+        \subsubsection{Syntax:}\\
+        \\ {
+                \texttt{}
+                \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} FAILJMP }\verb`       `{ \color{highlight_string} <"label"> }\\
+                        { \color{highlight_directive} DEFAULT\_JUMP }\verb`       `{ \color{highlight_string} <"label"> }\\
+                \end{tabular}
+            }\\
+            \\
+        \subsubsection{Description:}\\
+        Fills program memory with jump to the specified address. Simple protection against errors.
 
-                \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                        \verb'    '{\color{highlight_directive}\verb'END'}
-                        \caption{END directive}
-                    \end{code}
-
-                \subsection{FAILJMP,DEFAULT\_JUMP}
-                \textbf{SYNTAX:}\\
-                \\ {
-                        \texttt{}
-                        \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} FAILJMP }\verb`       `{ \color{highlight_string} <"label"> }\\
-                                { \color{highlight_directive} DEFAULT\_JUMP }\verb`       `{ \color{highlight_string} <"label"> }\\
-                        \end{tabular}
-                    }\\
-                    \\
-                \textbf{DESCRIPTION:}\\
-                Fills program memory with jump to the specified address. Simple protection against errors.
-
-                \textbf{EXAMPLE:}\\
-                    \begin{code}[h!]
-                        \verb'    '{\color{highlight_directive}\verb'FAILJMP'}\verb`       `{ \color{highlight_string} start }
-                        \verb'    '{\color{highlight_directive}\verb'DEFAULT\_JUMP'}\verb`       `{ \color{highlight_string} 0x000> }
-                        \caption{END directive}
-                    \end{code}
+        \subsubsection{Examples:}\\
+            \begin{code}[h!]
+                \verb'    'directive}\verb'FAILJMP'}\verb`       `{ \color{highlight_string} start }
+                \verb'    'directive}\verb'DEFAULT\_JUMP'}\verb`       `{ \color{highlight_string} 0x000> }
+                \caption{END directive}
+            \end{code}
 
         \section{Pseudo Instructions}
         MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code.
         Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
                 \subsection{INC}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1040,14 +934,14 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }
                     \\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This instruction increments given register value by one.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'INC          s0' }\\
+                            symbol}\verb'INC          s0' }\\
                         \end{code}
                 \subsection{DEC}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1058,16 +952,16 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }
                     \\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This instruction decrements given register value by one.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'DEC          s0' }\\
+                            symbol}\verb'DEC          s0' }\\
                         \end{code}
 
 
                 \subsection{SETR}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1078,14 +972,14 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#0xFF }
                     \\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This instruction sets given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'SET          s0' }\\
+                            symbol}\verb'SET          s0' }\\
                         \end{code}
                 \subsection{CLRR}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1096,14 +990,14 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#0x00 }
                     \\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This instruction clears given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'CLR          s0' }\\
+                            symbol}\verb'CLR          s0' }\\
                         \end{code}
                 \subsection{CPL}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1114,14 +1008,14 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
                     \\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This instruction execute 1\'s complement with given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'CPL          s0' }\\
+                            symbol}\verb'CPL          s0' }\\
                         \end{code}
                 \subsection{CPL2}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1132,15 +1026,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }\\
                     { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#0x1 }\\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 This execute 2\'s complement with given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'CPL2          s0' }\\
+                            symbol}\verb'CPL2          s0' }\\
                         \end{code}
 
                 \subsection{SETB}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1151,15 +1045,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#1<<3 }
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Sets bit in given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'SETB          s0,#3' }\\
+                            symbol}\verb'SETB          s0,#3' }\\
                         \end{code}
 
                 \subsection{CLRB}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1170,15 +1064,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} AND    } { \color{highlight_symbol}    sX,\#(0xFF \^ (1 << 3)) }
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Clears bit in given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'CLRB          s0,#3' }\\
+                            symbol}\verb'CLRB          s0,#3' }\\
                         \end{code}
 
                 \subsection{NOTB}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1189,15 +1083,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \textbf{EQUAL TO:}\\
                     Example for bit number 3 >\\
                     { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#~0b00000100 }
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Negates bit in given register.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                            {\color{highlight_symbol}\verb'NOTB          s0,#3' }\\
+                            symbol}\verb'NOTB          s0,#3' }\\
                         \end{code}
 
                 \subsection{DJNZ}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1209,16 +1103,16 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
                     { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }\\
                     { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Given register is decremented until it is zero.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                        {\color{highlight_symbol}\verb'loop:          ' }\\
-                        {\color{highlight_symbol}\verb'DJNZ          s0,loop' }\\
+                        symbol}\verb'loop:          ' }\\
+                        symbol}\verb'DJNZ          s0,loop' }\\
                         \end{code}
 
                 \subsection{IJNZ}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                     \begin{tabular}[h!]{llll}
@@ -1230,12 +1124,12 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
                     { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }\\
                     { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Given register is incremented until overflow.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                         \begin{code}[h!]
-                        {\color{highlight_symbol}\verb'loop:          ' }\\
-                        {\color{highlight_symbol}\verb'IJNZ          s0,loop' }\\
+                        symbol}\verb'loop:          ' }\\
+                        symbol}\verb'IJNZ          s0,loop' }\\
                         \end{code}
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
@@ -1260,7 +1154,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \end{table}
 
                 \subsection{IF}
-                    \textbf{SYNTAX:}\\
+                    \textbf{Syntax:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
@@ -1275,11 +1169,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
                                 { \color{highlight_directive} ENDIF }
                             \end{tabular}
                         }\\
-                    \textbf{DESCRIPTION:}\\
+                    \textbf{Description:}\\
                     You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
                     Number without \# is considered as register adress. See example for conditions syntax.
-                    \textbf{EXAMPLE:}\\
+                    \textbf{Examples:}\\
                             \begin{code}[h!]
                                     { \color{highlight_directive} IF }
                                     { \color{highlight_constant}   s0 == \#10 }\\
@@ -1293,7 +1187,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 In this example, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
                 symbol with register adress. So 5 would have been replaced with value storen in register with adress 5.
                 \subsection{WHILE}
-                    \textbf{SYNTAX:}\\
+                    \textbf{Syntax:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
@@ -1303,11 +1197,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
                                 { \color{highlight_directive} ENDW }
                             \end{tabular}
                         }\\
-                    \textbf{DESCRIPTION:}\\
+                    \textbf{Description:}\\
                     You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
                     Number without \# is considered as register adrress. See example for conditions syntax.
-                    \textbf{EXAMPLE:}\\
+                    \textbf{Examples:}\\
                             \begin{code}[h!]
                                     { \color{highlight_directive} WHILE  }
                                     { \color{highlight_constant}   s0 == \#10 }\\
@@ -1366,7 +1260,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                             \end{code}
 
                 \subsection{FOR}
-                    \textbf{SYNTAX:}\\
+                    \textbf{Syntax:}\\
                     \\ {
                         \texttt{}
                             \begin{tabular}[h!]{llll}
@@ -1376,13 +1270,13 @@ Then each list element is beeing parsed and splitted into an address reference, 
                                 { \color{highlight_directive} ENDF }
                             \end{tabular}
                         }\\
-                    \textbf{DESCRIPTION:}\\
+                    \textbf{Description:}\\
                     You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
                     counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
                     repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
                     See examples for better understanding. WARNING: Using FOR directive will overide used register( s0 in example)
-                    \textbf{EXAMPLE:}\\
+                    \textbf{Examples:}\\
                             \begin{code}[h!]
                                     { \color{highlight_directive} FOR  }
                                     { \color{highlight_constant}   s0,10 }\\
@@ -1412,7 +1306,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 by this assembler are.
 
                 \subsection{MACROS}
-                \textbf{SYNTAX:}\\
+                \textbf{Syntax:}\\
                 \\ {
                     \texttt{}
                         \begin{tabular}[h!]{llll}
@@ -1441,78 +1335,78 @@ Then each list element is beeing parsed and splitted into an address reference, 
                     \end{tabular}
                     \caption{Macro comands}
                 \end{table}
-                \textbf{DESCRIPTION:}\\
+                \textbf{Description:}\\
                 Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
                 with no parameters  or unlimited number of parameters.\\
-                \textbf{EXAMPLE:}\\
+                \textbf{Examples:}\\
                 This can be well demonstrated on examples:
 
                 \begin{code}[h!]
-                        {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_comment}\verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'a'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-                        {\color{highlight_directive}\verb'endm'}\\
+                        macro}\verb'abc'}\verb'     'directive}\verb'macro'}\verb'   \verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
+                        directive}\verb'endm'}\\
                         \verb''\\
-                        {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
+                        macro}\verb'abc'}\verb'     \verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
+                        macro}\verb'abc'}\verb'     \verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
                         \verb''\\
-                        {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'a'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'a'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                        comment}\verb'; This is the same as if you wrote this:'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
                         \caption{An exaple of simple macro without parameters}
                 \end{code}
                 \begin{code}[h!]
 
-                        {\color{highlight_comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
-                        {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'bar'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_constant}\verb'bar'}\\
-                        {\color{highlight_directive}\verb'endm'}\\
+                        comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
+                        macro}\verb'xyz'}\verb'     'directive}\verb'macro'}\verb'   'constant}\verb'foo'}oper_sep}\verb','}\verb' 'constant}\verb'bar'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'constant}\verb'foo'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'constant}\verb'bar'}\\
+                        directive}\verb'endm'}\\
                         \verb''\\
-                        {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'c'}\verb'            '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+                        macro}\verb'xyz'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb'c'}\verb'            \verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+                        macro}\verb'xyz'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'sfr}\verb's1'}\verb'        \verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
                         \verb''\\
-                        {\color{highlight_comment}\verb'; This is the same as if you wrote this:'\\
-                        }\verb'        '{\color{highlight_comment}\verb'; xyz   a, c'\\
-                        }\verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb'c'}\\
-                        \verb'        '{\color{highlight_comment}\verb'; xyz   s0, s0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SR0'}\verb'      '{\color{highlight_sfr}\verb's1'}\\
+                        comment}\verb'; This is the same as if you wrote this:'\\
+                        }\verb'        \verb'; xyz   a, c'\\
+                        }\verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'c'}\\
+                        \verb'        \verb'; xyz   s0, s0'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
+                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb's1'}\\
                         \caption{An exaple of macro with two parameters}
                 \end{code}
                 \begin{code}[h!]
-                       {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'ADD'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's1'}\\
+                       macro}\verb'ijk'}\verb'     'directive}\verb'macro'}\verb'   'constant}\verb'foo'}\\
+                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
                         \verb''\\
-                        \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_constant}\verb'foo'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
-                        \verb'                '{\color{highlight_instruction}\verb'SKIP 1'}\\
-                        \verb'        '{\color{highlight_directive}\verb'endif'}\\
+                        \verb'        'directive}\verb'if'}\verb' 'constant}\verb'foo'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
+                        \verb'                'instruction}\verb'SKIP 1'}\\
+                        \verb'        'directive}\verb'endif'}\\
                         \verb''\\
-                        \verb'        '{\color{highlight_instruction}\verb'SUB'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#foo'}\\
-                        {\color{highlight_directive}\verb'endm'}\\
+                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_constant}\verb'#foo'}\\
+                        directive}\verb'endm'}\\
                         \verb''\\
-                        {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_unknown_base}\verb'5'}\\
-                        {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_unknown_base}\verb'4'}\\
+                        macro}\verb'ijk'}\verb'     'unknown_base}\verb'5'}\\
+                        macro}\verb'ijk'}\verb'     'unknown_base}\verb'4'}\\
                         \verb''\\
-                        {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
-                        \verb'        '{\color{highlight_comment}\verb'; ijk   5'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'ADD'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's1'}\\
-                        \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'5'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SKIP 1'}\\
-                        \verb'        '{\color{highlight_directive}\verb'endif'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SUB'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
-                        \verb'        '{\color{highlight_comment}\verb'; ijk   4'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'ADD'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's1'}\\
-                        \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'4'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SKIP 1'}\\
-                        \verb'        '{\color{highlight_directive}\verb'endif'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'SUB'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
+                        comment}\verb'; This is the same as if you wrote this:'}\\
+                        \verb'        \verb'; ijk   5'}\\
+                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
+                        \verb'        'directive}\verb'if'}\verb' 'unknown_base}\verb'5'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
+                        \verb'        'instruction}\verb'SKIP 1'}\\
+                        \verb'        'directive}\verb'endif'}\\
+                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_unknown}\verb'#5'}\\
+                        \verb'        \verb'; ijk   4'}\\
+                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
+                        \verb'        'directive}\verb'if'}\verb' 'unknown_base}\verb'4'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
+                        \verb'        'instruction}\verb'SKIP 1'}\\
+                        \verb'        'directive}\verb'endif'}\\
+                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_unknown}\verb'#4'}\\
                         \caption{An exaple of named macro used with if statement}
                 \end{code}
 
@@ -1537,29 +1431,29 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 This can be best demonstrated on an example:
                 \begin{code}[h!]
                         \mysmallfont{}
-                        {\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_unknown_base}\verb'16'}\verb'              '{\color{highlight_comment}\verb'; Assign number 14 to symbol abc'}\\
-                        {\color{highlight_constant}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_unknown_base}\verb'10'}\verb'              '{\color{highlight_comment}\verb'; Assign number 10 to symbol abc'}\\
+                        constant}\verb'abc'}\verb'     'directive}\verb'equ'}\verb'     'unknown_base}\verb'16'}\verb'              \verb'; Assign number 14 to symbol abc'}\\
+                        constant}\verb'xyz'}\verb'     'directive}\verb'equ'}\verb'     'unknown_base}\verb'10'}\verb'              \verb'; Assign number 10 to symbol abc'}\\
                         \verb''\\
-                        {\color{highlight_directive}\verb'ifdef'}\verb' '{\color{highlight_constant}\verb'abc'}\verb'                       '{\color{highlight_comment}\verb';<--+ Assemble only if symbol abc has been defined'}\\
-                        \verb'  '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'13'}\verb' '{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if 13 has been assigned to symbol abc'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_bin}\verb'#01010101b'}\verb'   '{\color{highlight_comment}\verb';   |    |'}\\
-                        \verb'  '{\color{highlight_directive}\verb'elseif'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if 14 has been assigned to symbol abc'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#0aah'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
-                        \verb'  '{\color{highlight_directive}\verb'elseifn'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'%'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if the value assigned to symbol abc is even'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#abc'}\verb'         '{\color{highlight_comment}\verb';   |    |'}\\
-                        \verb'  '{\color{highlight_directive}\verb'else'}\verb'                          '{\color{highlight_comment}\verb';   | <--+ Else ..'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_oct}\verb'#377q'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
-                        \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
-                        {\color{highlight_directive}\verb'elseifndef'}\verb' '{\color{highlight_constant}\verb'xyz'}\verb'                  '{\color{highlight_comment}\verb';<--+ Assemble if symbol xyz has NOT been defined'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'clr'}\verb'     '{\color{highlight_sfr}\verb'A'}\verb'               '{\color{highlight_comment}\verb';   |'}\\
-                        {\color{highlight_directive}\verb'else'}\verb'                            '{\color{highlight_comment}\verb';<--+ Else ...'}\\
-                        \verb'  '{\color{highlight_directive}\verb'ifn'}\verb' '{\color{highlight_symbol}\verb'('}{\color{highlight_constant}\verb'xyz'}{\color{highlight_symbol}\verb' mod'}\verb' '{\color{highlight_unknown_base}\verb'2'}{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if ( yxz modulo 2 ) is 0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#128d'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
-                        \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
-                        {\color{highlight_directive}\verb'endif'}\verb'                           '{\color{highlight_comment}\verb';<--+'}\\
+                        directive}\verb'ifdef'}\verb' 'constant}\verb'abc'}\verb'                       \verb';<--+ Assemble only if symbol abc has been defined'}\\
+                        \verb'  'directive}\verb'if'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'='}\verb' 'unknown_base}\verb'13'}\verb' 'symbol}\verb')'}\verb'               \verb';   | <--+ Assemble if 13 has been assigned to symbol abc'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_bin}\verb'#01010101b'}\verb'   \verb';   |    |'}\\
+                        \verb'  'directive}\verb'elseif'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'='}\verb' 'unknown_base}\verb'14'}\verb' 'symbol}\verb')'}\verb'           \verb';   | <--+ Assemble if 14 has been assigned to symbol abc'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#0aah'}\verb'        \verb';   |    |'}\\
+                        \verb'  'directive}\verb'elseifn'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'%'}\verb' 'unknown_base}\verb'2'}\verb' 'symbol}\verb')'}\verb'           \verb';   | <--+ Assemble if the value assigned to symbol abc is even'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_constant}\verb'#abc'}\verb'         \verb';   |    |'}\\
+                        \verb'  'directive}\verb'else'}\verb'                          \verb';   | <--+ Else ..'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_\verb'#377q'}\verb'        \verb';   |    |'}\\
+                        \verb'  'directive}\verb'endif'}\verb'                         \verb';   | <--+'}\\
+                        directive}\verb'elseifndef'}\verb' 'constant}\verb'xyz'}\verb'                  \verb';<--+ Assemble if symbol xyz has NOT been defined'}\\
+                        \verb'        'instruction}\verb'clr'}\verb'     'sfr}\verb'A'}\verb'               \verb';   |'}\\
+                        directive}\verb'else'}\verb'                            \verb';<--+ Else ...'}\\
+                        \verb'  'directive}\verb'ifn'}\verb' 'symbol}\verb'('}constant}\verb'xyz'}symbol}\verb' mod'}\verb' 'unknown_base}\verb'2'}symbol}\verb')'}\verb'               \verb';   | <--+ Assemble if ( yxz modulo 2 ) is 0'}\\
+                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_dec}\verb'#128d'}\verb'        \verb';   |    |'}\\
+                        \verb'  'directive}\verb'endif'}\verb'                         \verb';   | <--+'}\\
+                        directive}\verb'endif'}\verb'                           \verb';<--+'}\\
                         \verb''\\
-                        {\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'$'}\verb'                       '{\color{highlight_comment}\verb'; Infinite loop'}\\
-                        {\color{highlight_directive}\verb'end'}\verb'                             '{\color{highlight_comment}\verb'; End of assembly'}\\
+                        instruction}\verb'sjmp'}\verb'    'constant}\verb'$'}\verb'                       \verb'; Infinite loop'}\\
+                        directive}\verb'end'}\verb'                             \verb'; End of assembly'}\\
                         \caption{An example of conditional assembly usage}
                 \end{code}
 
@@ -1695,22 +1589,22 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how were they were defined, what are their values and whether they were used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction OP codes, address space reservations, inclusion of code from another files. And all warnings, errors and notes generated during the assembly by the assembler. There are assembler control sequences which alters formatting of the code listing file. These control sequences will be discussed here. Format of code listing generated by this assembler is very similar to the one generated Metalink(R) ASM51.
                 \begin{code}[h]
 
-                        \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
-                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Picoblaze - Demostration code'}\\
-                        {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
-                        {\color{highlight_lst_line}\verb'                         3'}\\
-                        {\color{highlight_lst_line}\verb'                         4'}\verb'     '{\color{highlight_comment}\verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
-                        {\color{highlight_lst_line}\verb'                         5'}\\
-                        {\color{highlight_lst_line}\verb'                         6'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_hex}\verb'0h'}\\
-                        {\color{highlight_lst_line}\verb'                         7'}\\
-                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' 08'}{\color{highlight_lst_line}\verb'                  8'}\verb'     '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_sfr}\verb'R0'}\\
-                        {\color{highlight_lst_address}\verb'0001'}{\color{highlight_lst_code}\verb' 06'}{\color{highlight_lst_line}\verb'                  9'}\verb'             '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_indirect}\verb'@R0'}\\
-                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'cjne'}\verb'    '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#07Fh'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'main'}\\
-                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 7800'}{\color{highlight_lst_line}\verb'               11'}\verb'             '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#0d'}\\
-                        {\color{highlight_lst_address}\verb'0007'}{\color{highlight_lst_code}\verb' 80F7'}{\color{highlight_lst_line}\verb'               12'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\\
-                        {\color{highlight_lst_line}\verb'                        13'}\\
-                        {\color{highlight_lst_line}\verb'                        14'}\verb'             '{\color{highlight_directive}\verb'end'}\\
-                        {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
+                        \verb'demo0                                                                                                                   'macro}\verb'PAGE'}\verb' 'unknown_base}\verb'1'}\\
+                        lst_line}\verb'                         1'}\verb'     \verb'; MDS Picoblaze - Demostration code'}\\
+                        lst_line}\verb'                         2'}\verb'     \verb'; Very simple code'}\\
+                        lst_line}\verb'                         3'}\\
+                        lst_line}\verb'                         4'}\verb'     \verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
+                        lst_line}\verb'                         5'}\\
+                        lst_line}\verb'                         6'}\verb'             'directive}\verb'org'}\verb'     'hex}\verb'0h'}\\
+                        lst_line}\verb'                         7'}\\
+                        lst_address}\verb'0000'}lst_code}\verb' 08'}lst_line}\verb'                  8'}\verb'     'label}\verb'main:'}\verb'   'instruction}\verb'inc'}\verb'     'sfr}\verb'R0'}\\
+                        lst_address}\verb'0001'}lst_code}\verb' 06'}lst_line}\verb'                  9'}\verb'             'instruction}\verb'inc'}\verb'     'indirect}\verb'@R0'}\\
+                        lst_address}\verb'0002'}lst_code}\verb' B87FFB'}lst_line}\verb'             10'}\verb'             'instruction}\verb'cjne'}\verb'    'sfr}\verb'R0'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#07Fh'}oper_sep}\verb','}\verb' 'constant}\verb'main'}\\
+                        lst_address}\verb'0005'}lst_code}\verb' 7800'}lst_line}\verb'               11'}\verb'             'instruction}\verb'LOAD'}\verb'     'sfr}\verb'R0'}oper_sep}\verb','}\verb' 'imm_dec}\verb'#0d'}\\
+                        lst_address}\verb'0007'}lst_code}\verb' 80F7'}lst_line}\verb'               12'}\verb'             'instruction}\verb'sjmp'}\verb'    'constant}\verb'main'}\\
+                        lst_line}\verb'                        13'}\\
+                        lst_line}\verb'                        14'}\verb'             'directive}\verb'end'}\\
+                        lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
                         \caption{A simple code listing}
                 \end{code}
                 Code listing contains entire source code which was assembled but with each line prefixed with line number and some additional information which will be explained later. Besides the original code there is also table of symbols defined during the assembly unless it was turned off. Code listing is divided into pages separated by form feed character, this behavior may be altered by certain assembler control sequences as well as page height and width.
@@ -1737,26 +1631,26 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
                 \begin{code}[h]
 
-                        \verb'complicated_lst                                                                                                         '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
-                        {\color{highlight_lst_number}\verb'  001C'}{\color{highlight_lst_line}\verb'                   1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc'}\\
-                        {\color{highlight_lst_line}\verb'                         2'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_unknown_base}\verb'0'}\verb'               '{\color{highlight_comment}\verb'; Start writing code at address 0'}\\
-                        {\color{highlight_lst_line}\verb'                         3'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      4'}\verb'             '{\color{highlight_directive}\verb'include'}\verb' '{\color{highlight_string}\verb''\verb"'"\verb'my_macros.asm'\verb"'"\verb' '{\color{highlight_comment}\verb'; Include file my_macros.asm'}}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      5'}\verb'     '{\color{highlight_comment}\verb'; This is the beginning of file my_macros.asm'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      6'}\verb'     '{\color{highlight_macro}\verb'my_SR0'}\verb'  '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      7'}\verb'             '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'foo'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'SR0'}\verb'     '{\color{highlight_sfr}\verb'A'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      9'}\verb'             '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'A'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     10'}\verb'     '{\color{highlight_directive}\verb'endm'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     11'}\verb'     '{\color{highlight_comment}\verb'; This is the end of file my_macros.asm'}\\
-                        {\color{highlight_lst_line}\verb'                        12'}\\
-                        {\color{highlight_lst_line}\verb'                        13'}{\color{highlight_lst_macro}\verb' +1'}\verb'  '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_macro}\verb'my_SR0'}\verb'  '{\color{highlight_sfr}\verb'P0'}\verb'              '{\color{highlight_comment}\verb'; Expand macro my_SR0 here'}\\
-                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' E580'}{\color{highlight_lst_line}\verb'               14'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'                 15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'SR0'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-                        {\color{highlight_lst_address}\verb'0003'}{\color{highlight_lst_code}\verb' F580'}{\color{highlight_lst_line}\verb'               16'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'LOAD'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 80F9'}{\color{highlight_lst_line}\verb'               17'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\verb'            '{\color{highlight_comment}\verb'; Jump back to label main'}\\
-                        {\color{highlight_lst_line}\verb'                        18'}\verb'             '{\color{highlight_directive}\verb'end'}\verb'                     '{\color{highlight_comment}\verb'; End of assembly'}\\
-                        {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
+                        \verb'complicated_lst                                                                                                         'macro}\verb'PAGE'}\verb' 'unknown_base}\verb'1'}\\
+                        lst_number}\verb'  001C'}lst_line}\verb'                   1'}\verb'     'constant}\verb'abc'}\verb'     'directive}\verb'equ'}\verb'     'symbol}\verb'('}\verb' 'unknown_base}\verb'14'}\verb' 'symbol}\verb'*'}\verb' 'unknown_base}\verb'2'}\verb' 'symbol}\verb')'}\verb'      \verb'; Define symbol abc'}\\
+                        lst_line}\verb'                         2'}\verb'             'directive}\verb'org'}\verb'     'unknown_base}\verb'0'}\verb'               \verb'; Start writing code at address 0'}\\
+                        lst_line}\verb'                         3'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      4'}\verb'             'directive}\verb'include'}\verb' 'string}\verb''\verb"'"\verb'my_macros.asm'\verb"'"\verb' \verb'; Include file my_macros.asm'}}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      5'}\verb'     \verb'; This is the beginning of file my_macros.asm'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      6'}\verb'     'macro}\verb'my_SR0'}\verb'  'directive}\verb'macro'}\verb'   'constant}\verb'foo'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      7'}\verb'             'instruction}\verb'LOAD'}\verb'     'sfr}\verb'A'}oper_sep}\verb','}\verb' 'constant}\verb'foo'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      8'}\verb'             'instruction}\verb'SR0'}\verb'     'sfr}\verb'A'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'      9'}\verb'             'instruction}\verb'LOAD'}\verb'     'constant}\verb'foo'}oper_sep}\verb','}\verb' 'sfr}\verb'A'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'     10'}\verb'     'directive}\verb'endm'}\\
+                        lst_include}\verb'                 =1'}lst_line}\verb'     11'}\verb'     \verb'; This is the end of file my_macros.asm'}\\
+                        lst_line}\verb'                        12'}\\
+                        lst_line}\verb'                        13'}lst_macro}\verb' +1'}\verb'  'label}\verb'main:'}\verb'   'macro}\verb'my_SR0'}\verb'  'sfr}\verb'P0'}\verb'              \verb'; Expand macro my_SR0 here'}\\
+                        lst_address}\verb'0000'}lst_code}\verb' E580'}lst_line}\verb'               14'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb'p0'}\\
+                        lst_address}\verb'0002'}lst_code}\verb' F4'}lst_line}\verb'                 15'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'SR0'}\verb'     'sfr}\verb'a'}\\
+                        lst_address}\verb'0003'}lst_code}\verb' F580'}lst_line}\verb'               16'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'LOAD'}\verb'     'sfr}\verb'p0'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
+                        lst_address}\verb'0005'}lst_code}\verb' 80F9'}lst_line}\verb'               17'}\verb'             'instruction}\verb'sjmp'}\verb'    'constant}\verb'main'}\verb'            \verb'; Jump back to label main'}\\
+                        lst_line}\verb'                        18'}\verb'             'directive}\verb'end'}\verb'                     \verb'; End of assembly'}\\
+                        lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
                         \caption{A more complicated example of code listing}
                 \end{code}
 

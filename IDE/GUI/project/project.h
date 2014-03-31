@@ -131,7 +131,9 @@ class Project : public QObject
         void setFamily(QString family);
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
         int handleBreakpoint(QString file, int line);
+        int handleBookmark(QString file, int line);
         QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
+        QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -200,6 +202,7 @@ class Project : public QObject
     private:
         ProjectMan *parentManager;
         QList<QPair<QString, QSet<unsigned int>>> breakPoints;
+        QList<QPair<QString, QSet<unsigned int>>> bookmarks;
         std::vector<std::pair<const std::string *, unsigned int>> currLine;
         int prevLine;
         int prevLine2;
