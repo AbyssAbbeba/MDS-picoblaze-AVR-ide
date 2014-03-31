@@ -1,8 +1,8 @@
 <!-- Data types used here -->
-<!ENTITY % Boolean	"(0|1)">
-<!ENTITY % Integer	"CDATA">
-<!ENTITY % Float	"CDATA">
-<!ENTITY % String	"CDATA">
+<!ENTITY % Boolean      "(0|1)">
+<!ENTITY % Integer      "CDATA">
+<!ENTITY % Float        "CDATA">
+<!ENTITY % String       "CDATA">
 
 <!-- Root element -->
 <!ELEMENT devices (mcu)*>
@@ -10,16 +10,16 @@
 <!-- Certain AVR MCU programming specification -->
 <!ELEMENT mcu (web, signature, flash, eeprom, fuses, lockbits)>
 <!ATTLIST mcu
-	<!-- MCU name (e.g. ATmega8) -->
-	name			%String;	#REQUIRED
-	<!-- Required delay after chip erase in ms -->
-	erasedelay		%Float;		#REQUIRED
-	<!-- Number of calibration bytes -->
-	numberofcalibrationbytes %Integer;	#REQUIRED
+    <!-- MCU name (e.g. ATmega8) -->
+    name                        %String;        #REQUIRED
+    <!-- Required delay after chip erase in ms -->
+    erasedelay                  %Float;         #REQUIRED
+    <!-- Number of calibration bytes -->
+    numberofcalibrationbytes    %Integer;       #REQUIRED
 >
 
 <!-- URL pointing to some document about the MCU -->
-<!ELEMENT web	(%String;)>
+<!ELEMENT web   (%String;)>
 
 <!-- Information about signature bytes -->
 <!ELEMENT signature (byte0, byte1, byte2)>
@@ -27,26 +27,26 @@
 <!-- Signature byte 0 value in hexadecimal. (0x00..0xFF) -->
 <!ELEMENT byte0 (%Integer;)>
 <!ATTLIST byte0
-	address	%Integer;	#REQUIRED	<!-- Signature byte address in hexadecimal. -->
+    address     %Integer;       #REQUIRED       <!-- Signature byte address in hexadecimal. -->
 >
 
 <!-- Signature byte 1 value in hexadecimal. (0x00..0xFF) -->
 <!ELEMENT byte1 (%Integer;)>
 <!ATTLIST byte1
-	address	%Integer;	#REQUIRED	<!-- Signature byte address in hexadecimal. -->
+    address     %Integer;       #REQUIRED       <!-- Signature byte address in hexadecimal. -->
 >
 
 <!--Signature byte 2 value in hexadecimal. (0x00..0xFF)  -->
 <!ELEMENT byte2 (%Integer;)>
 <!ATTLIST byte2
-	address	%Integer;	#REQUIRED	<!-- Signature byte address in hexadecimal. -->
+    address     %Integer;       #REQUIRED       <!-- Signature byte address in hexadecimal. -->
 >
 
 <!-- Size of the flash/eeprom memory in bytes -->
-<!ELEMENT size (%Integer;)>
+<!ELEMENT size  (%Integer;)>
 
 <!-- Size of the flash/eeprom memory page in bytes -->
-<!ELEMENT page (%Integer;)>
+<!ELEMENT page  (%Integer;)>
 
 <!-- Delay required after flash/eeprom byte/cell programming in ms (e.g. 4.5) -->
 <!ELEMENT delay (%Float;)>
@@ -60,8 +60,8 @@
 <!-- Information about fuse bits -->
 <!ELEMENT fuses (feb, fhb, flb)>
 <!ATTLIST fuses
-	<!-- Delay required after fuse/lock bit programming in ms (e.g. 4.5) -->
-	delay	%Float;		#REQUIRED
+    <!-- Delay required after fuse/lock bit programming in ms (e.g. 4.5) -->
+    delay       %Float;         #REQUIRED
 >
 
 <!-- Information about fuse low bits -->
@@ -79,7 +79,7 @@
 <!-- Lock or fuse bit description string -->
 <!ELEMENT bit (%String)>
 <!ATTLIST bit
-	i	%Integer;	#REQUIRED	<!-- Bit number (0..7) -->
-	name	%String;	#IMPLIED	<!-- Bit name -->
-	default	%Boolean;	#IMPLIED '1'	<!-- Default state -->
+    i           %Integer;       #REQUIRED       <!-- Bit number (0..7) -->
+    name        %String;        #IMPLIED        <!-- Bit name -->
+    default     %Boolean;       #IMPLIED '1'    <!-- Default state -->
 >
