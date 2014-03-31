@@ -1,6 +1,10 @@
 
 == Licence certifate specification ==
 
+=== Foreword ===
+This simple specification assumes basic user-level knowledge of contemporary asymmetric cryptography, and general
+knowledge of computer usage above common user level; and it's intended mainly for software developers.
+
 === File format ===
 MDS licence certifate is a gzip compressed digitally signed XML file containing information about licensee.
 
@@ -10,7 +14,7 @@ MDS licence certifate is a gzip compressed digitally signed XML file containing 
 | +-----------+ |
 | |     0     | |  <-- Binary 0 (NULL), this is mandatory.
 | +-----------+ |
-| | signature | |  <-- RSA digital signature.
+| | signature | |  <-- RSA digital signature (everything is subject to the crypto-hash generation including the NULL).
 | +-----------+ |
 +---------------+
 
@@ -27,16 +31,16 @@ Cryptography standard: PKCS #1
 Signature scheme: RSASSA-PKCS1-v1_5
 Cryptographic hash function: SHA-256
 Recommended length of key modulus: 2048b
-Used key formats: PEM, ASN.1 DER
+Used key formats: PEM formatted and raw binary ASN.1 DER
 
 ==== Some OpenSSL CLI utility commands useful in accordance with the aforementioned specifications ====
 # Generate PEM encoded RSA private key with 2048 bit long modulus.
 openssl genrsa -out LicenseKey.pem 2048 -outform PEM
 
-# Generate ANS.1 BER (DER) encoded public key from the PEM encoded private key.
+# Generate raw binary ANS.1 BER (DER) encoded public key from the PEM encoded private key.
 openssl rsa -in LicenseKey.pem -pubout -inform PEM -outform DER -out LicenseKeyPublic.der
 
-# Convert the private key from PEM to ANS.1 BER (DER) encoding.
+# Convert the private key from PEM to raw binary ANS.1 BER (DER) encoding.
 openssl pkcs8 -nocrypt -in LicenseKey.pem -inform PEM -topk8 -outform DER -out LicenseKey.der
 
 # Compute digital signature.
@@ -49,8 +53,8 @@ openssl dgst -sha256 -verify -keyform PEM LicenseKeyPublic.pem -signature signat
 RSA Cryptography Standard: http://www.emc.com/collateral/white-papers/h11300-pkcs-1v2-2-rsa-cryptography-standard-wp.pdf
 
 
-=== Simple recipe for certificate generation using command line tools ===
-This example should work basically on arbitrary POSIX complaint operating system (e.g. any Linux, Unix, BSD, etc.).
+=== A simple recipe for certificate generation using command line tools ===
+This example should work basically on arbitrary POSIX operating system (e.g. Linux, Unix, BSD, etc.).
 
 1) Take file CertificateExample.xml, copy it as certificate.xml, and modify its contents to fit your needs
 2) append binary NULL to the certificate, i.e. run: printf "\x0" >> certificate.xml
@@ -59,4 +63,5 @@ This example should work basically on arbitrary POSIX complaint operating system
    run: cat certificate.xml certificate.sgn | gzip --stdout --fast > certificate.cert
 
 === Random remarks ===
-Private key is expected to be PEM encoded RSA key in this directory in file named `LicenseKey.pem'.
+ - This thing has in essence nothing to do with public key certificates and cryptographic certificates in general.
+ - Private key is expected to be PEM encoded RSA key in file named `LicenseKey.pem' (in this directory).
