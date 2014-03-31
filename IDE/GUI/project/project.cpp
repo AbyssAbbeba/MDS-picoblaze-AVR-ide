@@ -2561,6 +2561,90 @@ int Project::handleBreakpoint(QString file, int line)
 }
 
 
+//-1 nothing, 0 add, 1 remove
+int Project::handleBookmark(QString file, int line)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    //for (int i = 0; i < this->filePaths.count(); i++)
+    //{
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        qDebug() << "Project: contains" << fileRelative;
+        //if (this->filePaths.at(i) == fileRelative)
+        //{
+            //qDebug() << "Project:" << this->prjName << "contains file" << fileRelative;
+        int found = -1;
+        for (int j = 0; j < this->bookmarks.count() && found == -1; j++)
+        {
+            //qDebug() << "Project: matching file" << file << "with" << this->bookmarks.at(j).first;
+            if (this->bookmarks.at(j).first == file)
+            {
+                found = j;
+            }
+        }
+        if (found > -1)
+        {
+            if (false == this->bookmarks.at(found).second.contains(line))
+            {
+                //qDebug() << "Project: breakpoint file found, added";
+                QSet<unsigned int> set = this->bookmarks.at(found).second;
+                set.insert(line);
+                this->bookmarks.removeAt(found);
+                QPair<QString, QSet<unsigned int>> pair(file, set);
+                this->bookmarks.append(pair);
+                //emit breakpointAppend(file, line);
+                return 0;
+            }
+            else
+            {
+                QSet<unsigned int> set = this->bookmarks.at(found).second;
+                set.remove(line);
+                this->bookmarks.removeAt(found);
+                QPair<QString, QSet<unsigned int>> pair(file, set);
+                this->bookmarks.append(pair);
+                return 1;
+                //emit breakpointRemove(file, line);
+            }
+            //this->bookmarks.at(found).second;
+        }
+        else
+        {
+            //qDebug() << "Project: breakpoint file not found, added";
+            QSet<unsigned int> set;
+            set.insert(line);
+            QPair<QString, QSet<unsigned int>> pair(file, set);
+            this->bookmarks.append(pair);
+            return 0;
+            //emit breakpointAppend(file, line);
+        }
+        /*else
+        {
+            for (int j = 0; j < this->bookmarks.count(); j++)
+            {
+                if (this->bookmarks.at(j).first == file && true == this->bookmarks.at(j).second.contains(line))
+                {
+                    //qDebug() << "Project: breakpoint file found, removed";
+
+                    return;
+                }
+            }
+        }*/
+        //}
+    }
+    qDebug() << "Project: does not contain" << fileRelative;
+    return -1;
+}
+
+
 void Project::breakpointReachedSlot()
 {
     qDebug() << "Project: breakpoint reached";
@@ -2571,4 +2655,10 @@ void Project::breakpointReachedSlot()
 QList<QPair<QString, QSet<unsigned int>>>* Project::getBreakpointsListRef()
 {
     return &breakPoints;
+}
+
+
+QList<QPair<QString, QSet<unsigned int>>>* Project::getBookmarksListRef()
+{
+    return &bookmarks;
 }

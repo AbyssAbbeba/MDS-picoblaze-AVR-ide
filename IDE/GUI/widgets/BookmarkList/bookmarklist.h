@@ -15,26 +15,30 @@
 #ifndef BOOKMARKLIST_H
 #define BOOKMARKLIST_H
 
-#include <QListWidget>
+#include <QTreeWidget>
 
 
 
 /**
- * @brief QListWidget of bookmarks added to CodeEdit
+ * @brief QTreeWidget of bookmarks added in Project
  * @ingroup GUI
  * @class BookmarkList
  */
-class BookmarkList : public QListWidget
+class BookmarkList : public QTreeWidget
 {
-    Q_OBJECT   
+    Q_OBJECT
     public:
         BookmarkList(QWidget *parent);
-        void reload(QList<int> bookmarkList);
-
+        void reload(QList<QPair<QString, QSet<unsigned int>>> *bookmarkList);
+        void bookmarkListAdd(QString file, int line);
+        void bookmarkListRemove(QString file, int line);
+        void bookmarkListUpdate(QString file, int fromLine, int linesAdded);
 
     private slots:
-        void bookmarkListAddSlot(int line);
-        void bookmarkListRemoveSlot(int line);
+        void bookmarkClickedSlot(QTreeWidgetItem *item, int column);
+
+    signals:
+        void bookmarkClicked(QString file, int line);
 
 };
 

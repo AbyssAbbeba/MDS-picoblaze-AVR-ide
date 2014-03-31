@@ -27,6 +27,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //{
         //qDebug() << "parentCodeEdit is NULL";
         this->breakpointsLines = new QList<unsigned int>();
+        this->bookmarksLines = new QList<unsigned int>();
     //}
     //else
     //{
@@ -170,6 +171,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //{
         //qDebug() << "parentCodeEdit is NULL";
         this->breakpointsLines = new QList<unsigned int>();
+        this->bookmarksLines = new QList<unsigned int>();
     //}
     //else
     //{
@@ -296,6 +298,7 @@ CodeEdit::~CodeEdit()
     if (parentCodeEdit == NULL)
     {
         delete this->breakpointsLines;
+        delete this->bookmarksLines;
     }
 }
 
@@ -670,6 +673,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         qDebug() << "CodeEdit: breakpointsLines == NULL";
     }
     this->lineCount->getWidget()->setBreakpointList(this->breakpointsLines);
+    this->lineCount->getWidget()->setBookmarkList(this->bookmarksLines);
     /*if (name != NULL)
     {
         int index = this->name.lastIndexOf(".");
@@ -766,7 +770,7 @@ void CodeEdit::manageBreakpointEmit(int line)
 void CodeEdit::manageBookmarkEmit(int line)
 {
     //qDebug() << "CodeEdit: manageBookmarkEmit()";
-    emit bookmarkListStateChanged(this->path, line);
+    emit bookmarkEmit(this->path, line);
     //qDebug() << "CodeEdit: return manageBookmarkEmit()";
 }
 
@@ -846,4 +850,24 @@ void CodeEdit::removeBreakpointLine(unsigned int line)
 QList<unsigned int>* CodeEdit::getBreakpointsLines()
 {
     return this->breakpointsLines;
+}
+
+
+void CodeEdit::addBookmarkLine(unsigned int line)
+{
+    this->bookmarksLines->append(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+void CodeEdit::removeBookmarkLine(unsigned int line)
+{
+    this->bookmarksLines->removeAll(line);
+    this->lineCount->getWidget()->update();
+}
+
+
+QList<unsigned int>* CodeEdit::getBookmarksLines()
+{
+    return this->bookmarksLines;
 }

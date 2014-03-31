@@ -59,6 +59,9 @@ class CodeEdit : public QWidget
         void addBreakpointLine(unsigned int line);
         void removeBreakpointLine(unsigned int line);
         QList<unsigned int>* getBreakpointsLines();
+        void addBookmarkLine(unsigned int line);
+        void removeBookmarkLine(unsigned int line);
+        QList<unsigned int>* getBookmarksLines();
 
     public slots:
         void setChanged();
@@ -81,8 +84,9 @@ class CodeEdit : public QWidget
         void changedTabStatus(QString name, QString path, bool changed);
         void updateText(const QString& text, int pos, CodeEdit *editor);
         void CodeEditChanged(CodeEdit* editor);
-        void bookmarkListStateChanged(QString file, int line);
+        //void breakpointListStateChanged(QString file, int line);
         void breakpointEmit(QString file, int line);
+        void bookmarkEmit(QString file, int line);
         //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
@@ -109,6 +113,7 @@ class CodeEdit : public QWidget
         CodeEdit *parentCodeEdit;
         QColor *breakpointColor;
         int prevBlockCount;
+        QList<unsigned int> *bookmarksLines;
         QList<unsigned int> *breakpointsLines;
 
     protected:

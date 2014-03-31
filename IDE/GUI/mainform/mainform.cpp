@@ -116,6 +116,11 @@ MainForm::MainForm()
             this,
             SLOT(manageBreakpointEmit(QString, int))
            );
+    connect(wDockManager,
+            SIGNAL(bookmarkEmit(QString, int)),
+            this,
+            SLOT(manageBookmarkEmit(QString, int))
+           );
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -517,10 +522,6 @@ void MainForm::createToolbar()
 
 
 
-//nacteni defaultnich widgetu podle ulozeneho nastaveni
-//v tuto chvili jen informacni defaultni layout
-//s kazdym novym widgetem se zavola prislusna funkce s telem podobnym teto funkci
-//pojmenovani widgetu zacinat s "wid", popr. "w"
 /**
  * @brief Inits default or user-saved layout of basic dock widgets
  * @bug Only default layout
@@ -542,7 +543,7 @@ void MainForm::createDockWidgets()
         wDockManager->addDockWidget(wCompileInfo);
         wDockManager->addDockWidget(wSimulationInfo);
         wDockManager->addDockWidget(wBottomHide);
-        //wDockManager->addDockWidget(wBookmarkList);
+        wDockManager->addDockWidget(wBookmarkList);
         wDockManager->addDockWidget(wBreakpointList);
         //wDockManager->addDockWidget(wAnalysVar);
         //wDockManager->addDockWidget(wAnalysFunc);
@@ -562,11 +563,22 @@ void MainForm::createDockWidgets()
                 wDockManager,
                 SLOT(handleShowHideBottom(int))
                );
-        connect(wDockManager->getBreakpointList(),
-                SIGNAL(breakpointClicked(QString, int)),
-                this,
-                SLOT(scrollToBreakpoint(QString, int))
-               );
+        if (wDockManager->getBreakpointList() != NULL)
+        {
+            connect(wDockManager->getBreakpointList(),
+                    SIGNAL(breakpointClicked(QString, int)),
+                    this,
+                    SLOT(scrollToFileLine(QString, int))
+                   );
+        }
+        if (wDockManager->getBookmarkList() != NULL)
+        {
+            connect(wDockManager->getBookmarkList(),
+                    SIGNAL(bookmarkClicked(QString, int)),
+                    this,
+                    SLOT(scrollToFileLine(QString, int))
+                   );
+        }
 
         wDockManager->hideDockWidgetArea(1);
         wDockManager->hideDockWidgetArea(2);
@@ -2291,6 +2303,10 @@ void MainForm::activeProjectChanged(int index)
         {
             wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
         }
+        if (wDockManager->getBookmarkList() != NULL)
+        {
+            wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
+        }
     //}
 }
 
@@ -2361,6 +2377,31 @@ void MainForm::manageBreakpointEmit(QString file, int line)
     {
         wDockManager->getBreakpointList()->breakpointListRemove(file, line + 1);
         wDockManager->getCentralWidget()->removeBreakpointLine(line + 1);
+    }
+    //else project doesnt contain current file - result == -1
+    /*QList<Project*> projects = projectMan->getOpenProjects();
+    for (int i = 0; i < projects.count(); i++)
+    {
+        projects.at(i)->handleBreakpoint(file, line + 1);
+    }*/
+}
+
+
+void MainForm::manageBookmarkEmit(QString file, int line)
+{
+    qDebug() << "MainForm: bookmark:" << file << ":" << line + 1;
+    int result = projectMan->getActive()->handleBookmark(file, line + 1);
+    //add
+    if (0 == result)
+    {
+        wDockManager->getBookmarkList()->bookmarkListAdd(file, line + 1);
+        wDockManager->getCentralWidget()->addBookmarkLine(line + 1);
+    }
+    //remove
+    else if (1 == result)
+    {
+        wDockManager->getBookmarkList()->bookmarkListRemove(file, line + 1);
+        wDockManager->getCentralWidget()->removeBookmarkLine(line + 1);
     }
     //else project doesnt contain current file - result == -1
     /*QList<Project*> projects = projectMan->getOpenProjects();
@@ -2501,7 +2542,7 @@ void MainForm::deselectSlot()
 }
 
 
-void MainForm::scrollToBreakpoint(QString file, int line)
+void MainForm::scrollToFileLine(QString file, int line)
 {
     wDockManager->setCentralByPath(file);
     wDockManager->getCentralTextEdit()->scrollToLine(line);

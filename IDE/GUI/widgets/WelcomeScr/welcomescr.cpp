@@ -12,31 +12,31 @@ WelcomeScr::WelcomeScr(QWidget *parent)
     connect(ui.btnExample,
             SIGNAL(clicked()),
             this,
-            SLOT(example())
+            SLOT(exampleSlot())
            );
     connect(ui.btnNewProject,
             SIGNAL(clicked()),
             this,
-            SLOT(newProject())
+            SLOT(newProjectSlot())
            );
     connect(ui.btnOpenProject,
             SIGNAL(clicked()),
             this,
-            SLOT(openProject())
+            SLOT(openProjectSlot())
            );
     connect(ui.btnManual,
             SIGNAL(clicked()),
             this,
-            SLOT(manual()));
+            SLOT(manualSlot()));
     connect(ui.btnQuickGuide,
             SIGNAL(clicked()),
             this,
-            SLOT(quickGuide())
+            SLOT(quickGuideSlot())
            );
     connect(ui.lstProjects,
             SIGNAL(itemClicked(QListWidgetItem*)),
             this,
-            SLOT(listClick(QListWidgetItem*))
+            SLOT(listClickSlot(QListWidgetItem*))
            );
 
 }
@@ -48,34 +48,34 @@ WelcomeScr::WelcomeScr(QWidget *parent)
 
 
 
-void WelcomeScr::example()
+void WelcomeScr::exampleSlot()
 {
-
+    emit example();
 }
 
-void WelcomeScr::openProject()
+void WelcomeScr::openProjectSlot()
 {
-
+    emit openProject();
 }
 
-void WelcomeScr::newProject()
+void WelcomeScr::newProjectSlot()
 {
-
+    emit newProject();
 }
 
-void WelcomeScr::manual()
+void WelcomeScr::manualSlot()
 {
-
+    emit manual();
 }
 
-void WelcomeScr::quickGuide()
+void WelcomeScr::quickGuideSlot()
 {
-
+    emit quickGuide();
 }
 
-void WelcomeScr::listClick(QListWidgetItem* item)
+void WelcomeScr::listClickSlot(QListWidgetItem* item)
 {
-
+    emit recentProject(item->toolTip());
 }
 
 /*int main(int argc, char *argv[])
