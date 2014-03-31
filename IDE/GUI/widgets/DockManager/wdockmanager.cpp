@@ -317,6 +317,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
                 );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarkEmit(QString, int)),
+                    this,
+                    SLOT(bookmarkEmitSlot(QString, int))
+                );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
@@ -420,6 +425,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                     SIGNAL(breakpointEmit(QString, int)),
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarkEmit(QString, int)),
+                    this,
+                    SLOT(bookmarkEmitSlot(QString, int))
                 );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
@@ -527,6 +537,11 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
                     SIGNAL(breakpointEmit(QString, int)),
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarkEmit(QString, int)),
+                    this,
+                    SLOT(bookmarkEmitSlot(QString, int))
                 );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
@@ -1010,6 +1025,12 @@ void WDockManager::closeFile(QString path)
 void WDockManager::breakpointEmitSlot(QString file, int line)
 {
     emit breakpointEmit(file, line);
+}
+
+
+void WDockManager::bookmarkEmitSlot(QString file, int line)
+{
+    emit bookmarkEmit(file, line);
 }
 
 
