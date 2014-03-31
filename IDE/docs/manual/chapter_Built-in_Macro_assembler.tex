@@ -32,20 +32,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
 \section{Symbols}
     Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
 
-    \begin{code}[h!]
     {
         \usecodefont
-
         \verb'First_symb      EQU     0b100111 ; Number in binary'\\
         \verb'Second_symb     SET     47q      ; Octal'\\
         \verb'Third_symb      REG     39d      ; Decimal'\\
         \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
         \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
 
-        \caption{Example of symbol definitons.}
-        \label{code:esd}
     }
-    \end{code}
 
     As you can see in Code \ref{code:esd} example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
 
@@ -245,8 +240,6 @@ Then each list element is beeing parsed and splitted into an address reference, 
             The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
 
         \subsubsection{Examples:}
-            In this example, the assembler would always replace symbol}\verb'First_symb'} with 0x9C, symbol}\verb'Second_symb'} with 0x2F and symbol}\verb'Third_symb'} with 0x39 etc.
-            {
             ~\\
             \usecodefont
             \verb'First_symb    SET     0b10011100              ;Number in binary'\\
@@ -278,6 +271,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \subsection{REG}
         \subsubsection{Syntax:}
             \verb'<symbol>      REG             <reg name/address>'
+            
         \subsubsection{Description:}
         Symbols defined with the REG directive are by compiler considered as work registers.
 
@@ -285,11 +279,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             {
             ~\\
             \usecodefont
-            \verb'First_symb    REG     s1'\\
-            \verb'Second_symb   REG     s2'\\
-            \verb'Third_symb    REG     s3'\\
-            \verb'Fourth_symb   REG     s4'\\
-            \verb'Fifth_symb    REG     s5'\\
+            \verb'First_symb        REG     s1'\\
+            \verb'Second_symb       REG     s2'\\
+            \verb'Third_symb        REG     s3'\\
+            \verb'Fourth_symb       REG     s4'\\
+            \verb'Fifth_symb        REG     s5'\\
             }
             
         \subsection{NAMEREG}
@@ -384,241 +378,130 @@ Then each list element is beeing parsed and splitted into an address reference, 
             }
             
     \subsection{AUTOSPR}
-        \subsubsection{Syntax:}\\
-                    \\ {
-                            \texttt{}
-                            \begin{tabular}[h!]{llll}
-                            { \color{highlight_symbol} <symbol> }  &
-                            { \color{highlight_directive} AUTOSPR }
-                            { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                counter starting adress }\\
-                            { \color{highlight_constant} length } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                counter starting adress }\\
-                            \end{tabular}
-                    }
-                    \\
-    \subsubsection{Description:}\\
+        \subsubsection{Syntax:}
+            \verb'<symbol>      AUTOREG         [<cnt address>]'
+           
+    \subsubsection{Description:}
     Must be used only with instructions FETCH and STORE. It will automatically assign an
     adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
     after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
 
-    \subsubsection{Examples:}\\
-            \begin{code}[h!]
-            \mysmallfont{}
-                    symbol}\verb'First_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
-                    symbol}\verb'Second_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    \verb'  \verb'; Adress incremented, register at adress 0x01 '}\\
-                    symbol}\verb'Third_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    \verb'  \verb'; Adress incremented, register at adress 0x02 '}\\
-                    comment}\verb'; Now with optional parameter changing counting adress '}\\
-                    symbol}\verb'Fourth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    symbol}\verb'10h'}\verb'  \verb'; Registers are now defined from adress 0x10 '}
-                    symbol}\verb'Fifth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    comment}\verb'; Now register at adress 0x11'}\\
-            \caption{Using AUTOREG directive}
-        \end{code}
+    \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'First_symb    AUTOSPR             ; Automaticaly assigned, data at adress 0x00'\\
+            \verb'Second_symb   AUTOSPR'\\
+            \verb'Third_symb    AUTOSPR'\\
+            \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting adress to 0x05'\\
+            \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'\\
+        }
+            
+    \subsection{INITSPR}
+        \subsubsection{Syntax:}
 
-        \subsection{INITSPR}
-        \subsubsection{Syntax:}\\
-                    \\ {
-                            \texttt{}
-                            \begin{tabular}[h!]{llll}
-                            { \color{highlight_symbol} <symbol> }  &
-                            { \color{highlight_directive} AUTOSPR }
-                            { \color{highlight_constant} [AT E] } & { \color{highlight_comment} ; Optional attribute can define
-                                                                                                counter starting adress }\\
-                            \end{tabular}
-                    }
-                    \\
-    \subsubsection{Description:}\\
-    Must be used only with instructions FETCH and STORE. It will automatically assign an
-    adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
-    after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
-
-    \subsubsection{Examples:}\\
-            \begin{code}[h!]
-            \mysmallfont{}
-                    symbol}\verb'First_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    comment}\verb'; Automaticaly assigned, register at adress 0x00'}\\
-                    symbol}\verb'Second_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    \verb'  \verb'; Adress incremented, register at adress 0x01 '}\\
-                    symbol}\verb'Third_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    \verb'  \verb'; Adress incremented, register at adress 0x02 '}\\
-                    comment}\verb'; Now with optional parameter changing counting adress '}\\
-                    symbol}\verb'Fourth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    symbol}\verb'10h'}\verb'  \verb'; Registers are now defined from adress 0x10 '}
-                    symbol}\verb'Fifth_symb'}\verb'   'directive}\verb'AUTOSPR'}\verb'   '
-                    comment}\verb'; Now register at adress 0x11'}\\
-            \caption{Using AUTOREG directive}
-        \end{code}
-
-        \subsection{ORGSPR, MERGESPR}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} ORGSPR } & \verb'         '
-                        { \color{highlight_constant} <address> } & { \color{highlight_comment}  }\\
-                \end{tabular}
-            }\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} MERGESPR } & \verb'         '
-                        { \color{highlight_constant} <address>,<size> } & { \color{highlight_comment}  }\\
-                \end{tabular}
-            }\\
-        \subsubsection{Description:}\\
-        When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
-        The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
-        being assembled and is incremented after each line by the number of bytes of data or code in that line.
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
-                \caption{Using ORG directive}
-                \end{code}
-                \begin{code}[h!]
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
-                \caption{Using ADDRESS directive}
-                \end{code}
+        \subsubsection{Description:}
+ 
+        \subsubsection{Examples:}
 
 
-        \subsection{DEFINE}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_symbol} <symbol> }  &
-                        { \color{highlight_directive} DEFINE } &
-                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                \end{tabular}
-            }\\
-            \\
+    \subsection{ORGSPR, MERGESPR}
+        \subsubsection{Syntax:}
 
-        \subsubsection{Description:}\\
-        You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used.
+        \subsubsection{Description:}
 
-        \subsubsection{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'A'}\verb'   'directive}\verb'EQU'}\verb' '
-                            \verb'10'}\verb'       \verb'; First symbol'}\\
-                            symbol}\verb'B'}\verb'   'directive}\verb'SET'}\verb' '
-                            \verb'5'}\verb'       \verb'; Second  symbol, redefinable'}\\
-                            symbol}\verb'C'}\verb'    'directive}\verb'DEFINE'}\verb' '
-                            constant}\verb'(A + B) * 2'}\verb'   \verb'; Defined expresion'}\\
-                            symbol}\verb'C = '}constant}\verb'30'}\\
-                            symbol}\verb'B'}\verb'   'directive}\verb'SET'}\verb' '
-                            \verb'10'}\verb'       \verb'; B redefined'}\\
-                            symbol}\verb'C = '}constant}\verb'40'}\verb'   \verb'; C is now different'}\\\\
-                        \caption{Example of DEFINE directive}
-                        \end{code}
+    \subsection{DEFINE}
+        \subsubsection{Syntax:}
+            \verb'<symbol>      DEFINE             <expresion>'
 
-        \subsection{ADDRESS,ORG}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} ORG } & \verb'         '
-                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                \end{tabular}
-            }\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} ADDRESS } & \verb'         '
-                        { \color{highlight_constant} <expresion> } & { \color{highlight_comment}  }\\
-                \end{tabular}
-            }\\
-        \subsubsection{Description:}\\
-        When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter.
-        The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data
-        being assembled and is incremented after each line by the number of bytes of data or code in that line.
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ORG'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
-                \caption{Using ORG directive}
-                \end{code}
-                \begin{code}[h!]
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'0x3FF'}\verb'                  \verb'; Number'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'START:'}\verb'                    \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'label}\verb'INTERRUPT'}\verb'                 \verb'; Symbol'}\\
-                        \verb'    'directive}\verb'ADDRESS'}\verb'   'constant}\verb'($ + 15) AND 0xFFEE'}\verb'    \verb'; }\\
-                \caption{Using ADDRESS directive}
-                \end{code}
+        \subsubsection{Description:}
+        You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used. You can use symbols in define expresions
 
-        \subsection{REPT}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} REPT }
-                        { \color{highlight_constant} <expresion> }\verb'       ' { \color{highlight_comment} ; expresion determines number of repetion  }\\
-                        { \color{highlight_symbol} <repeated code> }\\
-                        { \color{highlight_directive} ENDR } { \color{highlight_comment} ; end of repetion  }
-                \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        Directive REPT is able to repeatedly execute a block of code.
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'A             EQU         10'\\
+            \verb'B             SET         5                   ; Second symbol is redefinable'\\
+            \verb'C             DEFINE      ( A + B ) * 2       ; Defined expresion'\\
+            \verb'F = C                                         ; F equals 30'
+            \verb'B             SET         10'\\
+            \verb'F = C                                         ; F equals 40'
+        }
 
-        \subsubsection{Examples:}\\
-            \begin{code}[h!]
-                comment}\verb'; With REPT'}\\\\
-                directive}\verb'REPT'}\verb'    'constant}\verb'8'}\verb'   '
-                comment}\verb'; Number of repetions'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                directive}\verb'ENDR'}\\
-                comment}\verb'; Without REPT'}\\\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                \caption{Example of REPT directive}
-            \end{code}
+    \subsection{ADDRESS,ORG}
+        \subsubsection{Syntax:}
+            \verb'ADDRESS             <expresion>'
+            \verb'ORG                 <expresion>'
 
+        \subsubsection{Description:}
+        When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter. The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data being assembled and is incremented after each line by the number of bytes of data or code in that line.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'ORG           0x3ff'\\
+            \verb'ORG           START'\\
+            \verb'ORG           INTERRUPT'\\
+            \verb'ORG           (\$ + 15) \& 0xFFEE'\\
+
+            \verb'ADDRESS       0x3ff'\\
+            \verb'ADDRESS       START'\\
+            \verb'ADDRESS       INTERRUPT'\\
+            \verb'ADDRESS       (\$ + 15)'\\
+        }
+    \subsection{REPT}
+        \subsubsection{Syntax:}
+            \verb'REPT  <NumberOfRepetions>'\\
+            \verb'<repeated code>'\\
+            \verb'ENDR'
+
+        \subsubsection{Description:}
+            Directive REPT is able to repeatedly execute a block of code.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            
+                \verb'; With REPT'}\\
+                \verb'REPT              8'\\
+                \verb'SR0               sF'}\\
+                \verb'ENDR'\\
+                \verb'; Without REPT'}\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+                \verb'SR0           sF'\\
+        }        
         \subsection{\#WHILE}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} \#WHILE }
-                        { \color{highlight_constant} <expresion> }\verb'       '\\
-                        { \color{highlight_symbol} <repeated code> }\\
-                        { \color{highlight_directive} \#ENDW }\verb'       ' { \color{highlight_comment} ; end of while  }
-                    \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
+        \subsubsection{Syntax:}
+            \verb'#WHILE  <symbol>'\\
+            \verb'<code>'\\
+            \verb'#ENDW'
+            
+        \subsubsection{Description:}
         The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    symbol}\verb'B'}\verb'    '
-                    directive}\verb'SET'}\verb'    'constant}\verb'8'}\\
-                    directive}\verb'#WHILE'}\verb'    'constant}\verb'B'}\verb'          '
-                    comment}\verb' ; While B != 0'}\\
-                    instruction}\verb'SR0'}\verb'    'symbol}\verb'sF'}\\
-                    symbol}\verb'B'}\verb'    '
-                    directive}\verb'SET'}\verb'    'constant}\verb'B - 1'}\\
-                    directive}\verb'#ENDW'}\\
-                    \caption{WHILE directive}
-                \end{code}
 
-        \subsection{SKIP}
-        \subsubsection{Syntax:}\\
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                        \verb'B             SET             8'\\
+                        \verb'#WHILE        B                       ; while B != 0'\\
+                        \verb'SR0           sF'\\
+                        \verb'B             SET             B - 1'\\
+                        \verb'#ENDW'
+            }
+    \subsection{SKIP}
+            \verb'REPT  <NumberOfInstructions>'
+
+        \subsubsection{Syntax:}
         \\ {
             \texttt{}
             \begin{tabular}[h!]{llll}
