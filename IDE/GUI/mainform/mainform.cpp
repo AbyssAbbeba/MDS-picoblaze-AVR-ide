@@ -543,8 +543,8 @@ void MainForm::createDockWidgets()
         wDockManager->addDockWidget(wCompileInfo);
         wDockManager->addDockWidget(wSimulationInfo);
         wDockManager->addDockWidget(wBottomHide);
-        wDockManager->addDockWidget(wBookmarkList);
         wDockManager->addDockWidget(wBreakpointList);
+        wDockManager->addDockWidget(wBookmarkList);
         //wDockManager->addDockWidget(wAnalysVar);
         //wDockManager->addDockWidget(wAnalysFunc);
         //addAct->setEnabled(true);

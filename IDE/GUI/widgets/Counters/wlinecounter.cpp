@@ -172,7 +172,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         {
             normalize = cursorRect.top() - 2;
         }*/
-        point.setY(cursorRect.top());
+        point.setY(cursorRect.top()+1);
         //qDebug() << "cursor normalized: " << cursorRect.top()-normalize;
         //point.setY(i*(size+7)+size/3);
         point.setX(0);
@@ -292,4 +292,17 @@ void WLineCounterWidget::setBreakpointList(QList<unsigned int> *list)
 void WLineCounterWidget::setBookmarkList(QList<unsigned int> *list)
 {
     this->bookmarkList = list;
+}
+
+
+void WLineCounterWidget::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        qDebug() << "WLineCounterWidget: left click";
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        qDebug() << "WLineCounterWidget: right click";
+    }
 }
