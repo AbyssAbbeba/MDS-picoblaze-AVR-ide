@@ -597,137 +597,104 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'DEVICE                KCPSM6'\\
         }
 
-        \subsection{LIST, NOLIST}
-        \subsubsection{Syntax:}\\
-        \\ {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} LIST }
-                    { \color{highlight_comment} ; Printing to code listing turned on (turned on by default)  }\\
-            \end{tabular}
-            }\\
+    \subsection{LIST, NOLIST}
+        \subsubsection{Syntax:}
+            \verb'LIST'\\
+            \verb'NOLIST'
 
-        {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} NOLIST }
-                    { \color{highlight_comment} ; Printing to code listing turned off  }\\
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        You can turn on/off printing to code listing in some parts of your code.\\
+        \subsubsection{Description:}
+        You can turn on/off printing to code listing in some parts of your code.
 
-        \subsection{TITLE}
-        \subsubsection{Syntax:}\\
+    \subsection{TITLE}
+        \subsubsection{Syntax:}
+            \verb'TITLE            <"title text">'
+
+        \subsubsection{Description:}
+        This will put a title into coresponding line in codelisting.  
+
+        \subsubsection{Examples:}
             {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                { \color{highlight_directive} TITLE }\verb`       `{ \color{highlight_string} <"title text"> }
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        This will put a title into coresponding line in codelisting.  \\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'TITLE'}\verb'    '
-                    constant}\verb'"Text, that will show up in the codelisting"'}
-                \end{code}
+                ~\\
+                \usecodefont
+                \verb'TITLE         "Text, that will show up in the codelisting"'
+            }
 
-        \subsection{MESSAGE}
+    \subsection{MESSAGE}
+        \subsubsection{Syntax:}
+            \verb'MESSAGE            <"message text">'
+
+        \subsubsection{Description:}
+            You can define message, that will show up after compilation.  
+
+        \subsubsection{Examples:}
             {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                { \color{highlight_directive} MESSAGE }\verb`       `{ \color{highlight_string} <"message text"> }
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        You can define message, that will show up after compilation.  \\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'MESSAGE'}\verb'    '
-                    constant}\verb'"Text, that will show up in the codelisting"'}
-                \end{code}
+                ~\\
+                \usecodefont
+                \verb'MESSAGE         "Text, that will show up in the codelisting"'
+            }
 
-        \subsection{ERROR}
-        \subsubsection{Syntax:}\\
-        \\ {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                { \color{highlight_directive} ERROR }\verb`       `{ \color{highlight_string} <"error text"> }
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        You can define an error report, which aborts compilation, when is executed.  \\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'ERROR'}\verb'    '
-                    constant}\verb'"Text, that will show up in the codelisting"'}
-                \end{code}
-
-        \subsection{LOCAL}
-        \subsubsection{Syntax:}\\
-        \\ {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} LOCAL } { \color{highlight_symbol} <name> }
-                    { \color{highlight_comment}  }\\
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels
-        or symbols.
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'MACRO'}\verb'     '\verb'name_of_macro'\\
-                    directive}\verb'LOCAL'}\verb`    `symbol}\verb'wait'}\\
-                    directive}\verb'wait:'}\\
-                    symbol}\verb'SUBCY        s0,#10h'}\\
-                    symbol}\verb'SUB          s0,#1h' }\\
-                    symbol}\verb'LOAD         s0,#F0h'}\\
-                    symbol}\verb'JUMP         C,wait'}\\
-                    directive}\verb'ENDM'}\\
-                \end{code}
-
-        \subsection{WARNING}
+    \subsection{ERROR}
+        \subsubsection{Syntax:}
+            \verb'MESSAGE            <"error text">'
+            
+        \subsubsection{Description:}
+        You can define an error report, which aborts compilation, when is executed.
+        
+        \subsubsection{Examples:}
             {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                { \color{highlight_directive} WARNING }\verb`       `{ \color{highlight_string} <"warning text"> }
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        This will put title into coresponding line in codelisting.  \\
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'WARNING'}\verb'    '
-                    constant}\verb'"Text, that will show up in the codelisting"'}
-                \end{code}
+                ~\\
+                \usecodefont
+                \verb'ERROR         "Text, that will show up in the codelisting"'
+            }
 
-        \subsection{END}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} END } &
-                        { \color{highlight_comment} ; Just END, no parameters }\\
-                \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
+    \subsection{WARNING}
+            \verb'WARNING            <"warning text">'
+            
+        \subsubsection{Description:}
+            This will put title into coresponding line in codelisting.
+            
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'WARNING         "Text, that will show up in the codelisting"'
+            }
+
+    \subsection{LOCAL}
+        \subsubsection{Syntax:}
+            \verb'LOCAL            <name>'
+
+        \subsubsection{Description:}
+            This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels or symbols.
+
+        \subsubsection{Examples:}
+            {
+            ~\\
+            \usecodefont
+                \verb'MACRO         name_of_macro'\\
+                \verb'LOCAL         wait'\\
+                \verb'wait:'\\
+                \verb'SUBCY         s0,#10h'\\
+                \verb'SUB           s0,#1h' \\
+                \verb'LOAD          s0,#F0h'\\
+                \verb'JUMP          C,wait'\\
+                \verb'ENDM'\\
+            }
+            
+    \subsection{END}
+        \subsubsection{Syntax:}
+            \verb'END'
+
+        \subsubsection{Description:}
         The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
         syntactically right.
 
-        \subsubsection{Examples:}\\
-            \begin{code}[h!]
-                \verb'    'directive}\verb'END'}
-                \caption{END directive}
-            \end{code}
+        \subsubsection{Examples:}
+            {
+                ~\\
+                \usecodefont
+                \verb'END'
+            }
 
         \subsection{FAILJMP,DEFAULT\_JUMP}
         \subsubsection{Syntax:}\\
@@ -743,11 +710,13 @@ Then each list element is beeing parsed and splitted into an address reference, 
         Fills program memory with jump to the specified address. Simple protection against errors.
 
         \subsubsection{Examples:}\\
-            \begin{code}[h!]
-                \verb'    'directive}\verb'FAILJMP'}\verb`       `{ \color{highlight_string} start }
-                \verb'    'directive}\verb'DEFAULT\_JUMP'}\verb`       `{ \color{highlight_string} 0x000> }
-                \caption{END directive}
-            \end{code}
+            {
+                ~\\
+                \usecodefont
+                \verb'FAILJMP                   Start'\\
+                \verb'DEFAULT\_JUMP             0x000'\\
+            }
+
 
         \section{Pseudo Instructions}
         MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code.
