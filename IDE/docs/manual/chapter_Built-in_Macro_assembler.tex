@@ -559,59 +559,43 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
         }
     \subsection{LIMIT}
-        \subsubsection{Syntax:}\\
-        \\ {
-                \texttt{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size of program memory}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} LIMIT }   \verb`     `
-                        { \color{highlight_symbol} R,<number> }  \verb`     `   { \color{highlight_comment} ; Number of registers }\\
-                        { \color{highlight_directive} LIMIT }   \verb`     `
-                        { \color{highlight_symbol} D,<number> }  \verb`     `   { \color{highlight_comment} ; Size of scratchpad ram }\\
-                        { \color{highlight_directive} LIMIT }  \verb`     `
-                        { \color{highlight_symbol} C,<number> }  \verb`     `   { \color{highlight_comment} ; Size of program memory }
-                        %  \caption{All three types of LIMIT directive. First number of registers, second size of scratch pad ram and third size
-                        % of program memory}
-                \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
+    
+        \subsubsection{Syntax:}
+        \verb'LIMIT          D,<number>                  ; Number of registers '\\
+        \verb'LIMIT          R,<number>                  ; Size of scratchpad ram '\\
+        \verb'LIMIT          C,<number>                  ; Size of program memory '\\
+        
+        \subsubsection{Description:}
         Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
-
-        \subsubsection{Examples:}\\
-                        \begin{code}[h!]
-                        { \color{highlight_directive} LIMIT }   \verb`     `
-                        { \color{highlight_symbol}\verb' R,16' }  \verb`          `   { \color{highlight_comment} ; Number of registers 16 }\\
-                        { \color{highlight_directive} LIMIT }   \verb`     `
-                        { \color{highlight_symbol}\verb' D,07' }  \verb`          `   { \color{highlight_comment} ; Size of scratchpad ram 7B }\\
-                        { \color{highlight_directive} LIMIT }   \verb`          `
-                        { \color{highlight_symbol}\verb' C,0b100000000' }  \verb`     `   { \color{highlight_comment} ; Size of program memory 512}\\
-                        \caption{Example of DEFINE directive}
-                        \end{code}
         In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
 
-        \subsection{DEVICE}
-        \subsubsection{Syntax:}\\
-        \\ {
-            \texttt{}
-            \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} DEVICE } { \color{highlight_symbol} <device name> }
-                    { \color{highlight_comment}  }\\
-            \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
-        Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
-        This will affect predefined symbols.\\
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont            
+            \verb'LIMIT          R,16                   ; Number of registers 16'\\
+            \verb'LIMIT          D,7                    ; Size of scratchpad ram   '\\
+            \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
+        }
+        
+    \subsection{DEVICE}
+        \subsubsection{Syntax:}
+        \verb'DEVICE            <device name>'
 
-        \subsubsection{Examples:}\\
-                \begin{code}[h!]
-                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM3'}\\
-                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM2'}\\
-                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM1'}\\
-                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM1cpld'}\\
-                    directive}\verb'DEVICE'}\verb`    `symbol}\verb'KCPSM6'}\\
-                    \caption{DEVICE directive}
-                \end{code}
+        \subsubsection{Description:}
+        Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
+        This will affect predefined symbols.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont       
+            \verb'DEVICE                KCPSM3'\\
+            \verb'DEVICE                KCPSM2'\\
+            \verb'DEVICE                KCPSM1'\\
+            \verb'DEVICE                KCPSM1cpld'\\
+            \verb'DEVICE                KCPSM6'\\
+        }
 
         \subsection{LIST, NOLIST}
         \subsubsection{Syntax:}\\
