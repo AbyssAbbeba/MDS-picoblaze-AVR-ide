@@ -92,8 +92,6 @@ class CodeEdit : public QWidget
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
 
     private:
-        void makeMenu();
-
         QString name;
         QString path;
         bool changed;
@@ -104,10 +102,6 @@ class CodeEdit : public QWidget
         WTextEdit *textEdit;
         QGridLayout *layout;
         WLineCounter *lineCount;
-        QMenu *editorPopup;
-        QAction *cutAct;
-        QAction *copyAct;
-        QAction *deselectAct;
         //QList<int> breakpointList;
         //QList<int> bookmarkList;
         CodeEdit *parentCodeEdit;
@@ -115,10 +109,6 @@ class CodeEdit : public QWidget
         int prevBlockCount;
         QList<unsigned int> *bookmarksLines;
         QList<unsigned int> *breakpointsLines;
-
-    protected:
-        void contextMenuEvent(QContextMenuEvent *event);
-        //bool eventFilter(QObject *target, QEvent *event);
 };
 
 

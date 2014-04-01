@@ -75,14 +75,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             textEdit = new WTextEdit(this, PLAIN);
         }
     }
-    textEdit->setContextMenuPolicy(Qt::NoContextMenu);
+    //textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
+    layout->addWidget(statusBar, 0, 1, 1, 0);
     setLayout(layout);
     name = wName;
     path = wPath;
@@ -93,7 +95,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
-    this->makeMenu();
+    //this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->textEdit->setFocusPolicy(Qt::NoFocus);
     //this->installEventFilter(this);
@@ -211,15 +213,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     {
         textEdit = new WTextEdit(this, PLAIN);
     }
-    textEdit->setContextMenuPolicy(Qt::NoContextMenu);
+    //textEdit->setContextMenuPolicy(Qt::NoContextMenu);
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    setLayout(layout);
+    layout->addWidget(statusBar, 0, 1, 1, 0);
     name = wName;
     path = wPath;
     parentWidget = parent;
@@ -228,8 +231,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     breakpointColor = new QColor(0,255,0);
     textEdit->setWordWrapMode(QTextOption::WordWrap);
     textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
-    this->makeMenu();
-    this->setFocusPolicy(Qt::StrongFocus);
+    //this->makeMenu();
+    //this->setFocusPolicy(Qt::StrongFocus);
     //this->installEventFilter(this);
     if (wPath != NULL)
     {
@@ -300,98 +303,6 @@ CodeEdit::~CodeEdit()
         delete this->breakpointsLines;
         delete this->bookmarksLines;
     }
-}
-
-
-void CodeEdit::makeMenu()
-{
-    //qDebug() << "CodeEdit: makeMenu()";
-    editorPopup = new QMenu(this);
-    cutAct = new QAction("Cut", editorPopup);
-    copyAct = new QAction("Copy", editorPopup);
-    QAction *pasteAct = new QAction("Paste", editorPopup);
-    QAction *undoAct = new QAction("Undo", editorPopup);
-    QAction *redoAct = new QAction("Redo", editorPopup);
-    QAction *selectAllAct = new QAction("Select All", editorPopup);
-    deselectAct = new QAction("Deselect", editorPopup);
-    //QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
-    //QAction *splitVerticalAct = new QAction("Split vertical", editorPopup);
-
-
-    editorPopup->addAction(cutAct);
-    editorPopup->addAction(copyAct);
-    editorPopup->addAction(pasteAct);
-    editorPopup->addSeparator();
-    editorPopup->addAction(undoAct);
-    editorPopup->addAction(redoAct);
-    editorPopup->addSeparator();
-    editorPopup->addAction(selectAllAct);
-    editorPopup->addAction(deselectAct);
-    //editorPopup->addSeparator();
-    //editorPopup->addAction(splitHorizontalAct);
-    //editorPopup->addAction(splitVerticalAct);
-    
-
-    /*connect(cutAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(editedCut())
-           );
-    connect(copyAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(copy()));
-    connect(pasteAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(editedPaste())
-           );
-    connect(undoAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(editedUndo())
-           );
-    connect(redoAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(editedRedo())
-           );connect(cutAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(editedCut())
-           );*/
-    connect(copyAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(copy()));
-    connect(pasteAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(paste())
-           );
-    connect(undoAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(undo())
-           );
-    connect(redoAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(redo())
-           );
-    connect(selectAllAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(selectAll())
-           );
-    connect(deselectAct,
-            SIGNAL(triggered()),
-            this->textEdit,
-            SLOT(deselect())
-           );
-    //connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
-    //connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
-    //qDebug() << "CodeEdit: return makeMenu()";
 }
 
 
@@ -519,26 +430,6 @@ void CodeEdit::splitVertical()
     //qDebug() << "Code Edit: split signal - vertical";
     emit splitSignal(Qt::Vertical, 0);
     //qDebug() << "CodeEdit: return splitVertical()";
-}
-
-
-void CodeEdit::contextMenuEvent(QContextMenuEvent *event)
-{
-    //if (target == textEdit)
-
-    if (this->textEdit->textCursor().selectedText() == NULL)
-    {
-        cutAct->setEnabled(false);
-        copyAct->setEnabled(false);
-        deselectAct->setEnabled(false);
-    }
-    else
-    {
-        cutAct->setEnabled(true);
-        copyAct->setEnabled(true);
-        deselectAct->setEnabled(true);
-    }
-    editorPopup->popup(event->globalPos());
 }
 
 
