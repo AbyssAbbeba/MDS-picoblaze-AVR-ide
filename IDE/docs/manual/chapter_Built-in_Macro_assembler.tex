@@ -76,7 +76,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \begin{itemize}
         \item \texttt{2+1}
         \item \texttt{(2 + 4) - ABC}
-        \item \texttt{A \&\& B)} (
+        \item \texttt{A \&\& B)}
         \item \texttt{X XOR 0FF00H}
         \item \texttt{X * Y + X \% Y}
     \end{itemize}
@@ -197,12 +197,12 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \subsection{EQU}
         \subsubsection{Syntax}
             \verb'<symbol>      EQU             <expresion> '
-            
+
         \subsubsection{Description:}
                 The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
-                
+
         \subsubsection{Examples:}
-       {
+        {
             ~\\
             \usecodefont
             \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
@@ -214,13 +214,13 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{CONSTANT}
         \subsubsection{Syntax}
-            \verb'CONSTANT             <symbol>,<expresion> '
+            \verb'CONSTANT             <symbol>,<expresion>'
 
         \subsubsection{Description:}
                 The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
         \subsubsection{Examples:}
-      {
+        {
             ~\\
             \usecodefont
             \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
@@ -237,7 +237,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \subsubsection{Description:}
             The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
 
-        \subsubsection{Examples:
+        \subsubsection{Examples:}
         {
             ~\\
             \usecodefont
@@ -266,7 +266,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ;Number with expresion'\\
             \verb'VARIABLE     Fifth_symb,0x09 << 2                ;'\\
         }
-            
+
     \subsection{REG}
         \subsubsection{Syntax:}
             \verb'<symbol>      REG             <reg name/address>'
@@ -476,18 +476,19 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 \verb'SR0           sF'\\
                 \verb'SR0           sF'\\
                 \verb'SR0           sF'\\
-        }        
+        }
+
     \subsection{\#WHILE}
         \subsubsection{Syntax:}
             \verb'#WHILE  <symbol>'\\
             \verb'<code>'\\
             \verb'#ENDW'
-            
+
         \subsubsection{Description:}
         The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
 
         \subsubsection{Examples:}
-            {
+        {
                 ~\\
                 \usecodefont
                 \verb'B             SET             8'\\
@@ -495,15 +496,15 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 \verb'SR0           sF'\\
                 \verb'B             SET             B - 1'\\
                 \verb'#ENDW'
-    }
-    \subsection{SKIP}
+        }
 
+    \subsection{SKIP}
         \subsubsection{Syntax:}
             \verb'SKIP  <NumberOfInstructions>'
-            
+
         \subsubsection{Description:}
-        SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.
-        
+            SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.
+
         \subsubsection{Examples:}
         {
             ~\\
@@ -523,7 +524,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \subsubsection{Description:}
         All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
 
-        \subsubsection{Examples:}\\
+        \subsubsection{Examples:}
         {
             ~\\
             \usecodefont
@@ -543,13 +544,13 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'DB                <"string"> [,<expresion1>,..]'\\
             \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
 
-        \subsubsection{Description:}\\
+        \subsubsection{Description:}
             The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
             so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
             with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
             See the examples for better understanding of DB directive.
 
-        \subsubsection{Examples:}\\
+        \subsubsection{Examples:}
         {
             ~\\
             \usecodefont
@@ -1673,8 +1674,8 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             implementation in FPGA. Basically the MDS replaces instances on
             {INIT\_XX}, {INITP\_XX} and {INIT64\_X}, {INIT128\_X}, {INIT256\_X} by constant strings with the appropriate values, similar to the kcpsmX tools of Xilinx.
 
-                \subsection{Connecting the Program ROM}
-                    The PicoBlaze program ROM is used within a VHDL design flow. The PicoBlaze assembler
+        \subsection{Connecting the Program ROM}
+            The PicoBlaze program ROM is used within a VHDL design flow. The PicoBlaze assembler
                     generates a VHDL and VERILOG file in which a block RAM and its initial contents are defined. This
                     file can be used for both logic synthesis and simulation of the processor.
-                    You need to declare component in your VHDL or VERILOG design and instantiate.\\
+                    You need to declare component in your VHDL or VERILOG design and instantiate.
