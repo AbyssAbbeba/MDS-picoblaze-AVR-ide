@@ -696,20 +696,20 @@ Then each list element is beeing parsed and splitted into an address reference, 
                 \verb'END'
             }
 
-        \subsection{FAILJMP,DEFAULT\_JUMP}
-        \subsubsection{Syntax:}\\
-        \\ {
+    \subsection{FAILJMP,DEFAULT\_JUMP}
+        \subsubsection{Syntax:}
+         {
                 \texttt{}
                 \begin{tabular}[h!]{llll}
                         { \color{highlight_directive} FAILJMP }\verb`       `{ \color{highlight_string} <"label"> }\\
                         { \color{highlight_directive} DEFAULT\_JUMP }\verb`       `{ \color{highlight_string} <"label"> }\\
                 \end{tabular}
-            }\\
-            \\
-        \subsubsection{Description:}\\
+            }
+            
+        \subsubsection{Description:}
         Fills program memory with jump to the specified address. Simple protection against errors.
 
-        \subsubsection{Examples:}\\
+        \subsubsection{Examples:}
             {
                 ~\\
                 \usecodefont
@@ -719,218 +719,207 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
 
         \section{Pseudo Instructions}
-        MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code.
-        Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+        MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
-                \subsection{INC}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} INC    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }
-                    \\
-                \textbf{Description:}\\
-                This instruction increments given register value by one.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'INC          s0' }\\
-                        \end{code}
-                \subsection{DEC}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} DEC    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }
-                    \\
-                \textbf{Description:}\\
-                This instruction decrements given register value by one.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'DEC          s0' }\\
-                        \end{code}
+            \subsection{INC}
+                \subsubsection{Syntax:}
+                    \verb'INC       <register>'
+                
+                \subsubsection{EQUAL TO:}
+                    \verb'ADD       sX, \#1'
+                
+                \subsubsection{Description:}
+            This instruction increments given register value by one.
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'INC              s0'\\                    
+                }
+                
+            \subsection{DEC}
+                \subsubsection{Syntax:}
+                    \verb'DEC       <register>'
 
+                \subsubsection{EQUAL TO:}
+                    \verb'SUB       sX, \#1'
 
-                \subsection{SETR}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} SET    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#0xFF }
-                    \\
-                \textbf{Description:}\\
-                This instruction sets given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'SET          s0' }\\
-                        \end{code}
-                \subsection{CLRR}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} CLR    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} AND    } { \color{highlight_symbol}      sX,\#0x00 }
-                    \\
-                \textbf{Description:}\\
-                This instruction clears given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'CLR          s0' }\\
-                        \end{code}
-                \subsection{CPL}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} CPL    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }
-                    \\
-                \textbf{Description:}\\
-                This instruction execute 1\'s complement with given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'CPL          s0' }\\
-                        \end{code}
-                \subsection{CPL2}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} CPL2    } { \color{highlight_symbol} <register> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#0xFF }\\
-                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#0x1 }\\
-                \textbf{Description:}\\
-                This execute 2\'s complement with given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'CPL2          s0' }\\
-                        \end{code}
+                \subsubsection{Description:}
+            This instruction decrements given register value by one.
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'DEC              s0'\\
+                }
 
-                \subsection{SETB}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} SETB    } { \color{highlight_symbol} <register>,<bit> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    Example for bit number 3 >\\
-                    { \color{highlight_instruction} OR    } { \color{highlight_symbol}      sX,\#1<<3 }
-                \textbf{Description:}\\
-                Sets bit in given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'SETB          s0,#3' }\\
-                        \end{code}
+            \subsection{SETR}
+                \subsubsection{Syntax:}
+                    \verb'SET       <register>'
 
-                \subsection{CLRB}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} CLRB    } { \color{highlight_symbol} <register>,<bit> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    Example for bit number 3 >\\
-                    { \color{highlight_instruction} AND    } { \color{highlight_symbol}    sX,\#(0xFF \^ (1 << 3)) }
-                \textbf{Description:}\\
-                Clears bit in given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'CLRB          s0,#3' }\\
-                        \end{code}
+                \subsubsection{EQUAL TO:}
+                    \verb'OR       sX, \#0xFF'
 
-                \subsection{NOTB}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} NOTB    } { \color{highlight_symbol} <register>,<bit> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    Example for bit number 3 >\\
-                    { \color{highlight_instruction} XOR    } { \color{highlight_symbol}      sX,\#~0b00000100 }
-                \textbf{Description:}\\
-                Negates bit in given register.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                            symbol}\verb'NOTB          s0,#3' }\\
-                        \end{code}
+                \subsubsection{Description:}
+                    This instruction sets given register.
+                    
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'SETR              s0'\\
+                }
+                
+            \subsection{CLRR}
+                \subsubsection{Syntax:}
+                    \verb'CLRR       <register>'
 
-                \subsection{DJNZ}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} DJNZ    } { \color{highlight_symbol} <register>,<label> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
-                    { \color{highlight_instruction} SUB    } { \color{highlight_symbol}      sX,\#1 }\\
-                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
-                \textbf{Description:}\\
-                Given register is decremented until it is zero.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                        symbol}\verb'loop:          ' }\\
-                        symbol}\verb'DJNZ          s0,loop' }\\
-                        \end{code}
+                \subsubsection{EQUAL TO:}
+                    \verb'AND       sX, \#0x00'
 
-                \subsection{IJNZ}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                    \begin{tabular}[h!]{llll}
-                            { \color{highlight_instruction} IJNZ   } { \color{highlight_symbol} <register>,<bit> }
-                            { \color{highlight_comment}  }\\
-                    \end{tabular}
-                    }\\
-                    \textbf{EQUAL TO:}\\
-                    { \color{highlight_label} loop:    } { \color{highlight_symbol}       }\\
-                    { \color{highlight_instruction} ADD    } { \color{highlight_symbol}      sX,\#1 }\\
-                    { \color{highlight_instruction} JUMP    } { \color{highlight_symbol}     NZ,\#loop }\\
-                \textbf{Description:}\\
-                Given register is incremented until overflow.\\
-                \textbf{Examples:}\\
-                        \begin{code}[h!]
-                        symbol}\verb'loop:          ' }\\
-                        symbol}\verb'IJNZ          s0,loop' }\\
-                        \end{code}
+                \subsubsection{Description:}
+                    This instruction clears given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'CLRR              s0'\\
+                }
+                
+            \subsection{CPL}
+                \subsubsection{Syntax:}
+                    \verb'CPL       <register>'
+
+                \subsubsection{EQUAL TO:}
+                    \verb'XOR       sX, #0xFF'
+
+                \subsubsection{Description:}
+                    This instruction execute 1\'s complement with given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'CPL              s0'\\
+                }
+                
+            \subsection{CPL2}
+                \subsubsection{Syntax:}
+                    \verb'CPL2       <register>'
+
+                \subsubsection{EQUAL TO:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'XOR              s0,\#0xFF'\\
+                    \verb'ADD              s0,\#1'\\
+                }
+                \subsubsection{Description:}
+                    This instruction executes 1\'s complement with given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'CPL2              s0'\\
+                }
+
+            \subsection{SETB}
+                \subsubsection{Syntax:}
+                    \verb'SETB       <register>,<bit>           ; bit <0:7>'          
+
+                \subsubsection{EQUAL TO:}
+                    \verb'OR       sX, \#1 << bit'
+
+                \subsubsection{Description:}
+                    Sets bit in given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'SETB              s0,3'\\
+                }
+                
+            \subsection{CLRB}
+                \subsubsection{Syntax:}
+                    \verb'CLRB       <register>,<bit>           ; bit <0:7>'
+
+                \subsubsection{EQUAL TO:}
+                    \verb'AND       sX,\#(0xFF \^ (1 << bit))'
+
+                \subsubsection{Description:}
+                    Clears bit in given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'CLRB              s0,7'\\
+                }
+                
+            \subsection{NOTB}
+                \subsubsection{Syntax:}
+                    \verb'NOTB       <register>,<bit>           ; bit <0:7>'
+
+                \subsubsection{EQUAL TO:}
+                    \verb'XOR       sX,\#(\~(1 << bit))'
+
+                \subsubsection{Description:}
+                    Negates bit in given register.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'NOTB              s0,7'\\
+                }
+
+            \subsection{DJNZ}
+                \subsubsection{Syntax:}
+                    \verb'DJNZ       <register>,<label>'
+
+                \subsubsection{EQUAL TO:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'SUB               s0,\#1'\\
+                    \verb'JUMP              NZ,loop'\\
+                }
+                \subsubsection{Description:}
+                    Given register is decremented until it is zero.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'loop:             '\\
+                    \verb'DJNZ              s0, loop'\\
+                }
+
+            \subsection{IJNZ}
+                \subsubsection{Syntax:}
+                    \verb'IJNZ       <register>,<label>'
+
+                \subsubsection{EQUAL TO:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'ADD               s0,\#1'\\
+                    \verb'JUMP              NZ,loop'\\
+                }
+                \subsubsection{Description:}
+                    Given register is incremented until overflow.
+
+                \subsubsection{Examples:}
+                {
+                    ~\\
+                    \usecodefont
+                    \verb'loop:             '\\
+                    \verb'IJNZ              s0, loop'\\
+                }
+
         \section{Run time directives}
         MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
         Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
@@ -954,21 +943,22 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \end{table}
 
                 \subsection{IF}
-                    \textbf{Syntax:}\\
-                    \\ {
-                        \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} IF } & \verb'     ' &
-                                { \color{highlight_constant} <condition> }\\
-                                { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} ELSEIF } & \verb'     ' &
-                                { \color{highlight_constant} <condition> }\\
-                                { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} ELSE } & \verb'     ' &
-                                { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} ENDIF }
-                            \end{tabular}
-                        }\\
+                    \subsubsection{Syntax:}
+                    {
+                        ~\\
+                        \usecodefont
+                                \verb'IF'\\
+                                \verb'<condition>'\\
+                                \verb'<code>'\\
+                                \verb'ELSEIF'\\
+                                \verb'<condition>'\\
+                                \verb'<code>'\\
+                                \verb'ELSE'\\
+                                \verb'<code> }\\
+                                \verb'ENDIF'\\
+                            
+                    }
+
                     \textbf{Description:}\\
                     You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
                     evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
