@@ -718,534 +718,534 @@ Then each list element is beeing parsed and splitted into an address reference, 
             }
 
 
-        \section{Pseudo Instructions}
-        MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+\section{Pseudo Instructions}
+MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
-            \subsection{INC}
-                \subsubsection{Syntax:}
-                    \verb'INC       <register>'
-                
-                \subsubsection{EQUAL TO:}
-                    \verb'ADD       sX, \#1'
-                
-                \subsubsection{Description:}
-            This instruction increments given register value by one.
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'INC              s0'\\                    
-                }
-                
-            \subsection{DEC}
-                \subsubsection{Syntax:}
-                    \verb'DEC       <register>'
+    \subsection{INC}
+        \subsubsection{Syntax:}
+            \verb'INC       <register>'
 
-                \subsubsection{EQUAL TO:}
-                    \verb'SUB       sX, \#1'
+        \subsubsection{EQUAL TO:}
+            \verb'ADD       sX, \#1'
 
-                \subsubsection{Description:}
-            This instruction decrements given register value by one.
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'DEC              s0'\\
-                }
+        \subsubsection{Description:}
+    This instruction increments given register value by one.
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'INC              s0'\\
+        }
 
-            \subsection{SETR}
-                \subsubsection{Syntax:}
-                    \verb'SET       <register>'
+    \subsection{DEC}
+        \subsubsection{Syntax:}
+            \verb'DEC       <register>'
 
-                \subsubsection{EQUAL TO:}
-                    \verb'OR       sX, \#0xFF'
+        \subsubsection{EQUAL TO:}
+            \verb'SUB       sX, \#1'
 
-                \subsubsection{Description:}
-                    This instruction sets given register.
-                    
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'SETR              s0'\\
-                }
-                
-            \subsection{CLRR}
-                \subsubsection{Syntax:}
-                    \verb'CLRR       <register>'
+        \subsubsection{Description:}
+    This instruction decrements given register value by one.
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'DEC              s0'\\
+        }
 
-                \subsubsection{EQUAL TO:}
-                    \verb'AND       sX, \#0x00'
+    \subsection{SETR}
+        \subsubsection{Syntax:}
+            \verb'SET       <register>'
 
-                \subsubsection{Description:}
-                    This instruction clears given register.
+        \subsubsection{EQUAL TO:}
+            \verb'OR       sX, \#0xFF'
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'CLRR              s0'\\
-                }
-                
-            \subsection{CPL}
-                \subsubsection{Syntax:}
-                    \verb'CPL       <register>'
+        \subsubsection{Description:}
+            This instruction sets given register.
 
-                \subsubsection{EQUAL TO:}
-                    \verb'XOR       sX, #0xFF'
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'SETR              s0'\\
+        }
 
-                \subsubsection{Description:}
-                    This instruction execute 1\'s complement with given register.
+    \subsection{CLRR}
+        \subsubsection{Syntax:}
+            \verb'CLRR       <register>'
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'CPL              s0'\\
-                }
-                
-            \subsection{CPL2}
-                \subsubsection{Syntax:}
-                    \verb'CPL2       <register>'
+        \subsubsection{EQUAL TO:}
+            \verb'AND       sX, \#0x00'
 
-                \subsubsection{EQUAL TO:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'XOR              s0,\#0xFF'\\
-                    \verb'ADD              s0,\#1'\\
-                }
-                \subsubsection{Description:}
-                    This instruction executes 1\'s complement with given register.
+        \subsubsection{Description:}
+            This instruction clears given register.
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'CPL2              s0'\\
-                }
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'CLRR              s0'\\
+        }
 
-            \subsection{SETB}
-                \subsubsection{Syntax:}
-                    \verb'SETB       <register>,<bit>           ; bit <0:7>'          
+    \subsection{CPL}
+        \subsubsection{Syntax:}
+            \verb'CPL       <register>'
 
-                \subsubsection{EQUAL TO:}
-                    \verb'OR       sX, \#1 << bit'
+        \subsubsection{EQUAL TO:}
+            \verb'XOR       sX, #0xFF'
 
-                \subsubsection{Description:}
-                    Sets bit in given register.
+        \subsubsection{Description:}
+            This instruction execute 1\'s complement with given register.
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'SETB              s0,3'\\
-                }
-                
-            \subsection{CLRB}
-                \subsubsection{Syntax:}
-                    \verb'CLRB       <register>,<bit>           ; bit <0:7>'
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'CPL              s0'\\
+        }
 
-                \subsubsection{EQUAL TO:}
-                    \verb'AND       sX,\#(0xFF \^ (1 << bit))'
+    \subsection{CPL2}
+        \subsubsection{Syntax:}
+            \verb'CPL2       <register>'
 
-                \subsubsection{Description:}
-                    Clears bit in given register.
+        \subsubsection{EQUAL TO:}
+        {
+            ~\\
+            \usecodefont
+            \verb'XOR              s0,\#0xFF'\\
+            \verb'ADD              s0,\#1'\\
+        }
+        \subsubsection{Description:}
+            This instruction executes 1\'s complement with given register.
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'CLRB              s0,7'\\
-                }
-                
-            \subsection{NOTB}
-                \subsubsection{Syntax:}
-                    \verb'NOTB       <register>,<bit>           ; bit <0:7>'
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'CPL2              s0'\\
+        }
 
-                \subsubsection{EQUAL TO:}
-                    \verb'XOR       sX,\#(\~(1 << bit))'
+    \subsection{SETB}
+        \subsubsection{Syntax:}
+            \verb'SETB       <register>,<bit>           ; bit <0:7>'
 
-                \subsubsection{Description:}
-                    Negates bit in given register.
+        \subsubsection{EQUAL TO:}
+            \verb'OR       sX, \#1 << bit'
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'NOTB              s0,7'\\
-                }
+        \subsubsection{Description:}
+            Sets bit in given register.
 
-            \subsection{DJNZ}
-                \subsubsection{Syntax:}
-                    \verb'DJNZ       <register>,<label>'
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'SETB              s0,3'\\
+        }
 
-                \subsubsection{EQUAL TO:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'SUB               s0,\#1'\\
-                    \verb'JUMP              NZ,loop'\\
-                }
-                \subsubsection{Description:}
-                    Given register is decremented until it is zero.
+    \subsection{CLRB}
+        \subsubsection{Syntax:}
+            \verb'CLRB       <register>,<bit>           ; bit <0:7>'
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'loop:             '\\
-                    \verb'DJNZ              s0, loop'\\
-                }
+        \subsubsection{EQUAL TO:}
+            \verb'AND       sX,\#(0xFF \^ (1 << bit))'
 
-            \subsection{IJNZ}
-                \subsubsection{Syntax:}
-                    \verb'IJNZ       <register>,<label>'
+        \subsubsection{Description:}
+            Clears bit in given register.
 
-                \subsubsection{EQUAL TO:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'ADD               s0,\#1'\\
-                    \verb'JUMP              NZ,loop'\\
-                }
-                \subsubsection{Description:}
-                    Given register is incremented until overflow.
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'CLRB              s0,7'\\
+        }
 
-                \subsubsection{Examples:}
-                {
-                    ~\\
-                    \usecodefont
-                    \verb'loop:             '\\
-                    \verb'IJNZ              s0, loop'\\
-                }
+    \subsection{NOTB}
+        \subsubsection{Syntax:}
+            \verb'NOTB       <register>,<bit>           ; bit <0:7>'
 
-        \section{Run time directives}
-        MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
-        Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
-        Table of allowed instructions is displayed below.
-            \begin{table}[h!]
-                    \mysmallfont{}
-                    \centering{}
-                    \begin{tabular}{|l|l}
+        \subsubsection{EQUAL TO:}
+            \verb'XOR       sX,\#(\~(1 << bit))'
+
+        \subsubsection{Description:}
+            Negates bit in given register.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'NOTB              s0,7'\\
+        }
+
+    \subsection{DJNZ}
+        \subsubsection{Syntax:}
+            \verb'DJNZ       <register>,<label>'
+
+        \subsubsection{EQUAL TO:}
+        {
+            ~\\
+            \usecodefont
+            \verb'SUB               s0,\#1'\\
+            \verb'JUMP              NZ,loop'\\
+        }
+        \subsubsection{Description:}
+            Given register is decremented until it is zero.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'loop:             '\\
+            \verb'DJNZ              s0, loop'\\
+        }
+
+    \subsection{IJNZ}
+        \subsubsection{Syntax:}
+            \verb'IJNZ       <register>,<label>'
+
+        \subsubsection{EQUAL TO:}
+        {
+            ~\\
+            \usecodefont
+            \verb'ADD               s0,\#1'\\
+            \verb'JUMP              NZ,loop'\\
+        }
+        \subsubsection{Description:}
+            Given register is incremented until overflow.
+
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'loop:             '\\
+            \verb'IJNZ              s0, loop'\\
+        }
+
+    \section{Run time directives}
+    MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
+    Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
+    Table of allowed instructions is displayed below.
+        \begin{table}[h!]
+                \mysmallfont{}
+                \centering{}
+                \begin{tabular}{|l|l}
+                \hline
+                Condition operator       &          Example  \\
+                ==                       &          A ==  B  \\
+                !=                       &          A !=  B  \\
+                >                        &          A >   B  \\
+                <                        &          A <   B  \\
+                >=                       &          A >=  B  \\
+                <=                       &          A <=  B  \\
+                \&                       &          A \&  B  \\
+                !\&                      &          A !\& B
+                \end{tabular}
+                \caption{Allowed conditions with IF, WHILE}
+        \end{table}
+
+        \subsection{IF}
+            \subsubsection{Syntax:}
+            {
+                ~\\
+                \usecodefont
+                \verb'IF                <condition>'\\
+                \verb'<code>'\\
+                \verb'ELSEIF            <condition>'\\
+                \verb'<code>'\\
+                \verb'ELSE'\\
+                \verb'<code>'\\
+                \verb'ENDIF'\\
+            }
+
+        \subsubsection{Description:}
+        You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
+        evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
+        Number without \# is considered as register adress. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
+        symbol with register adress. So 5 would have been replaced with value stored in register with adress 5.
+        \subsubsection{Examples:}
+        {
+            ~\\
+            \usecodefont
+            \verb'IF         s0 == \#10'\\
+            \verb'           LOAD  s0, \#10h'\\
+            \verb'ELSEIF     B >= \#100'\\
+            \verb'           SR0   s0'\\
+            \verb'ELSE       A >= 5'\\
+            \verb'           INPUT   s0,RX\_data'\\
+            \verb'ENDIF'
+        }
+       
+    \subsection{WHILE}
+        \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
+            \verb'WHILE       <condition>'\\
+            \verb'<code>'\\
+            \verb'ENDW'
+        }
+        \textbf{Description:}\\
+        You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
+        evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
+        Number without \# is considered as register adrress. See example for conditions syntax.
+        \textbf{Examples:}\\
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 == \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0  != \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 >    \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 < \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 <= \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 >= \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 \& \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+                \begin{code}[h!]
+                        { \color{highlight_directive} WHILE  }
+                        { \color{highlight_constant}   s0 !\& \#10 }\\
+                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
+                        { \color{highlight_directive}  ENDW}\\
+                    \caption{Run time while example}
+                \end{code}
+
+        \subsection{FOR}
+            \textbf{Syntax:}\\
+            \\ {
+                \texttt{}
+                    \begin{tabular}[h!]{llll}
+                        { \color{highlight_directive} FOR } & \verb'     ' &
+                        { \color{highlight_constant} <condition> }\\
+                        { \color{highlight_symbol} <code> }\\
+                        { \color{highlight_directive} ENDF }
+                    \end{tabular}
+                }\\
+            \textbf{Description:}\\
+            You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
+            evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
+            counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
+            repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
+            See examples for better understanding. WARNING: Using FOR directive will overide used register( s0 in example)
+            \textbf{Examples:}\\
+                    \begin{code}[h!]
+                            { \color{highlight_directive} FOR  }
+                            { \color{highlight_constant}   s0,10 }\\
+                            { \color{highlight_directive}  ENDF}\\
+                        \caption{Run time while example}
+                    \end{code}
+            In this case, incrementing is from 0 to 10. Incrementing step is 1.
+                    \begin{code}[h!]
+                            { \color{highlight_directive} FOR  }
+                            { \color{highlight_constant}   s0,10..20 }\\
+                            { \color{highlight_directive}  ENDF}\\
+                        \caption{Run time while example}
+                    \end{code}
+            In this case, incrementing is in the range 10 to 20. Incrementing step is 1.
+                    \begin{code}[h!]
+                            { \color{highlight_directive} FOR  }
+                            { \color{highlight_constant}   s0,10..50,10 }\\
+                            { \color{highlight_directive}  ENDF}\\
+                        \caption{Run time while example}
+                    \end{code}
+            In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).
+
+    \section{Macro Processing}
+        Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
+        repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
+        not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported
+        by this assembler are.
+
+        \subsection{MACROS}
+        \textbf{Syntax:}\\
+        \\ {
+            \texttt{}
+                \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} MACRO } & \verb'     ' &
+                    { \color{highlight_constant} [<parameter1>]  [,<parameter2>..] }\\
+                    { \color{highlight_symbol} <macro source code> }\\
+                    { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
+                \end{tabular}
+            }\\
+        \\ {
+            \texttt{}
+                \begin{tabular}[h!]{llll}
+                    { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
+                    { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
+                \end{tabular}
+            }\\
+        \begin{table}[h!]
+            \begin{tabular}{|ll|}
                     \hline
-                    Condition operator       &          Example  \\
-                    ==                       &          A ==  B  \\
-                    !=                       &          A !=  B  \\
-                    >                        &          A >   B  \\
-                    <                        &          A <   B  \\
-                    >=                       &          A >=  B  \\
-                    <=                       &          A <=  B  \\
-                    \&                       &          A \&  B  \\
-                    !\&                      &          A !\& B
-                    \end{tabular}
-                    \caption{Allowed conditions with IF, WHILE}
-            \end{table}
+                    MACRO      & Define a new macro \\
+                    EXITM      & Exit macro  \\
+                    ENDM       & End of macro definition \\
+                    EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
+                    NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
+                    \hline
+            \end{tabular}
+            \caption{Macro comands}
+        \end{table}
+        \textbf{Description:}\\
+        Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
+        with no parameters  or unlimited number of parameters.\\
+        \textbf{Examples:}\\
+        This can be well demonstrated on examples:
+        {
+            ~\\
+            \usecodefont
 
-                \subsection{IF}
-                    \subsubsection{Syntax:}
-                    {
-                        ~\\
-                        \usecodefont
-                                \verb'IF'\\
-                                \verb'<condition>'\\
-                                \verb'<code>'\\
-                                \verb'ELSEIF'\\
-                                \verb'<condition>'\\
-                                \verb'<code>'\\
-                                \verb'ELSE'\\
-                                \verb'<code> }\\
-                                \verb'ENDIF'\\
-                            
-                    }
+                {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_comment}\verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                {\color{highlight_directive}\verb'endm'}\\
+                \verb''\\
+                {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
+                {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
+                \verb''\\
+                {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+           }
+           
 
-                    \textbf{Description:}\\
-                    You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-                    evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
-                    Number without \# is considered as register adress. See example for conditions syntax.
-                    \textbf{Examples:}\\
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} IF }
-                                    { \color{highlight_constant}   s0 == \#10 }\\
-                                    { \color{highlight_instruction}   LOAD  s0, \#10h }\\
-                                    { \color{highlight_comment}  ELSEIF} { \color{highlight_constant}   B >= \#100 }\\
-                                    { \color{highlight_instruction}   SR0   s0 }\\
-                                    { \color{highlight_comment}  ELSE} { \color{highlight_constant}   A >= 5 }\\
-                                    { \color{highlight_instruction}   INPUT   s0,RX\_data }\\
-                                \caption{Run time if example}
-                        \end{code}
-                In this example, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
-                symbol with register adress. So 5 would have been replaced with value storen in register with adress 5.
-                \subsection{WHILE}
-                    \textbf{Syntax:}\\
-                    \\ {
-                        \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} WHILE } & \verb'     ' &
-                                { \color{highlight_constant} <condition> }\\
-                                { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} ENDW }
-                            \end{tabular}
-                        }\\
-                    \textbf{Description:}\\
-                    You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-                    evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
-                    Number without \# is considered as register adrress. See example for conditions syntax.
-                    \textbf{Examples:}\\
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 == \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0  != \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 >    \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 < \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 <= \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 >= \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 \& \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} WHILE  }
-                                    { \color{highlight_constant}   s0 !\& \#10 }\\
-                                    { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                                    { \color{highlight_directive}  ENDW}\\
-                                \caption{Run time while example}
-                            \end{code}
+        \begin{code}[h!]
+            \mysmallfont{}
+            {\color{highlight_comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'bar'}\\
+            \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_constant}\verb'bar'}\\
+            {\color{highlight_directive}\verb'endm'}\\
+            \verb''\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'c'}\verb'            '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p1'}{\color{highlight_symbol}\verb'.'}{\color{highlight_unknown_base}\verb'0'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+            \verb''\\
+            {\color{highlight_comment}\verb'; This is the same as if you wrote this:'\\
+            }\verb'        '{\color{highlight_comment}\verb'; xyz   a, c'\\
+            }\verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'c'}\\
+            \verb'        '{\color{highlight_comment}\verb'; xyz   p0, p1.0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_symbol}\verb'.'}{\color{highlight_unknown_base}\verb'0'}\\
+            \caption{An exaple of named macro with two parameters}
+        \end{code}
+        \begin{code}[h!]
+            \mysmallfont{}{\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb''\\
+            \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_constant}\verb'foo'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
+            \verb'                '{\color{highlight_instruction}\verb'nop'}\\
+            \verb'        '{\color{highlight_directive}\verb'endif'}\\
+            \verb''\\
+            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#foo'}\\
+            {\color{highlight_directive}\verb'endm'}\\
+            \verb''\\
+            {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_unknown_base}\verb'5'}\\
+            {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_unknown_base}\verb'4'}\\
+            \verb''\\
+            {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
+            \verb'        '{\color{highlight_comment}\verb'; ijk   5'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'5'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
+            \verb'        '{\color{highlight_instruction}\verb'nop'}\\
+            \verb'        '{\color{highlight_directive}\verb'endif'}\\
+            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
+            \verb'        '{\color{highlight_comment}\verb'; ijk   4'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'4'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
+            \verb'        '{\color{highlight_instruction}\verb'nop'}\\
+            \verb'        '{\color{highlight_directive}\verb'endif'}\\
+            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
+            \caption{An exaple of named macro used with if statement}
+    \end{code}
 
-                \subsection{FOR}
-                    \textbf{Syntax:}\\
-                    \\ {
-                        \texttt{}
-                            \begin{tabular}[h!]{llll}
-                                { \color{highlight_directive} FOR } & \verb'     ' &
-                                { \color{highlight_constant} <condition> }\\
-                                { \color{highlight_symbol} <code> }\\
-                                { \color{highlight_directive} ENDF }
-                            \end{tabular}
-                        }\\
-                    \textbf{Description:}\\
-                    You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-                    evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
-                    counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
-                    repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
-                    See examples for better understanding. WARNING: Using FOR directive will overide used register( s0 in example)
-                    \textbf{Examples:}\\
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} FOR  }
-                                    { \color{highlight_constant}   s0,10 }\\
-                                    { \color{highlight_directive}  ENDF}\\
-                                \caption{Run time while example}
-                            \end{code}
-                    In this case, incrementing is from 0 to 10. Incrementing step is 1.
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} FOR  }
-                                    { \color{highlight_constant}   s0,10..20 }\\
-                                    { \color{highlight_directive}  ENDF}\\
-                                \caption{Run time while example}
-                            \end{code}
-                    In this case, incrementing is in the range 10 to 20. Incrementing step is 1.
-                            \begin{code}[h!]
-                                    { \color{highlight_directive} FOR  }
-                                    { \color{highlight_constant}   s0,10..50,10 }\\
-                                    { \color{highlight_directive}  ENDF}\\
-                                \caption{Run time while example}
-                            \end{code}
-                    In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).
+\section{Conditional Assembly}
+        The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met.
+        This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions
+        to work with conditional assembly:
+        \begin{itemize}
+                \setlength{\itemsep}{-3pt}
+                \item IF <condition>
+                \item IFN <condition>
+                \item IFDEF <symbol>
+                \item IFNDEF <symbol>
+                \item ELSE
+                \item ELSEIF <condition>
+                \item ELSEIFN <condition>
+                \item ELSEIFDEF <symbol>
+                \item ELSEIFNDEF <symbol>
+                \item ENDIF
+        \end{itemize}
 
-        \section{Macro Processing}
-                Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
-                repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
-                not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported
-                by this assembler are.
-
-                \subsection{MACROS}
-                \textbf{Syntax:}\\
-                \\ {
-                    \texttt{}
-                        \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} MACRO } & \verb'     ' &
-                            { \color{highlight_constant} [<parameter1>]  [,<parameter2>..] }\\
-                            { \color{highlight_symbol} <macro source code> }\\
-                            { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
-                        \end{tabular}
-                    }\\
-                \\ {
-                    \texttt{}
-                        \begin{tabular}[h!]{llll}
-                            { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
-                            { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
-                        \end{tabular}
-                    }\\
-                \begin{table}[h!]
-                    \begin{tabular}{|ll|}
-                            \hline
-                            MACRO      & Define a new macro \\
-                            EXITM      & Exit macro  \\
-                            ENDM       & End of macro definition \\
-                            EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
-                            NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
-                            \hline
-                    \end{tabular}
-                    \caption{Macro comands}
-                \end{table}
-                \textbf{Description:}\\
-                Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
-                with no parameters  or unlimited number of parameters.\\
-                \textbf{Examples:}\\
-                This can be well demonstrated on examples:
-
-                \begin{code}[h!]
-                        macro}\verb'abc'}\verb'     'directive}\verb'macro'}\verb'   \verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
-                        directive}\verb'endm'}\\
-                        \verb''\\
-                        macro}\verb'abc'}\verb'     \verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        macro}\verb'abc'}\verb'     \verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        \verb''\\
-                        comment}\verb'; This is the same as if you wrote this:'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb's0'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'a'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's1'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
-                        \caption{An exaple of simple macro without parameters}
-                \end{code}
-                \begin{code}[h!]
-
-                        comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
-                        macro}\verb'xyz'}\verb'     'directive}\verb'macro'}\verb'   'constant}\verb'foo'}oper_sep}\verb','}\verb' 'constant}\verb'bar'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'constant}\verb'foo'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'constant}\verb'bar'}\\
-                        directive}\verb'endm'}\\
-                        \verb''\\
-                        macro}\verb'xyz'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb'c'}\verb'            \verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        macro}\verb'xyz'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'sfr}\verb's1'}\verb'        \verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
-                        \verb''\\
-                        comment}\verb'; This is the same as if you wrote this:'\\
-                        }\verb'        \verb'; xyz   a, c'\\
-                        }\verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb'c'}\\
-                        \verb'        \verb'; xyz   s0, s0'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#10h'}\\
-                        \verb'        'instruction}\verb'SR0'}\verb'      'sfr}\verb's1'}\\
-                        \caption{An exaple of macro with two parameters}
-                \end{code}
-                \begin{code}[h!]
-                       macro}\verb'ijk'}\verb'     'directive}\verb'macro'}\verb'   'constant}\verb'foo'}\\
-                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
-                        \verb''\\
-                        \verb'        'directive}\verb'if'}\verb' 'constant}\verb'foo'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
-                        \verb'                'instruction}\verb'SKIP 1'}\\
-                        \verb'        'directive}\verb'endif'}\\
-                        \verb''\\
-                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_constant}\verb'#foo'}\\
-                        directive}\verb'endm'}\\
-                        \verb''\\
-                        macro}\verb'ijk'}\verb'     'unknown_base}\verb'5'}\\
-                        macro}\verb'ijk'}\verb'     'unknown_base}\verb'4'}\\
-                        \verb''\\
-                        comment}\verb'; This is the same as if you wrote this:'}\\
-                        \verb'        \verb'; ijk   5'}\\
-                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
-                        \verb'        'directive}\verb'if'}\verb' 'unknown_base}\verb'5'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
-                        \verb'        'instruction}\verb'SKIP 1'}\\
-                        \verb'        'directive}\verb'endif'}\\
-                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_unknown}\verb'#5'}\\
-                        \verb'        \verb'; ijk   4'}\\
-                        \verb'        'instruction}\verb'ADD'}\verb'     'sfr}\verb's0'}oper_sep}\verb','}\verb' 'indirect}\verb's1'}\\
-                        \verb'        'directive}\verb'if'}\verb' 'unknown_base}\verb'4'}\verb' 'symbol}\verb'='}\verb' 'dec}\verb'4d'}\\
-                        \verb'        'instruction}\verb'SKIP 1'}\\
-                        \verb'        'directive}\verb'endif'}\\
-                        \verb'        'instruction}\verb'SUB'}\verb'    'sfr}\verb's0'}oper_sep}\verb','}\verb' 'imm_unknown}\verb'#4'}\\
-                        \caption{An exaple of named macro used with if statement}
-                \end{code}
-
-        \section{Conditional Assembly}
-                The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met.
-                This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions
-                to work with conditional assembly:
-                \begin{itemize}
-                        \setlength{\itemsep}{-3pt}
-                        \item IF <condition>
-                        \item IFN <condition>
-                        \item IFDEF <symbol>
-                        \item IFNDEF <symbol>
-                        \item ELSE
-                        \item ELSEIF <condition>
-                        \item ELSEIFN <condition>
-                        \item ELSEIFDEF <symbol>
-                        \item ELSEIFNDEF <symbol>
-                        \item ENDIF
-                \end{itemize}
-
-                This can be best demonstrated on an example:
+        This can be best demonstrated on an example:
                 \begin{code}[h!]
                         \mysmallfont{}
-                        constant}\verb'abc'}\verb'     'directive}\verb'equ'}\verb'     'unknown_base}\verb'16'}\verb'              \verb'; Assign number 14 to symbol abc'}\\
-                        constant}\verb'xyz'}\verb'     'directive}\verb'equ'}\verb'     'unknown_base}\verb'10'}\verb'              \verb'; Assign number 10 to symbol abc'}\\
+                        {\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_unknown_base}\verb'16'}\verb'              '{\color{highlight_comment}\verb'; Assign number 14 to symbol abc'}\\
+                        {\color{highlight_constant}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_unknown_base}\verb'10'}\verb'              '{\color{highlight_comment}\verb'; Assign number 10 to symbol abc'}\\
                         \verb''\\
-                        directive}\verb'ifdef'}\verb' 'constant}\verb'abc'}\verb'                       \verb';<--+ Assemble only if symbol abc has been defined'}\\
-                        \verb'  'directive}\verb'if'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'='}\verb' 'unknown_base}\verb'13'}\verb' 'symbol}\verb')'}\verb'               \verb';   | <--+ Assemble if 13 has been assigned to symbol abc'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_bin}\verb'#01010101b'}\verb'   \verb';   |    |'}\\
-                        \verb'  'directive}\verb'elseif'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'='}\verb' 'unknown_base}\verb'14'}\verb' 'symbol}\verb')'}\verb'           \verb';   | <--+ Assemble if 14 has been assigned to symbol abc'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#0aah'}\verb'        \verb';   |    |'}\\
-                        \verb'  'directive}\verb'elseifn'}\verb' 'symbol}\verb'('}\verb' 'constant}\verb'abc'}\verb' 'symbol}\verb'%'}\verb' 'unknown_base}\verb'2'}\verb' 'symbol}\verb')'}\verb'           \verb';   | <--+ Assemble if the value assigned to symbol abc is even'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_constant}\verb'#abc'}\verb'         \verb';   |    |'}\\
-                        \verb'  'directive}\verb'else'}\verb'                          \verb';   | <--+ Else ..'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_\verb'#377q'}\verb'        \verb';   |    |'}\\
-                        \verb'  'directive}\verb'endif'}\verb'                         \verb';   | <--+'}\\
-                        directive}\verb'elseifndef'}\verb' 'constant}\verb'xyz'}\verb'                  \verb';<--+ Assemble if symbol xyz has NOT been defined'}\\
-                        \verb'        'instruction}\verb'clr'}\verb'     'sfr}\verb'A'}\verb'               \verb';   |'}\\
-                        directive}\verb'else'}\verb'                            \verb';<--+ Else ...'}\\
-                        \verb'  'directive}\verb'ifn'}\verb' 'symbol}\verb'('}constant}\verb'xyz'}symbol}\verb' mod'}\verb' 'unknown_base}\verb'2'}symbol}\verb')'}\verb'               \verb';   | <--+ Assemble if ( yxz modulo 2 ) is 0'}\\
-                        \verb'        'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'imm_dec}\verb'#128d'}\verb'        \verb';   |    |'}\\
-                        \verb'  'directive}\verb'endif'}\verb'                         \verb';   | <--+'}\\
-                        directive}\verb'endif'}\verb'                           \verb';<--+'}\\
+                        {\color{highlight_directive}\verb'ifdef'}\verb' '{\color{highlight_constant}\verb'abc'}\verb'                       '{\color{highlight_comment}\verb';<--+ Assemble only if symbol abc has been defined'}\\
+                        \verb'  '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'13'}\verb' '{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if 13 has been assigned to symbol abc'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_bin}\verb'#01010101b'}\verb'   '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'  '{\color{highlight_directive}\verb'elseif'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if 14 has been assigned to symbol abc'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#0aah'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'  '{\color{highlight_directive}\verb'elseifn'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'%'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if the value assigned to symbol abc is even'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#abc'}\verb'         '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'  '{\color{highlight_directive}\verb'else'}\verb'                          '{\color{highlight_comment}\verb';   | <--+ Else ..'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_oct}\verb'#377q'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
+                        {\color{highlight_directive}\verb'elseifndef'}\verb' '{\color{highlight_constant}\verb'xyz'}\verb'                  '{\color{highlight_comment}\verb';<--+ Assemble if symbol xyz has NOT been defined'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'clr'}\verb'     '{\color{highlight_sfr}\verb'A'}\verb'               '{\color{highlight_comment}\verb';   |'}\\
+                        {\color{highlight_directive}\verb'else'}\verb'                            '{\color{highlight_comment}\verb';<--+ Else ...'}\\
+                        \verb'  '{\color{highlight_directive}\verb'ifn'}\verb' '{\color{highlight_symbol}\verb'('}{\color{highlight_constant}\verb'xyz'}{\color{highlight_symbol}\verb' mod'}\verb' '{\color{highlight_unknown_base}\verb'2'}{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if ( yxz modulo 2 ) is 0'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#128d'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
+                        {\color{highlight_directive}\verb'endif'}\verb'                           '{\color{highlight_comment}\verb';<--+'}\\
                         \verb''\\
-                        instruction}\verb'sjmp'}\verb'    'constant}\verb'$'}\verb'                       \verb'; Infinite loop'}\\
-                        directive}\verb'end'}\verb'                             \verb'; End of assembly'}\\
+                        {\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'\$'}\verb'                       '{\color{highlight_comment}\verb'; Infinite loop'}\\
+                        {\color{highlight_directive}\verb'end'}\verb'                             '{\color{highlight_comment}\verb'; End of assembly'}\\
                         \caption{An example of conditional assembly usage}
                 \end{code}
+
 
                 \clearpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1378,23 +1378,23 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \section{List File Format}
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how were they were defined, what are their values and whether they were used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction OP codes, address space reservations, inclusion of code from another files. And all warnings, errors and notes generated during the assembly by the assembler. There are assembler control sequences which alters formatting of the code listing file. These control sequences will be discussed here. Format of code listing generated by this assembler is very similar to the one generated Metalink(R) ASM51.
                 \begin{code}[h]
-
-                        \verb'demo0                                                                                                                   'macro}\verb'PAGE'}\verb' 'unknown_base}\verb'1'}\\
-                        lst_line}\verb'                         1'}\verb'     \verb'; MDS Picoblaze - Demostration code'}\\
-                        lst_line}\verb'                         2'}\verb'     \verb'; Very simple code'}\\
-                        lst_line}\verb'                         3'}\\
-                        lst_line}\verb'                         4'}\verb'     \verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
-                        lst_line}\verb'                         5'}\\
-                        lst_line}\verb'                         6'}\verb'             'directive}\verb'org'}\verb'     'hex}\verb'0h'}\\
-                        lst_line}\verb'                         7'}\\
-                        lst_address}\verb'0000'}lst_code}\verb' 08'}lst_line}\verb'                  8'}\verb'     'label}\verb'main:'}\verb'   'instruction}\verb'inc'}\verb'     'sfr}\verb'R0'}\\
-                        lst_address}\verb'0001'}lst_code}\verb' 06'}lst_line}\verb'                  9'}\verb'             'instruction}\verb'inc'}\verb'     'indirect}\verb'@R0'}\\
-                        lst_address}\verb'0002'}lst_code}\verb' B87FFB'}lst_line}\verb'             10'}\verb'             'instruction}\verb'cjne'}\verb'    'sfr}\verb'R0'}oper_sep}\verb','}\verb' 'imm_hex}\verb'#07Fh'}oper_sep}\verb','}\verb' 'constant}\verb'main'}\\
-                        lst_address}\verb'0005'}lst_code}\verb' 7800'}lst_line}\verb'               11'}\verb'             'instruction}\verb'LOAD'}\verb'     'sfr}\verb'R0'}oper_sep}\verb','}\verb' 'imm_dec}\verb'#0d'}\\
-                        lst_address}\verb'0007'}lst_code}\verb' 80F7'}lst_line}\verb'               12'}\verb'             'instruction}\verb'sjmp'}\verb'    'constant}\verb'main'}\\
-                        lst_line}\verb'                        13'}\\
-                        lst_line}\verb'                        14'}\verb'             'directive}\verb'end'}\\
-                        lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
+                        \mysmallfont{}
+                        \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
+                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MCU 8051 IDE - Demostration code'}\\
+                        {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
+                        {\color{highlight_lst_line}\verb'                         3'}\\
+                        {\color{highlight_lst_line}\verb'                         4'}\verb'     '{\color{highlight_comment}\verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
+                        {\color{highlight_lst_line}\verb'                         5'}\\
+                        {\color{highlight_lst_line}\verb'                         6'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_hex}\verb'0h'}\\
+                        {\color{highlight_lst_line}\verb'                         7'}\\
+                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' 08'}{\color{highlight_lst_line}\verb'                  8'}\verb'     '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_sfr}\verb'R0'}\\
+                        {\color{highlight_lst_address}\verb'0001'}{\color{highlight_lst_code}\verb' 06'}{\color{highlight_lst_line}\verb'                  9'}\verb'             '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_indirect}\verb'@R0'}\\
+                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'cjne'}\verb'    '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#07Fh'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'main'}\\
+                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 7800'}{\color{highlight_lst_line}\verb'               11'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#0d'}\\
+                        {\color{highlight_lst_address}\verb'0007'}{\color{highlight_lst_code}\verb' 80F7'}{\color{highlight_lst_line}\verb'               12'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\\
+                        {\color{highlight_lst_line}\verb'                        13'}\\
+                        {\color{highlight_lst_line}\verb'                        14'}\verb'             '{\color{highlight_directive}\verb'end'}\\
+                        {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
                         \caption{A simple code listing}
                 \end{code}
                 Code listing contains entire source code which was assembled but with each line prefixed with line number and some additional information which will be explained later. Besides the original code there is also table of symbols defined during the assembly unless it was turned off. Code listing is divided into pages separated by form feed character, this behavior may be altered by certain assembler control sequences as well as page height and width.
@@ -1421,26 +1421,26 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
                 \begin{code}[h]
 
-                        \verb'complicated_lst                                                                                                         'macro}\verb'PAGE'}\verb' 'unknown_base}\verb'1'}\\
-                        lst_number}\verb'  001C'}lst_line}\verb'                   1'}\verb'     'constant}\verb'abc'}\verb'     'directive}\verb'equ'}\verb'     'symbol}\verb'('}\verb' 'unknown_base}\verb'14'}\verb' 'symbol}\verb'*'}\verb' 'unknown_base}\verb'2'}\verb' 'symbol}\verb')'}\verb'      \verb'; Define symbol abc'}\\
-                        lst_line}\verb'                         2'}\verb'             'directive}\verb'org'}\verb'     'unknown_base}\verb'0'}\verb'               \verb'; Start writing code at address 0'}\\
-                        lst_line}\verb'                         3'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      4'}\verb'             'directive}\verb'include'}\verb' 'string}\verb''\verb"'"\verb'my_macros.asm'\verb"'"\verb' \verb'; Include file my_macros.asm'}}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      5'}\verb'     \verb'; This is the beginning of file my_macros.asm'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      6'}\verb'     'macro}\verb'my_SR0'}\verb'  'directive}\verb'macro'}\verb'   'constant}\verb'foo'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      7'}\verb'             'instruction}\verb'LOAD'}\verb'     'sfr}\verb'A'}oper_sep}\verb','}\verb' 'constant}\verb'foo'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      8'}\verb'             'instruction}\verb'SR0'}\verb'     'sfr}\verb'A'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'      9'}\verb'             'instruction}\verb'LOAD'}\verb'     'constant}\verb'foo'}oper_sep}\verb','}\verb' 'sfr}\verb'A'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'     10'}\verb'     'directive}\verb'endm'}\\
-                        lst_include}\verb'                 =1'}lst_line}\verb'     11'}\verb'     \verb'; This is the end of file my_macros.asm'}\\
-                        lst_line}\verb'                        12'}\\
-                        lst_line}\verb'                        13'}lst_macro}\verb' +1'}\verb'  'label}\verb'main:'}\verb'   'macro}\verb'my_SR0'}\verb'  'sfr}\verb'P0'}\verb'              \verb'; Expand macro my_SR0 here'}\\
-                        lst_address}\verb'0000'}lst_code}\verb' E580'}lst_line}\verb'               14'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'LOAD'}\verb'     'sfr}\verb'a'}oper_sep}\verb','}\verb' 'sfr}\verb'p0'}\\
-                        lst_address}\verb'0002'}lst_code}\verb' F4'}lst_line}\verb'                 15'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'SR0'}\verb'     'sfr}\verb'a'}\\
-                        lst_address}\verb'0003'}lst_code}\verb' F580'}lst_line}\verb'               16'}lst_macro}\verb' +1'}\verb'                  'instruction}\verb'LOAD'}\verb'     'sfr}\verb'p0'}oper_sep}\verb','}\verb' 'sfr}\verb'a'}\\
-                        lst_address}\verb'0005'}lst_code}\verb' 80F9'}lst_line}\verb'               17'}\verb'             'instruction}\verb'sjmp'}\verb'    'constant}\verb'main'}\verb'            \verb'; Jump back to label main'}\\
-                        lst_line}\verb'                        18'}\verb'             'directive}\verb'end'}\verb'                     \verb'; End of assembly'}\\
-                        lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
+                        \verb'complicated_lst                                                                                                         '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
+                        {\color{highlight_lst_number}\verb'  001C'}{\color{highlight_lst_line}\verb'                   1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc'}\\
+                        {\color{highlight_lst_line}\verb'                         2'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_unknown_base}\verb'0'}\verb'               '{\color{highlight_comment}\verb'; Start writing code at address 0'}\\
+                        {\color{highlight_lst_line}\verb'                         3'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      4'}\verb'             '{\color{highlight_directive}\verb'include'}\verb' '{\color{highlight_string}\verb''\verb"'"\verb'my_macros.asm'\verb"'"\verb' '{\color{highlight_comment}\verb'; Include file my_macros.asm'}}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      5'}\verb'     '{\color{highlight_comment}\verb'; This is the beginning of file my_macros.asm'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      6'}\verb'     '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      7'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'foo'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'A'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      9'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'A'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     10'}\verb'     '{\color{highlight_directive}\verb'endm'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     11'}\verb'     '{\color{highlight_comment}\verb'; This is the end of file my_macros.asm'}\\
+                        {\color{highlight_lst_line}\verb'                        12'}\\
+                        {\color{highlight_lst_line}\verb'                        13'}{\color{highlight_lst_macro}\verb' +1'}\verb'  '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_sfr}\verb'P0'}\verb'              '{\color{highlight_comment}\verb'; Expand macro my_cpl here'}\\
+                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' E580'}{\color{highlight_lst_line}\verb'               14'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
+                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'                 15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
+                        {\color{highlight_lst_address}\verb'0003'}{\color{highlight_lst_code}\verb' F580'}{\color{highlight_lst_line}\verb'               16'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 80F9'}{\color{highlight_lst_line}\verb'               17'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\verb'            '{\color{highlight_comment}\verb'; Jump back to label main'}\\
+                        {\color{highlight_lst_line}\verb'                        18'}\verb'             '{\color{highlight_directive}\verb'end'}\verb'                     '{\color{highlight_comment}\verb'; End of assembly'}\\
+                        {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
                         \caption{A more complicated example of code listing}
                 \end{code}
 
