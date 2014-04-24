@@ -35,7 +35,7 @@ void Avr8UsbProgCore::searchForProgrammers()
 {
     QStringList programmers;
     isp.findProgrammers(programmers);
-
+qDebug() << "searchForProgrammers() --> '" << programmers << "'";
     if ( m_programmers.size() != programmers.size() )
     {
         m_programmers = programmers;

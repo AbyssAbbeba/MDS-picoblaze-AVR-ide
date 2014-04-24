@@ -24,6 +24,9 @@ Avr8UsbProgPlugin::Avr8UsbProgPlugin()
     setStandAlone(standAloneFlag);
     setConnections();
     programmerThread.start(QThread::NormalPriority);
+
+    programmerThread.searchForProgrammers();
+    programmerThread.executeCommands();
 }
 
 Avr8UsbProgPlugin::~Avr8UsbProgPlugin()
@@ -262,7 +265,10 @@ void Avr8UsbProgPlugin::directoryContentsChanged(const QString & /*path*/)
 
 void Avr8UsbProgPlugin::refreshWatchedDirectories()
 {
-    fileSystemWatcher->removePaths(fileSystemWatcher->directories());
+    if ( false == fileSystemWatcher->directories().empty() )
+    {
+        fileSystemWatcher->removePaths(fileSystemWatcher->directories());
+    }
 
     if(QFileInfo(programFileLineEdit->text()).exists())
         fileSystemWatcher->addPath(

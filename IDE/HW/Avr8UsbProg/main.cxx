@@ -19,6 +19,8 @@ void abortOnSignal(int signal)
         qDebug() << QObject::tr("Exiting on signal") << " " << signal;
         if(loader)
                 loader->unload();
+
+//         exit(0);
 }
 
 int main(int argc, char** argv)
