@@ -8,6 +8,7 @@ Avr8UsbProgThread::Avr8UsbProgThread(QObject* parent) : QThread(parent)
 {
         createConnections();
         abortVariable=false;
+        executeCommandsFlag=false;
 }
 
 Avr8UsbProgThread::~Avr8UsbProgThread()
@@ -83,7 +84,7 @@ void Avr8UsbProgThread::errorOccuredSlot(QString errorInfo)
 
 void Avr8UsbProgThread::run()
 {
-        executeCommandsFlag=false;
+    qDebug() << "Avr8UsbProgThread::run()";
         argumentQueue.clear();
         commandQueue.clear();
 
@@ -95,6 +96,7 @@ void Avr8UsbProgThread::run()
 
 inline void Avr8UsbProgThread::commandLoop()
 {
+    qDebug() << "Avr8UsbProgThread::commandLoop()";
         QMutexLocker locker(&mutex);
 
         if(!executeCommandsFlag)
@@ -107,6 +109,7 @@ inline void Avr8UsbProgThread::commandLoop()
 
 inline bool Avr8UsbProgThread::executeNextCommand()
 {
+    qDebug() << "Avr8UsbProgThread::executeNextCommand()";
         if(abortVariable) {
                 abortNow();
                 emit terminatingConnection();
@@ -221,10 +224,13 @@ void Avr8UsbProgThread::executeCommands()
 {
         QMutexLocker locker(&mutex);
         executeCommandsFlag=true;
+    qDebug() << "Avr8UsbProgThread::executeCommands(), executeCommandsFlag="<<executeCommandsFlag;
 }
 
 void Avr8UsbProgThread::searchForProgrammers()
 {
+    qDebug() << "Avr8UsbProgThread::searchForProgrammers()";
+
     QMutexLocker locker(&mutex);
     commandQueue.enqueue(SEARCH_FOR_PROGRAMMERS);
 }

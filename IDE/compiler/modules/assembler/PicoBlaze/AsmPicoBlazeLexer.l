@@ -335,6 +335,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "notb"                  { return I_NOTB; }
 "djnz"                  { return I_DJNZ; }
 "ijnz"                  { return I_IJNZ; }
+"nop"                   { return I_NOP;  }
 
  /* Special macros. */
 "if"                    { return M_RTIF;     }

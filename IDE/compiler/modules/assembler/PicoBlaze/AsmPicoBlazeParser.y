@@ -178,7 +178,7 @@
 /* Pseudo-instructions */
 %token I_CPL            I_CPL2          I_INC           I_DEC           I_SET
 %token I_CLR            I_SETB          I_CLRB          I_DJNZ          I_IJNZ
-%token I_NOTB
+%token I_NOTB           I_NOP
 
 /* Special macros */
 %token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF       M_RTWHILE
@@ -2192,6 +2192,14 @@ inst_ijnz:
                                         $$->appendLink ( new CompilerStatement ( LOC(@$),
                                                                                  ASMPICOBLAZE_INS_JUMP_NZ_AAA,
                                                                                  $4 ) );
+                                    }
+;
+inst_nop:
+      I_NOP                         {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_INS_LOAD_SX_SY,
+                                                                     ( new CompilerExpr(0,LOC(@$)) )
+                                                                     -> appendLink ( new CompilerExpr(0,LOC(@$)) ) );
                                     }
 ;
 

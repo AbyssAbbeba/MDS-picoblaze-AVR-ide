@@ -13,6 +13,18 @@ void Avr8UsbProgIsp::findProgrammers ( QStringList & result )
     result << "xXx-123" << "xXx-456";
 }
 
+void Avr8UsbProgIsp::openDevice(const QString & devSerialNumber, int speedLevel)
+{
+}
+
+int Avr8UsbProgIsp::closeDevice()
+{
+}
+
+void Avr8UsbProgIsp::resetPositivePulse()
+{
+}
+
 void Avr8UsbProgIsp::setDelays(
     const int _tWD_FUSE,
     const int _tWD_FLASH,
@@ -32,12 +44,12 @@ void Avr8UsbProgIsp::setDelays(
 bool Avr8UsbProgIsp::ProgrammingEnable()
 {
 //      bool result;
-// 
+//
 //      readWrite(0xAC);
 //      readWrite(0x53);
 //      result=(readWrite() == 0x53);
 //      readWrite();
-// 
+//
 //      return result;
 return true;
 }
@@ -51,7 +63,7 @@ void Avr8UsbProgIsp::chipErase()
 //      readWrite(0x80);
 //      readWrite();
 //      readWrite();
-// 
+//
 //      usleep(tWD_ERASE);
 }
 
@@ -109,7 +121,7 @@ void Avr8UsbProgIsp::writeProgramMemoryPageLowLevel(unsigned char a, unsigned ch
 //      readWrite(a);
 //      readWrite(b);
 //      readWrite();
-// 
+//
 //      usleep(tWD_FLASH);
 }
 
@@ -134,7 +146,7 @@ void Avr8UsbProgIsp::writeEepromMemory(unsigned int b, unsigned char i)
 //      readWrite(b >> 8);
 //      readWrite(b & 0xff);
 //      readWrite(i);
-// 
+//
 //      usleep(tWD_EEPROM);
 }
 
@@ -158,7 +170,7 @@ void Avr8UsbProgIsp::writeEepromMemoryPage(unsigned int b)
 //      readWrite(b >> 8);
 //      readWrite(b & 0xff);
 //      readWrite();
-// 
+//
 //      usleep(tWD_EEPROM);
 }
 
@@ -206,7 +218,7 @@ void Avr8UsbProgIsp::writeFuseBits(unsigned char i)
 //      readWrite(0xA0);
 //      readWrite();
 //      readWrite(i);
-// 
+//
 //      usleep(tWD_FUSE);
 }
 
@@ -219,7 +231,7 @@ void Avr8UsbProgIsp::writeFuseHighBits(unsigned char i)
 //      readWrite(0xA8);
 //      readWrite();
 //      readWrite(i);
-// 
+//
 //      usleep(tWD_FUSE);
 }
 
@@ -232,7 +244,7 @@ void Avr8UsbProgIsp::writeExtendedFuseBits(unsigned char i)
 //      readWrite(0xA4);
 //      readWrite();
 //      readWrite(i);
-// 
+//
 //      usleep(tWD_FUSE);
 }
 
