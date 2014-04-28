@@ -35,7 +35,7 @@ void Avr8UsbProgCore::searchForProgrammers()
 {
     QStringList programmers;
     isp.findProgrammers(programmers);
-qDebug() << "searchForProgrammers() --> '" << programmers << "'";
+
     if ( m_programmers.size() != programmers.size() )
     {
         m_programmers = programmers;
@@ -55,8 +55,9 @@ qDebug() << "searchForProgrammers() --> '" << programmers << "'";
     }
 }
 
-void Avr8UsbProgCore::startProgramming(const QString & devSerialNumber, int speedLevel)
+void Avr8UsbProgCore::startProgramming(const QString & devPath, int speedLevel)
 {
+qDebug() << "startProgramming("<<devPath<<", "<<speedLevel<<")";
         abortVariable=false;
 
         // No MCU detected yet
@@ -66,8 +67,8 @@ void Avr8UsbProgCore::startProgramming(const QString & devSerialNumber, int spee
                 bool success=false;
 
                 // Open connection with programmer HW
-                isp.openDevice(devSerialNumber, speedLevel);
-
+                isp.openDevice(devPath, speedLevel);
+qDebug() << "isp.openDevice("<<devPath<<", "<<speedLevel<<")";
                 // Open connection with MCU in the programmer
                 for(int tryNo=0; tryNo<PROGRAMMER_MAX_TRYES; tryNo++) {
                         if(abortVariable) {

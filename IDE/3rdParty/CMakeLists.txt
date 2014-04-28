@@ -27,4 +27,4 @@ endif()
 add_subdirectory ( CryptoPP )
 
 # Build hidapi library.
-# add_subdirectory ( hidapi )
+add_subdirectory ( hidapi )

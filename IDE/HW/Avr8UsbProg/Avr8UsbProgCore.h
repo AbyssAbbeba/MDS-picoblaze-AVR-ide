@@ -90,7 +90,7 @@ private:
 public slots:
         void searchForProgrammers();
 
-        void startProgramming(const QString & devSerialNumber, int speedLevel = 2);
+        void startProgramming(const QString & devPath, int speedLevel = 2);
         void endProgramming();
 
         void abort();

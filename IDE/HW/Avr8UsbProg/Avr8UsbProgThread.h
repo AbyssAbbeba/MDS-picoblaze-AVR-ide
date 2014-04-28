@@ -28,7 +28,7 @@ class Avr8UsbProgThread : public QThread
         void executeCommands();
 
         void searchForProgrammers();
-        void startProgramming(QString devSerialNumber, int speedLevel = 4);
+        void startProgramming(QString devPath, int speedLevel = 4);
         void endProgramming();
 
         void abort();

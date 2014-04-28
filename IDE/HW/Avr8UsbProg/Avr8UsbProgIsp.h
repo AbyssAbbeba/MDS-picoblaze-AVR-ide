@@ -14,6 +14,9 @@ class Avr8UsbProgIsp
 {
 
 public:
+    static const unsigned short VENDOR_ID  = 0x03eb;
+    static const unsigned short PRODUCT_ID = 0x2016;
+
     Avr8UsbProgIsp();
 
         void findProgrammers ( QStringList & result );
@@ -209,10 +212,10 @@ public:
         /**
          * Open communication channel between computer and the MCU
          *
-         * @param deviceFile Terminal device file
+         * @param devPath
          * @param speedLevel Connection speed.
          */
-        void openDevice(const QString & devSerialNumber, int speedLevel);
+        void openDevice(const QString & devPath, int speedLevel);
 
         /**
          * Close communication channel between computer and the MCU

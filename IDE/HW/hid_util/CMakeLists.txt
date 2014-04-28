@@ -43,7 +43,7 @@ add_executable ( ${PROJECT_NAME}
 
 if ( CMAKE_HOST_UNIX )
     # GNU/Linux
-    target_link_libraries ( ${PROJECT_NAME} usb-1.0 udev )
+    target_link_libraries ( ${PROJECT_NAME} pthread usb-1.0 udev )
 elseif ( CMAKE_HOST_WIN32 )
     # Microsoft Windows
     target_link_libraries ( ${PROJECT_NAME} setupapi )

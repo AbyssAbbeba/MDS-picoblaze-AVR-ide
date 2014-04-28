@@ -21,7 +21,8 @@ set ( PLUGIN_LIB "${PROJECT_NAME}Plugin" )
 set ( EXECUTABLE "${PROJECT_NAME}"       )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
+include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
+                      "${CMAKE_SOURCE_DIR}/3rdParty/")
 
 # Create Qt user interfaces Wrappers.
 qt4_wrap_ui ( UI_FILES Avr8UsbProgPlugin.ui )
@@ -53,7 +54,7 @@ add_executable ( ${EXECUTABLE}
                  main.cxx )
 
 # Link targets to given libraries.
-target_link_libraries ( ${PLUGIN_LIB} ${QT_LIBRARIES} MCUDataFiles )
+target_link_libraries ( ${PLUGIN_LIB} ${QT_LIBRARIES} MCUDataFiles hidapi )
 target_link_libraries ( ${EXECUTABLE} ${PLUGIN_LIB} )
 
 # ------------------------------------------------------------------------------

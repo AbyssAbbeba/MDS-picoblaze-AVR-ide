@@ -9,6 +9,7 @@
 // GUI of this plugin
 #include "ui_Avr8UsbProgPlugin.h"
 
+#include <QTimer>
 #include <QMenu>
 #include <QString>
 #include <QVector>
@@ -96,6 +97,7 @@ private:
 
     Avr8UsbProgThread programmerThread;
     QFileSystemWatcher* fileSystemWatcher;
+    QTimer * m_usbWatcherTimer;
 
     QPixmap* statusIcon[4];
 
@@ -197,6 +199,7 @@ private slots:
     void on_abortButton_clicked();
 
     // Internal not related to GUI
+    void usbWatcherTimeOut();
     void directoryContentsChanged(const QString & path);
 
     // Intercomunication with the programmer HW driver thread
