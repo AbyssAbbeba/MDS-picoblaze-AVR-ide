@@ -85,8 +85,9 @@ void Avr8UsbProgThread::errorOccuredSlot(QString errorInfo)
 void Avr8UsbProgThread::run()
 {
     qDebug() << "Avr8UsbProgThread::run()";
-        argumentQueue.clear();
-        commandQueue.clear();
+//         argumentQueue.clear();
+//         commandQueue.clear();
+//         executeCommandsFlag=false;
 
         forever {
                 msleep(100);
@@ -96,7 +97,7 @@ void Avr8UsbProgThread::run()
 
 inline void Avr8UsbProgThread::commandLoop()
 {
-    qDebug() << "Avr8UsbProgThread::commandLoop()";
+//     qDebug() << "Avr8UsbProgThread::commandLoop()";
         QMutexLocker locker(&mutex);
 
         if(!executeCommandsFlag)
@@ -109,7 +110,7 @@ inline void Avr8UsbProgThread::commandLoop()
 
 inline bool Avr8UsbProgThread::executeNextCommand()
 {
-    qDebug() << "Avr8UsbProgThread::executeNextCommand()";
+qDebug() << "executeNextCommand()";
         if(abortVariable) {
                 abortNow();
                 emit terminatingConnection();
@@ -118,7 +119,9 @@ inline bool Avr8UsbProgThread::executeNextCommand()
         }
 
         if(commandQueue.isEmpty())
+        {
                 return false;
+        }
 
         switch(commandQueue.dequeue()) {
 
@@ -224,22 +227,19 @@ void Avr8UsbProgThread::executeCommands()
 {
         QMutexLocker locker(&mutex);
         executeCommandsFlag=true;
-    qDebug() << "Avr8UsbProgThread::executeCommands(), executeCommandsFlag="<<executeCommandsFlag;
 }
 
 void Avr8UsbProgThread::searchForProgrammers()
 {
-    qDebug() << "Avr8UsbProgThread::searchForProgrammers()";
-
     QMutexLocker locker(&mutex);
     commandQueue.enqueue(SEARCH_FOR_PROGRAMMERS);
 }
 
-void Avr8UsbProgThread::startProgramming(QString devSerialNumber, int speedLevel)
+void Avr8UsbProgThread::startProgramming(QString devPath, int speedLevel)
 {
         QMutexLocker locker(&mutex);
         commandQueue.enqueue(START_PROGRAMMING);
-        argumentQueue.enqueue(devSerialNumber);
+        argumentQueue.enqueue(devPath);
         argumentQueue.enqueue(speedLevel);
 }
 void Avr8UsbProgThread::endProgramming()

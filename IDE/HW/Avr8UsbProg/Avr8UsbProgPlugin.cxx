@@ -23,14 +23,23 @@ Avr8UsbProgPlugin::Avr8UsbProgPlugin()
     finalizeGui();
     setStandAlone(standAloneFlag);
     setConnections();
-    programmerThread.start(QThread::NormalPriority);
 
-    programmerThread.searchForProgrammers();
-    programmerThread.executeCommands();
+    programmerThread.start(QThread::NormalPriority);
+    m_usbWatcherTimer->start(1000);
+    usbWatcherTimeOut();
 }
 
 Avr8UsbProgPlugin::~Avr8UsbProgPlugin()
 {
+}
+
+void Avr8UsbProgPlugin::usbWatcherTimeOut()
+{
+    if ( false == busyFlag )
+    {
+        programmerThread.searchForProgrammers();
+        programmerThread.executeCommands();
+    }
 }
 
 void Avr8UsbProgPlugin::initializeObjectVariables()
@@ -40,6 +49,7 @@ void Avr8UsbProgPlugin::initializeObjectVariables()
     deviceDetectedFlag=false;
     reprogrammingStage=INACTIVE_STAGE;
 
+    m_usbWatcherTimer = new QTimer(this);
     fileSystemWatcher=new QFileSystemWatcher(this);
     Q_CHECK_PTR(fileSystemWatcher);
 
@@ -152,6 +162,7 @@ void Avr8UsbProgPlugin::finalizeGui()
 
 void Avr8UsbProgPlugin::setConnections()
 {
+    connect(m_usbWatcherTimer, SIGNAL(timeout()), SLOT(usbWatcherTimeOut()));
     connect(fileSystemWatcher,
         SIGNAL(directoryChanged(const QString &)),
         SLOT(directoryContentsChanged(const QString &)));
@@ -525,24 +536,24 @@ bool Avr8UsbProgPlugin::enterLeaveProgMode(EnterLeave enterLeave)
 {
     bool enable = (enterLeave == LEAVE);
     const Avr8UsbProgDeviceDB::Device * device=programmerThread.getMcuDetails();
-
+qDebug() << "enterLeaveProgMode()";
     if(enterLeave == ENTER) {
-        QString devSerialNumber=portComboBox->currentText();
+        QString devPath=portComboBox->currentText();
 
         if(busyFlag) {
             qDebug() << "BUG: Avr8UsbProgPlugin::enterLeaveProgMode -- busyFlag";
             return false;
         }
 
-        if(devSerialNumber.isEmpty()) {
-            QMessageBox::critical(this, tr("Missing information"), tr("You must specify <b>serial number</b> of the USB device which you want to establish communication with."), QMessageBox::Ok, QMessageBox::Ok);
+        if(devPath.isEmpty()) {
+            QMessageBox::critical(this, tr("Missing information"), tr("You must specify <b>path</b> to the USB device which you want to establish communication with."), QMessageBox::Ok, QMessageBox::Ok);
             return false;
         }
 
         deviceDetectedFlag=false;
         busyFlag=true;
-
-        programmerThread.startProgramming(devSerialNumber, speedSlider->value());
+qDebug() << "programmerThread.startProgramming("<<devPath<<", "<<speedSlider->value()<<");";
+        programmerThread.startProgramming(devPath, speedSlider->value());
 
         progressBar->setValue(0);
         bottomPanel->show();
@@ -1116,7 +1127,14 @@ void Avr8UsbProgPlugin::programmerThread_newProgrammersFound(const QStringList &
                 portComboBox->addItem(QIcon(":/Avr8UsbProg/images/usb.png"), id);
         }
 
-        portComboBox->setCurrentIndex(portComboBox->findText(currentItem));
+        if ( false == currentItem.isEmpty() )
+        {
+            portComboBox->setCurrentIndex(portComboBox->findText(currentItem));
+        }
+        else if ( programmers.size() == 1 )
+        {
+            portComboBox->setCurrentIndex(0);
+        }
 }
 
 void Avr8UsbProgPlugin::programmerThread_aborted()

@@ -29,8 +29,8 @@ int main(int argc, char** argv)
         loader=new QPluginLoader(PATH_TO_THE_PLUGIN);
         Q_CHECK_PTR(loader);
 
-        signal(SIGINT, abortOnSignal);
-        signal(SIGHUP, abortOnSignal);
+//         signal(SIGINT, abortOnSignal);
+//         signal(SIGHUP, abortOnSignal);
 
         QObject* plugin=loader->instance();
         if(!plugin) {

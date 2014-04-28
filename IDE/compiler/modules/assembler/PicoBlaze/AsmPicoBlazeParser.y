@@ -289,7 +289,7 @@
 // Statements - pseudo-instructions
 %type<stmt>     inst_cpl        inst_cpl2       inst_inc        inst_dec        inst_set
 %type<stmt>     inst_clr        inst_setb       inst_clrb       inst_djnz       inst_ijnz
-%type<stmt>     inst_notb
+%type<stmt>     inst_notb       inst_nop
 // Statements - special macros
 %type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
 %type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif     dir_rtwhile     dir_rtendw
@@ -1760,7 +1760,7 @@ instruction:
     | inst_set          { $$ = $1; } | inst_clr         { $$ = $1; }
     | inst_setb         { $$ = $1; } | inst_clrb        { $$ = $1; }
     | inst_djnz         { $$ = $1; } | inst_ijnz        { $$ = $1; }
-    | inst_notb         { $$ = $1; }
+    | inst_notb         { $$ = $1; } | inst_nop         { $$ = $1; }
 ;
 
 /* Program Control Group */
