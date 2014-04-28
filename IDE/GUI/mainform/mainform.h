@@ -126,6 +126,8 @@ class MainForm : public QMainWindow
         void changeProjectFamily(QString family);
         void closeProject();
         void manageBreakpointEmit(QString file, int line);
+        void breakpointsAddLines(QString file, int line, int linesAdded);
+        void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         void manageBookmarkEmit(QString file, int line);
         //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();

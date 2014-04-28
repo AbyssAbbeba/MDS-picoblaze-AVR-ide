@@ -27,7 +27,7 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     {
         highlighter = new Highlighter(this->document(), this->sourceType);
     }
-    this->setAcceptDrops(true);
+    //this->setAcceptDrops(true);
     this->makeMenu();
 
     connect(this,
@@ -42,7 +42,7 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
            );*/
 
     //this->show();
-    //this->setFocusPolicy(Qt::ClickFocus);
+    //this->setFocusPolicy(Qt::StrongFocus);
     //qDebug() << "WTextEdit: return WTextEdit()";
 }
 
@@ -103,7 +103,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
           && keyEvent->key() == Qt::Key_C)
         {
             QTextCursor cursor(this->textCursor());
-            if (cursor.hasSelection())
+            if (true == cursor.hasSelection())
             {
                 QString a(cursor.selectedText());
                 if (a.startsWith("/*") && a.endsWith("*/"))
@@ -149,6 +149,42 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             }
             //qDebug() << "WTextEdit: return eventFilter()";
             return true;
+        }
+        //new line
+        //check for selection
+        if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
+        {
+            QTextCursor cursor(this->textCursor());
+            if (false == cursor.hasSelection())
+            {
+                emit breakpointsAddLines(cursor.blockNumber(), 1);
+            }
+        }
+        //backspace on the beginning of the line
+        //check for selection
+        if (keyEvent->key() == Qt::Key_Backspace)
+        {
+            QTextCursor cursor(this->textCursor());
+            if (false == cursor.hasSelection())
+            {
+                if (true == cursor.atBlockStart())
+                {
+                    emit breakpointsRemoveLines(cursor.blockNumber(), 1);
+                }
+            }
+        }
+        //delete on the end of the line
+        //check for selection
+        if (keyEvent->key() == Qt::Key_Delete)
+        {
+            QTextCursor cursor(this->textCursor());
+            if (false == cursor.hasSelection())
+            {
+                if (true == cursor.atBlockEnd())
+                {
+                    emit breakpointsRemoveLines(cursor.blockNumber()+1, 1);
+                }
+            }
         }
         //paste ctrl+v
         /*if ( (keyEvent->modifiers() & Qt::ControlModifier)

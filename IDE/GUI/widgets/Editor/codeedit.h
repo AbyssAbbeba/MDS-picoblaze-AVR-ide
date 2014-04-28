@@ -58,6 +58,7 @@ class CodeEdit : public QWidget
         Project *getParentProject();
         void addBreakpointLine(unsigned int line);
         void removeBreakpointLine(unsigned int line);
+        void moveBreakpointsLines(int line, int linesChanged, bool added);
         QList<unsigned int>* getBreakpointsLines();
         void addBookmarkLine(unsigned int line);
         void removeBookmarkLine(unsigned int line);
@@ -77,6 +78,8 @@ class CodeEdit : public QWidget
         void changeFont(QFont font);
         void changeHeight();
         void updateLineCounter();
+        void breakpointsAddLines(int line, int linesAdded);
+        void breakpointsRemoveLines(int line, int linesRemoved);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -86,6 +89,8 @@ class CodeEdit : public QWidget
         void CodeEditChanged(CodeEdit* editor);
         //void breakpointListStateChanged(QString file, int line);
         void breakpointEmit(QString file, int line);
+        void breakpointsAddLines(QString file, int line, int linesAdded);
+        void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         void bookmarkEmit(QString file, int line);
         //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);

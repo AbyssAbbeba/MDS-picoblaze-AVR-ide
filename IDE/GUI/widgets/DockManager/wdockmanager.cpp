@@ -318,6 +318,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                     SLOT(breakpointEmitSlot(QString, int))
                 );
             connect(activeCodeEdit,
+                    SIGNAL(breakpointsAddLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(breakpointsRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsRemoveLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
                     SIGNAL(bookmarkEmit(QString, int)),
                     this,
                     SLOT(bookmarkEmitSlot(QString, int))
@@ -425,6 +435,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                     SIGNAL(breakpointEmit(QString, int)),
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(breakpointsAddLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(breakpointsRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsRemoveLinesSlot(QString, int, int))
                 );
             connect(activeCodeEdit,
                     SIGNAL(bookmarkEmit(QString, int)),
@@ -537,6 +557,16 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
                     SIGNAL(breakpointEmit(QString, int)),
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(breakpointsAddLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(breakpointsRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(breakpointsRemoveLinesSlot(QString, int, int))
                 );
             connect(activeCodeEdit,
                     SIGNAL(bookmarkEmit(QString, int)),
@@ -1025,6 +1055,18 @@ void WDockManager::closeFile(QString path)
 void WDockManager::breakpointEmitSlot(QString file, int line)
 {
     emit breakpointEmit(file, line);
+}
+
+
+void WDockManager::breakpointsAddLinesSlot(QString file, int line, int linesAdded)
+{
+    emit breakpointsAddLines(file, line, linesAdded);
+}
+
+
+void WDockManager::breakpointsRemoveLinesSlot(QString file, int line, int linesRemoved)
+{
+    emit breakpointsRemoveLines(file, line, linesRemoved);
 }
 
 

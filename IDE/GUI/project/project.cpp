@@ -2561,6 +2561,97 @@ int Project::handleBreakpoint(QString file, int line)
 }
 
 
+void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->breakPoints.count(); i++)
+        {
+            if (this->breakPoints.at(i).first == file)
+            {
+                //handle move
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) > line)
+                    {
+                        set << setValues.at(j) + linesAdded;
+                    }
+                    else
+                    {
+                        set << setValues.at(j);
+                    }
+                }
+                this->breakPoints.removeAt(i);
+                QPair<QString, QSet<unsigned int>> pair(file, set);
+                this->breakPoints.append(pair);
+                break;
+            }
+        }
+    }
+}
+
+
+void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->breakPoints.count(); i++)
+        {
+            if (this->breakPoints.at(i).first == file)
+            {
+                //handle move
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) > line)
+                    {
+                        set << setValues.at(j) - linesRemoved;
+                    }
+                    else
+                    {
+                        if (setValues.at(j) < line)
+                        {
+                            set << setValues.at(j);
+                        }
+                        //else (==) do nothing, breakpoint removed
+                    }
+                }
+                this->breakPoints.removeAt(i);
+                if (false == set.isEmpty())
+                {
+                    QPair<QString, QSet<unsigned int>> pair(file, set);
+                    this->breakPoints.append(pair);
+                }
+                break;
+            }
+        }
+    }
+}
+
+
 //-1 nothing, 0 add, 1 remove
 int Project::handleBookmark(QString file, int line)
 {
