@@ -80,11 +80,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
+    //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 0, 1, 1, 0);
+    //layout->addWidget(statusBar, 0, 1, 2, 1);
     setLayout(layout);
     name = wName;
     path = wPath;
@@ -119,6 +119,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             SIGNAL(breakpoint(int)),
             this,
             SLOT(manageBreakpointEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(breakpointsAddLines(int, int)),
+            this,
+            SLOT(breakpointsAddLines(int, int))
+           );
+    connect(textEdit,
+            SIGNAL(breakpointsRemoveLines(int, int)),
+            this,
+            SLOT(breakpointsRemoveLines(int, int))
            );
     connect(textEdit,
             SIGNAL(bookmark(int)),
@@ -218,11 +228,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
+    //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 0, 1, 1, 0);
+    //layout->addWidget(statusBar, 0, 1, 2, 1);
     name = wName;
     path = wPath;
     parentWidget = parent;
@@ -253,6 +263,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SIGNAL(breakpoint(int)),
             this,
             SLOT(manageBreakpointEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(breakpointsAddLines(int, int)),
+            this,
+            SLOT(breakpointsAddLines(int, int))
+           );
+    connect(textEdit,
+            SIGNAL(breakpointsRemoveLines(int, int)),
+            this,
+            SLOT(breakpointsRemoveLines(int, int))
            );
     connect(textEdit,
             SIGNAL(bookmark(int)),
@@ -761,4 +781,53 @@ void CodeEdit::removeBookmarkLine(unsigned int line)
 QList<unsigned int>* CodeEdit::getBookmarksLines()
 {
     return this->bookmarksLines;
+}
+
+
+void CodeEdit::breakpointsAddLines(int line, int linesAdded)
+{
+    emit breakpointsAddLines(this->path, line, linesAdded);
+}
+
+
+void CodeEdit::breakpointsRemoveLines(int line, int linesRemoved)
+{
+    emit breakpointsRemoveLines(this->path, line, linesRemoved);
+}
+
+
+void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
+{
+    bool update = false;
+    if (true == added)
+    {
+        for (int i = 0; i < this->breakpointsLines->count(); i++)
+        {
+            if (this->breakpointsLines->at(i) > line)
+            {
+                (*(this->breakpointsLines))[i] += linesChanged;
+                update = true;
+            }
+        }
+    }
+    else
+    {
+        if (this->breakpointsLines->contains(line))
+        {
+            this->breakpointsLines->removeAll(line);
+            update = true;
+        }
+        for (int i = 0; i < this->breakpointsLines->count(); i++)
+        {
+            if (this->breakpointsLines->at(i) > line)
+            {
+                (*(this->breakpointsLines))[i] -= linesChanged;
+                update = true;
+            }
+        }
+    }
+    if (true == update)
+    {
+        this->lineCount->getWidget()->update();
+    }
 }

@@ -64,6 +64,8 @@ class WTextEdit : public QPlainTextEdit
         //void textChangedSignal(const QString& text, int pos);
         //void selectionRemovedSignal(int posStart, int posEnd);
         void updateLineCounter();
+        void breakpointsAddLines(int line, int linesAdded);
+        void breakpointsRemoveLines(int line, int linesRemoved);
 
     //private slots:
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
