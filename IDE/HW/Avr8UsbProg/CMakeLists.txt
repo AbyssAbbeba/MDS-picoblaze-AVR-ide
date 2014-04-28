@@ -43,6 +43,7 @@ add_library ( ${PLUGIN_LIB} SHARED
               ${UI_FILES}
               ${QRC_FILES}
               ${MOC_FILES}
+              Avr8UsbProgHid.cxx
               Avr8UsbProgIsp.cxx
               Avr8UsbProgCore.cxx
               Avr8UsbProgThread.cxx

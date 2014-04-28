@@ -1,126 +1,16 @@
 #include "Avr8UsbProgIsp.h"
 
-#include "hidapi/hidapi.h"
 #include <iostream>
 
 #include <QDebug>
 
+
 Avr8UsbProgIsp::Avr8UsbProgIsp()
 {
-    if ( 0 != hid_init() )
-    {
-        std::cerr << "hid_init() failed." << std::endl;
-    }
-
     tWD_FUSE=0;
     tWD_FLASH=0;
     tWD_EEPROM=0;
     tWD_ERASE=0;
-}
-
-void Avr8UsbProgIsp::findProgrammers ( QStringList & result )
-{
-    hid_device_info * devs = hid_enumerate(VENDOR_ID, PRODUCT_ID);
-
-    for ( hid_device_info * device = devs;
-          NULL != device;
-          device = device->next )
-    {
-        result << device->path;
-    }
-
-    hid_free_enumeration(devs);
-}
-
-void Avr8UsbProgIsp::openDevice(const QString & devPath, int speedLevel)
-{
-    qDebug() << "openDevice("<<devPath<<", "<<speedLevel<<")";
-    hid_device * handle = hid_open_path(devPath.toAscii().data());
-//     hid_device * handle = hid_open(0x03eb, 0x2016, NULL);
-//     hid_set_nonblocking(handle, 1);
-
-    if ( NULL == handle )
-    {
-        qDebug() << "Unable to open device handle.";
-        // TODO: Unable to open device handle.
-        return;
-    }
-
-    constexpr int MAX_STR = 255;
-
-    int res;
-    wchar_t wstr[MAX_STR];
-
-    // Read the Manufacturer String
-    wprintf(L"Reading the Manufacturer String ... ");
-    res = hid_get_manufacturer_string(handle, wstr, MAX_STR);
-    wprintf(L"[OK] Manufacturer String: %s\n", wstr);
-
-    // Read the Product String
-    wprintf(L"Reading the Product String ... ");
-    res = hid_get_product_string(handle, wstr, MAX_STR);
-    wprintf(L"[OK] Product String: %s\n", wstr);
-
-    // Read the Serial Number String
-    wprintf(L"Reading the Serial Number String ... ");
-    res = hid_get_serial_number_string(handle, wstr, MAX_STR);
-    wprintf(L"[OK] Serial Number String: (%d) %s\n", wstr[0], wstr);
-
-    // Read Indexed String 1
-    wprintf(L"Reading the Indexed String 1 ... ");
-    res = hid_get_indexed_string(handle, 1, wstr, MAX_STR);
-    wprintf(L"[OK] Indexed String 1: %s\n", wstr);
-
-    static const char * testString = "\x01";
-
-    unsigned char buffer[65];
-
-    buffer[0] = 0x00;
-    int len = strlen(testString);
-    for ( int i = 0; i < len; i++ )
-    {
-        buffer[i+1] = testString[i];
-    }
-    for ( int i = len + 1; i < 65; i++ )
-    {
-        buffer[i] = 0;
-    }
-
-    wprintf(L"\nSending report to the device ...");
-    res = hid_write(handle, buffer, 65);
-    if ( -1 == res )
-    {
-        wprintf(L"\nError: cannot send data to the device.\n", res);
-        wprintf(L"OS message: `%s'.\n", hid_error(handle));
-        return;
-    }
-    else
-    {
-        wprintf(L" [OK] %d bytes sent to the device.\n", res);
-    }
-
-    wprintf(L"\nWaitning for the device to respond...");
-    while ( 0 == (res = hid_read_timeout(handle, buffer, 65, 15000)) )
-    {
-        wprintf(L".");
-    }
-    wprintf(L"[OK]\n");
-
-    // Print out the returned buffer.
-    wprintf(L"Device responded:\n");
-    wprintf(L"  []    DEC:   HEX:   ASCII:\n");
-    for ( int i = 0; i < res; i++ )
-    {
-        wprintf(L"%3d:    %3d    0x%02x    '%c'\n", i, buffer[i], buffer[i], buffer[i]);
-    }
-
-    // Close the HID device.
-    hid_close(handle);
-}
-
-int Avr8UsbProgIsp::closeDevice()
-{
-    std::cout << "closeDevice()";
 }
 
 void Avr8UsbProgIsp::resetPositivePulse()
