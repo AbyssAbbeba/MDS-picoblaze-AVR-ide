@@ -121,6 +121,16 @@ MainForm::MainForm()
             this,
             SLOT(manageBookmarkEmit(QString, int))
            );
+    connect(wDockManager,
+            SIGNAL(breakpointsAddLines(QString, int, int)),
+            this,
+            SLOT(breakpointsAddLines(QString, int, int))
+           );
+    connect(wDockManager,
+            SIGNAL(breakpointsRemoveLines(QString, int, int)),
+            this,
+            SLOT(breakpointsRemoveLines(QString, int, int))
+           );
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -2384,6 +2394,21 @@ void MainForm::manageBreakpointEmit(QString file, int line)
     {
         projects.at(i)->handleBreakpoint(file, line + 1);
     }*/
+}
+
+void MainForm::breakpointsAddLines(QString file, int line, int linesAdded)
+{
+    projectMan->getActive()->moveBreakpointsAdd(file, line + 1, linesAdded);
+    wDockManager->getBreakpointList()->breakpointsAddLines(file, line + 1, linesAdded);
+    wDockManager->getCentralWidget()->moveBreakpointsLines(line + 1, linesAdded, true);
+}
+
+
+void MainForm::breakpointsRemoveLines(QString file, int line, int linesRemoved)
+{
+    projectMan->getActive()->moveBreakpointsRemove(file, line + 1, linesRemoved);
+    wDockManager->getBreakpointList()->breakpointsRemoveLines(file, line + 1, linesRemoved);
+    wDockManager->getCentralWidget()->moveBreakpointsLines(line + 1, linesRemoved, false);
 }
 
 
