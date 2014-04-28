@@ -1,6 +1,8 @@
 #ifndef AVR8USBPROGISP_H
 #define AVR8USBPROGISP_H
 
+#include "Avr8UsbProgHid.h"
+
 #include <QString>
 #include <QStringList>
 
@@ -10,16 +12,11 @@
  * This class takes care about making appropriate delays after certain
  * programming instructions.
  */
-class Avr8UsbProgIsp
+class Avr8UsbProgIsp : public Avr8UsbProgHid
 {
 
 public:
-    static const unsigned short VENDOR_ID  = 0x03eb;
-    static const unsigned short PRODUCT_ID = 0x2016;
-
     Avr8UsbProgIsp();
-
-        void findProgrammers ( QStringList & result );
 
     /** Set delays for ceratin programming instructions
      * @param tWD_FUSE      Minimum wait delay before writing the next fuse
@@ -209,22 +206,8 @@ public:
      */
     bool pollRDYBSY();
 
-        /**
-         * Open communication channel between computer and the MCU
-         *
-         * @param devPath
-         * @param speedLevel Connection speed.
-         */
-        void openDevice(const QString & devPath, int speedLevel);
-
-        /**
-         * Close communication channel between computer and the MCU
-         * @return Zero on success
-         */
-        int closeDevice();
-
-        /** Give the MCU reset positive pulse (remember AVR reset pin is inverted) */
-        void resetPositivePulse();
+    /** Give the MCU reset positive pulse (remember AVR reset pin is inverted) */
+    void resetPositivePulse();
 
 private:
     int tWD_FUSE;   ///< Minimum wait delay before writing the next fuse (us)
