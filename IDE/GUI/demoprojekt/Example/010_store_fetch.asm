@@ -56,6 +56,7 @@ MAIN:
             loop:
                         DJNZ                s0,loop
                         load                 s3,#45
+
                add                S0, #2
                add                S1, #1
                store        	  S0, @S1

@@ -119,6 +119,8 @@ class WDockManager : public QObject
         void moveEditorsSlot(int from, int to);
         void stopSimSlot();
         void breakpointEmitSlot(QString file, int line);
+        void breakpointsAddLinesSlot(QString file, int line, int linesAdded);
+        void breakpointsRemoveLinesSlot(QString file, int line, int linesRemoved);
         void bookmarkEmitSlot(QString file, int line);
         //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
@@ -137,6 +139,8 @@ class WDockManager : public QObject
         void centralCreated();
         void breakpointEmit(QString file, int line);
         void bookmarkEmit(QString file, int line);
+        void breakpointsAddLines(QString file, int line, int linesAdded);
+        void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
 
     private:

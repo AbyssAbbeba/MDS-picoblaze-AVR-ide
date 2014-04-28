@@ -131,6 +131,8 @@ class Project : public QObject
         void setFamily(QString family);
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
         int handleBreakpoint(QString file, int line);
+        void moveBreakpointsAdd(QString file, int line, int linesAdded);
+        void moveBreakpointsRemove(QString file, int line, int linesRemoved);
         int handleBookmark(QString file, int line);
         QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
         QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
