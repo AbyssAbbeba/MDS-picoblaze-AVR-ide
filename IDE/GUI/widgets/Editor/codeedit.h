@@ -56,13 +56,13 @@ class CodeEdit : public QWidget
         CodeEdit* getParentCodeEdit();
         void setParentCodeEdit(CodeEdit *parentCodeEdit);
         Project *getParentProject();
-        void addBreakpointLine(unsigned int line);
-        void removeBreakpointLine(unsigned int line);
+        void addBreakpointLine(int line);
+        void removeBreakpointLine(int line);
         void moveBreakpointsLines(int line, int linesChanged, bool added);
-        QList<unsigned int>* getBreakpointsLines();
-        void addBookmarkLine(unsigned int line);
-        void removeBookmarkLine(unsigned int line);
-        QList<unsigned int>* getBookmarksLines();
+        QList<int>* getBreakpointsLines();
+        void addBookmarkLine(int line);
+        void removeBookmarkLine(int line);
+        QList<int>* getBookmarksLines();
 
     public slots:
         void setChanged();
@@ -112,8 +112,8 @@ class CodeEdit : public QWidget
         CodeEdit *parentCodeEdit;
         QColor *breakpointColor;
         int prevBlockCount;
-        QList<unsigned int> *bookmarksLines;
-        QList<unsigned int> *breakpointsLines;
+        QList<int> *bookmarksLines;
+        QList<int> *breakpointsLines;
 };
 
 

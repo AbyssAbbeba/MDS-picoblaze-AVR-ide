@@ -159,6 +159,20 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             {
                 emit breakpointsAddLines(cursor.blockNumber(), 1);
             }
+            else
+            {
+                QTextCursor cursorSelBeg(this->document());
+                QTextCursor cursorSelEnd(this->document());
+                cursorSelBeg.setPosition(cursor.selectionStart());
+                cursorSelEnd.setPosition(cursor.selectionEnd());
+                if (cursorSelBeg.blockNumber() != cursorSelEnd.blockNumber())
+                {
+                    emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                               );
+                }
+                emit breakpointsAddLines(cursorSelBeg.blockNumber(), 1);
+            }
         }
         //backspace on the beginning of the line
         //check for selection
@@ -172,6 +186,28 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     emit breakpointsRemoveLines(cursor.blockNumber(), 1);
                 }
             }
+            else
+            {
+                QTextCursor cursorSelBeg(this->document());
+                QTextCursor cursorSelEnd(this->document());
+                cursorSelBeg.setPosition(cursor.selectionStart());
+                cursorSelEnd.setPosition(cursor.selectionEnd());
+                if (cursorSelBeg.blockNumber() != cursorSelEnd.blockNumber())
+                {
+                    if (true == cursorSelBeg.atBlockStart())
+                    {
+                        emit breakpointsRemoveLines(cursorSelBeg.blockNumber(),
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                   );
+                    }
+                    else
+                    {
+                        emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                    }
+                }
+            }
         }
         //delete on the end of the line
         //check for selection
@@ -182,7 +218,29 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             {
                 if (true == cursor.atBlockEnd())
                 {
-                    emit breakpointsRemoveLines(cursor.blockNumber()+1, 1);
+                    emit breakpointsRemoveLines(cursor.blockNumber() + 1, 1);
+                }
+            }
+            else
+            {
+                QTextCursor cursorSelBeg(this->document());
+                QTextCursor cursorSelEnd(this->document());
+                cursorSelBeg.setPosition(cursor.selectionStart());
+                cursorSelEnd.setPosition(cursor.selectionEnd());
+                if (cursorSelBeg.blockNumber() != cursorSelEnd.blockNumber())
+                {
+                    if (true == cursorSelBeg.atBlockStart())
+                    {
+                        emit breakpointsRemoveLines(cursorSelBeg.blockNumber(),
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                   );
+                    }
+                    else
+                    {
+                        emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                    }
                 }
             }
         }
