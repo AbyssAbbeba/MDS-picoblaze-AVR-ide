@@ -283,13 +283,13 @@ void WLineCounterWidget::changeFont(QFont font)
 }
 
 
-void WLineCounterWidget::setBreakpointList(QList<unsigned int> *list)
+void WLineCounterWidget::setBreakpointList(QList<int> *list)
 {
     this->breakpointList = list;
 }
 
 
-void WLineCounterWidget::setBookmarkList(QList<unsigned int> *list)
+void WLineCounterWidget::setBookmarkList(QList<int> *list)
 {
     this->bookmarkList = list;
 }
