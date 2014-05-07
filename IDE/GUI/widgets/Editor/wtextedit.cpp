@@ -181,7 +181,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             QTextCursor cursor(this->textCursor());
             if (false == cursor.hasSelection())
             {
-                if (true == cursor.atBlockStart())
+                if (true == cursor.atBlockStart() && cursor.blockNumber() > 1) //bug
                 {
                     emit breakpointsRemoveLines(cursor.blockNumber(), 1);
                 }
