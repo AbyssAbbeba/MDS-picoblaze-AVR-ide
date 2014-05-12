@@ -140,6 +140,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this,
             SLOT(updateLineCounter())
            );
+    connect(lineCount,
+            SIGNAL(breakpoint(int)),
+            this,
+            SLOT(manageBreakpointEmit(int))
+           );
+    connect(lineCount,
+            SIGNAL(bookmark(int)),
+            this,
+            SLOT(manageBookmarkEmit(int))
+           );
     /*connect(textEdit,
             SIGNAL(blockCountChanged(int)),
             this,
@@ -816,15 +826,15 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
         for (i = this->breakpointsLines->begin(); i != this->breakpointsLines->end(); i++)
         {
             if ( *i >= line
-              && *i <= line + linesChanged
-               )
+            && *i < line + linesChanged
+            )
             {
                 *i = -1;
                 update = true;
             }
             else
             {
-                if (*i > line + linesChanged)
+                if (*i >= line + linesChanged)
                 {
                     *i -= linesChanged;
                     update = true;
