@@ -197,7 +197,8 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     if (true == cursorSelBeg.atBlockStart())
                     {
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber(),
-                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                    //cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
                     }
                     else

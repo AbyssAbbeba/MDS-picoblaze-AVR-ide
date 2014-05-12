@@ -133,14 +133,14 @@ void BreakpointList::breakpointsRemoveLines(QString file, int line, int linesRem
         if (item->toolTip(1) == file)
         {
             if ( item->text(0).toInt() >= line
-              && item->text(0).toInt() <= line + linesRemoved
-               )
+            && item->text(0).toInt() < line + linesRemoved
+            )
             {
                 itemsToRemove.append(item);
             }
             else
             {
-                if (item->text(0).toInt() > line + linesRemoved)
+                if (item->text(0).toInt() >= line + linesRemoved)
                 {
                     item->setText(0, QString::number(item->text(0).toInt() - linesRemoved, 10));
                 }

@@ -40,7 +40,21 @@ WLineCounter::WLineCounter(QPlainTextEdit *parent, bool icons, bool hex, int off
     this->setWidget(widget);
     this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    connect(this->parent->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(change(int)));
+    connect(this->parent->verticalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            this,
+            SLOT(change(int))
+           );
+    connect(widget,
+            SIGNAL(breakpointEmit(int)),
+            this,
+            SLOT(manageBreakpointEmit(int))
+           );
+    connect(widget,
+            SIGNAL(bookmarkEmit(int)),
+            this,
+            SLOT(manageBookmarkEmit(int))
+           );
     //qDebug() << "WLineCounter: return WLineCounter()";
 }
 
@@ -72,7 +86,7 @@ WLineCounterWidget* WLineCounter::getWidget()
 void WLineCounter::change(int value)
 {
     //qDebug() << "WLineCounter: change()" << value;
-    //this->verticalScrollBar()->setValue(value);
+    //qDebug() << "WLineCounter: value" << this->verticalScrollBar()->value();
     this->widget->update();
     this->update();
     //qDebug() << "WLineCounter: return change()";
@@ -92,6 +106,17 @@ void WLineCounter::changeFont(QFont font)
 }
 
 
+void WLineCounter::manageBreakpointEmit(int line)
+{
+    emit breakpoint(line);
+}
+
+
+void WLineCounter::manageBookmarkEmit(int line)
+{
+    emit bookmark(line);
+}
+
 
 /**
  * @brief Constructor. Inits shown widget.
@@ -104,6 +129,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     : QWidget(parent)
 {
     //qDebug() << "WLineCounterWidget: WLineCounterWidget()";
+    //qDebug() << "WLineCounterWidget: ";
     this->parent = parent;
     this->icons = icons;
     //font.setPixelSize(font.pixelSize()-2);
@@ -127,7 +153,6 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
         this->changeHeight();
         this->update();
     }*/
-    //qDebug() << "WLineCounterWidget: height" << this->height();
     //this->changeHeight();
     //this->parent->verticalScrollBar()->setMaximum(parent->getTextEdit()->verticalScrollBar()->maximum());
 
@@ -143,6 +168,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
  */
 void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
+    qDebug() << "WLineCounterWidget: paintEvent";
     QPlainTextEdit* textEdit = parent->getTextEdit();
     //int size = textEdit->currentFont().pointSize();
     //int normalize = 0;
@@ -167,7 +193,7 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         lineBlock = textEdit->document()->findBlockByNumber(i);
         QTextCursor cursor(lineBlock);
         cursorRect = textEdit->cursorRect(cursor);
-        //qDebug() << i << "WLineCounterWidget: block top" << cursorRect.top();
+        //qDebug() << "WLineCounterWidget: block" << lineBlock.text();
         /*if (i == 0 && cursorRect.top() < 0)
         {
             normalize = cursorRect.top() - 2;
@@ -297,12 +323,23 @@ void WLineCounterWidget::setBookmarkList(QList<int> *list)
 
 void WLineCounterWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton)
+    if (true == this->icons)
     {
-        qDebug() << "WLineCounterWidget: left click";
-    }
-    else if (event->button() == Qt::RightButton)
-    {
-        qDebug() << "WLineCounterWidget: right click";
+        if (event->button() == Qt::LeftButton)
+        {
+            int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
+            if (line > 0)
+            {
+                emit breakpointEmit(line-1);
+            }
+        }
+        else if (event->button() == Qt::RightButton)
+        {
+            int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
+            if (line > 0)
+            {
+                emit bookmarkEmit(line-1);
+            }
+        }
     }
 }

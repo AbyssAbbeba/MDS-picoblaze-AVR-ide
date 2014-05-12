@@ -1712,6 +1712,10 @@ void GuiCfg::saveConfig()
 
 void GuiCfg::saveSession()
 {
+    if (false == this->sessionRestoration)
+    {
+        return;
+    }
     if (this->sessionProjectPaths.count() > 0)
     {
         QDomDocument domDoc("sessionRestoration");
@@ -1754,6 +1758,10 @@ void GuiCfg::saveSession()
 
 bool GuiCfg::loadSession()
 {
+    if (false == this->sessionRestoration)
+    {
+        return false;
+    }
     QDomDocument domDoc("sessionRestoration");
     QFile sessionFile(this->sessionPath);
     if (!sessionFile.open(QIODevice::ReadOnly))
