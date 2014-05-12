@@ -43,10 +43,16 @@ class WLineCounter : public QScrollArea
         
     private slots:
         void change(int value);
+        void manageBreakpointEmit(int line);
+        void manageBookmarkEmit(int line);
 
     private:
         QPlainTextEdit *parent;
         WLineCounterWidget *widget;
+
+    signals:
+        void breakpoint(int line);
+        void bookmark(int line);
 };
 
 /**
@@ -61,8 +67,8 @@ class WLineCounterWidget : public QWidget
         WLineCounterWidget(WLineCounter *parent, bool icons, bool hex, int offset, QFont font);
         void changeHeight();
         void changeFont(QFont font);
-        void setBreakpointList(QList<unsigned int> *list);
-        void setBookmarkList(QList<unsigned int> *list);
+        void setBreakpointList(QList<int> *list);
+        void setBookmarkList(QList<int> *list);
         
     private:
         WLineCounter *parent;
@@ -74,8 +80,8 @@ class WLineCounterWidget : public QWidget
         //QList<bool> *breakpointList;
         //QList<bool> *errorList;
         //QList<bool> *bookmarkList;
-        QList<unsigned int> *breakpointList;
-        QList<unsigned int> *bookmarkList;
+        QList<int> *breakpointList;
+        QList<int> *bookmarkList;
         QLinearGradient gradient;
         QPointF point;
         QPen pen;
@@ -89,6 +95,10 @@ class WLineCounterWidget : public QWidget
     protected:
         void paintEvent(QPaintEvent *);
         void mousePressEvent(QMouseEvent *event);
+
+    signals:
+        void bookmarkEmit(int line);
+        void breakpointEmit(int line);
 };
 
 #endif

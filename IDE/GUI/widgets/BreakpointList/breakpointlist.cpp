@@ -56,8 +56,8 @@ void BreakpointList::reload(QList<QPair<QString, QSet<unsigned int>>> *breakpoin
             this->addTopLevelItem(newItem);
         }
     }
-    this->sortItems(0, Qt::AscendingOrder);
     this->sortItems(1, Qt::AscendingOrder);
+    this->sortItems(0, Qt::AscendingOrder);
     //qDebug() << "breakpointlist - reload";
 }
 
@@ -125,26 +125,37 @@ void BreakpointList::breakpointsAddLines(QString file, int line, int linesAdded)
 
 void BreakpointList::breakpointsRemoveLines(QString file, int line, int linesRemoved)
 {
-    QTreeWidgetItem *itemToRemove = NULL;
+    qDebug() << "BreakpointList: breakpointsRemoveLines" << file << line << linesRemoved;
+    QList<QTreeWidgetItem*> itemsToRemove;
     for (int i = 0; i < this->topLevelItemCount(); i++)
     {
         QTreeWidgetItem *item = this->topLevelItem(i);
         if (item->toolTip(1) == file)
         {
-            if (item->text(0).toInt() == line)
+            if ( item->text(0).toInt() >= line
+            && item->text(0).toInt() < line + linesRemoved
+            )
             {
-                itemToRemove = item;
+                itemsToRemove.append(item);
             }
-            if (item->text(0).toInt() > line)
+            else
             {
-                item->setText(0, QString::number(item->text(0).toInt() - linesRemoved, 10));
+                if (item->text(0).toInt() >= line + linesRemoved)
+                {
+                    item->setText(0, QString::number(item->text(0).toInt() - linesRemoved, 10));
+                }
             }
         }
     }
-    if (NULL != itemToRemove)
+    if (false == itemsToRemove.empty())
     {
-        delete itemToRemove;
-        itemToRemove = NULL;
+        QList<QTreeWidgetItem*>::iterator i;
+        for (i = itemsToRemove.begin(); i != itemsToRemove.end(); i++)
+        { 
+            //this->removeItemWidget(*i, 0);
+            delete *i;
+            *i = NULL;
+        }
     }
 }
 

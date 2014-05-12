@@ -56,9 +56,7 @@ Snake_:          OUTPUT          Snake,LEDs        ; Turn LEDs OFF
                                                   ; REPT directive is very good for repeating blocks of code
                 REPT            7                 ; Moving right
                 RR              Snake              
-                ENDR
-                
-                REPT            7                 ; Moving left
+                         7                 ; Moving left
                 RL              Snake
                 ENDR
                 
