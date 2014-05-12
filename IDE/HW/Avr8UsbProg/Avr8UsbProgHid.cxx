@@ -1,15 +1,34 @@
+// =============================================================================
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
+ * @ingroup Avr8UsbProg
+ * @file Avr8UsbProgHid.cxx
+ */
+// =============================================================================
+
 #include "Avr8UsbProgHid.h"
 
+// Standard header files.
 #include <chrono>
 #include <thread>
 #include <cstdlib>
 
+//<DEBUG!
 #include <iostream>
 #include <QDebug>
+//DEBUG!>
 
 Avr8UsbProgHid::Avr8UsbProgHid()
 {
     m_deviceHandle = NULL;
+    m_position = 0;
 }
 
 
@@ -26,7 +45,7 @@ Avr8UsbProgHid::Exception::Exception ( Type type,
     }
 }
 
-void Avr8UsbProgHid::findProgrammers ( QStringList & result )
+void Avr8UsbProgHid::findDevices ( QStringList & result )
 {
     hid_device_info * devs = hid_enumerate(VENDOR_ID, PRODUCT_ID);
 
@@ -115,4 +134,28 @@ int Avr8UsbProgHid::closeDevice()
         hid_close(m_deviceHandle);
         m_deviceHandle = NULL;
     }
+}
+
+void Avr8UsbProgHid::readShortItem ( ShortItem & item )
+{
+}
+
+void Avr8UsbProgHid::readLongItem ( LongItem & item )
+{
+}
+
+void Avr8UsbProgHid::writeShortItem ( const ShortItem & item )
+{
+}
+
+void Avr8UsbProgHid::writeLongItem ( const LongItem & item )
+{
+}
+
+void Avr8UsbProgHid::sendItems()
+{
+}
+
+void Avr8UsbProgHid::receiveItems()
+{
 }

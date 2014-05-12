@@ -547,8 +547,8 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
                 }
                 coreMessage ( MT_ERROR, QObject::tr ( "unable to locate file `%1' in base path `%2', or include "
                                                       "path(s): %3" )
-                                                    . arg ( filenamePath.c_str() )
-                                                    . arg ( basePath.c_str() )
+                                                    . arg ( (char*) filenamePath.c_str() )
+                                                    . arg ( (char*) basePath.c_str() )
                                                     . arg ( ipats.c_str() )
                                                     . toStdString() );
                 return nullptr;
