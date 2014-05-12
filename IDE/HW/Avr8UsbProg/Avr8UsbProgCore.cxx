@@ -34,7 +34,7 @@ const Avr8UsbProgDeviceDB::Device * Avr8UsbProgCore::getMcuDetails()
 void Avr8UsbProgCore::searchForProgrammers()
 {
     QStringList programmers;
-    isp.findProgrammers(programmers);
+    isp.findDevices(programmers);
 
     if ( m_programmers.size() != programmers.size() )
     {
