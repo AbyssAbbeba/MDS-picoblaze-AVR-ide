@@ -2626,7 +2626,7 @@ void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
                 QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
                 for (int j = 0; j < setValues.count(); j++)
                 {
-                    if (setValues.at(j) > line)
+                    if (setValues.at(j) >= line + linesRemoved)
                     {
                         set << setValues.at(j) - linesRemoved;
                     }

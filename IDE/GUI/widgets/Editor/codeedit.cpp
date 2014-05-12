@@ -26,8 +26,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
-        this->breakpointsLines = new QList<unsigned int>();
-        this->bookmarksLines = new QList<unsigned int>();
+        this->breakpointsLines = new QList<int>();
+        this->bookmarksLines = new QList<int>();
     //}
     //else
     //{
@@ -140,6 +140,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this,
             SLOT(updateLineCounter())
            );
+    connect(lineCount,
+            SIGNAL(breakpoint(int)),
+            this,
+            SLOT(manageBreakpointEmit(int))
+           );
+    connect(lineCount,
+            SIGNAL(bookmark(int)),
+            this,
+            SLOT(manageBookmarkEmit(int))
+           );
     /*connect(textEdit,
             SIGNAL(blockCountChanged(int)),
             this,
@@ -182,8 +192,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
-        this->breakpointsLines = new QList<unsigned int>();
-        this->bookmarksLines = new QList<unsigned int>();
+        this->breakpointsLines = new QList<int>();
+        this->bookmarksLines = new QList<int>();
     //}
     //else
     //{
@@ -744,41 +754,41 @@ Project* CodeEdit::getParentProject()
 }
 
 
-void CodeEdit::addBreakpointLine(unsigned int line)
+void CodeEdit::addBreakpointLine(int line)
 {
     this->breakpointsLines->append(line);
     this->lineCount->getWidget()->update();
 }
 
 
-void CodeEdit::removeBreakpointLine(unsigned int line)
+void CodeEdit::removeBreakpointLine(int line)
 {
     this->breakpointsLines->removeAll(line);
     this->lineCount->getWidget()->update();
 }
 
 
-QList<unsigned int>* CodeEdit::getBreakpointsLines()
+QList<int>* CodeEdit::getBreakpointsLines()
 {
     return this->breakpointsLines;
 }
 
 
-void CodeEdit::addBookmarkLine(unsigned int line)
+void CodeEdit::addBookmarkLine(int line)
 {
     this->bookmarksLines->append(line);
     this->lineCount->getWidget()->update();
 }
 
 
-void CodeEdit::removeBookmarkLine(unsigned int line)
+void CodeEdit::removeBookmarkLine(int line)
 {
     this->bookmarksLines->removeAll(line);
     this->lineCount->getWidget()->update();
 }
 
 
-QList<unsigned int>* CodeEdit::getBookmarksLines()
+QList<int>* CodeEdit::getBookmarksLines()
 {
     return this->bookmarksLines;
 }
@@ -812,19 +822,50 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
     }
     else
     {
-        if (this->breakpointsLines->contains(line))
+        QList<int>::iterator i;
+        for (i = this->breakpointsLines->begin(); i != this->breakpointsLines->end(); i++)
+        {
+            if ( *i >= line
+            && *i < line + linesChanged
+            )
+            {
+                *i = -1;
+                update = true;
+            }
+            else
+            {
+                if (*i >= line + linesChanged)
+                {
+                    *i -= linesChanged;
+                    update = true;
+                }
+            }
+        }
+        this->breakpointsLines->removeAll(-1);
+        /*if (this->breakpointsLines->contains(line))
         {
             this->breakpointsLines->removeAll(line);
             update = true;
-        }
+        }*/
+        /*
         for (int i = 0; i < this->breakpointsLines->count(); i++)
         {
-            if (this->breakpointsLines->at(i) > line)
+            if ( this->breakpointsLines->at(i) >= line
+              && this->breakpointsLines->at(i) <= line + linesChanged;
+               )
             {
-                (*(this->breakpointsLines))[i] -= linesChanged;
+                this->breakpointsLines->removeAll(line);
                 update = true;
             }
-        }
+            else
+            {
+                if (this->breakpointsLines->at(i) > line + linesChanged)
+                {
+                    (*(this->breakpointsLines))[i] -= linesChanged;
+                    update = true;
+                }
+            }
+        }*/
     }
     if (true == update)
     {
