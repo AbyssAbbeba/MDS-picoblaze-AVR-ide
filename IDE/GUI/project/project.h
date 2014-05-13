@@ -130,6 +130,7 @@ class Project : public QObject
         void setName(QString name);
         void setFamily(QString family);
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
+        void setClock(double clock, int mult);
         int handleBreakpoint(QString file, int line);
         void moveBreakpointsAdd(QString file, int line, int linesAdded);
         void moveBreakpointsRemove(QString file, int line, int linesRemoved);
@@ -170,6 +171,9 @@ class Project : public QObject
         RegDisplayList *m_regList;
         MCUSimControl *m_simControlUnit;
         //QString simulatedFile;
+        //simulation others
+        double clock;
+        int clockMult;
 
     public slots:
         void setMainFile(QString path, QString name);

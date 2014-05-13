@@ -357,7 +357,6 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, keywordPatterns)
         {
             keywordPatternsFinal << "\\b" + pattern + "\\b";
-            keywordPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
         }
 
                         
@@ -478,6 +477,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, keywordPatternsFinal)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = keywordFormat;
             rule.tag = "directive";
             highlightingRules.append(rule);
@@ -540,7 +540,6 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, functionPatterns)
         {
             functionPatternsFinal << "\\b" + pattern + "\\b";
-            functionPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
         }
         
         functionFormat.setForeground(Qt::darkBlue);
@@ -549,6 +548,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, functionPatternsFinal)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = functionFormat;
             rule.tag = "instruction";
             highlightingRules.append(rule);
@@ -557,7 +557,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
         
         QStringList specFunctionPatterns;
-        specFunctionPatterns << "ldret"      
+        specFunctionPatterns << "ldret"
                              << "ena"
                              << "dis"
                              << "retie"
@@ -592,7 +592,6 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, specFunctionPatterns)
         {
             specFunctionPatternsFinal << "\\b" + pattern + "\\b";
-            specFunctionPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
         }
 
                              
@@ -603,6 +602,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, specFunctionPatternsFinal)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = specFunctionFormat;
             rule.tag = "specinstruction";
             highlightingRules.append(rule);
@@ -623,7 +623,6 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, macroPatterns)
         {
             macroPatternsFinal << "\\b" + pattern + "\\b";
-            macroPatternsFinal << "\\b" + pattern.toUpper() + "\\b";
         }
                       
         macroFormat.setForeground(Qt::darkRed);
@@ -632,6 +631,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, macroPatternsFinal)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = macroFormat;
             rule.tag = "macro";
             highlightingRules.append(rule);
@@ -642,8 +642,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
 
         QStringList operandsPatterns;
         //pridat do keywords s {WS}
-        operandsPatterns << "\\bS[0-9A-F]+\\b"
-                         << "\\bs[0-9A-F]+\\b";
+        operandsPatterns << "\\bS[0-9A-F]+\\b";
 
         operandsFormat.setFontWeight(QFont::Bold);
         operandsFormat.setForeground(Qt::darkBlue);
@@ -651,6 +650,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, operandsPatterns)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = operandsFormat;
             rule.tag = "operand";
             highlightingRules.append(rule);
@@ -691,6 +691,7 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
         foreach (const QString &pattern, operatorsPatterns)
         {
             rule.pattern = QRegExp(pattern);
+            rule.pattern.setCaseSensitivity(Qt::CaseInsensitive);
             rule.format = operatorsFormat;
             rule.tag = "operator";
             highlightingRules.append(rule);
@@ -806,15 +807,16 @@ void Highlighter::highlightBlock(const QString &text)
         //qDebug() << "Highlighter: while1";
         if (currentBlockState() == 0)
         {
+            //QRegExp expression;
             foreach (const HighlightingRule &rule, highlightingRules)
             {
-                QRegExp expression(rule.pattern);
-                int index = expression.indexIn(text);
+                //expression.setPattern(rule.pattern.pattern());
+                int index = rule.pattern.indexIn(text);
                 while (index >= 0)
                 {
-                    int length = expression.matchedLength();
+                    int length = rule.pattern.matchedLength();
                     setFormat(index, length, rule.format);
-                    index = expression.indexIn(text, index + length);
+                    index = rule.pattern.indexIn(text, index + length);
                 }
             }
         }

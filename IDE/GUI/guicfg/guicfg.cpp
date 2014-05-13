@@ -335,18 +335,21 @@ void GuiCfg::setDefaultAll()
 void GuiCfg::setTabWidth(int width)
 {
     this->tabWidth = width;
+    emit tabWidthChanged(width);
 }
 
 
 void GuiCfg::setTabToSpaces(bool enabled)
 {
     this->tabToSpaces = enabled;
+    emit tabToSpacesChanged(enabled);
 }
 
         
 void GuiCfg::setSpacesInTab(int count)
 {
     this->spacesInTab = count;
+    emit spacesInTabChanged(count);
 }
 
         
@@ -507,7 +510,7 @@ bool GuiCfg::getTabToSpaces()
     return this->tabToSpaces;
 }
 
-int GuiCfg::getSpacesInTabs()
+int GuiCfg::getSpacesInTab()
 {
     return this->spacesInTab;
 }

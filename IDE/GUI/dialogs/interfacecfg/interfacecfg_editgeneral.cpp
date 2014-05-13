@@ -36,7 +36,7 @@ InterfaceCfg_EditGeneral::InterfaceCfg_EditGeneral(QWidget *parent)
         this->ui.lblSpaces->setDisabled(true);
         this->ui.spinSpaces->setDisabled(true);
     }
-    this->ui.spinSpaces->setValue(GuiCfg::getInstance().getSpacesInTabs());
+    this->ui.spinSpaces->setValue(GuiCfg::getInstance().getSpacesInTab());
     this->ui.cmbEncoding->setCurrentIndex(this->ui.cmbEncoding->findText(GuiCfg::getInstance().getEncoding()));
     this->ui.cmbEOL->setCurrentIndex(this->ui.cmbEOL->findText(GuiCfg::getInstance().getEOL()));
     

@@ -51,6 +51,8 @@ class WTextEdit : public QPlainTextEdit
     public slots:
         void deselect();
         void cursorPositionChangedSlot();
+        void setTabToSpaces(bool enabled);
+        void setSpacesInTab(int spacesInTab);
         //void editedUndo();
         //void editedRedo();
         //void editedCut();
@@ -81,6 +83,9 @@ class WTextEdit : public QPlainTextEdit
         QAction *cutAct;
         QAction *copyAct;
         QAction *deselectAct;
+        
+        bool tabToSpaces;
+        int spacesInTab;
         
 
 

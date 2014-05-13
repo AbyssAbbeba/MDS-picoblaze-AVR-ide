@@ -76,6 +76,7 @@ class CodeEdit : public QWidget
         void manageBreakpointEmit(int line);
         void manageBookmarkEmit(int line);
         void changeFont(QFont font);
+        void changeTabStopWidth(int width);
         void changeHeight();
         void updateLineCounter();
         void breakpointsAddLines(int line, int linesAdded);

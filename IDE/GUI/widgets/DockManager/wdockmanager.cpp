@@ -42,7 +42,9 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     centralBase = NULL;
     this->dockWidgets = false;
     wDockBotPrevHeight = 0;
-    visible = true;
+    wDockRightPrevWidth = 0;
+    bottomVisible = true;
+    rightVisible = true;
     connect(wTab, SIGNAL(tabCloseRequested(int)),this, SLOT(closeTab(int)));
     connect(wTab, SIGNAL(currentChanged(int)), this, SLOT(changeCodeEditor(int)));
     connect(wTab, SIGNAL(tabMoved(int, int)), this, SLOT(moveEditorsSlot(int, int)));
@@ -667,10 +669,10 @@ void WDockManager::addDockWidget(int code)
         //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
     }
     openDockWidgets.append(newWDock);
-    if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+    /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
     {
         wDockBotPrevHeight = newWDock->getQDockWidget()->height();
-    }
+    }*/
     //qDebug() << "WDockManager: return addDockWidget()";
 }
 
@@ -694,12 +696,12 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
             emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
             //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
         }
-        if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+        /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
         {
             wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
-        }
+        }*/
         openDockWidgets.append(newWDock);
-        connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     }
     else
     {
@@ -709,7 +711,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
         simWidget->setProjectPath(path);
         simWidget->fixHeight();
-        connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
         this->openSimWidgets.append(simWidget);
         simWidget->hide();
     }
@@ -757,16 +759,35 @@ void WDockManager::hideDockWidgetArea(int area)
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
-        if ((*i)->cmpArea(area) == true)
+        if (true == (*i)->cmpArea(area))
         {
-            if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
+            switch (area)
             {
-                //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
-                //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
-                wDockBotPrevHeight = (*i)->getQDockWidget()->height();
+                case 1:
+                {
+                    if (wDockRightPrevWidth < (*i)->getQDockWidget()->width())
+                    {
+                        //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+                        //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
+                        wDockRightPrevWidth = (*i)->getQDockWidget()->width();
+                    }
+                    (*i)->getQDockWidget()->setMaximumWidth(0);
+                    (*i)->getQDockWidget()->setMinimumWidth(0);
+                    break;
+                }
+                case 2:
+                {
+                    if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
+                    {
+                        //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
+                        //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
+                        wDockBotPrevHeight = (*i)->getQDockWidget()->height();
+                    }
+                    (*i)->getQDockWidget()->setMaximumHeight(0);
+                    (*i)->getQDockWidget()->setMinimumHeight(0);
+                    break;
+                }
             }
-            (*i)->getQDockWidget()->setMaximumHeight(0);
-            (*i)->getQDockWidget()->setMinimumHeight(0);
             //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), 0);
         }
     }
@@ -779,13 +800,29 @@ void WDockManager::showDockWidgetArea(int area)
     QList<WDock*>::iterator i;
     for (i = openDockWidgets.begin(); i != openDockWidgets.end(); i++)
     {
-        if ((*i)->cmpArea(area) == true)
+        if (true == (*i)->cmpArea(area))
         {
             //vybira si automaticky nejmensi
-            (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
-            (*i)->getQDockWidget()->setMaximumHeight(999);
-            (*i)->getQDockWidget()->setMinimumHeight(1);
-            //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
+            switch(area)
+            {
+                case 1:
+                {
+                    (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
+                    (*i)->getQDockWidget()->setMaximumWidth(999);
+                    (*i)->getQDockWidget()->setMinimumWidth(1);
+                    wDockRightPrevWidth = 0;
+                    break;
+                }
+                case 2:
+                {
+                    (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
+                    (*i)->getQDockWidget()->setMaximumHeight(999);
+                    (*i)->getQDockWidget()->setMinimumHeight(1);
+                    //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
+                    wDockBotPrevHeight = 0;
+                    break;
+                }
+            }
         }
     }
     //qDebug() << "WDockManager: wDockBotPrevHeight" << wDockBotPrevHeight;
@@ -825,7 +862,7 @@ void WDockManager::createBookmarkList(QDockWidget *wDockWidget)
 }
 
 
-void WDockManager::updateAnalysersSlot(CodeEdit *editor)
+/*void WDockManager::updateAnalysersSlot(CodeEdit *editor)
 {
     //qDebug() << "WDockManager: updateAnalysersSlot()";
     if (this->getDockWidget(wAnalysVar) != NULL && this->getDockWidget(wAnalysFunc) != NULL)
@@ -835,7 +872,7 @@ void WDockManager::updateAnalysersSlot(CodeEdit *editor)
         ((AnalyserWidget*)(this->getDockWidget(wAnalysFunc)->widget()))->fill(analyser->getFunc());
     }
     //qDebug() << "WDockManager: return updateAnalysersSlot()";
-}
+}*/
 
 
 void WDockManager::changeLine(QListWidgetItem *item)
@@ -961,6 +998,25 @@ void WDockManager::handleShowHideBottom(int index)
     //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
     if ("Hide" == bottomAreaTabs->tabText(index))
     {
+        if (true == bottomVisible)
+        {
+            hideDockWidgetArea(2);
+            bottomVisible = false;
+        }
+    }
+    else if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+        bottomVisible = true;
+    }
+}
+
+
+/*void WDockManager::handleShowHideLeft(int index)
+{
+    qDebug() << "WDockManager: left changed to" << leftAreaTabs->tabText(index);
+    if ("Hide" == leftAreaTabs->tabText(index))
+    {
         if (true == visible)
         {
             hideDockWidgetArea(2);
@@ -972,6 +1028,25 @@ void WDockManager::handleShowHideBottom(int index)
         showDockWidgetArea(2);
         visible = true;
     }
+}*/
+
+
+void WDockManager::handleShowHideRight(int index)
+{
+    //qDebug() << "WDockManager: right changed to" << rightAreaTabs->tabText(index);
+    if ("Hide" == rightAreaTabs->tabText(index))
+    {
+        if (true == rightVisible)
+        {
+            hideDockWidgetArea(1);
+            rightVisible = false;
+        }
+    }
+    else if (false == rightVisible)
+    {
+        showDockWidgetArea(1);
+        rightVisible = true;
+    }
 }
 
 
@@ -980,6 +1055,11 @@ void WDockManager::stopSimSlot()
     emit stopSimSig();
 }
 
+
+void WDockManager::clockChangedSlot(double clock, int clockMult)
+{
+    emit clockChangedSig(clock, clockMult);
+}
 
 void WDockManager::changeSimWidget(int index)
 {
@@ -1163,7 +1243,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             qDebug() << "WSimulationInfo: height fixed";*/
 	        break;
         }
-        case wAnalysVar:
+        /*case wAnalysVar:
         {
             wDockWidget = new QDockWidget("Variables", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
@@ -1185,7 +1265,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             area = 1;
             wDockWidget->setWidget(newDock);
             break;
-        }
+        }*/
         case wBottomHide:
         {
             wDockWidget = new QDockWidget("Hide", parentWindow);
@@ -1194,6 +1274,21 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
             QWidget *newDock = new QWidget(wDockWidget);
             area = 2;
+            wDockWidget->setWidget(newDock);
+            //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
+            //wDockWidget->setTitleBarWidget(pshTitle);
+            //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
+            //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
+            break;
+        }
+        case wRightHide:
+        {
+            wDockWidget = new QDockWidget("Hide", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
+            QWidget *newDock = new QWidget(wDockWidget);
+            area = 1;
             wDockWidget->setWidget(newDock);
             //QPushButton *pshTitle = new QPushButton("Hide", parentWindow);
             //wDockWidget->setTitleBarWidget(pshTitle);
@@ -1226,7 +1321,8 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             wDockWidget->setWidget(newWidget);
             wDockWidget->show();
             newWidget->fixHeight();
-            connect(newWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+            connect(newWidget, SIGNAL(stopSimSig()), parent, SLOT(stopSimSlot()));
+            connect(newWidget, SIGNAL(clockChanged(double, int)), parent, SLOT(clockChangedSlot(double, int)));
             parent->openSimWidgets.append(newWidget);
             //qDebug() << "WSimulationInfo: height fixed";
             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
@@ -1270,10 +1366,4 @@ bool WDock::cmpArea(int area)
 int WDock::getArea()
 {
     return this->area;
-}
-
-
-void WDock::stopSimSlot()
-{
-    emit stopSimSig();
 }

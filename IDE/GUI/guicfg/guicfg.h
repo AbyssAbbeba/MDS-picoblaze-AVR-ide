@@ -29,6 +29,9 @@ class GuiCfg : public QObject, public GuiCfg_Items
     
     signals:
         void editorFontChanged(QFont font);
+        void tabWidthChanged(int width);
+        void tabToSpacesChanged(bool enabled);
+        void spacesInTabChanged(int width);
         
 
     public:
@@ -127,7 +130,7 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         bool getTabToSpaces();
 
-        int getSpacesInTabs();
+        int getSpacesInTab();
 
         QString getEncoding();
 

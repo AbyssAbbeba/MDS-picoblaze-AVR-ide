@@ -70,6 +70,16 @@ int main(int argc, char *argv[])
     }
     GuiCfg::getInstance().loadConfig();
 
+
+    /*qDebug() << "CodeEdit: available encoding";
+    QList<QByteArray> list = QTextCodec::availableCodecs();
+    for (int i = 0; i < list.count(); i++)
+    {
+        qDebug() << "CodeEdit: codec" << i << list.at(i);
+    }*/
+    //QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-16"));
+    //qDebug() << "CodeEdit: current encoding" << QTextCodec::codecForLocale()->name();
+
     /*QStringList list = fdb.families();
 
     foreach (QString string, list)
@@ -79,7 +89,7 @@ int main(int argc, char *argv[])
     //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();
-    qDebug() << "Main: height" << MainGUI.height();
+    //qDebug() << "Main: height" << MainGUI.height();
     MainGUI.startHeight = MainGUI.height();
     
     if (true == openFile)

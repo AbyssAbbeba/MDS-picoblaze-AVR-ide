@@ -463,6 +463,21 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 useMainFile = false;
                             }
                         }
+                    }else if (xmlElement.tagName() == "Simulator")
+                    {
+                        QDomNode xmlSimulatorNode = xmlElement.firstChild();
+                        QDomElement xmlSimulatorElement;
+                        while (!xmlSimulatorNode.isNull())
+                        {
+                            //qDebug() << "node";
+                            xmlSimulatorElement = xmlSimulatorNode.toElement();
+                            if (xmlSimulatorElement.tagName() == "Clock")
+                            {
+                                    clock = xmlSimulatorElement.attribute("clock", "").toDouble();
+                                    clockMult = xmlSimulatorElement.attribute("clockMult", "").toInt();
+                            }
+                            xmlSimulatorNode = xmlSimulatorNode.nextSibling();
+                        }
                     }
                     else if (xmlElement.tagName() == "Compiler")
                     {
@@ -736,6 +751,8 @@ Project::Project(ProjectMan *parent)
     this->defaultVerilog = GuiCfg::getInstance().getProjectDefVerilog();
     this->templateVHDL =  GuiCfg::getInstance().getProjectPathVHDL();
     this->templateVerilog = GuiCfg::getInstance().getProjectPathVerilog();
+    this->clock = 10.0;
+    this->clockMult = 1000000;
 
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -877,6 +894,10 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlRoot.appendChild(xmlMainFile);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
+    QDomElement xmlClock = domDoc.createElement("Clock");
+    xmlClock.setAttribute("clock", this->clock);
+    xmlClock.setAttribute("clockMult", this->clockMult);
+    xmlSimulator.appendChild(xmlClock);
     xmlRoot.appendChild(xmlSimulator);
 
     QDomElement xmlCompiler = domDoc.createElement("Compiler");
@@ -1712,7 +1733,7 @@ void Project::setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QSt
                             xmlCompilerElement = xmlCompilerNode.toElement();
                             if (xmlCompilerElement.tagName() == "Templates")
                             {
-                                QDomNode xmlTemplatesNode = xmlElement.firstChild();
+                                QDomNode xmlTemplatesNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlTemplatesElement;
                                 while (!xmlTemplatesNode.isNull())
                                 {
@@ -1748,6 +1769,62 @@ void Project::setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QSt
                                 }
                             }
                             xmlCompilerNode = xmlCompilerNode.nextSibling();
+                        }
+                    }
+                }
+                xmlNode = xmlNode.nextSibling();
+            }
+            prjFile.close();
+            prjFile.open(QIODevice::WriteOnly);
+            QTextStream xmlStream(&prjFile);
+            xmlStream << domDoc.toString();
+        }
+    }
+}
+
+
+void Project::setClock(double clock, int mult)
+{
+    this->clock = clock;
+    this->clockMult = mult;
+
+    QFile prjFile(prjPath);
+    prjFile.open(QIODevice::ReadOnly);
+    QDomDocument domDoc("MDSProject");
+    if (!domDoc.setContent(&prjFile))
+    {
+        error(ERR_XML_ASSIGN);
+    }
+    else
+    {
+        //otevrit xml, upravit a ulozit
+        QDomElement xmlRoot = domDoc.documentElement();
+        if (xmlRoot.tagName() != "MDSProject")
+        {
+            error(ERR_XML_CONTENT);
+        }
+        else
+        {
+            QDomNode xmlNode = xmlRoot.firstChild();
+            QDomElement xmlElement;
+            while (!xmlNode.isNull())
+            {
+                xmlElement = xmlNode.toElement();
+                if (!xmlElement.isNull())
+                {
+                    if (xmlElement.tagName() == "Simulator")
+                    {
+                        QDomNode xmlSimulatorNode = xmlElement.firstChild();
+                        QDomElement xmlSimulatorElement;
+                        while (!xmlSimulatorNode.isNull())
+                        {
+                            xmlSimulatorElement = xmlSimulatorNode.toElement();
+                            if (xmlSimulatorElement.tagName() == "Clock")
+                            {
+                                xmlSimulatorElement.setAttribute("clock", QString::number(clock, 'f', 3));
+                                xmlSimulatorElement.setAttribute("clockMult", QString::number(mult));
+                            }
+                            xmlSimulatorNode = xmlSimulatorNode.nextSibling();
                         }
                     }
                 }

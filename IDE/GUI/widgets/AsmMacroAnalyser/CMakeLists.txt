@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(WDockManager)
+project(AsmMacroAnalyser)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -14,17 +14,13 @@ cmake_minimum_required(VERSION 2.8)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
-
-# with SET() command you can change variables or define new ones
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
-# note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./wdockmanager.cpp
+       ./asmmacroanalyser.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./wdockmanager.h
+       ./asmmacroanalyser.h
 )
 
 
@@ -40,8 +36,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} AsmMacroAnalyser Editor)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

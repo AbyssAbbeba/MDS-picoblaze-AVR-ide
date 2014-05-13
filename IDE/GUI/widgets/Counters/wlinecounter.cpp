@@ -168,7 +168,7 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
  */
 void WLineCounterWidget::paintEvent(QPaintEvent *)
 {
-    qDebug() << "WLineCounterWidget: paintEvent";
+    //qDebug() << "WLineCounterWidget: paintEvent";
     QPlainTextEdit* textEdit = parent->getTextEdit();
     //int size = textEdit->currentFont().pointSize();
     //int normalize = 0;
