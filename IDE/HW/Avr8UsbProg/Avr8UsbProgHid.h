@@ -30,13 +30,16 @@ class Avr8UsbProgHid
     ////    Public Static Constants    ////
     public:
         /// @brief
-        static const unsigned short VENDOR_ID   = 0x03eb;
+        static const unsigned short VENDOR_ID = 0x03eb;
 
         /// @brief
-        static const unsigned short PRODUCT_ID  = 0x2016;
+        static const unsigned short PRODUCT_ID = 0x2016;
 
         /// @brief
-        static const unsigned int   BUFFER_SIZE = 65;
+        static const unsigned int BUFFER_SIZE = 65;
+
+        /// @brief
+        static const int READ_TIMEOUT = 15000;
 
     ////    Public Datatypes    ////
     public:
@@ -80,9 +83,9 @@ class Avr8UsbProgHid
                         m_bTag ( bTag ),
                         m_bType ( bType ) {}
 
-            const std::string m_data;
-            const ShortTag m_bTag;
-            const Type m_bType;
+            std::string m_data;
+            ShortTag m_bTag;
+            Type m_bType;
         };
 
         /**
@@ -96,8 +99,8 @@ class Avr8UsbProgHid
                        m_data ( data ),
                        m_bTag ( bTag ) {}
 
-            const std::string m_data;
-            const LongTag m_bTag;
+            std::string m_data;
+            LongTag m_bTag;
         };
 
         /**
@@ -194,6 +197,11 @@ class Avr8UsbProgHid
              * @brief
              */
             void receiveItems();
+
+            /**
+             * @brief
+             */
+            void clearBuffer();
         //@}
 
     ////    Private Attributes    ////

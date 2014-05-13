@@ -222,7 +222,7 @@ class PicoBlazeInstructionSet : public MCUSimCPU
 inline int PicoBlazeInstructionSet::incrPc ( const int val )
 {
     m_pc += val;
-    while ( m_pc > m_config.m_pcMax )
+    while ( m_pc >= m_config.m_pcMax )
     {
         m_pc -= m_config.m_pcMax;
         logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_PC_OVERFLOW );
