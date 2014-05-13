@@ -2198,8 +2198,8 @@ inst_nop:
       I_NOP                         {
                                         $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_INS_LOAD_SX_SY,
-                                                                     ( new CompilerExpr(0,LOC(@$)) )
-                                                                     -> appendLink ( new CompilerExpr(0,LOC(@$)) ) );
+                                                                     ( new CompilerExpr("S0", LOC(@$)) )
+                                                                     -> appendLink ( new CompilerExpr("S0", LOC(@$))));
                                     }
 ;
 

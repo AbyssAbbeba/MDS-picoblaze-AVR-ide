@@ -28,7 +28,7 @@
 Avr8UsbProgHid::Avr8UsbProgHid()
 {
     m_deviceHandle = NULL;
-    m_position = 0;
+    m_position = 1;
 }
 
 
@@ -79,7 +79,7 @@ void Avr8UsbProgHid::openDevice(const QString & devPath, int speedLevel)
     int res;
 
 
-    static const char * testString = "\x01";
+    static const char * testString = "\x40";
 
     unsigned char buffer[65];
 
@@ -138,24 +138,80 @@ int Avr8UsbProgHid::closeDevice()
 
 void Avr8UsbProgHid::readShortItem ( ShortItem & item )
 {
+    item.m_bTag = ShortTag ( ( m_buffer[m_position] & 0xf0 ) >> 4 );
+    item.m_bType = Type ( ( m_buffer[m_position] & 0xc ) >> 2 );
+
+    int size = ( m_buffer[m_position] & 0x3 );
+
+    item.m_data.clear();
+    m_position++;
+
+    for ( int i = 0; i < size; i++ )
+    {
+        item.m_data.push_back(m_buffer[m_position++]);
+    }
 }
 
 void Avr8UsbProgHid::readLongItem ( LongItem & item )
 {
+    m_position++;
+
+    int size = m_buffer[m_position++];
+
+    item.m_bTag = LongTag ( m_buffer[m_position++] );
+    item.m_data.clear();
+
+    for ( int i = 0; i < size; i++ )
+    {
+        item.m_data.push_back(m_buffer[m_position++]);
+    }
 }
 
 void Avr8UsbProgHid::writeShortItem ( const ShortItem & item )
 {
+    m_buffer[m_position]  = ( ( item.m_bTag  & 0xf ) << 4 );
+    m_buffer[m_position] |= ( ( item.m_bType & 0x3 ) << 2 );
+    m_buffer[m_position] |= ( item.m_data.size() & 0x3 );
+    m_position++;
+
+    for ( const unsigned char byte : item.m_data )
+    {
+        m_buffer[m_position++] = byte;
+    }
 }
 
 void Avr8UsbProgHid::writeLongItem ( const LongItem & item )
 {
+    m_buffer[m_position++] = 0xfe;
+    m_buffer[m_position++] = (unsigned char) item.m_data.size();
+    m_buffer[m_position++] = (unsigned char) item.m_bTag;
+
+    for ( const unsigned char byte : item.m_data )
+    {
+        m_buffer[m_position++] = byte;
+    }
 }
 
 void Avr8UsbProgHid::sendItems()
 {
+    m_buffer[0] = 0;
+    if ( -1 == hid_write(m_deviceHandle, m_buffer, BUFFER_SIZE) )
+    {
+        throw Exception(Exception::WRITE_FAILED, hid_error(m_deviceHandle));
+    }
+    clearBuffer();
 }
 
 void Avr8UsbProgHid::receiveItems()
 {
+    clearBuffer();
+    if ( -1 == hid_read_timeout(m_deviceHandle, m_buffer, BUFFER_SIZE, READ_TIMEOUT) )
+    {
+        throw Exception(Exception::READ_FAILED, hid_error(m_deviceHandle));
+    }
+}
+
+void Avr8UsbProgHid::clearBuffer()
+{
+    m_position = 1;
 }
