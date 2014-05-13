@@ -62,6 +62,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void deviceReset();
         void setReadOnly(bool readOnly);
         void updateWidget();
+        void setClock(double clock, int clockMult);
         
     private:
         MCUSimControl *controlUnit;
@@ -131,6 +132,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
     signals:
         void stopSimSig();
+        void clockChanged(double clock, int clockMult);
         
     //protected:
         //void contextMenuEvent(QContextMenuEvent *event);

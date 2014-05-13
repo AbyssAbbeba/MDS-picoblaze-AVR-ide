@@ -79,6 +79,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
+    textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
+    textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
@@ -175,6 +177,21 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this->lineCount,
             SLOT(changeFont(QFont))
            );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(tabWidthChanged(int)),
+            this,
+            SLOT(changeTabStopWidth(int))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(tabToSpacesChanged(bool)),
+            this->textEdit,
+            SLOT(setTabToSpaces(bool))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(spacesInTabChanged(int)),
+            this->textEdit,
+            SLOT(setSpacesInTab(int))
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
@@ -237,6 +254,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setFont(GuiCfg::getInstance().getEditorFont());
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
+    textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
+    textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
     //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
@@ -318,6 +337,21 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SIGNAL(editorFontChanged(QFont)),
             this->lineCount,
             SLOT(changeFont(QFont))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(tabWidthChanged(int)),
+            this,
+            SLOT(changeTabStopWidth(int))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(tabToSpacesChanged(bool)),
+            this->textEdit,
+            SLOT(setTabToSpaces(bool))
+           );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(spacesInTabChanged(int)),
+            this->textEdit,
+            SLOT(setSpacesInTab(int))
            );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
@@ -871,4 +905,11 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
     {
         this->lineCount->getWidget()->update();
     }
+}
+
+
+void CodeEdit::changeTabStopWidth(int width)
+{
+    QFontMetrics fontMetrics(textEdit->font());
+    textEdit->setTabStopWidth(width * fontMetrics.width(' '));
 }

@@ -245,6 +245,18 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 }
             }
         }
+        if ( keyEvent->key() == Qt::Key_Tab
+          && true == this->tabToSpaces
+           )
+        {
+            QTextCursor cursor(this->textCursor());
+            for (int i = 0; i < this->spacesInTab; i++)
+            {
+                cursor.insertText(" ");
+            }
+            this->setTextCursor(cursor);
+            return true;
+        }
         //paste ctrl+v
         /*if ( (keyEvent->modifiers() & Qt::ControlModifier)
           && (keyEvent->key() == Qt::Key_V)
@@ -717,4 +729,15 @@ void WTextEdit::makeMenu()
     //connect(splitHorizontalAct, SIGNAL(triggered()), this, SLOT(splitHorizontal()));
     //connect(splitVerticalAct, SIGNAL(triggered()), this, SLOT(splitVertical()));
     //qDebug() << "CodeEdit: return makeMenu()";
+}
+
+
+void WTextEdit::setTabToSpaces(bool enabled)
+{
+    this->tabToSpaces = enabled;
+}
+
+void WTextEdit::setSpacesInTab(int spacesInTab)
+{
+    this->spacesInTab = spacesInTab;
 }

@@ -159,7 +159,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->leClock->setFixedWidth(80);
     this->leClock->setFixedHeight(17);
     this->leClock->setFont(leFont);
-    QRegExpValidator *doubleValidator = new QRegExpValidator(QRegExp("[0-9]+(\\.[0-9]*)?"), this->leClock);
+    QRegExpValidator *doubleValidator = new QRegExpValidator(QRegExp("[0-9]+(\\.[0-9]{0,3})?"), this->leClock);
     this->leClock->setValidator(doubleValidator);
     this->leClock->move(1125 - offsetMove, 40);
 
@@ -168,7 +168,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     this->cmbClock->setFixedWidth(80);
     this->cmbClock->move(1125 - offsetMove, 60);
     this->cmbClock->addItem("Hz");
-    this->cmbClock->addItem("KHz");
+    this->cmbClock->addItem("kHz");
     this->cmbClock->addItem("MHz");
     this->cmbClock->setCurrentIndex(2);
     //this->cmbClock->setStyleSheet ("QComboBox::drop-down {border-width: 1px;} QComboBox::down-arrow {border-width: 1px;}");
@@ -796,10 +796,32 @@ void PicoBlazeGrid::updateWidget()
 void PicoBlazeGrid::changeClock(const QString &text)
 {
     this->clock = text.toDouble();
+    emit clockChanged(this->clock, (int)this->clockMult);
 }
 
 
 void PicoBlazeGrid::changeClockMult(int index)
 {
     this->clockMult = qPow(1000.0, index);
+    emit clockChanged(this->clock, (int)this->clockMult);
+}
+
+
+void PicoBlazeGrid::setClock(double clock, int clockMult)
+{
+    this->clock = clock;
+    this->clockMult = clockMult;
+    this->leClock->setText(QString::number(clock, 'f', 3));
+    if (1 == clockMult)
+    {
+        this->cmbClock->setCurrentIndex(0);
+    }
+    else if (1000 == clockMult)
+    {
+        this->cmbClock->setCurrentIndex(1);
+    }
+    else
+    {
+        this->cmbClock->setCurrentIndex(2);
+    }
 }

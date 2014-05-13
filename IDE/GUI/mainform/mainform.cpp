@@ -102,6 +102,11 @@ MainForm::MainForm()
             SLOT(stopSimSlot())
            );
     connect(wDockManager,
+            SIGNAL(clockChangedSig(double, int)),
+            this,
+            SLOT(clockChangedSlot(double, int))
+           );
+    connect(wDockManager,
             SIGNAL(centralCreated()),
             this,
             SLOT(enableSimActs())
@@ -544,17 +549,44 @@ void MainForm::createDockWidgets()
     {
         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
+        setTabPosition(Qt::RightDockWidgetArea, QTabWidget::West);
 
         //mozno stejne jako u WDockManager - ulozit si ptr na okno
         //projectMan->addProject(NULL, NULL, NULL);
 
+        QList<QTabBar*> tabList;
         //wDockManager->addDockWidget(wListCode);
         //wDockManager->addDockWidget(wListCode2);
+        /*
+        tabList= this->findChildren<QTabBar*>();
+        wDockManager->leftAreaTabs = tabList.at(tabList.size()-1);
+        connect(tabList.at(tabList.size()-1),
+                SIGNAL(currentChanged(int)),
+                wDockManager,
+                SLOT(handleShowHideLeft(int))
+               );
+         */
         wDockManager->addDockWidget(wCompileInfo);
         wDockManager->addDockWidget(wSimulationInfo);
         wDockManager->addDockWidget(wBottomHide);
+        tabList= this->findChildren<QTabBar*>();
+        wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        connect(tabList.at(tabList.size()-1),
+                SIGNAL(currentChanged(int)),
+                wDockManager,
+                SLOT(handleShowHideBottom(int))
+               );
+        
         wDockManager->addDockWidget(wBreakpointList);
         wDockManager->addDockWidget(wBookmarkList);
+        wDockManager->addDockWidget(wRightHide);
+        tabList= this->findChildren<QTabBar*>();
+        wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
+        connect(tabList.at(tabList.size()-1),
+                SIGNAL(currentChanged(int)),
+                wDockManager,
+                SLOT(handleShowHideRight(int))
+               );
         //wDockManager->addDockWidget(wAnalysVar);
         //wDockManager->addDockWidget(wAnalysFunc);
         //addAct->setEnabled(true);
@@ -566,13 +598,6 @@ void MainForm::createDockWidgets()
         saveAsAct->setEnabled(true);
         saveAllAct->setEnabled(true);
         wDockManager->dockWidgets = true;
-        QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-        wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
-                SIGNAL(currentChanged(int)),
-                wDockManager,
-                SLOT(handleShowHideBottom(int))
-               );
         if (wDockManager->getBreakpointList() != NULL)
         {
             connect(wDockManager->getBreakpointList(),
@@ -689,7 +714,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -723,7 +748,8 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 }
                 if (parentProjectPath == "untracked")
                 {
-                    
+                    //TODO
+                    //WHAT DOES IT MEAN? Session restoration?
                 }
             }
             else
@@ -738,7 +764,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             }
         }
     }
-    qDebug() << "MainForm: return openFilePath()";
+    //qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -2030,7 +2056,10 @@ void MainForm::exampleOpen()
  */
 void MainForm::simProjectData()
 {
-    wDockManager->addSimDockWidgetP2(this->getProjectMan()->getActive()->prjPath, this->getProjectMan()->getActive()->getSimControl());
+    wDockManager->addSimDockWidgetP2(projectMan->getActive()->prjPath, projectMan->getActive()->getSimControl());
+    wDockManager->openSimWidgets.at(wDockManager->openSimWidgets.count()-1)->setClock(projectMan->getActive()->clock,
+                                                                                      projectMan->getActive()->clockMult
+                                                                                     );
 }
 
 /**
@@ -2456,14 +2485,14 @@ void MainForm::manageBookmarkEmit(QString file, int line)
 
 void MainForm::sessionRestorationSlot()
 {
-    qDebug() << "MainForm: session restoration";
+    //qDebug() << "MainForm: session restoration";
     QApplication::processEvents();
     //qDebug() << "MainForm: height" << this->height();
     //open projects and files
     if (this->height() == this->startHeight)
     {
         //qDebug() << "Mainform not visible";
-        qDebug() << "MainForm: session not loaded, Mainform not visible";
+        //qDebug() << "MainForm: session not loaded, Mainform not visible";
         QTimer::singleShot(50, this, SLOT(sessionRestorationSlot()));
         return;
     }
@@ -2488,8 +2517,8 @@ void MainForm::sessionRestorationSlot()
     GuiCfg::getInstance().sessionClear();
     //hack for fixing the linecount height (bigger at start)
     QTimer::singleShot(50, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
-    qDebug() << "MainForm: height" << this->height();
-    qDebug() << "MainForm: session loaded";
+    //qDebug() << "MainForm: height" << this->height();
+    //qDebug() << "MainForm: session loaded";
 }
 
 
@@ -2571,4 +2600,10 @@ void MainForm::scrollToFileLine(QString file, int line)
 {
     wDockManager->setCentralByPath(file);
     wDockManager->getCentralTextEdit()->scrollToLine(line);
+}
+
+
+void MainForm::clockChangedSlot(double clock, int clockMult)
+{
+    projectMan->getActive()->setClock(clock, clockMult);
 }

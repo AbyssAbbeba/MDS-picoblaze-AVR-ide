@@ -23,6 +23,7 @@
 #define wAnalysVar 1005
 #define wAnalysFunc 1006
 #define wBottomHide 1007
+#define wRightHide  1008
 
 
 #include <QDockWidget>
@@ -100,6 +101,8 @@ class WDockManager : public QObject
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
+        //QTabBar *leftAreaTabs;
+        QTabBar *rightAreaTabs;
         QList<PicoBlazeGrid*> openSimWidgets;
 
     public slots:
@@ -108,6 +111,8 @@ class WDockManager : public QObject
         void unhighlightSimWidget();
         void highlightError(QString filename, int line);
         void handleShowHideBottom(int index);
+        //void handleShowHideLeft(int index);
+        void handleShowHideRight(int index);
         
 
     private slots:
@@ -115,9 +120,10 @@ class WDockManager : public QObject
         void changeTabStatusSlot(QString name, QString path, bool changed);
         void changeCodeEditor(int index);
         void changeActiveCodeEdit(CodeEdit* editor);
-        void updateAnalysersSlot(CodeEdit *editor);
+        //void updateAnalysersSlot(CodeEdit *editor);
         void moveEditorsSlot(int from, int to);
         void stopSimSlot();
+        void clockChangedSlot(double clock, int clockMult);
         void breakpointEmitSlot(QString file, int line);
         void breakpointsAddLinesSlot(QString file, int line, int linesAdded);
         void breakpointsRemoveLinesSlot(QString file, int line, int linesRemoved);
@@ -135,6 +141,7 @@ class WDockManager : public QObject
         void getSimProjectData();
         void unhighlightSim();
         void stopSimSig();
+        void clockChangedSig(double clock, int clockMult);
         void centralClosed();
         void centralCreated();
         void breakpointEmit(QString file, int line);
@@ -167,7 +174,9 @@ class WDockManager : public QObject
 
         //wdockwidgets previous height
         int wDockBotPrevHeight;
-        bool visible;
+        int wDockRightPrevWidth;
+        bool bottomVisible;
+        bool rightVisible;
 };
 
 
@@ -189,11 +198,11 @@ class WDock : public QObject
         int getArea();
         QDockWidget* getQDockWidget();
 
-    signals:
+    /*signals:
         void stopSimSig();
 
     private slots:
-        void stopSimSlot();
+        void stopSimSlot();*/
         
     private:
         QDockWidget *wDockWidget;

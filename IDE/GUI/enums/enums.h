@@ -69,5 +69,18 @@ typedef enum SourceType
     PICOBLAZEASM
 } SourceType;
 
+typedef enum WidgetCode
+{
+    WBOOKMARKLIST = 0,
+    WBREAKPOINTLIST,
+    WCOMPILEINFO,
+    WCODEEDITCODE,
+    WSIMULATIONINFO,
+    WANALYSVAR,
+    WANALYSFUNC,
+    WBOTTOMHIDE,
+    WRIGHTHIDE
+} WidgetCode;
+
 
 #endif
