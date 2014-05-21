@@ -133,9 +133,12 @@ class MainForm : public QMainWindow
         //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();
         void scrollToFileLine(QString file, int line);
+        void requestMacrosCodeEdits();
 
     signals:
         void unhighlightSim();
+        void mtblCompiled(QString path);
+        void provideMacroCodeEdits(QList<CodeEdit*> editList);
         //void sessionRestorationSignal();
 
     private:

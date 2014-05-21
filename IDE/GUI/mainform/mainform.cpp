@@ -27,6 +27,7 @@
 #include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
+#include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
 #include "../guicfg/guicfg.h"
 
 
@@ -549,7 +550,7 @@ void MainForm::createDockWidgets()
     {
         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
-        setTabPosition(Qt::RightDockWidgetArea, QTabWidget::West);
+        setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
 
         //mozno stejne jako u WDockManager - ulozit si ptr na okno
         //projectMan->addProject(NULL, NULL, NULL);
@@ -579,6 +580,23 @@ void MainForm::createDockWidgets()
         
         wDockManager->addDockWidget(wBreakpointList);
         wDockManager->addDockWidget(wBookmarkList);
+        wDockManager->addDockWidget(wAsmMacroAnalyser);
+        AsmMacroAnalyser *analys = (AsmMacroAnalyser*)(wDockManager->getDockWidget(wAsmMacroAnalyser)->widget());
+        connect(analys,
+                SIGNAL(requestCodeEdits()),
+                this,
+                SLOT(requestMacrosCodeEdits())
+            );
+        connect(this,
+                SIGNAL(provideMacroCodeEdits(QList<CodeEdit*>)),
+                analys,
+                SLOT(reload(QList<CodeEdit*>))
+            );
+        connect(this,
+                SIGNAL(mtblCompiled(QString)),
+                analys,
+                SLOT(reload(QString))
+            );
         wDockManager->addDockWidget(wRightHide);
         tabList= this->findChildren<QTabBar*>();
         wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
@@ -2606,4 +2624,18 @@ void MainForm::scrollToFileLine(QString file, int line)
 void MainForm::clockChangedSlot(double clock, int clockMult)
 {
     projectMan->getActive()->setClock(clock, clockMult);
+}
+
+
+void MainForm::requestMacrosCodeEdits()
+{
+    QList<CodeEdit*> list;
+    for (int i = 0; i < wDockManager->getTabCount(); i++)
+    {
+        if (true == wDockManager->getTabWidget(i)->isChild(projectMan->getActive()))
+        {
+            list.append(wDockManager->getTabWidget(i));
+        }
+    }
+    emit provideMacroCodeEdits(list);
 }

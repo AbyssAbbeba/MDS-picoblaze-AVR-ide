@@ -1172,6 +1172,11 @@ void WDockManager::setCentralWelcome()
 }
 
 
+void WDockManager::compilationFinishedSlot(bool success)
+{
+}
+
+
 
 
 
@@ -1294,6 +1299,16 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
             //wDockWidget->setTitleBarWidget(pshTitle);
             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(hideBottomArea(bool)));
             //parent->connect(pshTitle, SIGNAL(clicked()), parent, SLOT(showBottomArea()));
+            break;
+        }
+        case wAsmMacroAnalyser:
+        {
+            wDockWidget = new QDockWidget("Macros", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
+            area = 1;
+            wDockWidget->setWidget(newDock); 
             break;
         }
     }
