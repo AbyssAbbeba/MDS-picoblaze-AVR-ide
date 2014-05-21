@@ -587,6 +587,11 @@ void MainForm::createDockWidgets()
                 this,
                 SLOT(requestMacrosCodeEdits())
             );
+        connect(analys,
+                SIGNAL(macroClicked(QString, int)),
+                this,
+                SLOT(scrollToFileLine(QString, int))
+            );
         connect(this,
                 SIGNAL(provideMacroCodeEdits(QList<CodeEdit*>)),
                 analys,

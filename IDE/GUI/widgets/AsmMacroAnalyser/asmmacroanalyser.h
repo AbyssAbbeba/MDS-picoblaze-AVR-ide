@@ -35,6 +35,7 @@ class AsmMacroAnalyser: public QTreeWidget
 
     private slots:
         void requestRefresh();
+        void macroClickedSlot(QTreeWidgetItem *item, int column);
 
     private:
         QRegExp macroEditRegExp;
@@ -43,6 +44,7 @@ class AsmMacroAnalyser: public QTreeWidget
 
     signals:
         void requestCodeEdits();
+        void macroClicked(QString file, int line);
         
     protected:
         void contextMenuEvent(QContextMenuEvent *event);
