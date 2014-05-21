@@ -19,11 +19,16 @@ AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
     : QTreeWidget(parent)
 {
     QStringList labels;
-    labels << "Name" << "Line" << "File";
+    labels << "Name" << "Args" << "Line" << "File";
     this->setHeaderLabels(labels);
+    QFontMetrics fontMetrics(this->font());
+    this->header()->resizeSection(0, fontMetrics.width("0000000000"));
+    this->header()->resizeSection(1, fontMetrics.width("0000000000"));
+    this->header()->resizeSection(2, fontMetrics.width("00000"));
+    
     this->setSortingEnabled(false);
     //macroEditRegExp.setPattern("[\\s]*([\\w]+)[\\s]+MACRO([\\s]+[\\w]+([,][\\s]*[\\w]+)*)?((\\r\\n)|(\\n)).*((\\r\\n)|(\\n))ENDM");
-    macroEditRegExp.setPattern("\\s*(\\w+)\\s+MACRO(\\s+\\w+(,\\s*\\w+)*)?(\\r?\\n).*(\\r?\\n)ENDM");
+    macroEditRegExp.setPattern("(\\w+)\\s+MACRO(\\s+\\w+(?:,\\s*\\w+)*)?(?:\\s;.*)?\\r?\\n.*\\r?\\nENDM");
     macroEditRegExp.setCaseSensitivity(Qt::CaseInsensitive);
     macroEditRegExp.setMinimal(true);
 
@@ -34,6 +39,11 @@ AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
             SIGNAL(triggered()),
             this,
             SLOT(requestRefresh())
+           );
+    connect(this,
+            SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
+            this,
+            SLOT(macroClickedSlot(QTreeWidgetItem*, int))
            );
 }
 
@@ -48,21 +58,46 @@ void AsmMacroAnalyser::reload(QList<CodeEdit*> editList)
             int position = 0;
             QString source = editList.at(i)->getTextEdit()->toPlainText();
             QStringList matchedList;
+            QTextCursor cur(editList.at(i)->getTextEdit()->document());
             while ((position = macroEditRegExp.indexIn(source, position)) != -1)
             {
                 matchedList = macroEditRegExp.capturedTexts();
-                qDebug() << "AsmMacroAnalyser: captured string" << matchedList.at(0);
+                cur.setPosition(position);
+                //qDebug() << "AsmMacroAnalyser: captured strings" << matchedList.at(0);
+                /*for (int j = 0; j < matchedList.count(); j++)
+                {
+                    qDebug() << "AsmMacroAnalyser: captured strings" << j << matchedList.at(j);
+                }*/
                 
                 QTreeWidgetItem *newItem = new QTreeWidgetItem(this);
                 newItem->setText(0, matchedList.at(1));
+                
+                //newItem->setText(1, matchedList.at(2));
+                if (matchedList.at(2) != "")
+                {
+                    QString args = matchedList.at(2);
+                    args.remove(QRegExp("\\s"));
+                    QStringList argsList = args.split(',', QString::SkipEmptyParts);
+                    if (args.count() > 0)
+                    {
+                        newItem->setText(1, argsList.at(0));
+                        for (int j = 1; j < argsList.count(); j++)
+                        {
+                            newItem->setText(1, newItem->text(1) + "," + argsList.at(j));
+                        }
+                    }
+                }
+                newItem->setText(2, QString::number(cur.blockNumber()+1));
                 //newItem->setText(1, breakpointList->at(i).first.section('/', -1));
-                newItem->setText(2, editList.at(i)->getName());
-                newItem->setToolTip(2, editList.at(i)->getPath());
+                newItem->setText(3, editList.at(i)->getName());
+                newItem->setToolTip(3, editList.at(i)->getPath());
                 this->addTopLevelItem(newItem);
                 
                 position += macroEditRegExp.matchedLength();
             }
         }
+        this->header()->setResizeMode(QHeaderView::ResizeToContents);
+        //this->header()->setResizeMode(QHeaderView::Interactive);
     }
 }
 
@@ -83,4 +118,10 @@ void AsmMacroAnalyser::contextMenuEvent(QContextMenuEvent *event)
 void AsmMacroAnalyser::requestRefresh()
 {
     emit requestCodeEdits();
+}
+
+
+void AsmMacroAnalyser::macroClickedSlot(QTreeWidgetItem *item, int column)
+{
+    emit macroClicked(item->toolTip(3), item->text(2).toInt());
 }

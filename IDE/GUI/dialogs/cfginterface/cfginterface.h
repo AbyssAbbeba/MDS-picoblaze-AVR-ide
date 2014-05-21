@@ -31,6 +31,7 @@ class CfgInterface : public QWidget
         CfgInterface(QWidget *parent);
         bool addWidget(QWidget *widget, QString text, QString tabText, bool child = false);
         void fixSize();
+        void expandAll();
         
         QDialogButtonBox *buttonBox;
 

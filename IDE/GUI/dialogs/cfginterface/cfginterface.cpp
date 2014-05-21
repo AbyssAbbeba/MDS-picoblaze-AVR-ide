@@ -137,6 +137,12 @@ void CfgInterface::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
     this->widgetLabel->setText(labelTexts[curr->type()]);
 }
 
+
+void CfgInterface::expandAll()
+{
+    this->menuList->expandAll();
+}
+
 /*void CfgInterface::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
