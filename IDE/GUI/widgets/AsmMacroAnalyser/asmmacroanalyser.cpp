@@ -22,8 +22,10 @@ AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
     labels << "Name" << "Line" << "File";
     this->setHeaderLabels(labels);
     this->setSortingEnabled(false);
-    macroEditRegExp.setPattern("[\\s]*([\\w]+)[\\s]+MACRO([\\s]+[\\w]+([,][\\s]*[\\w]+)*)?((\\r\\n)|(\\n)).*((\\r\\n)|(\\n))ENDM");
+    //macroEditRegExp.setPattern("[\\s]*([\\w]+)[\\s]+MACRO([\\s]+[\\w]+([,][\\s]*[\\w]+)*)?((\\r\\n)|(\\n)).*((\\r\\n)|(\\n))ENDM");
+    macroEditRegExp.setPattern("\\s*(\\w+)\\s+MACRO(\\s+\\w+(,\\s*\\w+)*)?(\\r?\\n).*(\\r?\\n)ENDM");
     macroEditRegExp.setCaseSensitivity(Qt::CaseInsensitive);
+    macroEditRegExp.setMinimal(true);
 
     this->popupMenu = new QMenu(this);
     QAction *refreshAct = new QAction("Refresh", this->popupMenu);
