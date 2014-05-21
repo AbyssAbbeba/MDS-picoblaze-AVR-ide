@@ -704,16 +704,53 @@ Project::Project(QFile *file, ProjectMan *parent)
                 prjTreeWidget->setMainFileManual(mainFileName, mainFilePath);
             }
 
-            connect(prjDockWidget, SIGNAL(visibilityChanged(bool)),this,SLOT(setActive()));  
-            connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),this,SLOT(openItem()));
-            connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
-            connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
-            connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
-            connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
-            connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
-            connect(prjTreeWidget, SIGNAL(closeProject()), this, SLOT(closeProjectSlot()));
-            connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
+            connect(prjDockWidget,
+                    SIGNAL(visibilityChanged(bool)),
+                    this,
+                    SLOT(setActive())
+                   );  
+            connect(prjTreeWidget,
+                    SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),
+                    this,
+                    SLOT(openItem())
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(requestFileCount()),
+                    this,
+                    SLOT(emitFileCount())
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(startProjectCfgDlgCore()),
+                    this,
+                    SLOT(startCfgDlgCore())
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(setMainFile(QString, QString)),
+                    this,
+                    SLOT(setMainFile(QString, QString))
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(removeFile(QString, QString)),
+                    this,
+                    SLOT(removeFile(QString, QString))
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(addFile(QString, QString)),
+                    this,
+                    SLOT(addFile(QString, QString))
+                   );
+            connect(prjTreeWidget,
+                    SIGNAL(closeProject()),
+                    this,
+                    SLOT(closeProjectSlot())
+                   );
+            connect(this,
+                    SIGNAL(fileCountSignal(int)),
+                    prjTreeWidget,
+                    SLOT(contextP2(int))
+                   );
             setupSim();
+            prjTreeWidget->expandAll();
         }
     }
     /*for (int i = 0; i < fileCount; i++)
@@ -780,16 +817,49 @@ Project::Project(ProjectMan *parent)
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
     
-    connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
-    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)), this, SLOT(openUntrackedItem()));
-    connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
-    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
+    connect(prjDockWidget,
+            SIGNAL(visibilityChanged(bool)),
+            this,
+            SLOT(setActive())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),
+            this,
+            SLOT(openUntrackedItem())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(requestFileCount()),
+            this,
+            SLOT(emitFileCount())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(startProjectCfgDlgCore()),
+            this,
+            SLOT(startCfgDlgCore())
+           );
     //connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(closeProject()), this, SLOT(closeProjectSlot()));
-    connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
+    connect(prjTreeWidget,
+            SIGNAL(removeFile(QString, QString)),
+            this,
+            SLOT(removeFile(QString, QString))
+           );
+    connect(prjTreeWidget,
+            SIGNAL(addFile(QString, QString)),
+            this,
+            SLOT(addFile(QString, QString))
+           );
+    connect(prjTreeWidget,
+            SIGNAL(closeProject()),
+            this,
+            SLOT(closeProjectSlot())
+           );
+    connect(this,
+            SIGNAL(fileCountSignal(int)),
+            prjTreeWidget,
+            SLOT(contextP2(int))
+           );
     setupSim();
+    prjTreeWidget->expandAll();
     //qDebug() << "Project: return Project()";
 }
 
@@ -959,16 +1029,53 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();
 
-    connect(prjDockWidget, SIGNAL(visibilityChanged(bool)), this, SLOT(setActive()));
-    connect(prjTreeWidget, SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)), this, SLOT(openItem()));
-    connect(prjTreeWidget, SIGNAL(requestFileCount()), this, SLOT(emitFileCount()));
-    connect(prjTreeWidget, SIGNAL(startProjectCfgDlgCore()), this, SLOT(startCfgDlgCore()));
-    connect(prjTreeWidget, SIGNAL(setMainFile(QString, QString)), this, SLOT(setMainFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(removeFile(QString, QString)), this, SLOT(removeFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(addFile(QString, QString)), this, SLOT(addFile(QString, QString)));
-    connect(prjTreeWidget, SIGNAL(closeProject()), this, SLOT(closeProjectSlot()));
-    connect(this, SIGNAL(fileCountSignal(int)), prjTreeWidget, SLOT(contextP2(int)));
+    connect(prjDockWidget,
+            SIGNAL(visibilityChanged(bool)),
+            this,
+            SLOT(setActive())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(itemDoubleClicked (QTreeWidgetItem*,int)),
+            this,
+            SLOT(openItem())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(requestFileCount()),
+            this,
+            SLOT(emitFileCount())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(startProjectCfgDlgCore()),
+            this,
+            SLOT(startCfgDlgCore())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(setMainFile(QString, QString)),
+            this,
+            SLOT(setMainFile(QString, QString))
+           );
+    connect(prjTreeWidget,
+            SIGNAL(removeFile(QString, QString)),
+            this,
+            SLOT(removeFile(QString, QString))
+           );
+    connect(prjTreeWidget,
+            SIGNAL(addFile(QString, QString)),
+            this,
+            SLOT(addFile(QString, QString))
+           );
+    connect(prjTreeWidget,
+            SIGNAL(closeProject()),
+            this,
+            SLOT(closeProjectSlot())
+           );
+    connect(this,
+            SIGNAL(fileCountSignal(int)),
+            prjTreeWidget,
+            SLOT(contextP2(int))
+           );
     setupSim();
+    prjTreeWidget->expandAll();
     //qDebug() << "Project: return Project() blank";
 }
 
