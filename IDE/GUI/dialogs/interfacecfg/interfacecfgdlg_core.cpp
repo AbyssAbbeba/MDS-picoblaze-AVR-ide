@@ -47,6 +47,7 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
     this->cfgInterface->fixSize();
     this->setFixedWidth(this->cfgInterface->width());
     this->setFixedHeight(this->cfgInterface->height());
+    this->cfgInterface->expandAll();
 
     connect(this->cfgInterface->buttonBox, SIGNAL(accepted()), this, SLOT(ok()));
     connect(this->cfgInterface->buttonBox, SIGNAL(rejected()), this, SLOT(cancel()));
