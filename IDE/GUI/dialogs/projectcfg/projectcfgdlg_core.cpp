@@ -52,6 +52,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->cfgInterface->show();
     this->show();
     this->cfgInterface->fixSize();
+    this->cfgInterface->expandAll();
     this->setFixedWidth(this->cfgInterface->width());
     this->setFixedHeight(this->cfgInterface->height());
     //this->generalCfg->fixButtonBox();
