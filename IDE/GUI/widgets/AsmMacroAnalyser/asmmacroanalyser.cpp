@@ -19,7 +19,7 @@ AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
     : QTreeWidget(parent)
 {
     QStringList labels;
-    labels << "Name" << "Line" << "File";
+    labels << "Name" << "Args" << "Line" << "File";
     this->setHeaderLabels(labels);
     this->setSortingEnabled(false);
     //macroEditRegExp.setPattern("[\\s]*([\\w]+)[\\s]+MACRO([\\s]+[\\w]+([,][\\s]*[\\w]+)*)?((\\r\\n)|(\\n)).*((\\r\\n)|(\\n))ENDM");
@@ -51,7 +51,7 @@ void AsmMacroAnalyser::reload(QList<CodeEdit*> editList)
             while ((position = macroEditRegExp.indexIn(source, position)) != -1)
             {
                 matchedList = macroEditRegExp.capturedTexts();
-                qDebug() << "AsmMacroAnalyser: captured string" << matchedList.at(0);
+                //qDebug() << "AsmMacroAnalyser: captured string" << matchedList.at(0);
                 
                 QTreeWidgetItem *newItem = new QTreeWidgetItem(this);
                 newItem->setText(0, matchedList.at(1));
