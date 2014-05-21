@@ -24,6 +24,7 @@
 #define wAnalysFunc 1006
 #define wBottomHide 1007
 #define wRightHide  1008
+#define wAsmMacroAnalyser 1009
 
 
 #include <QDockWidget>
@@ -40,8 +41,7 @@
 #include "../BreakpointList/breakpointlist.h"
 #include "../BookmarkList/bookmarklist.h"
 #include "../TabBar/tabbar.h"
-#include "../AnalyserWidget/analyserwidget.h"
-#include "../Analyser/analys.h"
+#include "../AsmMacroAnalyser/asmmacroanalyser.h"
 //#include "../ShowHideWidget/showhidewidget.h"
 #include "../WelcomeScr/welcomescr.h"
 
@@ -113,6 +113,7 @@ class WDockManager : public QObject
         void handleShowHideBottom(int index);
         //void handleShowHideLeft(int index);
         void handleShowHideRight(int index);
+        void compilationFinishedSlot(bool success);
         
 
     private slots:
@@ -149,6 +150,7 @@ class WDockManager : public QObject
         void breakpointsAddLines(QString file, int line, int linesAdded);
         void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
+        void compilationFinishedSig(bool success);
 
     private:
         //MainForm *wMainWindow;

@@ -327,19 +327,19 @@ void WLineCounterWidget::mousePressEvent(QMouseEvent *event)
     {
         if (event->button() == Qt::LeftButton)
         {
-            int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
-            if (line > 0)
-            {
-                emit breakpointEmit(line-1);
-            }
+            //QTextCursor cur = this->parent->getTextEdit()->cursorForPosition(QPoint(0,event->y()));
+            //int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
+            //int line = cur.blockNumber();
+            emit breakpointEmit(this->parent->getTextEdit()->cursorForPosition(QPoint(0,event->y())).blockNumber());
         }
         else if (event->button() == Qt::RightButton)
         {
-            int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
-            if (line > 0)
-            {
-                emit bookmarkEmit(line-1);
-            }
+            //int line = (event->y()+7)/this->fontHeight+this->parent->getTextEdit()->verticalScrollBar()->value();
+            //if (line > 0)
+            //{
+            //    emit bookmarkEmit(line-1);
+            //}
+            emit bookmarkEmit(this->parent->getTextEdit()->cursorForPosition(QPoint(0,event->y())).blockNumber());
         }
     }
 }
