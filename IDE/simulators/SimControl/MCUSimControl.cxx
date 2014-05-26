@@ -47,6 +47,10 @@
 #include <QDebug>
 #include <QCoreApplication>
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include "boost/filesystem.hpp"
+
 MCUSimControl::MCUSimControl ( const char * deviceName )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
@@ -842,6 +846,8 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
 
 void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs )
 {
+    using namespace boost::filesystem;
+
     m_breakPointsSet = false;
 
     if ( false == initialized() )
@@ -850,6 +856,12 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     }
 
     const std::vector<std::string> & files = m_dbgFile->getFileNames();
+    std::vector<std::string> filesBr;
+
+    for ( size_t j = 0; j < fileLinePairs.size(); j++ )
+    {
+        filesBr.push_back(canonical(path(fileLinePairs[j].first).make_preferred()).string());
+    }
 
     m_breakpoints.clear();
     m_breakpoints.resize(files.size());
@@ -858,7 +870,7 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     {
         for ( size_t j = 0; j < fileLinePairs.size(); j++ )
         {
-            if ( files[i] == fileLinePairs[j].first )
+            if ( files[i] == filesBr[j] )
             {
                 if ( false == fileLinePairs[j].second.empty() )
                 {
