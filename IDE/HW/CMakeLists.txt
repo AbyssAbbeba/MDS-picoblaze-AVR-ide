@@ -18,6 +18,6 @@ project ( HW )
 # ------------------------------------------------------------------------------
 
 # Software for USB programmer for SPI ISP capable 8-bit AVR microcontrollers.
-if ( CMAKE_HOST_WIN32 )
-    add_subdirectory ( Avr8UsbProg )
+if ( NOT TARGET_OS STREQUAL "Windows" )
+add_subdirectory ( Avr8UsbProg )
 endif()
