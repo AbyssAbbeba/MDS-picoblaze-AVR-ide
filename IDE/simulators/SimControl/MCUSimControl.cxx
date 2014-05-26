@@ -860,7 +860,7 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
 
     for ( size_t j = 0; j < fileLinePairs.size(); j++ )
     {
-        filesBr.push_back(canonical(path(fileLinePairs[j].first).make_preferred()).string());
+        filesBr.push_back(canonical(path(fileLinePairs[j].first)).make_preferred().string());
     }
 
     m_breakpoints.clear();
