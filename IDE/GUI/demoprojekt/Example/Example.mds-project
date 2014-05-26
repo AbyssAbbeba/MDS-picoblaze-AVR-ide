@@ -18,7 +18,9 @@
   <File path="010_store_fetch.asm" name="010_store_fetch.asm"/>
  </Files>
  <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
- <Simulator/>
+ <Simulator>
+ <Clock clockMult="1000000" clock="10.000"/>
+ </Simulator>
  <Compiler>
   <Options>
    <SymbolTable enable="false"/>
