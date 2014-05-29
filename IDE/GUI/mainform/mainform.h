@@ -161,6 +161,8 @@ class MainForm : public QMainWindow
         QMenu *toolsMenu;
         QMenu *helpMenu;
 
+        QMenu *recentFilesMenu;
+
         //toolbars
         QToolBar *fileToolBar;
         QToolBar *projectToolBar;
@@ -191,6 +193,7 @@ class MainForm : public QMainWindow
         //QAction *removeFileAct;
         QAction *openProjAct;
         QAction *saveProjAct;
+        QAction *saveProjConfigAct;
         QAction *projectCompileAct;
         QAction *projectConfigAct;
 
@@ -200,6 +203,7 @@ class MainForm : public QMainWindow
         QAction *simulationAnimateAct;
         QAction *simulationResetAct;
         QAction *simulationUnhighlightAct;
+        QAction *simulationBreakpointAct;
 
         QAction *toolDisassemblerAct;
         QAction *toolTranslatorAct;
