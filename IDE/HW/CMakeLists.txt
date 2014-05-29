@@ -18,4 +18,6 @@ project ( HW )
 # ------------------------------------------------------------------------------
 
 # Software for USB programmer for SPI ISP capable 8-bit AVR microcontrollers.
+if ( NOT TARGET_OS STREQUAL "Windows" )
 add_subdirectory ( Avr8UsbProg )
+endif()
