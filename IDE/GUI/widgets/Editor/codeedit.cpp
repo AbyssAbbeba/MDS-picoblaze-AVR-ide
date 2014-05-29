@@ -82,11 +82,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    //statusBar = new QStatusBar(this);
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    //layout->addWidget(statusBar, 0, 1, 2, 1);
+    layout->addWidget(statusBar, 1, 1, 2, 1);
     setLayout(layout);
     name = wName;
     path = wPath;
@@ -257,11 +257,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    //statusBar = new QStatusBar(this);
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    //layout->addWidget(statusBar, 0, 1, 2, 1);
+    layout->addWidget(statusBar, 1, 0, 2, 1);
     name = wName;
     path = wPath;
     parentWidget = parent;
@@ -460,7 +460,7 @@ QString CodeEdit::getPath()
 
 bool CodeEdit::isChild(Project* project)
 {
-    return (project==parentProject);
+    return (project == parentProject);
 }
 
 
@@ -468,7 +468,8 @@ bool CodeEdit::isChild(Project* project)
 void CodeEdit::setParentProject(Project* project)
 {
     //qDebug() << "CodeEdit: setParentProject()";
-    parentProject=project;
+    this->parentProject = project;
+    //TODO: refresh breakpointLines and bookmarkLines
     //qDebug() << "CodeEdit: return setParentProject()";
 }
 
@@ -913,3 +914,57 @@ void CodeEdit::changeTabStopWidth(int width)
     QFontMetrics fontMetrics(textEdit->font());
     textEdit->setTabStopWidth(width * fontMetrics.width(' '));
 }
+
+
+/*void CodeEdit::setBreakpointsLines(QList<unsigned int> *breakpoints)
+{
+    if (breakpoints != NULL)
+    {
+        this->breakpointsLines->clear();
+        for (int i = 0; i < breakpoints->count(); i++)
+        {
+            this->breakpointsLines->append((int)breakpoints->at(i));
+        }
+    }
+}
+
+
+void CodeEdit::setBreakpointsLines(QList<int> *breakpoints)
+{
+    if (breakpoints != NULL)
+    {
+        this->breakpointsLines->clear();
+        for (int i = 0; i < breakpoints->count(); i++)
+        {
+            this->breakpointsLines->append(breakpoints->at(i));
+        }
+    }
+}
+
+
+void CodeEdit::setBookmarksLines(QList<unsigned int> *bookmarks)
+{
+    if (bookmarks != NULL)
+    {
+        this->bookmarksLines->clear();
+        for (int i = 0; i < bookmarks->count(); i++)
+        {
+            this->bookmarksLines->append((int)bookmarks->at(i));
+        }
+        this->lineCount->getWidget()->update();
+    } 
+}
+
+
+void CodeEdit::setBookmarksLines(QList<int> *bookmarks)
+{
+    if (bookmarks != NULL)
+    {
+        this->bookmarksLines->clear();
+        for (int i = 0; i < bookmarks->count(); i++)
+        {
+            this->bookmarksLines->append(bookmarks->at(i));
+        }
+        this->lineCount->getWidget()->update();
+    }
+}*/

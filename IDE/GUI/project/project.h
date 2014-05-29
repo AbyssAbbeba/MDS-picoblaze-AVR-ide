@@ -109,8 +109,9 @@ class Project : public QObject
         Project(ProjectMan *parent);
         //konstruktor pro prazdny projekt
         Project(QString name, QString path, QString arch, LangType langType, QFile *file, ProjectMan *parent);
-        //~Project();
+        ~Project();
 
+        void saveProject();
         void setupSim();
         void setupSim(QString family);
         int start(QString file = "");
@@ -137,6 +138,8 @@ class Project : public QObject
         int handleBookmark(QString file, int line);
         QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
         QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
+        //QList<unsigned int>* getBreakpointsForFileAbsolute(QString file);
+        //QList<unsigned int>* getBookmarksForFileAbsolute(QString file);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -206,6 +209,10 @@ class Project : public QObject
         void breakpointReached();
         
     private:
+        //void xmlBreakpointAdd(QString file, unsigned int line);
+        //void xmlBreakpointRemove(QString file, unsigned int line);
+        //void xmlBreakpointFileReplace(QString file);
+        
         ProjectMan *parentManager;
         QList<QPair<QString, QSet<unsigned int>>> breakPoints;
         QList<QPair<QString, QSet<unsigned int>>> bookmarks;
