@@ -62,7 +62,7 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     this->textBrowser->show();
     helpPanel->setFixedHeight(height);
     helpPanel->setFixedWidth(width);
-    this->show();
+    this->showMaximized();
     //this->resize(width, height);
     //(QWidget*)(helpEngine->contentWidget())->setFixedWidth(width);
     //(QWidget*)(helpEngine->contentWidget())->setFixedHeight(height);
