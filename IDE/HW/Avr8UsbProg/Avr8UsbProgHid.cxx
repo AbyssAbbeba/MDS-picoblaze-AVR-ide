@@ -20,6 +20,11 @@
 #include <thread>
 #include <cstdlib>
 
+//<DEBUG!
+#include <iostream>
+#include <QDebug>
+//DEBUG!>
+
 Avr8UsbProgHid::Avr8UsbProgHid()
 {
     m_deviceHandle = NULL;
