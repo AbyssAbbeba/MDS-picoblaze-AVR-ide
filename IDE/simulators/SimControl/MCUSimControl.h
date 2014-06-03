@@ -78,6 +78,17 @@ class MCUSimControl : public QThread
             uint8_t m_mask;             ///<
         };
 
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        struct BrkPntStop
+        {
+            int m_lineNumber; ///<
+            int m_fileNumber; ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -364,6 +375,9 @@ class MCUSimControl : public QThread
 
         /// @brief
         unsigned long long m_totalMCycles;
+
+        /// @brief
+        BrkPntStop m_lastBrkPntStop;
 
         /// @brief
         bool m_running;
