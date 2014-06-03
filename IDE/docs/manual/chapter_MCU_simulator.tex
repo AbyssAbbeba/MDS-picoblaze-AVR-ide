@@ -9,13 +9,13 @@
         \includegraphics[width=.9\textwidth]{img/simulation_panel.png}
         \caption{Project window layout.}
     \end{figure}
-    
+
 \section{Modes of simulation}
     There are 4 modes of simulation:
     \begin{itemize}
         \item STEP: Execute exactly one intruction, no matter how many machine cycles it will take. This does not apply for macro-instruction, in that case each instruction of the macro is executed separately.
-        \item STEP OVER: Execute as many instructions as possible until simulator cursor changes its location from one line of source code to another.
+%         \item STEP OVER: Execute as many instructions as possible until simulator cursor changes its location from one line of source code to another.
         \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
         \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
-        \item STEP BACK: Take back the last performed step. There is limited number of step which can be taken back.
+%         \item STEP BACK: Take back the last performed step. There is limited number of step which can be taken back.
     \end{itemize}
