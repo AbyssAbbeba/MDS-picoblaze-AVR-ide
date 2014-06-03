@@ -39,6 +39,7 @@
  */
 MainForm::MainForm()
 {
+    //this->statusBar()->showMessage("Loading", 0);
     //qDebug() << "MainForm: MainForm()";
     this->projectTabConnected = false;
     this->simulationStatus = false;
@@ -72,11 +73,11 @@ MainForm::MainForm()
     this->setCentralWidget(centralWidget);
     centralWidget->show();
     //connect(this, SIGNAL(dockWidgetsCreated()), wDockManager, SLOT(dockWidgetsCreated()));
-    connect(wDockManager,
+    /*connect(wDockManager,
             SIGNAL(createDockWidgets()),
             this,
             SLOT(createDockWidgets())
-           );
+           );*/
     connect(wDockManager,
             SIGNAL(tabifyDockWidget(QDockWidget*, QDockWidget*)),
             this,
@@ -157,6 +158,7 @@ MainForm::MainForm()
     //CreateDockWidgets();
     //CreateWelcome();
     //qDebug() << "MainForm: return MainForm()";
+    //this->statusBar()->showMessage("Loaded", 5000);
 }
 
 
@@ -196,30 +198,37 @@ MainForm::~MainForm()
     delete this->icon_simUnhighlight;
     delete this->icon_toolDis;
 
-    if (projectMan->getOpenProjects().count() > 0)
+    if (true == GuiCfg::getInstance().getSessionRestoration())
     {
-        QList<Project*> projects = projectMan->getOpenProjects();
-        qDebug() << "Mainform: prepare to project session restoration";
-        for (int i = 0; i < projects.count(); i++)
+        if (projectMan->getOpenProjects().count() > 0)
         {
-            qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
-            GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
-            if (wDockManager->getTabCount() > 0)
+            QList<Project*> projects = projectMan->getOpenProjects();
+            qDebug() << "Mainform: prepare to project session restoration";
+            for (int i = 0; i < projects.count(); i++)
             {
-                qDebug() << "Mainform: prepare to files session restoration";
-                for (int j = 0; j < wDockManager->getTabCount(); j++)
+                qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+                GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
+                if (wDockManager->getTabCount() > 0)
                 {
-                    if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
+                    qDebug() << "Mainform: prepare to files session restoration";
+                    for (int j = 0; j < wDockManager->getTabCount(); j++)
                     {
-                        qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
-                        GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
-                        GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
+                        if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
+                        {
+                            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
+                            GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
+                        }
                     }
                 }
             }
         }
+        GuiCfg::getInstance().saveSession();
     }
-    GuiCfg::getInstance().saveSession();
+    while (projectMan->getOpenProjects().count() > 0)
+    {
+        projectMan->closeProject(projectMan->getActive());
+    }
 }
 
 
@@ -233,11 +242,15 @@ void MainForm::createMenu()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(newAct);
     fileMenu->addAction(newAddAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(openAct);
+    recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
+    fileMenu->addSeparator();
     //fileMenu->addAction(addAct);
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(saveAllAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -260,6 +273,7 @@ void MainForm::createMenu()
     projectMenu->addAction(newProjAct);
     projectMenu->addAction(openProjAct);
     projectMenu->addAction(saveProjAct);
+    projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectCompileAct);
     projectMenu->addAction(projectConfigAct);
 
@@ -270,6 +284,8 @@ void MainForm::createMenu()
     simulationMenu->addAction(simulationStepAct);
     simulationMenu->addAction(simulationResetAct);
     simulationMenu->addAction(simulationUnhighlightAct);
+    simulationMenu->addSeparator();
+    simulationMenu->addAction(simulationBreakpointAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(toolDisassemblerAct);
@@ -282,6 +298,7 @@ void MainForm::createMenu()
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQTAct);
     helpMenu->addAction(helpActionAct);
+    helpMenu->addSeparator();
     helpMenu->addAction(example1Act);
     //qDebug() << "MainForm: return createMenu()";
 }
@@ -295,7 +312,7 @@ void MainForm::createMenu()
 void MainForm::createActions()
 {
     //qDebug() << "MainForm: CreateActions()";
-    newAct = new QAction(tr("New File"), this);
+    newAct = new QAction(tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
     newAct->setShortcut(QKeySequence("Ctrl+N"));
@@ -315,7 +332,7 @@ void MainForm::createActions()
 
     this->pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
     this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
-    newAddAct = new QAction(*icon_projNewAdd, tr("New project file"), this);
+    newAddAct = new QAction(*icon_projNewAdd, tr("New Project File"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
     newAddAct->setDisabled(true);
 
@@ -383,6 +400,9 @@ void MainForm::createActions()
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
 
+    saveProjConfigAct = new QAction(tr("Save Project Config"), this);
+    saveProjConfigAct->setDisabled(true);
+
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
@@ -443,6 +463,9 @@ void MainForm::createActions()
     simulationUnhighlightAct = new QAction(*icon_simUnhighlight, tr("Unhighlight"), this);
     connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
     simulationUnhighlightAct->setDisabled(true);
+
+    simulationBreakpointAct = new QAction(tr("Breakpoint"), this);
+    simulationBreakpointAct->setDisabled(true);
 
     this->pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
     this->icon_toolDis = new QIcon(*pm_toolDis);
@@ -615,6 +638,7 @@ void MainForm::createDockWidgets()
         //addAct->setEnabled(true);
         newAddAct->setEnabled(true);
         saveProjAct->setEnabled(true);
+        saveProjConfigAct->setEnabled(true);
         //projectCompileAct->setEnabled(true);
         //simulationFlowAct->setEnabled(true);
         saveAct->setEnabled(true);
@@ -771,8 +795,10 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 }
                 if (parentProjectPath == "untracked")
                 {
-                    //TODO
+                    //TODO: something
                     //WHAT DOES IT MEAN? Session restoration?
+                    //IF YOU ARE BLIND AND LIVING BY THE RIVER...
+                    //WHAT?!
                 }
             }
             else
@@ -1049,10 +1075,30 @@ void MainForm::projectOpened()
         if (tabList.size() > 1)
         {
             projectTabConnected = true;
-            connect(tabList.at(tabList.size()-1), SIGNAL(currentChanged(int)), this, SLOT(activeProjectChanged(int)));
+            connect(tabList.at(tabList.size()-1),
+                    SIGNAL(currentChanged(int)),
+                    this,
+                    SLOT(activeProjectChanged(int))
+                   );
         }
     }
     this->createDockWidgets();
+    if (wDockManager->getBreakpointList() != NULL)
+    {
+        wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
+        /*if (wDockManager->getCentralWidget() != NULL)
+        {
+            wDockManager->getCentralWidget()->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
+        }*/
+    }
+    if (wDockManager->getBookmarkList() != NULL)
+    {
+        wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
+        /*if (wDockManager->getCentralWidget() != NULL)
+        {
+            wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
+        }*/
+    }
 }
 
 
@@ -2383,6 +2429,10 @@ void MainForm::enableSimActs()
     {
         simulationFlowAct->setEnabled(true);
     }
+    if (false == simulationBreakpointAct->isEnabled())
+    {
+        simulationBreakpointAct->setEnabled(true);
+    }
 }
 
 
@@ -2395,6 +2445,10 @@ void MainForm::disableSimActs()
     if (true == simulationFlowAct->isEnabled())
     {
         simulationFlowAct->setDisabled(true);
+    }
+    if (true == simulationBreakpointAct->isEnabled())
+    {
+        simulationBreakpointAct->setDisabled(true);
     }
 }
 
@@ -2508,14 +2562,14 @@ void MainForm::manageBookmarkEmit(QString file, int line)
 
 void MainForm::sessionRestorationSlot()
 {
-    //qDebug() << "MainForm: session restoration";
+    qDebug() << "MainForm: session restoration";
     QApplication::processEvents();
-    //qDebug() << "MainForm: height" << this->height();
+    qDebug() << "MainForm: height" << this->height();
     //open projects and files
     if (this->height() == this->startHeight)
     {
-        //qDebug() << "Mainform not visible";
-        //qDebug() << "MainForm: session not loaded, Mainform not visible";
+        qDebug() << "Mainform not visible";
+        qDebug() << "MainForm: session not loaded, Mainform not visible";
         QTimer::singleShot(50, this, SLOT(sessionRestorationSlot()));
         return;
     }
