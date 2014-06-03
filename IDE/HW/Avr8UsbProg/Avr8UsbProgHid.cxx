@@ -31,7 +31,6 @@ Avr8UsbProgHid::Avr8UsbProgHid()
     m_position = 1;
 }
 
-
 Avr8UsbProgHid::Exception::Exception ( Type type,
                                        const wchar_t * info )
 {
