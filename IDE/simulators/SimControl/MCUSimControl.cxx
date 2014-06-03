@@ -540,7 +540,7 @@ void MCUSimControl::animateProgram()
 void MCUSimControl::runProgram()
 {
     constexpr unsigned int MAX_REFRESH_FREQ_HZ = 25;
-    constexpr unsigned int MIN_REFRESH_FREQ_I  = 1000000;
+    constexpr unsigned int MIN_REFRESH_FREQ_I  = 250000;
 
     if ( nullptr == m_simulator )
     {
@@ -791,11 +791,13 @@ void MCUSimControl::dispatchEvents()
 
     while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail) )
     {
-        if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
-        {
-            m_messages.push_back(QObject::tr("Invalid subsysId." ).toStdString());
-            continue;
-        }
+        #ifndef NDEBUG
+            if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
+            {
+                m_messages.push_back(QObject::tr("Invalid subsysId." ).toStdString());
+                continue;
+            }
+        #endif // NDEBUG
 
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
         for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); ++it )
