@@ -228,14 +228,20 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
         }
         case PicoBlazeStack::EVENT_STACK_OVERFLOW:
         {
-            error(ErrorCode::ERR_STACK_OVERFLOW);
-            emit stopSimSig();
+            if (true == this->warningOptions.stackOverflow)
+            {
+                error(ErrorCode::ERR_STACK_OVERFLOW);
+                emit stopSimSig();
+            }
             break;
         }
         case PicoBlazeStack::EVENT_STACK_UNDERFLOW:
         {
-            error(ErrorCode::ERR_STACK_UNDERFLOW);
-            emit stopSimSig();
+            if (true == this->warningOptions.stackUnderflow)
+            {
+                error(ErrorCode::ERR_STACK_UNDERFLOW);
+                emit stopSimSig();
+            }
             break;
         }
         default:
@@ -294,11 +300,13 @@ void StackWidget::deviceReset()
     {
         this->lwStack->item(i)->setText("");
     }
+    this->setWarningOpt(GuiCfg::getInstance().getWarningsOpt());
 }
 
 
 void StackWidget::setReadOnly(bool readOnly)
 {
+    
 }
 
 
@@ -347,4 +355,12 @@ void StackWidget::updateWidget()
     {
         this->lwStack->item(this->sp-1)->setBackground(Qt::green);
     }
+}
+
+
+
+
+void StackWidget::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    this->warningOptions = options;
 }

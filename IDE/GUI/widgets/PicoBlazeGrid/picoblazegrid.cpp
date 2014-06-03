@@ -337,14 +337,20 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case MCUSimCPU::EVENT_CPU_PC_OVERFLOW:
             {
-                error(ErrorCode::ERR_CPU_PC_OVERFLOW);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuPcOverflow)
+                {
+                    error(ErrorCode::ERR_CPU_PC_OVERFLOW);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_PC_UNDERFLOW:
             {
-                error(ErrorCode::ERR_CPU_PC_UNDERFLOW);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuPcUnderflow)
+                {
+                    error(ErrorCode::ERR_CPU_PC_UNDERFLOW);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR:
@@ -355,56 +361,83 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE:
             {
-                error(ErrorCode::ERR_CPU_INVALID_OPCODE);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuOpcode)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_OPCODE);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP:
             {
-                error(ErrorCode::ERR_CPU_INVALID_JUMP);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuJump)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_JUMP);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL:
             {
-                error(ErrorCode::ERR_CPU_INVALID_CALL);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuCall)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_CALL);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ:
             {
-                error(ErrorCode::ERR_CPU_INVALID_IRQ);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuIRQ)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_IRQ);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_RET:
             {
-                error(ErrorCode::ERR_CPU_INVALID_RET);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuRet)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_RET);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI:
             {
-                error(ErrorCode::ERR_CPU_INVALID_RETI);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuReti)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_RETI);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET:
             {
-                error(ErrorCode::ERR_CPU_INVALID_OPSET);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuOpset)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_OPSET);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST:
             {
-                error(ErrorCode::ERR_CPU_UNSUPPORTED_INST);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuInsUnsupported)
+                {
+                    error(ErrorCode::ERR_CPU_UNSUPPORTED_INST);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_INST_IGNORED:
             {
-                error(ErrorCode::ERR_CPU_INST_IGNORED);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuInsIgnored)
+                {
+                    error(ErrorCode::ERR_CPU_INST_IGNORED);
+                    emit stopSimSig();
+                }
                 break;
             }
             default:
@@ -666,6 +699,7 @@ void PicoBlazeGrid::deviceReset()
     this->clock = 10.0;
     this->clockMult = 1000000;
     this->leCycles->setText("0");
+    this->setWarningOpt(GuiCfg::getInstance().getWarningsOpt());
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -824,4 +858,10 @@ void PicoBlazeGrid::setClock(double clock, int clockMult)
     {
         this->cmbClock->setCurrentIndex(2);
     }
+}
+
+
+void PicoBlazeGrid::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    this->warningOptions = options;
 }
