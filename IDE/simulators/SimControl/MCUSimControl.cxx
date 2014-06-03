@@ -235,9 +235,7 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-
-    m_lastBrkPntStop.m_lineNumber = -1;
-    m_lastBrkPntStop.m_fileNumber = -1;
+    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -274,9 +272,7 @@ bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-
-    m_lastBrkPntStop.m_lineNumber = -1;
-    m_lastBrkPntStop.m_fileNumber = -1;
+    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -433,9 +429,7 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-
-    m_lastBrkPntStop.m_lineNumber = -1;
-    m_lastBrkPntStop.m_fileNumber = -1;
+    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -901,13 +895,16 @@ inline bool MCUSimControl::checkBreakpoint()
         return false;
     }
 
+    bool stop = false;
     std::vector<unsigned int> recordNumbers;
 
+    m_lastBrkPntStop.open();
     m_dbgFile->getLineByAddr(static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter(),
                              recordNumbers);
 
     if ( true == recordNumbers.empty() )
     {
+        m_lastBrkPntStop.close();
         return false;
     }
 
@@ -916,28 +913,22 @@ inline bool MCUSimControl::checkBreakpoint()
         const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
         const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
 
-        if (
-               ( lineRecord.m_lineNumber == m_lastBrkPntStop.m_lineNumber )
-                   &&
-               ( lineRecord.m_fileNumber == m_lastBrkPntStop.m_fileNumber )
-           )
-        {
-            continue;
-        }
-
         if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
         {
-            emit(breakpointReached());
-
-            m_lastBrkPntStop.m_lineNumber = lineRecord.m_lineNumber;
-            m_lastBrkPntStop.m_fileNumber = lineRecord.m_fileNumber;
-            return true;
+            if ( false == m_lastBrkPntStop.check(lineRecord.m_fileNumber, lineRecord.m_lineNumber) )
+            {
+                stop = true;
+            }
         }
     }
 
-    m_lastBrkPntStop.m_lineNumber = -1;
-    m_lastBrkPntStop.m_fileNumber = -1;
-    return false;
+    if ( true == stop )
+    {
+        emit(breakpointReached());
+    }
+
+    m_lastBrkPntStop.close();
+    return stop;
 }
 
 void MCUSimControl::enableBreakPoints ( bool enabled )
@@ -1043,4 +1034,61 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
     }
 
     return true;
+}
+
+void MCUSimControl::BrkPntStop::open()
+{
+    for ( auto & point : m_brkPnts )
+    {
+        point.m_checked = false;
+    }
+}
+
+void MCUSimControl::BrkPntStop::close()
+{
+    bool reconstruct = false;
+
+    for ( const auto & point : m_brkPnts )
+    {
+        if ( false == point.m_checked )
+        {
+            reconstruct = true;
+            break;
+        }
+    }
+
+    std::list<BrkPnt> newBrkPnts;
+
+    if ( true == reconstruct )
+    {
+        for ( const auto & point : m_brkPnts )
+        {
+            if ( true == point.m_checked )
+            {
+                newBrkPnts.push_back(point);
+            }
+        }
+
+        m_brkPnts = newBrkPnts;
+    }
+}
+
+void MCUSimControl::BrkPntStop::clear()
+{
+    m_brkPnts.clear();
+}
+
+bool MCUSimControl::BrkPntStop::check ( const int file,
+                                        const int line )
+{
+    for ( auto & point : m_brkPnts )
+    {
+        if ( ( file == point.m_fileNumber ) && ( line == point.m_lineNumber ) )
+        {
+            point.m_checked = true;
+            return true;
+        }
+    }
+
+    return false;
 }
