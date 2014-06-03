@@ -30,6 +30,8 @@ class QHBoxLayout;
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../errordialog/errordlg.h"
+#include "../../guicfg/guicfg.h"
+
 
 class McuMemoryView : public QWidget, public MCUSimObserver  {
 	Q_OBJECT
@@ -45,6 +47,7 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         void unhighlight();
         void updateWidget();
         int getSize();
+        void setWarningOpt(GuiCfg::WarningsOpt options);
 
     signals:
         void stopSimSig();
@@ -60,6 +63,8 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         MCUSimSubsys::SubsysId subsys;
 
         QHBoxLayout * m_layout;
+
+        GuiCfg::WarningsOpt warningOptions;
 
         inline void deleteHexEdit();
 };

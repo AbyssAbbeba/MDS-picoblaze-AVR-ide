@@ -31,38 +31,42 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
     }
 
-    std::vector<int> mask;
-    mask.push_back(MCUSimCPU::EVENT_CPU_PC_CHANGED);
-    mask.push_back(MCUSimCPU::EVENT_CPU_PC_OVERFLOW);
-    mask.push_back(MCUSimCPU::EVENT_CPU_PC_UNDERFLOW);
-    mask.push_back(MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL);
-    mask.push_back(MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RET);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI);
-    mask.push_back(MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET);
-    mask.push_back(MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST);
-    mask.push_back(MCUSimCPU::EVENT_CPU_INST_IGNORED);
+    std::vector<int> mask = {
+                                MCUSimCPU::EVENT_CPU_PC_CHANGED,
+                                MCUSimCPU::EVENT_CPU_PC_OVERFLOW,
+                                MCUSimCPU::EVENT_CPU_PC_UNDERFLOW,
+                                MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL,
+                                MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_RET,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI,
+                                MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET,
+                                MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST,
+                                MCUSimCPU::EVENT_CPU_INST_IGNORED
+                            };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
-    mask.clear();
-    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED);
-    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED);
-    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED);
-    mask.push_back(PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED);
+    mask =  {
+                PicoBlazeStatusFlags::EVENT_FLAGS_Z_CHANGED,
+                PicoBlazeStatusFlags::EVENT_FLAGS_C_CHANGED,
+                PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED,
+                PicoBlazeStatusFlags::EVENT_FLAGS_INT_CHANGED
+            };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_FLAGS, mask);
 
-    mask.clear();
-    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
-    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
-    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
-    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
+    mask =  {
+                MCUSimPureLogicIO::EVENT_PLIO_WRITE,
+                MCUSimPureLogicIO::EVENT_PLIO_READ, 
+                MCUSimPureLogicIO::EVENT_PLIO_WRITE_END,
+                MCUSimPureLogicIO::EVENT_PLIO_READ_END
+            };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
 
-    mask.clear();
-    mask.push_back(PicoBlazeStack::EVENT_STACK_SP_CHANGED);
+    mask =  {
+                PicoBlazeStack::EVENT_STACK_SP_CHANGED
+            };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
 
     int offsetMove = 0;
@@ -337,14 +341,20 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case MCUSimCPU::EVENT_CPU_PC_OVERFLOW:
             {
-                error(ErrorCode::ERR_CPU_PC_OVERFLOW);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuPcOverflow)
+                {
+                    error(ErrorCode::ERR_CPU_PC_OVERFLOW);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_PC_UNDERFLOW:
             {
-                error(ErrorCode::ERR_CPU_PC_UNDERFLOW);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuPcUnderflow)
+                {
+                    error(ErrorCode::ERR_CPU_PC_UNDERFLOW);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR:
@@ -355,56 +365,83 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE:
             {
-                error(ErrorCode::ERR_CPU_INVALID_OPCODE);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuOpcode)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_OPCODE);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP:
             {
-                error(ErrorCode::ERR_CPU_INVALID_JUMP);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuJump)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_JUMP);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL:
             {
-                error(ErrorCode::ERR_CPU_INVALID_CALL);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuCall)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_CALL);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ:
             {
-                error(ErrorCode::ERR_CPU_INVALID_IRQ);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuIRQ)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_IRQ);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_RET:
             {
-                error(ErrorCode::ERR_CPU_INVALID_RET);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuRet)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_RET);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_RETI:
             {
-                error(ErrorCode::ERR_CPU_INVALID_RETI);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuReti)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_RETI);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_ERR_INVALID_OPSET:
             {
-                error(ErrorCode::ERR_CPU_INVALID_OPSET);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuOpset)
+                {
+                    error(ErrorCode::ERR_CPU_INVALID_OPSET);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_UNSUPPORTED_INST:
             {
-                error(ErrorCode::ERR_CPU_UNSUPPORTED_INST);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuInsUnsupported)
+                {
+                    error(ErrorCode::ERR_CPU_UNSUPPORTED_INST);
+                    emit stopSimSig();
+                }
                 break;
             }
             case MCUSimCPU::EVENT_CPU_INST_IGNORED:
             {
-                error(ErrorCode::ERR_CPU_INST_IGNORED);
-                emit stopSimSig();
+                if (true == this->warningOptions.cpuInsIgnored)
+                {
+                    error(ErrorCode::ERR_CPU_INST_IGNORED);
+                    emit stopSimSig();
+                }
                 break;
             }
             default:
@@ -666,6 +703,7 @@ void PicoBlazeGrid::deviceReset()
     this->clock = 10.0;
     this->clockMult = 1000000;
     this->leCycles->setText("0");
+    this->setWarningOpt(GuiCfg::getInstance().getWarningsOpt());
     this->unhighlight();
     
     //qDebug() << "PicoBlazeGrid: return deviceReset()";
@@ -824,4 +862,10 @@ void PicoBlazeGrid::setClock(double clock, int clockMult)
     {
         this->cmbClock->setCurrentIndex(2);
     }
+}
+
+
+void PicoBlazeGrid::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    this->warningOptions = options;
 }

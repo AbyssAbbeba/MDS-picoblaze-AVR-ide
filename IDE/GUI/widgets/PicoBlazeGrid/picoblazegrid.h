@@ -38,6 +38,7 @@
 #include "../sim/McuMemoryView.h"
 #include "../TimeWidget/timewidget.h"
 #include "../../errordialog/errordlg.h"
+#include "../../guicfg/guicfg.h"
 
 
 class MCUSimControl;
@@ -63,6 +64,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void setReadOnly(bool readOnly);
         void updateWidget();
         void setClock(double clock, int clockMult);
+        void setWarningOpt(GuiCfg::WarningsOpt options);
         
     private:
         MCUSimControl *controlUnit;
@@ -109,6 +111,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         double clock;
         double clockMult;
+
+        GuiCfg::WarningsOpt warningOptions;
         
 
     //signals:
