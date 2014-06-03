@@ -35,6 +35,16 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
     mask.push_back(MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT);
     mask.push_back(MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED);
     mask.push_back(MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_RD_ACCESS_DENIED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_ERR_WR_ACCESS_DENIED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_RD_DEFAULT);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_RD_WRITE_ONLY);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_WR_READ_ONLY);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_RD_PAR_WRITE_ONLY);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_WR_PAR_READ_ONLY);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_RD_RESERVED_READ);
+    mask.push_back(MCUSimMemory::EVENT_MEM_WRN_WR_RESERVED_WRITTEN);
 	controlUnit->registerObserver(
 		this,
 		subsys,
@@ -79,7 +89,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 		qDebug("Invalid address, event ignored.");
 		return;
 	}
-
+	
 	switch ( eventId )
     {
 		case MCUSimMemory::EVENT_MEM_INF_WR_VAL_CHANGED:
@@ -95,28 +105,131 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
 		}
         case MCUSimMemory::EVENT_MEM_ERR_WR_NONEXISTENT:
         {
-            error(ErrorCode::ERR_MEM_WR_NONEXISTENT);
-            emit stopSimSig();
+            if (true == this->warningOptions.memWriteNonexist)
+            {
+                error(ErrorCode::ERR_MEM_WR_NONEXISTENT);
+                emit stopSimSig();
+            }
             break;
         }
         case MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT:
         {
-            error(ErrorCode::ERR_MEM_RD_NONEXISTENT);
-            emit stopSimSig();
+            if (true == this->warningOptions.memReadNonexist)
+            {
+                error(ErrorCode::ERR_MEM_RD_NONEXISTENT);
+                emit stopSimSig();
+            }
             break;
         }
         case MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED:
         {
-            error(ErrorCode::ERR_MEM_WR_NOT_IMPLEMENTED);
-            emit stopSimSig();
+            if (true == this->warningOptions.memWriteUnimplement)
+            {
+                error(ErrorCode::ERR_MEM_WR_NOT_IMPLEMENTED);
+                emit stopSimSig();
+            }
             break;
         }
         case MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED:
         {
-            error(ErrorCode::ERR_MEM_RD_NOT_IMPLEMENTED);
-            emit stopSimSig();
+            if (true == this->warningOptions.memReadUnimplement)
+            {
+                error(ErrorCode::ERR_MEM_RD_NOT_IMPLEMENTED);
+                emit stopSimSig();
+            }
             break;
         }
+        case MCUSimMemory::EVENT_MEM_ERR_RD_ACCESS_DENIED:
+        {
+            if (true == this->warningOptions.memReadAccess)
+            {
+                error(ErrorCode::ERR_MEM_RD_ACCESS_DENIED);
+                emit stopSimSig();                                                
+            }                                                                     
+            break;                                                               
+        }
+        case MCUSimMemory::EVENT_MEM_ERR_WR_ACCESS_DENIED:
+        {
+            if (true == this->warningOptions.memWriteAccess)
+            {
+                error(ErrorCode::ERR_MEM_WR_ACCESS_DENIED);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED:
+        {
+            if (true == this->warningOptions.memReadUndef)
+            {
+                error(ErrorCode::ERR_MEM_RD_UNDEFINED);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_RD_DEFAULT:
+        {
+            if (true == this->warningOptions.memReadDefault)
+            {
+                error(ErrorCode::ERR_MEM_RD_DEFAULT);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_RD_WRITE_ONLY:
+        {
+            if (true == this->warningOptions.memReadWriteOnly)
+            {
+                error(ErrorCode::ERR_MEM_RD_WRITE_ONLY);       
+                emit stopSimSig();                                                      
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_WR_READ_ONLY:
+        {
+            if (true == this->warningOptions.memWriteReadOnly)
+            {
+                error(ErrorCode::ERR_MEM_WR_READ_ONLY);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_RD_PAR_WRITE_ONLY:
+        {
+            if (true == this->warningOptions.memReadPartWriteOnly)
+            {
+                error(ErrorCode::ERR_MEM_RD_PAR_WRITE_ONLY);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_WR_PAR_READ_ONLY:
+        {
+            if (true == this->warningOptions.memWritePartReadOnly)
+            {
+                error(ErrorCode::ERR_MEM_WR_PAR_READ_ONLY);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_RD_RESERVED_READ:
+        {
+            if (true == this->warningOptions.memReadReserved)
+            {
+                error(ErrorCode::ERR_MEM_RD_RESERVED_READ);
+                emit stopSimSig();
+            }
+            break;
+        }
+        case MCUSimMemory::EVENT_MEM_WRN_WR_RESERVED_WRITTEN:
+        {
+            if (true == this->warningOptions.memWriteReserved)
+            {
+                error(ErrorCode::ERR_MEM_WR_RESERVED_WRITTEN);
+                emit stopSimSig();
+            }
+            break;
+        }
+
 		default:
 			qDebug("Invalid event received, event ignored.");
 			break;
@@ -253,4 +366,10 @@ void McuMemoryView::updateWidget()
 int McuMemoryView::getSize()
 {
     return m_size;
+}
+
+
+void McuMemoryView::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    this->warningOptions = options;
 }
