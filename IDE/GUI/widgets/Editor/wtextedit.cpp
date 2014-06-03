@@ -344,7 +344,19 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
 
 void WTextEdit::highlightCurrentLine()
 {
-    qDebug() << "WTextEdit: highlightCurrentLine()";
+    qDebug() << "WTextEdit: highlightCurrentLine(), obsolete";
+    /*QList<QTextEdit::ExtraSelection> extraSelections;
+
+    QTextEdit::ExtraSelection selection;
+
+    selection.format.setBackground(*cursorLineColor);
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = this->textCursor();
+    selection.cursor.clearSelection();
+    extraSelections.append(selection);
+    this->setExtraSelections(extraSelections);
+
+    //obsolete code below
     QTextCursor cursor(this->textCursor());
     QTextBlockFormat lineFormat = cursor.blockFormat();
     if (lineFormat.background() == Qt::green)
@@ -358,6 +370,8 @@ void WTextEdit::highlightCurrentLine()
         lineFormat.setBackground(Qt::green);
     }
     cursor.setBlockFormat(lineFormat);
+    //end of obsolete code
+    */
     qDebug() << "WTextEdit: return highlightCurrentLine()";
 }
 
@@ -371,7 +385,45 @@ bool WTextEdit::highlightLine(int line, QColor *color)
     if (line >= 0 && line <= this->document()->lineCount())
     {
         QTextBlock lineBlock = this->document()->findBlockByNumber(line);
-        QTextBlockFormat lineFormat = lineBlock.blockFormat();
+        QTextCursor cursor(lineBlock);
+        
+        QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
+        
+        if (color != NULL)
+        {
+            int i = 0;
+            foreach (const QTextEdit::ExtraSelection &selection, extraSelections)
+            {
+                if (selection.cursor == cursor)
+                {
+                    //qDebug() << "WTextEdit: removing extra selection";
+                    extraSelections.removeAt(i);
+                }
+                i++;
+            }
+            QTextEdit::ExtraSelection selection;
+            selection.format.setBackground(*color);
+            selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+            selection.cursor = cursor;
+            selection.cursor.clearSelection();
+            extraSelections.append(selection);
+        }
+        else
+        {
+            int i = 0;
+            foreach (const QTextEdit::ExtraSelection &selection, extraSelections)
+            {
+                if (selection.cursor == cursor)
+                {
+                    //qDebug() << "WTextEdit: removing extra selection, NULL";
+                    extraSelections.removeAt(i);
+                }
+                i++;
+            }
+        }
+        this->setExtraSelections(extraSelections);
+            
+        /*QTextBlockFormat lineFormat = lineBlock.blockFormat();
         if (color == NULL)
         {
             //QPalette palette = this->palette();
@@ -384,10 +436,10 @@ bool WTextEdit::highlightLine(int line, QColor *color)
             //QColor orig = lineFormat.background().color();
             //origColor = &orig;
             lineFormat.setBackground(*color);
-        }
-        QTextCursor cursor(lineBlock);
+        }*/
+        /*QTextCursor cursor(lineBlock);
         //qDebug() << "position: " << cursor.position();
-        cursor.setBlockFormat(lineFormat);
+        cursor.setBlockFormat(lineFormat);*/
         this->setTextCursor(cursor);
         this->ensureCursorVisible();
         //qDebug() << "WTextEdit: return highlightLine()";
@@ -600,19 +652,30 @@ void WTextEdit::cursorPositionChangedSlot()
     {
         if (this->isReadOnly() == false)
         {
-            QTextBlockFormat lineFormat;
-            if (this->prevBlock <= this->document()->blockCount())
-            {
-                QTextBlock lineBlock = this->document()->findBlockByNumber(this->prevBlock);
-                lineFormat = lineBlock.blockFormat();
-                lineFormat.clearBackground();
-                QTextCursor cursor(lineBlock);
-                cursor.setBlockFormat(lineFormat);
-            }
-            QTextCursor curCursor(this->textCursor().block());
-            lineFormat = curCursor.blockFormat();
-            lineFormat.setBackground(*cursorLineColor);
-            curCursor.setBlockFormat(lineFormat);
+            QList<QTextEdit::ExtraSelection> extraSelections;
+
+            QTextEdit::ExtraSelection selection;
+
+            selection.format.setBackground(*cursorLineColor);
+            selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+            selection.cursor = this->textCursor();
+            selection.cursor.clearSelection();
+            extraSelections.append(selection);
+            this->setExtraSelections(extraSelections);
+
+            //QTextBlockFormat lineFormat;
+            //if (this->prevBlock <= this->document()->blockCount())
+            //{
+                //QTextBlock lineBlock = this->document()->findBlockByNumber(this->prevBlock);
+                //lineFormat = lineBlock.blockFormat();
+                //lineFormat.clearBackground();
+                //QTextCursor cursor(lineBlock);
+                //cursor.setBlockFormat(lineFormat);
+            //}
+            //QTextCursor curCursor(this->textCursor().block());
+            //lineFormat = curCursor.blockFormat();
+            //lineFormat.setBackground(*cursorLineColor);
+            //curCursor.setBlockFormat(lineFormat);
         }
         this->prevBlock = this->textCursor().blockNumber();
         emit updateLineCounter();
