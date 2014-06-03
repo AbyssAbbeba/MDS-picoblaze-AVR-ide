@@ -63,6 +63,10 @@ class CodeEdit : public QWidget
         void addBookmarkLine(int line);
         void removeBookmarkLine(int line);
         QList<int>* getBookmarksLines();
+        //void setBreakpointsLines(QList<unsigned int> *breakpoints);
+        //void setBreakpointsLines(QList<int> *breakpoints);
+        //void setBookmarksLines(QList<unsigned int> *bookmarks);
+        //void setBookmarksLines(QList<int> *bookmarks);
 
     public slots:
         void setChanged();
