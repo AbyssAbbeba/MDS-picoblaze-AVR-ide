@@ -236,6 +236,9 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
 
+    m_lastBrkPntStop.m_lineNumber = -1;
+    m_lastBrkPntStop.m_fileNumber = -1;
+
     delete dataFile;
     return true;
 }
@@ -271,6 +274,9 @@ bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
+
+    m_lastBrkPntStop.m_lineNumber = -1;
+    m_lastBrkPntStop.m_fileNumber = -1;
 
     delete dataFile;
     return true;
@@ -428,6 +434,9 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
 
+    m_lastBrkPntStop.m_lineNumber = -1;
+    m_lastBrkPntStop.m_fileNumber = -1;
+
     delete dataFile;
     return true;
 }
@@ -540,7 +549,7 @@ void MCUSimControl::animateProgram()
 void MCUSimControl::runProgram()
 {
     constexpr unsigned int MAX_REFRESH_FREQ_HZ = 25;
-    constexpr unsigned int MIN_REFRESH_FREQ_I  = 1000000;
+    constexpr unsigned int MIN_REFRESH_FREQ_I  = 250000;
 
     if ( nullptr == m_simulator )
     {
@@ -791,11 +800,13 @@ void MCUSimControl::dispatchEvents()
 
     while ( 0 != m_simulatorLog->getEvent(subsysId, eventId, locationOrReason, detail) )
     {
-        if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
-        {
-            m_messages.push_back(QObject::tr("Invalid subsysId." ).toStdString());
-            continue;
-        }
+        #ifndef NDEBUG
+            if ( (subsysId >= MCUSimSubsys::ID__MAX__) || (subsysId < 0) )
+            {
+                m_messages.push_back(QObject::tr("Invalid subsysId." ).toStdString());
+                continue;
+            }
+        #endif // NDEBUG
 
         std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
         for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); ++it )
@@ -905,13 +916,27 @@ inline bool MCUSimControl::checkBreakpoint()
         const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
         const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
 
+        if (
+               ( lineRecord.m_lineNumber == m_lastBrkPntStop.m_lineNumber )
+                   &&
+               ( lineRecord.m_fileNumber == m_lastBrkPntStop.m_fileNumber )
+           )
+        {
+            continue;
+        }
+
         if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
         {
             emit(breakpointReached());
+
+            m_lastBrkPntStop.m_lineNumber = lineRecord.m_lineNumber;
+            m_lastBrkPntStop.m_fileNumber = lineRecord.m_fileNumber;
             return true;
         }
     }
 
+    m_lastBrkPntStop.m_lineNumber = -1;
+    m_lastBrkPntStop.m_fileNumber = -1;
     return false;
 }
 
