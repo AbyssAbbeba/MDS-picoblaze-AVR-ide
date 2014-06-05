@@ -138,8 +138,8 @@ class Project : public QObject
         int handleBookmark(QString file, int line);
         QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
         QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
-        //QList<unsigned int>* getBreakpointsForFileAbsolute(QString file);
-        //QList<unsigned int>* getBookmarksForFileAbsolute(QString file);
+        QList<unsigned int> getBreakpointsForFileAbsolute(QString file);
+        QList<unsigned int> getBookmarksForFileAbsolute(QString file);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
