@@ -235,7 +235,6 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -272,7 +271,6 @@ bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -429,7 +427,6 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
     //
     m_simulatorLog->clear();
     allObservers_setReadOnly(false);
-    m_lastBrkPntStop.clear();
 
     delete dataFile;
     return true;
@@ -611,6 +608,7 @@ void MCUSimControl::resetProgram()
     m_totalMCycles = 0;
     m_simulator->reset(MCUSim::RSTMD_MCU_RESET);
     allObservers_deviceReset();
+    m_lastBrkPntStop.clear();
 }
 
 bool MCUSimControl::changeDevice ( const char * deviceName )
@@ -1036,7 +1034,7 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
     return true;
 }
 
-void MCUSimControl::BrkPntStop::open()
+inline void MCUSimControl::BrkPntStop::open()
 {
     for ( auto & point : m_brkPnts )
     {
@@ -1044,7 +1042,7 @@ void MCUSimControl::BrkPntStop::open()
     }
 }
 
-void MCUSimControl::BrkPntStop::close()
+inline void MCUSimControl::BrkPntStop::close()
 {
     bool reconstruct = false;
 
@@ -1073,13 +1071,13 @@ void MCUSimControl::BrkPntStop::close()
     }
 }
 
-void MCUSimControl::BrkPntStop::clear()
+inline void MCUSimControl::BrkPntStop::clear()
 {
     m_brkPnts.clear();
 }
 
-bool MCUSimControl::BrkPntStop::check ( const int file,
-                                        const int line )
+inline bool MCUSimControl::BrkPntStop::check ( const int file,
+                                               const int line )
 {
     for ( auto & point : m_brkPnts )
     {
@@ -1090,5 +1088,6 @@ bool MCUSimControl::BrkPntStop::check ( const int file,
         }
     }
 
+    m_brkPnts.push_back ( { line, file, true } );
     return false;
 }
