@@ -916,55 +916,66 @@ void CodeEdit::changeTabStopWidth(int width)
 }
 
 
-/*void CodeEdit::setBreakpointsLines(QList<unsigned int> *breakpoints)
+void CodeEdit::setBreakpointsLines(QList<unsigned int> breakpoints)
 {
-    if (breakpoints != NULL)
+    qDebug() << "CodeEdit: setBreakpointsLines(unsigned int)";
+    /*if (breakpoints == NULL)
+    {
+        qDebug() << "CodeEdit: breakpoints NULL";
+    }*/
+    qDebug() << "breakpoints count" << breakpoints.count();
+    //if (breakpoints != NULL && breakpointsLines != NULL)
+    if (breakpointsLines != NULL)
     {
         this->breakpointsLines->clear();
-        for (int i = 0; i < breakpoints->count(); i++)
+        for (int i = 0; i < breakpoints.count(); i++)
         {
-            this->breakpointsLines->append((int)breakpoints->at(i));
+            qDebug() << "CodeEdit: appending breakpoint";
+            this->breakpointsLines->append((int)breakpoints.at(i));
         }
+        qDebug() << "CodeEdit: setBreakpoints - updateWidget()";
+        this->lineCount->getWidget()->update();
     }
 }
 
 
-void CodeEdit::setBreakpointsLines(QList<int> *breakpoints)
+void CodeEdit::setBreakpointsLines(QList<int> breakpoints)
 {
-    if (breakpoints != NULL)
+    if (breakpointsLines != NULL)
     {
         this->breakpointsLines->clear();
-        for (int i = 0; i < breakpoints->count(); i++)
+        for (int i = 0; i < breakpoints.count(); i++)
         {
-            this->breakpointsLines->append(breakpoints->at(i));
+            this->breakpointsLines->append(breakpoints.at(i));
         }
+        this->lineCount->getWidget()->update();
     }
 }
 
 
-void CodeEdit::setBookmarksLines(QList<unsigned int> *bookmarks)
+void CodeEdit::setBookmarksLines(QList<unsigned int> bookmarks)
 {
-    if (bookmarks != NULL)
+    if (this->bookmarksLines != NULL)
     {
         this->bookmarksLines->clear();
-        for (int i = 0; i < bookmarks->count(); i++)
+        for (int i = 0; i < bookmarks.count(); i++)
         {
-            this->bookmarksLines->append((int)bookmarks->at(i));
+            this->bookmarksLines->append((int)bookmarks.at(i));
         }
         this->lineCount->getWidget()->update();
     } 
 }
 
 
-void CodeEdit::setBookmarksLines(QList<int> *bookmarks)
+void CodeEdit::setBookmarksLines(QList<int> bookmarks)
 {
-    if (bookmarks != NULL)
+    if (this->bookmarksLines != NULL)
     {
         this->bookmarksLines->clear();
-        for (int i = 0; i < bookmarks->count(); i++)
+        for (int i = 0; i < bookmarks.count(); i++)
         {
-            this->bookmarksLines->append(bookmarks->at(i));
+            this->bookmarksLines->append(bookmarks.at(i));
         }
         this->lineCount->getWidget()->update();
     }
-}*/
+}

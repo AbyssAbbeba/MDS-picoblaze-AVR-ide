@@ -780,7 +780,8 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             //qDebug() << "MainForm: connect";
-            wDockManager->getCentralWidget()->connectAct();
+            CodeEdit *centralCodeEdit = wDockManager->getCentralWidget();
+            centralCodeEdit->connectAct();
             //qDebug() << "MainForm: set parent";
             if (parentProjectPath != "")
             {
@@ -788,8 +789,10 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 {
                     if (projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
                     {
-                        wDockManager->getCentralWidget()->setParentProject(projectMan->getOpenProjects().at(i));
+                        centralCodeEdit->setParentProject(projectMan->getOpenProjects().at(i));
                         wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getOpenProjects().at(i));
+                        centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+                        //wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->updateLineCounter();
                         break;
                     }
                 }
@@ -803,11 +806,14 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             }
             else
             {
-                wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+                centralCodeEdit->setParentProject(projectMan->getActive());
                 wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getActive());
+                centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+                //wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->updateLineCounter();
+                
             }
             //wDockManager->getCentralWidget()->setSaved();
-            if (true == wDockManager->getCentralWidget()->isChanged())
+            if (true == centralCodeEdit->isChanged())
             {
                 qDebug() << "MainForm: openfilepath - some error here";
             }

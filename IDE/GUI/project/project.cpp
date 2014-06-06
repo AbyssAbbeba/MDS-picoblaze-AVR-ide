@@ -3479,33 +3479,36 @@ QList<QPair<QString, QSet<unsigned int>>>* Project::getBookmarksListRef()
 }*/
 
 
-/*QList<unsigned int>* Project::getBreakpointsForFileAbsolute(QString file)
+QList<unsigned int> Project::getBreakpointsForFileAbsolute(QString file)
 {
-    QDir project(QFileInfo(this->prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
+    //QDir project(QFileInfo(this->prjPath).dir());
+    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
-        if (this->breakPoints.at(i).first == relativePath)
+        //qDebug() << "Project: checking" << this->breakPoints.at(i).first << "with relative" << relativePath;
+        //qDebug() << "Project: original file path" << file;
+        if (this->breakPoints.at(i).first == file)
         {
-            QList<unsigned int> list = this->breakPoints.at(i).second.toList();
-            return &list;
+            //QList<unsigned int> list(this->breakPoints.at(i).second.toList());
+            //qDebug() << "Project: breakPoints count" << list.count();
+            //return list;
+            return this->breakPoints.at(i).second.toList();
         }
     }
-    return NULL;
+    return QList<unsigned int>();
 }
 
 
-QList<unsigned int>* Project::getBookmarksForFileAbsolute(QString file)
+QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 {
-    QDir project(QFileInfo(this->prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
+    //QDir project(QFileInfo(this->prjPath).dir());
+    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->bookmarks.count(); i++)
     {
-        if (this->bookmarks.at(i).first == relativePath)
+        if (this->bookmarks.at(i).first == file)
         {
-            QList<unsigned int> list = this->bookmarks.at(i).second.toList();
-            return &list;
+            return this->bookmarks.at(i).second.toList();
         }
     }
-    return NULL;
-}*/
+    return QList<unsigned int>();
+}
