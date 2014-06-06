@@ -99,13 +99,13 @@ class MCUSimControl : public QThread
             ////    Public Operations    ////
             public:
                 /// @brief
-                void open();
+                inline void open();
 
                 /// @brief
-                void close();
+                inline void close();
 
                 /// @brief
-                void clear();
+                inline void clear();
 
                 /**
                  * @brief
@@ -113,8 +113,8 @@ class MCUSimControl : public QThread
                  * @param[in] line
                  * @return
                  */
-                bool check ( const int file,
-                             const int line );
+                inline bool check ( const int file,
+                                    const int line );
 
             private:
                 /// @brief
