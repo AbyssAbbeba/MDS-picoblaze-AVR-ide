@@ -130,10 +130,14 @@ class MainForm : public QMainWindow
         void breakpointsAddLines(QString file, int line, int linesAdded);
         void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         void manageBookmarkEmit(QString file, int line);
+        void bookmarksAddLines(QString file, int line, int linesAdded);
+        void bookmarksRemoveLines(QString file, int line, int linesRemoved);
         //void manageBreakpointRemove(QString file, int line);
         void pauseSimulation();
         void scrollToFileLine(QString file, int line);
         void requestMacrosCodeEdits();
+        void breakpointActHandle();
+        void disableBreakpointsHandle();
 
     signals:
         void unhighlightSim();
@@ -204,6 +208,7 @@ class MainForm : public QMainWindow
         QAction *simulationResetAct;
         QAction *simulationUnhighlightAct;
         QAction *simulationBreakpointAct;
+        QAction *simulationDisableBreakpointsAct;
 
         QAction *toolDisassemblerAct;
         QAction *toolTranslatorAct;
@@ -256,6 +261,10 @@ class MainForm : public QMainWindow
         bool projectTabConnected;
 
         bool simulationRequest;
+
+        bool simulationBreakpointsEnabled;
+
+        bool simulationBreakpointsReload;
 
     protected:
         void closeEvent(QCloseEvent *event);

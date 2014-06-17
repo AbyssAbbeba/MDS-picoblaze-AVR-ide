@@ -68,6 +68,8 @@ class WTextEdit : public QPlainTextEdit
         void updateLineCounter();
         void breakpointsAddLines(int line, int linesAdded);
         void breakpointsRemoveLines(int line, int linesRemoved);
+        void bookmarksAddLines(int line, int linesAdded);
+        void bookmarksRemoveLines(int line, int linesRemoved);
 
     //private slots:
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
