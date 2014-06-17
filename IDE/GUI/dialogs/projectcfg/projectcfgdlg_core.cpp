@@ -86,7 +86,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
  * @brief
  * @param
  */
-void ProjectConfigDialog_Core::closeEvent(QCloseEvent * e)
+void ProjectConfigDialog_Core::closeEvent(QCloseEvent * /*e*/)
 {
     if (reloadFiles == true)
     {

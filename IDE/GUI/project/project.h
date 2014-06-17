@@ -115,6 +115,7 @@ class Project : public QObject
         void setupSim();
         void setupSim(QString family);
         int start(QString file = "");
+        void setBreakpoints(bool set);
         void stop();
         void reset();
         void step();
@@ -133,9 +134,11 @@ class Project : public QObject
         void setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QString VHDLTemplate);
         void setClock(double clock, int mult);
         int handleBreakpoint(QString file, int line);
-        void moveBreakpointsAdd(QString file, int line, int linesAdded);
-        void moveBreakpointsRemove(QString file, int line, int linesRemoved);
+        void moveBreakpointsAdd(QString file, int line, unsigned int linesAdded);
+        void moveBreakpointsRemove(QString file, int line, unsigned int linesRemoved);
         int handleBookmark(QString file, int line);
+        void moveBookmarksAdd(QString file, int line, unsigned int linesAdded);
+        void moveBookmarksRemove(QString file, int line, unsigned int linesRemoved);
         QList<QPair<QString, QSet<unsigned int>>>* getBreakpointsListRef();
         QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
         QList<unsigned int> getBreakpointsForFileAbsolute(QString file);

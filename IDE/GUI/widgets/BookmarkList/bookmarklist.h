@@ -32,7 +32,8 @@ class BookmarkList : public QTreeWidget
         void reload(QList<QPair<QString, QSet<unsigned int>>> *bookmarkList);
         void bookmarkListAdd(QString file, int line);
         void bookmarkListRemove(QString file, int line);
-        void bookmarkListUpdate(QString file, int fromLine, int linesAdded);
+        void bookmarksAddLines(QString file, int line, int linesAdded);
+        void bookmarksRemoveLines(QString file, int line, int linesRemoved);
 
     private slots:
         void bookmarkClickedSlot(QTreeWidgetItem *item, int column);
