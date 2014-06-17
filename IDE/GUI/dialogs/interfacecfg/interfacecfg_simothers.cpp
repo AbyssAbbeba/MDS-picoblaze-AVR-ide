@@ -27,4 +27,5 @@ InterfaceCfg_SimOthers::InterfaceCfg_SimOthers(QWidget *parent)
 
 void InterfaceCfg_SimOthers::save()
 {
+    
 }

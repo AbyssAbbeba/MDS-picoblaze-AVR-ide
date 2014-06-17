@@ -158,6 +158,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             if (false == cursor.hasSelection())
             {
                 emit breakpointsAddLines(cursor.blockNumber(), 1);
+                emit bookmarksAddLines(cursor.blockNumber(), 1);
             }
             else
             {
@@ -170,8 +171,12 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                 cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                );
+                    emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                               );
                 }
                 emit breakpointsAddLines(cursorSelBeg.blockNumber(), 1);
+                emit bookmarksAddLines(cursorSelBeg.blockNumber(), 1);
             }
         }
         //backspace on the beginning of the line
@@ -184,6 +189,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 if (true == cursor.atBlockStart() && cursor.blockNumber() > 1) //bug
                 {
                     emit breakpointsRemoveLines(cursor.blockNumber(), 1);
+                    emit bookmarksRemoveLines(cursor.blockNumber(), 1);
                 }
             }
             else
@@ -200,10 +206,17 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                                                     //cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber(),
+                                                    //cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
                     }
                     else
                     {
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
                     }
@@ -220,6 +233,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 if (true == cursor.atBlockEnd())
                 {
                     emit breakpointsRemoveLines(cursor.blockNumber() + 1, 1);
+                    emit bookmarksRemoveLines(cursor.blockNumber() + 1, 1);
                 }
             }
             else
@@ -235,10 +249,16 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber(),
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
                                                    );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber(),
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                   );
                     }
                     else
                     {
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
                     }

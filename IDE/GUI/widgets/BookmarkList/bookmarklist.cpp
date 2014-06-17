@@ -28,6 +28,7 @@ BookmarkList::BookmarkList(QWidget *parent)
     QStringList labels;
     labels << "Line" << "File";
     this->setHeaderLabels(labels);
+    this->setSortingEnabled(false);
     connect(this,
             SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
             this,
@@ -36,10 +37,6 @@ BookmarkList::BookmarkList(QWidget *parent)
 }
 
 
-/**
- * @brief Reloads list (clear and load).
- * @param bookmarkList QList of bookmarks' line numbers.
- */
 void BookmarkList::reload(QList<QPair<QString, QSet<unsigned int>>> *bookmarkList)
 {
     this->clear();
@@ -56,45 +53,55 @@ void BookmarkList::reload(QList<QPair<QString, QSet<unsigned int>>> *bookmarkLis
             this->addTopLevelItem(newItem);
         }
     }
-    this->sortItems(0, Qt::AscendingOrder);
-    this->sortItems(1, Qt::AscendingOrder);
-    //qDebug() << "bookmarklist - reload";
+    //qDebug() << "breakpointlist - reload";
 }
 
 
-/**
- * @brief Adds bookmark to the list.
- * @param line Line number of added bookmark.
- */
 void BookmarkList::bookmarkListAdd(QString file, int line)
 {
-    QTreeWidgetItem *newItem = new QTreeWidgetItem(this);
+    QTreeWidgetItem *newItem = new QTreeWidgetItem();
     newItem->setText(0, QString::number(line, 10));
     newItem->setText(1, file.section('/', -1));
     newItem->setToolTip(1, file);
-    this->addTopLevelItem(newItem);
-    //qDebug() << "bookmarklist - add";
+    QTreeWidgetItem *curItem;
+    int index = 0;
+    for (; index < this->topLevelItemCount(); index++)
+    {
+        curItem = this->topLevelItem(index);
+        if (curItem->toolTip(1) == file)
+        {
+            if (curItem->text(0).toInt() > line)
+            {
+                //qDebug() << "BreakpointList: file found, breaking on index" << index;
+                //qDebug() << "BreakpointList: file" << file << "tooltip" << curItem->toolTip(1);
+                break;
+            }
+        }
+        else
+        {
+            if (curItem->toolTip(1) > file)
+            {
+                //qDebug() << "BreakpointList: breaking on index" << index;
+                //qDebug() << "BreakpointList: file" << file << "tooltip" << curItem->toolTip(1);
+                break;
+            }
+        }
+    }
+    //qDebug() << "BreakpointList: inserting on index" << index;
+    //qDebug() << "BreakpointList: total items" << this->topLevelItemCount();
+    this->insertTopLevelItem(index, newItem);
+    //this->sortItems(0, Qt::AscendingOrder);
+    //this->sortItems(1, Qt::AscendingOrder);
+    //qDebug() << "breakpointlist - add";
 }
 
 
-/**
- * @brief Removes bookmark from the list.
- * @param line Line number of removed bookmark.
- */
 void BookmarkList::bookmarkListRemove(QString file, int line)
 {
-    /*QList<QTreeWidgetItem*> list = this->findItems(file, Qt::MatchExactly);
-    QList<QTreeWidgetItem*>::iterator i;
-    for (i = list.begin(); i != list.end(); i++)
-    {
-        this->removeItemWidget(*i, 0);
-        delete *i;
-        *i = NULL;
-    }*/
     for (int i = 0; i < this->topLevelItemCount(); i++)
     {
-        qDebug() << "BookmarkList: compare given line" << line << "with item line" << this->topLevelItem(i)->text(0).toInt();
-        qDebug() << "BookmarkList: compare given file" << file << "with item file" << this->topLevelItem(i)->toolTip(1);
+        //qDebug() << "BreakpointList: compare given line" << line << "with item line" << this->topLevelItem(i)->text(0).toInt();
+        //qDebug() << "BreakpointList: compare given file" << file << "with item file" << this->topLevelItem(i)->toolTip(1);
         if (file == this->topLevelItem(i)->toolTip(1) && line == this->topLevelItem(i)->text(0).toInt())
         {
             QTreeWidgetItem *item = this->takeTopLevelItem(i);
@@ -103,26 +110,63 @@ void BookmarkList::bookmarkListRemove(QString file, int line)
             return;
         }
     }
-    //qDebug() << "bookmarklist - remove";
 }
 
 
-/**
- * @brief Updates bookmarks for selected file on linecount change
- */
-void BookmarkList::bookmarkListUpdate(QString file, int fromLine, int linesAdded)
+void BookmarkList::bookmarksAddLines(QString file, int line, int linesAdded)
 {
-    QList<QTreeWidgetItem*> list = this->findItems(file, Qt::MatchExactly);
-    QList<QTreeWidgetItem*>::iterator i;
-    for (i = list.begin(); i != list.end(); i++)
+    for (int i = 0; i < this->topLevelItemCount(); i++)
     {
-        (*i)->setText(0, QString::number((*i)->text(1).toInt() + linesAdded, 10));
+        QTreeWidgetItem *item = this->topLevelItem(i);
+        if (item->toolTip(1) == file)
+        {
+            if (item->text(0).toInt() > line)
+            {
+                item->setText(0, QString::number(item->text(0).toInt() + linesAdded, 10));
+            }
+        }
     }
-    //qDebug() << "bookmarklist - remove";
 }
 
 
-void BookmarkList::bookmarkClickedSlot(QTreeWidgetItem *item, int column)
+void BookmarkList::bookmarksRemoveLines(QString file, int line, int linesRemoved)
+{
+    //qDebug() << "BreakpointList: breakpointsRemoveLines" << file << line << linesRemoved;
+    QList<QTreeWidgetItem*> itemsToRemove;
+    for (int i = 0; i < this->topLevelItemCount(); i++)
+    {
+        QTreeWidgetItem *item = this->topLevelItem(i);
+        if (item->toolTip(1) == file)
+        {
+            if ( item->text(0).toInt() >= line
+            && item->text(0).toInt() < line + linesRemoved
+            )
+            {
+                itemsToRemove.append(item);
+            }
+            else
+            {
+                if (item->text(0).toInt() >= line + linesRemoved)
+                {
+                    item->setText(0, QString::number(item->text(0).toInt() - linesRemoved, 10));
+                }
+            }
+        }
+    }
+    if (false == itemsToRemove.empty())
+    {
+        QList<QTreeWidgetItem*>::iterator i;
+        for (i = itemsToRemove.begin(); i != itemsToRemove.end(); i++)
+        {
+            //this->removeItemWidget(*i, 0);
+            delete *i;
+            *i = NULL;
+        }
+    }
+}
+
+
+void BookmarkList::bookmarkClickedSlot(QTreeWidgetItem *item, int /*column*/)
 {
     emit bookmarkClicked(item->toolTip(1), item->text(0).toInt());
 }

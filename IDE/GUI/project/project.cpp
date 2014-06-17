@@ -490,6 +490,30 @@ Project::Project(QFile *file, ProjectMan *parent)
                             xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
                         }
                     }
+                    else if (xmlElement.tagName() == "Bookmarks")
+                    {
+                        QDomNode xmlBookmarkFileNode = xmlElement.firstChild();
+                        QDomElement xmlBookmarkFileElement;
+                        QString absolutePath;
+                        while (!xmlBookmarkFileNode.isNull())
+                        {
+                            xmlBookmarkFileElement = xmlBookmarkFileNode.toElement();
+                            QSet<unsigned int> set;
+                            QDomNode xmlBookmarkNode = xmlBookmarkFileNode.firstChild();
+                            QDomElement xmlBookmarkElement;
+                            while (!xmlBookmarkNode.isNull())
+                            {
+                                xmlBookmarkElement = xmlBookmarkNode.toElement();
+                                set << xmlBookmarkElement.attribute("line").toInt();
+                                xmlBookmarkNode = xmlBookmarkNode.nextSibling();
+                            }
+                            //TODO:
+                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBookmarkFileElement.attribute("path");
+                            QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
+                            this->bookmarks.append(pair);
+                            xmlBookmarkFileNode = xmlBookmarkFileNode.nextSibling();
+                        }
+                    }
                     else if (xmlElement.tagName() == "Simulator")
                     {
                         QDomNode xmlSimulatorNode = xmlElement.firstChild();
@@ -993,6 +1017,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlBreakpoints = domDoc.createElement("Breakpoints");
     xmlRoot.appendChild(xmlBreakpoints);
 
+    QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
+    xmlRoot.appendChild(xmlBookmarks);
+
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     QDomElement xmlClock = domDoc.createElement("Clock");
     xmlClock.setAttribute("clock", this->clock);
@@ -1189,6 +1216,22 @@ void Project::saveProject()
         xmlBreakpoints.appendChild(xmlBreakpointFile);
     }
     xmlRoot.appendChild(xmlBreakpoints);
+    
+    QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
+    for (int i = 0; i < this->bookmarks.count(); i++)
+    {
+        relativePath = project.relativeFilePath(this->bookmarks.at(i).first);
+        QDomElement xmlBookmarkFile = domDoc.createElement("BookmarkFile");
+        xmlBookmarkFile.setAttribute("path", relativePath);
+        foreach (unsigned int value, this->bookmarks.at(i).second)
+        {
+            QDomElement xmlBookmark = domDoc.createElement("Bookmark");
+            xmlBookmark.setAttribute("line", value);
+            xmlBookmarkFile.appendChild(xmlBookmark);
+        }
+        xmlBookmarks.appendChild(xmlBookmarkFile);
+    }
+    xmlRoot.appendChild(xmlBookmarks);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     QDomElement xmlClock = domDoc.createElement("Clock");
@@ -2435,7 +2478,7 @@ int Project::start(QString file)
         QDir dir(prjPath.section('/',0, -2));
         this->simulatedFile = dir.absoluteFilePath(mainFilePath);
     }*/
-    if (this->breakPoints.count() > 0)
+    /*if (this->breakPoints.count() > 0)
     {
         std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
         for (int i = 0; i < this->breakPoints.count(); i++)
@@ -2460,8 +2503,10 @@ int Project::start(QString file)
             }
         }
         m_simControlUnit->setBreakPoints(breakpointsVector);
-    }
+    }*/
     //qDebug() << "Project: getLineNumber";
+    std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+    m_simControlUnit->setBreakPoints(breakpointsVector);
     m_simControlUnit->getLineNumber(currLine);
     //qDebug() << "Project: getLineNumber check";
     if (currLine.empty() == true)
@@ -2488,6 +2533,51 @@ int Project::start(QString file)
     //qDebug() << "Project: return start()";
     return 0;
 }
+
+
+void Project::setBreakpoints(bool set)
+{
+    if (true == set)
+    {
+        qDebug() << "Project: setBreakpoints(true)";
+        if (this->breakPoints.count() > 0)
+        {
+            if (false == m_simControlUnit->breakPointsEnabled())
+            {
+                m_simControlUnit->enableBreakPoints(true);
+            }
+            std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+            for (int i = 0; i < this->breakPoints.count(); i++)
+            {
+                //qDebug() << "Project: breakpoint list at" << i;
+                std::set<unsigned int> breakpointsSet;
+                foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                {
+                    breakpointsSet.insert(value);
+                }
+                std::pair<std::string, std::set<unsigned int>> breakpointsPair;
+                breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
+                breakpointsPair.second = breakpointsSet;
+                breakpointsVector.push_back(breakpointsPair);
+            }
+            /*for (unsigned int i = 0; i < breakpointsVector.size(); i++)
+            {
+                qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                {
+                    qDebug() << "Project: breakpoint line" << value;
+                }
+            }*/
+            m_simControlUnit->setBreakPoints(breakpointsVector);
+        }
+    }
+    else
+    {
+        qDebug() << "Project: setBreakpoints(false)";
+        m_simControlUnit->enableBreakPoints(false);
+    }
+}
+
 
 
 
@@ -3049,7 +3139,7 @@ int Project::handleBreakpoint(QString file, int line)
 }
 
 
-void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
+void Project::moveBreakpointsAdd(QString file, int line, unsigned int linesAdded)
 {
     QString fileRelative;
     if (this->prjPath == "untracked")
@@ -3073,7 +3163,7 @@ void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
                 QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
                 for (int j = 0; j < setValues.count(); j++)
                 {
-                    if (setValues.at(j) > line)
+                    if (setValues.at(j) > (unsigned int)line)
                     {
                         set << setValues.at(j) + linesAdded;
                         changed = true;
@@ -3100,7 +3190,7 @@ void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
 }
 
 
-void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
+void Project::moveBreakpointsRemove(QString file, int line, unsigned int linesRemoved)
 {
     QString fileRelative;
     if (this->prjPath == "untracked")
@@ -3124,14 +3214,14 @@ void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
                 QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
                 for (int j = 0; j < setValues.count(); j++)
                 {
-                    if (setValues.at(j) >= line + linesRemoved)
+                    if (setValues.at(j) >= (unsigned int)line + linesRemoved)
                     {
                         set << setValues.at(j) - linesRemoved;
                         changed = true;
                     }
                     else
                     {
-                        if (setValues.at(j) < line)
+                        if (setValues.at(j) < (unsigned int)line)
                         {
                             set << setValues.at(j);
                         }
@@ -3244,6 +3334,120 @@ int Project::handleBookmark(QString file, int line)
     qDebug() << "Project: does not contain" << fileRelative;
     return -1;
 }
+
+
+void Project::moveBookmarksAdd(QString file, int line, unsigned int linesAdded)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->bookmarks.count(); i++)
+        {
+            if (this->bookmarks.at(i).first == file)
+            {
+                //handle move
+                bool changed = false;
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->bookmarks.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) > (unsigned int)line)
+                    {
+                        set << setValues.at(j) + linesAdded;
+                        changed = true;
+                    }
+                    else
+                    {
+                        set << setValues.at(j);
+                    }
+                }
+                if (true == changed)
+                {
+                    this->bookmarks.removeAt(i);
+                    QPair<QString, QSet<unsigned int>> pair(file, set);
+                    this->bookmarks.append(pair);
+                    /*if (this->prjPath != "untracked")
+                    {
+                        this->xmlBreakpointFileReplace(file);
+                    }*/
+                }
+                break;
+            }
+        }
+    }
+}
+
+
+void Project::moveBookmarksRemove(QString file, int line, unsigned int linesRemoved)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->bookmarks.count(); i++)
+        {
+            if (this->bookmarks.at(i).first == file)
+            {
+                //handle move
+                bool changed = false;
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->bookmarks.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) >= (unsigned int)line + linesRemoved)
+                    {
+                        set << setValues.at(j) - linesRemoved;
+                        changed = true;
+                    }
+                    else
+                    {
+                        if (setValues.at(j) < (unsigned int)line)
+                        {
+                            set << setValues.at(j);
+                        }
+                        else
+                        {
+                        //else (==) do nothing, breakpoint removed
+                            changed = true;
+                        }
+                    }
+                }
+                if (true == changed)
+                {
+                    this->bookmarks.removeAt(i);
+                    if (false == set.isEmpty())
+                    {
+                        QPair<QString, QSet<unsigned int>> pair(file, set);
+                        this->bookmarks.append(pair);
+                        /*if (this->prjPath != "untracked")
+                        {
+                            this->xmlBreakpointFileReplace(file);
+                        }*/
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
+
 
 
 void Project::breakpointReachedSlot()

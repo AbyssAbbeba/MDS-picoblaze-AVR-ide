@@ -48,8 +48,6 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setSimWidgetUpdatedColor(QColor color);
 
-        void setBreakpointColor(QColor color);
-
         void setWarningsOpt(GuiCfg::WarningsOpt opts);
 
         void fileOpened(QString path, QString name);
@@ -105,8 +103,6 @@ class GuiCfg : public QObject, public GuiCfg_Items
         QColor getSimColor();
 
         QColor getSimWidgetChangedColor();
-
-        QColor getBreakpointColor();
 
         GuiCfg::WarningsOpt getWarningsOpt();
 
