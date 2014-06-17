@@ -56,6 +56,12 @@ class MCUSimBase
              */
             ARCH_PICOBLAZE,
 
+            /**
+             * AdaptableSim - simulator for user-defined processors.
+             * Harvard architecture processor core inspired by KCPSM.
+             */
+            ARCH_ADAPTABLE,
+
             ARCH__MAX__         ///<
         };
 

@@ -27,5 +27,8 @@ add_subdirectory ( PIC8 )
 # Build the KCPSMx (PicoBlaze) Simulator
 add_subdirectory ( PicoBlaze )
 
+# Build the Adaptable Simulator
+add_subdirectory ( AdaptableSim )
+
 # Build the MCU simulator configuration management
 add_subdirectory ( McuSimCfgMgr )
