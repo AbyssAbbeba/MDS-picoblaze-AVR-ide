@@ -46,6 +46,8 @@ MainForm::MainForm()
     this->simulationRunStatus = false;
     this->simulationAnimateStatus = false;
     this->simulationRequest = false;
+    this->simulationBreakpointsReload = true;
+    this->simulationBreakpointsEnabled = true;
     
     projectMan = new ProjectMan(this);
     connect(projectMan,
@@ -124,11 +126,6 @@ MainForm::MainForm()
             SLOT(manageBreakpointEmit(QString, int))
            );
     connect(wDockManager,
-            SIGNAL(bookmarkEmit(QString, int)),
-            this,
-            SLOT(manageBookmarkEmit(QString, int))
-           );
-    connect(wDockManager,
             SIGNAL(breakpointsAddLines(QString, int, int)),
             this,
             SLOT(breakpointsAddLines(QString, int, int))
@@ -137,6 +134,21 @@ MainForm::MainForm()
             SIGNAL(breakpointsRemoveLines(QString, int, int)),
             this,
             SLOT(breakpointsRemoveLines(QString, int, int))
+           );
+    connect(wDockManager,
+            SIGNAL(bookmarkEmit(QString, int)),
+            this,
+            SLOT(manageBookmarkEmit(QString, int))
+           );
+    connect(wDockManager,
+            SIGNAL(bookmarksAddLines(QString, int, int)),
+            this,
+            SLOT(bookmarksAddLines(QString, int, int))
+           );
+    connect(wDockManager,
+            SIGNAL(bookmarksRemoveLines(QString, int, int)),
+            this,
+            SLOT(bookmarksRemoveLines(QString, int, int))
            );
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
@@ -286,6 +298,7 @@ void MainForm::createMenu()
     simulationMenu->addAction(simulationUnhighlightAct);
     simulationMenu->addSeparator();
     simulationMenu->addAction(simulationBreakpointAct);
+    simulationMenu->addAction(simulationDisableBreakpointsAct);
 
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
     toolsMenu->addAction(toolDisassemblerAct);
@@ -422,7 +435,7 @@ void MainForm::createActions()
     this->pm_simFlowStart = new QPixmap(":/resources//icons//simulationStart.png");
     this->pm_simFlowStop = new QPixmap(":/resources//icons//simulationStop.png");
     this->icon_simFlow = new QIcon(*pm_simFlowStart);
-    simulationFlowAct = new QAction(*icon_simFlow, tr("Start simulation"), this);
+    simulationFlowAct = new QAction(*icon_simFlow, tr("Start Simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
     simulationStatus = false;
     simulationRunStatus = false;
@@ -466,6 +479,11 @@ void MainForm::createActions()
 
     simulationBreakpointAct = new QAction(tr("Breakpoint"), this);
     simulationBreakpointAct->setDisabled(true);
+    connect(simulationBreakpointAct, SIGNAL(triggered()), this, SLOT(breakpointActHandle()));
+
+    simulationDisableBreakpointsAct = new QAction(tr("Disable breakpoints"), this);
+    simulationDisableBreakpointsAct->setDisabled(true);
+    connect(simulationDisableBreakpointsAct, SIGNAL(triggered()), this, SLOT(disableBreakpointsHandle()));
 
     this->pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
     this->icon_toolDis = new QIcon(*pm_toolDis);
@@ -485,7 +503,7 @@ void MainForm::createActions()
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     helpActionAct = new QAction(tr("Help"), this);
     connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("Example 1"), this);
+    example1Act = new QAction(tr("Example Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":/resources//icons//cross.png");
@@ -547,6 +565,8 @@ void MainForm::createToolbar()
     simulationToolBar->addAction(simulationStepAct);
     simulationToolBar->addAction(simulationResetAct);
     simulationToolBar->addAction(simulationUnhighlightAct);
+    simulationToolBar->addAction(simulationBreakpointAct);
+    simulationToolBar->addAction(simulationDisableBreakpointsAct);
 
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
@@ -792,6 +812,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                         centralCodeEdit->setParentProject(projectMan->getOpenProjects().at(i));
                         wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getOpenProjects().at(i));
                         centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+                        centralCodeEdit->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
                         //wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->updateLineCounter();
                         break;
                     }
@@ -809,6 +830,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 centralCodeEdit->setParentProject(projectMan->getActive());
                 wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getActive());
                 centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+                centralCodeEdit->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
                 //wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->updateLineCounter();
                 
             }
@@ -1855,16 +1877,20 @@ void MainForm::simulationRunHandle()
             this->simulationAnimateAct->setEnabled(true);
             this->simulationStepAct->setEnabled(true);
             this->simulationResetAct->setEnabled(true);
+            this->simulationBreakpointAct->setEnabled(true);
+            this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationRunStatus = false;
         }
         else
         {
             this->icon_simRun = new QIcon(*pm_cross);
             simulationRunAct->setIcon(*icon_simRun);
-            simulationRunAct->setText(tr("Stop run"));
+            simulationRunAct->setText(tr("Stop Run"));
             this->simulationAnimateAct->setDisabled(true);
             this->simulationStepAct->setDisabled(true);
             this->simulationResetAct->setDisabled(true);
+            this->simulationBreakpointAct->setDisabled(true);
+            this->simulationDisableBreakpointsAct->setDisabled(true);
             this->simulationRunStatus = true;
         }
         projectMan->getSimulated()->run();
@@ -1888,21 +1914,26 @@ void MainForm::simulationAnimateHandle()
             this->simulationRunAct->setEnabled(true);
             this->simulationStepAct->setEnabled(true);
             this->simulationResetAct->setEnabled(true);
+            this->simulationBreakpointAct->setEnabled(true);
+            this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationAnimateStatus = false;
         }
         else
         {
             this->icon_simAnimate = new QIcon(*pm_cross);
             simulationAnimateAct->setIcon(*icon_simAnimate);
-            simulationAnimateAct->setText(tr("Stop animate"));
+            simulationAnimateAct->setText(tr("Stop Animate"));
             this->simulationRunAct->setDisabled(true);
             this->simulationStepAct->setDisabled(true);
             this->simulationResetAct->setDisabled(true);
+            this->simulationBreakpointAct->setDisabled(true);
+            this->simulationDisableBreakpointsAct->setDisabled(true);
             this->simulationAnimateStatus = true;
         }
         projectMan->getSimulated()->animate();
     }
 }
+
 
 
 /**
@@ -1989,6 +2020,7 @@ void MainForm::simulationFlowHandle()
             simulationStepAct->setEnabled(true);
             simulationRunAct->setEnabled(true);
             simulationAnimateAct->setEnabled(true);
+            simulationDisableBreakpointsAct->setEnabled(true);
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
             projectMan->setSimulated(projectMan->getActive());
@@ -2059,6 +2091,7 @@ void MainForm::simulationFlowHandle()
         simulationStepAct->setDisabled(true);
         simulationRunAct->setDisabled(true);
         simulationAnimateAct->setDisabled(true);
+        simulationDisableBreakpointsAct->setDisabled(true);
         simulationResetAct->setDisabled(true);
         simulationUnhighlightAct->setDisabled(true);
         projectMan->getSimulated()->stop();
@@ -2396,12 +2429,10 @@ void MainForm::stopSimSlot()
     //qDebug() << "MainForm: stopSimSlot";
     if (true == simulationRunStatus)
     {
-        //qDebug() << "MainForm: stop run";
         this->simulationRunHandle();
     }
     else if (true == simulationAnimateStatus)
     {
-        //qDebug() << "MainForm: stop animate";
         this->simulationAnimateHandle();
     }
 }
@@ -2549,6 +2580,23 @@ void MainForm::manageBookmarkEmit(QString file, int line)
 }
 
 
+void MainForm::bookmarksAddLines(QString file, int line, int linesAdded)
+{
+    qDebug() << "MainForm: bookmarksAddLines";
+    projectMan->getActive()->moveBookmarksAdd(file, line + 1, linesAdded);
+    wDockManager->getBookmarkList()->bookmarksAddLines(file, line + 1, linesAdded);
+    wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesAdded, true);
+}
+
+
+void MainForm::bookmarksRemoveLines(QString file, int line, int linesRemoved)
+{
+    projectMan->getActive()->moveBookmarksRemove(file, line + 1, linesRemoved);
+    wDockManager->getBookmarkList()->bookmarksRemoveLines(file, line + 1, linesRemoved);
+    wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesRemoved, false);
+}
+
+
 /*void MainForm::manageBreakpointRemove(QString file, int line)
 {
     qDebug() << "MainForm: breakpoint remove:" << file << ":" << line;
@@ -2618,6 +2666,8 @@ void MainForm::pauseSimulation()
             this->simulationRunAct->setEnabled(true);
             this->simulationStepAct->setEnabled(true);
             this->simulationResetAct->setEnabled(true);
+            this->simulationBreakpointAct->setEnabled(true);
+            this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationAnimateStatus = false;
             return;
         }
@@ -2630,6 +2680,8 @@ void MainForm::pauseSimulation()
             this->simulationAnimateAct->setEnabled(true);
             this->simulationStepAct->setEnabled(true);
             this->simulationResetAct->setEnabled(true);
+            this->simulationBreakpointAct->setEnabled(true);
+            this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationRunStatus = false;
             return;
         }
@@ -2638,8 +2690,9 @@ void MainForm::pauseSimulation()
 
 
 
-void MainForm::closeEvent(QCloseEvent *event)
+void MainForm::closeEvent(QCloseEvent */*event*/)
 {
+    //TODO: save prompt
     QApplication::closeAllWindows();
 }
 
@@ -2703,4 +2756,27 @@ void MainForm::requestMacrosCodeEdits()
         }
     }
     emit provideMacroCodeEdits(list);
+}
+
+ 
+void MainForm::breakpointActHandle()
+{
+    
+}
+
+
+void MainForm::disableBreakpointsHandle()
+{
+    if (true == this->simulationBreakpointsEnabled)
+    {
+        this->projectMan->getSimulated()->setBreakpoints(false);
+        this->simulationBreakpointsEnabled = false;
+        this->simulationDisableBreakpointsAct->setText(tr("Enable Breakpoints"));
+    }
+    else
+    {
+        this->projectMan->getSimulated()->setBreakpoints(true);
+        this->simulationBreakpointsEnabled = true;
+        this->simulationDisableBreakpointsAct->setText(tr("Disable Breakpoints"));
+    }
 }

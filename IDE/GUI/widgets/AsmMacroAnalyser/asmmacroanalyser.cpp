@@ -121,7 +121,7 @@ void AsmMacroAnalyser::requestRefresh()
 }
 
 
-void AsmMacroAnalyser::macroClickedSlot(QTreeWidgetItem *item, int column)
+void AsmMacroAnalyser::macroClickedSlot(QTreeWidgetItem *item, int /*column*/)
 {
     emit macroClicked(item->toolTip(3), item->text(2).toInt());
 }

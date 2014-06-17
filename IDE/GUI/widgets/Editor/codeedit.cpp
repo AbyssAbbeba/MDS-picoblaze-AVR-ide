@@ -138,6 +138,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             SLOT(manageBookmarkEmit(int))
            );
     connect(textEdit,
+            SIGNAL(bookmarksAddLines(int, int)),
+            this,
+            SLOT(bookmarksAddLines(int, int))
+           );
+    connect(textEdit,
+            SIGNAL(bookmarksRemoveLines(int, int)),
+            this,
+            SLOT(bookmarksRemoveLines(int, int))
+           );
+    connect(textEdit,
             SIGNAL(updateLineCounter()),
             this,
             SLOT(updateLineCounter())
@@ -307,6 +317,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SIGNAL(bookmark(int)),
             this,
             SLOT(manageBookmarkEmit(int))
+           );
+    connect(textEdit,
+            SIGNAL(bookmarksAddLines(int, int)),
+            this,
+            SLOT(bookmarksAddLines(int, int))
+           );
+    connect(textEdit,
+            SIGNAL(bookmarksRemoveLines(int, int)),
+            this,
+            SLOT(bookmarksRemoveLines(int, int))
            );
     connect(textEdit,
             SIGNAL(updateLineCounter()),
@@ -624,9 +644,14 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     this->setName(editor->getName());
     this->setPath(editor->getPath());
     this->breakpointsLines = editor->getBreakpointsLines();
+    this->bookmarksLines = editor->getBookmarksLines();
     if (this->breakpointsLines == NULL)
     {
         qDebug() << "CodeEdit: breakpointsLines == NULL";
+    }
+    if (this->bookmarksLines == NULL)
+    {
+        qDebug() << "CodeEdit: bookmarskLines == NULL";
     }
     this->lineCount->getWidget()->setBreakpointList(this->breakpointsLines);
     this->lineCount->getWidget()->setBookmarkList(this->bookmarksLines);
@@ -831,6 +856,7 @@ QList<int>* CodeEdit::getBookmarksLines()
 
 void CodeEdit::breakpointsAddLines(int line, int linesAdded)
 {
+    qDebug() << "CodeEdit: breakpointsAddLines";
     emit breakpointsAddLines(this->path, line, linesAdded);
 }
 
@@ -901,6 +927,63 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
                 }
             }
         }*/
+    }
+    if (true == update)
+    {
+        this->lineCount->getWidget()->update();
+    }
+}
+
+
+void CodeEdit::bookmarksAddLines(int line, int linesAdded)
+{
+    qDebug() << "CodeEdit: bookmarksAddLines";
+    emit bookmarksAddLines(this->path, line, linesAdded);
+}
+
+
+void CodeEdit::bookmarksRemoveLines(int line, int linesRemoved)
+{
+    emit bookmarksRemoveLines(this->path, line, linesRemoved);
+}
+
+
+void CodeEdit::moveBookmarksLines(int line, int linesChanged, bool added)
+{
+    bool update = false;
+    if (true == added)
+    {
+        for (int i = 0; i < this->bookmarksLines->count(); i++)
+        {
+            if (this->bookmarksLines->at(i) > line)
+            {
+                (*(this->bookmarksLines))[i] += linesChanged;
+                update = true;
+            }
+        }
+    }
+    else
+    {
+        QList<int>::iterator i;
+        for (i = this->bookmarksLines->begin(); i != this->bookmarksLines->end(); i++)
+        {
+            if ( *i >= line
+            && *i < line + linesChanged
+            )
+            {
+                *i = -1;
+                update = true;
+            }
+            else
+            {
+                if (*i >= line + linesChanged)
+                {
+                    *i -= linesChanged;
+                    update = true;
+                }
+            }
+        }
+        this->bookmarksLines->removeAll(-1);
     }
     if (true == update)
     {
