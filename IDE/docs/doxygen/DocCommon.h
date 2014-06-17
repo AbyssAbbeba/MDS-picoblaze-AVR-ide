@@ -59,6 +59,10 @@
  * @ingroup MCUSim
  * Simulator of PicoBlaze soft-processors.
  *
+ * @defgroup AdaptableSim Adaptable Simulator
+ * @ingroup MCUSim
+ * Simulator for user defined processors.
+ *
  * @defgroup McuSimCfgMgr MCU simulator configuration manager
  * @ingroup MCUSim
  * MCU simulator configuration management.
