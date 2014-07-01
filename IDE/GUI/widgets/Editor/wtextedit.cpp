@@ -824,3 +824,59 @@ void WTextEdit::setSpacesInTab(int spacesInTab)
 {
     this->spacesInTab = spacesInTab;
 }
+
+bool WTextEdit::highlightLineAppend(int line, QColor *color)
+{
+    //qDebug() << "Highlight";
+    if (line >= 0 && line <= this->document()->lineCount())
+    {
+        QTextBlock lineBlock = this->document()->findBlockByNumber(line);
+        QTextCursor cursor(lineBlock);
+
+        QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
+        
+        QTextEdit::ExtraSelection selection;
+        selection.format.setBackground(*color);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = cursor;
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+
+        this->setExtraSelections(extraSelections);
+
+        /*QTextBlockFormat lineFormat = lineBlock.blockFormat();
+        if (color == NULL)
+        {
+            //QPalette palette = this->palette();
+            //lineFormat.setBackground(palette.color(QPalette::Base));
+            lineFormat.clearBackground();
+            //lineFormat.setBackground(Qt::red);
+        }
+        else
+        {
+            //QColor orig = lineFormat.background().color();
+            //origColor = &orig;
+            lineFormat.setBackground(*color);
+        }*/
+        /*QTextCursor cursor(lineBlock);
+        //qDebug() << "position: " << cursor.position();
+        cursor.setBlockFormat(lineFormat);*/
+        this->setTextCursor(cursor);
+        this->ensureCursorVisible();
+        //qDebug() << "WTextEdit: return highlightLine()";
+        return true;
+    }
+    /*else
+    {
+        qDebug() << "WTextEdit: highlight failed----";
+    }*/
+    //qDebug() << "WTextEdit: return highlightLine()";
+    return false;
+}
+
+
+void WTextEdit::clearHighlight()
+{
+    //qDebug() << "WTextEdit: clearHighlight()";
+    this->setExtraSelections(QList<QTextEdit::ExtraSelection>());
+}

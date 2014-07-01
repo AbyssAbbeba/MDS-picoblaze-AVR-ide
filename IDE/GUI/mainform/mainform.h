@@ -104,6 +104,10 @@ class MainForm : public QMainWindow
         void addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget);
         void connectProjectSlot(Project *project);
         void highlightLine(QString file, int line, QColor *color);
+        void simHighlightLines(std::vector<std::pair<const std::string *, unsigned int>> curr,
+                               std::vector<std::pair<const std::string *, unsigned int>> prev,
+                               std::vector<std::pair<const std::string *, unsigned int>> prev2,
+                               QList<QColor*> colors);
         void setCentralByName(QString file);
         void scrollCentralToLine(int line);
         void setEditorReadOnly(bool readOnly);
