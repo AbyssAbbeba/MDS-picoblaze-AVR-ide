@@ -36,9 +36,9 @@ AdaptableSimSim::AdaptableSimSim()
     m_registers             = new AdaptableSimRegisters();
     m_dataMemory            = new AdaptableSimDataMemory();
     m_statusFlags           = new AdaptableSimStatusFlags();
-    m_instructionSet        = new AdaptableSimInstructionSet();
     m_clockControl          = new AdaptableSimClockControl();
     m_programMemory         = new AdaptableSimProgramMemory();
+    m_instructionSet        = new AdaptableSimInstructionSet();
     m_interruptController   = new AdaptableSimInterruptController();
 
     regSubSys ( m_io             -> link ( m_eventLogger ) );
@@ -95,7 +95,6 @@ inline void AdaptableSimSim::regSubSys ( MCUSimSubsys * subSystem )
 {
     m_subSystems.push_back(subSystem);
 }
-
 
 inline void AdaptableSimSim::unregSubSys ( const MCUSimSubsys * subSystem )
 {
