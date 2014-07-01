@@ -88,4 +88,33 @@ void AdaptableSimInstructionSet::irq()
 
 int AdaptableSimInstructionSet::execInstruction()
 {
+    const int pcOrig = m_pc;
+    unsigned int opCode = m_programMemory->readRaw(m_pc);
+
+    if ( opCode & 0xffff0000 )
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_UNDEFINED_OPCODE, m_pc );
+
+        if ( true == m_config.m_ignoreUndefinedOpCodes )
+        {
+            incrPc();
+            return -1;
+        }
+        else
+        {
+            opCode &= 0x0ffff;
+        }
+    }
+
+    incrPc();
+
+    // Execute instruction from dispatch table.
+    ( this ->* ( m_opCodeDispatchTable [ opCode >> 12 ] ) ) ( opCode );
+
+    if ( pcOrig != m_pc )
+    {
+        logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
+    }
+
+    return 1;
 }
