@@ -1001,22 +1001,22 @@ void CodeEdit::changeTabStopWidth(int width)
 
 void CodeEdit::setBreakpointsLines(QList<unsigned int> breakpoints)
 {
-    qDebug() << "CodeEdit: setBreakpointsLines(unsigned int)";
+    //qDebug() << "CodeEdit: setBreakpointsLines(unsigned int)";
     /*if (breakpoints == NULL)
     {
         qDebug() << "CodeEdit: breakpoints NULL";
     }*/
-    qDebug() << "breakpoints count" << breakpoints.count();
+    //qDebug() << "breakpoints count" << breakpoints.count();
     //if (breakpoints != NULL && breakpointsLines != NULL)
     if (breakpointsLines != NULL)
     {
         this->breakpointsLines->clear();
         for (int i = 0; i < breakpoints.count(); i++)
         {
-            qDebug() << "CodeEdit: appending breakpoint";
+            //qDebug() << "CodeEdit: appending breakpoint";
             this->breakpointsLines->append((int)breakpoints.at(i));
         }
-        qDebug() << "CodeEdit: setBreakpoints - updateWidget()";
+        //qDebug() << "CodeEdit: setBreakpoints - updateWidget()";
         this->lineCount->getWidget()->update();
     }
 }

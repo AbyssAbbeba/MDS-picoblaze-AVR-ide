@@ -2024,6 +2024,14 @@ void MainForm::simulationFlowHandle()
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
             projectMan->setSimulated(projectMan->getActive());
+            if (true == simulationBreakpointsEnabled)
+            {
+                projectMan->getSimulated()->setBreakpoints(true);
+            }
+            else
+            {
+                projectMan->getSimulated()->setBreakpoints(false);
+            }
         }
         else
         {
@@ -2193,7 +2201,18 @@ void MainForm::addDockWidgetSlot(Qt::DockWidgetArea area, QDockWidget *widget)
  */
 void MainForm::connectProjectSlot(Project *project)
 {
-    connect(project, SIGNAL(highlightLine(QString, int, QColor*)), this, SLOT(highlightLine(QString, int, QColor*)));
+    //connect(project, SIGNAL(highlightLine(QString, int, QColor*)), this, SLOT(highlightLine(QString, int, QColor*)));
+    connect(project,
+            SIGNAL(simHighlightLines(std::vector<std::pair<const std::string *, unsigned int>>,
+                                     std::vector<std::pair<const std::string *, unsigned int>>,
+                                     std::vector<std::pair<const std::string *, unsigned int>>,
+                                     QList<QColor*>)),
+            this,
+            SLOT(simHighlightLines(std::vector<std::pair<const std::string *, unsigned int>>,
+                                   std::vector<std::pair<const std::string *, unsigned int>>,
+                                   std::vector<std::pair<const std::string *, unsigned int>>,
+                                   QList<QColor*>)));
+            
     connect(project, SIGNAL(setCentralByName(QString)), this, SLOT(setCentralByName(QString)));
     //connect(project, SIGNAL(scrollToLine(int)), this, SLOT(scrollCentralToLine(int)));
     connect(project, SIGNAL(addUntrackedFile(QString, QString)), this, SLOT(addUntrackedFile(QString, QString)));
@@ -2221,7 +2240,7 @@ void MainForm::highlightLine(QString file, int line, QColor *color)
     {
         this->getWDockManager()->setCentralByName(file.section('/', -1));
         this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color);
-        this->getWDockManager()->getCentralWidget()->setSaved();
+        //this->getWDockManager()->getCentralWidget()->setSaved();
         //if (this->getWDockManager()->getCentralTextEdit()->highlightLine(line, color) == true)
         //{
         //    this->getWDockManager()->getCentralTextEdit()->scrollToLine(line, false);
@@ -2699,36 +2718,43 @@ void MainForm::closeEvent(QCloseEvent */*event*/)
 
 void MainForm::undoSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->undo();
 }
 
 
 void MainForm::redoSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->redo();
 }
 
 
 void MainForm::cutSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->cut();
 }
 
 
 void MainForm::copySlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->copy();
 }
 
 
 void MainForm::pasteSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->paste();
 }
 
 
 void MainForm::selectAllSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->selectAll();
 }
 
 
 void MainForm::deselectSlot()
 {
+    this->getWDockManager()->getCentralTextEdit()->deselect();
 }
 
 
@@ -2761,7 +2787,7 @@ void MainForm::requestMacrosCodeEdits()
  
 void MainForm::breakpointActHandle()
 {
-    
+    this->manageBreakpointEmit(wDockManager->getCentralPath(), wDockManager->getCentralTextEdit()->textCursor().blockNumber());
 }
 
 
@@ -2769,14 +2795,151 @@ void MainForm::disableBreakpointsHandle()
 {
     if (true == this->simulationBreakpointsEnabled)
     {
-        this->projectMan->getSimulated()->setBreakpoints(false);
         this->simulationBreakpointsEnabled = false;
         this->simulationDisableBreakpointsAct->setText(tr("Enable Breakpoints"));
+        if (true == this->simulationStatus)
+        {
+            this->projectMan->getSimulated()->setBreakpoints(false);
+        }
     }
     else
     {
-        this->projectMan->getSimulated()->setBreakpoints(true);
         this->simulationBreakpointsEnabled = true;
         this->simulationDisableBreakpointsAct->setText(tr("Disable Breakpoints"));
+        if (true == this->simulationStatus)
+        {
+            this->projectMan->getSimulated()->setBreakpoints(true);
+        }
+    }
+}
+
+
+void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsigned int>> curr,
+                                 std::vector<std::pair<const std::string *, unsigned int>> prev,
+                                 std::vector<std::pair<const std::string *, unsigned int>> prev2,
+                                 QList<QColor*> colors)
+{
+    QSet<QString> files;
+    if (prev.size() > 0)
+    {
+        if (prev.size() > 1)
+        {
+            for (unsigned int i = 0; i < prev.size(); i++)
+            {
+                files << QString::fromStdString(*(std::get<0>(prev.at(i))));
+            }
+        }
+        else
+        {
+            files << QString::fromStdString(*(std::get<0>(prev.at(0))));
+        }
+    }
+    if (prev2.size() > 0)
+    {
+        if (prev2.size() > 1)
+        {
+            for (unsigned int i = 0; i < prev2.size(); i++)
+            {
+                files << QString::fromStdString(*(std::get<0>(prev2.at(i))));
+            }
+        }
+        else
+        {
+            files << QString::fromStdString(*(std::get<0>(prev2.at(0))));
+        }
+    }
+    if (curr.size() > 0)
+    {
+        if (curr.size() > 1)
+        {
+            for (unsigned int i = 0; i < curr.size(); i++)
+            {
+                files << QString::fromStdString(*(std::get<0>(curr.at(i))));
+            }
+        }
+        else
+        {
+            files << QString::fromStdString(*(std::get<0>(curr.at(0))));
+        }
+    }
+    
+    foreach (const QString &value, files)
+    {
+        if (false == this->getWDockManager()->setCentralByPath(value))
+        {
+            this->openFilePath(value);
+            this->getWDockManager()->setCentralByPath(value);
+        }
+        this->getWDockManager()->getCentralTextEdit()->clearHighlight();
+        
+        /*if (NULL == this->getWDockManager()->getCentralByPath(value))
+        {
+            this->openFilePath(value);
+        }
+        this->getWDockManager()->getCentralByPath(value)->getTextEdit()->clearHighlight();*/
+    }
+    
+    if (prev.size() > 0)
+    {
+        if (prev.size() > 1)
+        {
+            for (unsigned int i = 0; i < prev.size(); i++)
+            {
+                if (QString::fromStdString(*(std::get<0>(prev.at(i)))) != "")
+                {
+                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)), colors.at(1));
+                    //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)), colors.at(1));
+                }
+            }
+        }
+        else
+        {
+            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)), colors.at(1));
+            //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)), colors.at(1));
+        }
+    }
+
+    if (prev2.size() > 0)
+    {
+        if (prev2.size() > 1)
+        {
+            for (unsigned int i = 0; i < prev2.size(); i++)
+            {
+                if (QString::fromStdString(*(std::get<0>(prev2.at(i)))) != "")
+                {
+                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(i)), colors.at(2));
+                    //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
+                }
+            }
+        }
+        else
+        {
+            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
+            //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
+        }
+    }
+
+    if (curr.size() > 0)
+    {
+        if (curr.size() > 1)
+        {
+            for (unsigned int i = 0; i < curr.size(); i++)
+            {
+                if (QString::fromStdString(*(std::get<0>(curr.at(i)))) != "")
+                {
+                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(i)), colors.at(0));
+                }
+            }
+        }
+        else
+        {
+            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)), colors.at(0));
+        }
     }
 }
