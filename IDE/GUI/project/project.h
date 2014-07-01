@@ -197,7 +197,11 @@ class Project : public QObject
         void breakpointReachedSlot();
 
     signals:
-        void highlightLine(QString file, int line, QColor *color);
+        //void highlightLine(QString file, int line, QColor *color);
+        void simHighlightLines(std::vector<std::pair<const std::string *, unsigned int>> curr,
+                               std::vector<std::pair<const std::string *, unsigned int>> prev,
+                               std::vector<std::pair<const std::string *, unsigned int>> prev2,
+                               QList<QColor*> colors);
         void setCentralByName(QString file);
         void scrollToLine(int line);
         void addUntrackedFile(QString name, QString path);
@@ -219,17 +223,10 @@ class Project : public QObject
         ProjectMan *parentManager;
         QList<QPair<QString, QSet<unsigned int>>> breakPoints;
         QList<QPair<QString, QSet<unsigned int>>> bookmarks;
-        std::vector<std::pair<const std::string *, unsigned int>> currLine;
-        int prevLine;
-        int prevLine2;
-        int prevLine3;
-        QColor currLineColor;
-        QColor prevLineColor;
-        QColor prevLine2Color;
-        QString currFile;
-        QString prevFile;
-        QString prevFile2;
-        QString prevFile3;
+        std::vector<std::pair<const std::string *, unsigned int>> currSim;
+        std::vector<std::pair<const std::string *, unsigned int>> prevSim;
+        std::vector<std::pair<const std::string *, unsigned int>> prevSim2;
+        QList<QColor*> simColors;
         
         QTreeWidgetItem *treeProjName;
         QTreeWidgetItem *treeProjSource;

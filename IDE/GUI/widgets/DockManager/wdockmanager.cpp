@@ -949,7 +949,7 @@ void WDockManager::setCentralByName(QString fileName)
 }
 
 
-void WDockManager::setCentralByPath(QString filePath)
+bool WDockManager::setCentralByPath(QString filePath)
 {
     //qDebug() << "WDockManager: setCentralByName()";
     if (filePath != "")
@@ -965,10 +965,11 @@ void WDockManager::setCentralByPath(QString filePath)
                     this->wTab->setCurrentIndex(i);
                     //this->changeCodeEditor(i);
                 }
-                return;
+                return true;
             }
         }
     }
+    return false;
     //qDebug() << "WDockManager: return setCentralByName()";
 }
 
@@ -984,7 +985,7 @@ CodeEdit* WDockManager::getCentralByPath(QString filePath)
             if (this->wTab->tabToolTip(i) == filePath)
             {
                 //qDebug() << "WDockManager: CodeEdit found";
-                return this->codeEditList.at(this->wTab->currentIndex());
+                return openCentralWidgets.at(this->wTab->currentIndex())->getCodeEdit();
             }
         }
     }
