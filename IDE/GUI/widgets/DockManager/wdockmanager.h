@@ -91,7 +91,7 @@ class WDockManager : public QObject
         void createBookmarkList(QDockWidget *wDockWidget);
         void createBreakpointList(QDockWidget *wDockWidget);
         void setCentralByName(QString fileName);
-        void setCentralByPath(QString filePath);
+        bool setCentralByPath(QString filePath);
         CodeEdit* getCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         void changeSimWidget(int index);
