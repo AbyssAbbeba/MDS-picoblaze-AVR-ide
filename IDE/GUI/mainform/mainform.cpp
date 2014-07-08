@@ -28,6 +28,7 @@
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
 #include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
+#include "../widgets/LicenseWidget/licensewidget.h"
 #include "../guicfg/guicfg.h"
 
 
@@ -308,6 +309,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolDisplayAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(licenseAct);
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQTAct);
     helpMenu->addAction(helpActionAct);
@@ -498,6 +500,8 @@ void MainForm::createActions()
     toolDisplayAct = new QAction(tr("Segment Display"), this);
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
 
+    licenseAct = new QAction(tr("License"), this);
+    connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     aboutAct = new QAction(tr("About"), this);
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
@@ -2942,4 +2946,11 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)), colors.at(0));
         }
     }
+}
+
+
+void MainForm::manageLicense()
+{
+    LicenseWidget *widget = new LicenseWidget(this);
+    widget->exec();
 }

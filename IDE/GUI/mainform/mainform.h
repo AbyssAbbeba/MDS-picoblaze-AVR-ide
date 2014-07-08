@@ -142,6 +142,7 @@ class MainForm : public QMainWindow
         void requestMacrosCodeEdits();
         void breakpointActHandle();
         void disableBreakpointsHandle();
+        void manageLicense();
 
     signals:
         void unhighlightSim();
@@ -220,6 +221,7 @@ class MainForm : public QMainWindow
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
 
+        QAction *licenseAct;
         QAction *aboutAct;
         QAction *aboutQTAct;        
         QAction *helpActionAct;
