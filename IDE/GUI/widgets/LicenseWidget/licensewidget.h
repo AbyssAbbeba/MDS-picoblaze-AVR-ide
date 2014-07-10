@@ -29,9 +29,13 @@ class LicenseWidget : public QDialog
 
     private slots:
         void load();
+        void tryAccept();
+        void tryReject();
 
     private:
         Ui_LicenseWidget ui;
+        bool license;
+        QString licensePath;
 
 };
 
