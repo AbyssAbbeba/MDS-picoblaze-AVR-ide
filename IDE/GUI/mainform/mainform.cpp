@@ -29,6 +29,7 @@
 #include "../widgets/HelpWidget/helpwidget.h"
 #include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
 #include "../widgets/LicenseWidget/licensewidget.h"
+#include "../widgets/LoopGen/loop_gen.h"
 #include "../guicfg/guicfg.h"
 
 
@@ -307,6 +308,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolFileConvertAct);
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
+    toolsMenu->addAction(toolLoopGenAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(licenseAct);
@@ -499,6 +501,8 @@ void MainForm::createActions()
     connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     toolDisplayAct = new QAction(tr("Segment Display"), this);
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
+    toolLoopGenAct = new QAction(tr("Loop Generator"), this);
+    connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
 
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -2953,4 +2957,11 @@ void MainForm::manageLicense()
 {
     LicenseWidget *widget = new LicenseWidget(this);
     widget->exec();
+}
+
+
+void MainForm::loopGen()
+{
+    loop_gen *widget = new loop_gen(this);
+    widget->show();
 }
