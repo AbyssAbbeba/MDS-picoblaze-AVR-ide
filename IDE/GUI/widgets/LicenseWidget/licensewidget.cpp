@@ -25,6 +25,10 @@ LicenseWidget::LicenseWidget(QWidget *parent)
     this->setModal(true);
     ui.setupUi(this);
     connect(ui.btnPath, SIGNAL(clicked()), this, SLOT(load()));
+    connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
+    connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
+
+    this->license = false;
 }
 
 //copy to path after ok
@@ -32,12 +36,13 @@ LicenseWidget::LicenseWidget(QWidget *parent)
 
 void LicenseWidget::load()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
-    if (path != NULL)
+    this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    if (this->licensePath != NULL)
     {
+        ui.lePath->setText(this->licensePath);
         std::ifstream ifs;
 
-        ifs.open (path.toStdString(), std::ios_base::binary);
+        ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
 
         if (ifs.is_open())
         {
@@ -45,6 +50,7 @@ void LicenseWidget::load()
             LicenseCertificate crt(ifs);
             if ( false == crt.m_isValid )
             {
+                this->license = true;
                 ui.teInfo->clear();
                 ui.teInfo->insertPlainText("Version:\t");
                 
@@ -105,4 +111,26 @@ void LicenseWidget::load()
         }
 
     }
+}
+
+
+void LicenseWidget::tryAccept()
+{
+    if (true == this->license)
+    {
+        QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+        this->setResult(QDialog::Accepted);
+    }
+    else
+    {
+        this->setResult(QDialog::Rejected);
+    }
+    this->close();
+}
+
+
+void LicenseWidget::tryReject()
+{
+    this->setResult(QDialog::Rejected);
+    this->close();
 }

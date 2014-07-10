@@ -15,6 +15,10 @@
 #include <QtGui>
 #include "mainform/mainform.h"
 #include "guicfg/guicfg.h"
+#include "widgets/LicenseWidget/licensewidget.h"
+#include "errordialog/errordlg.h"
+#include "../utilities/LicenseCertificate/LicenseCertificate.h"
+#include <iostream>
 
 int main(int argc, char *argv[])
 {
@@ -69,6 +73,20 @@ int main(int argc, char *argv[])
         }
     }
     GuiCfg::getInstance().loadConfig();
+    
+    std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);
+    LicenseCertificate crt(file);
+    file.close();
+
+    if ( false == crt.m_isValid )
+    {
+        error(ERR_NO_LICENSE);
+        LicenseWidget *widget = new LicenseWidget(0);
+        if (QDialog::Rejected == widget->exec())
+        {
+            return 1;
+        }
+    }
 
 
     /*qDebug() << "CodeEdit: available encoding";
