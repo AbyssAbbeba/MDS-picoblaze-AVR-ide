@@ -33,7 +33,7 @@ class loop_gen : public QWidget
         void keyPressEvent(QKeyEvent *);
         ~loop_gen();
 
-    public slots:
+    private slots:
         double TimeToCycles();
         void TimeChanged(QString);
         void Generate(void);
@@ -41,6 +41,7 @@ class loop_gen : public QWidget
         void Default_click(void);
         void Time_click(void);
         void Cycles_click (void);
+        void CopyToClipboard();
 
     private:
 

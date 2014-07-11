@@ -2962,6 +2962,6 @@ void MainForm::manageLicense()
 
 void MainForm::loopGen()
 {
-    loop_gen *widget = new loop_gen(this);
+    loop_gen *widget = new loop_gen(0);
     widget->show();
 }
