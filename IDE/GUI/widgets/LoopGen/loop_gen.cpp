@@ -1,6 +1,7 @@
 #include "loop_gen.h"
 #include "ui_loop_gen.h"
-#include "qdebug.h"
+#include "../Highlighter/highlighter.h"
+#include "../../guicfg/guicfg.h"
 #include <QtGui>
 
 #define max             8589803504
@@ -57,9 +58,14 @@ loop_gen::loop_gen(QWidget *parent) :
     ui->Vstup_Cas->setValidator(decValidator);
     ui->Vstup_Cycles->setValidator(decValidator);
 
+    ui->Vystup_text->setFont(GuiCfg::getInstance().getEditorFont());
+    Highlighter *highlighter = new Highlighter(ui->Vystup_text->document(), SourceType::PICOBLAZEASM);
 
+    ui->Vstup_Cycles->setDisabled(true);
+    
     connect(ui->Vstup_Cas, SIGNAL(textChanged(QString)), this, SLOT(TimeChanged(QString)));
     connect(ui->push_Generate, SIGNAL(clicked()), this, SLOT( Generate()));
+    connect(ui->push_Copy, SIGNAL(clicked()), this, SLOT(CopyToClipboard()));
     connect(ui->check_default, SIGNAL(clicked()), this, SLOT( Default_click()));
     connect(ui->radio_Cycles,  SIGNAL(clicked()), this, SLOT( Cycles_click()));
     connect(ui->radio_Time,  SIGNAL(clicked()), this, SLOT( Time_click()));
@@ -290,6 +296,7 @@ double loop_gen::TimeToCycles()
         Steps = temp1.toDouble() / 2;
         return temp1.toDouble();                         // dod2lat steps
     }
+    ui->Vstup_Cycles->setDisabled(false);
     // get inserted frekvency value
     setTimeFrame = get_frekvency();
     qDebug()<< " f:"<< Frekvency;
@@ -331,7 +338,7 @@ void loop_gen::TimeChanged ( QString Time_change )
 
 void loop_gen::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Enter)
+    if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
     {
         Generate();
     }
@@ -357,6 +364,7 @@ void loop_gen::Generate ( void)
     {
         ui->Vstup_Cycles->setText(QString::number( Cycles, 'f', 0 ) );
     }
+    
     GenerateLoop();
 }
 
@@ -1903,4 +1911,11 @@ void loop_gen::Default_click(void)
 loop_gen::~loop_gen()
 {
     delete ui;
+}
+
+
+void loop_gen::CopyToClipboard()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText(ui->Vystup_text->toPlainText());
 }
