@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimInterruptController.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimINTERRUPTCONTROLLER_H
-#define AdaptableSimINTERRUPTCONTROLLER_H
+#ifndef ADAPTABLESIMINTERRUPTCONTROLLER_H
+#define ADAPTABLESIMINTERRUPTCONTROLLER_H
 
 #include "../MCUSim.h"
 
@@ -70,9 +70,9 @@ class AdaptableSimInterruptController : public MCUSimSubsys
          * @param[in,out] statusFlags
          * @return
          */
-        AdaptableSimInterruptController * link ( MCUSimEventLogger        * eventLogger,
-                                              AdaptableSimInstructionSet  * instructionSet,
-                                              AdaptableSimStatusFlags     * statusFlags );
+        AdaptableSimInterruptController * link ( MCUSimEventLogger          * eventLogger,
+                                                 AdaptableSimInstructionSet * instructionSet,
+                                                 AdaptableSimStatusFlags    * statusFlags );
 
         /**
          * @brief
@@ -152,4 +152,4 @@ inline int AdaptableSimInterruptController::autoInterrupt()
     }
 }
 
-#endif // AdaptableSimINTERRUPTCONTROLLER_H
+#endif // ADAPTABLESIMINTERRUPTCONTROLLER_H

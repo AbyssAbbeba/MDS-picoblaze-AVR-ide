@@ -9,19 +9,22 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimStack.h
  */
 // =====================================================================================================================
 
-#ifndef AdaptableSimSTACK_H
-#define AdaptableSimSTACK_H
+#ifndef ADAPTABLESIMSTACK_H
+#define ADAPTABLESIMSTACK_H
 
 // Forward declarations
 class DataFile;
 
 #include "../MCUSim.h"
+
+#include "AdaptableSimRegisters.h"
+#include "AdaptableSimDataMemory.h"
 
 /**
  * @brief
@@ -47,8 +50,49 @@ class AdaptableSimStack : public MCUSimMemory
          */
         struct Config
         {
-            /// Stack capacity.
+            /// Stack capacity, set to 0 when simple stack is used or no stack is used at all.
             unsigned int m_size;
+
+            /// Use stack as designated single purpose memory accessible only by specific instruction subset.
+            bool m_useDesignatedStack;
+
+            /**
+             * @brief Settings related to simple stack, i.e. stack not implemented as designated single purpose memory.
+             */
+            struct SimpleStack
+            {
+                /// Target memory space.
+                enum Space
+                {
+                    SP_REG, ///< Register file.
+                    SP_DATA ///< Data memory.
+                };
+
+                /// Mode of stack operation.
+                enum Operation
+                {
+                    OP_PREINC,  ///< Increment SP before PUSH, decrement after  POP.
+                    OP_POSTINC, ///< Increment SP after  PUSH, decrement before POP.
+                    OP_PREDEC,  ///< Decrement SP before PUSH, increment after  POP.
+                    OP_POSTDEC  ///< Decrement SP after  PUSH, increment before POP.
+                } m_operation;
+
+                /// Location where the stacked values are stored.
+                struct Content
+                {
+                    Space m_space; ///< Memory space.
+                    int m_offset;  ///< This value is added to the stack pointer value before accessing stack memory.
+                } m_content;
+
+                /// Location designated for the stack pointer.
+                struct Pointer
+                {
+                    Space m_space;   ///< Memory space.
+                    int m_address;   ///< Address in the designated memory space.
+                    int m_maxSize; ///< Maximum allowed stack pointer value, -1 means no limit.
+                    bool m_indirect; ///< If true, "m_address" is threated as indirect address.
+                } m_pointer;
+            } m_simpleStack;
         };
 
     ////    Constructors and Destructors    ////
@@ -68,9 +112,13 @@ class AdaptableSimStack : public MCUSimMemory
         /**
          * @brief Link the subsystem with other simulator subsystems which this subsystem necessarily needs to function.
          * @param[in,out] eventLogger Simulator event observer.
+         * @param[in,out] registers Register file simulation subsystem.
+         * @param[in,out] dataMemory Generic data memory simulation subsystem.
          * @return This object.
          */
-        AdaptableSimStack * link ( MCUSimEventLogger * eventLogger );
+        AdaptableSimStack * link ( MCUSimEventLogger      * eventLogger,
+                                   AdaptableSimRegisters  * registers,
+                                   AdaptableSimDataMemory * dataMemory );
 
         /**
          * @brief Reset the subsystem in the specified mode.
@@ -118,6 +166,46 @@ class AdaptableSimStack : public MCUSimMemory
          */
         virtual void storeInDataFile ( DataFile * file ) const override;
 
+        /**
+         * @brief Push value onto stack.
+         *
+         * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.
+         *
+         * @param value Address to the program memory to be stored in stack.
+         */
+        void pushOnStack ( unsigned int value );
+
+        /**
+         * @brief Pop value from the stack.
+         *
+         * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.
+         *
+         * @return Address to the program memory retrieved from the stack.
+         */
+        unsigned int popFromStack();
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @return
+         */
+        unsigned int getSPVal();
+
+        /**
+         * @param[in] by
+         */
+        void incrSP ( int by );
+
+        /**
+         * @param[in] value
+         */
+        void pushBySP ( unsigned int value );
+
+        /**
+         * @return
+         */
+        unsigned int popBySP();
+
     ////    Inline Public Operations    ////
     public:
         /**
@@ -148,24 +236,6 @@ class AdaptableSimStack : public MCUSimMemory
             return (unsigned int) m_position;
         }
 
-        /**
-         * @brief Push value onto stack.
-         *
-         * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.
-         *
-         * @param value Address to the program memory to be stored in stack.
-         */
-        inline void pushOnStack ( unsigned int value );
-
-        /**
-         * @brief Pop value from the stack.
-         *
-         * This method is NOT supposed to be used outside the simulator's own subsystems, like from GUI.
-         *
-         * @return Address to the program memory retrieved from the stack.
-         */
-        inline unsigned int popFromStack();
-
     ////    Inline Private Operations    ////
     private:
         /**
@@ -195,45 +265,15 @@ class AdaptableSimStack : public MCUSimMemory
 
         /// Stack pointer, starts with 0; push increments, pop decrements.
         int m_position;
+
+        /// @name AdaptableSim simulator subsystems
+        //@{
+            ///
+            AdaptableSimRegisters * m_registers;
+
+            ///
+            AdaptableSimDataMemory * m_dataMemory;
+        //@}
 };
 
-// -----------------------------------------------------------------------------
-// Inline Function Definitions
-// -----------------------------------------------------------------------------
-
-inline void AdaptableSimStack::pushOnStack ( unsigned int value )
-{
-    if ( (int) m_config.m_size == m_position )
-    {
-        logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_STACK_OVERFLOW, m_position, value);
-        m_position = 0;
-    }
-
-    logEvent(EVENT_MEM_INF_WR_VAL_WRITTEN, m_position, value);
-    if ( m_data[m_position] != value )
-    {
-        logEvent(EVENT_MEM_INF_WR_VAL_CHANGED, m_position, value);
-    }
-    m_data[m_position] = value;
-    m_position++;
-    logEvent(EVENT_STACK_SP_CHANGED, m_position);
-}
-
-inline unsigned int AdaptableSimStack::popFromStack()
-{
-    m_position--;
-    if ( -1 == m_position )
-    {
-        logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_STACK_UNDERFLOW, m_position, -1 );
-        m_position = (int) m_config.m_size - 1;
-    }
-
-    unsigned int result = ( 0x3ff & m_data[m_position] );
-
-    logEvent(EVENT_STACK_SP_CHANGED, m_position);
-    logEvent(EVENT_MEM_INF_RD_VAL_READ, m_position, result);
-
-    return result;
-}
-
-#endif // AdaptableSimSTACK_H
+#endif // ADAPTABLESIMSTACK_H

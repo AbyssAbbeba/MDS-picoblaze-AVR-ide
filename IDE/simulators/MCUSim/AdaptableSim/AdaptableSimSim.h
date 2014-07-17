@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimSim.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimSIM_H
-#define AdaptableSimSIM_H
+#ifndef ADAPTABLESIMSIM_H
+#define ADAPTABLESIMSIM_H
 
 // Forward declarations
 class AdaptableSimIO;
@@ -241,4 +241,4 @@ class AdaptableSimSim : public MCUSim
         std::vector<MCUSimSubsys*> m_subSystems;
 };
 
-#endif // AdaptableSimSIM_H
+#endif // ADAPTABLESIMSIM_H

@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimDataMemory.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimDATAMEMORY_H
-#define AdaptableSimDATAMEMORY_H
+#ifndef ADAPTABLESIMDATAMEMORY_H
+#define ADAPTABLESIMDATAMEMORY_H
 
 // Forward declarations
 class DataFile;
@@ -269,4 +269,4 @@ inline unsigned int AdaptableSimDataMemory::read ( unsigned int addr )
     return result;
 }
 
-#endif // AdaptableSimDATAMEMORY_H
+#endif // ADAPTABLESIMDATAMEMORY_H

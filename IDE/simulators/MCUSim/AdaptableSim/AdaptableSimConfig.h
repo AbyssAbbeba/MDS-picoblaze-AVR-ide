@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimConfig.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimCONFIG_H
-#define AdaptableSimCONFIG_H
+#ifndef ADAPTABLESIMCONFIG_H
+#define ADAPTABLESIMCONFIG_H
 
 // Forward declarations.
 class AdaptableSimSim;
@@ -87,31 +87,31 @@ class AdaptableSimConfig : public MCUSimConfig
         /// @name Configuration containers for AdaptableSim simulator subsystems.
         //@{
             ///
-            AdaptableSimClockControl::Config               * m_configClockControl;
-
-            ///
-            AdaptableSimDataMemory::Config                 * m_configDataMemory;
-
-            ///
-            AdaptableSimRegisters::Config                  * m_configRegisters;
-
-            ///
-            AdaptableSimInterruptController::Config        * m_configInterruptController;
-
-            ///
-            AdaptableSimProgramMemory::Config              * m_configProgramMemory;
+            AdaptableSimIO::Config                         * m_configIO;
 
             ///
             AdaptableSimStack::Config                      * m_configStack;
 
             ///
-            AdaptableSimInstructionSet::Config             * m_configInstructionSet;
+            AdaptableSimRegisters::Config                  * m_configRegisters;
 
             ///
-            AdaptableSimIO::Config                         * m_configIO;
+            AdaptableSimDataMemory::Config                 * m_configDataMemory;
 
             ///
             AdaptableSimStatusFlags::Config                * m_configStatusFlags;
+
+            ///
+            AdaptableSimClockControl::Config               * m_configClockControl;
+
+            ///
+            AdaptableSimProgramMemory::Config              * m_configProgramMemory;
+
+            ///
+            AdaptableSimInstructionSet::Config             * m_configInstructionSet;
+
+            ///
+            AdaptableSimInterruptController::Config        * m_configInterruptController;
         //@}
 
     ////    Private Attributes    ////
@@ -122,4 +122,4 @@ class AdaptableSimConfig : public MCUSimConfig
         bool m_isLinked;
 };
 
-#endif // AdaptableSimCONFIG_H
+#endif // ADAPTABLESIMCONFIG_H

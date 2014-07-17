@@ -7,16 +7,18 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimStatusFlags.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimSTATUSFLAGS_H
-#define AdaptableSimSTATUSFLAGS_H
+#ifndef ADAPTABLESIMSTATUSFLAGS_H
+#define ADAPTABLESIMSTATUSFLAGS_H
 
 #include "../MCUSim.h"
+
+#include "AdaptableSimInstruction.h"
 #include "AdaptableSimStatusFlagsBase.h"
 
 /**
@@ -25,7 +27,7 @@
  * @class AdaptableSimStatusFlags
  */
 class AdaptableSimStatusFlags : public MCUSimSubsys,
-                             public AdaptableSimStatusFlagsBase
+                                public AdaptableSimStatusFlagsBase
 {
     ////    Public Datatypes    ////
     public:
@@ -34,14 +36,19 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
          */
         enum Event
         {
-            EVENT_FLAGS_Z_CHANGED,   ///<
-            EVENT_FLAGS_C_CHANGED,   ///<
-            EVENT_FLAGS_PZ_CHANGED,  ///<
-            EVENT_FLAGS_PC_CHANGED,  ///<
-            EVENT_FLAGS_IE_CHANGED,  ///<
-            EVENT_FLAGS_INT_CHANGED, ///<
+            EVENT_FLAGS_ZERO_CHANGED,           ///<
+            EVENT_FLAGS_CARRY_CHANGED,          ///<
+            EVENT_FLAGS_OVERFLOW_CHANGED,       ///<
+            EVENT_FLAGS_NEGATIVE_CHANGED,       ///<
+            EVENT_FLAGS_HALF_CARRY_CHANGED,     ///<
+            EVENT_FLAGS_FLAG_0_CHANGED,         ///<
+            EVENT_FLAGS_FLAG_1_CHANGED,         ///<
+            EVENT_FLAGS_PZ_CHANGED,             ///<
+            EVENT_FLAGS_PC_CHANGED,             ///<
+            EVENT_FLAGS_IE_CHANGED,             ///<
+            EVENT_FLAGS_INT_CHANGED,            ///<
 
-            EVENT_FLAGS__MAX__       ///<
+            EVENT_FLAGS__MAX__                  ///<
         };
 
         /**
@@ -138,13 +145,19 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
             {
                 return m_inte;
             }
+
+            /**
+             * @brief
+             * @return
+             */
+            bool getFlag ( AdaptableSimInstruction::OperParam::ProcFlag flag ) const;
         //@}
 
         /// @name Mutator methods.
         //@{
             /**
              * @brief
-             * @return
+             * @param[in] value
              */
             void setInterrupted ( int value )
             {
@@ -154,27 +167,27 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
 
             /**
              * @brief
-             * @return
+             * @param[in] flag
              */
             void setCarry ( bool flag )
             {
                 m_carry = flag;
-                logEvent(EVENT_FLAGS_C_CHANGED, 0, flag);
+                logEvent(EVENT_FLAGS_CARRY_CHANGED, 0, flag);
             }
 
             /**
              * @brief
-             * @return
+             * @param[in] flag
              */
             void setZero ( bool flag )
             {
                 m_zero = flag;
-                logEvent(EVENT_FLAGS_Z_CHANGED, 0, flag);
+                logEvent(EVENT_FLAGS_ZERO_CHANGED, 0, flag);
             }
 
             /**
              * @brief
-             * @return
+             * @param[in] flag
              */
             void setPreCarry ( bool flag )
             {
@@ -184,7 +197,7 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
 
             /**
              * @brief
-             * @return
+             * @param[in] flag
              */
             void setPreZero ( bool flag )
             {
@@ -194,13 +207,21 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
 
             /**
              * @brief
-             * @return
+             * @param[in] flag
              */
             void setInte ( bool flag )
             {
                 m_inte = flag;
                 logEvent(EVENT_FLAGS_IE_CHANGED, 0, flag);
             }
+
+            /**
+             * @brief
+             * @param[in] flag
+             * @param[in] value
+             */
+            void setFlag ( AdaptableSimInstruction::OperParam::ProcFlag flag,
+                           bool value );
         //@}
 
     ////    Public Attributes    ////
@@ -209,4 +230,4 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
         Config m_config;
 };
 
-#endif // AdaptableSimSTATUSFLAGS_H
+#endif // ADAPTABLESIMSTATUSFLAGS_H

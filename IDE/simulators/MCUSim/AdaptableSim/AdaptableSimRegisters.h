@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimRegisters.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimREGISTERS_H
-#define AdaptableSimREGISTERS_H
+#ifndef ADAPTABLESIMREGISTERS_H
+#define ADAPTABLESIMREGISTERS_H
 
 // Forward declarations
 class DataFile;
@@ -241,7 +241,7 @@ inline unsigned int AdaptableSimRegisters::getUndefVal() const
 }
 
 inline void AdaptableSimRegisters::write ( unsigned int addr,
-                                        unsigned int val )
+                                           unsigned int val )
 {
     if ( true == m_config.m_banks )
     {
@@ -278,8 +278,8 @@ inline void AdaptableSimRegisters::write ( unsigned int addr,
 }
 
 inline void AdaptableSimRegisters::write ( unsigned int addr,
-                                        unsigned int val,
-                                        int targetBank )
+                                           unsigned int val,
+                                           int targetBank )
 {
     bool bankOrig = m_bank;
     m_bank = targetBank;
@@ -320,4 +320,4 @@ inline unsigned int AdaptableSimRegisters::read ( unsigned int addr )
     return result;
 }
 
-#endif // AdaptableSimREGISTERS_H
+#endif // ADAPTABLESIMREGISTERS_H

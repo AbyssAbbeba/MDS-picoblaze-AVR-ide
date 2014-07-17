@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimStatusFlagsBase.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimSTATUSFLAGSBASE_H
-#define AdaptableSimSTATUSFLAGSBASE_H
+#ifndef ADAPTABLESIMSTATUSFLAGSBASE_H
+#define ADAPTABLESIMSTATUSFLAGSBASE_H
 
 /**
  * @brief
@@ -39,6 +39,21 @@ class AdaptableSimStatusFlagsBase
         /// Zero flag.
         bool m_zero;
 
+        ///
+        bool m_overflow;
+
+        ///
+        bool m_negative;
+
+        ///
+        bool m_halmCarry;
+
+        ///
+        bool m_flag0;
+
+        ///
+        bool m_flag1;
+
         /// Value of the Carry flag before interrupt (see AdaptableSim spec. for details).
         bool m_preCarry;
 
@@ -49,4 +64,4 @@ class AdaptableSimStatusFlagsBase
         bool m_inte;
 };
 
-#endif // AdaptableSimSTATUSFLAGSBASE_H
+#endif // ADAPTABLESIMSTATUSFLAGSBASE_H

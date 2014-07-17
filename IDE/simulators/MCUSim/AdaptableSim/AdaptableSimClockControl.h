@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimClockControl.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimCLOCKCONTROL_H
-#define AdaptableSimCLOCKCONTROL_H
+#ifndef ADAPTABLESIMCLOCKCONTROL_H
+#define ADAPTABLESIMCLOCKCONTROL_H
 
 #include "../MCUSim.h"
 
@@ -76,4 +76,4 @@ class AdaptableSimClockControl : public MCUSimClock
         ClockSource m_clockSource;
 };
 
-#endif // AdaptableSimCLOCKCONTROL_H
+#endif // ADAPTABLESIMCLOCKCONTROL_H
