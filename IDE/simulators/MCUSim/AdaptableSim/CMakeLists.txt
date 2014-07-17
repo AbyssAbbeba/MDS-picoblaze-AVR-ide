@@ -29,7 +29,9 @@ add_library ( ${PROJECT_NAME} OBJECT
               AdaptableSimStack.cxx
               AdaptableSimConfig.cxx
               AdaptableSimRegisters.cxx
+              AdaptableSimOperations.cxx
               AdaptableSimDataMemory.cxx
+              AdaptableSimInstruction.cxx
               AdaptableSimStatusFlags.cxx
               AdaptableSimClockControl.cxx
               AdaptableSimProgramMemory.cxx

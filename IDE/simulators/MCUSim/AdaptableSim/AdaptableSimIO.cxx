@@ -76,7 +76,7 @@ unsigned int AdaptableSimIO::getNumberOfBitsTotal()
 }
 
 bool AdaptableSimIO::read ( unsigned int port,
-                         unsigned int bit )
+                            unsigned int bit )
 {
     if ( port >= NUMBER_OF_PORTS )
     {
@@ -97,8 +97,8 @@ unsigned int AdaptableSimIO::read ( unsigned int port )
 }
 
 void AdaptableSimIO::write ( unsigned int port,
-                          unsigned int bit,
-                          bool value )
+                             unsigned int bit,
+                             bool value )
 {
     if ( port >= NUMBER_OF_PORTS )
     {

@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimInstructionSet.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimINSTRUCTIONSET_H
-#define AdaptableSimINSTRUCTIONSET_H
+#ifndef ADAPTABLESIMINSTRUCTIONSET_H
+#define ADAPTABLESIMINSTRUCTIONSET_H
 
 // Forward declarations
 class AdaptableSimIO;
@@ -25,10 +25,11 @@ class AdaptableSimProgramMemory;
 class AdaptableSimInterruptController;
 
 #include "../MCUSim.h"
-
-#include "AdaptableSimInsNames.h"
 #include "AdaptableSimStatusFlags.h"
+#include "AdaptableSimInstruction.h"
 
+// Standard header files.
+#include <vector>
 #include <cstdint>
 
 /**
@@ -52,19 +53,19 @@ class AdaptableSimInstructionSet : public MCUSimCPU
             }
 
             ///
-            MCUSim::Family m_dev;
-
-            ///
             int m_pcMax;
 
             ///
             unsigned int m_interruptVector;
 
             ///
-            bool m_ignoreUndefinedOpCodes;
+            unsigned int m_opCodeSize;
 
             ///
-            uint8_t m_hwbuild;
+            std::vector<AdaptableSimInstruction> m_instructions;
+
+            ///
+            bool m_ignoreUndefinedOpCodes;
         };
 
     ////    Public Operations    ////
@@ -80,14 +81,14 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          * @param[in,out] interruptController
          * @return
          */
-        AdaptableSimInstructionSet * link ( MCUSimEventLogger            * eventLogger,
-                                         AdaptableSimIO                  * io,
-                                         AdaptableSimStack               * stack,
-                                         AdaptableSimRegisters           * registers,
-                                         AdaptableSimDataMemory          * dataMemory,
-                                         AdaptableSimStatusFlags         * statusFlags,
-                                         AdaptableSimProgramMemory       * programMemory,
-                                         AdaptableSimInterruptController * interruptController );
+        AdaptableSimInstructionSet * link ( MCUSimEventLogger               * eventLogger,
+                                            AdaptableSimIO                  * io,
+                                            AdaptableSimStack               * stack,
+                                            AdaptableSimRegisters           * registers,
+                                            AdaptableSimDataMemory          * dataMemory,
+                                            AdaptableSimStatusFlags         * statusFlags,
+                                            AdaptableSimProgramMemory       * programMemory,
+                                            AdaptableSimInterruptController * interruptController );
 
         /**
          * @brief
@@ -106,14 +107,43 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          */
         void irq();
 
-    ////    Inline Protected Operations    ////
+    ////    Protected Operations    ////
     protected:
         /**
          * @brief
-         * @param[in] val
-         * @return New value the program counter (PC)
+         * @param[in] operation
+         * @param[in] operands
+         * @param[in] parameters
+         * @return
          */
-        inline int incrPc ( const int val = 1 );
+        virtual bool operationSwitch ( AdaptableSimInstruction::OperationID operation,
+                                       unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
+                                       AdaptableSimInstruction::OperParam parameters ) = 0;
+
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] inst
+         * @param[in,out] time
+         * @param[in] opCode
+         * @return
+         */
+        void performOP ( const AdaptableSimInstruction & inst,
+                         unsigned int & time,
+                         unsigned int opCode );
+
+        /**
+         * @brief
+         * @param[in] id
+         * @param[in,out] time
+         * @param[in] opCode
+         * @return
+         */
+        void performOP ( unsigned short id,
+                         unsigned int & time,
+                         unsigned int opCode );
 
     ////    Inline Public Operations    ////
     public:
@@ -145,6 +175,15 @@ class AdaptableSimInstructionSet : public MCUSimCPU
             logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
         }
 
+    ////    Inline Protected Operations    ////
+    protected:
+        /**
+         * @brief
+         * @param[in] val
+         * @return New value the program counter (PC)
+         */
+        inline int incrPc ( const int val = 1 );
+
     ////    Inline Private Operations    ////
     private:
         /**
@@ -156,6 +195,11 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          * @brief
          */
         inline void resetToInitialValues();
+
+        /**
+         * @brief
+         */
+        inline void newConfig();
 
     ////    Public Attributes    ////
     public:
@@ -173,10 +217,10 @@ class AdaptableSimInstructionSet : public MCUSimCPU
         int m_actSubprogCounter;
 
         ///
-        unsigned int m_instructionCounter [ AdaptableSimInsNames::INS__MAX__ ];
+        std::vector<unsigned int> m_instructionCounter;
 
         ///
-        AdaptableSimInsNames::Instructions m_lastInstruction;
+        int m_lastInstruction;
 
         /// @name AdaptableSim simulator subsystems
         //@{
@@ -224,4 +268,4 @@ inline int AdaptableSimInstructionSet::incrPc ( const int val )
     return m_pc;
 }
 
-#endif // AdaptableSimINSTRUCTIONSET_H
+#endif // ADAPTABLESIMINSTRUCTIONSET_H

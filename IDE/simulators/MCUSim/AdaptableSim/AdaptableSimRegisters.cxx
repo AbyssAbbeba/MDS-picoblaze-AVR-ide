@@ -79,7 +79,7 @@ void AdaptableSimRegisters::storeInDataFile ( DataFile * file ) const
 }
 
 MCUSim::RetCode AdaptableSimRegisters::directRead ( unsigned int addr,
-                                                 unsigned int & data ) const
+                                                    unsigned int & data ) const
 {
     if ( addr >= m_size )
     {
@@ -91,7 +91,7 @@ MCUSim::RetCode AdaptableSimRegisters::directRead ( unsigned int addr,
 }
 
 MCUSim::RetCode AdaptableSimRegisters::directWrite ( unsigned int addr,
-                                                  unsigned int data )
+                                                     unsigned int data )
 {
     if ( addr >= m_size )
     {

@@ -14,6 +14,7 @@
 // =============================================================================
 
 #include "AdaptableSimDataMemory.h"
+
 #include "MCUDataFiles/DataFile.h"
 
 AdaptableSimDataMemory::AdaptableSimDataMemory()
@@ -79,7 +80,7 @@ void AdaptableSimDataMemory::storeInDataFile ( DataFile * file ) const
 }
 
 MCUSim::RetCode AdaptableSimDataMemory::directRead ( unsigned int addr,
-                                                  unsigned int & data ) const
+                                                     unsigned int & data ) const
 {
     if ( addr >= m_size )
     {
@@ -91,7 +92,7 @@ MCUSim::RetCode AdaptableSimDataMemory::directRead ( unsigned int addr,
 }
 
 MCUSim::RetCode AdaptableSimDataMemory::directWrite ( unsigned int addr,
-                                                   unsigned int data )
+                                                     unsigned int data )
 {
     if ( addr >= m_size )
     {

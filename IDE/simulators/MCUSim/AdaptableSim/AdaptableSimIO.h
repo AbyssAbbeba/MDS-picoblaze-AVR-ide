@@ -7,14 +7,14 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
  * @file AdaptableSimIO.h
  */
 // =============================================================================
 
-#ifndef AdaptableSimIO_H
-#define AdaptableSimIO_H
+#ifndef ADAPTABLESIMIO_H
+#define ADAPTABLESIMIO_H
 
 #include "../MCUSim.h"
 
@@ -195,4 +195,4 @@ inline void AdaptableSimIO::clockCycle()
     }
 }
 
-#endif // AdaptableSimIO_H
+#endif // ADAPTABLESIMIO_H

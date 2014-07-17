@@ -20,8 +20,8 @@
 #include "AdaptableSimConfig.h"
 #include "AdaptableSimRegisters.h"
 #include "AdaptableSimDataMemory.h"
+#include "AdaptableSimOperations.h"
 #include "AdaptableSimProgramMemory.h"
-#include "AdaptableSimInstructionSet.h"
 #include "AdaptableSimInterruptController.h"
 
 #include <cassert>
@@ -35,19 +35,22 @@ AdaptableSimSim::AdaptableSimSim()
     m_stack                 = new AdaptableSimStack();
     m_registers             = new AdaptableSimRegisters();
     m_dataMemory            = new AdaptableSimDataMemory();
+    m_instructionSet        = new AdaptableSimOperations();
     m_statusFlags           = new AdaptableSimStatusFlags();
     m_clockControl          = new AdaptableSimClockControl();
     m_programMemory         = new AdaptableSimProgramMemory();
-    m_instructionSet        = new AdaptableSimInstructionSet();
     m_interruptController   = new AdaptableSimInterruptController();
 
     regSubSys ( m_io             -> link ( m_eventLogger ) );
-    regSubSys ( m_stack          -> link ( m_eventLogger ) );
     regSubSys ( m_registers      -> link ( m_eventLogger ) );
     regSubSys ( m_dataMemory     -> link ( m_eventLogger ) );
     regSubSys ( m_statusFlags    -> link ( m_eventLogger ) );
     regSubSys ( m_clockControl   -> link ( m_eventLogger ) );
     regSubSys ( m_programMemory  -> link ( m_eventLogger ) );
+
+    regSubSys ( m_stack          -> link ( m_eventLogger,
+                                           m_registers,
+                                           m_dataMemory ) );
 
     regSubSys ( m_instructionSet -> link ( m_eventLogger,
                                            m_io,

@@ -23,9 +23,9 @@ AdaptableSimInterruptController::~AdaptableSimInterruptController()
 {
 }
 
-AdaptableSimInterruptController * AdaptableSimInterruptController::link ( MCUSimEventLogger        * eventLogger,
-                                                                    AdaptableSimInstructionSet  * instructionSet,
-                                                                    AdaptableSimStatusFlags     * statusFlags )
+AdaptableSimInterruptController * AdaptableSimInterruptController::link ( MCUSimEventLogger           * eventLogger,
+                                                                          AdaptableSimInstructionSet  * instructionSet,
+                                                                          AdaptableSimStatusFlags     * statusFlags )
 {
     MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
     m_instructionSet = instructionSet;
