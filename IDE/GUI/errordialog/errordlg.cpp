@@ -172,6 +172,11 @@ void error(int errCode)
             msgBox.setText("Error: Project main file not set");
             break;
         }
+        case ERR_NO_LICENSE:
+        {
+            msgBox.setText("Error: Valid license file not found");
+            break;
+        }
         default:
         {
             msgBox.setText("Error: Error not specified");

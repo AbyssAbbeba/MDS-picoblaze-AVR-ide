@@ -293,6 +293,7 @@ void GuiCfg::setDefaultPaths(bool release)
         //}   
         this->configPath = homeDir.absolutePath() + "/config.xml";
         this->sessionPath = homeDir.absolutePath() + "/session.xml";
+        this->licensePath = homeDir.absolutePath() + "/certificate.cert";
         this->compilerPath = "../include/mds";
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -304,6 +305,7 @@ void GuiCfg::setDefaultPaths(bool release)
         #ifdef Q_OS_LINUX
             this->configPath = "./resources/xml/config.xml";
             this->sessionPath = "./resources/xml/session.xml";
+            this->licensePath = "./resources/xml/certificate.cert";
             this->compilerPath = "../compiler/include";
             this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -312,6 +314,7 @@ void GuiCfg::setDefaultPaths(bool release)
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->sessionPath = "./GUI/resources/xml/session.xml";
+            this->licensePath = "./GUI/resources/xml/certificate.cert";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -611,6 +614,13 @@ QString GuiCfg::getHelpPath()
 {
     return this->helpPath;
 }
+
+
+QString GuiCfg::getLicensePath()
+{
+    return this->licensePath;
+}
+
 
 
 bool GuiCfg::getProjectDefVHDL()
