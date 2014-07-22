@@ -27,6 +27,8 @@
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
 #include "../../errordialog/errordlg.h"
+#include "../../guicfg/guicfg.h"
+
 
 class StackWidget : public QWidget, public MCUSimObserver
 {
@@ -42,6 +44,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         void fixHeight();
         void unhighlight();
         void updateWidget();
+        void setWarningOpt(GuiCfg::WarningsOpt options);
 
     signals:
         void stopSimSig();
@@ -62,6 +65,7 @@ class StackWidget : public QWidget, public MCUSimObserver
         int numWidth;
         //QIcon *iconSP;
         int sp;
+        GuiCfg::WarningsOpt warningOptions;
 };
 
 

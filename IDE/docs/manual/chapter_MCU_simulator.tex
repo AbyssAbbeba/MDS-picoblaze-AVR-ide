@@ -12,6 +12,7 @@ You can see status of internal registers, scratchpad ram, input and output ports
         \caption{Main simulator panel}
     \end{figure}
 
+<<<<<<< HEAD
    \begin{figure}[h!]
         \centering
         \includegraphics[width=\textwidth]{img/compiler_panel.png}
@@ -31,6 +32,8 @@ You can see status of internal registers, scratchpad ram, input and output ports
     \end{table}
 
     
+=======
+>>>>>>> d021c3cab8d288fd692139a22eafef6dc5442e16
 \section{Modes of simulation}
     There are 4 modes of simulation:
 
@@ -42,8 +45,15 @@ You can see status of internal registers, scratchpad ram, input and output ports
     
     \begin{itemize}
         \item STEP: Execute exactly one intruction, no matter how many machine cycles it will take. This does not apply for macro-instruction, in that case each instruction of the macro is executed separately.
+<<<<<<< HEAD
         \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
         \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
         \item RESET: Resets everything to the initial state of program.
         \item UNHIGHLIGHT: Cleans up all highlighted text.
+=======
+%         \item STEP OVER: Execute as many instructions as possible until simulator cursor changes its location from one line of source code to another.
+        \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
+        \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
+%         \item STEP BACK: Take back the last performed step. There is limited number of step which can be taken back.
+>>>>>>> d021c3cab8d288fd692139a22eafef6dc5442e16
     \end{itemize}
