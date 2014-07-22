@@ -201,7 +201,7 @@ inline unsigned int AdaptableSimDataMemory::getUndefVal() const
     if ( -1 == m_config.m_undefinedValue )
     {
         // Generate random value
-        return ( (unsigned int)rand() &  0xff );
+        return ( (unsigned int) rand() &  0xff );
     }
     else
     {
@@ -211,7 +211,7 @@ inline unsigned int AdaptableSimDataMemory::getUndefVal() const
 }
 
 inline void AdaptableSimDataMemory::write ( unsigned int addr,
-                                         unsigned int val )
+                                            unsigned int val )
 {
     if ( addr >= m_size )
     {

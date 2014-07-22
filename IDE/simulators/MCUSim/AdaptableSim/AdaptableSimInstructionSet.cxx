@@ -174,7 +174,7 @@ void AdaptableSimInstructionSet::performOP ( const AdaptableSimInstruction & ins
         }
     }
 
-    bool condPositive = operationSwitch ( inst.m_operation, operands, inst.m_parameters );
+    bool condPositive = operationSwitch ( inst.m_operation, operands, inst );
 
     m_lastInstruction = (int) inst.m_id;
     m_instructionCounter[m_lastInstruction]++;

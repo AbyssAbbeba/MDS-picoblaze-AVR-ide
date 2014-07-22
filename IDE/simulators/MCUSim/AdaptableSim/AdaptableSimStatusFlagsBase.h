@@ -46,19 +46,31 @@ class AdaptableSimStatusFlagsBase
         bool m_negative;
 
         ///
-        bool m_halmCarry;
+        bool m_halfCarry;
 
         ///
-        bool m_flag0;
+        bool m_parity;
 
         ///
-        bool m_flag1;
+        bool m_flag;
 
         /// Value of the Carry flag before interrupt (see AdaptableSim spec. for details).
         bool m_preCarry;
 
         /// Value of the Zero flag before interrupt (see AdaptableSim spec. for details).
         bool m_preZero;
+
+        ///
+        bool m_preOverflow;
+
+        ///
+        bool m_preNegative;
+
+        ///
+        bool m_preHalfCarry;
+
+        ///
+        bool m_preParity;
 
         /// Interrupt enable flag.
         bool m_inte;

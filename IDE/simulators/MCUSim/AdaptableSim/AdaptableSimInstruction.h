@@ -74,10 +74,10 @@ class AdaptableSimInstruction
             OP_SHIFT_RIGHT_1,   ///<
             OP_SHIFT_LEFT_R,    ///<
             OP_SHIFT_RIGHT_R,   ///<
+            OP_SHIFT_LEFT_C,    ///<
+            OP_SHIFT_RIGHT_C,   ///<
             OP_ROTATE_LEFT,     ///<
-            OP_ROTATE_RIGHT,    ///<
-            OP_ROTATE_LEFT_C,   ///<
-            OP_ROTATE_RIGHT_C   ///<
+            OP_ROTATE_RIGHT     ///<
         };
 
         /**
@@ -128,8 +128,8 @@ class AdaptableSimInstruction
                 F_NEGATIVE    = 3,
                 F_HALF_CARRY  = 4,
                 F_INTR_ENABLE = 5,
-                F_FLAG_0      = 6,
-                F_FLAG_1      = 7
+                F_PARITY      = 6,
+                F_FLAG        = 7
             };
 
             /**
@@ -137,19 +137,18 @@ class AdaptableSimInstruction
              */
             enum AddressingMode
             {
-                A_REG_DIR   = 0,
-                A_REG_INDR  = 1,
-                A_DATA_DIR  = 2,
-                A_DATA_INDR = 3,
-                A_PROGRAM   = 4,
-                A_PORT      = 5,
+                A_IMMEDIATE = 0,
+                A_REG_DIR   = 1,
+                A_REG_INDR  = 2,
+                A_DATA_DIR  = 3,
+                A_DATA_INDR = 4,
+                A_PROGRAM   = 5,
+                A_PORT      = 6
                 // Max. (=upper bound) = 15
             };
 
             ///
             uint64_t m_data;
-
-            int oprSize ( unsigned int operand ) const { return (int) ( 0b1111 & (m_data >> ( 39 + 4 * operand )) ); }
 
             bool nextN          () const { return bool ( 0b1 & (m_data >> 38) ); }
             bool nextP          () const { return bool ( 0b1 & (m_data >> 37) ); }
@@ -168,12 +167,12 @@ class AdaptableSimInstruction
                 return ProcFlag ( 0b111 & (m_data >> 28) );
             }
 
-            FlagAttr flagAttr ( ProcFlag flag )
+            FlagAttr flagAttr ( ProcFlag flag ) const
             {
                 return FlagAttr ( 0b11 & ( m_data >> ( 12 + 2 * int(flag) ) ) );
             }
 
-            AddressingMode addressingMode ( unsigned int operand )
+            AddressingMode addressingMode ( unsigned int operand ) const
             {
                 return AddressingMode ( 0b1111 & ( m_data >> ( operand * 4 ) ) );
             }
