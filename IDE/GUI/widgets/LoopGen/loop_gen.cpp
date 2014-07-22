@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Martin Madron <martin.madron@moravia-microsystems.com>
+ * @ingroup ComboBox
+ * @file loop_gen.cpp
+ */
+
+
 #include "loop_gen.h"
 #include "ui_loop_gen.h"
 #include "../Highlighter/highlighter.h"
@@ -63,12 +77,12 @@ loop_gen::loop_gen(QWidget *parent) :
 
     ui->Vstup_Cycles->setDisabled(true);
     
-    connect(ui->Vstup_Cas, SIGNAL(textChanged(QString)), this, SLOT(TimeChanged(QString)));
-    connect(ui->push_Generate, SIGNAL(clicked()), this, SLOT( Generate()));
-    connect(ui->push_Copy, SIGNAL(clicked()), this, SLOT(CopyToClipboard()));
-    connect(ui->check_default, SIGNAL(clicked()), this, SLOT( Default_click()));
-    connect(ui->radio_Cycles,  SIGNAL(clicked()), this, SLOT( Cycles_click()));
-    connect(ui->radio_Time,  SIGNAL(clicked()), this, SLOT( Time_click()));
+    connect(ui->Vstup_Cas,      SIGNAL(textChanged(QString)), this, SLOT(TimeChanged(QString)));
+    connect(ui->push_Generate,  SIGNAL(clicked()), this, SLOT( Generate()));
+    connect(ui->push_Copy,      SIGNAL(clicked()), this, SLOT(CopyToClipboard()));
+    connect(ui->check_default,  SIGNAL(clicked()), this, SLOT( Default_click()));
+    connect(ui->radio_Cycles,   SIGNAL(clicked()), this, SLOT( Cycles_click()));
+    connect(ui->radio_Time,     SIGNAL(clicked()), this, SLOT( Time_click()));
 
     //register values
     temp1 = 0;

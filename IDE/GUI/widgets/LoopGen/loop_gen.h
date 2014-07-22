@@ -1,3 +1,17 @@
+/**
+ * @brief
+ * C++ Implementation: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @author Martin Madron <martin.madron@moravia-microsystems.com>
+ * @ingroup ComboBox
+ * @file loop_gen.h
+ */
+
+
 #ifndef LOOP_GEN_H
 #define LOOP_GEN_H
 
