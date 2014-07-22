@@ -113,12 +113,12 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          * @brief
          * @param[in] operation
          * @param[in] operands
-         * @param[in] parameters
+         * @param[in] inst
          * @return
          */
         virtual bool operationSwitch ( AdaptableSimInstruction::OperationID operation,
                                        unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
-                                       AdaptableSimInstruction::OperParam parameters ) = 0;
+                                       const AdaptableSimInstruction & inst ) = 0;
 
 
     ////    Private Operations    ////

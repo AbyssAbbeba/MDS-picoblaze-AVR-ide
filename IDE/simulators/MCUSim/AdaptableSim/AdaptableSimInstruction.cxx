@@ -68,43 +68,47 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( operationID )
     {
-        case AdaptableSimInstruction::OP_NONE:          out << "NONE";
-        case AdaptableSimInstruction::OP_ABS_JUMP:      out << "ABS JUMP";
-        case AdaptableSimInstruction::OP_ABS_CALL:      out << "ABS CALL";
-        case AdaptableSimInstruction::OP_REL_JUMP:      out << "REL CALL";
-        case AdaptableSimInstruction::OP_REL_CALL:      out << "REL CALL";
-        case AdaptableSimInstruction::OP_OFS_JUMP:      out << "OFS CALL";
-        case AdaptableSimInstruction::OP_OFS_CALL:      out << "OFS CALL";
-        case AdaptableSimInstruction::OP_IDX_JUMP:      out << "IDX CALL";
-        case AdaptableSimInstruction::OP_IDX_CALL:      out << "IDX CALL";
-        case AdaptableSimInstruction::OP_RETURN:        out << "RETURN";
-        case AdaptableSimInstruction::OP_ISR_RETURN:    out << "ISR RETURN";
-        case AdaptableSimInstruction::OP_SET_BANK:      out << "SET BANK";
-        case AdaptableSimInstruction::OP_MOVE:          out << "MOVE";
-        case AdaptableSimInstruction::OP_CB_MOVE:       out << "CROSS BANK MOVE";
-        case AdaptableSimInstruction::OP_MOVE_BIT:      out << "MOVE BIT";
-        case AdaptableSimInstruction::OP_CB_MOVE_BIT:   out << "CROSS BANK MOVE BIT";
-        case AdaptableSimInstruction::OP_SWAP:          out << "SWAP";
-        case AdaptableSimInstruction::OP_CB_SWAP:       out << "CROSS BANK SWAP";
-        case AdaptableSimInstruction::OP_SWAP_BIT:      out << "SWAP BIT";
-        case AdaptableSimInstruction::OP_CB_SWAP_BIT:   out << "CROSS BANK SWAPBIT";
-        case AdaptableSimInstruction::OP_CPL:           out << "CPL";
-        case AdaptableSimInstruction::OP_BIT_TEST:      out << "BIT TEST";
-        case AdaptableSimInstruction::OP_ADD:           out << "ADD";
-        case AdaptableSimInstruction::OP_SUB:           out << "SUB";
-        case AdaptableSimInstruction::OP_AND:           out << "AND";
-        case AdaptableSimInstruction::OP_OR:            out << "OR";
-        case AdaptableSimInstruction::OP_XOR:           out << "XOR";
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_0:  out << "SHIFT LEFT 0";
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_0: out << "SHIFT RIGHT 0";
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_1:  out << "SHIFT LEFT 1";
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_1: out << "SHIFT RIGHT 1";
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_R:  out << "SHIFT LEFT R";
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_R: out << "SHIFT RIGHT R";
-        case AdaptableSimInstruction::OP_ROTATE_LEFT:   out << "ROTATE LEFT";
-        case AdaptableSimInstruction::OP_ROTATE_RIGHT:  out << "ROTATE RIGHT";
-        case AdaptableSimInstruction::OP_ROTATE_LEFT_C: out << "ROTATE LEFT C";
-        case AdaptableSimInstruction::OP_ROTATE_RIGHT_C:out << "ROTATE RIGHT C";
+        case AdaptableSimInstruction::OP_NONE:          out << "NONE";                  break;
+        case AdaptableSimInstruction::OP_ABS_JUMP:      out << "ABS JUMP";              break;
+        case AdaptableSimInstruction::OP_ABS_CALL:      out << "ABS CALL";              break;
+        case AdaptableSimInstruction::OP_REL_JUMP:      out << "REL CALL";              break;
+        case AdaptableSimInstruction::OP_REL_CALL:      out << "REL CALL";              break;
+        case AdaptableSimInstruction::OP_OFS_JUMP:      out << "OFS CALL";              break;
+        case AdaptableSimInstruction::OP_OFS_CALL:      out << "OFS CALL";              break;
+        case AdaptableSimInstruction::OP_IDX_JUMP:      out << "IDX CALL";              break;
+        case AdaptableSimInstruction::OP_IDX_CALL:      out << "IDX CALL";              break;
+        case AdaptableSimInstruction::OP_RETURN:        out << "RETURN";                break;
+        case AdaptableSimInstruction::OP_ISR_RETURN:    out << "ISR RETURN";            break;
+        case AdaptableSimInstruction::OP_SET_BANK:      out << "SET BANK";              break;
+        case AdaptableSimInstruction::OP_MOVE:          out << "MOVE";                  break;
+        case AdaptableSimInstruction::OP_CB_MOVE:       out << "CROSS BANK MOVE";       break;
+        case AdaptableSimInstruction::OP_MOVE_BIT:      out << "MOVE BIT";              break;
+        case AdaptableSimInstruction::OP_CB_MOVE_BIT:   out << "CROSS BANK MOVE BIT";   break;
+        case AdaptableSimInstruction::OP_SWAP:          out << "SWAP";                  break;
+        case AdaptableSimInstruction::OP_CB_SWAP:       out << "CROSS BANK SWAP";       break;
+        case AdaptableSimInstruction::OP_SWAP_BIT:      out << "SWAP BIT";              break;
+        case AdaptableSimInstruction::OP_CB_SWAP_BIT:   out << "CROSS BANK SWAPBIT";    break;
+        case AdaptableSimInstruction::OP_CPL:           out << "CPL";                   break;
+        case AdaptableSimInstruction::OP_BIT_TEST:      out << "BIT TEST";              break;
+        case AdaptableSimInstruction::OP_ADD:           out << "ADD";                   break;
+        case AdaptableSimInstruction::OP_SUB:           out << "SUB";                   break;
+        case AdaptableSimInstruction::OP_AND:           out << "AND";                   break;
+        case AdaptableSimInstruction::OP_OR:            out << "OR";                    break;
+        case AdaptableSimInstruction::OP_XOR:           out << "XOR";                   break;
+        case AdaptableSimInstruction::OP_SHIFT_LEFT_0:  out << "SHIFT LEFT 0";          break;
+        case AdaptableSimInstruction::OP_SHIFT_RIGHT_0: out << "SHIFT RIGHT 0";         break;
+        case AdaptableSimInstruction::OP_SHIFT_LEFT_1:  out << "SHIFT LEFT 1";          break;
+        case AdaptableSimInstruction::OP_SHIFT_RIGHT_1: out << "SHIFT RIGHT 1";         break;
+        case AdaptableSimInstruction::OP_SHIFT_LEFT_R:  out << "SHIFT LEFT R";          break;
+        case AdaptableSimInstruction::OP_SHIFT_RIGHT_R: out << "SHIFT RIGHT R";         break;
+        case AdaptableSimInstruction::OP_SHIFT_LEFT_C:  out << "SHIFT LEFT C";          break;
+        case AdaptableSimInstruction::OP_SHIFT_RIGHT_C: out << "SHIFT RIGHT C";         break;
+        case AdaptableSimInstruction::OP_ROTATE_LEFT:   out << "ROTATE LEFT";           break;
+        case AdaptableSimInstruction::OP_ROTATE_RIGHT:  out << "ROTATE RIGHT";          break;
+
+        default:
+            out << "<ERROR:Unknown!>";
+            break;
     }
 
     return out;
@@ -134,8 +138,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "    Operand address space and addressing modes:" << std::endl;
     for ( unsigned int i = 0; i < AdaptableSimInstruction::OPERANDS_MAX; i++ )
     {
-        out << "        Operand #" << i << " [size=" << operParam.oprSize(i) << "] : "
-            << operParam.addressingMode(i) << std::endl;
+        out << "        Operand #" << i << ": " << operParam.addressingMode(i) << std::endl;
     }
 
     return out;
@@ -146,9 +149,9 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( condition )
     {
-        case AdaptableSimInstruction::OperParam::C_NONE:     out << "NONE";
-        case AdaptableSimInstruction::OperParam::C_POSITIVE: out << "POSITIVE";
-        case AdaptableSimInstruction::OperParam::C_NEGATIVE: out << "NEGATIVE";
+        case AdaptableSimInstruction::OperParam::C_NONE:     out << "NONE";     break;
+        case AdaptableSimInstruction::OperParam::C_POSITIVE: out << "POSITIVE"; break;
+        case AdaptableSimInstruction::OperParam::C_NEGATIVE: out << "NEGATIVE"; break;
     }
 
     return out;
@@ -159,10 +162,10 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( attribute )
     {
-        case AdaptableSimInstruction::OperParam::P_KEEP:   out << "KEEP";
-        case AdaptableSimInstruction::OperParam::P_SET:    out << "SET";
-        case AdaptableSimInstruction::OperParam::P_CLEAR:  out << "CLEAR";
-        case AdaptableSimInstruction::OperParam::P_AFFECT: out << "AFFECT";
+        case AdaptableSimInstruction::OperParam::P_KEEP:   out << "KEEP";       break;
+        case AdaptableSimInstruction::OperParam::P_SET:    out << "SET";        break;
+        case AdaptableSimInstruction::OperParam::P_CLEAR:  out << "CLEAR";      break;
+        case AdaptableSimInstruction::OperParam::P_AFFECT: out << "AFFECT";     break;
     }
 
     return out;
@@ -173,14 +176,14 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( flag )
     {
-        case AdaptableSimInstruction::OperParam::F_ZERO:        out << "ZERO";
-        case AdaptableSimInstruction::OperParam::F_CARRY:       out << "CARRY";
-        case AdaptableSimInstruction::OperParam::F_OVERFLOW:    out << "OVERFLOW";
-        case AdaptableSimInstruction::OperParam::F_NEGATIVE:    out << "NEGATIVE";
-        case AdaptableSimInstruction::OperParam::F_HALF_CARRY:  out << "HALF_CARRY";
-        case AdaptableSimInstruction::OperParam::F_INTR_ENABLE: out << "INTR_ENABLE";
-        case AdaptableSimInstruction::OperParam::F_FLAG_0:      out << "FLAG_0";
-        case AdaptableSimInstruction::OperParam::F_FLAG_1:      out << "FLAG_1";
+        case AdaptableSimInstruction::OperParam::F_ZERO:        out << "ZERO";          break;
+        case AdaptableSimInstruction::OperParam::F_CARRY:       out << "CARRY";         break;
+        case AdaptableSimInstruction::OperParam::F_OVERFLOW:    out << "OVERFLOW";      break;
+        case AdaptableSimInstruction::OperParam::F_NEGATIVE:    out << "NEGATIVE";      break;
+        case AdaptableSimInstruction::OperParam::F_HALF_CARRY:  out << "HALF_CARRY";    break;
+        case AdaptableSimInstruction::OperParam::F_INTR_ENABLE: out << "INTR_ENABLE";   break;
+        case AdaptableSimInstruction::OperParam::F_PARITY:      out << "PARITY";        break;
+        case AdaptableSimInstruction::OperParam::F_FLAG:        out << "FLAG";          break;
     }
 
     return out;
@@ -191,12 +194,13 @@ std::ostream & operator << ( std::ostream & out,
 {
     switch ( mode )
     {
-        case AdaptableSimInstruction::OperParam::A_REG_DIR:   out << "REG_DIR";
-        case AdaptableSimInstruction::OperParam::A_REG_INDR:  out << "REG_INDR";
-        case AdaptableSimInstruction::OperParam::A_DATA_DIR:  out << "DATA_DIR";
-        case AdaptableSimInstruction::OperParam::A_DATA_INDR: out << "DATA_INDR";
-        case AdaptableSimInstruction::OperParam::A_PROGRAM:   out << "PROGRAM";
-        case AdaptableSimInstruction::OperParam::A_PORT:      out << "PORT";
+        case AdaptableSimInstruction::OperParam::A_IMMEDIATE: out << "IMMEDIATE";       break;
+        case AdaptableSimInstruction::OperParam::A_REG_DIR:   out << "REG_DIR";         break;
+        case AdaptableSimInstruction::OperParam::A_REG_INDR:  out << "REG_INDR";        break;
+        case AdaptableSimInstruction::OperParam::A_DATA_DIR:  out << "DATA_DIR";        break;
+        case AdaptableSimInstruction::OperParam::A_DATA_INDR: out << "DATA_INDR";       break;
+        case AdaptableSimInstruction::OperParam::A_PROGRAM:   out << "PROGRAM";         break;
+        case AdaptableSimInstruction::OperParam::A_PORT:      out << "PORT";            break;
     }
 
     return out;

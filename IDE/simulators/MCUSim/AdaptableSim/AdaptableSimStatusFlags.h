@@ -41,8 +41,8 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
             EVENT_FLAGS_OVERFLOW_CHANGED,       ///<
             EVENT_FLAGS_NEGATIVE_CHANGED,       ///<
             EVENT_FLAGS_HALF_CARRY_CHANGED,     ///<
-            EVENT_FLAGS_FLAG_0_CHANGED,         ///<
-            EVENT_FLAGS_FLAG_1_CHANGED,         ///<
+            EVENT_FLAGS_FLAG_PARITY_CHANGED,    ///<
+            EVENT_FLAGS_FLAG_CHANGED,           ///<
             EVENT_FLAGS_PZ_CHANGED,             ///<
             EVENT_FLAGS_PC_CHANGED,             ///<
             EVENT_FLAGS_IE_CHANGED,             ///<
@@ -56,6 +56,9 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
          */
         struct Config
         {
+            bool m_backupWhenInterruped;
+            bool m_autoDisableInterrputs; // When when entering ISR.
+            bool m_autoEnableInterrputs; // When when leaving ISR.
         };
 
     ////    Constructors and Destructors    ////
