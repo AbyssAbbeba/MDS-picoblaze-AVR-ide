@@ -19,6 +19,7 @@
  </Files>
  <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
  <Breakpoints/>
+ <Bookmarks/>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>
  </Simulator>
