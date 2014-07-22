@@ -1150,7 +1150,7 @@ void Project::saveProject()
     xmlRoot.appendChild(xmlGeneral);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
-    qDebug() << "Project: saving" << this->fileCount << "files";
+    //qDebug() << "Project: saving" << this->fileCount << "files";
     for (int i = 0; i < this->fileCount; i++)
     {
         QDomElement xmlFile = domDoc.createElement("File");

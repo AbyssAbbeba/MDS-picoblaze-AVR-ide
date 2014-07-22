@@ -25,6 +25,7 @@ class MCUSimObserver;
 #include "../MCUSim/MCUSim.h"
 
 #include <set>
+#include <list>
 #include <vector>
 #include <string>
 #include <utility>
@@ -76,6 +77,48 @@ class MCUSimControl : public QThread
             std::string m_toolsTips[8]; ///<
             std::string m_statusTips[8];///<
             uint8_t m_mask;             ///<
+        };
+
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        class BrkPntStop
+        {
+            ////    Private Datatypes    ////
+            private:
+                /// @brief
+                struct BrkPnt
+                {
+                    int m_lineNumber; ///<
+                    int m_fileNumber; ///<
+                    bool m_checked;   ///<
+                };
+
+            ////    Public Operations    ////
+            public:
+                /// @brief
+                void open();
+
+                /// @brief
+                void close();
+
+                /// @brief
+                void clear();
+
+                /**
+                 * @brief
+                 * @param[in] file
+                 * @param[in] line
+                 * @return
+                 */
+                bool check ( const int file,
+                             const int line );
+
+            private:
+                /// @brief
+                std::list<BrkPnt> m_brkPnts;
         };
 
     ////    Constructors and Destructors    ////
@@ -364,6 +407,9 @@ class MCUSimControl : public QThread
 
         /// @brief
         unsigned long long m_totalMCycles;
+
+        /// @brief
+        BrkPntStop m_lastBrkPntStop;
 
         /// @brief
         bool m_running;
