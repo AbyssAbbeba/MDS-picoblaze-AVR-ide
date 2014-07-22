@@ -42,6 +42,7 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         
     private slots:
         void updateValue(int row, int column);
+        void unhighlightCell(int row, int column);
         
     private:
         MCUSimMemory * m_memory;

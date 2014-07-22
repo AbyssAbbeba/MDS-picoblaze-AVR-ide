@@ -158,6 +158,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             if (false == cursor.hasSelection())
             {
                 emit breakpointsAddLines(cursor.blockNumber(), 1);
+                emit bookmarksAddLines(cursor.blockNumber(), 1);
             }
             else
             {
@@ -170,8 +171,12 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                 cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                );
+                    emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                               );
                 }
                 emit breakpointsAddLines(cursorSelBeg.blockNumber(), 1);
+                emit bookmarksAddLines(cursorSelBeg.blockNumber(), 1);
             }
         }
         //backspace on the beginning of the line
@@ -184,6 +189,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 if (true == cursor.atBlockStart() && cursor.blockNumber() > 1) //bug
                 {
                     emit breakpointsRemoveLines(cursor.blockNumber(), 1);
+                    emit bookmarksRemoveLines(cursor.blockNumber(), 1);
                 }
             }
             else
@@ -200,10 +206,17 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                                                     //cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber(),
+                                                    //cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
                     }
                     else
                     {
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
                     }
@@ -220,6 +233,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 if (true == cursor.atBlockEnd())
                 {
                     emit breakpointsRemoveLines(cursor.blockNumber() + 1, 1);
+                    emit bookmarksRemoveLines(cursor.blockNumber() + 1, 1);
                 }
             }
             else
@@ -235,10 +249,16 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber(),
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
                                                    );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber(),
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber() + 1
+                                                   );
                     }
                     else
                     {
                         emit breakpointsRemoveLines(cursorSelBeg.blockNumber() + 1,
+                                                    cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
+                                                   );
+                        emit bookmarksRemoveLines(cursorSelBeg.blockNumber() + 1,
                                                     cursorSelEnd.blockNumber() - cursorSelBeg.blockNumber()
                                                    );
                     }
@@ -803,4 +823,60 @@ void WTextEdit::setTabToSpaces(bool enabled)
 void WTextEdit::setSpacesInTab(int spacesInTab)
 {
     this->spacesInTab = spacesInTab;
+}
+
+bool WTextEdit::highlightLineAppend(int line, QColor *color)
+{
+    //qDebug() << "Highlight";
+    if (line >= 0 && line <= this->document()->lineCount())
+    {
+        QTextBlock lineBlock = this->document()->findBlockByNumber(line);
+        QTextCursor cursor(lineBlock);
+
+        QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
+        
+        QTextEdit::ExtraSelection selection;
+        selection.format.setBackground(*color);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = cursor;
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+
+        this->setExtraSelections(extraSelections);
+
+        /*QTextBlockFormat lineFormat = lineBlock.blockFormat();
+        if (color == NULL)
+        {
+            //QPalette palette = this->palette();
+            //lineFormat.setBackground(palette.color(QPalette::Base));
+            lineFormat.clearBackground();
+            //lineFormat.setBackground(Qt::red);
+        }
+        else
+        {
+            //QColor orig = lineFormat.background().color();
+            //origColor = &orig;
+            lineFormat.setBackground(*color);
+        }*/
+        /*QTextCursor cursor(lineBlock);
+        //qDebug() << "position: " << cursor.position();
+        cursor.setBlockFormat(lineFormat);*/
+        this->setTextCursor(cursor);
+        this->ensureCursorVisible();
+        //qDebug() << "WTextEdit: return highlightLine()";
+        return true;
+    }
+    /*else
+    {
+        qDebug() << "WTextEdit: highlight failed----";
+    }*/
+    //qDebug() << "WTextEdit: return highlightLine()";
+    return false;
+}
+
+
+void WTextEdit::clearHighlight()
+{
+    //qDebug() << "WTextEdit: clearHighlight()";
+    this->setExtraSelections(QList<QTextEdit::ExtraSelection>());
 }

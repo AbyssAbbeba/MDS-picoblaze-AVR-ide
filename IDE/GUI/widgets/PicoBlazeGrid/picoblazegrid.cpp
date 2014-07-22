@@ -247,6 +247,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
         connect(this->memScratch, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
     }
 
+    this->installEventFilter(this);
+
     deviceChanged();
     
     //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
@@ -588,7 +590,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void PicoBlazeGrid::deviceChanged()
 {
-    //qDebug() << "PicoBlazeGrid: deviceChanged";
+    qDebug() << "PicoBlazeGrid: deviceChanged";
     /*if (NULL == this->memScratch)
     {
         qDebug() << "PicoBlazeGrid: null scratch";
@@ -674,10 +676,11 @@ void PicoBlazeGrid::deviceChanged()
             this->btnInte->move(1080 - 215, 200);
         }
     }
+    qDebug() << "PicoBlazeGrid: grid changed";
     
     
     deviceReset();
-    //qDebug() << "PicoBlazeGrid: return deviceChanged";
+    qDebug() << "PicoBlazeGrid: return deviceChanged";
 }
 
 
@@ -868,4 +871,19 @@ void PicoBlazeGrid::setClock(double clock, int clockMult)
 void PicoBlazeGrid::setWarningOpt(GuiCfg::WarningsOpt options)
 {
     this->warningOptions = options;
+}
+
+
+bool PicoBlazeGrid::eventFilter(QObject *target, QEvent *event)
+{
+    if (target == this->lePC)
+    {
+        if (QEvent::MouseButtonPress == event->type())
+        {
+            this->lePC->setStyleSheet("background-color: none");
+        }
+        qDebug() << "PicoBlazeGrid: lePC event";
+        return true;
+    }
+    return QWidget::eventFilter(target, event);
 }

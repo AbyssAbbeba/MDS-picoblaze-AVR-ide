@@ -46,19 +46,18 @@ void GuiCfg::setEditorFont(QFont font)
 
 void GuiCfg::setSimColor(QColor color)
 {
-    simColorLine = color;
+    this->simColorCurrLine = color;
+    this->simColorCurrLine.setAlpha(255);
+    this->simColorPrevLine = color;
+    this->simColorPrevLine.setAlpha(125);
+    this->simColorPrev2Line = color;
+    this->simColorPrev2Line.setAlpha(50);
 }
 
 
 void GuiCfg::setSimWidgetUpdatedColor(QColor color)
 {
     simColorWidgetChanged = color;
-}
-
-
-void GuiCfg::setBreakpointColor(QColor color)
-{
-    simColorBreakpoint = color;
 }
 
 
@@ -236,8 +235,11 @@ void GuiCfg::setDefaultSimWarnings()
 void GuiCfg::setDefaultSimOthers()
 {
     this->undefinedValue = (GuiCfg_Items::UndefinedValueOpt)0;
-    this->simColorLine.setRgb(102,204,255, 255);
-    this->simColorBreakpoint.setNamedColor("#00FF00");
+    this->simColorCurrLine.setRgb(102,204,255, 255);
+    this->simColorPrevLine = this->simColorCurrLine;
+    this->simColorPrevLine.setAlpha(125);
+    this->simColorPrev2Line = this->simColorCurrLine;
+    this->simColorPrev2Line.setAlpha(50);
     this->simColorWidgetChanged.setNamedColor("#FFFF00");
 }
 
@@ -291,6 +293,7 @@ void GuiCfg::setDefaultPaths(bool release)
         //}   
         this->configPath = homeDir.absolutePath() + "/config.xml";
         this->sessionPath = homeDir.absolutePath() + "/session.xml";
+        this->licensePath = homeDir.absolutePath() + "/certificate.cert";
         this->compilerPath = "../include/mds";
         this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -302,6 +305,7 @@ void GuiCfg::setDefaultPaths(bool release)
         #ifdef Q_OS_LINUX
             this->configPath = "./resources/xml/config.xml";
             this->sessionPath = "./resources/xml/session.xml";
+            this->licensePath = "./resources/xml/certificate.cert";
             this->compilerPath = "../compiler/include";
             this->examplePath = "./demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -310,6 +314,7 @@ void GuiCfg::setDefaultPaths(bool release)
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->sessionPath = "./GUI/resources/xml/session.xml";
+            this->licensePath = "./GUI/resources/xml/certificate.cert";
             this->compilerPath = "./compiler/include";
             this->examplePath = "./GUI/demoprojekt/Example";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
@@ -415,17 +420,12 @@ QFont GuiCfg::getEditorFont()
 
 QColor GuiCfg::getSimColor()
 {
-    return simColorLine;
+    return simColorCurrLine;
 }
 
 QColor GuiCfg::getSimWidgetChangedColor()
 {
     return simColorWidgetChanged;
-}
-
-QColor GuiCfg::getBreakpointColor()
-{
-    return simColorBreakpoint;
 }
 
 GuiCfg_Items::WarningsOpt GuiCfg::getWarningsOpt()
@@ -534,22 +534,19 @@ bool GuiCfg::getHighlightEnabled()
 
 QColor GuiCfg::getCurrLineColor()
 {
-    this->simColorLine.setAlpha(255);
-    return this->simColorLine;
+    return this->simColorCurrLine;
 }
 
 
 QColor GuiCfg::getPrevLineColor()
 {
-    this->simColorLine.setAlpha(125);
-    return this->simColorLine;
+    return this->simColorPrevLine;
 }
 
 
 QColor GuiCfg::getPrevLine2Color()
 {
-    this->simColorLine.setAlpha(50);
-    return this->simColorLine;
+    return this->simColorPrev2Line;
 }
 
 
@@ -617,6 +614,13 @@ QString GuiCfg::getHelpPath()
 {
     return this->helpPath;
 }
+
+
+QString GuiCfg::getLicensePath()
+{
+    return this->licensePath;
+}
+
 
 
 bool GuiCfg::getProjectDefVHDL()
@@ -1018,11 +1022,12 @@ void GuiCfg::loadConfig()
                                 {
                                     if (xmlSimOthersElement.attribute("type", "") == "line")
                                     {
-                                        this->simColorLine.setNamedColor(xmlSimOthersElement.attribute("color", ""));
-                                    }
-                                    else if (xmlSimOthersElement.attribute("type", "") == "breakpoint")
-                                    {
-                                        this->simColorBreakpoint.setNamedColor(xmlSimOthersElement.attribute("color", ""));
+                                        this->simColorCurrLine.setNamedColor(xmlSimOthersElement.attribute("color", ""));
+                                        this->simColorCurrLine.setAlpha(255);
+                                        this->simColorPrevLine = this->simColorCurrLine;
+                                        this->simColorPrevLine.setAlpha(125);
+                                        this->simColorPrev2Line = this->simColorCurrLine;
+                                        this->simColorPrev2Line.setAlpha(50);
                                     }
                                     else if (xmlSimOthersElement.attribute("type", "") == "update")
                                     {
@@ -1692,13 +1697,8 @@ void GuiCfg::saveConfig()
     QDomElement xmlLine = domDoc.createElement("Option");
     xmlLine.setAttribute("name", "color");
     xmlLine.setAttribute("type", "line");
-    xmlLine.setAttribute("color", this->simColorLine.name());
+    xmlLine.setAttribute("color", this->simColorCurrLine.name());
     xmlSimOthers.appendChild(xmlLine);
-    QDomElement xmlBreak = domDoc.createElement("Option");
-    xmlBreak.setAttribute("name", "color");
-    xmlBreak.setAttribute("type", "breakpoint");
-    xmlBreak.setAttribute("color", this->simColorBreakpoint.name());
-    xmlSimOthers.appendChild(xmlBreak);
     QDomElement xmlUpdate = domDoc.createElement("Option");
     xmlUpdate.setAttribute("name", "color");
     xmlUpdate.setAttribute("type", "update");

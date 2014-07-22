@@ -137,8 +137,9 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
     signals:
         void stopSimSig();
         void clockChanged(double clock, int clockMult);
-        
-    //protected:
+
+    protected:
+        bool eventFilter(QObject *target, QEvent *event);
         //void contextMenuEvent(QContextMenuEvent *event);
         //virtual void closeEvent(QCloseEvent *event);
         //virtual void enterEvent(QEvent *event);

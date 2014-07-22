@@ -70,6 +70,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
 
     deviceChanged();
     connect(this, SIGNAL(cellChanged(int, int)), this, SLOT(updateValue(int, int)));
+    connect(this, SIGNAL(cellClicked(int,int)), this, SLOT(unhighlightCell(int, int)));
 }
 
 
@@ -468,7 +469,7 @@ void RegistersWidget::updateWidget()
     {
         this->m_memory->directRead(i, value);
         //dec, hex, bin, first half, Si
-        if (value != this->item(i,1)->text().toInt(0, 10))
+        if (value != this->item(i,1)->text().toUInt(0, 10))
         {
             this->item(i, 1)->setBackground(Qt::yellow);
             this->item(i, 2)->setBackground(Qt::yellow);
@@ -512,7 +513,7 @@ void RegistersWidget::updateWidget()
 
         //dec, hex, bin, second half, S(i+m_size/2)
         this->m_memory->directRead(i+m_size/2, value);
-        if (value != this->item(i,5)->text().toInt(0, 10))
+        if (value != this->item(i,5)->text().toUInt(0, 10))
         {
             this->item(i, 5)->setBackground(Qt::yellow);
             this->item(i, 6)->setBackground(Qt::yellow);
@@ -555,4 +556,10 @@ void RegistersWidget::updateWidget()
         }
     }
     this->update = false;
+}
+
+
+void RegistersWidget::unhighlightCell(int row, int column)
+{
+    this->item(row, column)->setBackground(this->palette().base().color());
 }

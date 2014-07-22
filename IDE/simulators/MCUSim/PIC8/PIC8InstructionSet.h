@@ -8,7 +8,7 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Erik Chalupa <xchalu10@stud.fit.vutbr.cz>, (C) 2013
- * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>, (C) 2013
+ * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup PIC8
  * @file PIC8InstructionSet.h
  */
