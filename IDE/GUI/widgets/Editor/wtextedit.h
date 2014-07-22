@@ -35,6 +35,8 @@ class WTextEdit : public QPlainTextEdit
         WTextEdit(QWidget *parent, SourceType type);
         void highlightCurrentLine();
         bool highlightLine(int line, QColor *color);
+        bool highlightLineAppend(int line, QColor *color);
+        void clearHighlight();
         bool isLineHighlighted(int line, QColor *color);
         void reloadHighlighter(SourceType type);
         void setPosition(int pos);
@@ -68,6 +70,8 @@ class WTextEdit : public QPlainTextEdit
         void updateLineCounter();
         void breakpointsAddLines(int line, int linesAdded);
         void breakpointsRemoveLines(int line, int linesRemoved);
+        void bookmarksAddLines(int line, int linesAdded);
+        void bookmarksRemoveLines(int line, int linesRemoved);
 
     //private slots:
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);

@@ -334,6 +334,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                     this,
                     SLOT(bookmarkEmitSlot(QString, int))
                 );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksAddLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksRemoveLinesSlot(QString, int, int))
+                );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
@@ -452,6 +462,16 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                     SIGNAL(bookmarkEmit(QString, int)),
                     this,
                     SLOT(bookmarkEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksAddLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksRemoveLinesSlot(QString, int, int))
                 );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
@@ -574,6 +594,16 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
                     SIGNAL(bookmarkEmit(QString, int)),
                     this,
                     SLOT(bookmarkEmitSlot(QString, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksAddLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksAddLinesSlot(QString, int, int))
+                );
+            connect(activeCodeEdit,
+                    SIGNAL(bookmarksRemoveLines(QString, int, int)),
+                    this,
+                    SLOT(bookmarksRemoveLinesSlot(QString, int, int))
                 );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
@@ -919,7 +949,7 @@ void WDockManager::setCentralByName(QString fileName)
 }
 
 
-void WDockManager::setCentralByPath(QString filePath)
+bool WDockManager::setCentralByPath(QString filePath)
 {
     //qDebug() << "WDockManager: setCentralByName()";
     if (filePath != "")
@@ -935,10 +965,11 @@ void WDockManager::setCentralByPath(QString filePath)
                     this->wTab->setCurrentIndex(i);
                     //this->changeCodeEditor(i);
                 }
-                return;
+                return true;
             }
         }
     }
+    return false;
     //qDebug() << "WDockManager: return setCentralByName()";
 }
 
@@ -954,7 +985,7 @@ CodeEdit* WDockManager::getCentralByPath(QString filePath)
             if (this->wTab->tabToolTip(i) == filePath)
             {
                 //qDebug() << "WDockManager: CodeEdit found";
-                return this->codeEditList.at(this->wTab->currentIndex());
+                return openCentralWidgets.at(this->wTab->currentIndex())->getCodeEdit();
             }
         }
     }
@@ -1140,6 +1171,7 @@ void WDockManager::breakpointEmitSlot(QString file, int line)
 
 void WDockManager::breakpointsAddLinesSlot(QString file, int line, int linesAdded)
 {
+    qDebug() << "WDockManager: breakpointsAddLines";
     emit breakpointsAddLines(file, line, linesAdded);
 }
 
@@ -1153,6 +1185,19 @@ void WDockManager::breakpointsRemoveLinesSlot(QString file, int line, int linesR
 void WDockManager::bookmarkEmitSlot(QString file, int line)
 {
     emit bookmarkEmit(file, line);
+}
+
+
+void WDockManager::bookmarksAddLinesSlot(QString file, int line, int linesAdded)
+{
+    qDebug() << "WDockManager: bookmarksAddLines";
+    emit bookmarksAddLines(file, line, linesAdded);
+}
+
+
+void WDockManager::bookmarksRemoveLinesSlot(QString file, int line, int linesRemoved)
+{
+    emit bookmarksRemoveLines(file, line, linesRemoved);
 }
 
 

@@ -91,7 +91,7 @@ class WDockManager : public QObject
         void createBookmarkList(QDockWidget *wDockWidget);
         void createBreakpointList(QDockWidget *wDockWidget);
         void setCentralByName(QString fileName);
-        void setCentralByPath(QString filePath);
+        bool setCentralByPath(QString filePath);
         CodeEdit* getCentralByPath(QString filePath);
         void setEditorsReadOnly(bool readonly);
         void changeSimWidget(int index);
@@ -129,6 +129,8 @@ class WDockManager : public QObject
         void breakpointsAddLinesSlot(QString file, int line, int linesAdded);
         void breakpointsRemoveLinesSlot(QString file, int line, int linesRemoved);
         void bookmarkEmitSlot(QString file, int line);
+        void bookmarksAddLinesSlot(QString file, int line, int linesAdded);
+        void bookmarksRemoveLinesSlot(QString file, int line, int linesRemoved);
         //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
@@ -149,6 +151,8 @@ class WDockManager : public QObject
         void bookmarkEmit(QString file, int line);
         void breakpointsAddLines(QString file, int line, int linesAdded);
         void breakpointsRemoveLines(QString file, int line, int linesRemoved);
+        void bookmarksAddLines(QString file, int line, int linesAdded);
+        void bookmarksRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
         void compilationFinishedSig(bool success);
 

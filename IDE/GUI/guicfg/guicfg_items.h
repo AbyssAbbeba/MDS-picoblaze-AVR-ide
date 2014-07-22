@@ -132,8 +132,9 @@ class GuiCfg_Items
         QFont editorFont;
 
         //sim options
-        QColor simColorLine;
-        QColor simColorBreakpoint;
+        QColor simColorCurrLine;
+        QColor simColorPrevLine;
+        QColor simColorPrev2Line;
         QColor simColorWidgetChanged;
         GuiCfg_Items::UndefinedValueOpt undefinedValue;
 
@@ -174,6 +175,7 @@ class GuiCfg_Items
         QString tempPath;
         QString helpPath;
         QString sessionPath;
+        QString licensePath;
 
         //session
         QList<QString> sessionProjectPaths;

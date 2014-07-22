@@ -62,11 +62,12 @@ class CodeEdit : public QWidget
         QList<int>* getBreakpointsLines();
         void addBookmarkLine(int line);
         void removeBookmarkLine(int line);
+        void moveBookmarksLines(int line, int linesChanged, bool added);
         QList<int>* getBookmarksLines();
-        //void setBreakpointsLines(QList<unsigned int> *breakpoints);
-        //void setBreakpointsLines(QList<int> *breakpoints);
-        //void setBookmarksLines(QList<unsigned int> *bookmarks);
-        //void setBookmarksLines(QList<int> *bookmarks);
+        void setBreakpointsLines(QList<unsigned int> breakpoints);
+        void setBreakpointsLines(QList<int> breakpoints);
+        void setBookmarksLines(QList<unsigned int> bookmarks);
+        void setBookmarksLines(QList<int> bookmarks);
 
     public slots:
         void setChanged();
@@ -85,6 +86,8 @@ class CodeEdit : public QWidget
         void updateLineCounter();
         void breakpointsAddLines(int line, int linesAdded);
         void breakpointsRemoveLines(int line, int linesRemoved);
+        void bookmarksAddLines(int line, int linesAdded);
+        void bookmarksRemoveLines(int line, int linesRemoved);
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -97,6 +100,8 @@ class CodeEdit : public QWidget
         void breakpointsAddLines(QString file, int line, int linesAdded);
         void breakpointsRemoveLines(QString file, int line, int linesRemoved);
         void bookmarkEmit(QString file, int line);
+        void bookmarksAddLines(QString file, int line, int linesAdded);
+        void bookmarksRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);

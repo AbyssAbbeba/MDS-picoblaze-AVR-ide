@@ -57,7 +57,6 @@ void ( PicoBlazeInstructionSet1 :: * const PicoBlazeInstructionSet1::m_inst_1100
     & PicoBlazeInstructionSet1::inst_SUBCY_sx_sy,  // opCode = 1100 xxxx | yyyy 0111
 };
 
-
 void ( PicoBlazeInstructionSet1 :: * const PicoBlazeInstructionSet1::m_inst_1101_DTable [ 16 ] )
      ( const unsigned int opCode ) =
 {

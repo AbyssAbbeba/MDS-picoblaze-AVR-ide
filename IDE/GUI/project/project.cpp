@@ -370,9 +370,9 @@ Project::Project(QFile *file, ProjectMan *parent)
     parentManager = parent;
     this->m_simControlUnit = NULL;
     prjPath = QFileInfo(*file).filePath();
-    currLineColor = GuiCfg::getInstance().getCurrLineColor();
-    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
-    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
+    this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
     //nacteni ze souboru
     QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(file))
@@ -488,6 +488,30 @@ Project::Project(QFile *file, ProjectMan *parent)
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->breakPoints.append(pair);
                             xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "Bookmarks")
+                    {
+                        QDomNode xmlBookmarkFileNode = xmlElement.firstChild();
+                        QDomElement xmlBookmarkFileElement;
+                        QString absolutePath;
+                        while (!xmlBookmarkFileNode.isNull())
+                        {
+                            xmlBookmarkFileElement = xmlBookmarkFileNode.toElement();
+                            QSet<unsigned int> set;
+                            QDomNode xmlBookmarkNode = xmlBookmarkFileNode.firstChild();
+                            QDomElement xmlBookmarkElement;
+                            while (!xmlBookmarkNode.isNull())
+                            {
+                                xmlBookmarkElement = xmlBookmarkNode.toElement();
+                                set << xmlBookmarkElement.attribute("line").toInt();
+                                xmlBookmarkNode = xmlBookmarkNode.nextSibling();
+                            }
+                            //TODO:
+                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBookmarkFileElement.attribute("path");
+                            QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
+                            this->bookmarks.append(pair);
+                            xmlBookmarkFileNode = xmlBookmarkFileNode.nextSibling();
                         }
                     }
                     else if (xmlElement.tagName() == "Simulator")
@@ -798,9 +822,9 @@ Project::Project(ProjectMan *parent)
     this->prjName = "untracked";
     this->prjPath = "untracked";
 
-    currLineColor = GuiCfg::getInstance().getCurrLineColor();
-    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
-    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
+    this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
 
     this->family = GuiCfg::getInstance().getProjectFamily();
     this->intVector = GuiCfg::getInstance().getProjectIntVector();
@@ -907,9 +931,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     //qDebug() << "Project: Project() blank";
     parentManager = parent;
     this->m_simControlUnit = NULL;
-    currLineColor = GuiCfg::getInstance().getCurrLineColor();
-    prevLineColor = GuiCfg::getInstance().getPrevLineColor();
-    prevLine2Color = GuiCfg::getInstance().getPrevLine2Color();
+    this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
+    this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
@@ -992,6 +1016,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
     QDomElement xmlBreakpoints = domDoc.createElement("Breakpoints");
     xmlRoot.appendChild(xmlBreakpoints);
+
+    QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
+    xmlRoot.appendChild(xmlBookmarks);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     QDomElement xmlClock = domDoc.createElement("Clock");
@@ -1189,6 +1216,22 @@ void Project::saveProject()
         xmlBreakpoints.appendChild(xmlBreakpointFile);
     }
     xmlRoot.appendChild(xmlBreakpoints);
+    
+    QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
+    for (int i = 0; i < this->bookmarks.count(); i++)
+    {
+        relativePath = project.relativeFilePath(this->bookmarks.at(i).first);
+        QDomElement xmlBookmarkFile = domDoc.createElement("BookmarkFile");
+        xmlBookmarkFile.setAttribute("path", relativePath);
+        foreach (unsigned int value, this->bookmarks.at(i).second)
+        {
+            QDomElement xmlBookmark = domDoc.createElement("Bookmark");
+            xmlBookmark.setAttribute("line", value);
+            xmlBookmarkFile.appendChild(xmlBookmark);
+        }
+        xmlBookmarks.appendChild(xmlBookmarkFile);
+    }
+    xmlRoot.appendChild(xmlBookmarks);
 
     QDomElement xmlSimulator = domDoc.createElement("Simulator");
     QDomElement xmlClock = domDoc.createElement("Clock");
@@ -2340,12 +2383,12 @@ void Project::setupSim()
  */
 void Project::setupSim(QString family)
 {
-    //qDebug() << "Project: setupSim()";
+    qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
-    //qDebug() << "Project: return setupSim()";
+    qDebug() << "Project: return setupSim()";
 }
 
 
@@ -2435,7 +2478,7 @@ int Project::start(QString file)
         QDir dir(prjPath.section('/',0, -2));
         this->simulatedFile = dir.absoluteFilePath(mainFilePath);
     }*/
-    if (this->breakPoints.count() > 0)
+    /*if (this->breakPoints.count() > 0)
     {
         std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
         for (int i = 0; i < this->breakPoints.count(); i++)
@@ -2460,34 +2503,85 @@ int Project::start(QString file)
             }
         }
         m_simControlUnit->setBreakPoints(breakpointsVector);
-    }
+    }*/
     //qDebug() << "Project: getLineNumber";
-    m_simControlUnit->getLineNumber(currLine);
+    std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+    m_simControlUnit->setBreakPoints(breakpointsVector);
+    m_simControlUnit->getLineNumber(this->currSim);
     //qDebug() << "Project: getLineNumber check";
-    if (currLine.empty() == true)
+    if (this->currSim.empty() == true)
     {
         return 2;
     }
+    this->prevSim.clear();
+    this->prevSim2.clear();
     //qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
     //qDebug() << "Project: currFile";
-    this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+    //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
     //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
     //qDebug() << "Project: highlightLine";
-    emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
+    //emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
+    emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
     //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-    this->prevLine = std::get<1>(this->currLine.at(0))-1;
+    /*this->prevLine = std::get<1>(this->currLine.at(0))-1;
     this->prevLine2 = -1;
     this->prevLine3 = -1;
 
     this->prevFile = this->currFile;
     this->prevFile2 = this->currFile;
-    this->prevFile3 = this->currFile;
+    this->prevFile3 = this->currFile;*/
+    this->prevSim = this->currSim;
     //qDebug() << "Project: return start()";
     return 0;
 }
+
+
+void Project::setBreakpoints(bool set)
+{
+    if (true == set)
+    {
+        qDebug() << "Project: setBreakpoints(true)";
+        if (this->breakPoints.count() > 0)
+        {
+            if (false == m_simControlUnit->breakPointsEnabled())
+            {
+                m_simControlUnit->enableBreakPoints(true);
+            }
+            std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+            for (int i = 0; i < this->breakPoints.count(); i++)
+            {
+                //qDebug() << "Project: breakpoint list at" << i;
+                std::set<unsigned int> breakpointsSet;
+                foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                {
+                    breakpointsSet.insert(value);
+                }
+                std::pair<std::string, std::set<unsigned int>> breakpointsPair;
+                breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
+                breakpointsPair.second = breakpointsSet;
+                breakpointsVector.push_back(breakpointsPair);
+            }
+            /*for (unsigned int i = 0; i < breakpointsVector.size(); i++)
+            {
+                qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                {
+                    qDebug() << "Project: breakpoint line" << value;
+                }
+            }*/
+            m_simControlUnit->setBreakPoints(breakpointsVector);
+        }
+    }
+    else
+    {
+        qDebug() << "Project: setBreakpoints(false)";
+        m_simControlUnit->enableBreakPoints(false);
+    }
+}
+
 
 
 
@@ -2498,16 +2592,17 @@ void Project::stop()
 {
     //qDebug() << "Project: stop()";
     std::string fileName; //= new std::string;
-    m_simControlUnit->getLineNumber(currLine);
-    if (currLine.empty() == true)
+    m_simControlUnit->getLineNumber(this->currSim);
+    if (currSim.empty() == true)
     {
         return;
     }
-    this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+    //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     m_simControlUnit->stopSimulation();
+    /*emit simHighlightLines()
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
     emit highlightLine(this->prevFile2, this->prevLine2, NULL);
-    emit highlightLine(this->prevFile, this->prevLine, NULL);
+    emit highlightLine(this->prevFile, this->prevLine, NULL);*/
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
     //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
@@ -2531,20 +2626,24 @@ void Project::handleUpdateRequest(int mask)
     if (4 & mask)
     {
         //std::string fileName; //= new std::string();
-        m_simControlUnit->getLineNumber(currLine);
-        if (currLine.empty() == true)
+        m_simControlUnit->getLineNumber(this->currSim);
+        if (this->currSim.empty() == true)
         {
             qDebug() << "Project: currline empty, should never happen";
             return;
         }
-        this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+        //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
         //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
         //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-        emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+        /*emit highlightLine(this->prevFile3, this->prevLine3, NULL);
         emit highlightLine(this->prevFile2, this->prevLine2, NULL);
         emit highlightLine(this->prevFile, this->prevLine, NULL);
-        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
+        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));*/
+
+        this->prevSim.clear();
+        this->prevSim2.clear();
+        emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
 
         //emit setCentralByName(this->currFile);
         //emit scrollToLine(this->line);
@@ -2552,30 +2651,33 @@ void Project::handleUpdateRequest(int mask)
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-        this->prevLine3 = -1;
+        /*this->prevLine3 = -1;
         this->prevLine2 = -1;
         this->prevLine = std::get<1>(this->currLine.at(0))-1;
 
         this->prevFile3 = this->currFile;
         this->prevFile2 = this->currFile;
-        this->prevFile = this->currFile;
+        this->prevFile = this->currFile;*/
+        this->prevSim = this->currSim;
     }
     else if (2 & mask)
     {
         //std::string fileName; //= new std::string();
-        m_simControlUnit->getLineNumber(currLine);
-        if (currLine.empty() == true)
+        m_simControlUnit->getLineNumber(this->currSim);
+        if (this->currSim.empty() == true)
         {
             return;
         }
-        this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+        //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
         //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
         //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-        emit highlightLine(this->prevFile3, this->prevLine3, NULL);
+        /*emit highlightLine(this->prevFile3, this->prevLine3, NULL);
         emit highlightLine(this->prevFile2, this->prevLine2,&(this->prevLine2Color));
         emit highlightLine(this->prevFile, this->prevLine, &(this->prevLineColor));
-        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
+        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));*/
+
+        emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
 
         //emit setCentralByName(this->currFile);
         //emit scrollToLine(this->line);
@@ -2583,13 +2685,15 @@ void Project::handleUpdateRequest(int mask)
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
         //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-        this->prevLine3 = this->prevLine2;
+        /*this->prevLine3 = this->prevLine2;
         this->prevLine2 = this->prevLine;
         this->prevLine = std::get<1>(this->currLine.at(0))-1;
 
         this->prevFile3 = this->prevFile2;
         this->prevFile2 = this->prevFile;
-        this->prevFile = this->currFile;
+        this->prevFile = this->currFile;*/
+        this->prevSim2 = this->prevSim;
+        this->prevSim = this->currSim;
     }
 }
 
@@ -3049,7 +3153,7 @@ int Project::handleBreakpoint(QString file, int line)
 }
 
 
-void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
+void Project::moveBreakpointsAdd(QString file, int line, unsigned int linesAdded)
 {
     QString fileRelative;
     if (this->prjPath == "untracked")
@@ -3073,7 +3177,7 @@ void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
                 QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
                 for (int j = 0; j < setValues.count(); j++)
                 {
-                    if (setValues.at(j) > line)
+                    if (setValues.at(j) > (unsigned int)line)
                     {
                         set << setValues.at(j) + linesAdded;
                         changed = true;
@@ -3100,7 +3204,7 @@ void Project::moveBreakpointsAdd(QString file, int line, int linesAdded)
 }
 
 
-void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
+void Project::moveBreakpointsRemove(QString file, int line, unsigned int linesRemoved)
 {
     QString fileRelative;
     if (this->prjPath == "untracked")
@@ -3124,14 +3228,14 @@ void Project::moveBreakpointsRemove(QString file, int line, int linesRemoved)
                 QList<unsigned int> setValues = this->breakPoints.at(i).second.toList();
                 for (int j = 0; j < setValues.count(); j++)
                 {
-                    if (setValues.at(j) >= line + linesRemoved)
+                    if (setValues.at(j) >= (unsigned int)line + linesRemoved)
                     {
                         set << setValues.at(j) - linesRemoved;
                         changed = true;
                     }
                     else
                     {
-                        if (setValues.at(j) < line)
+                        if (setValues.at(j) < (unsigned int)line)
                         {
                             set << setValues.at(j);
                         }
@@ -3244,6 +3348,120 @@ int Project::handleBookmark(QString file, int line)
     qDebug() << "Project: does not contain" << fileRelative;
     return -1;
 }
+
+
+void Project::moveBookmarksAdd(QString file, int line, unsigned int linesAdded)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->bookmarks.count(); i++)
+        {
+            if (this->bookmarks.at(i).first == file)
+            {
+                //handle move
+                bool changed = false;
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->bookmarks.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) > (unsigned int)line)
+                    {
+                        set << setValues.at(j) + linesAdded;
+                        changed = true;
+                    }
+                    else
+                    {
+                        set << setValues.at(j);
+                    }
+                }
+                if (true == changed)
+                {
+                    this->bookmarks.removeAt(i);
+                    QPair<QString, QSet<unsigned int>> pair(file, set);
+                    this->bookmarks.append(pair);
+                    /*if (this->prjPath != "untracked")
+                    {
+                        this->xmlBreakpointFileReplace(file);
+                    }*/
+                }
+                break;
+            }
+        }
+    }
+}
+
+
+void Project::moveBookmarksRemove(QString file, int line, unsigned int linesRemoved)
+{
+    QString fileRelative;
+    if (this->prjPath == "untracked")
+    {
+        fileRelative = file;
+    }
+    else
+    {
+        QDir prjDir(this->prjPath.section('/', 0, -2));
+        fileRelative = prjDir.relativeFilePath(file);
+    }
+    if (true == this->filePaths.contains(fileRelative))
+    {
+        for (int i = 0; i < this->bookmarks.count(); i++)
+        {
+            if (this->bookmarks.at(i).first == file)
+            {
+                //handle move
+                bool changed = false;
+                QSet<unsigned int> set;
+                QList<unsigned int> setValues = this->bookmarks.at(i).second.toList();
+                for (int j = 0; j < setValues.count(); j++)
+                {
+                    if (setValues.at(j) >= (unsigned int)line + linesRemoved)
+                    {
+                        set << setValues.at(j) - linesRemoved;
+                        changed = true;
+                    }
+                    else
+                    {
+                        if (setValues.at(j) < (unsigned int)line)
+                        {
+                            set << setValues.at(j);
+                        }
+                        else
+                        {
+                        //else (==) do nothing, breakpoint removed
+                            changed = true;
+                        }
+                    }
+                }
+                if (true == changed)
+                {
+                    this->bookmarks.removeAt(i);
+                    if (false == set.isEmpty())
+                    {
+                        QPair<QString, QSet<unsigned int>> pair(file, set);
+                        this->bookmarks.append(pair);
+                        /*if (this->prjPath != "untracked")
+                        {
+                            this->xmlBreakpointFileReplace(file);
+                        }*/
+                    }
+                }
+                break;
+            }
+        }
+    }
+}
+
 
 
 void Project::breakpointReachedSlot()
@@ -3479,33 +3697,36 @@ QList<QPair<QString, QSet<unsigned int>>>* Project::getBookmarksListRef()
 }*/
 
 
-/*QList<unsigned int>* Project::getBreakpointsForFileAbsolute(QString file)
+QList<unsigned int> Project::getBreakpointsForFileAbsolute(QString file)
 {
-    QDir project(QFileInfo(this->prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
+    //QDir project(QFileInfo(this->prjPath).dir());
+    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
-        if (this->breakPoints.at(i).first == relativePath)
+        //qDebug() << "Project: checking" << this->breakPoints.at(i).first << "with relative" << relativePath;
+        //qDebug() << "Project: original file path" << file;
+        if (this->breakPoints.at(i).first == file)
         {
-            QList<unsigned int> list = this->breakPoints.at(i).second.toList();
-            return &list;
+            //QList<unsigned int> list(this->breakPoints.at(i).second.toList());
+            //qDebug() << "Project: breakPoints count" << list.count();
+            //return list;
+            return this->breakPoints.at(i).second.toList();
         }
     }
-    return NULL;
+    return QList<unsigned int>();
 }
 
 
-QList<unsigned int>* Project::getBookmarksForFileAbsolute(QString file)
+QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 {
-    QDir project(QFileInfo(this->prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
+    //QDir project(QFileInfo(this->prjPath).dir());
+    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->bookmarks.count(); i++)
     {
-        if (this->bookmarks.at(i).first == relativePath)
+        if (this->bookmarks.at(i).first == file)
         {
-            QList<unsigned int> list = this->bookmarks.at(i).second.toList();
-            return &list;
+            return this->bookmarks.at(i).second.toList();
         }
     }
-    return NULL;
-}*/
+    return QList<unsigned int>();
+}
