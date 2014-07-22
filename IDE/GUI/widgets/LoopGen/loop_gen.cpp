@@ -89,6 +89,7 @@ void loop_gen::Cycles_click()
 void loop_gen::Time_click()
 {
     ui->Vstup_Cas->setEnabled(true);
+    ui->Vstup_Cycles->setEnabled(true);
 }
 
 
