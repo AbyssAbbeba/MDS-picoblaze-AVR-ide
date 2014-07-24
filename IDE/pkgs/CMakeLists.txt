@@ -54,40 +54,17 @@ macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL )
     endif()
 endmacro()
 
-# ------------------------------------------------------------------------------
-# ADD SOME DATA FILES TO THE INSTALLATION PACKAGES.
-# ------------------------------------------------------------------------------
-
-if ( TARGET_OS STREQUAL "Linux" )
-    #
-    ## GNU/Linux and possibly other POSIX systems
-    #
-
-    set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
-    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
-
-    # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
-    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
-    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
-
-elseif ( TARGET_OS STREQUAL "Windows" )
-    #
-    ## Microsoft Windows
-    #
-
-    set ( CPACK_GENERATOR "NSIS" )
-
-    get_filename_component ( COMPILER_DIRECTORY ${CMAKE_CXX_COMPILER} PATH )
-
+##
+ #
+macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE COMPILER_DIRECTORY )
     find_library ( LIB_GCC
-                   NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1
+                   NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1 gcc_s
                    DOC "GCC library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
 
     find_library ( LIB_STD_CPP
-                   NAMES stdc++-6
+                   NAMES stdc++-6 stdc++
                    DOC "stdc++ library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
@@ -112,6 +89,44 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
     install ( FILES ${BOOST_LIBS_TO_INSTALL}
               DESTINATION ${INSTALL_DIR_BIN} )
+endmacro()
+
+# ------------------------------------------------------------------------------
+# ADD SOME DATA FILES TO THE INSTALLATION PACKAGES.
+# ------------------------------------------------------------------------------
+
+if ( TARGET_OS STREQUAL "Linux" )
+    #
+    ## GNU/Linux and possibly other POSIX systems
+    #
+
+    set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
+
+    # Install .desktop spec and application icon
+    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
+
+    if ( INDEPENDENT_PACKAGES )
+        set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt" )
+        file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/4.8.2/" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${COMPILER_DIR} )
+    else()
+        set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+    endif()
+
+    set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" )
+    set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
+
+elseif ( TARGET_OS STREQUAL "Windows" )
+    #
+    ## Microsoft Windows
+    #
+
+    set ( CPACK_GENERATOR "NSIS" )
+
+    get_filename_component ( COMPILER_DIR ${CMAKE_CXX_COMPILER} PATH )
+    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${COMPILER_DIR} )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
