@@ -37,7 +37,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
