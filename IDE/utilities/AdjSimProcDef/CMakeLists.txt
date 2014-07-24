@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Library for working with  SDCC's .cdb files, and other kinds "debugger" files.
+# Library for working with processor definition files used Adjustable Simulator.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( DbgFile )
+project ( AdjSimProcDef )
 
 # ------------------------------------------------------------------------------
 # WINDRES RC FILES.
@@ -23,7 +23,7 @@ windres_rc ( OUTPUT_VAR         RC_FILE
              FILETYPE           "DLL"
              FILE_VERSION       "1.0"
              FILEOS             "NT_WINDOWS32"
-             FILE_DESCRIPTION   "MDS Debugging Files Support"
+             FILE_DESCRIPTION   "MDS ASPD"
              COMPANY_NAME       "Moravia Microsystems, s.r.o."
              TARGET             ${PROJECT_NAME}
              PRODUCT_NAME       ${PRODUCT_NAME}
@@ -35,17 +35,15 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 # ------------------------------------------------------------------------------
 
 # Add include directories to the build.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/.." )
+include_directories ( ${CMAKE_SOURCE_DIR} )
 
-## Add a library to the project using the specified source files,
- # in this case it will produce dynamic C++ library.
+# Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
               ${RC_FILE}
-              DbgFile.cxx
-              DbgFileCDB.cxx
-              DbgFileNative.cxx
-              DbgFileAvrCoff.cxx
-              DbgFileAvraLst.cxx )
+              AdjSimProcDef.cxx
+              AdjSimProcDefGui.cxx
+              AdjSimProcDefParser.cxx
+              AdjSimProcDefGenerator.cxx )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
