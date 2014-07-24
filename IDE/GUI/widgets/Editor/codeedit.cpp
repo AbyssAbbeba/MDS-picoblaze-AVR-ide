@@ -82,11 +82,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
+    //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 1, 1, 2, 1);
+    //layout->addWidget(statusBar, 1, 1, 2, 1);
     setLayout(layout);
     name = wName;
     path = wPath;
@@ -267,11 +267,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
+    //statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 1, 0, 2, 1);
+    //layout->addWidget(statusBar, 1, 0, 2, 1);
     name = wName;
     path = wPath;
     parentWidget = parent;

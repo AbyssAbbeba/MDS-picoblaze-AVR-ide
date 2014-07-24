@@ -26,21 +26,21 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
 
     this->ideGeneral = new InterfaceCfg_IDEGeneral(this->cfgInterface);
     this->editGeneral = new InterfaceCfg_EditGeneral(this->cfgInterface);
-    this->editSyntax = new InterfaceCfg_EditSyntax(this->cfgInterface);
+    //this->editSyntax = new InterfaceCfg_EditSyntax(this->cfgInterface);
     this->editFonts = new InterfaceCfg_EditFonts(this->cfgInterface);
     this->simWarnings = new InterfaceCfg_SimWarnings(this->cfgInterface);
-    this->simOthers = new InterfaceCfg_SimOthers(this->cfgInterface);
+    //this->simOthers = new InterfaceCfg_SimOthers(this->cfgInterface);
 
     this->cfgInterface->addWidget(NULL, "IDE", "IDE Config");
     this->cfgInterface->addWidget(this->ideGeneral, "General", "IDE General Options", true);
-    this->cfgInterface->addWidget(NULL, "Shortcuts", "IDE Shortcuts", true);
+    //this->cfgInterface->addWidget(NULL, "Shortcuts", "IDE Shortcuts", true);
     this->cfgInterface->addWidget(NULL, "Editor", "Editor Config");
     this->cfgInterface->addWidget(this->editGeneral, "General", "Editor General Options", true);
-    this->cfgInterface->addWidget(this->editSyntax, "Highlighter", "Editor Syntax Highlight", true);
+    //this->cfgInterface->addWidget(this->editSyntax, "Highlighter", "Editor Syntax Highlight", true);
     this->cfgInterface->addWidget(this->editFonts, "Fonts", "Editor Fonts", true);
     this->cfgInterface->addWidget(NULL, "Simulator", "Simulator Config");
     this->cfgInterface->addWidget(this->simWarnings, "Warnings", "Simulator Warnings", true);
-    this->cfgInterface->addWidget(this->simOthers, "Others", "Simulator Others", true);
+    //this->cfgInterface->addWidget(this->simOthers, "Others", "Simulator Others", true);
 
     this->cfgInterface->show();
     this->show();
@@ -61,10 +61,10 @@ void InterfaceCfgDlg_Core::ok()
 {
     this->editFonts->save();
     this->editGeneral->save();
-    this->editSyntax->save();
+    //this->editSyntax->save();
     this->ideGeneral->save();
     this->simWarnings->save();
-    this->simOthers->save();
+    //this->simOthers->save();
     GuiCfg::getInstance().saveConfig();
     this->done(1);
 }

@@ -717,7 +717,7 @@ void WDockManager::addSimDockWidgetP1()
 
 void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
 {
-    //qDebug() << "WDockManager: addSimDockWidgetP2()";
+    qDebug() << "WDockManager: addSimDockWidgetP2()";
     if (false == this->dockWidgets)
     {
         WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
@@ -745,7 +745,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         this->openSimWidgets.append(simWidget);
         simWidget->hide();
     }
-    //qDebug() << "WDockManager: return addSimDockWidgetP2()";
+    qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
 
@@ -1094,8 +1094,8 @@ void WDockManager::clockChangedSlot(double clock, int clockMult)
 
 void WDockManager::changeSimWidget(int index)
 {
-    //qDebug() << "WDockManager: changeSimWidget index:" << index;
-    //qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
+    qDebug() << "WDockManager: changeSimWidget index:" << index;
+    qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
     if (this->getDockWidget(wSimulationInfo) == NULL)
     {
         //qDebug() << "fuck, null";
@@ -1107,12 +1107,13 @@ void WDockManager::changeSimWidget(int index)
         return;
     }
     this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
-    //qDebug() << "WDockManager: changeSimWidget done";
+    qDebug() << "WDockManager: changeSimWidget done";
 }
 
 
 void WDockManager::deleteActiveSimWidget()
 {
+    qDebug() << "WDockManager: deleteActiveSimWidget";
     PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(wSimulationInfo)->widget());
     int index = openSimWidgets.indexOf(tempGrid);
     if (openSimWidgets.count() > 1)
@@ -1145,6 +1146,7 @@ void WDockManager::deleteActiveSimWidget()
         //delete tempGrid;
         //tempGrid = NULL;
     }
+    qDebug() << "WDockManager: deleteActiveSimWidget done";
 }
 
 
