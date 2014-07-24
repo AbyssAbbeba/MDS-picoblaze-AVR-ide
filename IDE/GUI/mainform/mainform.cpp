@@ -1045,7 +1045,7 @@ void MainForm::newProject()
  */
 void MainForm::openProject()
 {
-    //qDebug() << "MainForm: openProject()";
+    qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
     QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
@@ -1066,7 +1066,7 @@ void MainForm::openProject()
             file.close();
         }
     }
-    //qDebug() << "MainForm: return openProject()";
+    qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -1076,7 +1076,7 @@ void MainForm::openProject()
  */
 bool MainForm::openProject(QString path)
 {
-    //qDebug() << "MainForm: openProject()";
+    qDebug() << "MainForm: openProject()";
     if (false == projectMan->isOpened(path))
     {
         QFile file(path);
@@ -1090,11 +1090,12 @@ bool MainForm::openProject(QString path)
             //nacteni obsahu do widgetu
             projectMan->openProject(&file);
             file.close();
+            qDebug() << "MainForm: return openProject()";
             return true;
         }
     }
+    qDebug() << "MainForm: return openProject()";
     return false;
-    //qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -1135,6 +1136,7 @@ void MainForm::projectOpened()
             wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
         }*/
     }
+    qDebug() << "MainForm: projectOpened done";
 }
 
 
@@ -2149,7 +2151,7 @@ ProjectMan* MainForm::getProjectMan()
  */
 void MainForm::exampleOpen()
 {
-    //qDebug() << "MainForm: exampleOpen";
+    qDebug() << "MainForm: exampleOpen";
     if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example.mds-project"))
     {
         return;
@@ -2162,7 +2164,7 @@ void MainForm::exampleOpen()
         //qDebug() << "MainForm: loading";
         this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
-    //qDebug() << "MainForm: return exampleOpen";
+    qDebug() << "MainForm: return exampleOpen";
 }
 
 
@@ -2535,8 +2537,11 @@ void MainForm::closeProject()
             path.setPath(project->prjPath.section('/',0,-2));
             wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))));
         }
+        qDebug() << "MainForm: delete active sim widget";
         wDockManager->deleteActiveSimWidget();
+        qDebug() << "MainForm: remove dock widget";
         this->removeDockWidget(project->prjDockWidget);
+        qDebug() << "MainForm: close project";
         projectMan->closeProject(project);
     }
 }

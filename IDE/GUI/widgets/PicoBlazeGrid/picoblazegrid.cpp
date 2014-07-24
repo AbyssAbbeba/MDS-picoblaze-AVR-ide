@@ -24,7 +24,7 @@
 PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
-    //qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
+    qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
 
     if ( NULL == controlUnit )
     {
@@ -251,7 +251,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     deviceChanged();
     
-    //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
+    qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
 
 
@@ -686,7 +686,7 @@ void PicoBlazeGrid::deviceChanged()
 
 void PicoBlazeGrid::deviceReset()
 {
-    //qDebug() << "PicoBlazeGrid: deviceReset()";
+    qDebug() << "PicoBlazeGrid: deviceReset()";
     int value = m_cpu->getProgramCounter();
     if (value > 0xFF)
     {
@@ -709,7 +709,7 @@ void PicoBlazeGrid::deviceReset()
     this->setWarningOpt(GuiCfg::getInstance().getWarningsOpt());
     this->unhighlight();
     
-    //qDebug() << "PicoBlazeGrid: return deviceReset()";
+    qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
 
 
