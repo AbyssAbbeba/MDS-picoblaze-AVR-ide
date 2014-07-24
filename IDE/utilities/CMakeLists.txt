@@ -35,6 +35,9 @@ add_subdirectory ( AsmTranslator )
 # Library for validating license certificates.
 add_subdirectory ( LicenseCertificate )
 
+# Library for working with processor definition files used Adjustable Simulator.
+add_subdirectory ( AdjSimProcDef )
+
 # Library for automated testing environment using libCUnit.
 if ( BUILD_TESTING )
     add_subdirectory ( AutoTest )

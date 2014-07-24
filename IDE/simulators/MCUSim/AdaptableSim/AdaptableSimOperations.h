@@ -60,7 +60,7 @@ class AdaptableSimOperations : public AdaptableSimInstructionSet
          * @param[in] inst
          * @return
          */
-        virtual bool operationSwitch ( AdaptableSimInstruction::OperationID operation,
+        virtual bool operationSwitch ( AdaptableSimOperationID::ID operation,
                                        unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
                                        const AdaptableSimInstruction & inst ) final override;
 

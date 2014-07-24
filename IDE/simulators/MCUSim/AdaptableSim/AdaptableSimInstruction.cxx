@@ -64,57 +64,6 @@ std::ostream & operator << ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             AdaptableSimInstruction::OperationID operationID )
-{
-    switch ( operationID )
-    {
-        case AdaptableSimInstruction::OP_NONE:          out << "NONE";                  break;
-        case AdaptableSimInstruction::OP_ABS_JUMP:      out << "ABS JUMP";              break;
-        case AdaptableSimInstruction::OP_ABS_CALL:      out << "ABS CALL";              break;
-        case AdaptableSimInstruction::OP_REL_JUMP:      out << "REL CALL";              break;
-        case AdaptableSimInstruction::OP_REL_CALL:      out << "REL CALL";              break;
-        case AdaptableSimInstruction::OP_OFS_JUMP:      out << "OFS CALL";              break;
-        case AdaptableSimInstruction::OP_OFS_CALL:      out << "OFS CALL";              break;
-        case AdaptableSimInstruction::OP_IDX_JUMP:      out << "IDX CALL";              break;
-        case AdaptableSimInstruction::OP_IDX_CALL:      out << "IDX CALL";              break;
-        case AdaptableSimInstruction::OP_RETURN:        out << "RETURN";                break;
-        case AdaptableSimInstruction::OP_ISR_RETURN:    out << "ISR RETURN";            break;
-        case AdaptableSimInstruction::OP_SET_BANK:      out << "SET BANK";              break;
-        case AdaptableSimInstruction::OP_MOVE:          out << "MOVE";                  break;
-        case AdaptableSimInstruction::OP_CB_MOVE:       out << "CROSS BANK MOVE";       break;
-        case AdaptableSimInstruction::OP_MOVE_BIT:      out << "MOVE BIT";              break;
-        case AdaptableSimInstruction::OP_CB_MOVE_BIT:   out << "CROSS BANK MOVE BIT";   break;
-        case AdaptableSimInstruction::OP_SWAP:          out << "SWAP";                  break;
-        case AdaptableSimInstruction::OP_CB_SWAP:       out << "CROSS BANK SWAP";       break;
-        case AdaptableSimInstruction::OP_SWAP_BIT:      out << "SWAP BIT";              break;
-        case AdaptableSimInstruction::OP_CB_SWAP_BIT:   out << "CROSS BANK SWAPBIT";    break;
-        case AdaptableSimInstruction::OP_CPL:           out << "CPL";                   break;
-        case AdaptableSimInstruction::OP_BIT_TEST:      out << "BIT TEST";              break;
-        case AdaptableSimInstruction::OP_ADD:           out << "ADD";                   break;
-        case AdaptableSimInstruction::OP_SUB:           out << "SUB";                   break;
-        case AdaptableSimInstruction::OP_AND:           out << "AND";                   break;
-        case AdaptableSimInstruction::OP_OR:            out << "OR";                    break;
-        case AdaptableSimInstruction::OP_XOR:           out << "XOR";                   break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_0:  out << "SHIFT LEFT 0";          break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_0: out << "SHIFT RIGHT 0";         break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_1:  out << "SHIFT LEFT 1";          break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_1: out << "SHIFT RIGHT 1";         break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_R:  out << "SHIFT LEFT R";          break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_R: out << "SHIFT RIGHT R";         break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_C:  out << "SHIFT LEFT C";          break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_C: out << "SHIFT RIGHT C";         break;
-        case AdaptableSimInstruction::OP_ROTATE_LEFT:   out << "ROTATE LEFT";           break;
-        case AdaptableSimInstruction::OP_ROTATE_RIGHT:  out << "ROTATE RIGHT";          break;
-
-        default:
-            out << "<ERROR:Unknown!>";
-            break;
-    }
-
-    return out;
-}
-
-std::ostream & operator << ( std::ostream & out,
                              AdaptableSimInstruction::OperParam operParam )
 {
     out << std::boolalpha;
