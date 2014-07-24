@@ -38,6 +38,8 @@ set ( INSTALL_DIR_DEMOPROJECT "share/mds/demoproject" )
 set ( PRODUCT_VERSION "1.0" )
 set ( COPYRIGHT_YEARS "2013, 2014" )
 set ( PRODUCT_NAME    "Multitarget Development System" )
+set ( COMPANY_NAME    "Moravia Microsystems, s.r.o." )
+set ( COMPANY_ADDRESS "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
 
 ## Set global compilation flags:
  # - for all build types:
