@@ -19,7 +19,7 @@ project ( docs )
 # ------------------------------------------------------------------------------
 
 # Build manual.
-#add_subdirectory ( manual )
+add_subdirectory ( manual )
 
 # Build API documentation.
 add_subdirectory ( doxygen )
