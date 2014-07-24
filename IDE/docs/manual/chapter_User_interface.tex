@@ -216,23 +216,25 @@
     \end{figure}
 
 \subsection{Waiting loop generator}
-    In many cases, it is usefull to have a tool for creating  
+    In many cases, it is usefull to have a tool for creating waiting loops. It can save some time in development process. This tool can generate
+    waiting loops using up to six registers. All you have to do is insert desired waiting time or number of cycles and valid frekvency.
 
     \begin{description}
-        \item[Section File] Here you can choose which file you want to be disassembled
-        \item[Section Target] Architecture - Select processor architecture
-        \item[Family] select processor family of selected architecture
-        \item[Section Options] Indentation - Choose between Tabs or Spaces
-        \item[TabSize] Number of spaces in one tab
-        \item[Radix] Binary,Octal, Decima or Hexadecimal
-        \item[Linebreak] LF,CR or CRLF
-        \item[Case]  You can choose if you want disassemled file will be in upper or lower case
-        \item[Generate symbols] Select which symbols should be disassembled
+        \item[Section Input variable] You can choose between time or cycles
+        \item[Section Desired waiting time] Insert number of executed time or cycles 
+        \item[Section Frekvency] Set working frekvency 
+        \item[Section Register names] Optional selection. You can change register names in generated code
+        \item[Section Generated code] Here is where code will appear
+        \item[Instruction] Select instruction used in loop.
+        \item[Type] Type of waiting loop you want to create (blank/macro).
+        \item[Checkboxes UpperCase and Comments]  You can turn off automaticaly added comments or change letter case
+        \item[Button Copy to clipboard] This will copy loop into your clipboard
+        \item[Button Generate] When you have all set. This will generate loop
     \end{description}
 
     \begin{figure}[h]
         \centering{}
-        \includegraphics[width=.5\textwidth]{img/loop_generator.png}
+        \includegraphics[width=.7\textwidth]{img/loop_gen.png}
         \caption{Loop generator user interface}
     \end{figure}
     
