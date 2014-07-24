@@ -1100,7 +1100,7 @@ bool MainForm::openProject(QString path)
 
 void MainForm::projectOpened()
 {
-    //qDebug() << "MainForm: projectOpened";
+    qDebug() << "MainForm: projectOpened";
     if (false == projectConfigAct->isEnabled())
     {
         projectConfigAct->setEnabled(true);
@@ -2896,7 +2896,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                 if (QString::fromStdString(*(std::get<0>(prev.at(i)))) != "")
                 {
                     this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))));
-                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)), colors.at(1));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)) - 1, colors.at(1));
                     //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)), colors.at(1));
                 }
             }
@@ -2904,7 +2904,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         else
         {
             this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))));
-            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)), colors.at(1));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)) - 1, colors.at(1));
             //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)), colors.at(1));
         }
     }
@@ -2918,7 +2918,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                 if (QString::fromStdString(*(std::get<0>(prev2.at(i)))) != "")
                 {
                     this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
-                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(i)), colors.at(2));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(i)) - 1, colors.at(2));
                     //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
                 }
             }
@@ -2926,7 +2926,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         else
         {
             this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
-            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)) - 1, colors.at(2));
             //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
         }
     }
@@ -2940,14 +2940,14 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                 if (QString::fromStdString(*(std::get<0>(curr.at(i)))) != "")
                 {
                     this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
-                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(i)), colors.at(0));
+                    this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(i)) - 1, colors.at(0));
                 }
             }
         }
         else
         {
             this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
-            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)), colors.at(0));
+            this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)) - 1, colors.at(0));
         }
     }
 }
