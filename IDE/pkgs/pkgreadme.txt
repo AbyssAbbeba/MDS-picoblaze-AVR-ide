@@ -1,1 +1,0 @@
-Content of the pkgreadme.txt file.

@@ -149,9 +149,9 @@ endif()
 #
 
 set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME}" )
-set ( CPACK_PACKAGE_VENDOR "Moravia Microsystems, s.r.o." )
+set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME}" )
-set ( MY_CPACK_PACKAGE_DETAILED_DESC "<MY_CPACK_PACKAGE_DETAILED_DESC> ... ... ... ... ... ... ... ... ... ... " )
+set ( MY_CPACK_PACKAGE_DETAILED_DESC "${PRODUCT_NAME} by ${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
 string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
 
@@ -159,10 +159,10 @@ string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME}
 ## Resources.
 #
 
+set ( CPACK_RESOURCE_FILE_README     "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme.txt" )
+set ( CPACK_RESOURCE_FILE_WELCOME    "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc.txt" )
-set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" )
-set ( CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome.txt" )
 
 #
 ## Options for the "DEB" generator.
@@ -176,7 +176,7 @@ endif()
 set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
 set ( CPACK_DEBIAN_PACKAGE_RECOMMENDS "" )
 set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
-set ( CPACK_PACKAGE_CONTACT "Moravia Microsystems, s.r.o.; trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
+set ( CPACK_PACKAGE_CONTACT "${COMPANY_NAME}; ${COMPANY_ADDRESS}" )
 set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.moravia-microsystems.com" )
 set ( CPACK_DEBIAN_PACKAGE_SECTION "Development" )
 set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "\t${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n\t\t${MY_CPACK_PACKAGE_DETAILED_DESC}" )
@@ -196,7 +196,7 @@ set ( CPACK_RPM_PACKAGE_LICENSE "<package license>" )
 ## Options for the "NSIS" generator (Windows).
 #
 
-# Coverts a sane path (e.g. "/x/y/z") into an MS-DOS crap (e.g. "\\\\x\\\\y\\\\z").
+# Coverts a sane path (like "/x/y/z") into an MS-DOS "crap" (like "\\\\x\\\\y\\\\z").
 macro ( SLASH_TO_QUADRUPLE_BACKSLACH Variable )
     string ( REGEX REPLACE "/" "\\\\\\\\" ${Variable} "${${Variable}}" )
     string ( REGEX REPLACE "\\|" "/" ${Variable} "${${Variable}}" )

@@ -129,6 +129,7 @@ int AdaptableSimInstructionSet::execInstruction()
     incrPc();
 
     // Execute instruction.
+    m_microCycles = 0;
     for ( const AdaptableSimInstruction & inst : m_config.m_instructions )
     {
         if ( inst.m_code == ( inst.m_mask & opCode ) )
@@ -203,6 +204,12 @@ void AdaptableSimInstructionSet::performOP ( unsigned short id,
                                              unsigned int & time,
                                              unsigned int opCode )
 {
+    if ( m_microCycles > MICRO_CYCLES_MAX )
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_TOO_MANY_MICRO_CYCLES, m_pc );
+        return;
+    }
+
     for ( const AdaptableSimInstruction & inst : m_config.m_instructions )
     {
         if ( inst.m_id == id )

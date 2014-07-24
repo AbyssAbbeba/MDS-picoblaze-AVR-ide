@@ -39,8 +39,21 @@ class AdaptableSimInterruptController;
  */
 class AdaptableSimInstructionSet : public MCUSimCPU
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const unsigned int MICRO_CYCLES_MAX = 1000;
+
     ////    Public Datatypes    ////
     public:
+        /**
+         * @brief
+         */
+        enum Event
+        {
+            EVENT_CPU_TOO_MANY_MICRO_CYCLES = MCUSimCPU::EVENT_CPU__MAX__
+        };
+
         /**
          * @brief
          */
@@ -116,7 +129,7 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          * @param[in] inst
          * @return
          */
-        virtual bool operationSwitch ( AdaptableSimInstruction::OperationID operation,
+        virtual bool operationSwitch ( AdaptableSimOperationID::ID operation,
                                        unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
                                        const AdaptableSimInstruction & inst ) = 0;
 
@@ -217,10 +230,13 @@ class AdaptableSimInstructionSet : public MCUSimCPU
         int m_actSubprogCounter;
 
         ///
-        std::vector<unsigned int> m_instructionCounter;
+        int m_lastInstruction;
 
         ///
-        int m_lastInstruction;
+        unsigned int m_microCycles;
+
+        ///
+        std::vector<unsigned int> m_instructionCounter;
 
         /// @name AdaptableSim simulator subsystems
         //@{

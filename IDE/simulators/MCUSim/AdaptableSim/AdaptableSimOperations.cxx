@@ -19,15 +19,18 @@
 #include "AdaptableSimStack.h"
 #include "AdaptableSimRegisters.h"
 #include "AdaptableSimDataMemory.h"
+#include "AdaptableSimOperationID.h"
 #include "AdaptableSimStatusFlags.h"
 #include "AdaptableSimInstruction.h"
 #include "AdaptableSimProgramMemory.h"
 #include "AdaptableSimInterruptController.h"
 
-bool AdaptableSimOperations::operationSwitch ( AdaptableSimInstruction::OperationID operation,
+bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID operation,
                                                unsigned int operands [ AdaptableSimInstruction::OPERANDS_MAX ],
                                                const AdaptableSimInstruction & inst )
 {
+    using namespace AdaptableSimOperationID;
+
     const AdaptableSimInstruction::OperParam parameters = inst.m_parameters;
 
     if ( AdaptableSimInstruction::OperParam::C_NONE != parameters.condition() )
@@ -48,117 +51,117 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimInstruction::Operatio
 
     switch ( operation )
     {
-        case AdaptableSimInstruction::OP_NONE:
+        case OP_NONE:
             break;
-        case AdaptableSimInstruction::OP_ABS_JUMP:
+        case OP_ABS_JUMP:
             instAbsoluteJump(parameters, operands[0]);
             break;
-        case AdaptableSimInstruction::OP_ABS_CALL:
+        case OP_ABS_CALL:
             instAbsoluteCall(parameters, operands[0]);
             break;
-        case AdaptableSimInstruction::OP_REL_JUMP:
+        case OP_REL_JUMP:
             instRelativeJump(parameters, operands[0], inst.m_permutation[0]);
             break;
-        case AdaptableSimInstruction::OP_REL_CALL:
+        case OP_REL_CALL:
             instRelativeCall(parameters, operands[0], inst.m_permutation[0]);
             break;
-        case AdaptableSimInstruction::OP_OFS_JUMP:
+        case OP_OFS_JUMP:
             instOffsetJump(parameters, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_OFS_CALL:
+        case OP_OFS_CALL:
             instOffsetCall(parameters, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_IDX_JUMP:
+        case OP_IDX_JUMP:
             instIndexJump(parameters, operands[0], operands[1], operands[2]);
             break;
-        case AdaptableSimInstruction::OP_IDX_CALL:
+        case OP_IDX_CALL:
             instIndexCall(parameters, operands[0], operands[1], operands[2]);
             break;
-        case AdaptableSimInstruction::OP_RETURN:
+        case OP_RETURN:
             instReturn();
             break;
-        case AdaptableSimInstruction::OP_BIT_TEST:
+        case OP_BIT_TEST:
             if ( false == instBitTest(parameters, operands[0], operands[1]) )
             {
                 return false;
             }
             break;
-        case AdaptableSimInstruction::OP_ISR_RETURN:
+        case OP_ISR_RETURN:
             instIsrReturn();
             break;
-        case AdaptableSimInstruction::OP_SET_BANK:
+        case OP_SET_BANK:
             instSetBank(operands[0]);
             break;
-        case AdaptableSimInstruction::OP_MOVE:
+        case OP_MOVE:
             instMove(inst, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_CB_MOVE:
+        case OP_CB_MOVE:
             instCbMove(inst, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_MOVE_BIT:
+        case OP_MOVE_BIT:
             instMoveBit(parameters, operands[0], operands[1], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_CB_MOVE_BIT:
+        case OP_CB_MOVE_BIT:
             instCbMoveBit(parameters, operands[0], operands[1], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_SWAP:
+        case OP_SWAP:
             instSwap(inst, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_CB_SWAP:
+        case OP_CB_SWAP:
             instCbSwap(inst, operands[0], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_SWAP_BIT:
+        case OP_SWAP_BIT:
             instSwapBit(parameters, operands[0], operands[1], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_CB_SWAP_BIT:
+        case OP_CB_SWAP_BIT:
             instCbSwapBit(parameters, operands[0], operands[1], operands[1]);
             break;
-        case AdaptableSimInstruction::OP_ADD:
+        case OP_ADD:
             instAdd(inst, operands[0], operands[1], operands[2]);
             break;
-        case AdaptableSimInstruction::OP_SUB:
+        case OP_SUB:
             instAdd(inst, operands[0], operands[1], operands[2], true);
             break;
-        case AdaptableSimInstruction::OP_AND:
+        case OP_AND:
             instLogOper(inst, operands[0], operands[1], operands[2], LOG_AND);
             break;
-        case AdaptableSimInstruction::OP_OR:
+        case OP_OR:
             instLogOper(inst, operands[0], operands[1], operands[2], LOG_OR);
             break;
-        case AdaptableSimInstruction::OP_XOR:
+        case OP_XOR:
             instLogOper(inst, operands[0], operands[1], operands[2], LOG_XOR);
             break;
-        case AdaptableSimInstruction::OP_CPL:
+        case OP_CPL:
             instCpl(inst, operands[0]);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_0:
+        case OP_SHIFT_LEFT_0:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHL0);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_0:
+        case OP_SHIFT_RIGHT_0:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHR0);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_1:
+        case OP_SHIFT_LEFT_1:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHL1);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_1:
+        case OP_SHIFT_RIGHT_1:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHR1);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_R:
+        case OP_SHIFT_LEFT_R:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHLR);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_R:
+        case OP_SHIFT_RIGHT_R:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHRR);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_LEFT_C:
+        case OP_SHIFT_LEFT_C:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHLC);
             break;
-        case AdaptableSimInstruction::OP_SHIFT_RIGHT_C:
+        case OP_SHIFT_RIGHT_C:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_SHRC);
             break;
-        case AdaptableSimInstruction::OP_ROTATE_LEFT:
+        case OP_ROTATE_LEFT:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_RL);
             break;
-        case AdaptableSimInstruction::OP_ROTATE_RIGHT:
+        case OP_ROTATE_RIGHT:
             instShiftRotateOper(inst, operands[0], operands[1], operands[2], SRO_RR);
             break;
     }

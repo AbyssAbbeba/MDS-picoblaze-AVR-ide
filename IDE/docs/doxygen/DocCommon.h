@@ -21,9 +21,13 @@
  *   - SDCC's .cdb files (http://sourceforge.net/apps/trac/sdcc/wiki/CDB%20File%20Format)
  *   - \<in future others\>
  *
- * @defgroup LicenseCertificate License certificate
+ * @defgroup LicenseCertificate License certificates
  * @ingroup Util
  * Library for validating license certificates.
+ *
+ * @defgroup AdjSimProcDef Processor definition
+ * @ingroup Util
+ * Library for working with processor definition files used Adjustable Simulator.
  */
 
 /**
