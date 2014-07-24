@@ -36,7 +36,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} AsmMacroAnalyser Editor)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Editor)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

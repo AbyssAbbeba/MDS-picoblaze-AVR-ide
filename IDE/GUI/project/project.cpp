@@ -124,6 +124,7 @@ void ProjectMan::addUntrackedProject()
     if (projectCount > 0)
     {
         emit tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
+        //newProject->prjDockWidget->raise();
         //mainWindow->tabifyDockWidget(openProjects.at(0)->prjDockWidget, newProject->prjDockWidget);
     }
 
