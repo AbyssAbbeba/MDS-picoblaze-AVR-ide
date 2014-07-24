@@ -56,7 +56,7 @@ endmacro()
 
 ##
  #
-macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE COMPILER_DIRECTORY )
+macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRECTORY )
     find_library ( LIB_GCC
                    NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1 gcc_s
                    DOC "GCC library"
@@ -77,18 +77,22 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE COMPILER_DIRECTORY )
         message ( SEND_ERROR "Unable to find stdc++ library." )
     endif()
 
-    install ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
-    install ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.
+    install ( FILES ${LIB_GCC}         DESTINATION ${TARGET_DIRECTORY} ) # Include libGCC.
+    install ( FILES ${LIB_STD_CPP}     DESTINATION ${TARGET_DIRECTORY} ) # Include C++ standard library.
 
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
-    install ( FILES ${QT_LIBS_TO_INSTALL} "${QT_LIBRARY_DIR}/QtCLucene4.dll"
-              DESTINATION ${INSTALL_DIR_BIN} )
+    if ( TARGET_OS STREQUAL "Windows" )
+        list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
+    endif()
+    install ( FILES ${QT_LIBS_TO_INSTALL}
+              DESTINATION ${TARGET_DIRECTORY} )
 
     # Include boost libraries.
     filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
     install ( FILES ${BOOST_LIBS_TO_INSTALL}
-              DESTINATION ${INSTALL_DIR_BIN} )
+              DESTINATION ${TARGET_DIRECTORY} )
+
 endmacro()
 
 # ------------------------------------------------------------------------------
@@ -110,7 +114,7 @@ if ( TARGET_OS STREQUAL "Linux" )
     if ( INDEPENDENT_PACKAGES )
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt" )
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/4.8.2/" )
-        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${COMPILER_DIR} )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${INSTALL_DIR_LIB} ${COMPILER_DIR} )
     else()
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
     endif()
@@ -126,7 +130,7 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     set ( CPACK_GENERATOR "NSIS" )
 
     get_filename_component ( COMPILER_DIR ${CMAKE_CXX_COMPILER} PATH )
-    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${COMPILER_DIR} )
+    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${INSTALL_DIR_BIN} ${COMPILER_DIR} )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
