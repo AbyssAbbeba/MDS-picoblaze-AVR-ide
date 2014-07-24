@@ -44,7 +44,7 @@ ProjectMan::ProjectMan(QWidget *parent)
  */
 void ProjectMan::openProject(QFile *file)
 {
-    //qDebug() << "ProjectMan: openProject()";
+    qDebug() << "ProjectMan: openProject()";
     Project *newProject = new Project(file, this);
     emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
@@ -68,7 +68,7 @@ void ProjectMan::openProject(QFile *file)
     projectCount++;
     emit connectProject(newProject);
     emit projectOpened();
-    //qDebug() << "ProjectMan: return openProject()";
+    qDebug() << "ProjectMan: return openProject()";
 }
 
 
