@@ -57,42 +57,48 @@ endmacro()
 ##
  #
 macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRECTORY )
+
+    set ( LIB_FILES_TO_INSTALL "" )
+
+    # Include libGCC.
     find_library ( LIB_GCC
                    NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1 gcc_s
                    DOC "GCC library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
+    if ( NOT LIB_GCC )
+        message ( SEND_ERROR "Unable to find gcc library." )
+    endif()
+    list ( APPEND LIB_FILES_TO_INSTALL ${LIB_GCC} )
 
+    # Include C++ standard library.
     find_library ( LIB_STD_CPP
                    NAMES stdc++-6 stdc++
                    DOC "stdc++ library"
                    PATHS ${COMPILER_DIRECTORY}
                    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
-
-    if ( NOT LIB_GCC )
-        message ( SEND_ERROR "Unable to find gcc library." )
-    endif()
-
     if ( NOT LIB_STD_CPP )
         message ( SEND_ERROR "Unable to find stdc++ library." )
     endif()
-
-    install ( FILES ${LIB_GCC}         DESTINATION ${TARGET_DIRECTORY} ) # Include libGCC.
-    install ( FILES ${LIB_STD_CPP}     DESTINATION ${TARGET_DIRECTORY} ) # Include C++ standard library.
+    list ( APPEND LIB_FILES_TO_INSTALL ${LIB_STD_CPP} )
 
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
     if ( TARGET_OS STREQUAL "Windows" )
         list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
     endif()
-    install ( FILES ${QT_LIBS_TO_INSTALL}
-              DESTINATION ${TARGET_DIRECTORY} )
+    list ( APPEND LIB_FILES_TO_INSTALL ${QT_LIBS_TO_INSTALL} )
 
     # Include boost libraries.
     filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
-    install ( FILES ${BOOST_LIBS_TO_INSTALL}
-              DESTINATION ${TARGET_DIRECTORY} )
+    list ( APPEND LIB_FILES_TO_INSTALL ${BOOST_LIBS_TO_INSTALL} )
 
+    message ( STATUS "3rd party libraries to install as files:" )
+    foreach ( FILE_NAME ${LIB_FILES_TO_INSTALL} )
+        get_filename_component ( REAL_FILE ${FILE_NAME} REALPATH  )
+        install ( FILES ${REAL_FILE} DESTINATION ${TARGET_DIRECTORY} )
+        message ( STATUS "    * \"${REAL_FILE}\"" )
+    endforeach()
 endmacro()
 
 # ------------------------------------------------------------------------------

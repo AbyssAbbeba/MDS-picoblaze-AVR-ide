@@ -19,7 +19,7 @@ SET( SAMPLE_SRCS
 	./codeedit.cpp
     ./wtextedit.cpp
 )
-  
+
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
 	./baseeditor.h
@@ -37,7 +37,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
