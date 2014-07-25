@@ -1381,7 +1381,7 @@ void MainForm::compileProject()
             
 
             
-            mainFile = filePath;
+            mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName();
             qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
