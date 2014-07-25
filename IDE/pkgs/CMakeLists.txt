@@ -174,10 +174,10 @@ endif()
 ## General options.
 #
 
-set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME}" )
+set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
-set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME}" )
-set ( MY_CPACK_PACKAGE_DETAILED_DESC "${PRODUCT_NAME} by ${COMPANY_NAME}" )
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME_SHORT}" )
+set ( MY_CPACK_PACKAGE_DETAILED_DESC "${PRODUCT_NAME} (${PRODUCT_NAME_SHORT}) by ${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
 string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
 
@@ -199,7 +199,11 @@ if ( TARGET_ARCH STREQUAL "x86_64" )
 elseif ( TARGET_ARCH STREQUAL "x86" )
     set ( CPACK_DEBIAN_PACKAGE_ARCHITECTURE "i386" )
 endif()
-set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
+if ( INDEPENDENT_PACKAGES )
+    set ( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
+else()
+    set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
+endif()
 set ( CPACK_DEBIAN_PACKAGE_RECOMMENDS "" )
 set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
 set ( CPACK_PACKAGE_CONTACT "${COMPANY_NAME}; ${COMPANY_ADDRESS}" )
@@ -211,7 +215,11 @@ set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "\t${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n
 ## Options for the "RPM" generator.
 #
 
-set ( CPACK_RPM_PACKAGE_REQUIRES "qt-x11 >= ${QT_MIN_VER}, boost-filesystem = ${BOOST_MIN_VER}, boost-system = ${BOOST_MIN_VER}, libboost-regex = ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
+if ( INDEPENDENT_PACKAGES )
+    set ( CPACK_DEBIAN_PACKAGE_DEPENDS "" )
+else()
+    set ( CPACK_RPM_PACKAGE_REQUIRES "qt-x11 >= ${QT_MIN_VER}, boost-filesystem = ${BOOST_MIN_VER}, boost-system = ${BOOST_MIN_VER}, libboost-regex = ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
+endif()
 set ( CPACK_RPM_PACKAGE_SUGGESTS "" )
 set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
