@@ -18,13 +18,13 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Build the simulator widgets
+add_subdirectory(Editor)
 add_subdirectory(sim)
 add_subdirectory(TimeWidget)
 #add_subdirectory(Tests)
 #add_subdirectory(GraphWidget)
 add_subdirectory(Counters)
 add_subdirectory(DockManager)
-add_subdirectory(Editor)
 add_subdirectory(HexEdit)
 #add_subdirectory(MovGridLayout)
 add_subdirectory(ProjectTree)
