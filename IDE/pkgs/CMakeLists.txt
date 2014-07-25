@@ -114,6 +114,7 @@ if ( TARGET_OS STREQUAL "Linux" )
 
     if ( INDEPENDENT_PACKAGES )
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt/${PRODUCT_NAME_SHORT}" )
+        set ( INSTALL_DIR_LIB "bin" )
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
         file ( GLOB COMPILER_DIR2 "/usr/lib/gcc/x86_64*linux*/4.8*/" )
         INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB}" "${COMPILER_DIR};${COMPILER_DIR2}" )
