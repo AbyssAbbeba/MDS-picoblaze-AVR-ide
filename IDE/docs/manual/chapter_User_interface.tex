@@ -9,61 +9,89 @@
     \end{figure}
 
 \subsection{Middle panel}
-    Middle panel is main text editor for writing a code. It has syntax highligh for better readability and you can easily add breakpoints and bookmarks just by clicking to desired line number.
+    Middle panel is main text editor for writing a code. It has syntax highligh for better readability and you can easily
+    add breakpoints and bookmarks just by clicking on desired line number.
 
 \subsection{Top panel}
 
-
    \begin{figure}[h!]
         \centering
-        \includegraphics[width=\textwidth]{img/top_panel.png}
-        \caption{Window layout concept}
+        \includegraphics[width=0.75\textwidth]{img/top_panel.png}
+        \caption{Top panel icons}
     \end{figure}
-    
-    \begin{itemize}
-        \item New file: creates a new document to enter a new source file.
-        \item Open file: allows to open an existing source file.
-        \item Open recent: lists the 5 most recently used files.
-        \item Add to project:
-        \item Save file: saves the open document to the related file.
-        \item Save as: save the open document to a new file.
-        \item Save all: saves all currently open documents.
-        \item Exit: closes all open documents and closes MDS.
-    \end{itemize}
 
-    \begin{itemize}
-        \item Undo: will undo all edit actions on the open document in reverse order
-        \item Redo: will redo all undo actions
-        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
-        \item Copy: copies all selected parts of the open document to the clipboard
-        \item Paste: pastes the text contents of the clipboard in the open document
-        \item Select: All selects all text in the open document
-        \item Find: find a to be given string through the open document
-        \item Replace: replace a given string in the open document by a new string
-    \end{itemize}
+    \subsubsection{Top panel icons}
+        \begin{itemize}
+            \item New project: Creates a new project.
+            \item Open project: Allows to open an existing project file.
+            \item Save project: Saves current project file.
+            \item Compile: Compiles your code.
+            \item Start Simulation: Enters simulation mode.
+            \item Run: Simulation at full speed.
+            \item Animate: Simulation with updated GUI.
+            \item Step: Performs one step.
+            \item Reset: Resets simulation to its initial state.
+            \item Unhighlight: You can erase highlighted text.
+        \end{itemize}
 
-    \begin{itemize}
-        \item Undo: will undo all edit actions on the open document in reverse order
-        \item Redo: will redo all undo actions
-        \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
-        \item Copy: copies all selected parts of the open document to the clipboard
-        \item Paste: pastes the text contents of the clipboard in the open document
-        \item Select: All selects all text in the open document
-        \item Find: find a to be given string through the open document
-        \item Replace: replace a given string in the open document by a new string
-    \end{itemize}
-
+        
     \begin{table}[h!]
-        \begin{tabular}{ccc}
-            \includegraphics[width=.25\textwidth]{img/menu_file.png}
+        \begin{tabular}{cc}
+            \includegraphics[width=.25\textwidth]{img/NewImg/file.png}
                 &
-            \includegraphics[width=.25\textwidth]{img/menu_file.png}
-                &
-            \includegraphics[width=.25\textwidth]{img/menu_file.png}
+            \includegraphics[width=.25\textwidth]{img/NewImg/edit.png}
                 \\
-            Project selection & Edit selection & File selection
+            File & Edit
         \end{tabular}
     \end{table}
+
+    \begin{table}[h!]
+        \begin{tabular}{cc}
+            \includegraphics[width=.25\textwidth]{img/NewImg/project_tab.png}
+                &
+            \includegraphics[width=.25\textwidth]{img/NewImg/simulation.png}
+                \\
+            Project & Simulation
+        \end{tabular}
+    \end{table}
+ 
+    \subsubsection{Top panel}
+        \begin{itemize}
+            \item Undo: will undo all edit actions on the open document in reverse order
+            \item Redo: will redo all undo actions
+            \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+            \item Copy: copies all selected parts of the open document to the clipboard
+            \item Paste: pastes the text contents of the clipboard in the open document
+            \item Select: All selects all text in the open document
+            \item Find: find a to be given string through the open document
+            \item Replace: replace a given string in the open document by a new string
+        \end{itemize}
+    
+    \subsubsection{Top panel}
+        \begin{itemize}
+            \item Undo: will undo all edit actions on the open document in reverse order
+            \item Redo: will redo all undo actions
+            \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+            \item Copy: copies all selected parts of the open document to the clipboard
+            \item Paste: pastes the text contents of the clipboard in the open document
+            \item Select: All selects all text in the open document
+            \item Find: find a to be given string through the open document
+            \item Replace: replace a given string in the open document by a new string
+        \end{itemize}
+
+    \subsubsection{Top panel}
+        \begin{itemize}
+            \item Undo: will undo all edit actions on the open document in reverse order
+            \item Redo: will redo all undo actions
+            \item Cut: cuts all selected parts of the open doecument and puts it on the clipboard
+            \item Copy: copies all selected parts of the open document to the clipboard
+            \item Paste: pastes the text contents of the clipboard in the open document
+            \item Select: All selects all text in the open document
+            \item Find: find a to be given string through the open document
+            \item Replace: replace a given string in the open document by a new string
+        \end{itemize}
+
+
 
 \subsection{Bottom panel}
     Here you can see bottom panel. You can see status of internal registers, scratchpad ram, input and output ports, stack, program counter, elapsed time and cycles, actual clock and internal flags: CARRY and ZERO. All those features can be edited during processor simulation. 
@@ -78,6 +106,7 @@
     Right panel contains list of breakpoints and bookmarks. Yoou can also find here list of symbols and macros in your source code.
     
 \subsection{Left panel}
+    Here you can see main project tree. You can close or configure project. Also add new file or create a new one.
 
     \begin{table}[h!]
         \begin{tabular}{cc}
@@ -133,22 +162,7 @@
 
 \section{Other tools}
 
-\subsection{Code Completion list}
-    The Code Completion List shows program symbols that contain the characters you are currently typing.
-    \begin{figure}[h]
-        \centering{}
-        \includegraphics[width=.3\textwidth]{img/mensi_obrazek.png}
-        \caption{Code completion list}
-    \end{figure}
-
 \clearpage
-\subsection{Parameter Information}
-    Parameter Information shows the names, amount of, and parameter types of a function or method. The parameter in bold indicates the next parameter that is required as you are typing.
-    \begin{figure}[h]
-        \centering{}
-        \includegraphics[width=.3\textwidth]{img/mensi_obrazek.png}
-        \caption{Parametr information list}
-    \end{figure}
 
 \subsection{DATA file convertor}
     This tool alows you to convert selected data file to another. Mutual conversion can be made with Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
@@ -237,30 +251,6 @@
         \includegraphics[width=.7\textwidth]{img/loop_gen.png}
         \caption{Loop generator user interface}
     \end{figure}
-    
-\subsection{Syntax Checking}
-    Syntax Checking validates the program syntax while you are typing the code and provides real-time alerts to potential code violations before compilation. This enhances productivity and greatly reduces edit, compile, and correction cycles.
-    \begin{figure}[h]
-        \centering{}
-        \includegraphics[scale=0.3]{img/mensi_obrazek.png}
-        \caption{Syntax checking picture}
-    \end{figure}
-
-\subsection{Instruction details}
-
-\subsection{Subprograms call monitor}
-
-\subsection{ASCII chart}
-
-\subsection{PicoBlaze Instruction Table}
-
-\subsection{Symbol viewer}
-
-\subsection{Stopwatch}
-
-\subsection{Hexadecimal editors}
-
-\subsection{Interrupt monitor}
 
 \subsection{8-segment editor}
     \begin{wrapfigure}{r}{0pt}
