@@ -119,8 +119,14 @@ if ( TARGET_OS STREQUAL "Linux" )
 
     if ( INDEPENDENT_PACKAGES )
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt" )
+<<<<<<< HEAD
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/4.8.2/" )
         INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE("${INSTALL_DIR_LIB}" "${COMPILER_DIR}")
+=======
+        file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
+        file ( GLOB COMPILER_DIR2 "/usr/lib/gcc/x86_64*linux*/4.8*/" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB}" "${COMPILER_DIR};${COMPILER_DIR2}" )
+>>>>>>> adc8d2654707dad0fc7d5731b9784954e2a0481c
     else()
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
     endif()
@@ -136,7 +142,7 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     set ( CPACK_GENERATOR "NSIS" )
 
     get_filename_component ( COMPILER_DIR ${CMAKE_CXX_COMPILER} PATH )
-    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${INSTALL_DIR_BIN} ${COMPILER_DIR} )
+    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_BIN}" "${COMPILER_DIR}" )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
