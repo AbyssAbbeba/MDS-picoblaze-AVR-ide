@@ -112,11 +112,6 @@ if ( TARGET_OS STREQUAL "Linux" )
 
     set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
 
-    # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "/usr/share/pixmaps/" )
-    install ( FILES mds-ide.desktop               DESTINATION "/usr/share/applications/" )
-    install ( FILES application-x-mds-project.xml DESTINATION "/usr/share/mime/packages/" )
-
     if ( INDEPENDENT_PACKAGES )
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt/${PRODUCT_NAME_SHORT}" )
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
@@ -128,6 +123,11 @@ if ( TARGET_OS STREQUAL "Linux" )
 
     set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" )
     set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
+
+    # Install .desktop spec and application icon
+    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
