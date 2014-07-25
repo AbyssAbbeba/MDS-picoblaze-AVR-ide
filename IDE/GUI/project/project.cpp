@@ -194,10 +194,10 @@ void ProjectMan::setActive(Project *activePrj)
 
 void ProjectMan::setActiveByIndex(int index)
 {
-    //qDebug() << "ProjectMan: setActiveByIndex" << index;
+    qDebug() << "ProjectMan: setActiveByIndex" << index;
+    qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
     activeProject = openProjects.at(index);
-    //qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
-    //qDebug() << "ProjectMan: return setActiveByIndex";
+    qDebug() << "ProjectMan: return setActiveByIndex";
 }
 
 
