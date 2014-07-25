@@ -61,6 +61,9 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 # USER OPTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Optionally build installation packages independent on system libraries (valid for Linux only).
+option ( INDEPENDENT_PACKAGES "Build installation packages independent on system libraries." ON )
+
 # Optionally start test subjects in Valgrind:Memcheck.
 option ( TEST_MEMCHECK "Start test subjects in Valgrind:Memcheck." ON )
 

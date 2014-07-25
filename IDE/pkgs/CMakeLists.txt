@@ -54,6 +54,53 @@ macro ( FILTER_RELEASE_ONLY LIBRARIES_TO_INSTALL )
     endif()
 endmacro()
 
+##
+ #
+macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRECTORY )
+
+    set ( LIB_FILES_TO_INSTALL "" )
+
+    # Include libGCC.
+    find_library ( LIB_GCC
+                   NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1 gcc_s
+                   DOC "GCC library"
+                   PATHS ${COMPILER_DIRECTORY}
+                   NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
+    if ( NOT LIB_GCC )
+        message ( SEND_ERROR "Unable to find gcc library." )
+    endif()
+    list ( APPEND LIB_FILES_TO_INSTALL ${LIB_GCC} )
+
+    # Include C++ standard library.
+    find_library ( LIB_STD_CPP
+                   NAMES stdc++-6 stdc++
+                   DOC "stdc++ library"
+                   PATHS ${COMPILER_DIRECTORY}
+                   NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
+    if ( NOT LIB_STD_CPP )
+        message ( SEND_ERROR "Unable to find stdc++ library." )
+    endif()
+    list ( APPEND LIB_FILES_TO_INSTALL ${LIB_STD_CPP} )
+
+    # Include Qt framework libraries.
+    filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
+    if ( TARGET_OS STREQUAL "Windows" )
+        list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
+    endif()
+    list ( APPEND LIB_FILES_TO_INSTALL ${QT_LIBS_TO_INSTALL} )
+
+    # Include boost libraries.
+    filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
+    list ( APPEND LIB_FILES_TO_INSTALL ${BOOST_LIBS_TO_INSTALL} )
+
+    message ( STATUS "3rd party libraries to install as files:" )
+    foreach ( FILE_NAME ${LIB_FILES_TO_INSTALL} )
+        get_filename_component ( REAL_FILE ${FILE_NAME} REALPATH  )
+        install ( FILES ${REAL_FILE} DESTINATION ${TARGET_DIRECTORY} )
+        message ( STATUS "    * \"${REAL_FILE}\"" )
+    endforeach()
+endmacro()
+
 # ------------------------------------------------------------------------------
 # ADD SOME DATA FILES TO THE INSTALLATION PACKAGES.
 # ------------------------------------------------------------------------------
@@ -64,12 +111,22 @@ if ( TARGET_OS STREQUAL "Linux" )
     #
 
     set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
-    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
 
     # Install .desktop spec and application icon
     install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
     install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
     install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
+
+    if ( INDEPENDENT_PACKAGES )
+        set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt" )
+        file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/4.8.2/" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${INSTALL_DIR_LIB} ${COMPILER_DIR} )
+    else()
+        set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+    endif()
+
+    set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" )
+    set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
@@ -78,40 +135,8 @@ elseif ( TARGET_OS STREQUAL "Windows" )
 
     set ( CPACK_GENERATOR "NSIS" )
 
-    get_filename_component ( COMPILER_DIRECTORY ${CMAKE_CXX_COMPILER} PATH )
-
-    find_library ( LIB_GCC
-                   NAMES gcc_s_sjlj-1 gcc_s_seh-1 libgcc_s_dw2-1
-                   DOC "GCC library"
-                   PATHS ${COMPILER_DIRECTORY}
-                   NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
-
-    find_library ( LIB_STD_CPP
-                   NAMES stdc++-6
-                   DOC "stdc++ library"
-                   PATHS ${COMPILER_DIRECTORY}
-                   NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH )
-
-    if ( NOT LIB_GCC )
-        message ( SEND_ERROR "Unable to find gcc library." )
-    endif()
-
-    if ( NOT LIB_STD_CPP )
-        message ( SEND_ERROR "Unable to find stdc++ library." )
-    endif()
-
-    install ( FILES ${LIB_GCC}         DESTINATION ${INSTALL_DIR_BIN} ) # Include libGCC.
-    install ( FILES ${LIB_STD_CPP}     DESTINATION ${INSTALL_DIR_BIN} ) # Include C++ standard library.
-
-    # Include Qt framework libraries.
-    filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
-    install ( FILES ${QT_LIBS_TO_INSTALL} "${QT_LIBRARY_DIR}/QtCLucene4.dll"
-              DESTINATION ${INSTALL_DIR_BIN} )
-
-    # Include boost libraries.
-    filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
-    install ( FILES ${BOOST_LIBS_TO_INSTALL}
-              DESTINATION ${INSTALL_DIR_BIN} )
+    get_filename_component ( COMPILER_DIR ${CMAKE_CXX_COMPILER} PATH )
+    INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( ${INSTALL_DIR_BIN} ${COMPILER_DIR} )
 
 elseif ( TARGET_OS STREQUAL "Darwin" )
     #
