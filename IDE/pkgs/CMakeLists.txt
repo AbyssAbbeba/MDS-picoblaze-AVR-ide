@@ -121,11 +121,11 @@ if ( TARGET_OS STREQUAL "Linux" )
         set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
     endif()
 
-    set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" )
     set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
+    set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${PRODUCT_NAME_SHORT}/${INSTALL_DIR_LIB}" )
 
     # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "/usr/share/pixmaps/" )
+    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
     install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
     install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
 
