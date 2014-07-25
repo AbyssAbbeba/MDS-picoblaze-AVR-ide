@@ -48,7 +48,7 @@ void LicenseWidget::load()
         {
             //load info
             LicenseCertificate crt(ifs);
-            if ( false == crt.m_isValid )
+            if ( true == crt.m_isValid )
             {
                 this->license = true;
                 ui.teInfo->clear();
@@ -118,7 +118,11 @@ void LicenseWidget::tryAccept()
 {
     if (true == this->license)
     {
-        QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+        if (QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath()) == false)
+        {
+            QFile::remove(GuiCfg::getInstance().getLicensePath());
+            QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+        }
         this->setResult(QDialog::Accepted);
     }
     else
