@@ -2469,10 +2469,14 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
+    qDebug() << "MainForm: activeProjectChanged";
     //if (false == this->simulationStatus)
-    //{
+    if (index >= 0)
+    {
         projectMan->setActiveByIndex(index);
+    qDebug() << "MainForm: activeProjectChanged2";
         wDockManager->changeSimWidget(index);
+    qDebug() << "MainForm: activeProjectChanged3";
         if (wDockManager->getBreakpointList() != NULL)
         {
             wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
@@ -2481,7 +2485,8 @@ void MainForm::activeProjectChanged(int index)
         {
             wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
         }
-    //}
+    }
+    qDebug() << "MainForm: return activeProjectChanged";
 }
 
 
@@ -2543,6 +2548,22 @@ void MainForm::closeProject()
         this->removeDockWidget(project->prjDockWidget);
         qDebug() << "MainForm: close project";
         projectMan->closeProject(project);
+        if (wDockManager->getBreakpointList() != NULL)
+        {
+            wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
+            /*if (wDockManager->getCentralWidget() != NULL)
+            {
+                wDockManager->getCentralWidget()->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
+            }*/
+        }
+        if (wDockManager->getBookmarkList() != NULL)
+        {
+            wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
+            /*if (wDockManager->getCentralWidget() != NULL)
+            {
+                wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
+            }*/
+        }
     }
 }
 
