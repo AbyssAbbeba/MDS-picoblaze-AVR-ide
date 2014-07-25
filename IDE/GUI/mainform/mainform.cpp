@@ -1228,7 +1228,8 @@ void MainForm::compileProject()
         {
             pathDir.mkpath(".");
         }
-        
+
+        QDir prjDir;
         mainFile = pathDir.absolutePath()
                  + "/"
                  +  wDockManager->getCentralName().section('.',0,-2);
@@ -1341,17 +1342,18 @@ void MainForm::compileProject()
         
         QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir;
+        QString filePath;
         bool found = false;
         
         for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
         {
-            fileDir.setPath(prjDir.absolutePath()
-                            + "/"
-                            + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
-                           );
-            //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
-            //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
-            if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
+            //fileDir.setPath(QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i)));
+            filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i));
+            qDebug() << prjDir.relativeFilePath(projectMan->getActive()->filePaths.at(i));
+            qDebug() << projectMan->getActive()->filePaths.at(i);
+            qDebug() << "fixed?" << prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i);
+            qDebug() << "MainForm: file dir" << filePath;
+            if (filePath == wDockManager->getCentralPath())
             {
                 found = true;
                 break;
@@ -1360,11 +1362,7 @@ void MainForm::compileProject()
         if (found == true)
         {
             qDebug() << "MainForm: compiled actual project, actual file";
-            options->m_sourceFiles.push_back(  (projectMan->getActive()->prjPath.section('/',0, -2)
-                                                + "/"
-                                                +  wDockManager->getCentralName()
-                                                ).toStdString()
-                                            );
+            options->m_sourceFiles.push_back(filePath.toStdString());
 
 
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
@@ -1383,9 +1381,8 @@ void MainForm::compileProject()
             
 
             
-            mainFile = prjDir.absolutePath()
-                     + "/"
-                     +  wDockManager->getCentralName().section('.',0,-2);
+            mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName();
+            qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -1478,10 +1475,10 @@ void MainForm::compileProject()
             if (true == this->projectMan->getActive()->defaultVerilog)
             {
                 options->m_verilogTemplate = ( templateDir.absolutePath()
-                                            + "/"
-                                            + this->projectMan->getActive()->family
-                                            + ".v"
-                                            ).toStdString();
+                                             + "/"
+                                             + this->projectMan->getActive()->family
+                                             + ".v"
+                                             ).toStdString();
             }
             else
             {
@@ -1491,10 +1488,10 @@ void MainForm::compileProject()
             if (true == this->projectMan->getActive()->defaultVHDL)
             {
                 options->m_vhdlTemplate = ( templateDir.absolutePath()
-                                        + "/"
-                                        + this->projectMan->getActive()->family
-                                        + ".vhd"
-                                        ).toStdString();
+                                          + "/"
+                                          + this->projectMan->getActive()->family
+                                          + ".vhd"
+                                          ).toStdString();
             }
             else
             {
@@ -1522,7 +1519,10 @@ void MainForm::compileProject()
                 pathDir.mkpath(".");
             }
 
-            mainFile = pathDir.absolutePath() + "/" + wDockManager->getCentralName();
+            mainFile = QDir::cleanPath( prjDir.absolutePath()
+                                      + "/"
+                                      +  wDockManager->getCentralPath().section('.',0,-2)
+                                      );
 
 
             if (projectMan->getUntracked()->compileOpt.at(0))
@@ -1642,7 +1642,7 @@ void MainForm::compileProject()
         {
             mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
                      + "/"
-                     +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+                     +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
         }
         
         options->m_device = this->projectMan->getActive()->family.toStdString();
