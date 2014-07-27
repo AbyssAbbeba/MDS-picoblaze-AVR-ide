@@ -174,7 +174,7 @@ void error(int errCode)
         }
         case ERR_NO_LICENSE:
         {
-            msgBox.setText("Error: Valid license file not found");
+            msgBox.setText("License file not loaded.");
             break;
         }
         default:
