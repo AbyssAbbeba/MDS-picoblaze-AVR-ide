@@ -99,6 +99,16 @@ if ( TEST_COVERAGE )
     message ( STATUS "This build is configured for coverage analysis!" )
 endif()
 
+# Optionally build installation packages independent on system libraries (valid for Linux only).
+if ( NOT MDS_VARIANT )
+    message ( STATUS "MDS_VARIANT not set, options are: \"PROFI\" (default), \"TRIAL\", and \"NONCOMMERCIAL\"." )
+    set ( MDS_VARIANT "PROFI" )
+else()
+    message ( STATUS "MDS_VARIANT: ${MDS_VARIANT}" )
+endif()
+set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT}" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT}" )
+
 # Target architecture.
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
 if ( HOST_ARCH STREQUAL "AMD64" )
@@ -252,6 +262,9 @@ include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Build installation packages.
+add_subdirectory ( pkgs )
+
 # Build API and user documentation.
 add_subdirectory ( docs )
 
@@ -283,6 +296,3 @@ add_subdirectory ( 3rdParty )
 if ( BUILD_TESTING )
     add_subdirectory ( tests )
 endif()
-
-# Build installation packages.
-add_subdirectory ( pkgs )
