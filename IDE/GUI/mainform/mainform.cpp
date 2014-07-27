@@ -152,6 +152,36 @@ MainForm::MainForm()
             this,
             SLOT(bookmarksRemoveLines(QString, int, int))
            );
+    connect(wDockManager,
+            SIGNAL(welcomeScrExampleSig()),
+            this,
+            SLOT(exampleOpen())
+           );
+    /*connect(wDockManager,
+            SIGNAL(welcomeScrOpenPrjSig()),
+            this,
+            SLOT(exampleOpen())
+           );*/
+    /*connect(wDockManager,
+            SIGNAL(welcomeScrNewPrjSig()),
+            this,
+            SLOT()
+           );
+    connect(wDockManager,
+            SIGNAL(welcomeScrManualSig()),
+            this,
+            SLOT()
+           );
+    connect(wDockManager,
+            SIGNAL(welcomeScrGuideSig()),
+            this,
+            SLOT()
+           );
+    connect(wDockManager,
+            SIGNAL(welcomeScrRecentSig(QString path)),
+            this,
+            SLOT()
+           );*/
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -1466,6 +1496,17 @@ void MainForm::compileProject()
         else
         {
             qDebug() << "MainForm: compiled untracked project, actual file";
+            if (this->projectMan->getUntracked() != NULL)
+            {
+                this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
+                this->projectMan->setActive(this->projectMan->getUntracked());
+            }
+            else
+            {
+                this->projectMan->addUntrackedProject();
+                this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
+                this->projectMan->setActive(this->projectMan->getUntracked());
+            }
             options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -1519,7 +1560,7 @@ void MainForm::compileProject()
                 pathDir.mkpath(".");
             }
 
-            mainFile = QDir::cleanPath( prjDir.absolutePath()
+            mainFile = QDir::cleanPath( GuiCfg::getInstance().getTempPath()
                                       + "/"
                                       +  wDockManager->getCentralPath().section('.',0,-2)
                                       );
@@ -1975,8 +2016,8 @@ void MainForm::simulationFlowHandle()
         if (projectMan->getActive()->prjPath == "untracked")
         {
             this->saveFile();
-            
-            file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
+            file = wDockManager->getCentralPath();
+            dumpFiles = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
         }
         else
         {
@@ -2015,9 +2056,13 @@ void MainForm::simulationFlowHandle()
                 }
                 else
                 {
-                    projectMan->setActive(projectMan->getUntracked());
-                    file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
-                    dumpFiles = file;
+                    if (projectMan->getUntracked() != NULL)
+                    {
+                        projectMan->addUntrackedProject();
+                        projectMan->setActive(projectMan->getUntracked());
+                    }
+                    file = filePath;
+                    dumpFiles = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
                 }
             }
             else

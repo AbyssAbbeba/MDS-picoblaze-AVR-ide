@@ -1215,6 +1215,36 @@ void WDockManager::setCentralWelcome()
     {
         this->welcomeScr = new WelcomeScr(this->splitter);
         this->splitter->addWidget(this->welcomeScr);
+        connect(this->welcomeScr,
+                SIGNAL(example()),
+                this,
+                SLOT(welcomeScrExample())
+               );
+        connect(this->welcomeScr,
+                SIGNAL(openProject()),
+                this,
+                SLOT(welcomeScrOpenPrj())
+               );
+        connect(this->welcomeScr,
+                SIGNAL(newProject()),
+                this,
+                SLOT(welcomeScrNewPrj())
+               );
+        connect(this->welcomeScr,
+                SIGNAL(manual()),
+                this,
+                SLOT(welcomeScrManual())
+               );
+        connect(this->welcomeScr,
+                SIGNAL(quickGuide()),
+                this,
+                SLOT(welcomeScrGuide())
+               );
+        connect(this->welcomeScr,
+                SIGNAL(recentProject(QString)),
+                this,
+                SLOT(welcomeScrRecent(QString))
+               );
     }
 }
 
@@ -1224,8 +1254,40 @@ void WDockManager::compilationFinishedSlot(bool success)
 }
 
 
+void WDockManager::welcomeScrExample()
+{
+   emit welcomeScrExampleSig();
+}
 
 
+void WDockManager::welcomeScrOpenPrj()
+{
+    emit welcomeScrOpenPrjSig();
+}
+
+
+void WDockManager::welcomeScrNewPrj()
+{
+    emit welcomeScrNewPrjSig();
+}
+
+
+void WDockManager::welcomeScrManual()
+{
+    emit welcomeScrManualSig();
+}
+
+
+void WDockManager::welcomeScrGuide()
+{
+    emit welcomeScrGuideSig();
+}
+
+
+void WDockManager::welcomeScrRecent(QString path)
+{
+    emit welcomeScrRecentSig(path);
+}
 
 
 

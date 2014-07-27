@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
     
     if (true == openFile)
     {
-        MainGUI.openProject(QString::fromLocal8Bit(argv[1]));
+        QTimer::singleShot(200, &MainGUI, SLOT(openProject(QString::fromLocal8Bit(argv[1]))));
     }
     else
     {
