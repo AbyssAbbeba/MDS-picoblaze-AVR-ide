@@ -52,6 +52,7 @@ function build() {
           -DCOLOR_GCC=${color:-on}              \
           -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
           -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
+          -DMDS_VARIANT=${variant:=PROFI}       \
           . || exit 1
 
     if ! ${makeProgram} -j ${PP} --keep-going; then
@@ -194,6 +195,7 @@ function printHelp() {
     echo "    arch=<arch>     Set target architecture to build for (options: 'x86', and 'x86_64'). (all: <native>)."
     echo "    os=<os>         Set target operating system to build for (options: 'Linux', 'Windows', and 'Darwin') (all: <native>)."
     echo "    btest=<on|off>  Build test binaries  (normal: 'on', tests: [always on])."
+    echo "    variant=<PROFI|TRIAL|NONCOMMERCIAL> Set MDS_VARIANT."
     echo ""
     echo "Example:"
     echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."
