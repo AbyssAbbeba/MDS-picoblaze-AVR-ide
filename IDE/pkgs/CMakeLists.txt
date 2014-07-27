@@ -110,32 +110,35 @@ if ( TARGET_OS STREQUAL "Linux" )
     ## GNU/Linux and possibly other POSIX systems
     #
 
-    set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
+    set ( CPACK_GENERATOR "DEB" "RPM" )
+
+    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
 
     if ( INDEPENDENT_PACKAGES )
-        set ( CPACK_PACKAGING_INSTALL_PREFIX "/opt/${PRODUCT_NAME_SHORT}" )
-        set ( INSTALL_DIR_LIB "bin" )
+        set ( LIB_DIR_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
         file ( GLOB COMPILER_DIR2 "/usr/lib/gcc/x86_64*linux*/4.8*/" )
-        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB}" "${COMPILER_DIR};${COMPILER_DIR2}" )
-    else()
-        set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${LIB_DIR_3RD_PARTY}" "${COMPILER_DIR};${COMPILER_DIR2}" )
     endif()
 
-    set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE )
-    set ( CMAKE_INSTALL_RPATH "${CPACK_PACKAGING_INSTALL_PREFIX}/${PRODUCT_NAME_SHORT}/${INSTALL_DIR_LIB}" )
+    set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE PARENT_SCOPE )
+    set ( CMAKE_INSTALL_RPATH "${LIB_DIR_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
 
     # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_SHARE}/pixmaps/" )
-    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_SHARE}/applications/" )
-    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_SHARE}/mime/packages/" )
+    install ( FILES mds-ide.png                   DESTINATION "share/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "share/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "share/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
     ## Microsoft Windows
     #
 
-    set ( CPACK_GENERATOR "NSIS" )
+    if ( TARGET_ARCH STREQUAL "x86_64" )
+        set ( CPACK_GENERATOR "NSIS64" )
+    else()
+        set ( CPACK_GENERATOR "NSIS" )
+    endif()
 
     get_filename_component ( COMPILER_DIR ${CMAKE_CXX_COMPILER} PATH )
     INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_BIN}" "${COMPILER_DIR}" )
@@ -175,7 +178,7 @@ endif()
 ## General options.
 #
 
-set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
+set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}-${MDS_VARIANT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME_SHORT}" )
 set ( MY_CPACK_PACKAGE_DETAILED_DESC "${PRODUCT_NAME} (${PRODUCT_NAME_SHORT}) by ${COMPANY_NAME}" )
@@ -186,10 +189,10 @@ string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME}
 ## Resources.
 #
 
-set ( CPACK_RESOURCE_FILE_README     "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME    "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome.txt" )
-set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" )
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc.txt" )
+set ( CPACK_RESOURCE_FILE_README     "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme-${MDS_VARIANT}.txt" )
+set ( CPACK_RESOURCE_FILE_WELCOME    "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome-${MDS_VARIANT}.txt" )
+set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
 
 #
 ## Options for the "DEB" generator.

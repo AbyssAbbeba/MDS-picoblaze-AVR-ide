@@ -34,7 +34,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     file ( GLOB CLEAN_HTLATEX *.html *.css *.4ct *.4tc *.lg *.tc *.dvi *.idv *.tmp *.xref texput.log genXHTML.log )
     set ( CLEAN_MAKEINDEX "MDS_manual.idx;MDS_manual.ind;MDS_manual.ilg" )
     set ( CLEAN_QHELP     "MDS_manual.qhc;MDS_manual.qch;MDS_manual.qhp" )
-    set ( CLEAN_LATEX     "MDS_manual.log;${MANUAL_PDF};MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
+    set ( CLEAN_LATEX     "${MANUAL_PDF};MDS_manual.log;MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
     set ( CLEAN_FILES     "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
     set_directory_properties ( PROPERTIES
                                ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
