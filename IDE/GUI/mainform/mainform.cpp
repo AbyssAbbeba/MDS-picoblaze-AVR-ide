@@ -1381,7 +1381,7 @@ void MainForm::compileProject()
             
 
             
-            mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName();
+            mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName().section('.',0,-2);
             qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -1967,6 +1967,7 @@ void MainForm::simulationFlowHandle()
     if (false == simulationStatus)
     {
         QString file = "";
+        QString dumpFiles = "";
         if (projectMan->getActive() == NULL)
         {
             error(ERR_NO_PROJECT);
@@ -1986,17 +1987,22 @@ void MainForm::simulationFlowHandle()
                 
                 QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
                 QDir fileDir;
+                QString filePath;
+                
                 bool found = false;
 
                 for (int i = 0; i < projectMan->getActive()->filePaths.count(); i++)
                 {
-                    fileDir.setPath(prjDir.absolutePath()
+                    filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i));
+                    /*fileDir.setPath(prjDir.absolutePath()
                                     + "/"
                                     + projectMan->getActive()->filePaths.at(i).section('/',0, -2)
-                                );
+                                );*/
                     //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
                     //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
-                    if (QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i)) == wDockManager->getCentralPath())
+                    qDebug() << filePath;
+                    qDebug() << wDockManager->getCentralPath();
+                    if (filePath == wDockManager->getCentralPath())
                     {
                         found = true;
                         break;
@@ -2004,12 +2010,14 @@ void MainForm::simulationFlowHandle()
                 }
                 if (true == found)
                 {
-                    file = wDockManager->getCentralPath();
+                    file = filePath;
+                    dumpFiles = prjDir.absolutePath() + "/" + wDockManager->getCentralName();
                 }
                 else
                 {
                     projectMan->setActive(projectMan->getUntracked());
                     file = GuiCfg::getInstance().getTempPath() + "/" + wDockManager->getCentralName();
+                    dumpFiles = file;
                 }
             }
             else
@@ -2019,7 +2027,9 @@ void MainForm::simulationFlowHandle()
                 //file = "";
             }
         }
-        int start = projectMan->getActive()->start(file);
+        qDebug() << "MainForm: sim file" << file;
+        qDebug() << "MainForm: sim dump file" << dumpFiles;
+        int start = projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
             delete this->icon_simFlow;
@@ -2059,7 +2069,27 @@ void MainForm::simulationFlowHandle()
                 }
                 case 3:
                 {
-                    error(ErrorCode::ERR_SIM_NOT_COMPILED);
+                    //error(ErrorCode::ERR_SIM_NOT_COMPILED);
+                    QMessageBox msgBox;
+                    msgBox.setText("The source files have not been compiled.");
+                    msgBox.setInformativeText("Do you want to compile?");
+                    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                    msgBox.setDefaultButton(QMessageBox::Yes);
+                    msgBox.setIcon(QMessageBox::Question);
+                    int ret = msgBox.exec();
+                    switch (ret)
+                    {
+                        case QMessageBox::Yes:
+                        {
+                            this->simulationRequest = true;
+                            this->compileProject();
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
                     break;
                 }
                 case 4:
@@ -2982,6 +3012,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 void MainForm::manageLicense()
 {
     LicenseWidget *widget = new LicenseWidget(this);
+    widget->tryLoad();
     widget->exec();
 }
 

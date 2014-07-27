@@ -114,7 +114,7 @@ class Project : public QObject
         void saveProject();
         void setupSim();
         void setupSim(QString family);
-        int start(QString file = "");
+        int start(QString file = "", QString dumpFiles = "");
         void setBreakpoints(bool set);
         void stop();
         void reset();
