@@ -1,83 +1,30 @@
+.\" ====================================================================================================================
 .\"
-.\" MCU 8051 IDE - Itegrated development enviroment for MCS-51 based microcontrollers
-.\" Copyright (C) 2007 Martin Osmera
+.\"  M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
+.\"  MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O     R  R O  O S      Y Y  S       T   E     MM MM S
+.\"  M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O     RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+.\"  M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O     RR   O  O    SS   Y      SS   T   E     M   M    SS
+.\"  M   M O  O R R  A   A  V V   I  A   A    M   M  I  O     R R  O  O      S  Y        S  T   E     M   M      S
+.\"  M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
 .\"
-.\" This program is free software; you can redistribute it and/or modify
-.\" it under the terms of the GNU General Public License as published by
-.\" the Free Software Foundation; either version 2 of the License, or
-.\" (at your option) any later version.
+.\" (C) copyright 2014 Moravia Microsystems, s.r.o.
+.\"     trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+.\"     http://www.moravia-microsystems.com
 .\"
-.\" This program is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public License
-.\" along with this program; if not, write to the Free Software
-.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-.\"
+.\" ====================================================================================================================
+
 .TH "mds-compiler" "1" "July 2014" "User Commands"
 .SH NAME
 mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia Microsystems, s.r.o.
 .SH USAGE
-.B mds-compiler <OPTIONS> <path-to-source> [ <path-to-source> ... ]
-
-.RB [ \-\-help ]
-.RB [ \-h ]
-.RB [ \-\-assemble
-.IR asm_file ]
-.RB [ \-\-compile
-.IR asm_file ]
-.RB [ \-\-iram\-size
-.IR size ]
-.RB [ \-\-code\-size
-.IR size ]
-.RB [ \-\-xram\-size
-.IR size ]
-.RB [ \-\-no\-opt ]
-.RB [ \-\-quiet ]
-.RB [ \-q ]
-.RB [ \-\-nosplash ]
-.RB [ \-\-nocolor ]
-.RB [ \-n ]
-.RB [ \-\-version ]
-.RB [ \-V ]
-.RB [ \-\-defaults ]
-.RB [ \-\-disassemble ]
-.RB [ \-\-minimalized ]
-.RB [ \-\-config\-file
-.IR filename ]
-.RB [ \-\-check\-libraries ]
-.RB [ \-\-ignore\-last\-session ]
-.RB [ \-\-open\-project
-.IR project ]
-.RB [ \-\-reset\-user\-settings ]
-.RB [ \-\-hex2bin
-.IR input
-.IR output ]
-.RB [ \-\-bin2hex
-.IR input
-.IR output ]
-.RB [ \-\-sim2hex
-.IR input
-.IR output ]
-.RB [ \-\-sim2bin
-.IR input
-.IR output ]
-.RB [ \-\-normalize\-hex
-.IR input ]
-.RB [ \-\-auto\-indent
-.IR input ]
-.RB [ \-\-comp\-quiet ]
-.RB [ \-\-no\-sim ]
-.RB [ \-\-no\-bin ]
-.RB [ \-\-no\-lst ]
-.RB [ \-\-no\-hex ]
-.RB [ \-\-warning\-level
-.IR N ]
+.B mds-compiler
+.I <OPTIONS>
+[
+.I source-file ...
+]
 
 .SH DESCRIPTION
-\fB MCU 8051 IDE\fR is tool for developing programs in assembly language and C languge (with SDCC) for micronstollers based on industrial standard MCS-51. It consist of editor with syntax highlight, auto completion, syntax validation and command line, compiler with support for macro-instructions (even macro in macro), simulator, scientific calculator, (rich) text editor for writing to do lists, hexadecimal editor and many other tools.
+\fB mds-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors. mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.
 
 .SH OPTIONS
 .TP
