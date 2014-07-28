@@ -26,20 +26,18 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \verb'            symbol         directive argument                       [ ;comment ]'\\
         \verb'            directive      symbol, argument                         [ ;comment ]'\\
     }
-
     Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive, so after that directive the code do not have to be syntactically valid. Empty lines are allowed as well as line containing only comment or label. Statements can be separated by spaces, NBSP characters and tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
 \section{Symbols}
     Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
-
     {
+        ~\\
         \usecodefont
         \verb'First_symb      EQU     0b100111 ; Number in binary'\\
         \verb'Second_symb     SET     47q      ; Octal'\\
         \verb'Third_symb      REG     39d      ; Decimal'\\
         \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
         \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
-
     }
 
     As you can see in Code \ref{code:esd} example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
@@ -178,8 +176,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \clearpage
     \subsection{INCLUDE}
         \subsubsection{Syntax}
+        {
+            ~\\
+            \usecodefont
             \verb'INCLUDE "file_name.asm"'
-
+        }
         \subsubsection{Description}
             Compiler basicaly copies content of included file to line, where the directive is used. Include files can include other files.
 
@@ -196,8 +197,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{EQU}
         \subsubsection{Syntax}
+        {
+            ~\\
+            \usecodefont        
             \verb'<symbol>      EQU             <expresion> '
-
+        }
         \subsubsection{Description:}
                 The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
@@ -214,8 +218,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{CONSTANT}
         \subsubsection{Syntax}
+        {
+            ~\\
+            \usecodefont
             \verb'CONSTANT             <symbol>,<expresion>'
-
+        }
         \subsubsection{Description:}
                 The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
@@ -232,8 +239,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{SET}
         \subsubsection{Syntax}
+        {
+            ~\\
+            \usecodefont
             \verb'<symbol>      SET             <expresion>'
-
+        }
         \subsubsection{Description:}
             The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
 
@@ -250,8 +260,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
         
     \subsection{VARIABLE}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'VARIABLE            <symbol>,<expresion>'
-
+        }
         \subsubsection{Description:}
             Directive VARIABLE is similar to SET, but with diferent syntax. Symbols defined with VARIABLE can be redefined with another value in your source
             code, but those defined with EQU cannot.
@@ -269,7 +282,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{REG}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'<symbol>      REG             <reg name/address>'
+        }
             
         \subsubsection{Description:}
         Symbols defined with the REG directive are by compiler considered as work registers.
@@ -286,8 +303,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             }
             
         \subsection{NAMEREG}
+        {
+            ~\\
+            \usecodefont        
             \verb'NAMEREG            <symbol>,<reg name or address> '
-            
+            }            
         \subsubsection{Description:}
         Directive NAMEREG is similar to REG, but with diferent syntax. Symbols defined with NAMEREG can be redefined with another value in your source
         code.
@@ -306,7 +326,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{DATA}
         \subsubsection{Syntax:}
+            {
+                ~\\
+                \usecodefont        
             \verb'<symbol>      DATA             <expresion>'
+            }            
             
         \subsubsection{Description:}
             Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
@@ -324,7 +348,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             
     \subsection{CODE}
         \subsubsection{Syntax:}
+            {
+                ~\\
+                \usecodefont
             \verb'<symbol>      CODE             <expresion>'
+            }
         \subsubsection{Description:}
         Symbols defined with the CODE directive are by compiler considered as program memory.
 
@@ -341,8 +369,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             
     \subsection{PORT}
         \subsubsection{Syntax:}
+            {
+                ~\\
+                \usecodefont        
             \verb'<symbol>      PORT             <expresion>'
-
+            }
         \subsubsection{Description:}
         Symbol defined with this directive is considered to be PORT\_ID identificator.
 
@@ -358,8 +389,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             }
     \subsection{AUTOREG}
         \subsubsection{Syntax:}
+            {
+                ~\\
+                \usecodefont        
             \verb'<symbol>      AUTOREG         [<cnt address>]'
-            
+            }            
         \subsubsection{Description:}
         This directive saves time. You can use it, when you dont care which work register will be used. It will automatically assign a register
         at adress 0x00, which is incremented with every other AUTOREG directive. Optionaly, you can change starting address counter by adding a parameter
@@ -378,7 +412,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
             
     \subsection{AUTOSPR}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'<symbol>      AUTOREG         [<cnt address>]'
+        }
            
     \subsubsection{Description:}
     Must be used only with instructions FETCH and STORE. It will automatically assign an
@@ -411,8 +449,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{DEFINE}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'<symbol>      DEFINE             <expresion>'
-
+        }
         \subsubsection{Description:}
         You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used. You can use symbols in define expresions
 
@@ -430,9 +471,12 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{ADDRESS,ORG}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'ADDRESS             <expresion>'\\
             \verb'ORG                 <expresion>'
-
+        }
         \subsubsection{Description:}
         When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter. The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data being assembled and is incremented after each line by the number of bytes of data or code in that line.
 
@@ -444,7 +488,6 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'ORG           START'\\
             \verb'ORG           INTERRUPT'\\
             \verb'ORG           (\$ + 15) \& 0xFFEE'\\
-
             \verb'ADDRESS       0x3ff'\\
             \verb'ADDRESS       START'\\
             \verb'ADDRESS       INTERRUPT'\\
@@ -452,9 +495,13 @@ Then each list element is beeing parsed and splitted into an address reference, 
         }
     \subsection{REPT}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'REPT  <NumberOfRepetions>'\\
             \verb'<repeated code>'\\
             \verb'ENDR'
+        }            
 
         \subsubsection{Description:}
             Directive REPT is able to repeatedly execute a block of code.
@@ -480,10 +527,14 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{\#WHILE}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'#WHILE  <symbol>'\\
             \verb'<code>'\\
             \verb'#ENDW'
-
+        }
+        
         \subsubsection{Description:}
         The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
 
@@ -500,8 +551,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{SKIP}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'SKIP  <NumberOfInstructions>'
-
+        }
         \subsubsection{Description:}
             SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.
 
@@ -519,8 +573,12 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \subsection{UNDEFINE, UNDEF}
 
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
         \verb'UNDEFINE          <symbol>'\\
         \verb'UNDEF             <symbol>'
+        }
         \subsubsection{Description:}
         All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
 
@@ -536,6 +594,9 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{DB}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb '; Expresion syntax'\\
             \verb'DB                 <expresion1>  [,<expresion2>,..]'\\
             \verb' ; String syntax'\\
@@ -543,7 +604,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'; Combination of string and expresions'\\
             \verb'DB                <"string"> [,<expresion1>,..]'\\
             \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
-
+        }
         \subsubsection{Description:}
             The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
             so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
@@ -600,9 +661,12 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{LIST, NOLIST}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont 
             \verb'LIST'\\
             \verb'NOLIST'
-
+        }
         \subsubsection{Description:}
         You can turn on/off printing to code listing in some parts of your code.
 
@@ -699,12 +763,11 @@ Then each list element is beeing parsed and splitted into an address reference, 
 
     \subsection{FAILJMP,DEFAULT\_JUMP}
         \subsubsection{Syntax:}
-         {
-                \texttt{}
-                \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} FAILJMP }\verb`       `{ \color{highlight_string} <"label"> }\\
-                        { \color{highlight_directive} DEFAULT\_JUMP }\verb`       `{ \color{highlight_string} <"label"> }\\
-                \end{tabular}
+            {
+                ~\\
+                \usecodefont
+                \verb'<FAILJMP          "label">'\\
+                \verb'<DEFAULT_JMP      "label">'
             }
             
         \subsubsection{Description:}
@@ -726,7 +789,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'INC       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'ADD       sX, \#1'
 
         \subsubsection{Description:}
@@ -742,7 +805,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'DEC       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'SUB       sX, \#1'
 
         \subsubsection{Description:}
@@ -758,7 +821,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'SET       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'OR       sX, \#0xFF'
 
         \subsubsection{Description:}
@@ -775,7 +838,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'CLRR       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'AND       sX, \#0x00'
 
         \subsubsection{Description:}
@@ -792,7 +855,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'CPL       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'XOR       sX, #0xFF'
 
         \subsubsection{Description:}
@@ -809,7 +872,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'CPL2       <register>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
@@ -830,7 +893,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'SETB       <register>,<bit>           ; bit <0:7>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'OR       sX, \#1 << bit'
 
         \subsubsection{Description:}
@@ -847,7 +910,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'CLRB       <register>,<bit>           ; bit <0:7>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'AND       sX,\#(0xFF \^ (1 << bit))'
 
         \subsubsection{Description:}
@@ -864,7 +927,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'NOTB       <register>,<bit>           ; bit <0:7>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
             \verb'XOR       sX,\#(\~(1 << bit))'
 
         \subsubsection{Description:}
@@ -881,7 +944,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'DJNZ       <register>,<label>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
@@ -903,7 +966,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
             \verb'IJNZ       <register>,<label>'
 
-        \subsubsection{EQUAL TO:}
+        \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
@@ -983,108 +1046,75 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'WHILE       <condition>'\\
             \verb'<code>'\\
             \verb'ENDW'
-        }
+        }\\
         \textbf{Description:}\\
         You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
         evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
         Number without \# is considered as register adrress. See example for conditions syntax.
         \textbf{Examples:}\\
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 == \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0  != \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 >    \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 < \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 <= \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 >= \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 \& \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
-                \begin{code}[h!]
-                        { \color{highlight_directive} WHILE  }
-                        { \color{highlight_constant}   s0 !\& \#10 }\\
-                        { \color{highlight_instruction} ADDCY    S1,\#1 }\\
-                        { \color{highlight_directive}  ENDW}\\
-                    \caption{Run time while example}
-                \end{code}
+        {
+            ~\\
+            \usecodefont
+            \verb'WHILE       s0 == #10'\\
+            \verb'      ADDCY    S1,\#1'\\
+            \verb'ENDW'
+        }\\
+        {
+            ~\\
+            \usecodefont
+            \verb'WHILE       s0 > #10'\\
+            \verb'      ADDCY    S1,#1'\\
+            \verb'ENDW'
+        }\\
+        {
+            ~\\
+            \usecodefont
+            \verb'WHILE       s0  != #10'\\
+            \verb'      ADDCY    S1,#1'\\
+            \verb'ENDW'
+        }\\
 
         \subsection{FOR}
             \textbf{Syntax:}\\
-            \\ {
-                \texttt{}
-                    \begin{tabular}[h!]{llll}
-                        { \color{highlight_directive} FOR } & \verb'     ' &
-                        { \color{highlight_constant} <condition> }\\
-                        { \color{highlight_symbol} <code> }\\
-                        { \color{highlight_directive} ENDF }
-                    \end{tabular}
-                }\\
+        {
+            ~\\
+            \usecodefont
+            \verb'FOR       <condition>'\\
+            \verb'      <code>'\\
+            \verb'ENDW'
+        }\\
             \textbf{Description:}\\
             You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
             evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
             counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
             repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
-            See examples for better understanding. WARNING: Using FOR directive will overide used register( s0 in example)
+            See examples for better understanding.\\ WARNING: Using FOR directive will overide used register( s0 in example)
             \textbf{Examples:}\\
-                    \begin{code}[h!]
-                            { \color{highlight_directive} FOR  }
-                            { \color{highlight_constant}   s0,10 }\\
-                            { \color{highlight_directive}  ENDF}\\
-                        \caption{Run time while example}
-                    \end{code}
-            In this case, incrementing is from 0 to 10. Incrementing step is 1.
-                    \begin{code}[h!]
-                            { \color{highlight_directive} FOR  }
-                            { \color{highlight_constant}   s0,10..20 }\\
-                            { \color{highlight_directive}  ENDF}\\
-                        \caption{Run time while example}
-                    \end{code}
-            In this case, incrementing is in the range 10 to 20. Incrementing step is 1.
-                    \begin{code}[h!]
-                            { \color{highlight_directive} FOR  }
-                            { \color{highlight_constant}   s0,10..50,10 }\\
-                            { \color{highlight_directive}  ENDF}\\
-                        \caption{Run time while example}
-                    \end{code}
-            In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).
+        {
+            ~\\
+            \usecodefont
+            \verb'FOR       s0,10'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
+        }\\
+        In this case, incrementing is from 0 to 10. Incrementing step is 1.\\
+        {
+            ~\\
+            \usecodefont
+            \verb'FOR       s0,10..20'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
+        }\\
+
+        In this case, incrementing is in the range 10 to 20. Incrementing step is 1.\\
+        {
+            ~\\
+            \usecodefont
+            \verb'FOR       s0,10..50,10'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
+        }\\
+        In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).\\
 
     \section{Macro Processing}
         Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
@@ -1094,22 +1124,21 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
         \subsection{MACROS}
         \textbf{Syntax:}\\
-        \\ {
-            \texttt{}
-                \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} MACRO } & \verb'     ' &
-                    { \color{highlight_constant} [<parameter1>]  [,<parameter2>..] }\\
-                    { \color{highlight_symbol} <macro source code> }\\
-                    { \color{highlight_directive} ENDM } &  \verb'     ' { \color{highlight_comment} ; end of macro declaration  }
-                \end{tabular}
-            }\\
-        \\ {
-            \texttt{}
-                \begin{tabular}[h!]{llll}
-                    { \color{highlight_directive} EXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros allowed  }\\
-                    { \color{highlight_directive} NOEXPAND } &  \verb'     ' { \color{highlight_comment} ; Expanding of macros forbidden  }
-                \end{tabular}
-            }\\
+        {
+            ~\\
+            \usecodefont
+            \verb'MACRO      [<parameter1>]  [,<parameter2>..]'\\
+            \verb'    <macro source code>'\\
+            \verb'ENDM  ; end of macro declaration '
+        }\\
+
+        {
+            ~\\
+            \usecodefont
+            \verb'EXPAND        ; Expanding of macros allowed'\\
+            \verb'NOEXPAND      ; Expanding of macros forbidden '\\
+        }\\
+
         \begin{table}[h!]
             \begin{tabular}{|ll|}
                     \hline
@@ -1275,11 +1304,11 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[User defined memory limit for Scratch Pad RAM exceeded]\hfill \\
                     You have exceeded maximum scratch pad RAM defined with directive LIMIT.
                     \item[Instruction X requires operand \#Y to be of type(s) Z; while the given operand is of type: W] \hfill \\   %lllll
-                    Wrong type of operand. See manual for more informations.
+                    Wrong type of operand. 
                     \item[Macro not defined ] \hfill \\
                     The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
                     \item[Too many arguments given, expecting at most X arguments] \hfill \\             % lll
-                    Too many arguments, compiler tells you how many he is expecting.
+                    Too many arguments. Reduce number of given arguments.
                     \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  %llll
                     Desired memory space is not available.
                     \item[The last error was critical, compilation aborted] \hfill \\                   %llll
