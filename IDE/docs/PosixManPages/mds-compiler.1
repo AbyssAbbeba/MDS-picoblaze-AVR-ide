@@ -1,0 +1,150 @@
+.\" ====================================================================================================================
+.\"
+.\"  M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
+.\"  MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O     R  R O  O S      Y Y  S       T   E     MM MM S
+.\"  M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O     RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+.\"  M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O     RR   O  O    SS   Y      SS   T   E     M   M    SS
+.\"  M   M O  O R R  A   A  V V   I  A   A    M   M  I  O     R R  O  O      S  Y        S  T   E     M   M      S
+.\"  M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
+.\"
+.\" (C) copyright 2014 Moravia Microsystems, s.r.o.
+.\"     trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+.\"     http://www.moravia-microsystems.com
+.\"
+.\" ====================================================================================================================
+
+.TH "mds-compiler" "1" "July 2014" "User Commands"
+.SH NAME
+mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia Microsystems, s.r.o.
+.SH USAGE
+.B mds-compiler
+.I <OPTIONS>
+[
+.I source-file ...
+]
+
+.SH DESCRIPTION
+\fB mds-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors. mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.
+
+.SH OPTIONS
+.TP
+\fB\-\-help\fR, \fB\-h\fR
+Display short help text
+.TP
+\fB\-\-quiet\fR, \-q\fR
+Don't display status of initialization progress on startup
+.TP
+\fB\-\-nosplash\fR
+Don't show splash screen
+.TP
+\fB\-\-nocolor\fR, \-n\fR
+Disable color output
+.TP
+\fB\-\-version\fR, \fB\-V\fR
+Display version information
+.TP
+\fB\-\-defaults\fR
+Start with default settings (low level GUI settings (panel sizes ...))
+.TP
+\fB\-\-minimalized\fR
+Start with minimalized window
+.TP
+\fB\-\-config\-file \fIfilename\fR
+Specify path to file containg user settings
+.TP
+\fB\-\-check\-libraries\fR
+Check if all nessesary Tcl libraries are avaible
+.TP
+\fB\-\-ignore\-last\-session\fR
+Start with an empty session (no project will be opened at startup)
+.TP
+\fB\-\-open\-project \fIproject\fR
+Open only this project
+.TP
+\fB\-\-reset\-user\-settings\fR
+Reset all user settings to defaults
+.TP
+\fB\-\-hex2bin \fIinput output\fR
+Convert Intel Hex 8 file to binary file
+.TP
+\fB\-\-bin2hex \fIinput output\fR
+Convert binary file to Intel Hex 8 file
+.TP
+\fB\-\-sim2hex \fIinput output\fR
+Convert MCU 8051 IDE v0.9.1 simulator file to Intel Hex 8 file
+.TP
+\fB\-\-sim2bin \fIinput output\fR
+Convert MCU 8051 IDE v0.9.1 simulator file to binary file
+.TP
+\fB\-\-normalize\-hex \fIinput\fR
+Normalize IHEX8 file
+.TP
+\fB\-\-auto\-indent \fIinput\fR
+Reformat indention in source code
+.TP
+\fB\-\-disassemble \fIinput\fR
+Disaseble IHEX8 code and store result in input.asm
+.TP
+\fB\-\-assemble \fIasm_file\fR
+Assemble the asm_file and exit program
+.TP
+\fB\-\-compile \fIasm_file\fR
+The same as \-\-assemble
+.TP
+\fB\-\-iram\-size \fIsize\fR
+Set size of internal data memory (eg. 1K or 1024) (default: 0x100)
+.TP
+\fB\-\-code\-size \fIsize\fR
+Set size of program memory (eg. 1K or 1024) (default: 0x10000)
+.TP
+\fB\-\-xram\-size \fIsize\fR
+Set size of external data memory (eg. 1K or 1024) (default: 0x10000)
+.TP
+\fB\-\-no\-opt\fR
+Disable compiler optimalizations
+.TP
+\fB\-\-comp\-quiet\fR
+Suppress compiler console output
+.TP
+\fB\-\-no\-sim\fR
+Do not generate SIM file (for MCU 8051 IDE simulator)
+.TP
+\fB\-\-no\-bin\fR
+Do not generate binary object code
+.TP
+\fB\-\-no\-lst\fR
+Do not generate code listing
+.TP
+\fB\-\-no\-hex\fR
+.TP
+\fB\-\-warning\-level \fIN\fR
+Do not generate IHEX8 object code; 3 - Nothing; 2 - Errros only; 1 - Errors + Warnings; 0 - All (Default)
+
+.SH FILES
+.TP
+.I /usr/share/mcu8051ide/data/tips.conf
+XML file containing tips. (Dialog "Tip of the day")
+.TP
+.I /usr/share/mcu8051ide/data/mcus.conf
+XML definition of supported MCUs. \fBWarning: MCU 8051 IDE cannot run without this file.\fR Please do not rely on format of this file. It may be changed in future version without any warning.
+.TP
+.I ~/.mcu8051ide/last_session.conf
+INI like definition of the last session.
+.TP
+.I ~/.mcu8051ide/base.conf
+Base configuration file. It contains only three configuration keys separated by spaces, please do not rely on format of this file. It may be changed in future version without any warning.
+.TP
+.I ~/.mcu8051ide/config.conf
+Main configuration file (INI like). Readable and I hope user friendly.
+
+.SH NOTES
+List of supported porcessors is very short yet. Please post suggestions to martin.osmera@gmail.com .
+.SH SUPPORTED PROCESSORS
+8051, 80C51, 8052, AT89C2051, AT89C4051, AT89C51, AT89C51RC, AT89C52, AT89C55WD, AT89LV51, AT89LV52, AT89LV55, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, T87C5101, T83C5101, T83C5102, TS80C32X2, TS80C52X2, TS87C52X2, AT80C32X2, AT80C52X2, AT87C52X2, AT80C54X2, AT80C58X2, AT87C54X2, AT87C58X2, TS80C54X2, TS80C58X2, TS87C54X2, TS87C58X2, TS80C31X2, AT80C31X2
+
+.SH TO DO
+Add support for more MCS\-51 based microcontrollers.
+Fix all bugs.
+
+.SH AUTHOR
+Martin Osmera <martin.osmera@gmail.com>

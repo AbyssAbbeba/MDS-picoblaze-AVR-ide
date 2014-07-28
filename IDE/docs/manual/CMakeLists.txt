@@ -35,9 +35,9 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     set ( CLEAN_MAKEINDEX "MDS_manual.idx;MDS_manual.ind;MDS_manual.ilg" )
     set ( CLEAN_QHELP     "MDS_manual.qhc;MDS_manual.qch;MDS_manual.qhp" )
     set ( CLEAN_LATEX     "${MANUAL_PDF};MDS_manual.log;MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
-    set ( CLEAN_FILES     "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
+    set ( MAN_CLEAN_FILES "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
     set_directory_properties ( PROPERTIES
-                               ADDITIONAL_MAKE_CLEAN_FILES "${CLEAN_FILES}" )
+                               ADDITIONAL_MAKE_CLEAN_FILES "${MAN_CLEAN_FILES}" )
 
     # Use LaTeX tools to generate end user documentation, and Qt Help Framework tools to generate Qt Help.
     if ( "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.tex" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/${MANUAL_PDF}" )
