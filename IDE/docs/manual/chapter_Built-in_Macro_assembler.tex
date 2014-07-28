@@ -1132,21 +1132,21 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \usecodefont
 
                 {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_comment}\verb'; Define named macro ``abc'\verb"'"\verb''\verb"'"\verb''}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's2'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's2'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's2'}\\
                 {\color{highlight_directive}\verb'endm'}\\
                 \verb''\\
                 {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
                 {\color{highlight_macro}\verb'abc'}\verb'     '{\color{highlight_comment}\verb'; Expand macro ``abc'\verb"'"\verb''\verb"'"\verb' here'}\\
                 \verb''\\
                 {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-                \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-                \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's2'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's2'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's2'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's2'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
+                \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's2'}\\
+                \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's2'}\\
            }
            
 
@@ -1154,31 +1154,31 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \mysmallfont{}
             {\color{highlight_comment}\verb'; Define macro named as ``xyz'\verb"'"\verb''\verb"'"\verb' with 2 mandatory parameters'}\\
             {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'bar'}\\
-            \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
             \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_constant}\verb'bar'}\\
             {\color{highlight_directive}\verb'endm'}\\
             \verb''\\
-            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'c'}\verb'            '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
-            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p1'}{\color{highlight_symbol}\verb'.'}{\color{highlight_unknown_base}\verb'0'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's2'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'c'}\verb'            '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}{\color{highlight_symbol}\verb','}{\color{highlight_unknown_base}\verb'0'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
             \verb''\\
             {\color{highlight_comment}\verb'; This is the same as if you wrote this:'\\
             }\verb'        '{\color{highlight_comment}\verb'; xyz   a, c'\\
-            }\verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            }\verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
             \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'c'}\\
-            \verb'        '{\color{highlight_comment}\verb'; xyz   p0, p1.0'}\\
-            \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
-            \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'p1'}{\color{highlight_symbol}\verb'.'}{\color{highlight_unknown_base}\verb'0'}\\
+            \verb'        '{\color{highlight_comment}\verb'; xyz   s0, s1,0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_symbol}\verb','}{\color{highlight_unknown_base}\verb'0'}\\
             \caption{An exaple of named macro with two parameters}
         \end{code}
         \begin{code}[h!]
             \mysmallfont{}{\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
             \verb''\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_constant}\verb'foo'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'                '{\color{highlight_instruction}\verb'nop'}\\
             \verb'        '{\color{highlight_directive}\verb'endif'}\\
             \verb''\\
-            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#foo'}\\
+            \verb'        '{\color{highlight_instruction}\verb'sub'}\verb'    '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#foo'}\\
             {\color{highlight_directive}\verb'endm'}\\
             \verb''\\
             {\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_unknown_base}\verb'5'}\\
@@ -1186,17 +1186,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb''\\
             {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
             \verb'        '{\color{highlight_comment}\verb'; ijk   5'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'5'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'        '{\color{highlight_instruction}\verb'nop'}\\
             \verb'        '{\color{highlight_directive}\verb'endif'}\\
-            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
+            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
             \verb'        '{\color{highlight_comment}\verb'; ijk   4'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@R0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'4'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'        '{\color{highlight_instruction}\verb'nop'}\\
             \verb'        '{\color{highlight_directive}\verb'endif'}\\
-            \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
+            \verb'        '{\color{highlight_instruction}\verb'sub'}\verb'    '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#4'}\\
             \caption{An exaple of named macro used with if statement}
     \end{code}
 
@@ -1226,23 +1226,23 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                         \verb''\\
                         {\color{highlight_directive}\verb'ifdef'}\verb' '{\color{highlight_constant}\verb'abc'}\verb'                       '{\color{highlight_comment}\verb';<--+ Assemble only if symbol abc has been defined'}\\
                         \verb'  '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'13'}\verb' '{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if 13 has been assigned to symbol abc'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_bin}\verb'#01010101b'}\verb'   '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_bin}\verb'#01010101b'}\verb'   '{\color{highlight_comment}\verb';   |    |'}\\
                         \verb'  '{\color{highlight_directive}\verb'elseif'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if 14 has been assigned to symbol abc'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#0aah'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#0aah'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
                         \verb'  '{\color{highlight_directive}\verb'elseifn'}\verb' '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_constant}\verb'abc'}\verb' '{\color{highlight_symbol}\verb'%'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'           '{\color{highlight_comment}\verb';   | <--+ Assemble if the value assigned to symbol abc is even'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#abc'}\verb'         '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_constant}\verb'#abc'}\verb'         '{\color{highlight_comment}\verb';   |    |'}\\
                         \verb'  '{\color{highlight_directive}\verb'else'}\verb'                          '{\color{highlight_comment}\verb';   | <--+ Else ..'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_oct}\verb'#377q'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_oct}\verb'#377q'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
                         \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
                         {\color{highlight_directive}\verb'elseifndef'}\verb' '{\color{highlight_constant}\verb'xyz'}\verb'                  '{\color{highlight_comment}\verb';<--+ Assemble if symbol xyz has NOT been defined'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'clr'}\verb'     '{\color{highlight_sfr}\verb'A'}\verb'               '{\color{highlight_comment}\verb';   |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'clrr'}\verb'     '{\color{highlight_sfr}\verb's1'}\verb'               '{\color{highlight_comment}\verb';   |'}\\
                         {\color{highlight_directive}\verb'else'}\verb'                            '{\color{highlight_comment}\verb';<--+ Else ...'}\\
                         \verb'  '{\color{highlight_directive}\verb'ifn'}\verb' '{\color{highlight_symbol}\verb'('}{\color{highlight_constant}\verb'xyz'}{\color{highlight_symbol}\verb' mod'}\verb' '{\color{highlight_unknown_base}\verb'2'}{\color{highlight_symbol}\verb')'}\verb'               '{\color{highlight_comment}\verb';   | <--+ Assemble if ( yxz modulo 2 ) is 0'}\\
-                        \verb'        '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#128d'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
+                        \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#128d'}\verb'        '{\color{highlight_comment}\verb';   |    |'}\\
                         \verb'  '{\color{highlight_directive}\verb'endif'}\verb'                         '{\color{highlight_comment}\verb';   | <--+'}\\
                         {\color{highlight_directive}\verb'endif'}\verb'                           '{\color{highlight_comment}\verb';<--+'}\\
                         \verb''\\
-                        {\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'\$'}\verb'                       '{\color{highlight_comment}\verb'; Infinite loop'}\\
+                        {\color{highlight_instruction}\verb'jmp'}\verb'    '{\color{highlight_constant}\verb'\$'}\verb'                       '{\color{highlight_comment}\verb'; Infinite loop'}\\
                         {\color{highlight_directive}\verb'end'}\verb'                             '{\color{highlight_comment}\verb'; End of assembly'}\\
                         \caption{An example of conditional assembly usage}
                 \end{code}
@@ -1281,13 +1281,13 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[Too many arguments given, expecting at most X arguments] \hfill \\             % lll
                     Too many arguments, compiler tells you how many he is expecting.
                     \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  %llll
-                    bl
+                    Desired memory space is not available.
                     \item[The last error was critical, compilation aborted] \hfill \\                   %llll
-                    bl
+                    Critical error has occured. Compilation cannot continue.
                     \item[Device not supported] \hfill \\
                     The given device is not supported. Please choose different device.
                     \item[Device specification code is already loaded ] \hfill \\                       %llll
-                    bl
+                    You have already specified architecture in project configuration.
                     \item[Limit value X is not valid] \hfill \\
                     Invalid limit value. Viz. LIMIT directive chapter for valid values.
                     \item[Directive `LOCAL' cannot appear outside macro definition ] \hfill \\   % chyba, apear
@@ -1312,7 +1312,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[Symbol X already defined with type Y] \hfill \\
                     The given symbol has been already defined with type Y. Symbol cannot be defined more than one time.
                     \item[Undefined value ] \hfill \\
-                    Undefined value. Compiler does not know this value.                       %mmmm
+                    Undefined value. You need to specify the value.                       %mmmm
                     \item[Real numbers are not supported in assembler ] \hfill \\
                     Real numbers cannot be used on 8-bit processor.
                     \item[Undefined symbol: X ] \hfill \\
@@ -1331,48 +1331,48 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     Unterminated string or character constant
                     \item[Unrecognized escape sequence: ] \hfill \\
                     Unrecognized escape sequence
-                    \item[no file name specified ] \hfill \\                                                                            %llll
+                    \item[No file name specified ] \hfill \\                                                                            %llll
                     File name has to be specified.
                     \item[Unable to open the specified file: X] \hfill \\
                     The given file cannot be opened for some reason.
                     \item[Unrecognized token:  ] \hfill \\                    % mas to tam dvakrat
-                    bl
+                    Source code contains invalid characters.
                     \ldots
                     \end{description}
 
                  \subsection{WARNING list}
                     \begin{description}
                     \item[Maximum number of messages reached, suppressing compiler message generation] \hfill \\
-                    Source code contains big number of errors. Those errors were suppressed to prevent enormous size of code listing file.
+                    Source code contains a big number of errors. Those errors were suppressed to prevent enormous size of code listing file.
                     \item[Redefinition of macro ] \hfill \\
-                    The given macro has been already defined.
+                    The given macro has already been defined.
                     \item[Macro X will not be expanded because macro expansion has been disabled] \hfill \\
                     The given macro cannot be expanded, because macro expansion has been disabled by NOEXPAND directive.
                     You can use EXPAND directive to allow expansion again.
                     \item[Parameter X substituted for blank value ] \hfill \\     %llll
-                    Macro expected
+                    Macro expected input parameter. Compiler replaced it with blank parameter.
                     \item[Symbol X already declared as local ] \hfill \\
-                    Symbol is already used as local inside macro.   %llll
+                    Symbol is already used as local inside of macro.   %llll
                     \item[Reusing already reserved space in X memory at address: Y] \hfill \\  %llll
-                    bl
+                    Memory space is already defined. Make sure the collision will not occur.
                     \item[Limit value -1 means unlimited] \hfill \\
                     You can define limit values with LIMIT directive. Using -1 as directive argument, means unlimited.
                     \item[Symbol X declared as local but never used, declaration ignored] \hfill \\
                     The given local symbol has been declared, but never used. Declaration will be ignored.
                     \item[Comparing two immediate constants, result is always positive] \hfill \\
-
+                    Comparing two immediate constants, result will be always same.
                     \item[Comparing two immediate constants, result is always negative] \hfill \\
-
+                    Comparing two immediate constants, result will be always same.
                     \item[Sign overflow. Result is negative number lower than the lowest negative number representable in two's complement arithmetic by the given number of bits ] \hfill \\
-
-                    \item[Result is negative number X, this will be represented as 2-bit number in two's complement arithmetic] \hfill \\
-
+                    Two's complement sign overflow.
+                    \item[Result is negative number X, this will be represented as X-bit number in two's complement arithmetic] \hfill \\
+                    Result is negative number. This will be represented as number in two's complement arithmetic.
                     \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ] \hfill \\
-                    Value out of range. Adjust input value.                                                     %,,,,
+                    Value out of range. Adjust input value.                                                  
                     \item[Maximum number of messages reached, suppressing compiler message generation ] \hfill \\
                     Compiler is suppressing error messages generation to avoid massive code listing file size.
                     \item[File name contains a null character ] \hfill \\
-                    Null character in file name is forbidden. Please change name of the given file.
+                    Null character in file name is forbidden. Please change the name of the given file.
                     \ldots
                     \end{description}
 
@@ -1381,18 +1381,15 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                 \begin{code}[h]
                         \mysmallfont{}
                         \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
-                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MCU 8051 IDE - Demostration code'}\\
-                        {\color{highlight_lst_line}\verb'                         2'}\verb'     '{\color{highlight_comment}\verb'; Very simple code'}\\
-                        {\color{highlight_lst_line}\verb'                         3'}\\
-                        {\color{highlight_lst_line}\verb'                         4'}\verb'     '{\color{highlight_comment}\verb'; Press F2 and F6 to run the program (start simulator and animate)'}\\
-                        {\color{highlight_lst_line}\verb'                         5'}\\
+                        {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Demostration code'}\\
+
                         {\color{highlight_lst_line}\verb'                         6'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_hex}\verb'0h'}\\
                         {\color{highlight_lst_line}\verb'                         7'}\\
-                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' 08'}{\color{highlight_lst_line}\verb'                  8'}\verb'     '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_sfr}\verb'R0'}\\
-                        {\color{highlight_lst_address}\verb'0001'}{\color{highlight_lst_code}\verb' 06'}{\color{highlight_lst_line}\verb'                  9'}\verb'             '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_indirect}\verb'@R0'}\\
-                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'cjne'}\verb'    '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#07Fh'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'main'}\\
-                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 7800'}{\color{highlight_lst_line}\verb'               11'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'R0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#0d'}\\
-                        {\color{highlight_lst_address}\verb'0007'}{\color{highlight_lst_code}\verb' 80F7'}{\color{highlight_lst_line}\verb'               12'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\\
+                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' 08'}{\color{highlight_lst_line}\verb'                  8'}\verb'     '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_sfr}\verb's0'}\\
+                        {\color{highlight_lst_address}\verb'0001'}{\color{highlight_lst_code}\verb' 06'}{\color{highlight_lst_line}\verb'                  9'}\verb'             '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_indirect}\verb's0'}\\
+                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'djnz'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#07Fh'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'main'}\\
+                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 7800'}{\color{highlight_lst_line}\verb'               11'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#0d'}\\
+                        {\color{highlight_lst_address}\verb'0007'}{\color{highlight_lst_code}\verb' 80F7'}{\color{highlight_lst_line}\verb'               12'}\verb'             '{\color{highlight_instruction}\verb'jmp'}\verb'    '{\color{highlight_constant}\verb'main'}\\
                         {\color{highlight_lst_line}\verb'                        13'}\\
                         {\color{highlight_lst_line}\verb'                        14'}\verb'             '{\color{highlight_directive}\verb'end'}\\
                         {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
@@ -1404,11 +1401,11 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
                 \begin{code}[h]
                         \verb'  '\texttt{\colorbox{Lavender}{0055}}\verb'                   '\texttt{\colorbox{Goldenrod}{18}}\verb'      '\texttt{\colorbox{Gray}{X      data     55h}} \\
-                        \texttt{\colorbox{Apricot}{0014}}\verb' '\texttt{\colorbox{GreenYellow}{1122}}\verb'       '\texttt{\colorbox{LimeGreen}{=1}}\verb'     '\texttt{\colorbox{Goldenrod}{33}}\verb'      '\texttt{\colorbox{Gray}{l:     inc      A}} \\
+                        \texttt{\colorbox{Apricot}{0014}}\verb' '\texttt{\colorbox{GreenYellow}{1122}}\verb'       '\texttt{\colorbox{LimeGreen}{=1}}\verb'     '\texttt{\colorbox{Goldenrod}{33}}\verb'      '\texttt{\colorbox{Gray}{l:     inc      s0}} \\
                         \verb'                          '\texttt{\colorbox{Goldenrod}{35}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{abc     ; Expand macro ``abc'' here}} \\
-                        \texttt{\colorbox{Apricot}{001E}}\verb' '\texttt{\colorbox{GreenYellow}{E580}}\verb'               '\texttt{\colorbox{Goldenrod}{36}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     a, p0}} \\
-                        \texttt{\colorbox{Apricot}{0020}}\verb' '\texttt{\colorbox{GreenYellow}{F4}}\verb'                 '\texttt{\colorbox{Goldenrod}{37}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                SR0     a}} \\
-                        \texttt{\colorbox{Apricot}{0021}}\verb' '\texttt{\colorbox{GreenYellow}{F590}}\verb'               '\texttt{\colorbox{Goldenrod}{38}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     p1, a}} \\\\
+                        \texttt{\colorbox{Apricot}{001E}}\verb' '\texttt{\colorbox{GreenYellow}{E580}}\verb'               '\texttt{\colorbox{Goldenrod}{36}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     s1, s0}} \\
+                        \texttt{\colorbox{Apricot}{0020}}\verb' '\texttt{\colorbox{GreenYellow}{F4}}\verb'                 '\texttt{\colorbox{Goldenrod}{37}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                SR0     s1}} \\
+                        \texttt{\colorbox{Apricot}{0021}}\verb' '\texttt{\colorbox{GreenYellow}{F590}}\verb'               '\texttt{\colorbox{Goldenrod}{38}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     s2, s1}} \\\\
                         \colorbox{Goldenrod}{\color{Goldenrod}X} Line number \\
                         \colorbox{LimeGreen}{\color{LimeGreen}X} Level of file inclusion \\
                         \colorbox{ProcessBlue}{\color{ProcessBlue}X} Level of macro expansion \\
@@ -1429,17 +1426,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                         {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      4'}\verb'             '{\color{highlight_directive}\verb'include'}\verb' '{\color{highlight_string}\verb''\verb"'"\verb'my_macros.asm'\verb"'"\verb' '{\color{highlight_comment}\verb'; Include file my_macros.asm'}}\\
                         {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      5'}\verb'     '{\color{highlight_comment}\verb'; This is the beginning of file my_macros.asm'}\\
                         {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      6'}\verb'     '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      7'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'A'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'foo'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'A'}\\
-                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      9'}\verb'             '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'A'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      7'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's3'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'foo'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's3'}\\
+                        {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'      9'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's3'}\\
                         {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     10'}\verb'     '{\color{highlight_directive}\verb'endm'}\\
                         {\color{highlight_lst_include}\verb'                 =1'}{\color{highlight_lst_line}\verb'     11'}\verb'     '{\color{highlight_comment}\verb'; This is the end of file my_macros.asm'}\\
                         {\color{highlight_lst_line}\verb'                        12'}\\
-                        {\color{highlight_lst_line}\verb'                        13'}{\color{highlight_lst_macro}\verb' +1'}\verb'  '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_sfr}\verb'P0'}\verb'              '{\color{highlight_comment}\verb'; Expand macro my_cpl here'}\\
-                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' E580'}{\color{highlight_lst_line}\verb'               14'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'p0'}\\
-                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'                 15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'a'}\\
-                        {\color{highlight_lst_address}\verb'0003'}{\color{highlight_lst_code}\verb' F580'}{\color{highlight_lst_line}\verb'               16'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'mov'}\verb'     '{\color{highlight_sfr}\verb'p0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'a'}\\
-                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 80F9'}{\color{highlight_lst_line}\verb'               17'}\verb'             '{\color{highlight_instruction}\verb'sjmp'}\verb'    '{\color{highlight_constant}\verb'main'}\verb'            '{\color{highlight_comment}\verb'; Jump back to label main'}\\
+                        {\color{highlight_lst_line}\verb'                        13'}{\color{highlight_lst_macro}\verb' +1'}\verb'  '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_sfr}\verb's0'}\verb'              '{\color{highlight_comment}\verb'; Expand macro my_cpl here'}\\
+                        {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' E580'}{\color{highlight_lst_line}\verb'               14'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
+                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'                 15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}\\
+                        {\color{highlight_lst_address}\verb'0003'}{\color{highlight_lst_code}\verb' F580'}{\color{highlight_lst_line}\verb'               16'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}\\
+                        {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 80F9'}{\color{highlight_lst_line}\verb'               17'}\verb'             '{\color{highlight_instruction}\verb'jmp'}\verb'    '{\color{highlight_constant}\verb'main'}\verb'            '{\color{highlight_comment}\verb'; Jump back to label main'}\\
                         {\color{highlight_lst_line}\verb'                        18'}\verb'             '{\color{highlight_directive}\verb'end'}\verb'                     '{\color{highlight_comment}\verb'; End of assembly'}\\
                         {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
                         \caption{A more complicated example of code listing}
