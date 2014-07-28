@@ -95,6 +95,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         void sessionAppendFileParentProject(QString path);
 
         void sessionClear();
+
+        void recentAppend(QString name, QString path);
         
         
         //getters

@@ -98,6 +98,7 @@ class WDockManager : public QObject
         void deleteActiveSimWidget();
         void closeFile(QString path);
         void setCentralWelcome(); //welcome screen
+        void deleteCentralWelcome();
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;

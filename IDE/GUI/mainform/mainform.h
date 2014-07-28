@@ -54,7 +54,6 @@ class MainForm : public QMainWindow
         WDockManager* getWDockManager();
         ProjectMan* getProjectMan();
         //bool dockWidgets;
-        bool openProject(QString path);
         //void emitSessionRestorationSignal();
         void createWelcome();
 
@@ -63,6 +62,7 @@ class MainForm : public QMainWindow
     public slots:
         void openFilePath(QString path, QString parentProjectName = "");
         void sessionRestorationSlot();
+        bool openProject(QString path);
 
     private slots:
         //slots connected to menu actions
