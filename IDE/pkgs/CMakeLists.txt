@@ -125,9 +125,9 @@ if ( TARGET_OS STREQUAL "Linux" )
     set ( CMAKE_INSTALL_RPATH "${LIB_DIR_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
 
     # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "share/pixmaps/" )
-    install ( FILES mds-ide.desktop               DESTINATION "share/applications/" )
-    install ( FILES application-x-mds-project.xml DESTINATION "share/mime/packages/" )
+    install ( FILES mds-ide.png                   DESTINATION "/usr/share/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "/usr/share/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "/usr/share/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
