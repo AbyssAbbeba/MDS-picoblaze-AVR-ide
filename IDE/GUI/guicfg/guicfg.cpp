@@ -401,6 +401,10 @@ void GuiCfg::sessionClear()
 }
 
 
+void GuiCfg::recentAppend(QString name, QString path)
+{
+}
+
 
 
 
