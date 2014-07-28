@@ -131,6 +131,12 @@ class WDockManager : public QObject
         void bookmarkEmitSlot(QString file, int line);
         void bookmarksAddLinesSlot(QString file, int line, int linesAdded);
         void bookmarksRemoveLinesSlot(QString file, int line, int linesRemoved);
+        void welcomeScrExample();
+        void welcomeScrOpenPrj();
+        void welcomeScrNewPrj();
+        void welcomeScrManual();
+        void welcomeScrGuide();
+        void welcomeScrRecent(QString path);
         //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
@@ -155,6 +161,12 @@ class WDockManager : public QObject
         void bookmarksRemoveLines(QString file, int line, int linesRemoved);
         //void breakpointListRemove(QString file, int line);
         void compilationFinishedSig(bool success);
+        void welcomeScrExampleSig();
+        void welcomeScrOpenPrjSig();
+        void welcomeScrNewPrjSig();
+        void welcomeScrManualSig();
+        void welcomeScrGuideSig();
+        void welcomeScrRecentSig(QString path);
 
     private:
         //MainForm *wMainWindow;

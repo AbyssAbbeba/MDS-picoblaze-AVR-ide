@@ -826,7 +826,8 @@ Project::Project(ProjectMan *parent)
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
-
+    
+    this->langType = LANG_ASM;
     this->family = GuiCfg::getInstance().getProjectFamily();
     this->intVector = GuiCfg::getInstance().getProjectIntVector();
     this->hwBuild = GuiCfg::getInstance().getProjectHWBuild();
@@ -2400,10 +2401,11 @@ void Project::setupSim(QString family)
  */
 int Project::start(QString file, QString dumpFiles)
 {
-    //qDebug() << "Project: start()";
+    qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
+        qDebug() << "Project: start() after ";
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         QString hexPath;
         QString asmPath;
