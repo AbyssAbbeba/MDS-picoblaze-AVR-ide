@@ -23,7 +23,10 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
 {
     QHelpEngine *helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     qDebug() << "HelpWidget: " << GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc";
-    helpEngine->setupData();
+    if (!helpEngine->setupData())
+    {
+        qDebug() << "HelpWidget: setupData suck ass";
+    }
     this->textBrowser = new HelpBrowser(this);
 
     QTabWidget *tabs = new QTabWidget(this);
