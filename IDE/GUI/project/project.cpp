@@ -826,7 +826,8 @@ Project::Project(ProjectMan *parent)
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
-
+    
+    this->langType = LANG_ASM;
     this->family = GuiCfg::getInstance().getProjectFamily();
     this->intVector = GuiCfg::getInstance().getProjectIntVector();
     this->hwBuild = GuiCfg::getInstance().getProjectHWBuild();
@@ -2398,27 +2399,40 @@ void Project::setupSim(QString family)
  * @return 0 - started; >0 - not started;
  * @details  1 - sim not started; 2 - getLineNumber error; 3 - files do not exist; 4 - files modified;
  */
-int Project::start(QString file)
+int Project::start(QString file, QString dumpFiles)
 {
-    //qDebug() << "Project: start()";
+    qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
+        qDebug() << "Project: start() after ";
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         QString hexPath;
+        QString asmPath;
         if (file != "")
         {
-            hexPath = file.section('.',0,-2);
+            asmPath = file;
+            if (dumpFiles != "")
+            {
+                hexPath = dumpFiles.section('.',0,-2);
+            }
+            else
+            {
+                hexPath = file.section('.',0,-2);
+            }
         }
         else
         {
             QDir dir(prjPath.section('/',0, -2));
             hexPath = dir.absoluteFilePath(mainFilePath.section('.',0,-2));
+            asmPath = dir.absoluteFilePath(mainFilePath);
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
-        QFileInfo infoAsm(file);
+        QFileInfo infoAsm(asmPath);
         QFileInfo infoHex(hexPath + ".ihex");
         QFileInfo infoDbg(hexPath + ".dbg");
+        qDebug() << "Project: sim file" << asmPath;
+        qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
             qDebug() << "Project: files do not exist";
@@ -2429,6 +2443,7 @@ int Project::start(QString file)
             qDebug() << "Project: files modified";
             return 4;
         }
+        qDebug() << "Orig ASM:" << asmPath;
         qDebug() << "ASM:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
 

@@ -26,6 +26,7 @@ class LicenseWidget : public QDialog
     Q_OBJECT
     public:
         LicenseWidget(QWidget *parent);
+        void tryLoad();
 
     private slots:
         void load();

@@ -24,6 +24,7 @@ LicenseWidget::LicenseWidget(QWidget *parent)
 {
     this->setModal(true);
     ui.setupUi(this);
+    ui.teInfo->setReadOnly(true);
     connect(ui.btnPath, SIGNAL(clicked()), this, SLOT(load()));
     connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
     connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
@@ -33,6 +34,45 @@ LicenseWidget::LicenseWidget(QWidget *parent)
 
 //copy to path after ok
 //QFile::copy("/path/file", "/path/copy-of-file");
+
+
+void LicenseWidget::tryLoad()
+{
+    this->licensePath = GuiCfg::getInstance().getLicensePath();
+    std::ifstream ifs;
+
+    ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
+
+    if (ifs.is_open())
+    {
+        //load info
+        LicenseCertificate crt(ifs);
+        if ( true == crt.m_isValid )
+        {
+            this->license = true;
+            ui.teInfo->clear();
+            //ui.teInfo->insertPlainText("Version:\t");
+
+            //ui.teInfo->insertPlainText(QString::fromStdString(crt.m_version) + "\n");
+            //ui.teInfo->insertPlainText("Date:\t");
+            //ui.teInfo->insertPlainText(QString::number(crt.m_date) + "\n");
+            //ui.teInfo->insertPlainText("UserID:\t");
+            //ui.teInfo->insertPlainText(QString::number(crt.m_userid) + "\n");
+            ui.teInfo->insertPlainText("User:\t");
+            ui.teInfo->insertPlainText(QString::fromStdString(crt.m_name) + "\n");
+            //ui.teInfo->insertPlainText("Expiration:\t");
+            //ui.teInfo->insertPlainText(QString::number(crt.m_expiry) + "\n");
+            //ui.teInfo->insertPlainText("LicenseID:\t");
+            //ui.teInfo->insertPlainText(QString::number(crt.m_licenseid) + "\n");
+            ui.teInfo->insertPlainText("Products:");
+            for (unsigned int i = 0; i < crt.m_products.size(); i++)
+            {
+                ui.teInfo->insertPlainText("\t" + QString::fromStdString(crt.m_products.at(i)) + "\n");
+            }
+        }
+    }
+}
+
 
 void LicenseWidget::load()
 {
@@ -52,25 +92,25 @@ void LicenseWidget::load()
             {
                 this->license = true;
                 ui.teInfo->clear();
-                ui.teInfo->insertPlainText("Version:\t");
+                //ui.teInfo->insertPlainText("Version:\t");
                 
-                ui.teInfo->insertPlainText(QString::fromStdString(crt.m_version) + "\n");
-                ui.teInfo->insertPlainText("Date:\t");
-                ui.teInfo->insertPlainText(QString::number(crt.m_date) + "\n");
-                ui.teInfo->insertPlainText("UserID:\t");
-                ui.teInfo->insertPlainText(QString::number(crt.m_userid) + "\n");
+                //ui.teInfo->insertPlainText(QString::fromStdString(crt.m_version) + "\n");
+                //ui.teInfo->insertPlainText("Date:\t");
+                //ui.teInfo->insertPlainText(QString::number(crt.m_date) + "\n");
+                //ui.teInfo->insertPlainText("UserID:\t");
+                //ui.teInfo->insertPlainText(QString::number(crt.m_userid) + "\n");
                 ui.teInfo->insertPlainText("User:\t");
                 ui.teInfo->insertPlainText(QString::fromStdString(crt.m_name) + "\n");
-                ui.teInfo->insertPlainText("Expiration:\t");
-                ui.teInfo->insertPlainText(QString::number(crt.m_expiry) + "\n");
-                ui.teInfo->insertPlainText("LicenseID:\t");
-                ui.teInfo->insertPlainText(QString::number(crt.m_licenseid) + "\n");
+                //ui.teInfo->insertPlainText("Expiration:\t");
+                //ui.teInfo->insertPlainText(QString::number(crt.m_expiry) + "\n");
+                //ui.teInfo->insertPlainText("LicenseID:\t");
+                //ui.teInfo->insertPlainText(QString::number(crt.m_licenseid) + "\n");
                 ui.teInfo->insertPlainText("Products:");
                 for (unsigned int i = 0; i < crt.m_products.size(); i++)
                 {
-                   ui.teInfo->insertPlainText("\t\t" + QString::fromStdString(crt.m_products.at(i)) + "\n");
+                   ui.teInfo->insertPlainText("\t" + QString::fromStdString(crt.m_products.at(i)) + "\n");
                 }
-                std::cout << "Certificate is valid." << std::endl;
+                /*std::cout << "Certificate is valid." << std::endl;
                 std::cout << std::endl;
                 std::cout << "<certificate>" << std::endl;
                 std::cout << "  ├─ version: " << crt.m_version << std::endl;
@@ -99,7 +139,7 @@ void LicenseWidget::load()
                 std::cout << "       │    ├─ email: " << crt.m_detailsContactEmail << std::endl;
                 std::cout << "       │    ├─ phone: \"" << crt.m_detailsContactPhone << '"' << std::endl;
                 std::cout << "       │    ╰─ address: \"" << crt.m_detailsContactAddress << '"' << std::endl;
-                std::cout << "       ╰─ department: \"" << crt.m_detailsDepartment << '"' << std::endl;
+                std::cout << "       ╰─ department: \"" << crt.m_detailsDepartment << '"' << std::endl;*/
             }
             else
             {
