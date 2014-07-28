@@ -101,13 +101,14 @@ endif()
 
 # Optionally build installation packages independent on system libraries (valid for Linux only).
 if ( NOT MDS_VARIANT )
-    message ( STATUS "MDS_VARIANT not set, options are: \"PROFI\" (default), \"TRIAL\", and \"NONCOMMERCIAL\"." )
-    set ( MDS_VARIANT "PROFI" )
+    message ( STATUS "MDS_VARIANT not set, options are: \"Profi\" (default), \"Trial\", and \"Noncommercial\"." )
+    set ( MDS_VARIANT "Profi" )
 else()
     message ( STATUS "MDS_VARIANT: ${MDS_VARIANT}" )
 endif()
-set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT}" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT}" )
+string ( TOUPPER "${MDS_VARIANT}" MDS_VARIANT_UPPER_CASE )
+set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
 
 # Target architecture.
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
