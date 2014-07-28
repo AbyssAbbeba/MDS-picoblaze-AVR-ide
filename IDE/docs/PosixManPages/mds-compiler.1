@@ -19,110 +19,86 @@ mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multi
 .SH USAGE
 .B mds-compiler
 .I <OPTIONS>
+[ -- ]
 [
 .I source-file ...
 ]
 
 .SH DESCRIPTION
-\fB mds-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors. mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.
+\fB mds-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors. mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors. For more information please consult MDS handbook.
 
 .SH OPTIONS
 .TP
-\fB\-\-help\fR, \fB\-h\fR
-Display short help text
+\fB\-\-arch\fR, \fB\-a\fI <architecture>\fR
+Specify target architecture, supported architectures are:
+- PicoBlaze: (K)constant Coded Programmable State Machine.
 .TP
-\fB\-\-quiet\fR, \-q\fR
-Don't display status of initialization progress on startup
-.TP
-\fB\-\-nosplash\fR
-Don't show splash screen
-.TP
-\fB\-\-nocolor\fR, \-n\fR
-Disable color output
-.TP
-\fB\-\-version\fR, \fB\-V\fR
-Display version information
-.TP
-\fB\-\-defaults\fR
-Start with default settings (low level GUI settings (panel sizes ...))
-.TP
-\fB\-\-minimalized\fR
-Start with minimalized window
-.TP
-\fB\-\-config\-file \fIfilename\fR
-Specify path to file containg user settings
-.TP
-\fB\-\-check\-libraries\fR
-Check if all nessesary Tcl libraries are avaible
-.TP
-\fB\-\-ignore\-last\-session\fR
-Start with an empty session (no project will be opened at startup)
-.TP
-\fB\-\-open\-project \fIproject\fR
-Open only this project
-.TP
-\fB\-\-reset\-user\-settings\fR
-Reset all user settings to defaults
-.TP
-\fB\-\-hex2bin \fIinput output\fR
-Convert Intel Hex 8 file to binary file
-.TP
-\fB\-\-bin2hex \fIinput output\fR
-Convert binary file to Intel Hex 8 file
-.TP
-\fB\-\-sim2hex \fIinput output\fR
-Convert MCU 8051 IDE v0.9.1 simulator file to Intel Hex 8 file
-.TP
-\fB\-\-sim2bin \fIinput output\fR
-Convert MCU 8051 IDE v0.9.1 simulator file to binary file
-.TP
-\fB\-\-normalize\-hex \fIinput\fR
-Normalize IHEX8 file
-.TP
-\fB\-\-auto\-indent \fIinput\fR
-Reformat indention in source code
-.TP
-\fB\-\-disassemble \fIinput\fR
-Disaseble IHEX8 code and store result in input.asm
-.TP
-\fB\-\-assemble \fIasm_file\fR
-Assemble the asm_file and exit program
-.TP
-\fB\-\-compile \fIasm_file\fR
-The same as \-\-assemble
-.TP
-\fB\-\-iram\-size \fIsize\fR
-Set size of internal data memory (eg. 1K or 1024) (default: 0x100)
-.TP
-\fB\-\-code\-size \fIsize\fR
-Set size of program memory (eg. 1K or 1024) (default: 0x10000)
-.TP
-\fB\-\-xram\-size \fIsize\fR
-Set size of external data memory (eg. 1K or 1024) (default: 0x10000)
-.TP
-\fB\-\-no\-opt\fR
-Disable compiler optimalizations
-.TP
-\fB\-\-comp\-quiet\fR
-Suppress compiler console output
-.TP
-\fB\-\-no\-sim\fR
-Do not generate SIM file (for MCU 8051 IDE simulator)
-.TP
-\fB\-\-no\-bin\fR
-Do not generate binary object code
-.TP
-\fB\-\-no\-lst\fR
-Do not generate code listing
-.TP
-\fB\-\-no\-hex\fR
-.TP
-\fB\-\-warning\-level \fIN\fR
-Do not generate IHEX8 object code; 3 - Nothing; 2 - Errros only; 1 - Errors + Warnings; 0 - All (Default)
+\fB\-\-plang\fR, \fB\-p\fI <programming-language>\fR
+Specify programming language, supported languages are:
+- asm: assembly language.
+
+    -x, --hex <Intel HEX file>
+        Specify output file with machine code generated as a result of compilation,
+        data will be stored in Intel 8 Hex format.
+    -d, --dbg <MDS native debug file>
+        Specify output file with code for MCU simulator and other debugging tools.
+    --srec <Motorola S-REC file>
+        Specify output file with machine code generated as a result of compilation,
+        data will be stored in Motorola S-record format.
+    --binary <binary file>
+        Specify output file with machine code generated as a result of compilation,
+        data will be stored in raw binary format.
+    -l, --lst <code listing>
+        Specify output file where code listing generated during compilation will be stored.
+    -m, --mtable <table of macros>
+        Specify file in which the compiler will put table of macros defined in your code.
+    -s, --stable <table of symbols>
+        Specify file in which the compiler will put table of symbols defined in your code.
+    -h, --help
+        (Print this message.)
+    -V, --version
+        Print compiler version and exit.
+    -c, --check
+        Do not perform the actual compilation, do only lexical and syntax analysis of the
+        the provided source code and exit.
+    --no-backup
+        Don't generate backup files.
+    --brief-msg
+        Print only unique messages.
+    --no-strict
+        Disable certain error and warning messages.
+    --no-warnings
+        Do not print any warnings.
+    --no-errors
+        Do not print any errors.
+    --no-remarks
+        Do not print any remarks.
+    --silent
+        Do not print any warnings, errors, or any other messages, stay completely silent.
+    -I, --include <directory>
+        Add directory where the compiler will search for include files.
+    -D, --dev <device>
+        Specify exact target device.
+    -P, --precompile <.prc file>
+        Specify target file for generation of precompiled code.
+    --vhdl <.vhd file>
+        Specify target file for generation of VHDL code.
+    --vhdl-tmpl <.vhd file>
+        Specify VHDL template file.
+    --verilog <.v file>
+        Specify target file for generation of verilog code.
+    --verilog-tmpl <.v file>
+        Specify target file for generation of verilog code.
+    --verilog-tmpl <.v file>
+        Specify verilog template file.
+    --mem <.mem file>
+        Specify target file for generation of MEM file.
+    --raw-hex-dump <.hex file>
+        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
 
 .SH FILES
 .TP
-.I /usr/share/mcu8051ide/data/tips.conf
+.I /usr/local/share/mds/
 XML file containing tips. (Dialog "Tip of the day")
 .TP
 .I /usr/share/mcu8051ide/data/mcus.conf
@@ -137,14 +113,19 @@ Base configuration file. It contains only three configuration keys separated by 
 .I ~/.mcu8051ide/config.conf
 Main configuration file (INI like). Readable and I hope user friendly.
 
-.SH NOTES
-List of supported porcessors is very short yet. Please post suggestions to martin.osmera@gmail.com .
 .SH SUPPORTED PROCESSORS
-8051, 80C51, 8052, AT89C2051, AT89C4051, AT89C51, AT89C51RC, AT89C52, AT89C55WD, AT89LV51, AT89LV52, AT89LV55, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, T87C5101, T83C5101, T83C5102, TS80C32X2, TS80C52X2, TS87C52X2, AT80C32X2, AT80C52X2, AT87C52X2, AT80C54X2, AT80C58X2, AT87C54X2, AT87C58X2, TS80C54X2, TS80C58X2, TS87C54X2, TS87C58X2, TS80C31X2, AT80C31X2
-
-.SH TO DO
-Add support for more MCS\-51 based microcontrollers.
-Fix all bugs.
+.TP
+KCPSM1-CPLD
+.TP
+KCPSM1
+.TP
+KCPSM2
+.TP
+KCPSM3
+.TP
+KCPSM6
 
 .SH AUTHOR
-Martin Osmera <martin.osmera@gmail.com>
+Moravia Microsystems, s.r.o.
+trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+http://www.moravia-microsystems.com

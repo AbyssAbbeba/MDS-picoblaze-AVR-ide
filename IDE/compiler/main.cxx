@@ -77,14 +77,14 @@ void printHelp ( const char * executable )
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
               << QObject::tr("        Specify target architecture, supported architectures are:")
                             .toStdString() << std::endl
-              << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
-              << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
-              << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+//               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
+//               << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
+//               << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
               << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
                             .toStdString() << std::endl
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
               << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
-              << QObject::tr("            - c   : C language,").toStdString() << std::endl
+//               << QObject::tr("            - c   : C language,").toStdString() << std::endl
               << QObject::tr("            - asm : assembly language.").toStdString() << std::endl
               << QObject::tr("    -x, --hex <Intel HEX file>").toStdString() << std::endl
               << QObject::tr("        Specify output file with machine code generated as a result of compilation,")
@@ -154,10 +154,10 @@ void printHelp ( const char * executable )
               << QObject::tr("    --raw-hex-dump <.hex file>").toStdString() << std::endl
               << QObject::tr("        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal "
                              "numbers separated by CRLF sequence).").toStdString() << std::endl
-              << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
-              << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
-                             "used by the compiler itself, it's intended for the user (valid for C language "
-                             "only).").toStdString() << std::endl
+//               << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
+//               << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
+//                              "used by the compiler itself, it's intended for the user (valid for C language "
+//                              "only).").toStdString() << std::endl
               << std::endl;
 
     std::cout << QObject::tr("Notes:").toStdString() << std::endl
