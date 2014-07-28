@@ -110,9 +110,9 @@ if ( TARGET_OS STREQUAL "Linux" )
     ## GNU/Linux and possibly other POSIX systems
     #
 
-    set ( CPACK_GENERATOR "DEB" "RPM" )
+    set ( CPACK_GENERATOR "DEB" "RPM" "STGZ" )
 
-    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr" )
+    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr/local" )
 
     if ( INDEPENDENT_PACKAGES )
         set ( LIB_DIR_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
@@ -178,10 +178,11 @@ endif()
 ## General options.
 #
 
+set ( CPACK_SET_DESTDIR ON )
 set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}-${MDS_VARIANT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
-set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME_SHORT}" )
-set ( MY_CPACK_PACKAGE_DETAILED_DESC "${PRODUCT_NAME} (${PRODUCT_NAME_SHORT}) by ${COMPANY_NAME}" )
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} by ${COMPANY_NAME}" )
+set ( MY_CPACK_PACKAGE_DETAILED_DESC "Window-based software development platform combining robust and modern tools needed to develop embedded applications." )
 set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
 string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
 
@@ -189,8 +190,6 @@ string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME}
 ## Resources.
 #
 
-set ( CPACK_RESOURCE_FILE_README     "${CMAKE_CURRENT_SOURCE_DIR}/pkgreadme-${MDS_VARIANT}.txt" )
-set ( CPACK_RESOURCE_FILE_WELCOME    "${CMAKE_CURRENT_SOURCE_DIR}/pkgwelcome-${MDS_VARIANT}.txt" )
 set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
 
@@ -227,7 +226,8 @@ endif()
 set ( CPACK_RPM_PACKAGE_SUGGESTS "" )
 set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
-set ( CPACK_RPM_PACKAGE_LICENSE "<package license>" )
+set ( CPACK_RPM_PACKAGE_LICENSE "Moravia Microsystems license" )
+set ( CPACK_RPM_PACKAGE_RELOCATABLE OFF )
 
 
 #

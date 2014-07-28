@@ -1,10 +1,10 @@
 # ======================================================================================================================
 #
 #    M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
-#    MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O   O R  R O  O S      Y Y  S       T   E     MM MM S
-#    M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O   O RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
-#    M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O   O RR   O  O    SS   Y      SS   T   E     M   M    SS
-#    M   M O  O R R  A   A  V V   I  A   A    M   M  I  O   O R R  O  O      S  Y        S  T   E     M   M      S
+#    MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O     R  R O  O S      Y Y  S       T   E     MM MM S
+#    M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O     RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+#    M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O     RR   O  O    SS   Y      SS   T   E     M   M    SS
+#    M   M O  O R R  A   A  V V   I  A   A    M   M  I  O     R R  O  O      S  Y        S  T   E     M   M      S
 #    M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
 #
 # ======================================================================================================================
@@ -101,13 +101,14 @@ endif()
 
 # Optionally build installation packages independent on system libraries (valid for Linux only).
 if ( NOT MDS_VARIANT )
-    message ( STATUS "MDS_VARIANT not set, options are: \"PROFI\" (default), \"TRIAL\", and \"NONCOMMERCIAL\"." )
-    set ( MDS_VARIANT "PROFI" )
+    message ( STATUS "MDS_VARIANT not set, options are: \"Profi\" (default), \"Trial\", and \"Noncommercial\"." )
+    set ( MDS_VARIANT "Profi" )
 else()
     message ( STATUS "MDS_VARIANT: ${MDS_VARIANT}" )
 endif()
-set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT}" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT}" )
+string ( TOUPPER "${MDS_VARIANT}" MDS_VARIANT_UPPER_CASE )
+set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
 
 # Target architecture.
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )

@@ -1290,6 +1290,16 @@ void WDockManager::welcomeScrRecent(QString path)
 }
 
 
+void WDockManager::deleteCentralWelcome()
+{
+
+    if (this->welcomeScr != NULL)
+    {
+        delete this->welcomeScr;
+        this->welcomeScr = NULL;
+    }
+}
+
 
 
 

@@ -157,31 +157,31 @@ MainForm::MainForm()
             this,
             SLOT(exampleOpen())
            );
-    /*connect(wDockManager,
+    connect(wDockManager,
             SIGNAL(welcomeScrOpenPrjSig()),
             this,
-            SLOT(exampleOpen())
-           );*/
-    /*connect(wDockManager,
+            SLOT(openProject())
+           );
+    connect(wDockManager,
             SIGNAL(welcomeScrNewPrjSig()),
             this,
-            SLOT()
+            SLOT(newProject())
            );
     connect(wDockManager,
             SIGNAL(welcomeScrManualSig()),
             this,
-            SLOT()
+            SLOT(help())
            );
-    connect(wDockManager,
+    /*connect(wDockManager,
             SIGNAL(welcomeScrGuideSig()),
             this,
             SLOT()
-           );
-    connect(wDockManager,
-            SIGNAL(welcomeScrRecentSig(QString path)),
-            this,
-            SLOT()
            );*/
+    connect(wDockManager,
+            SIGNAL(welcomeScrRecentSig(QString)),
+            this,
+            SLOT(openProject(QString))
+           );
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -1132,6 +1132,7 @@ bool MainForm::openProject(QString path)
 void MainForm::projectOpened()
 {
     qDebug() << "MainForm: projectOpened";
+    wDockManager->deleteCentralWelcome();
     if (false == projectConfigAct->isEnabled())
     {
         projectConfigAct->setEnabled(true);
@@ -1165,6 +1166,11 @@ void MainForm::projectOpened()
         {
             wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
         }*/
+    }
+
+    if (projectMan->getActive()->prjPath != "untracked")
+    {
+        GuiCfg::getInstance().recentAppend(projectMan->getActive()->prjName, projectMan->getActive()->prjPath);
     }
     qDebug() << "MainForm: projectOpened done";
 }
@@ -2638,6 +2644,10 @@ void MainForm::closeProject()
             {
                 wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
             }*/
+        }
+        if (projectMan->getOpenProjects().count() == 0)
+        {
+            wDockManager->setCentralWelcome();
         }
     }
 }
