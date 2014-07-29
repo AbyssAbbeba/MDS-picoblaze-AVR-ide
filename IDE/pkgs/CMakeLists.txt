@@ -110,24 +110,23 @@ if ( TARGET_OS STREQUAL "Linux" )
     ## GNU/Linux and possibly other POSIX systems
     #
 
+    set ( CPACK_SET_DESTDIR ON )
     set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
-
-    set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr/local" )
+    set ( CPACK_PACKAGING_INSTALL_PREFIX "${INSTALL_DIR_PREFIX}" )
 
     if ( INDEPENDENT_PACKAGES )
-        set ( LIB_DIR_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
         file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
         file ( GLOB COMPILER_DIR2 "/usr/lib/gcc/x86_64*linux*/4.8*/" )
-        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${LIB_DIR_3RD_PARTY}" "${COMPILER_DIR};${COMPILER_DIR2}" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB_3RD_PARTY}" "${COMPILER_DIR};${COMPILER_DIR2}" )
     endif()
 
     set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE PARENT_SCOPE )
-    set ( CMAKE_INSTALL_RPATH "${LIB_DIR_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
+    set ( CMAKE_INSTALL_RPATH "${INSTALL_DIR_LIB_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
 
     # Install .desktop spec and application icon
-    install ( FILES mds-ide.png                   DESTINATION "/usr/share/pixmaps/" )
-    install ( FILES mds-ide.desktop               DESTINATION "/usr/share/applications/" )
-    install ( FILES application-x-mds-project.xml DESTINATION "/usr/share/mime/packages/" )
+    install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_MAIN_SHARE}/pixmaps/" )
+    install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_MAIN_SHARE}/applications/" )
+    install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_MAIN_SHARE}/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
     #
@@ -156,6 +155,17 @@ endif()
 # ------------------------------------------------------------------------------
 
 #
+## General options.
+#
+
+set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
+set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
+set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} ${MDS_GRADE} for ${MDS_TARGET} in ${MDS_VARIANT} version" )
+set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform that combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced tested and reliable tools to your development arsenal. Our focus is efficiency and precision." )
+set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
+
+#
 ## Package version.
 #
 
@@ -175,28 +185,21 @@ else()
 endif()
 
 #
-## Resources.
+## Package file name.
 #
 
-set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
-
-#
-## General options.
-#
-
-set ( CPACK_SET_DESTDIR ON )
-set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}-${MDS_VARIANT}" )
-set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
-set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} by ${COMPANY_NAME}" )
-
-# CPACK_PACKAGE_FILE_NAME
-set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
-string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
-
-file ( READ ${CPACK_PACKAGE_DESCRIPTION_FILE} MY_CPACK_PACKAGE_DETAILED_DESC )
-string ( REGEX REPLACE "(\r?\n)+$" "" MY_CPACK_PACKAGE_DETAILED_DESC ${MY_CPACK_PACKAGE_DETAILED_DESC} )
-string ( REGEX REPLACE "\r?\n(\r?\n)*" "\n " MY_CPACK_PACKAGE_DETAILED_DESC ${MY_CPACK_PACKAGE_DETAILED_DESC} )
+set ( MDS_TARGET_PKG "-${MDS_TARGET}" )
+if ( MDS_VARIANT STREQUAL "Commercial" )
+    set ( MDS_VARIANT_PKG "" )
+else()
+    set ( MDS_VARIANT_PKG "-${MDS_VARIANT}" )
+endif()
+if ( MDS_GRADE STREQUAL "Professional" )
+    set ( MDS_GRADE_PKG "-Profi" )
+else()
+    set ( MDS_GRADE_PKG "-${MDS_GRADE}" )
+endif()
+set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}${MDS_GRADE_PKG}${MDS_TARGET_PKG}${MDS_VARIANT_PKG}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
 
 #
 ## Options for the "DEB" generator.
@@ -216,7 +219,7 @@ set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
 set ( CPACK_PACKAGE_CONTACT "${COMPANY_NAME}; ${COMPANY_ADDRESS}" )
 set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.moravia-microsystems.com" )
 set ( CPACK_DEBIAN_PACKAGE_SECTION "Development" )
-set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "${MY_CPACK_PACKAGE_DETAILED_DESC}" )
+set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "${PACKAGE_DETAILED_DESCRIPTION}" )
 
 #
 ## Options for the "RPM" generator.
@@ -232,7 +235,7 @@ set ( CPACK_RPM_PACKAGE_SUGGESTS "" )
 set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
 set ( CPACK_RPM_PACKAGE_LICENSE "Moravia Microsystems license" )
-set ( CPACK_RPM_PACKAGE_DESCRIPTION "${MY_CPACK_PACKAGE_DETAILED_DESC}" )
+set ( CPACK_RPM_PACKAGE_DESCRIPTION "${PACKAGE_DETAILED_DESCRIPTION}" )
 
 
 #
@@ -298,7 +301,7 @@ set ( CPACK_NSIS_CREATE_ICONS_EXTRA "
 slash_to_quadruple_backslach ( CPACK_NSIS_CREATE_ICONS_EXTRA )
  # Specify links in [application] menu.
 set ( CPACK_NSIS_MENU_LINKS
-      "${INSTALL_DIR_DOC}/${MANUAL_PDF}" "${PRODUCT_NAME} user documentation"
+      "${INSTALL_DIR_DOC}/${MDS_MANUAL_PDF}" "${PRODUCT_NAME} user documentation"
       "http:||www.moravia-microsystems.com" "Moravia Microsystems Web Site" )
 slash_to_quadruple_backslach ( CPACK_NSIS_MENU_LINKS )
  # Extra NSIS commands that will be added to the beginning of the install Section

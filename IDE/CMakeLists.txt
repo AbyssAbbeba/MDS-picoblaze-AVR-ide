@@ -28,20 +28,6 @@ cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
 # Create verbose makefiles if on.
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
 
-set ( INSTALL_DIR_BIN "bin" )
-set ( INSTALL_DIR_LIB "lib/mds" )
-set ( INSTALL_DIR_SHARE "share/mds" )
-set ( INSTALL_DIR_DOC "doc/mds" )
-set ( INSTALL_DIR_INCLUDE "include/mds" )
-set ( INSTALL_DIR_DEMOPROJECT "share/mds/demoproject" )
-
-set ( PRODUCT_VERSION    "1.0" )
-set ( COPYRIGHT_YEARS    "2013, 2014" )
-set ( PRODUCT_NAME       "Multitarget Development System" )
-set ( PRODUCT_NAME_SHORT "MultiDevSys" )
-set ( COMPANY_NAME       "Moravia Microsystems, s.r.o." )
-set ( COMPANY_ADDRESS    "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
-
 ## Set global compilation flags:
  # - for all build types:
 set ( CMAKE_C_FLAGS            "-Wall -Wextra -Wno-unused-local-typedefs -pipe" )
@@ -57,6 +43,36 @@ set ( CMAKE_CXX_FLAGS              "${CMAKE_C_FLAGS} -std=c++0x" )
 set ( CMAKE_CXX_FLAGS_DEBUG        "${CMAKE_C_FLAGS_DEBUG}" )
 set ( CMAKE_CXX_FLAGS_RELEASE      "${CMAKE_C_FLAGS_RELEASE}" )
 set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
+
+# ----------------------------------------------------------------------------------------------------------------------
+# GLOBAL NON-SPECIAL CONSTANTS
+# ----------------------------------------------------------------------------------------------------------------------
+
+# General product and company information.
+set ( PRODUCT_VERSION    "1.0" )
+set ( COPYRIGHT_YEARS    "2013, 2014" )
+set ( PRODUCT_NAME_SHORT "MDS" )
+set ( PRODUCT_NAME       "Multitarget Development System" )
+set ( COMPANY_NAME       "Moravia Microsystems, s.r.o." )
+set ( COMPANY_ADDRESS    "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
+
+# Installation directories.
+set ( INSTALL_DIR_BIN         "bin" )
+set ( INSTALL_DIR_LIB         "lib/mds" )
+set ( INSTALL_DIR_DOC         "doc/mds" )
+set ( INSTALL_DIR_SHARE       "share/mds" )
+set ( INSTALL_DIR_INCLUDE     "include/mds" )
+set ( INSTALL_DIR_DEMOPROJECT "share/mds/demoproject" )
+
+# Installation directories specific for Linux.
+set ( INSTALL_DIR_PREFIX        "/usr/local" )
+set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )
+set ( INSTALL_DIR_MAN           "${INSTALL_DIR_MAIN_SHARE}/man/man1" )
+set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
+
+# Others ...
+set ( MDS_MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Name of MDS manual as PDF file without full path." )
+mark_as_advanced ( MDS_MANUAL_PDF )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # USER OPTIONS
@@ -87,7 +103,7 @@ if ( NOT CMAKE_BUILD_TYPE )
         "Choose the type of build, options are: Debug, Release, and MinSizeRel."
         FORCE )
 endif()
-message ( STATUS "Configuring environment for build in mode: ${CMAKE_BUILD_TYPE}." )
+message ( STATUS "Build mode: ${CMAKE_BUILD_TYPE}." )
 
 # Optionally build with support for coverage analysis support.
 option ( TEST_COVERAGE "Configure build for coverage analysis." OFF )
@@ -99,16 +115,48 @@ if ( TEST_COVERAGE )
     message ( STATUS "This build is configured for coverage analysis!" )
 endif()
 
-# Optionally build installation packages independent on system libraries (valid for Linux only).
+# Select package build variant, grade, and target development architecture.
 if ( NOT MDS_VARIANT )
-    message ( STATUS "MDS_VARIANT not set, options are: \"Profi\" (default), \"Trial\", and \"Noncommercial\"." )
-    set ( MDS_VARIANT "Profi" )
+    message ( STATUS "MDS_VARIANT not set, options are: \"Commercial\" (default), \"Noncommercial\", and \"Trial\"." )
+    set ( MDS_VARIANT "Commercial" )
+elseif ( ( NOT MDS_VARIANT STREQUAL "Commercial" ) AND
+         ( NOT MDS_VARIANT STREQUAL "Noncommercial" ) AND
+         ( NOT MDS_VARIANT STREQUAL "Trial" ) )
+    message ( SEND_ERROR "MDS_VARIANT has to be set one of {Commercial, Noncommercial, Trial}, \"${MDS_VARIANT}\" is not a valid value." )
 else()
-    message ( STATUS "MDS_VARIANT: ${MDS_VARIANT}" )
+    message ( STATUS "MDS variant: ${MDS_VARIANT}" )
 endif()
+
+if ( NOT MDS_GRADE )
+    message ( STATUS "MDS_GRADE not set, options are: \"Basic\", \"Premium\", \"Professional\" (default), and \"Ultimate\"." )
+    set ( MDS_GRADE "Commercial" )
+elseif ( ( NOT MDS_GRADE STREQUAL "Basic" ) AND
+         ( NOT MDS_GRADE STREQUAL "Premium" ) AND
+         ( NOT MDS_GRADE STREQUAL "Professional" ) AND
+         ( NOT MDS_GRADE STREQUAL "Ultimate" ) )
+    message ( SEND_ERROR "MDS_GRADE has to be set one of {Basic, Premium, Professional, Ultimate}, \"${MDS_GRADE}\" is not a valid value." )
+else()
+    message ( STATUS "MDS grade: ${MDS_GRADE}" )
+endif()
+
+if ( NOT MDS_TARGET )
+    message ( STATUS "MDS_TARGET not set, options are: \"PicoBlaze\" (default), \"AVR8\", and \"All\"." )
+    set ( MDS_TARGET "Commercial" )
+elseif ( ( NOT MDS_TARGET STREQUAL "PicoBlaze" ) AND
+         ( NOT MDS_TARGET STREQUAL "AVR8" ) AND
+         ( NOT MDS_TARGET STREQUAL "All" ) )
+    message ( SEND_ERROR "MDS_TARGET has to be set one of {PicoBlaze, AVR8, All}, \"${MDS_TARGET}\" is not a valid value." )
+else()
+    message ( STATUS "MDS target: ${MDS_TARGET}" )
+endif()
+
 string ( TOUPPER "${MDS_VARIANT}" MDS_VARIANT_UPPER_CASE )
-set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE}" )
+string ( TOUPPER "${MDS_GRADE}" MDS_GRADE_UPPER_CASE )
+string ( TOUPPER "${MDS_TARGET}" MDS_TARGET_UPPER_CASE )
+
+set ( MDS_BUILD_CFG_DEFS "-DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE} -DMDS_GRADE_${MDS_GRADE_UPPER_CASE} -DMDS_TARGET_${MDS_TARGET_UPPER_CASE}" )
+set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${MDS_BUILD_CFG_DEFS}" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MDS_BUILD_CFG_DEFS}" )
 
 # Target architecture.
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
@@ -118,6 +166,8 @@ endif()
 if ( NOT TARGET_ARCH )
     message ( STATUS "Target architecture not specified, using native: ${HOST_ARCH}." )
     set ( TARGET_ARCH "${HOST_ARCH}")
+else()
+    message ( STATUS "Target architecture for this build explicitly set to: ${TARGET_ARCH}." )
 endif()
 if ( TARGET_ARCH STREQUAL "x86_64" )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -m64 -march=x86-64 -mfpmath=sse" )
@@ -128,13 +178,14 @@ elseif ( TARGET_ARCH STREQUAL "x86" )
 else()
     message ( FATAL_ERROR "Target architecture \"${TARGET_ARCH}\" not recognized!" )
 endif()
-message ( STATUS "Target architecture for this build: ${TARGET_ARCH}." )
 
 # Target operating system.
 set ( HOST_OS "${CMAKE_HOST_SYSTEM_NAME}" )
 if ( NOT TARGET_OS )
     message ( STATUS "Target operating system not specified, using native: ${HOST_OS}." )
     set ( TARGET_OS "${HOST_OS}" )
+else()
+    message ( STATUS "Target operating system for this build explicitly set to: ${TARGET_OS}." )
 endif()
 if ( TARGET_OS STREQUAL "Linux" )
     # Pick up one dynamic linker (program interpreter) for all 32b/64b Linux distributions.
@@ -160,7 +211,6 @@ elseif ( TARGET_OS STREQUAL "Darwin" )
 else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
 endif()
-message ( STATUS "Target operating system for this build: ${TARGET_OS}." )
 
 # When in Debug build mode, build all libraries as shared by default.
 if ( CMAKE_BUILD_TYPE STREQUAL "Debug" )
@@ -183,8 +233,6 @@ endif()
 # CROSS COMPILATION
 # ----------------------------------------------------------------------------------------------------------------------
 
-message ( STATUS "Host architecture: ${HOST_ARCH}." )
-message ( STATUS "Host operating system: ${HOST_OS}." )
 if ( ( NOT TARGET_OS STREQUAL HOST_OS ) OR ( NOT TARGET_ARCH STREQUAL HOST_ARCH ) )
     include ( "${CMAKE_SOURCE_DIR}/cross-compilation.cmake" )
 endif()
