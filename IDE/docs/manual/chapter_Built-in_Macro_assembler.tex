@@ -2,7 +2,7 @@ In this chapter, we will be concerned with build-in macro assembler. With syntax
 
 MDS has the most advanced macro assembler on the market. Its suports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
 
-Then each list element is beeing parsed and splitted into an address reference, a command and an argument list. After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.
+Each list element is being parsed and splitted into an address reference, a command and an argument list. After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.
 
 \paragraph{Important changes}
     You need to tell compiler, that you are using constants by adding \# before second operand.
@@ -11,7 +11,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
         ~\\
         \usecodefont
         \verb'; Example of instructions operating with constants'\\
-        \verb'LOAD    s0, #0b000111   ; compiler now know, that this number is constant'\\
+        \verb'LOAD    s0, #0b000111   ; compiler now know, that this number is a constant'\\
         \verb'LOAD    s0,  0b000111   ; and this compiler takes as an adrress'\\
     }
 
@@ -40,7 +40,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
         \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
     }
 
-    As you can see in Code \ref{code:esd} example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
+    As you can see in code example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
 
 \section{Constants}
     MDS supports both prefix and sufix definition.
@@ -74,8 +74,8 @@ Then each list element is beeing parsed and splitted into an address reference, 
     \begin{itemize}
         \item \texttt{2+1}
         \item \texttt{(2 + 4) - ABC}
-        \item \texttt{A \&\& B)}
-        \item \texttt{X XOR 0FF00H}
+        \item \texttt{A \&\& B}
+        \item \texttt{X XOR 0FF00h}
         \item \texttt{X * Y + X \% Y}
     \end{itemize}
 
@@ -298,8 +298,8 @@ Then each list element is beeing parsed and splitted into an address reference, 
             \verb'First_symb        REG     s1'\\
             \verb'Second_symb       REG     s2'\\
             \verb'Third_symb        REG     s3'\\
-            \verb'Fourth_symb       REG     s4'\\
-            \verb'Fifth_symb        REG     s5'\\
+            \verb'Fourth_symb       REG     0x4'\\
+            \verb'Fifth_symb        REG     0x5'\\
             }
             
         \subsection{NAMEREG}
@@ -415,7 +415,7 @@ Then each list element is beeing parsed and splitted into an address reference, 
         {
             ~\\
             \usecodefont        
-            \verb'<symbol>      AUTOREG         [<cnt address>]'
+            \verb'<symbol>      AUTOSPR        [<cnt address>]'
         }
            
     \subsubsection{Description:}
@@ -787,11 +787,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{INC}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'INC       <register>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'ADD       sX, \#1'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'ADD       sX, #1'
+        }
         \subsubsection{Description:}
     This instruction increments given register value by one.
         \subsubsection{Examples:}
@@ -803,11 +809,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{DEC}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'DEC       <register>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'SUB       sX, \#1'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'SUB       sX, #1'
+        }
         \subsubsection{Description:}
     This instruction decrements given register value by one.
         \subsubsection{Examples:}
@@ -819,11 +831,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{SETR}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'SET       <register>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'OR       sX, \#0xFF'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'OR       sX, #0xFF'
+        }
         \subsubsection{Description:}
             This instruction sets given register.
 
@@ -836,11 +854,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{CLRR}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'CLRR       <register>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'AND       sX, \#0x00'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'AND       sX, #0x00'
+        }
         \subsubsection{Description:}
             This instruction clears given register.
 
@@ -853,11 +877,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{CPL}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'CPL       <register>'
-
+        }
         \subsubsection{Equal to:}
+        {
+            ~\\
+            \usecodefont
             \verb'XOR       sX, #0xFF'
-
+        }
         \subsubsection{Description:}
             This instruction execute 1\'s complement with given register.
 
@@ -870,14 +900,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{CPL2}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'CPL2       <register>'
-
+        }
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
-            \verb'XOR              s0,\#0xFF'\\
-            \verb'ADD              s0,\#1'\\
+            \verb'XOR              s0,#0xFF'\\
+            \verb'ADD              s0,#1'\\
         }
         \subsubsection{Description:}
             This instruction executes 1\'s complement with given register.
@@ -891,11 +924,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{SETB}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'SETB       <register>,<bit>           ; bit <0:7>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'OR       sX, \#1 << bit'
-
+         {
+            ~\\
+            \usecodefont       
+            \verb'OR       sX, #1 << bit'
+        }
         \subsubsection{Description:}
             Sets bit in given register.
 
@@ -908,11 +947,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{CLRB}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'CLRB       <register>,<bit>           ; bit <0:7>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'AND       sX,\#(0xFF \^ (1 << bit))'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'AND       sX,#(0xFF ^ (1 << bit))'
+        }
         \subsubsection{Description:}
             Clears bit in given register.
 
@@ -925,11 +970,17 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{NOTB}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont
             \verb'NOTB       <register>,<bit>           ; bit <0:7>'
-
+        }
         \subsubsection{Equal to:}
-            \verb'XOR       sX,\#(\~(1 << bit))'
-
+        {
+            ~\\
+            \usecodefont
+            \verb'XOR       sX,#(~(1 << bit))'
+        }
         \subsubsection{Description:}
             Negates bit in given register.
 
@@ -942,13 +993,16 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
     \subsection{DJNZ}
         \subsubsection{Syntax:}
+        {
+            ~\\
+            \usecodefont        
             \verb'DJNZ       <register>,<label>'
-
+        }
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
-            \verb'SUB               s0,\#1'\\
+            \verb'SUB               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
         }
         \subsubsection{Description:}
@@ -970,7 +1024,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         {
             ~\\
             \usecodefont
-            \verb'ADD               s0,\#1'\\
+            \verb'ADD               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
         }
         \subsubsection{Description:}
@@ -1025,6 +1079,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
         Number without \# is considered as register adress. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
         symbol with register adress. So 5 would have been replaced with value stored in register with adress 5.
+        
         \subsubsection{Examples:}
         {
             ~\\
@@ -1047,10 +1102,11 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'<code>'\\
             \verb'ENDW'
         }\\
+        
         \textbf{Description:}\\
         You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
         evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
-        Number without \# is considered as register adrress. See example for conditions syntax.
+        Number without \# is considered as register adrress. See example for conditions syntax.\\
         \textbf{Examples:}\\
         {
             ~\\
@@ -1083,6 +1139,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'      <code>'\\
             \verb'ENDW'
         }\\
+        
             \textbf{Description:}\\
             You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
             evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
@@ -1188,20 +1245,20 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             {\color{highlight_directive}\verb'endm'}\\
             \verb''\\
             {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's2'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb'c'}\verb'            '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
-            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}{\color{highlight_symbol}\verb','}{\color{highlight_unknown_base}\verb'0'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
+            {\color{highlight_macro}\verb'xyz'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}\verb'        '{\color{highlight_comment}\verb'; Expand macro ``xyz'\verb"'"\verb''\verb"'"\verb' here'}\\
             \verb''\\
             {\color{highlight_comment}\verb'; This is the same as if you wrote this:'\\
             }\verb'        '{\color{highlight_comment}\verb'; xyz   a, c'\\
             }\verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb'a'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
             \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb'c'}\\
-            \verb'        '{\color{highlight_comment}\verb'; xyz   s0, s1,0'}\\
+            \verb'        '{\color{highlight_comment}\verb'; xyz   s0, s1'}\\
             \verb'        '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#10h'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_symbol}\verb','}{\color{highlight_unknown_base}\verb'0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'cpl'}\verb'     '{\color{highlight_sfr}\verb's1'}\\
             \caption{An exaple of named macro with two parameters}
         \end{code}
         \begin{code}[h!]
             \mysmallfont{}{\color{highlight_macro}\verb'ijk'}\verb'     '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's0'}\\
             \verb''\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_constant}\verb'foo'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'                '{\color{highlight_instruction}\verb'nop'}\\
@@ -1215,13 +1272,13 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb''\\
             {\color{highlight_comment}\verb'; This is the same as if you wrote this:'}\\
             \verb'        '{\color{highlight_comment}\verb'; ijk   5'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's0'}\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'5'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'        '{\color{highlight_instruction}\verb'nop'}\\
             \verb'        '{\color{highlight_directive}\verb'endif'}\\
             \verb'        '{\color{highlight_instruction}\verb'subb'}\verb'    '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_unknown}\verb'#5'}\\
             \verb'        '{\color{highlight_comment}\verb'; ijk   4'}\\
-            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb'@s0'}\\
+            \verb'        '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_indirect}\verb's0'}\\
             \verb'        '{\color{highlight_directive}\verb'if'}\verb' '{\color{highlight_unknown_base}\verb'4'}\verb' '{\color{highlight_symbol}\verb'='}\verb' '{\color{highlight_dec}\verb'4d'}\\
             \verb'        '{\color{highlight_instruction}\verb'nop'}\\
             \verb'        '{\color{highlight_directive}\verb'endif'}\\
@@ -1298,38 +1355,38 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[Some of the source code files were aparently changed during compilation]\hfill \\
                     Do not change source files during the compilation. Wait for compilation to be finished.
                     \item[User defined memory limit for program memory exceeded]\hfill \\
-                    You have exceeded maximum program memory defined with directive LIMIT.
+                    You have exceeded maximum program memory defined with directive LIMIT or project configuration.
                     \item[User defined memory limit for register file exceeded]\hfill \\
-                    You have exceeded maximum number of working registers defined with directive LIMIT.
+                    You have exceeded maximum number of working registers defined with directive LIMITor project configuration.
                     \item[User defined memory limit for Scratch Pad RAM exceeded]\hfill \\
-                    You have exceeded maximum scratch pad RAM defined with directive LIMIT.
+                    You have exceeded maximum scratch pad RAM defined with directive LIMIT or project configuration.
                     \item[Instruction X requires operand \#Y to be of type(s) Z; while the given operand is of type: W] \hfill \\   %lllll
                     Wrong type of operand. 
                     \item[Macro not defined ] \hfill \\
                     The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
-                    \item[Too many arguments given, expecting at most X arguments] \hfill \\             % lll
+                    \item[Too many arguments given, expecting at most X arguments] \hfill \\             
                     Too many arguments. Reduce number of given arguments.
-                    \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  %llll
+                    \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  
                     Desired memory space is not available.
-                    \item[The last error was critical, compilation aborted] \hfill \\                   %llll
+                    \item[The last error was critical, compilation aborted] \hfill \\                   
                     Critical error has occured. Compilation cannot continue.
                     \item[Device not supported] \hfill \\
-                    The given device is not supported. Please choose different device.
-                    \item[Device specification code is already loaded ] \hfill \\                       %llll
+                    The given device is not supported. Please choose different device in project configuration.
+                    \item[Device specification code is already loaded ] \hfill \\                       
                     You have already specified architecture in project configuration.
                     \item[Limit value X is not valid] \hfill \\
                     Invalid limit value. Viz. LIMIT directive chapter for valid values.
-                    \item[Directive `LOCAL' cannot appear outside macro definition ] \hfill \\   % chyba, apear
-                    Directive LOCAL must be only used inside macro. Use different directive for symbol definition, or put it inside of macro.
+                    \item[Directive `LOCAL' cannot appear outside of macro definition ] \hfill \\   
+                    Directive LOCAL must be only used inside of macro. Use different directive for symbol definition( EQU,SET etc.), or put it inside of macro.
                     \item[Directive EXITM' cannot apper outside macro definition] \hfill \\
                     The given directive is used to immediately exit macro. It does not make sense to use it differently.
                     \item[Maximum macro expansion level X reached  ] \hfill \\
                     Maximum macro expansion level reached. You can change your compiler settings and set bigger expansion level.
                     By default, macro expansion level is unlimited.
-                    \item[Maximum number of WHILE directive iterations reached ] \hfill \\    %\#kk\#kk
+                    \item[Maximum number of WHILE directive iterations reached ] \hfill \\    
                     Maximum WHILE directive iterations reached. You can change your compiler settings and allow more iterations.
                     By default, number of iterations is unlimited.
-                    \item[Maximum number of REPEAT directive iterations reached ] \hfill \\                     % nema byt rept?
+                    \item[Maximum number of REPEAT directive iterations reached ] \hfill \\                     
                     Maximum REPEAT directive iterations reached. You can change your compiler settings and allow more iterations.
                     By default, number of iterations is unlimited.
                     \item[Instruction word is only 18 bits wide, value X trimmed to Y ] \hfill \\
@@ -1346,20 +1403,20 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     Real numbers cannot be used on 8-bit processor.
                     \item[Undefined symbol: X ] \hfill \\
                     Symbol has not been defined. Define symbol before usage.
-                    \item[This value is not valid inside an expression ] \hfill \\         %mmmmm
+                    \item[This value is not valid inside of expression ] \hfill \\         %mmmmm
                     The given expresion contains forbidden value.
                     \item[Division by zero ] \hfill \\
                     Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
                     \item[Unable to resolve this expression ] \hfill \\
                     The given expresion cannot be resolved. Check if expresion is syntactically right.
                     \item[Syntax not understood ] \hfill \\
-                    There is syntax error in your source code. Check manual for right syntax.
+                    There is syntax error in your source code.
                     \item[Character constant is too long ] \hfill \\
-                    Character constant is too long
+                    Character constant is too long. Check ASCII table for appropriate values.
                     \item[Unterminated string or character constant ] \hfill \\
-                    Unterminated string or character constant
+                    Unterminated string or character constant. You probably forgot to end with ''.
                     \item[Unrecognized escape sequence: ] \hfill \\
-                    Unrecognized escape sequence
+                    Unrecognized escape sequence. Check ASCII table for appropriate values.
                     \item[No file name specified ] \hfill \\                                                                            %llll
                     File name has to be specified.
                     \item[Unable to open the specified file: X] \hfill \\
@@ -1411,12 +1468,11 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                         \mysmallfont{}
                         \verb'demo0                                                                                                                   '{\color{highlight_macro}\verb'PAGE'}\verb' '{\color{highlight_unknown_base}\verb'1'}\\
                         {\color{highlight_lst_line}\verb'                         1'}\verb'     '{\color{highlight_comment}\verb'; MDS Demostration code'}\\
-
                         {\color{highlight_lst_line}\verb'                         6'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_hex}\verb'0h'}\\
                         {\color{highlight_lst_line}\verb'                         7'}\\
                         {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' 08'}{\color{highlight_lst_line}\verb'                  8'}\verb'     '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_sfr}\verb's0'}\\
                         {\color{highlight_lst_address}\verb'0001'}{\color{highlight_lst_code}\verb' 06'}{\color{highlight_lst_line}\verb'                  9'}\verb'             '{\color{highlight_instruction}\verb'inc'}\verb'     '{\color{highlight_indirect}\verb's0'}\\
-                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'djnz'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_hex}\verb'#07Fh'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'main'}\\
+                        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' B87FFB'}{\color{highlight_lst_line}\verb'             10'}\verb'             '{\color{highlight_instruction}\verb'djnz'}\verb'    '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}{\color{highlight_constant}\verb'main'}\\
                         {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 7800'}{\color{highlight_lst_line}\verb'               11'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_imm_dec}\verb'#0d'}\\
                         {\color{highlight_lst_address}\verb'0007'}{\color{highlight_lst_code}\verb' 80F7'}{\color{highlight_lst_line}\verb'               12'}\verb'             '{\color{highlight_instruction}\verb'jmp'}\verb'    '{\color{highlight_constant}\verb'main'}\\
                         {\color{highlight_lst_line}\verb'                        13'}\\
@@ -1625,12 +1681,12 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{TEST}
             The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and
             only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero.
-            The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).
+            The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).\\
                 \textbf{TEST} sX,sY\\
                 \textbf{TEST} sX,\#kk\\
         \subsubsection{TESTCY}
             The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of
-            values more than 8-bits.
+            values more than 8-bits.\\
             \textbf{TESTCY} sX,sY\\
             \textbf{TESTCY} sX,\#kk\\
         \subsection{Shift and Rotate Group}
@@ -1659,12 +1715,12 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             "pp" represents a port address in the range 00 to FF.\\
             "ss" represents an internal storage address in the range 00 to 3F.\\
         \subsubsection{STORE}
-            The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).
+            The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).\\
                 \textbf{STORE} sX,ss\\
                 \textbf{STORE} sX,@sY\\
 
         \subsubsection{FETCH}
-            The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"
+            The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"\\
                 \textbf{FETCH} sX,ss\\
                 \textbf{FETCH} sX,@sY\\
 
