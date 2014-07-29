@@ -142,7 +142,7 @@ int main ( int argc, char ** argv )
     // -----------------------------------------------------------------------------------------------------------------
 
     std::cout << QObject::tr("MDS assembler translator v%1").arg(VERSION).toStdString() << std::endl
-              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
+              << QObject::tr("(C) copyright 2013, 2014 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
                             .toStdString() << std::endl
               << "All rights reserved." << std::endl
               << std::endl;

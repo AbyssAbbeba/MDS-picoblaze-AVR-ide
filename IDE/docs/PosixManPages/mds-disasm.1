@@ -1,202 +1,142 @@
+.\" ====================================================================================================================
 .\"
-.\" MCU 8051 IDE - Itegrated development enviroment for MCS-51 based microcontrollers
-.\" Copyright (C) 2007 Martin Osmera
+.\"  M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
+.\"  MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O     R  R O  O S      Y Y  S       T   E     MM MM S
+.\"  M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O     RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+.\"  M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O     RR   O  O    SS   Y      SS   T   E     M   M    SS
+.\"  M   M O  O R R  A   A  V V   I  A   A    M   M  I  O     R R  O  O      S  Y        S  T   E     M   M      S
+.\"  M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
 .\"
-.\" This program is free software; you can redistribute it and/or modify
-.\" it under the terms of the GNU General Public License as published by
-.\" the Free Software Foundation; either version 2 of the License, or
-.\" (at your option) any later version.
+.\" (C) copyright 2014 Moravia Microsystems, s.r.o.
+.\"     trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+.\"     http://www.moravia-microsystems.com
 .\"
-.\" This program is distributed in the hope that it will be useful,
-.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
-.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-.\" GNU General Public License for more details.
-.\"
-.\" You should have received a copy of the GNU General Public License
-.\" along with this program; if not, write to the Free Software
-.\" Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-.\"
-.TH MCU8051IDE "1" "16 December 2007" "User Commands"
+.\" ====================================================================================================================
+
+.TH "mds-disasm" "1" "July 2014" "User Commands"
 .SH NAME
-mcu8051ide \- Integrated development enviroment for MCS-51 based microcontrollers
-.SH SYNOPSIS
-.B mcu8051ide
-.RB [ \-\-help ]
-.RB [ \-h ]
-.RB [ \-\-assemble
-.IR asm_file ]
-.RB [ \-\-compile
-.IR asm_file ]
-.RB [ \-\-iram\-size
-.IR size ]
-.RB [ \-\-code\-size
-.IR size ]
-.RB [ \-\-xram\-size
-.IR size ]
-.RB [ \-\-no\-opt ]
-.RB [ \-\-quiet ]
-.RB [ \-q ]
-.RB [ \-\-nosplash ]
-.RB [ \-\-nocolor ]
-.RB [ \-n ]
-.RB [ \-\-version ]
-.RB [ \-V ]
-.RB [ \-\-defaults ]
-.RB [ \-\-disassemble ]
-.RB [ \-\-minimalized ]
-.RB [ \-\-config\-file
-.IR filename ]
-.RB [ \-\-check\-libraries ]
-.RB [ \-\-ignore\-last\-session ]
-.RB [ \-\-open\-project
-.IR project ]
-.RB [ \-\-reset\-user\-settings ]
-.RB [ \-\-hex2bin
-.IR input
-.IR output ]
-.RB [ \-\-bin2hex
-.IR input
-.IR output ]
-.RB [ \-\-sim2hex
-.IR input
-.IR output ]
-.RB [ \-\-sim2bin
-.IR input
-.IR output ]
-.RB [ \-\-normalize\-hex
-.IR input ]
-.RB [ \-\-auto\-indent
-.IR input ]
-.RB [ \-\-comp\-quiet ]
-.RB [ \-\-no\-sim ]
-.RB [ \-\-no\-bin ]
-.RB [ \-\-no\-lst ]
-.RB [ \-\-no\-hex ]
-.RB [ \-\-warning\-level
-.IR N ]
+mds\-disasm \- Disassembler used by the Multitarget Development System by Moravia Microsystems, s.r.o.
+.SH USAGE
+.B mds\-disasm
+.I <OPTIONS>
+[ -- ]
+.I <input\-file>
 
 .SH DESCRIPTION
-\fB MCU 8051 IDE\fR is tool for developing programs in assembly language and C languge (with SDCC) for micronstollers based on industrial standard MCS-51. It consist of editor with syntax highlight, auto completion, syntax validation and command line, compiler with support for macro-instructions (even macro in macro), simulator, scientific calculator, (rich) text editor for writing to do lists, hexadecimal editor and many other tools.
+Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain
+level of capability of reversing the assembly process and regaining the original source code from any object code.
+
+For more information please consult the MDS handbook.
 
 .SH OPTIONS
 .TP
+\fB\-\-arch\fR, \fB\-a\fI <architecture>\fR
+Specify processor architecture, supported architectures are:
+.IP 1.
+\fBPicoBlaze\fR : (K)constant Coded Programmable State Machine.
+.TP
+\fB\-\-family\fR, \fB\-f\fI <family>\fR
+Specify processor family, supported families for the given architectures are:
+.IP 1.
+For PicoBlaze: \fBkcpsm1\fR, \fBkcpsm1cpld\fR, \fBkcpsm2\fR, \fBkcpsm3\fR, and \fBkcpsm6\fR
+.TP
+\fB\-\-out\fR, \fB\-o\fI <output\-file>\fR
+Specify output file where the resulting assembly language code will be stored.
+.TP
+\fB\-\-type\fR, \fB\-t\fI <input\-file\-format>\fR
+Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported
+types are:
+.IP 1.
+\fBhex\fR : Intel 8 HEX, or Intel 16 HEX,
+.IP 2.
+\fBsrec\fR : Motorola S-Record,
+.IP 3.
+\fBbin\fR : raw binary file,
+.IP 4.
+\fBmem\fR : Xilinx MEM file (for PicoBlaze only),
+.IP 5.
+\fBvhd\fR : VHDL file (for PicoBlaze only),
+.IP 6.
+\fBv\fR : Verilog file (for PicoBlaze only).
+.TP
+\fB\-\-cfg\-ind\fI <indentation>\fR
+Indent with:
+.IP 1.
+\fBspaces\fR : indent with spaces (default),
+.IP 2.
+\fBtabs\fR : indent with tabs.
+.TP
+\fB\-\-cfg\-tabsz\fI <n>\fR
+Consider tab to be displayed at most n spaces wide, here it is by default 8.
+.TP
+\fB\-\-cfg\-eof\fI <end\-of\-line\-character>\fR
+Specify line separator, available options are:
+.IP 1.
+\fBcrlf\fR : \fI[WINDOWS]\fR use sequence of carriage return and line feed characters
+.IP 2.
+\fBlf\fR : \fI[UNIX]\fR use a single line feed character (0x0a = '\n') (default),
+.IP 3.
+\fBcr\fR : \fI[APPLE]\fR use single carriage return (0x0d = '\r').
+.TP
+\fB\-\-cfg\-sym\fI <symbols>\fR
+Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers,
+available options are:
+.IP 1.
+\fBc\fR : program memory,
+.IP 2.
+\fBd\fR : data memory,
+.IP 3.
+\fBr\fR : register file,
+.IP 4.
+\fBp\fR : port address,
+.IP 5.
+\fBk\fR : immediate constants,
+.br
+ This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register
+file.
+.TP
+\fB\-\-cfg\-lc\fI <character>\fR
+Use uppercase, or lowercase characters:
+.IP 1.
+\fBl\fR : lowercase (default),
+.IP 2.
+\fBu\fR : uppercase.
+.TP
+\fB\-\-cfg\-radix\fI <radix>\fR
+Radix, available options are:
+.IP 1.
+\fBh\fR : hexadecimal (default),
+.IP 2.
+\fBd\fR : decimal,
+.IP 3.
+\fBb\fR : binary,
+.IP 4.
+\fBo\fR : octal.
+.TP
 \fB\-\-help\fR, \fB\-h\fR
-Display short help text
-.TP
-\fB\-\-quiet\fR, \-q\fR
-Don't display status of initialization progress on startup
-.TP
-\fB\-\-nosplash\fR
-Don't show splash screen
-.TP
-\fB\-\-nocolor\fR, \-n\fR
-Disable color output
+Print help message.
 .TP
 \fB\-\-version\fR, \fB\-V\fR
-Display version information
-.TP
-\fB\-\-defaults\fR
-Start with default settings (low level GUI settings (panel sizes ...))
-.TP
-\fB\-\-minimalized\fR
-Start with minimalized window
-.TP
-\fB\-\-config\-file \fIfilename\fR
-Specify path to file containg user settings
-.TP
-\fB\-\-check\-libraries\fR
-Check if all nessesary Tcl libraries are avaible
-.TP
-\fB\-\-ignore\-last\-session\fR
-Start with an empty session (no project will be opened at startup)
-.TP
-\fB\-\-open\-project \fIproject\fR
-Open only this project
-.TP
-\fB\-\-reset\-user\-settings\fR
-Reset all user settings to defaults
-.TP
-\fB\-\-hex2bin \fIinput output\fR
-Convert Intel Hex 8 file to binary file
-.TP
-\fB\-\-bin2hex \fIinput output\fR
-Convert binary file to Intel Hex 8 file
-.TP
-\fB\-\-sim2hex \fIinput output\fR
-Convert MCU 8051 IDE v0.9.1 simulator file to Intel Hex 8 file
-.TP
-\fB\-\-sim2bin \fIinput output\fR
-Convert MCU 8051 IDE v0.9.1 simulator file to binary file
-.TP
-\fB\-\-normalize\-hex \fIinput\fR
-Normalize IHEX8 file
-.TP
-\fB\-\-auto\-indent \fIinput\fR
-Reformat indention in source code
-.TP
-\fB\-\-disassemble \fIinput\fR
-Disaseble IHEX8 code and store result in input.asm
-.TP
-\fB\-\-assemble \fIasm_file\fR
-Assemble the asm_file and exit program
-.TP
-\fB\-\-compile \fIasm_file\fR
-The same as \-\-assemble
-.TP
-\fB\-\-iram\-size \fIsize\fR
-Set size of internal data memory (eg. 1K or 1024) (default: 0x100)
-.TP
-\fB\-\-code\-size \fIsize\fR
-Set size of program memory (eg. 1K or 1024) (default: 0x10000)
-.TP
-\fB\-\-xram\-size \fIsize\fR
-Set size of external data memory (eg. 1K or 1024) (default: 0x10000)
-.TP
-\fB\-\-no\-opt\fR
-Disable compiler optimalizations
-.TP
-\fB\-\-comp\-quiet\fR
-Suppress compiler console output
-.TP
-\fB\-\-no\-sim\fR
-Do not generate SIM file (for MCU 8051 IDE simulator)
-.TP
-\fB\-\-no\-bin\fR
-Do not generate binary object code
-.TP
-\fB\-\-no\-lst\fR
-Do not generate code listing
-.TP
-\fB\-\-no\-hex\fR
-.TP
-\fB\-\-warning\-level \fIN\fR
-Do not generate IHEX8 object code; 3 - Nothing; 2 - Errros only; 1 - Errors + Warnings; 0 - All (Default)
-
-.SH FILES
-.TP
-.I /usr/share/mcu8051ide/data/tips.conf
-XML file containing tips. (Dialog "Tip of the day")
-.TP
-.I /usr/share/mcu8051ide/data/mcus.conf
-XML definition of supported MCUs. \fBWarning: MCU 8051 IDE cannot run without this file.\fR Please do not rely on format of this file. It may be changed in future version without any warning.
-.TP
-.I ~/.mcu8051ide/last_session.conf
-INI like definition of the last session.
-.TP
-.I ~/.mcu8051ide/base.conf
-Base configuration file. It contains only three configuration keys separated by spaces, please do not rely on format of this file. It may be changed in future version without any warning.
-.TP
-.I ~/.mcu8051ide/config.conf
-Main configuration file (INI like). Readable and I hope user friendly.
+Print disassembler version and exit.
 
 .SH NOTES
-List of supported porcessors is very short yet. Please post suggestions to martin.osmera@gmail.com .
-.SH SUPPORTED PROCESSORS
-8051, 80C51, 8052, AT89C2051, AT89C4051, AT89C51, AT89C51RC, AT89C52, AT89C55WD, AT89LV51, AT89LV52, AT89LV55, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, AT89S52, AT89LS51, AT89LS52, AT89S8253, AT89S2051, AT89S4051, T87C5101, T83C5101, T83C5102, TS80C32X2, TS80C52X2, TS87C52X2, AT80C32X2, AT80C52X2, AT87C52X2, AT80C54X2, AT80C58X2, AT87C54X2, AT87C58X2, TS80C54X2, TS80C58X2, TS87C54X2, TS87C58X2, TS80C31X2, AT80C31X2
+.IP 1.
+`--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a
+command line option.
 
-.SH TO DO
-Add support for more MCS\-51 based microcontrollers.
-Fix all bugs.
+.SH "SEE ALSO"
+.TP
+.BR mds-compiler (1)
+Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia Microsystems.
+.TP
+.BR mds-translator (1)
+Assembly language variant translator used by the Multitarget Development System by Moravia Microsystems.
 
 .SH AUTHOR
-Martin Osmera <martin.osmera@gmail.com>
+(C) Moravia Microsystems, s.r.o.
+.br
+trida Kpt. Jarose 1946/35, CZ-602 00
+.br
+Brno, Czech Republic, European Union
+.br
+http://www.moravia-microsystems.com

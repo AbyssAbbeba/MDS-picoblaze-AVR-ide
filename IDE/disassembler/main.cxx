@@ -151,7 +151,7 @@ void printHelp ( const char * executable )
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
-              << QObject::tr("        Print compiler version and exit.").toStdString() << std::endl
+              << QObject::tr("        Print disassembler version and exit.").toStdString() << std::endl
               << std::endl
               << std::endl;
 
@@ -203,7 +203,7 @@ int main ( int argc, char ** argv )
     bool inTypeGuessed = false;
 
     std::cout << QObject::tr("MDS mutitarget disassembler v%1").arg(VERSION).toStdString() << std::endl
-              << QObject::tr("(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
+              << QObject::tr("(C) copyright 2013, 2014 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
                             .toStdString() << std::endl
               << "All rights reserved." << std::endl
               << std::endl;

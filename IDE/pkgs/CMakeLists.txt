@@ -110,7 +110,7 @@ if ( TARGET_OS STREQUAL "Linux" )
     ## GNU/Linux and possibly other POSIX systems
     #
 
-    set ( CPACK_GENERATOR "DEB" "RPM" "STGZ" )
+    set ( CPACK_GENERATOR "DEB" "RPM" "TBZ2" )
 
     set ( CPACK_PACKAGING_INSTALL_PREFIX "/usr/local" )
 
@@ -175,6 +175,13 @@ else()
 endif()
 
 #
+## Resources.
+#
+
+set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
+
+#
 ## General options.
 #
 
@@ -182,16 +189,14 @@ set ( CPACK_SET_DESTDIR ON )
 set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}-${MDS_VARIANT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} by ${COMPANY_NAME}" )
-set ( MY_CPACK_PACKAGE_DETAILED_DESC "Window-based software development platform combining robust and modern tools needed to develop embedded applications." )
+
+# CPACK_PACKAGE_FILE_NAME
 set ( CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${TARGET_OS}.${TARGET_ARCH}" )
 string ( REGEX REPLACE " " "" CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME} )
 
-#
-## Resources.
-#
-
-set ( CPACK_RESOURCE_FILE_LICENSE    "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
+file ( READ ${CPACK_PACKAGE_DESCRIPTION_FILE} MY_CPACK_PACKAGE_DETAILED_DESC )
+string ( REGEX REPLACE "(\r?\n)+$" "" MY_CPACK_PACKAGE_DETAILED_DESC ${MY_CPACK_PACKAGE_DETAILED_DESC} )
+string ( REGEX REPLACE "\r?\n(\r?\n)*" "\n " MY_CPACK_PACKAGE_DETAILED_DESC ${MY_CPACK_PACKAGE_DETAILED_DESC} )
 
 #
 ## Options for the "DEB" generator.
@@ -212,7 +217,7 @@ set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
 set ( CPACK_PACKAGE_CONTACT "${COMPANY_NAME}; ${COMPANY_ADDRESS}" )
 set ( CPACK_DEBIAN_PACKAGE_HOMEPAGE "http://www.moravia-microsystems.com" )
 set ( CPACK_DEBIAN_PACKAGE_SECTION "Development" )
-set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "\t${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n\t\t${MY_CPACK_PACKAGE_DETAILED_DESC}" )
+set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "${MY_CPACK_PACKAGE_DETAILED_DESC}" )
 
 #
 ## Options for the "RPM" generator.
@@ -228,6 +233,7 @@ set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
 set ( CPACK_RPM_PACKAGE_LICENSE "Moravia Microsystems license" )
 set ( CPACK_RPM_PACKAGE_RELOCATABLE OFF )
+set ( CPACK_RPM_PACKAGE_DESCRIPTION "${MY_CPACK_PACKAGE_DETAILED_DESC}" )
 
 
 #

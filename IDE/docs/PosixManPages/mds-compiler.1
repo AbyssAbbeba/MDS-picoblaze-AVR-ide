@@ -15,117 +15,155 @@
 
 .TH "mds-compiler" "1" "July 2014" "User Commands"
 .SH NAME
-mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia Microsystems, s.r.o.
+mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia
+Microsystems, s.r.o.
 .SH USAGE
-.B mds-compiler
+.B mds\-compiler
 .I <OPTIONS>
 [ -- ]
 [
-.I source-file ...
+.I source\-file ...
 ]
 
 .SH DESCRIPTION
-\fB mds-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors. mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors. For more information please consult MDS handbook.
+\fB mds\-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors.
+mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG
+loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also
+produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it
+feature set includes various special macros and user defined macros support making it one of the world most advanced
+assemblers available on the market today for PicoBlaze soft-core processors.
+
+For more information please consult the MDS handbook.
 
 .SH OPTIONS
 .TP
 \fB\-\-arch\fR, \fB\-a\fI <architecture>\fR
 Specify target architecture, supported architectures are:
-- PicoBlaze: (K)constant Coded Programmable State Machine.
+.IP 1.
+\fBPicoBlaze\fR: (K)constant Coded Programmable State Machine.
 .TP
-\fB\-\-plang\fR, \fB\-p\fI <programming-language>\fR
+\fB\-\-plang\fR, \fB\-p\fI <programming\-language>\fR
 Specify programming language, supported languages are:
-- asm: assembly language.
+.IP 1.
+\fBasm\fR: assembly language.
+.TP
+\fB\-\-hex\fR, \fB\-x\fI <Intel\-HEX\-file>\fR
+Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
+.TP
+\fB\-\-dbg\fR, \fB\-d\fI <MDS\-native\-debug\-file>\fR
+Specify output file with code for MCU simulator and other debugging tools.
+.TP
+\fB\-\-srec\fI <Motorola\-S\-REC\-file>\fR
+Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record
+format.
+.TP
+\fB\-\-binary\fI <binary\-file>\fR
+Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
+.TP
+\fB\-\-lst\fR, \fB\-l\fI <code\-listing>\fR
+Specify output file where code listing generated during compilation will be stored.
+.TP
+\fB\-\-mtable\fR, \fB\-m\fI <table\-of\-macros>\fR
+Specify file in which the compiler will put table of macros defined in your code.
+.TP
+\fB\-\-stable\fR, \fB\-s\fI <table\-of\-symbols>\fR
+Specify file in which the compiler will put table of symbols defined in your code.
+.TP
+\fB\-\-help\fR, \fB\-h\fR
+Print help message.
+.TP
+\fB\-\-version\fR, \fB\-V\fR
+Print compiler version and exit.
+.TP
+\fB\-\-check\fR, \fB\-c\fR
+Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
+.TP
+\fB\-\-no\-backup\fR
+Don't generate backup files.
+.TP
+\fB\-\-brief\-msg\fR
+Print only unique messages.
+.TP
+\fB\-\-no\-strict\fR
+Disable certain error and warning messages.
+.TP
+\fB\-\-no\-warnings\fR
+Do not print any warnings.
+.TP
+\fB\-\-no\-errors\fR
+Do not print any errors.
+.TP
+\fB\-\-no\-remarks\fR
+Do not print any remarks.
+.TP
+\fB\-\-silent\fR
+Do not print any warnings, errors, or any other messages, stay completely silent.
+.TP
+\fB\-\-include\fR, \fB\-I\fI <directory>\fR
+Add directory where the compiler will search for include files.
+.TP
+\fB\-\-dev\fR, \fB\-D\fI <device>\fR
+Specify exact target device, options are:
+.IP 1.
+For PicoBlaze: \fBkcpsm1\fR, \fBkcpsm1cpld\fR, \fBkcpsm2\fR, \fBkcpsm3\fR, and \fBkcpsm6\fR
+.TP
+\fB\-\-precompile\fR, \fB\-P\fI <.prc\-file>\fR
+Specify target file for generation of precompiled code.
+.TP
+\fB\-\-vhdl\fI <.vhd\-file>\fR
+Specify target file for generation of VHDL code.
+.TP
+\fB\-\-vhdl\-tmpl\fI <.vhd\-file>\fR
+Specify VHDL template file.
+.TP
+\fB\-\-verilog\fI <.v\-file>\fR
+Specify target file for generation of verilog code.
+.TP
+\fB\-\-verilog\-tmpl\fI <.v\-file>\fR
+Specify target file for generation of verilog code.
+.TP
+\fB\-\-verilog\-tmpl\fI <.v\-file>\fR
+Specify verilog template file.
+.TP
+\fB\-\-mem\fI <.mem\-file>\fR
+Specify target file for generation of MEM file.
+.TP
+\fB\-\-raw\-hex\-dump\fI <.hex\-file>\fR
+Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
 
-    -x, --hex <Intel HEX file>
-        Specify output file with machine code generated as a result of compilation,
-        data will be stored in Intel 8 Hex format.
-    -d, --dbg <MDS native debug file>
-        Specify output file with code for MCU simulator and other debugging tools.
-    --srec <Motorola S-REC file>
-        Specify output file with machine code generated as a result of compilation,
-        data will be stored in Motorola S-record format.
-    --binary <binary file>
-        Specify output file with machine code generated as a result of compilation,
-        data will be stored in raw binary format.
-    -l, --lst <code listing>
-        Specify output file where code listing generated during compilation will be stored.
-    -m, --mtable <table of macros>
-        Specify file in which the compiler will put table of macros defined in your code.
-    -s, --stable <table of symbols>
-        Specify file in which the compiler will put table of symbols defined in your code.
-    -h, --help
-        (Print this message.)
-    -V, --version
-        Print compiler version and exit.
-    -c, --check
-        Do not perform the actual compilation, do only lexical and syntax analysis of the
-        the provided source code and exit.
-    --no-backup
-        Don't generate backup files.
-    --brief-msg
-        Print only unique messages.
-    --no-strict
-        Disable certain error and warning messages.
-    --no-warnings
-        Do not print any warnings.
-    --no-errors
-        Do not print any errors.
-    --no-remarks
-        Do not print any remarks.
-    --silent
-        Do not print any warnings, errors, or any other messages, stay completely silent.
-    -I, --include <directory>
-        Add directory where the compiler will search for include files.
-    -D, --dev <device>
-        Specify exact target device.
-    -P, --precompile <.prc file>
-        Specify target file for generation of precompiled code.
-    --vhdl <.vhd file>
-        Specify target file for generation of VHDL code.
-    --vhdl-tmpl <.vhd file>
-        Specify VHDL template file.
-    --verilog <.v file>
-        Specify target file for generation of verilog code.
-    --verilog-tmpl <.v file>
-        Specify target file for generation of verilog code.
-    --verilog-tmpl <.v file>
-        Specify verilog template file.
-    --mem <.mem file>
-        Specify target file for generation of MEM file.
-    --raw-hex-dump <.hex file>
-        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
+.SH NOTES
+.IP 1.
+`--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a
+command line option.
+.IP 2.
+When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command
+line (from left to right).
 
-.SH FILES
+.SH EXAMPLES
 .TP
-.I /usr/local/share/mds/
-XML file containing tips. (Dialog "Tip of the day")
+\fBmds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm\fR
+Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly
+language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
 .TP
-.I /usr/share/mcu8051ide/data/mcus.conf
-XML definition of supported MCUs. \fBWarning: MCU 8051 IDE cannot run without this file.\fR Please do not rely on format of this file. It may be changed in future version without any warning.
+\fBmds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm\fR
+Do the same at the above, only in this case we have used another variant of usage of switches with argument.
 .TP
-.I ~/.mcu8051ide/last_session.conf
-INI like definition of the last session.
-.TP
-.I ~/.mcu8051ide/base.conf
-Base configuration file. It contains only three configuration keys separated by spaces, please do not rely on format of this file. It may be changed in future version without any warning.
-.TP
-.I ~/.mcu8051ide/config.conf
-Main configuration file (INI like). Readable and I hope user friendly.
+\fBmds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm\fR
+Do the same at the above, only in this case we have used short version of the switches.
 
-.SH SUPPORTED PROCESSORS
+.SH "SEE ALSO"
 .TP
-KCPSM1-CPLD
+.BR mds-translator (1)
+Assembly language variant translator used by the Multitarget Development System by Moravia Microsystems.
 .TP
-KCPSM1
-.TP
-KCPSM2
-.TP
-KCPSM3
-.TP
-KCPSM6
+.BR mds-disasm (1)
+Disassembler for embedded applications used by the Multitarget Development System by Moravia Microsystems.
 
 .SH AUTHOR
-Moravia Microsystems, s.r.o.
-trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+(C) Moravia Microsystems, s.r.o.
+.br
+trida Kpt. Jarose 1946/35, CZ-602 00
+.br
+Brno, Czech Republic, European Union
+.br
 http://www.moravia-microsystems.com
