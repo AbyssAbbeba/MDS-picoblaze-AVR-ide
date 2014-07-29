@@ -213,6 +213,9 @@ endif()
 # LIBRARIES & TOOLS
 # ----------------------------------------------------------------------------------------------------------------------
 
+# glibc (relevant for GNU/Linux only)
+set ( GLIBC_MIN_VER "2.14" )
+
 # Find Qt4 directories and libraries.
 set ( QT_MIN_VER "4.8.1" )
 set ( QT_IS_STATIC OFF )
