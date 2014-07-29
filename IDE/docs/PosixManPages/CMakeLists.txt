@@ -46,4 +46,4 @@ set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${compressedManPageFiles}" )
 
 install ( FILES ${compressedManPageFiles}
-          DESTINATION "/usr/share/man/man1" )
+          DESTINATION ${INSTALL_DIR_MAN} )
