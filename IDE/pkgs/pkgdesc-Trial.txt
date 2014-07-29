@@ -1,4 +1,4 @@
-Multitarget Development System by Moravia MIcrosystems, s.r.o.
+MDS - Multitarget Development System by Moravia Microsystems, s.r.o.
 
 This is TRIAL VERSION only (i.e. for limited time product evaluation), read license terms for more information.
 
