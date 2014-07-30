@@ -1,5 +1,6 @@
 #include "welcomescr.h"
 #include "ui_welcomescr.h"
+#include "../../guicfg/guicfg.h"
 
 WelcomeScr::WelcomeScr(QWidget *parent)
     : QWidget(parent)
@@ -8,6 +9,8 @@ WelcomeScr::WelcomeScr(QWidget *parent)
 
     QPixmap pixLogo(":/resources/icons/logo_big.png");
     ui.lblLogo->setPixmap(pixLogo);
+
+    GuiCfg::RecentFiles recent = GuiCfg::getInstance().getRecentFiles();
 
     connect(ui.btnExample,
             SIGNAL(clicked()),
