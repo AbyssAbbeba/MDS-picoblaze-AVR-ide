@@ -84,6 +84,13 @@ class GuiCfg_Items
         } RecentFiles;
 
 
+        typedef struct RecentProjects
+        {
+            QString fileNames[5];
+            QString filePaths[5];
+        } RecentProjects;
+
+
         typedef enum
         {
             RANDOM = 0,
