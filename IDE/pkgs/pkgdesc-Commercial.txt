@@ -1,7 +1,6 @@
 MDS - Multitarget Development System by Moravia Microsystems, s.r.o.
 
-This is NON-COMMERCIAL variant (cannot be legally used by certain profit making corporations, etc.), read license terms
-for more information.
+This is commercial variant, please read license terms for more information. Congratulations on your buy!
 
 MDS is a window-based software development platform that combines robust and modern editor with a project manager,
 integrating all the tools needed to develop embedded applications including macro assembler, and HEX, VHDL, and Verilog

@@ -21,9 +21,10 @@ project ( manual )
 
 # Path to MDS manual as PDF file, and as Qt Help Collection Files.
 set ( MANUAL_TEX "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.tex" CACHE STRING "Path to MDS manual as TeX file." )
-set ( MANUAL_PDF "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.pdf" CACHE STRING "Path to MDS manual as PDF file." )
 set ( MANUAL_QHC "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
 set ( MANUAL_QCH "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.qch" CACHE STRING "Path to MDS manual as QCH file." )
+set ( MANUAL_PDF "${CMAKE_CURRENT_SOURCE_DIR}/${MDS_MANUAL_PDF}" CACHE STRING "Path to MDS manual as PDF file." )
+
 mark_as_advanced ( MANUAL_TEX MANUAL_PDF MANUAL_QHC MANUAL_QCH )
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
