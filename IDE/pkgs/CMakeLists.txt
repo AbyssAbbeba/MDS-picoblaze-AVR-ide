@@ -126,7 +126,7 @@ if ( TARGET_OS STREQUAL "Linux" )
     endif()
 
     set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE PARENT_SCOPE )
-    set ( CMAKE_INSTALL_RPATH "${INSTALL_DIR_LIB_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
+    set ( CMAKE_INSTALL_RPATH "${INSTALL_DIR_LIB_3RD_PARTY};${INSTALL_DIR_LIB}" PARENT_SCOPE )
 
     # Install .desktop spec and application icon
     install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_MAIN_SHARE}/pixmaps/" )
@@ -166,7 +166,7 @@ endif()
 set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} ${MDS_GRADE} for ${MDS_TARGET} in ${MDS_VARIANT} version" )
-set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform that combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced tested and reliable tools to your development arsenal. Our focus is efficiency and precision." )
+set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced and reliable tools to your development arsenal. Our focus is efficiency and precision." )
 set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
 

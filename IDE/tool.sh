@@ -124,7 +124,7 @@ function clean() {
 
     for fileGlob in 'Makefile' 'Doxyfile' 'DartConfiguration.tcl' 'CPackSourceConfig.cmake' 'CPackConfig.cmake' \
                     '*-Linux.*' '*~' '*.a' '*.so' 'moc_*.cxx' '.directory' '*.dll' '*.exe' 'CMakeCache.txt'     \
-                    'cmake_install.cmake' 'CTestTestfile.cmake' 'install_manifest.txt'
+                    'cmake_install.cmake' 'CTestTestfile.cmake' 'install_manifest.txt' '*.gcno'
     do
         rm -fv $(find -type f -name "${fileGlob}")
     done
