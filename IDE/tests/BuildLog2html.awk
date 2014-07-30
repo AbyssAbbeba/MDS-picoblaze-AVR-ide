@@ -88,6 +88,7 @@ END {
 }
 
 {
+    sub ( / fatal error: /,"<span class=\"error\">&</span> ",   $0 )
     sub ( / [Ee]rror: /,   "<span class=\"error\">&</span> ",   $0 )
     sub ( / [Ww]arning: /, "<span class=\"warning\">&</span> ", $0 )
     sub ( / note: /,       "<span class=\"note\">&</span> ",    $0 )

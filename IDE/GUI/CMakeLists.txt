@@ -1,23 +1,6 @@
 # set project's name
   PROJECT( GUI )
 
-  # we need this to be able to include headers produced by uic in our code
-  # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
-  include_directories ( ${CMAKE_BINARY_DIR}
-                        "${CMAKE_CURRENT_BINARY_DIR}/mainform/" )
-# ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
-# ------------------------------------------------------------------------------
-
-# Build the widgets
-add_subdirectory(widgets)
-add_subdirectory(dialogs)
-add_subdirectory(mainform)
-add_subdirectory(project)
-add_subdirectory(errordialog)
-add_subdirectory(guicfg)
-add_subdirectory(demoprojekt)
-
 windres_rc ( OUTPUT_VAR         RC_FILE
              FILETYPE           "APP"
              FILE_VERSION       "1.0"
@@ -78,12 +61,25 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform Editor GuiCfg LicenseWidget ErrorDialog LicenseCertificate)
-add_dependencies(mds-ide Editor)
+  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform GuiCfg LicenseWidget ErrorDialog LicenseCertificate)
 
 
+  # we need this to be able to include headers produced by uic in our code
+  # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
+  include_directories ( ${CMAKE_BINARY_DIR}
+                        "${CMAKE_CURRENT_BINARY_DIR}/mainform/" )
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
 
-
+# Build the widgets
+add_subdirectory(widgets)
+add_subdirectory(dialogs)
+add_subdirectory(mainform)
+add_subdirectory(project)
+add_subdirectory(errordialog)
+add_subdirectory(guicfg)
+add_subdirectory(demoprojekt)
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

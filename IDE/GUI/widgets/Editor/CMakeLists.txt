@@ -40,6 +40,8 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
+# This is required due to header files: ui_timewidget.ui, and ui_welcomescr.h
+add_dependencies(${PROJECT_NAME} TimeWidget WelcomeScr)
 
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter GuiCfg)
 
