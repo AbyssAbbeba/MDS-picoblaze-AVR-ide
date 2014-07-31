@@ -1,6 +1,7 @@
 #include "welcomescr.h"
 #include "ui_welcomescr.h"
 #include "../../guicfg/guicfg.h"
+#include <QtGui>
 
 WelcomeScr::WelcomeScr(QWidget *parent)
     : QWidget(parent)
@@ -10,7 +11,12 @@ WelcomeScr::WelcomeScr(QWidget *parent)
     QPixmap pixLogo(":/resources/icons/logo_big.png");
     ui.lblLogo->setPixmap(pixLogo);
 
-    GuiCfg::RecentFiles recent = GuiCfg::getInstance().getRecentFiles();
+    QList<QString> recent = GuiCfg::getInstance().getRecentProjects();
+
+    for (int i = 0; i < recent.count(); i++)
+    {
+        ui.lstProjects->insertItem(0,recent.at(i));
+    }
 
     connect(ui.btnExample,
             SIGNAL(clicked()),
@@ -46,7 +52,6 @@ WelcomeScr::WelcomeScr(QWidget *parent)
 
 /*WelcomeScr::~WelcomeScr()
 {
-    delete ui;
 }*/
 
 
@@ -78,7 +83,7 @@ void WelcomeScr::quickGuideSlot()
 
 void WelcomeScr::listClickSlot(QListWidgetItem* item)
 {
-    emit recentProject(item->toolTip());
+    emit recentProject(item->text());
 }
 
 /*int main(int argc, char *argv[])

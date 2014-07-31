@@ -50,7 +50,9 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setWarningsOpt(GuiCfg::WarningsOpt opts);
 
-        void fileOpened(QString path, QString name);
+        void fileOpened(QString path);
+
+        void projectOpened(QString path);
 
         void setLastDialogPath(QString path);
 
@@ -95,8 +97,6 @@ class GuiCfg : public QObject, public GuiCfg_Items
         void sessionAppendFileParentProject(QString path);
 
         void sessionClear();
-
-        void recentAppend(QString name, QString path);
         
         
         //getters
@@ -108,7 +108,9 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         GuiCfg::WarningsOpt getWarningsOpt();
 
-        GuiCfg::RecentFiles getRecentFiles();
+        QList<QString> getRecentFiles();
+        
+        QList<QString> getRecentProjects();
 
         QString getLastDialogPath();
 

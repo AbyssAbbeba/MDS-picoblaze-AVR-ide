@@ -273,6 +273,8 @@ MainForm::~MainForm()
     {
         projectMan->closeProject(projectMan->getActive());
     }
+
+    GuiCfg::getInstance().saveConfig();
 }
 
 
@@ -1124,7 +1126,7 @@ bool MainForm::openProject(QString path)
             return true;
         }
     }
-    qDebug() << "MainForm: return openProject()";
+    qDebug() << "MainForm: return openProject() false";
     return false;
 }
 
@@ -1170,7 +1172,7 @@ void MainForm::projectOpened()
 
     if (projectMan->getActive()->prjPath != "untracked")
     {
-        GuiCfg::getInstance().recentAppend(projectMan->getActive()->prjName, projectMan->getActive()->prjPath);
+        GuiCfg::getInstance().projectOpened(projectMan->getActive()->prjPath);
     }
     qDebug() << "MainForm: projectOpened done";
 }
