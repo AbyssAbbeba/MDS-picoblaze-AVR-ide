@@ -26,6 +26,84 @@
  */
 class LicenseCertificate
 {
+    ////    Public Datatypes & Attributes   ////
+    public:
+        /// @brief
+        bool m_isValid;
+
+        /// @brief Version of license certificate data format.
+        std::string m_version;
+
+        /// @brief Information of the licensed product and type of license.
+        struct Product
+        {
+            /// Name of product covered by the license.
+            std::string m_designation;
+
+            /// Number of licenses issued.
+            std::string m_licences;
+
+            /// Product variant, one of {Commercial,Noncommercial}.
+            std::string m_variant;
+
+            /// Product grade, one of {Basic,Premium,Professional,Ultimate}.
+            std::string m_grade;
+
+            /// Processor architecture or similar.
+            std::string m_target;
+        } m_product;
+
+        /// @brief Information about to whom the license was or has been granted.
+        struct Licensee
+        {
+            /// Subject name
+            std::string m_name;
+
+            /// Type of subject, one of: {company,school,individual,other}.
+            std::string m_type;
+
+            /// Email address associated with the registered customer.
+            std::string m_email;
+
+            /// Contact phone (may be empty).
+            std::string m_phone;
+
+            /// @brief Address of the licensee.
+            struct Address
+            {
+                /// Sovereign state (e.g. United States of America, Federal Republic of Germany, Russian Federation).
+                std::string m_country;
+
+                /// Dependent state (optional) (e.g. Republic of Texas, Freistaat Bayern, Novosibirsk Oblast)
+                std::string m_state;
+
+                /// City/town or other type of municipality (e.g. Dallas, München, Novosibirsk).
+                std::string m_municipality;
+
+                /// Street name.
+                std::string m_street;
+
+                /// House number or similar designation.
+                std::string m_number;
+
+                /// Postal code.
+                std::string m_post;
+            } m_address;
+        } m_licensee;
+
+        /// @brief Software details related to certificate file generation.
+        struct System
+        {
+            /// Unix time stamp (seconds since 1970-01-01 00:00:00 UTC) - time of generation.
+            std::string m_timestamp;
+
+            /// Some Unique User ID from web page DB table(s) hashed with MD5 as hexadecimal string.
+            std::string m_userid;
+
+            /// Some Unique Order ID from web page DB table(s) hashed with MD5 as hexadecimal string.
+            std::string m_orderid;
+        } m_system;
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -76,68 +154,6 @@ class LicenseCertificate
          * @return True on success, false otherwise.
          */
         inline bool parseXML ( const char * data );
-
-    ////    Public Attributes    ////
-    public:
-        /// @brief
-        bool m_isValid;
-
-        /// @brief Version of license certificate data format.
-        std::string m_version;
-
-        /// @brief Unique user identifier of the licensee.
-        unsigned int m_userid;
-
-        /// @brief Unique license identifier.
-        unsigned int m_licenseid;
-
-        /// @brief List of products licensed to the licensee.
-        std::vector<std::string> m_products;
-
-        /// @brief Date when this certificated was legally issued in form of Unix style time stamp.
-        unsigned int m_date;
-
-        /// @brief Number of seconds for which the certificate remains valid since "m_date", 0 means indefinitely.
-        unsigned int m_expiry;
-
-        /// @brief Street line #1.
-        std::string m_addrStreet1;
-
-        /// @brief Street line #2.
-        std::string m_addrstreet2;
-
-        /// @brief Municipality (not necessarily a city).
-        std::string m_addrcity;
-
-        /// @brief Postal code.
-        std::string m_addrpost;
-
-        /// @brief The lowest level of state, i.e. a province of a republic or realm.
-        std::string m_addrstate1;
-
-        /// @brief Any middle level of state, i.e. a republic or realm as a part of some bigger country or union.
-        std::string m_addrstate2;
-
-        /// @brief The highest level of state, i.e. a country or a union of countries.
-        std::string m_addrstate3;
-
-        /// @brief Name of the licensee.
-        std::string m_name;
-
-        /// @brief Type of the licensee, e.g. "legal entity".
-        std::string m_detailsType;
-
-        /// @brief Contact email.
-        std::string m_detailsContactEmail;
-
-        /// @brief Contact address.
-        std::string m_detailsContactAddress;
-
-        /// @brief Contact phone number(s).
-        std::string m_detailsContactPhone;
-
-        /// @brief Department of the licensee to which the license was granted.
-        std::string m_detailsDepartment;
 };
 
 #endif // LICENSECERTIFICATE_H
