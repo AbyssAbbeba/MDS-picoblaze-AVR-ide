@@ -24,9 +24,6 @@ file ( GLOB LST_FILES *.lst )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${PRC_FILES};${LST_FILES}" )
 
-# Locate compiler executable binary.
-get_property ( MDS_COMPILER TARGET ${COMPILER_EXEC_TARGET} PROPERTY LOCATION )
-
 # Build device specification files.
 foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
     # Build.
@@ -38,13 +35,14 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                             COMMENT "Building device specification file for ${PROCESSOR}."
                             COMMAND bash "${CMAKE_SOURCE_DIR}/runMdsCompiler.sh" ${COLOR_GCC}
-                                        ${MDS_COMPILER} --silent
-                                                        --plang=asm
-                                                        --arch=PicoBlaze
-                                                        --lst=${FILE_BASE}.lst
-                                                        --precompile=${FILE_BASE}.prc
-                                                        --base-inc-dir=${CMAKE_SOURCE_DIR}/compiler/include
-                                                        "${FILE_BASE}.asm" )
+                                    $<TARGET_FILE:${COMPILER_EXEC_TARGET}>
+                                        --silent
+                                        --plang=asm
+                                        --arch=PicoBlaze
+                                        --lst=${FILE_BASE}.lst
+                                        --precompile=${FILE_BASE}.prc
+                                        --base-inc-dir=${CMAKE_SOURCE_DIR}/compiler/include
+                                        "${FILE_BASE}.asm" )
     else()
         add_custom_target ( "${PROJECT_NAME}_prc_file_${PROCESSOR}" ALL
                             COMMENT "Device specification file for ${PROCESSOR} is already built ... skipping." )

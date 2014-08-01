@@ -140,53 +140,125 @@ inline bool LicenseCertificate::parseXML ( const char * data )
     {
         return false;
     }
-    m_version   = tagCertificate.attribute("version"    ).toStdString();
-    m_date      = tagCertificate.attribute("date"       ).toUInt(nullptr, 16);
-    m_userid    = tagCertificate.attribute("userid"     ).toUInt(nullptr, 16);
-    m_expiry    = tagCertificate.attribute("expiry", "0").toUInt(nullptr, 16);
-    m_licenseid = tagCertificate.attribute("licenseid"  ).toUInt(nullptr, 16);
-    for ( const auto & product : tagCertificate.attribute("products").split(',') )
-    {
-        m_products.push_back(product.toStdString());
-    }
+    m_version = tagCertificate.attribute("version").toStdString();
 
     for ( QDomElement n = tagCertificate.firstChildElement();
           false == n.isNull();
           n = n.nextSiblingElement() )
     {
-        if ( "address" == n.tagName() )
-        {
-            m_addrcity    = n.attribute("city"   ).toStdString();
-            m_addrpost    = n.attribute("post"   ).toStdString();
-            m_addrstate1  = n.attribute("state1" ).toStdString();
-            m_addrstate2  = n.attribute("state2" ).toStdString();
-            m_addrstate3  = n.attribute("state3" ).toStdString();
-            m_addrStreet1 = n.attribute("street1").toStdString();
-            m_addrstreet2 = n.attribute("street2").toStdString();
-        }
-        else if ( "name" == n.tagName() )
-        {
-            m_name = n.text().toStdString();
-        }
-        else if ( "details" == n.tagName() )
+        if ( "product" == n.tagName() )
         {
             for ( QDomElement m = n.firstChildElement();
                   false == m.isNull();
                   m = m.nextSiblingElement() )
             {
-                if ( "type" == m.tagName() )
+                if ( "designation" == m.tagName() )
                 {
-                    m_detailsType = m.text().toStdString();
+                    m_product.m_designation = m.text().toStdString();
                 }
-                else if ( "contact" == m.tagName() )
+                else if ( "licences" == m.tagName() )
                 {
-                    m_detailsContactEmail   = m.attribute("email"  ).toStdString();
-                    m_detailsContactPhone   = m.attribute("phone"  ).toStdString();
-                    m_detailsContactAddress = m.attribute("address").toStdString();
+                    m_product.m_licences = m.text().toStdString();
                 }
-                else if ( "department" == m.tagName() )
+                else if ( "variant" == m.tagName() )
                 {
-                    m_detailsDepartment = m.text().toStdString();
+                    m_product.m_variant = m.text().toStdString();
+                }
+                else if ( "grade" == m.tagName() )
+                {
+                    m_product.m_grade = m.text().toStdString();
+                }
+                else if ( "target" == m.tagName() )
+                {
+                    m_product.m_target = m.text().toStdString();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else if ( "licensee" == n.tagName() )
+        {
+            for ( QDomElement m = n.firstChildElement();
+                  false == m.isNull();
+                  m = m.nextSiblingElement() )
+            {
+                if ( "name" == m.tagName() )
+                {
+                    m_licensee.m_name = m.text().toStdString();
+                }
+                else if ( "type" == m.tagName() )
+                {
+                    m_licensee.m_type = m.text().toStdString();
+                }
+                else if ( "email" == m.tagName() )
+                {
+                    m_licensee.m_email = m.text().toStdString();
+                }
+                else if ( "phone" == m.tagName() )
+                {
+                    m_licensee.m_phone = m.text().toStdString();
+                }
+                else if ( "address" == m.tagName() )
+                {
+                    for ( QDomElement o = m.firstChildElement();
+                          false == o.isNull();
+                           o = o.nextSiblingElement() )
+                    {
+                        if ( "country" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_country = o.text().toStdString();
+                        }
+                        else if ( "state" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_state = o.text().toStdString();
+                        }
+                        else if ( "municipality" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_municipality = o.text().toStdString();
+                        }
+                        else if ( "street" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_street = o.text().toStdString();
+                        }
+                        else if ( "number" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_number = o.text().toStdString();
+                        }
+                        else if ( "post" == o.tagName() )
+                        {
+                            m_licensee.m_address.m_post = o.text().toStdString();
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else if ( "system" == n.tagName() )
+        {
+            for ( QDomElement m = n.firstChildElement();
+                  false == m.isNull();
+                  m = m.nextSiblingElement() )
+            {
+                if ( "timestamp" == m.tagName() )
+                {
+                    m_system.m_timestamp = m.text().toStdString();
+                }
+                else if ( "userid" == m.tagName() )
+                {
+                    m_system.m_userid = m.text().toStdString();
+                }
+                else if ( "orderid" == m.tagName() )
+                {
+                    m_system.m_orderid = m.text().toStdString();
                 }
                 else
                 {

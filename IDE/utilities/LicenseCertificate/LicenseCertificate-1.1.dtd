@@ -1,0 +1,62 @@
+<!--
+  -- XML DTD for license certificates v1.1 issued by Moravia Microsystems, s.r.o.
+  --
+  -- (C) copyright 2014 Moravia Microsystems, s.r.o.
+  --
+  -- http://www.moravia-microsystems.com
+  -->
+
+<!-- Data types used here. -->
+<!ENTITY % Integer "CDATA">
+<!ENTITY % String  "CDATA">
+
+<!-- Root element. -->
+<!ELEMENT certificate (product, licensee, system)>
+<!ATTLIST certificate
+    <!-- Version of license certificate format. -->
+    version %String; #REQUIRED
+>
+<!-- Information of the licensed product and type of license. -->
+<!ELEMENT product (designation, licences, variant, grade, target)>
+<!-- Name of product covered by the license. -->
+<!ELEMENT designation (#PCDATA)>
+<!-- Number of licenses issued. -->
+<!ELEMENT licences (#PCDATA)>
+<!-- Product variant, one of {Commercial,Noncommercial}. -->
+<!ELEMENT variant (#PCDATA)>
+<!-- Product grade, one of {Basic,Premium,Professional,Ultimate}. -->
+<!ELEMENT grade (#PCDATA)>
+<!-- Processor architecture or similar. -->
+<!ELEMENT target (#PCDATA)>
+<!-- Information about to whom the license was or has been granted. -->
+<!ELEMENT licensee (name, type, email, phone, address)>
+<!-- Subject name. -->
+<!ELEMENT name (#PCDATA)>
+<!-- Type of subject, one of: {company,school,individual,other}. -->
+<!ELEMENT type (#PCDATA)>
+<!-- Email address associated with the registered customer. -->
+<!ELEMENT email (#PCDATA)>
+<!-- Contact phone (optional). -->
+<!ELEMENT phone (#PCDATA)>
+<!-- Address of the licensee. -->
+<!ELEMENT address (country, state, municipality, street, number, post)>
+<!-- Sovereign state (e.g. United States of America, Federal Republic of Germany, Russian Federation). -->
+<!ELEMENT country (#PCDATA)>
+<!-- Dependent state (optional) (e.g. Republic of Texas, Freistaat Bayern, Novosibirsk Oblast). -->
+<!ELEMENT state (#PCDATA)>
+<!-- City/town or other type of municipality (e.g. Dallas, München, Novosibirsk). -->
+<!ELEMENT municipality (#PCDATA)>
+<!-- Street name. -->
+<!ELEMENT street (#PCDATA)>
+<!-- House number or similar designation. -->
+<!ELEMENT number (#PCDATA)>
+<!-- Postal code. -->
+<!ELEMENT post (#PCDATA)>
+<!-- Software details related to certificate file generation. -->
+<!ELEMENT system (timestamp, userid, orderid)>
+<!-- Unix time stamp (seconds since 1970-01-01 00:00:00 UTC) - time of generation. -->
+<!ELEMENT timestamp (#PCDATA)>
+<!-- Some Unique User ID from web page DB table(s) hashed with MD5 as hexadecimal string. -->
+<!ELEMENT userid (#PCDATA)>
+<!-- Some Unique Order ID from web page DB table(s) hashed with MD5 as hexadecimal string. -->
+<!ELEMENT orderid (#PCDATA)>

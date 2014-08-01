@@ -1,63 +1,33 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!DOCTYPE certificate
     PUBLIC "-//Moravia Microsystems//License Certificate File 1.0//EN"
-    "http://www.moravia-microsystems.com/LicenseCertificate.dtd">
+    "http://www.moravia-microsystems.com/LicenseCertificate-1.1.dtd">
 
 <certificate version="1.1">
     <product>
-        <name>Multitarget Development System</name>
+        <designation>Multitarget Development System</designation>
         <licences>5</licences>
-        <variant></variant> <!-- Commercial | Noncommercial | Trial -->
-        <grade></grade> <!-- Basic | Premium | Professional | Ultimate -->
+        <variant>Commercial</variant>
+        <grade>Professional</grade>
         <target>PicoBlaze</target>
     </product>
     <licensee>
-        <name>Kelio s.r.o.</name> <!-- may also be name of an individual -->
-        <type>company</type> <!-- company | education institution | individual | other -->
+        <name>Kelio s.r.o.</name>
+        <type>company</type>
         <email>info@kelio.cz</email>
-        <phone>+420777776720</phone> <!-- optional -->
+        <phone>+420777776720</phone>
         <address>
             <country>Czech Republic</country>
-            <state><state> <!-- optional -->
+            <state></state>
             <municipality>Brno</municipality>
-            <area>Brno-Žabovřesky</area> <!-- optional -->
             <street>Maničky</street>
-            <number>43/12<number>
-            <post>61600<post>
+            <number>43/12</number>
+            <post>61600</post>
         </address>
     </licensee>
     <system>
-        <timestamp></timestamp> <!-- Unix timestamp - time of generation -->
-        <userid></userid><!-- Some Unique User ID from web page DB table(s), e.g. 1244 -->
-        <orderid></orderid><!-- Some Unique Order ID from web page DB table(s), e.g. 1244 -->
+        <timestamp>1406890984</timestamp>
+        <userid>454503058c5b68f4d2e2dd3fb390b93a</userid>
+        <orderid>2f498969904778335f1c320479ebefbc</orderid>
     </system>
 </certificate>
-
-<!-- Old format:
-
-<certificate version="1.0"
-             userid="0123abcd"
-             licenseid="000d1234"
-             products="1,4,4a,f8,1b,c"
-             date="5322F8F7"
-             expiry="">
-
-    <address street1="4 avenue Saint Granier"
-             street2="BP 3009"
-             city="Toulouse"
-             post="31300"
-             state1="Midi-Pyrénées"
-             state2="France"
-             state3="European Union"/>
-
-    <name>Honeywell Aerospace SAS</name>
-
-    <details>
-        <type>legal entity</type>
-        <contact email="overlord@nsa.gov" address="38°52′16″N 77°3′21″W" phone=""/>
-        <department>Department of military espionage.</department>
-    </details>
-
-</certificate>
-
--->

@@ -23,7 +23,7 @@
 project ( IDE )
 
 # Set the minimum required version of CMake.
-cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
+cmake_minimum_required ( VERSION 3.0 FATAL_ERROR )
 
 # Create verbose makefiles if on.
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
@@ -275,7 +275,7 @@ include_directories ( ${Boost_INCLUDE_DIRS} )
 find_package ( FLEX  2.5.35 REQUIRED )
 find_package ( BISON 2.5    REQUIRED )
 
-# Find Doxygen (not required).
+# Find Doxygen (optional).
 find_package ( Doxygen 1.7.6 )
 
 # Find QtHelp tools.
@@ -324,7 +324,7 @@ set ( INSTALL_DIR_DEMOPROJECT "${INSTALL_DIR_PREFIX}share/mds/demoproject" )
 # Installation directories specific for Linux.
 set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )
 set ( INSTALL_DIR_MAN           "${INSTALL_DIR_MAIN_SHARE}/man/man1" )
-set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
+set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/mds-libs" )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
