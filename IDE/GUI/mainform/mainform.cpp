@@ -291,6 +291,7 @@ void MainForm::createMenu()
     fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
+    QList<QString> recentFiles = GuiCfg::getInstance().getRecentFiles();
     fileMenu->addSeparator();
     //fileMenu->addAction(addAct);
     fileMenu->addAction(saveAct);
@@ -318,6 +319,8 @@ void MainForm::createMenu()
     projectMenu = menuBar()->addMenu(tr("&Project"));
     projectMenu->addAction(newProjAct);
     projectMenu->addAction(openProjAct);
+    recentProjectsMenu = projectMenu->addMenu(tr("Open Recent"));
+    QList<QString> recentProjects = GuiCfg::getInstance().getRecentProjects();
     projectMenu->addAction(saveProjAct);
     projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectCompileAct);
