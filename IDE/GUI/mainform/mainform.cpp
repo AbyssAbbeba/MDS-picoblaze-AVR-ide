@@ -825,6 +825,7 @@ void MainForm::openFile()
             wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
             wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
             wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
+            GuiCfg::getInstance().fileOpened(path);
         }
     }
     //qDebug() << "MainForm: return openFile()";
@@ -877,8 +878,6 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 {
                     //TODO: something
                     //WHAT DOES IT MEAN? Session restoration?
-                    //IF YOU ARE BLIND AND LIVING BY THE RIVER...
-                    //WHAT?!
                 }
             }
             else
