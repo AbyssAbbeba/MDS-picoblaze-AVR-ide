@@ -60,7 +60,9 @@
   <Option type="line" name="color" color="#66ccff"/>
   <Option type="update" name="color" color="#ffff00"/>
  </SimOthers>
- <RecentFiles/>
+ <RecentFiles>
+  <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/a.debug"/>
+ </RecentFiles>
  <RecentProjects>
   <Project path="./demoprojekt/Example/Example.mds-project"/>
  </RecentProjects>
