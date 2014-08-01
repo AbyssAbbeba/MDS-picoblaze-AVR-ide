@@ -18,7 +18,7 @@
 
 #include <QWidget>
 #include <QDialog>
-#include "ui_aboutwidget.h"
+//#include "ui_aboutwidget.h"
 
 
 
@@ -27,8 +27,8 @@ class AboutWidget : public QDialog
     public:
         AboutWidget(QWidget *parent);
 
-    private:
-        Ui_AboutWidget ui;
+    //private:
+        //Ui_AboutWidget ui;
 };
 
 
