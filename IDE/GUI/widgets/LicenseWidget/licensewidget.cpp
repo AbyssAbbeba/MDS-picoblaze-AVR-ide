@@ -57,7 +57,7 @@ void LicenseWidget::tryLoad()
             QFile file(":/resources/html/license.html");
             if (file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
-                ui.teInfo->setHtml(file.readAll());
+                ui.teInfo->setHtml(QString::fromUtf8(file.readAll()));
                 QTextCursor cur(ui.teInfo->document());
                 cur = ui.teInfo->document()->find("__NAME__");
                 cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
