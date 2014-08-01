@@ -58,6 +58,24 @@ void LicenseWidget::tryLoad()
             if (file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
                 ui.teInfo->setHtml(file.readAll());
+                QTextCursor cur(ui.teInfo->document());
+                cur = ui.teInfo->document()->find("__NAME__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                cur = ui.teInfo->document()->find("__EMAIL__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                cur = ui.teInfo->document()->find("__PHONE__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                cur = ui.teInfo->document()->find("__STREET__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                cur = ui.teInfo->document()->find("__NUMBER__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                cur = ui.teInfo->document()->find("__POST__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                cur = ui.teInfo->document()->find("__CITY__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                cur = ui.teInfo->document()->find("__STATE__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                ui.teInfo->setTextCursor(cur);
                 file.close();
                 this->setResult(QDialog::Accepted);
             }
@@ -88,6 +106,24 @@ void LicenseWidget::load()
                 if (file.open(QIODevice::ReadOnly | QIODevice::Text))
                 {
                     ui.teInfo->setHtml(file.readAll());
+                    QTextCursor cur(ui.teInfo->document());
+                    cur = ui.teInfo->document()->find("__NAME__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                    cur = ui.teInfo->document()->find("__EMAIL__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                    cur = ui.teInfo->document()->find("__PHONE__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                    cur = ui.teInfo->document()->find("__STREET__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                    cur = ui.teInfo->document()->find("__NUMBER__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                    cur = ui.teInfo->document()->find("__POST__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                    cur = ui.teInfo->document()->find("__CITY__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                    cur = ui.teInfo->document()->find("__STATE__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                    ui.teInfo->setTextCursor(cur);
                     file.close();
                 }
                 if (QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath()) == false)
@@ -100,6 +136,7 @@ void LicenseWidget::load()
             else
             {
                 ui.teInfo->clear();
+                this->license = false;
                 ui.teInfo->insertPlainText("<invalid certificate>");
                 this->setResult(QDialog::Rejected);
             }
