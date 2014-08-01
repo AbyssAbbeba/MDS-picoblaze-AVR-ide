@@ -66,8 +66,8 @@ class ProjectConfigDialog_Core : public QDialog
         void ok();
         void cancel();
 
-    protected:
-        virtual void closeEvent(QCloseEvent *e);
+    //protected:
+    //    virtual void closeEvent(QCloseEvent *e);
 };
 
 #endif

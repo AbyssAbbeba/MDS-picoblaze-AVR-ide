@@ -24,7 +24,7 @@ SET( SAMPLE_SRCS
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
     "./lineeditconvert.h"
-    "./convertortool.h"
+    #"./convertortool.h"
 )
 
 # ------------------------------------------------------------------------------

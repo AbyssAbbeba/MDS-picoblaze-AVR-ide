@@ -77,18 +77,16 @@ class GuiCfg_Items
         } WarningsOpt;
 
 
-        typedef struct RecentFiles
+        /*typedef struct RecentFiles
         {
-            QString fileNames[5];
-            QString filePaths[5];
+            QList<QString> filePaths;
         } RecentFiles;
 
 
         typedef struct RecentProjects
         {
-            QString fileNames[5];
-            QString filePaths[5];
-        } RecentProjects;
+            QList<QString> projectPaths;
+        } RecentProjects;*/
 
 
         typedef enum
@@ -116,7 +114,8 @@ class GuiCfg_Items
 
         
         //recent files
-        GuiCfg_Items::RecentFiles recentFiles;
+        QList<QString> recentFiles;
+        QList<QString> recentProjects;
 
         //last dialog (open, save) path
         QString lastDialogPath;

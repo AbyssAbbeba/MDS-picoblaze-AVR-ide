@@ -23,5 +23,8 @@
      <file>resources/fonts/Ubuntu/UbuntuMono-RI.ttf</file>
      <file>resources/fonts/Ubuntu/UbuntuMono-B.ttf</file>
      <file>resources/fonts/Ubuntu/UbuntuMono-BI.ttf</file>
+     <file>resources/html/about-general.html</file>
+     <file>resources/html/about-3rd.html</file>
+     <file>resources/html/license.html</file>
  </qresource>
  </RCC>
