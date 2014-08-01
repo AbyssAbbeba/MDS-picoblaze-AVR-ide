@@ -172,6 +172,7 @@ class MainForm : public QMainWindow
         QMenu *helpMenu;
 
         QMenu *recentFilesMenu;
+        QMenu *recentProjectsMenu;
 
         //toolbars
         QToolBar *fileToolBar;
