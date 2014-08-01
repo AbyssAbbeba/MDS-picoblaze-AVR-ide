@@ -31,19 +31,22 @@ AboutWidget::AboutWidget(QWidget *parent)
 
     QWidget *tabWidgetGeneral = new QWidget(this);
     QVBoxLayout *generalLayout = new QVBoxLayout(tabWidgetGeneral);
-    QTextEdit *editGeneral = new QTextEdit(tabWidgetGeneral);
+    QTextBrowser *editGeneral = new QTextBrowser(tabWidgetGeneral);
     generalLayout->addWidget(editGeneral);
     tabWidgetGeneral->setLayout(generalLayout);
     tabWidget->addTab(tabWidgetGeneral, "General");
 
     QWidget *tabWidgetOthers = new QWidget(this);
     QVBoxLayout *othersLayout = new QVBoxLayout(tabWidgetOthers);
-    QTextEdit *editOthers = new QTextEdit(tabWidgetOthers);
+    QTextBrowser *editOthers = new QTextBrowser(tabWidgetOthers);
     othersLayout->addWidget(editOthers);
     tabWidgetOthers->setLayout(othersLayout);
     tabWidget->addTab(tabWidgetOthers, "3rd party");
 
-    QFile fileGeneral(":/resources/html/about-general.html");
+    editGeneral->setSource(QUrl("qrc:/resources/html/about-general.html"));
+    editOthers->setSource(QUrl("qrc:/resources/html/about-3rd.html"));
+
+    /*QFile fileGeneral(":/resources/html/about-general.html");
     if (fileGeneral.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         editGeneral->setHtml(fileGeneral.readAll());
@@ -55,6 +58,6 @@ AboutWidget::AboutWidget(QWidget *parent)
     {
         editOthers->setHtml(fileOthers.readAll());
         fileOthers.close();
-    }
+    }*/
     
 }
