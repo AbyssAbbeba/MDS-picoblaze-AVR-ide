@@ -58,7 +58,10 @@
  <SimOthers>
   <Option param="random" name="undef"/>
   <Option type="line" name="color" color="#66ccff"/>
-  <Option type="breakpoint" name="color" color="#00ff00"/>
   <Option type="update" name="color" color="#ffff00"/>
  </SimOthers>
+ <RecentFiles/>
+ <RecentProjects>
+  <Project path="./demoprojekt/Example/Example.mds-project"/>
+ </RecentProjects>
 </config>

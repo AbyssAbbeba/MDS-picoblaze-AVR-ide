@@ -185,6 +185,7 @@ class Project : public QObject
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);
         QString addFile(QString path, QString name);
+        void reloadProjectTree();
         
     private slots:
         void setActive();

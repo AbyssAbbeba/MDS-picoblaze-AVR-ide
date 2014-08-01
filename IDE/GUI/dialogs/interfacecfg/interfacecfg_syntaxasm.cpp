@@ -248,145 +248,145 @@ void InterfaceCfg_SyntaxAsm::colorSelected(const QColor &color)
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxICmntChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxICmntChanged(int /*state*/)
 {
     //this->ui.chckICmnt->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxUCmntChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxUCmntChanged(int /*state*/)
 {
     //this->ui.chckUCmnt->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSCmntChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSCmntChanged(int /*state*/)
 {
     //this->ui.chckSCmnt->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBCmntChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBCmntChanged(int /*state*/)
 {
     //this->ui.chckBCmnt->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxILblChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxILblChanged(int /*state*/)
 {
     //this->ui.chckILbl->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxULblChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxULblChanged(int /*state*/)
 {
     //this->ui.chckILbl->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSLblChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSLblChanged(int /*state*/)
 {
     //this->ui.chckILbl->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBLblChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBLblChanged(int /*state*/)
 {
     //this->ui.chckILbl->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxIKwrdChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxIKwrdChanged(int /*state*/)
 {
     //this->ui.chckIKwrd->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxUKwrdChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxUKwrdChanged(int /*state*/)
 {
     //this->ui.chckIKwrd->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSKwrdChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSKwrdChanged(int /*state*/)
 {
     //this->ui.chckIKwrd->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBKwrdChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBKwrdChanged(int /*state*/)
 {
     //this->ui.chckIKwrd->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxIOpdsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxIOpdsChanged(int /*state*/)
 {
     //this->ui.chckIOpds->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxUOpdsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxUOpdsChanged(int /*state*/)
 {
     //this->ui.chckIOpds->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSOpdsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSOpdsChanged(int /*state*/)
 {
     //this->ui.chckIOpds->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBOpdsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBOpdsChanged(int /*state*/)
 {
     //this->ui.chckIOpds->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxIOptsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxIOptsChanged(int /*state*/)
 {
     //this->ui.chckIOpts->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxUOptsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxUOptsChanged(int /*state*/)
 {
     //this->ui.chckIOpts->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSOptsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSOptsChanged(int /*state*/)
 {
     //this->ui.chckIOpts->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBOptsChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBOptsChanged(int /*state*/)
 {
     //this->ui.chckIOpts->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxIQuoteChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxIQuoteChanged(int /*state*/)
 {
     //this->ui.chckIQuote->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxUQuoteChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxUQuoteChanged(int /*state*/)
 {
     //this->ui.chckIQuote->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxSQuoteChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxSQuoteChanged(int /*state*/)
 {
     //this->ui.chckIQuote->setChecked(state);
 }
 
 
-void InterfaceCfg_SyntaxAsm::checkBoxBQuoteChanged(int state)
+void InterfaceCfg_SyntaxAsm::checkBoxBQuoteChanged(int /*state*/)
 {
     //this->ui.chckIQuote->setChecked(state);
 }

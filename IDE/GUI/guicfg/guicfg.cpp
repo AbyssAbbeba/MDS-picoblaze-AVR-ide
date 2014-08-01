@@ -67,15 +67,47 @@ void GuiCfg::setWarningsOpt(GuiCfg::WarningsOpt opts)
 }
 
 
-void GuiCfg::fileOpened(QString path, QString name)
+void GuiCfg::fileOpened(QString path)
 {
-    for (int i = 5; i > 1; i--)
+    if (true == recentFiles.contains(path))
     {
-        recentFiles.fileNames[i] = recentFiles.fileNames[i-1];
-        recentFiles.filePaths[i] = recentFiles.filePaths[i-1];
+        recentFiles.removeAll(path);
+        recentFiles.append(path);
     }
-    recentFiles.fileNames[0] = name;
-    recentFiles.filePaths[0] = path;
+    else
+    {
+        if (recentFiles.count() >= 5)
+        {
+            recentFiles.removeFirst();
+            recentFiles.append(path);
+        }
+        else
+        {
+            recentFiles.append(path);
+        }
+    }
+}
+
+
+void GuiCfg::projectOpened(QString path)
+{
+    if (true == recentProjects.contains(path))
+    {
+        recentProjects.removeAll(path);
+        recentProjects.append(path);
+    }
+    else
+    {
+        if (recentProjects.count() >= 5)
+        {
+            recentProjects.removeFirst();
+            recentProjects.append(path);
+        }
+        else
+        {
+            recentProjects.append(path);
+        }
+    }
 }
 
 
@@ -401,11 +433,6 @@ void GuiCfg::sessionClear()
 }
 
 
-void GuiCfg::recentAppend(QString name, QString path)
-{
-}
-
-
 
 
 
@@ -437,9 +464,16 @@ GuiCfg_Items::WarningsOpt GuiCfg::getWarningsOpt()
     return warnings;
 }
 
-GuiCfg_Items::RecentFiles GuiCfg::getRecentFiles()
+
+QList<QString> GuiCfg::getRecentFiles()
 {
     return recentFiles;
+}
+
+
+QList<QString> GuiCfg::getRecentProjects()
+{
+    return recentProjects;
 }
 
 QString GuiCfg::getLastDialogPath()
@@ -1040,6 +1074,34 @@ void GuiCfg::loadConfig()
                                 }
                             }
                             xmlSimOthersNode = xmlSimOthersNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "RecentFiles")
+                    {
+                        QDomNode xmlRecentNode = xmlElement.firstChild();
+                        QDomElement xmlRecentElement;
+                        while (!xmlRecentNode.isNull())
+                        {
+                            xmlRecentElement = xmlRecentNode.toElement();
+                            if (xmlRecentElement.tagName() == "File")
+                            {
+                                this->recentFiles.append(xmlRecentElement.attribute("path"));
+                            }
+                            xmlRecentNode = xmlRecentNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "RecentProjects")
+                    {
+                        QDomNode xmlRecentNode = xmlElement.firstChild();
+                        QDomElement xmlRecentElement;
+                        while (!xmlRecentNode.isNull())
+                        {
+                            xmlRecentElement = xmlRecentNode.toElement();
+                            if (xmlRecentElement.tagName() == "Project")
+                            {
+                                this->recentProjects.append(xmlRecentElement.attribute("path"));
+                            }
+                            xmlRecentNode = xmlRecentNode.nextSibling();
                         }
                     }
                 }
@@ -1709,6 +1771,25 @@ void GuiCfg::saveConfig()
     xmlUpdate.setAttribute("color", this->simColorWidgetChanged.name());
     xmlSimOthers.appendChild(xmlUpdate);
     xmlRoot.appendChild(xmlSimOthers);
+    
+    QDomElement xmlRecentFiles = domDoc.createElement("RecentFiles");
+    for (int i = 0; i < this->recentFiles.count(); i++)
+    {
+        QDomElement xmlFile = domDoc.createElement("File");
+        xmlFile.setAttribute("path", this->recentFiles.at(i));
+        xmlRecentFiles.appendChild(xmlFile);
+    }
+    xmlRoot.appendChild(xmlRecentFiles);
+
+    QDomElement xmlRecentProjects = domDoc.createElement("RecentProjects");
+    for (int i = 0; i < this->recentProjects.count(); i++)
+    {
+        QDomElement xmlProject = domDoc.createElement("Project");
+        xmlProject.setAttribute("path", this->recentProjects.at(i));
+        xmlRecentProjects.appendChild(xmlProject);
+    }
+    xmlRoot.appendChild(xmlRecentProjects);
+    
     QFile cfgFile(this->configPath);
     cfgFile.open(QIODevice::WriteOnly);
     QTextStream xmlStream(&cfgFile);
