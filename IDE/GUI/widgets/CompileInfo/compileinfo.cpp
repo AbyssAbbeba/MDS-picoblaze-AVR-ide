@@ -36,7 +36,7 @@ void CompileInfo::mouseMoveEvent(QMouseEvent *e)
     bool ok = false;
     if (list.size() > 1)
     {
-        int line = list.at(1).section('.',0,0).toInt(&ok, 10);
+        //int line = list.at(1).section('.',0,0).toInt(&ok, 10);
         if (ok == true)
         {
             QWidget *viewport = this->viewport();

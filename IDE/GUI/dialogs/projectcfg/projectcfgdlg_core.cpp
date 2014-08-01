@@ -86,13 +86,13 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
  * @brief
  * @param
  */
-void ProjectConfigDialog_Core::closeEvent(QCloseEvent * /*e*/)
+/*void ProjectConfigDialog_Core::closeEvent(QCloseEvent * e)
 {
     if (reloadFiles == true)
     {
         emit reloadTree();
     }
-}
+}*/
 
 
 /**
@@ -100,6 +100,7 @@ void ProjectConfigDialog_Core::closeEvent(QCloseEvent * /*e*/)
  */
 void ProjectConfigDialog_Core::reload()
 {
+    qDebug() << "ProjectConfigDialog_Core: reload()";
     reloadFiles = true;
 }
 
@@ -127,6 +128,10 @@ void ProjectConfigDialog_Core::ok()
     this->generalCfg->save();
     this->compilerCfg->save();
     this->pathsCfg->save();
+    if (reloadFiles == true)
+    {
+        emit reloadTree();
+    }
     this->done(1);
 }
 
@@ -136,5 +141,9 @@ void ProjectConfigDialog_Core::ok()
  */
 void ProjectConfigDialog_Core::cancel()
 {
+    if (reloadFiles == true)
+    {
+        emit reloadTree();
+    }
     this->done(0);
 }

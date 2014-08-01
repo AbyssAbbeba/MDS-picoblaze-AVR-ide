@@ -286,7 +286,7 @@ void StackWidget::deviceChanged()
     this->lwStack->clear();
     for (int i = 0; i < m_size; i++)
     {
-        QListWidgetItem *item = new QListWidgetItem("", this->lwStack, i);
+        /*QListWidgetItem *item = */new QListWidgetItem("", this->lwStack, i);
     }
 
     deviceReset();
@@ -304,7 +304,7 @@ void StackWidget::deviceReset()
 }
 
 
-void StackWidget::setReadOnly(bool readOnly)
+void StackWidget::setReadOnly(bool /*readOnly*/)
 {
     
 }
