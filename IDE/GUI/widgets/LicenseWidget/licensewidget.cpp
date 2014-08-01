@@ -24,12 +24,15 @@ LicenseWidget::LicenseWidget(QWidget *parent)
 {
     this->setModal(true);
     ui.setupUi(this);
+    this->setLayout(ui.gridLayout);
     ui.teInfo->setReadOnly(true);
-    connect(ui.btnPath, SIGNAL(clicked()), this, SLOT(load()));
-    connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
-    connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
+    connect(ui.btnLoad, SIGNAL(clicked()), this, SLOT(load()));
+    connect(ui.btnPrint, SIGNAL(clicked()), this, SLOT(print()));
+    //connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
+    //connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
 
     this->license = false;
+    this->setResult(QDialog::Rejected);
 }
 
 //copy to path after ok
@@ -51,11 +54,12 @@ void LicenseWidget::tryLoad()
         {
             this->license = true;
             ui.teInfo->clear();
-            QFile file = QFile(":resources/html/license.html")
+            QFile file(":/resources/html/license.html");
             if (file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
-                ui.teInfo->setHtml(file.readAll())
-                file.close()
+                ui.teInfo->setHtml(file.readAll());
+                file.close();
+                this->setResult(QDialog::Accepted);
             }
         }
     }
@@ -67,7 +71,7 @@ void LicenseWidget::load()
     this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (this->licensePath != NULL)
     {
-        ui.lePath->setText(this->licensePath);
+        //ui.lePath->setText(this->licensePath);
         std::ifstream ifs;
 
         ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
@@ -80,17 +84,24 @@ void LicenseWidget::load()
             {
                 this->license = true;
                 ui.teInfo->clear();
-                QFile file = QFile(":resources/html/license.html")
+                QFile file(":/resources/html/license.html");
                 if (file.open(QIODevice::ReadOnly | QIODevice::Text))
                 {
-                    ui.teInfo->setHtml(file.readAll())
-                    file.close()
+                    ui.teInfo->setHtml(file.readAll());
+                    file.close();
+                }
+                if (QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath()) == false)
+                {
+                    QFile::remove(GuiCfg::getInstance().getLicensePath());
+                    QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+                    this->setResult(QDialog::Accepted);
                 }
             }
             else
             {
                 ui.teInfo->clear();
                 ui.teInfo->insertPlainText("<invalid certificate>");
+                this->setResult(QDialog::Rejected);
             }
 
             ifs.close();
@@ -100,7 +111,34 @@ void LicenseWidget::load()
 }
 
 
-void LicenseWidget::tryAccept()
+/*void LicenseWidget::closeEvent(QCloseEvent *)
+{
+    if (true == this->license)
+    {
+        this->setResult(QDialog::Accepted);
+    }
+    else
+    {
+        this->setResult(QDialog::Rejected);
+    }
+}*/
+
+
+void LicenseWidget::print()
+{
+    QPrinter printer;
+    printer.setPageSize(QPrinter::A4);
+    printer.setFullPage(true);
+    QPrintDialog *dialog = new QPrintDialog (&printer, this);
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+    ui.teInfo->print(&printer);
+}
+
+
+/*void LicenseWidget::tryAccept()
 {
     if (true == this->license)
     {
@@ -123,4 +161,4 @@ void LicenseWidget::tryReject()
 {
     this->setResult(QDialog::Rejected);
     this->close();
-}
+}*/
