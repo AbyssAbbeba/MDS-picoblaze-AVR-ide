@@ -110,7 +110,7 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
         set ( LIB_FILES_TO_INSTALL "" )
 
         foreach ( file ${dep} )
-            if ( EXISTS ${file} )
+            if ( EXISTS file )
                 get_filename_component ( file ${file} REALPATH  )
                 list ( APPEND LIB_FILES_TO_INSTALL ${file} )
             endif()
@@ -148,12 +148,14 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
             foreach ( name ${libName} ${libNameM} ${libNameMN} ${libNameMNP} )
                 if ( NOT filename STREQUAL name )
                     # message ( "lib='${lib}' | '${name}' --> '${filename}' | target='symlink-${basename}-${i}'" )
-                    math ( EXPR i "${i} + 1" )
                     list ( APPEND symLinks ${name} )
-                    add_custom_target ( symlink-${basename}-${i} ALL
-                                        COMMAND ln -sf ${filename} ${name}
-                                        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                                        VERBATIM )
+                    if ( NOT EXISTS name )
+                        add_custom_target ( symlink-${basename}-${i} ALL
+                                            COMMAND ln -s ${filename} ${name}
+                                            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                                            VERBATIM )
+                        math ( EXPR i "${i} + 1" )
+                    endif()
                 endif()
             endforeach()
         endforeach()
