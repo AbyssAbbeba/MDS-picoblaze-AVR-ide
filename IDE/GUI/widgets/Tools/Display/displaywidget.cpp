@@ -137,7 +137,7 @@ DisplayWidget::DisplayWidget(QWidget *parent, int index, bool align, bool comma)
 }
 
 
-void DisplayWidget::mousePressEvent(QMouseEvent *event)
+void DisplayWidget::mousePressEvent(QMouseEvent */*event*/)
 {
     emit pressed(this->index);
     if (activated)
@@ -161,7 +161,7 @@ void DisplayWidget::activate(bool active)
 }
 
 
-void DisplayWidget::paintEvent(QPaintEvent *event)
+void DisplayWidget::paintEvent(QPaintEvent */*event*/)
 {
     QPainter paint;
     paint.begin(this);

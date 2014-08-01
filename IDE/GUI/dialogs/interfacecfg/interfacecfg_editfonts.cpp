@@ -30,13 +30,13 @@ InterfaceCfg_EditFonts::InterfaceCfg_EditFonts(QWidget *parent)
         //if (QFont(family).styleHint() == QFont::Monospace)
         //{
         //    qDebug() << "added" << family;
-            QListWidgetItem * item = new QListWidgetItem(family, this->ui.listFonts);
+            /*QListWidgetItem * item = */new QListWidgetItem(family, this->ui.listFonts);
         //}
     }
     
     for (int i = 6; i < 25; i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(QString::number(i), this->ui.listSize);
+        /*QListWidgetItem *item = */new QListWidgetItem(QString::number(i), this->ui.listSize);
     }
 
     if (ui.listFonts->findItems(GuiCfg::getInstance().getEditorFont().family(), Qt::MatchExactly).isEmpty() == false)

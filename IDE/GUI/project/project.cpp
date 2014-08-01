@@ -3746,3 +3746,9 @@ QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
     }
     return QList<unsigned int>();
 }
+
+
+void Project::reloadProjectTree()
+{
+    qDebug() << "Project: reloadProjectTree()";
+}

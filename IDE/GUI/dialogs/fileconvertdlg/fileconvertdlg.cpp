@@ -88,7 +88,7 @@ void FileConvertDlg::setPathTemplate()
  */
 void FileConvertDlg::create()
 {
-    bool finalResult;
+    //bool finalResult;
     DataFile *input;
     DataFile *output;
 

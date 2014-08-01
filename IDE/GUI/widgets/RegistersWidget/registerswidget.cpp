@@ -80,7 +80,7 @@ RegistersWidget::~RegistersWidget()
 }
 
 
-void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int detail)
+void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/)
 {
     //qDebug() << "RegistersWidget: handleEvent()";
     if ( subsysId != this->subsys )
@@ -273,7 +273,7 @@ void RegistersWidget::deviceReset()
 }
 
 
-void RegistersWidget::setReadOnly(bool readOnly)
+void RegistersWidget::setReadOnly(bool /*readOnly*/)
 {
 }
 
