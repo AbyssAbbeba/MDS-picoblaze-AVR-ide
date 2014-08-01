@@ -43,21 +43,21 @@ AboutWidget::AboutWidget(QWidget *parent)
     tabWidgetOthers->setLayout(othersLayout);
     tabWidget->addTab(tabWidgetOthers, "3rd party");
 
-    editGeneral->setSource(QUrl("qrc:/resources/html/about-general.html"));
-    editOthers->setSource(QUrl("qrc:/resources/html/about-3rd.html"));
+    //editGeneral->setSource(QUrl("qrc:/resources/html/about-general.html"));
+    //editOthers->setSource(QUrl("qrc:/resources/html/about-3rd.html"));
 
-    /*QFile fileGeneral(":/resources/html/about-general.html");
+    QFile fileGeneral(":/resources/html/about-general.html");
     if (fileGeneral.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        editGeneral->setHtml(fileGeneral.readAll());
+        editGeneral->setHtml(QString::fromUtf8(fileGeneral.readAll()));
         fileGeneral.close();
     }
 
     QFile fileOthers(":/resources/html/about-3rd.html");
     if (fileOthers.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        editOthers->setHtml(fileOthers.readAll());
+        editOthers->setHtml(QString::fromUtf8(fileOthers.readAll()));
         fileOthers.close();
-    }*/
+    }
     
 }
