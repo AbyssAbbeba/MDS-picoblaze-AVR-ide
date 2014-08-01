@@ -91,5 +91,5 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     endif()
 endif()
 
-install ( FILES "${MANUAL_PDF}" "${MANUAL_QHC}" "${MANUAL_QCH}"
+install ( FILES "${MANUAL_PDF}" "${MANUAL_QHC}" "${MANUAL_QCH}" "QuickUserGuideAssembler.pdf"
           DESTINATION ${INSTALL_DIR_DOC} )
