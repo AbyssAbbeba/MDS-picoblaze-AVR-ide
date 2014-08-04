@@ -863,7 +863,14 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
 
     for ( size_t j = 0; j < fileLinePairs.size(); j++ )
     {
-        filesBr.push_back(canonical(path(fileLinePairs[j].first)).make_preferred().string());
+        try
+        {
+            filesBr.push_back(canonical(path(fileLinePairs[j].first)).make_preferred().string());
+        }
+        catch ( const boost::filesystem::filesystem_error & e )
+        {
+            qDebug() << "!!! ERROR: MCUSimControl::setBreakPoints(...): \"fileLinePairs[j].first\" is not valid path.";
+        }
     }
 
     m_breakpoints.clear();
