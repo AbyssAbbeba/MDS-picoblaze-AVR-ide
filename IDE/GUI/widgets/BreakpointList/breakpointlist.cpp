@@ -189,7 +189,7 @@ void BreakpointList::breakpointsRemoveLines(QString file, int line, int linesRem
 }
 
 
-void BreakpointList::breakpointClickedSlot(QTreeWidgetItem *item, int column)
+void BreakpointList::breakpointClickedSlot(QTreeWidgetItem *item, int /*column*/)
 {
     emit breakpointClicked(item->toolTip(1), item->text(0).toInt());
 }

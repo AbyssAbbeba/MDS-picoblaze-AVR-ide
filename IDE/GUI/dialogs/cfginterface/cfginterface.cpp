@@ -131,7 +131,7 @@ bool CfgInterface::addWidget(QWidget *widget, QString text, QString tabText, boo
  * @param
  * @param
  */
-void CfgInterface::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev)
+void CfgInterface::changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem */*prev*/)
 {
     this->tabs->setCurrentIndex(curr->type());
     this->widgetLabel->setText(labelTexts[curr->type()]);

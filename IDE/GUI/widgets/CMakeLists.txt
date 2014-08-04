@@ -18,6 +18,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # ------------------------------------------------------------------------------
 
 # Build the simulator widgets
+add_subdirectory(WelcomeScr)
 add_subdirectory(Editor)
 add_subdirectory(sim)
 add_subdirectory(TimeWidget)
@@ -45,7 +46,7 @@ add_subdirectory(RegistersWidget)
 add_subdirectory(PortHexEdit)
 add_subdirectory(HelpWidget)
 #add_subdirectory(ShowHideWidget)
-add_subdirectory(WelcomeScr)
 add_subdirectory(AsmMacroAnalyser)
 add_subdirectory(LicenseWidget)
 add_subdirectory(LoopGen)
+add_subdirectory(AboutWidget)

@@ -88,37 +88,6 @@ macro ( windows_cross )
     if ( NOT IS_DIRECTORY "${Boost_INCLUDE_DIR}" )
         message ( SEND_ERROR "\"${Boost_INCLUDE_DIR}\" not found." )
     endif()
-
-# set ( QT_INSTALL_LIBS "/usr/i686-w64-mingw32/Qt/lib" )
-# set ( QT_QMAKE_EXECUTABLE "wine ${CMAKE_FIND_ROOT_PATH}/Qt/qmake.exe" )
-#     # Configure Qt.
-#     set ( QTVERSION "4.8.5" )
-#     set ( QT_VERSION_MAJOR 4 )
-#     set ( QT_VERSION_MINOR 8 )
-#     set ( QT_VERSION_PATCH 5 )
-#
-#     set ( QT_BINARY_DIR                 "/usr/bin" )
-#     set ( QT_QMAKE_EXECUTABLE           "${QT_BINARY_DIR}/qmake" )
-#     set ( QT_MOC_EXECUTABLE             "${QT_BINARY_DIR}/moc" )
-#     set ( QT_RCC_EXECUTABLE             "${QT_BINARY_DIR}/rcc" )
-#     set ( QT_UIC_EXECUTABLE             "${QT_BINARY_DIR}/uic" )
-#
-#     set ( QT_INCLUDE_DIR                "${libPath}/Qt/include" )
-#     set ( QT_QTCORE_INCLUDE_DIR         "${QT_INCLUDE_DIR}/QtCore" )
-#     set ( QT_QTGUI_INCLUDE_DIR          "${QT_INCLUDE_DIR}/QtGui" )
-#     set ( QT_QTXML_INCLUDE_DIR          "${QT_INCLUDE_DIR}/QtXml" )
-#     set ( QT_QTHELP_INCLUDE_DIR         "${QT_INCLUDE_DIR}/QtHelp" )
-#
-#     set ( QT_LIBRARY_DIR                "${libPath}/Qt/lib" )
-#     set ( QT_QTGUI_LIBRARY_RELEASE      "${QT_LIBRARY_DIR}/QtGui4.dll" )
-#     set ( QT_QTXML_LIBRARY_RELEASE      "${QT_LIBRARY_DIR}/QtXml4.dll" )
-#     set ( QT_QTHELP_LIBRARY_RELEASE     "${QT_LIBRARY_DIR}/Qthelp4.dll" )
-#     set ( QT_QTCORE_LIBRARY_RELEASE     "${QT_LIBRARY_DIR}/QtCore4.dll" )
-#
-#     set ( QT_LIBRARIES ${QT_QTGUI_LIBRARY_RELEASE}
-#                        ${QT_QTXML_LIBRARY_RELEASE}
-#                        ${QT_QTHELP_LIBRARY_RELEASE}
-#                        ${QT_QTCORE_LIBRARY_RELEASE} )
 endmacro()
 
 if ( HOST_OS STREQUAL "Linux" )

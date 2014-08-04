@@ -298,11 +298,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            if (this->welcomeScr != NULL)
-            {
-                delete this->welcomeScr;
-                this->welcomeScr = NULL;
-            }
+            deleteCentralWelcome();
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
@@ -427,11 +423,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            if (this->welcomeScr != NULL)
-            {
-                delete this->welcomeScr;
-                this->welcomeScr = NULL;
-            }
+            deleteCentralWelcome();
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor1";
@@ -557,11 +549,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
-            if (this->welcomeScr != NULL)
-            {
-                delete this->welcomeScr;
-                this->welcomeScr = NULL;
-            }
+            this->deleteCentralWelcome();
             //qDebug() << "WDockManager: Create centralBase";
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
             //qDebug() << "WDockManager: base1 height" << newBaseEditor->height();
@@ -1211,6 +1199,7 @@ void WDockManager::bookmarksRemoveLinesSlot(QString file, int line, int linesRem
 
 void WDockManager::setCentralWelcome()
 {
+    qDebug() << "WDockManager: setCentralWelcome()";
     if (this->splitter->count() == 0)
     {
         this->welcomeScr = new WelcomeScr(this->splitter);
@@ -1246,6 +1235,7 @@ void WDockManager::setCentralWelcome()
                 SLOT(welcomeScrRecent(QString))
                );
     }
+    qDebug() << "WDockManager: return setCentralWelcome()";
 }
 
 
@@ -1292,12 +1282,15 @@ void WDockManager::welcomeScrRecent(QString path)
 
 void WDockManager::deleteCentralWelcome()
 {
-
+    qDebug() << "WDockManager: deleteCentralWelcome();";
     if (this->welcomeScr != NULL)
     {
-        delete this->welcomeScr;
+        this->welcomeScr->disconnect();
+        this->welcomeScr->deleteLater();
+        //delete this->welcomeScr;
         this->welcomeScr = NULL;
     }
+    qDebug() << "WDockManager: return deleteCentralWelcome();";
 }
 
 

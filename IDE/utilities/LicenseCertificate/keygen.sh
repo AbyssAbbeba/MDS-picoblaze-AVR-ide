@@ -1,5 +1,19 @@
 #! /bin/bash
 
+# ======================================================================================================================
+#
+# This script converts Moravia Micorsystems' license key (RSA private key) from PEM format to raw binary ANS.1 BER (DER)
+# encoded public key represented as C language static array defined with initializer list filled with hexadecimal
+# values.
+#
+# SW dependencies: "openssl", and "od".
+#
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+#
+# author: Martin Ošmera <martin.osmera@moravia-microsystems.com>
+#
+# ======================================================================================================================
+
 openssl rsa -in "${1}" -pubout -outform DER 2>/dev/null | od --format=x1 --address-radix=n | gawk -O '
     BEGIN {
         size = 0

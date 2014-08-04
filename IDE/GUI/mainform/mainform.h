@@ -144,6 +144,7 @@ class MainForm : public QMainWindow
         void disableBreakpointsHandle();
         void manageLicense();
         void loopGen();
+        void about();
 
     signals:
         void unhighlightSim();
@@ -172,6 +173,7 @@ class MainForm : public QMainWindow
         QMenu *helpMenu;
 
         QMenu *recentFilesMenu;
+        QMenu *recentProjectsMenu;
 
         //toolbars
         QToolBar *fileToolBar;

@@ -83,7 +83,7 @@ WLineCounterWidget* WLineCounter::getWidget()
  * @brief Sets scrollbar value to given value. (synchronisation with qtextedit)
  * @param value New ScrollBar value.
  */
-void WLineCounter::change(int value)
+void WLineCounter::change(int /*value*/)
 {
     //qDebug() << "WLineCounter: change()" << value;
     //qDebug() << "WLineCounter: value" << this->verticalScrollBar()->value();

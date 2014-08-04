@@ -58,7 +58,13 @@
  <SimOthers>
   <Option param="random" name="undef"/>
   <Option type="line" name="color" color="#66ccff"/>
-  <Option type="breakpoint" name="color" color="#00ff00"/>
   <Option type="update" name="color" color="#ffff00"/>
  </SimOthers>
+ <RecentFiles>
+  <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/a.debug"/>
+ </RecentFiles>
+ <RecentProjects>
+  <Project path="./demoprojekt/Example/Example.mds-project"/>
+  <Project path="/home/millenium/vbshare/demo2/saass.mds-project"/>
+ </RecentProjects>
 </config>

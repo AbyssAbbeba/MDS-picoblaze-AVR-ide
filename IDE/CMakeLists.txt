@@ -23,7 +23,7 @@
 project ( IDE )
 
 # Set the minimum required version of CMake.
-cmake_minimum_required ( VERSION 2.8 FATAL_ERROR )
+cmake_minimum_required ( VERSION 3.0 FATAL_ERROR )
 
 # Create verbose makefiles if on.
 set ( CMAKE_VERBOSE_MAKEFILE OFF )
@@ -55,20 +55,6 @@ set ( PRODUCT_NAME_SHORT "MDS" )
 set ( PRODUCT_NAME       "Multitarget Development System" )
 set ( COMPANY_NAME       "Moravia Microsystems, s.r.o." )
 set ( COMPANY_ADDRESS    "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
-
-# Installation directories.
-set ( INSTALL_DIR_BIN         "bin" )
-set ( INSTALL_DIR_LIB         "lib/mds" )
-set ( INSTALL_DIR_DOC         "doc/mds" )
-set ( INSTALL_DIR_SHARE       "share/mds" )
-set ( INSTALL_DIR_INCLUDE     "include/mds" )
-set ( INSTALL_DIR_DEMOPROJECT "share/mds/demoproject" )
-
-# Installation directories specific for Linux.
-set ( INSTALL_DIR_PREFIX        "/usr/local" )
-set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )
-set ( INSTALL_DIR_MAN           "${INSTALL_DIR_MAIN_SHARE}/man/man1" )
-set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/${PRODUCT_NAME_SHORT}-libs" )
 
 # Others ...
 set ( MDS_MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Name of MDS manual as PDF file without full path." )
@@ -162,6 +148,8 @@ set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MDS_BUILD_CFG_DEFS}" )
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
 if ( HOST_ARCH STREQUAL "AMD64" )
     set ( HOST_ARCH "x86_64")
+elseif ( HOST_ARCH STREQUAL "i686" )
+    set ( HOST_ARCH "x86")
 endif()
 if ( NOT TARGET_ARCH )
     message ( STATUS "Target architecture not specified, using native: ${HOST_ARCH}." )
@@ -247,12 +235,17 @@ if ( CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCPP )
     exec_program ( ${CMAKE_CXX_COMPILER}
                    ARGS --version
                    OUTPUT_VARIABLE gccOutput )
-    string ( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" gccVersion "${gccOutput}" )
-    message ( STATUS "Found GCC compiler: ${CMAKE_CXX_COMPILER} (version: \"${gccVersion}\", minimum required is: \"${GCC_MIN_VER}\")" )
+    string ( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" GCC_VERSION "${gccOutput}" )
+    message ( STATUS "Found GCC compiler: ${CMAKE_CXX_COMPILER} (version: \"${GCC_VERSION}\", minimum required is: \"${GCC_MIN_VER}\")" )
 
-    if ( "${gccVersion}" VERSION_LESS "${GCC_MIN_VER}" )
+    if ( "${GCC_VERSION}" VERSION_LESS "${GCC_MIN_VER}" )
         message ( SEND_ERROR "Minimum required version of GCC compiler is \"${GCC_MIN_VER}\"." )
     endif()
+
+    string ( REGEX MATCH "^[0-9]+"      GCC_VERSION_MAYOR "${GCC_VERSION}" )
+    string ( REGEX MATCH "\\.[0-9]+\\." GCC_VERSION_MINOR "${GCC_VERSION}" )
+    string ( REGEX MATCH "[0-9]+"       GCC_VERSION_MINOR "${GCC_VERSION_MINOR}" )
+    string ( REGEX MATCH "[0-9]+$"      GCC_VERSION_PATCH "${GCC_VERSION}" )
 else()
     message ( SEND_ERROR "Required compiler is GCC" )
 endif()
@@ -282,7 +275,7 @@ include_directories ( ${Boost_INCLUDE_DIRS} )
 find_package ( FLEX  2.5.35 REQUIRED )
 find_package ( BISON 2.5    REQUIRED )
 
-# Find Doxygen (not required).
+# Find Doxygen (optional).
 find_package ( Doxygen 1.7.6 )
 
 # Find QtHelp tools.
@@ -309,6 +302,29 @@ include ( "CTest" )
 
 # Include our own test macros.
 include ( "${CMAKE_SOURCE_DIR}/tests.cmake" )
+
+# ----------------------------------------------------------------------------------------------------------------------
+# INSTALLATION DIRECTORIES
+# ----------------------------------------------------------------------------------------------------------------------
+
+if ( TARGET_OS STREQUAL "Windows" )
+    set ( INSTALL_DIR_PREFIX "" )
+else()
+    set ( INSTALL_DIR_PREFIX "/usr/" )
+endif()
+
+# General installation directories.
+set ( INSTALL_DIR_BIN         "${INSTALL_DIR_PREFIX}bin" )
+set ( INSTALL_DIR_LIB         "${INSTALL_DIR_PREFIX}lib/mds" )
+set ( INSTALL_DIR_DOC         "${INSTALL_DIR_PREFIX}doc/mds" )
+set ( INSTALL_DIR_SHARE       "${INSTALL_DIR_PREFIX}share/mds" )
+set ( INSTALL_DIR_INCLUDE     "${INSTALL_DIR_PREFIX}include/mds" )
+set ( INSTALL_DIR_DEMOPROJECT "${INSTALL_DIR_PREFIX}share/mds/demoproject" )
+
+# Installation directories specific for Linux.
+set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )
+set ( INSTALL_DIR_MAN           "${INSTALL_DIR_MAIN_SHARE}/man/man1" )
+set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/mds-libs" )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES

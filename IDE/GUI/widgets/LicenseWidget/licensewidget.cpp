@@ -24,12 +24,15 @@ LicenseWidget::LicenseWidget(QWidget *parent)
 {
     this->setModal(true);
     ui.setupUi(this);
+    this->setLayout(ui.gridLayout);
     ui.teInfo->setReadOnly(true);
-    connect(ui.btnPath, SIGNAL(clicked()), this, SLOT(load()));
-    connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
-    connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
+    connect(ui.btnLoad, SIGNAL(clicked()), this, SLOT(load()));
+    connect(ui.btnPrint, SIGNAL(clicked()), this, SLOT(print()));
+    //connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
+    //connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
 
     this->license = false;
+    this->setResult(QDialog::Rejected);
 }
 
 //copy to path after ok
@@ -51,23 +54,30 @@ void LicenseWidget::tryLoad()
         {
             this->license = true;
             ui.teInfo->clear();
-            //ui.teInfo->insertPlainText("Version:\t");
-
-            //ui.teInfo->insertPlainText(QString::fromStdString(crt.m_version) + "\n");
-            //ui.teInfo->insertPlainText("Date:\t");
-            //ui.teInfo->insertPlainText(QString::number(crt.m_date) + "\n");
-            //ui.teInfo->insertPlainText("UserID:\t");
-            //ui.teInfo->insertPlainText(QString::number(crt.m_userid) + "\n");
-            ui.teInfo->insertPlainText("User:\t");
-            ui.teInfo->insertPlainText(QString::fromStdString(crt.m_name) + "\n");
-            //ui.teInfo->insertPlainText("Expiration:\t");
-            //ui.teInfo->insertPlainText(QString::number(crt.m_expiry) + "\n");
-            //ui.teInfo->insertPlainText("LicenseID:\t");
-            //ui.teInfo->insertPlainText(QString::number(crt.m_licenseid) + "\n");
-            ui.teInfo->insertPlainText("Products:");
-            for (unsigned int i = 0; i < crt.m_products.size(); i++)
+            QFile file(":/resources/html/license.html");
+            if (file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
-                ui.teInfo->insertPlainText("\t" + QString::fromStdString(crt.m_products.at(i)) + "\n");
+                ui.teInfo->setHtml(QString::fromUtf8(file.readAll()));
+                QTextCursor cur(ui.teInfo->document());
+                cur = ui.teInfo->document()->find("__NAME__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                cur = ui.teInfo->document()->find("__EMAIL__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                cur = ui.teInfo->document()->find("__PHONE__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                cur = ui.teInfo->document()->find("__STREET__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                cur = ui.teInfo->document()->find("__NUMBER__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                cur = ui.teInfo->document()->find("__POST__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                cur = ui.teInfo->document()->find("__CITY__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                cur = ui.teInfo->document()->find("__STATE__");
+                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                ui.teInfo->setTextCursor(cur);
+                file.close();
+                this->setResult(QDialog::Accepted);
             }
         }
     }
@@ -79,7 +89,7 @@ void LicenseWidget::load()
     this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (this->licensePath != NULL)
     {
-        ui.lePath->setText(this->licensePath);
+        //ui.lePath->setText(this->licensePath);
         std::ifstream ifs;
 
         ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
@@ -92,59 +102,43 @@ void LicenseWidget::load()
             {
                 this->license = true;
                 ui.teInfo->clear();
-                //ui.teInfo->insertPlainText("Version:\t");
-                
-                //ui.teInfo->insertPlainText(QString::fromStdString(crt.m_version) + "\n");
-                //ui.teInfo->insertPlainText("Date:\t");
-                //ui.teInfo->insertPlainText(QString::number(crt.m_date) + "\n");
-                //ui.teInfo->insertPlainText("UserID:\t");
-                //ui.teInfo->insertPlainText(QString::number(crt.m_userid) + "\n");
-                ui.teInfo->insertPlainText("User:\t");
-                ui.teInfo->insertPlainText(QString::fromStdString(crt.m_name) + "\n");
-                //ui.teInfo->insertPlainText("Expiration:\t");
-                //ui.teInfo->insertPlainText(QString::number(crt.m_expiry) + "\n");
-                //ui.teInfo->insertPlainText("LicenseID:\t");
-                //ui.teInfo->insertPlainText(QString::number(crt.m_licenseid) + "\n");
-                ui.teInfo->insertPlainText("Products:");
-                for (unsigned int i = 0; i < crt.m_products.size(); i++)
+                QFile file(":/resources/html/license.html");
+                if (file.open(QIODevice::ReadOnly | QIODevice::Text))
                 {
-                   ui.teInfo->insertPlainText("\t" + QString::fromStdString(crt.m_products.at(i)) + "\n");
+                    ui.teInfo->setHtml(file.readAll());
+                    QTextCursor cur(ui.teInfo->document());
+                    cur = ui.teInfo->document()->find("__NAME__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                    cur = ui.teInfo->document()->find("__EMAIL__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                    cur = ui.teInfo->document()->find("__PHONE__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                    cur = ui.teInfo->document()->find("__STREET__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                    cur = ui.teInfo->document()->find("__NUMBER__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                    cur = ui.teInfo->document()->find("__POST__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                    cur = ui.teInfo->document()->find("__CITY__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                    cur = ui.teInfo->document()->find("__STATE__");
+                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                    ui.teInfo->setTextCursor(cur);
+                    file.close();
                 }
-                /*std::cout << "Certificate is valid." << std::endl;
-                std::cout << std::endl;
-                std::cout << "<certificate>" << std::endl;
-                std::cout << "  ├─ version: " << crt.m_version << std::endl;
-                std::cout << "  ├─ user ID: " << crt.m_userid << std::endl;
-                std::cout << "  ├─ license ID: " << crt.m_licenseid << std::endl;
-                std::cout << "  ├─ date: " << crt.m_date << std::endl;
-                std::cout << "  ├─ expiry: " << crt.m_expiry << std::endl;
-                std::cout << "  ├─ products:";
-                for ( const auto & product : crt.m_products )
+                if (QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath()) == false)
                 {
-                    std::cout << ' ' << product;
+                    QFile::remove(GuiCfg::getInstance().getLicensePath());
+                    QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+                    this->setResult(QDialog::Accepted);
                 }
-                std::cout << std::endl;
-                std::cout << "  ├─ <address>" << std::endl;
-                std::cout << "  │    ├─ street1: \"" << crt.m_addrStreet1 << '"' << std::endl;
-                std::cout << "  │    ├─ street2: \"" << crt.m_addrstreet2 << '"' << std::endl;
-                std::cout << "  │    ├─ city: \"" << crt.m_addrcity << '"' << std::endl;
-                std::cout << "  │    ├─ post: \"" << crt.m_addrpost << '"' << std::endl;
-                std::cout << "  │    ├─ state1: \"" << crt.m_addrstate1 << '"' << std::endl;
-                std::cout << "  │    ├─ state2: \"" << crt.m_addrstate2 << '"' << std::endl;
-                std::cout << "  │    ╰─ state3: \"" << crt.m_addrstate3 << '"' << std::endl;
-                std::cout << "  ├─ name: \"" << crt.m_name << '"' << std::endl;
-                std::cout << "  ╰─ <details>" << std::endl;
-                std::cout << "       ├─ type: \"" << crt.m_detailsType << '"' << std::endl;
-                std::cout << "       ├─ <contact>" << std::endl;
-                std::cout << "       │    ├─ email: " << crt.m_detailsContactEmail << std::endl;
-                std::cout << "       │    ├─ phone: \"" << crt.m_detailsContactPhone << '"' << std::endl;
-                std::cout << "       │    ╰─ address: \"" << crt.m_detailsContactAddress << '"' << std::endl;
-                std::cout << "       ╰─ department: \"" << crt.m_detailsDepartment << '"' << std::endl;*/
             }
             else
             {
                 ui.teInfo->clear();
+                this->license = false;
                 ui.teInfo->insertPlainText("<invalid certificate>");
+                this->setResult(QDialog::Rejected);
             }
 
             ifs.close();
@@ -154,7 +148,34 @@ void LicenseWidget::load()
 }
 
 
-void LicenseWidget::tryAccept()
+/*void LicenseWidget::closeEvent(QCloseEvent *)
+{
+    if (true == this->license)
+    {
+        this->setResult(QDialog::Accepted);
+    }
+    else
+    {
+        this->setResult(QDialog::Rejected);
+    }
+}*/
+
+
+void LicenseWidget::print()
+{
+    QPrinter printer;
+    printer.setPageSize(QPrinter::A4);
+    printer.setFullPage(true);
+    QPrintDialog *dialog = new QPrintDialog (&printer, this);
+    if (dialog->exec() != QDialog::Accepted)
+    {
+        return;
+    }
+    ui.teInfo->print(&printer);
+}
+
+
+/*void LicenseWidget::tryAccept()
 {
     if (true == this->license)
     {
@@ -177,4 +198,4 @@ void LicenseWidget::tryReject()
 {
     this->setResult(QDialog::Rejected);
     this->close();
-}
+}*/

@@ -50,7 +50,7 @@ void ProjectCfg_CompPaths::newPath()
     QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
     if (NULL != path)
     {
-        QListWidgetItem *item = new QListWidgetItem(path, ui.lstPaths);
+        /*QListWidgetItem *item = */new QListWidgetItem(path, ui.lstPaths);
     }
 }
 
@@ -95,7 +95,7 @@ void ProjectCfg_CompPaths::load()
     //qDebug() << "ProjectCfg_CompPaths: load()";
     for (int i = 0; i < this->project->compileIncPaths.count(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(this->project->compileIncPaths.at(i), this->ui.lstPaths);
+        /*QListWidgetItem *item = */new QListWidgetItem(this->project->compileIncPaths.at(i), this->ui.lstPaths);
     }
     //qDebug() << "ProjectCfg_CompPaths: load()";
 }
