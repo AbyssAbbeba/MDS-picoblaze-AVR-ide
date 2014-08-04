@@ -38,27 +38,27 @@ InterfaceCfg_EditSyntax::InterfaceCfg_EditSyntax(QWidget *parent)
 
 
 
-void InterfaceCfg_EditSyntax::colorChanged(const QColor &color, InterfaceCfg_SyntaxAsm::Types type)
+void InterfaceCfg_EditSyntax::colorChanged(const QColor &/*color*/, InterfaceCfg_SyntaxAsm::Types /*type*/)
 {
 }
 
 
-void InterfaceCfg_EditSyntax::italicChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type)
+void InterfaceCfg_EditSyntax::italicChanged(bool /*enabled*/, InterfaceCfg_SyntaxAsm::Types /*type*/)
 {
 }
 
 
-void InterfaceCfg_EditSyntax::underlineChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type)
+void InterfaceCfg_EditSyntax::underlineChanged(bool /*enabled*/, InterfaceCfg_SyntaxAsm::Types /*type*/)
 {
 }
 
 
-void InterfaceCfg_EditSyntax::strikeChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type)
+void InterfaceCfg_EditSyntax::strikeChanged(bool /*enabled*/, InterfaceCfg_SyntaxAsm::Types /*type*/)
 {
 }
 
 
-void InterfaceCfg_EditSyntax::boldChanged(bool enabled, InterfaceCfg_SyntaxAsm::Types type)
+void InterfaceCfg_EditSyntax::boldChanged(bool /*enabled*/, InterfaceCfg_SyntaxAsm::Types /*type*/)
 {
 }
 

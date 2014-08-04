@@ -1,0 +1,63 @@
+<!-- Data types used here. -->
+<!ENTITY % IntegerHex   "CDATA">
+<!ENTITY % String       "CDATA">
+<!ENTITY % StringList   "CDATA">
+
+<!-- Root element. -->
+<!ELEMENT certificate (address, name, details)>
+<!ATTLIST certificate
+    <!-- Version of license certificate data format. -->
+    version     %String;        #REQUIRED
+    <!-- Unique user identifier of the licensee. -->
+    userid      %IntegerHex;    #REQUIRED
+    <!-- Unique license identifier. -->
+    licenseid   %IntegerHex;    #REQUIRED
+    <!-- Comma separated list of products licensed to the licensee. -->
+    products    %StringList;    #REQUIRED
+    <!-- Date when this certificated was legally issued in form of Unix style time stamp. -->
+    date        %IntegerHex;    #REQUIRED
+    <!-- Number of seconds for which the certificate remains valid since "date", 0 means indefinitely. -->
+    expiry      %IntegerHex;    #IMPLIED '0'
+>
+
+<!-- Address of the licensee. -->
+<!ELEMENT address EMPTY>
+<!ATTLIST address
+    <!-- Street line #1. -->
+    street1     %String;        #REQUIRED
+    <!-- Street line #2. -->
+    street2     %String;        #IMPLIED
+    <!-- Municipality (not necessarily a city). -->
+    city        %String;        #REQUIRED
+    <!-- Postal code. -->
+    post        %String;        #REQUIRED
+    <!-- The lowest level of state, i.e. a province of a republic or realm, e.g. JMK. -->
+    state1      %String;        #REQUIRED
+    <!-- Any middle level of state, i.e. a republic or realm as a part of some bigger country or union, e.g. CZ. -->
+    state2      %String;        #IMPLIED
+    <!-- The highest level of state, i.e. a country or a union of countries, e.g. EU. -->
+    state3      %String;        #IMPLIED
+>
+
+<!-- Name of the licensee. -->
+<!ELEMENT name (#PCDATA)>
+
+<!-- Additional details about the licensee. -->
+<!ELEMENT details (type, contact, department)>
+
+<!-- Type of the licensee. -->
+<!ELEMENT type (#PCDATA)>
+
+<!-- Additional contact information about the licensee. -->
+<!ELEMENT contact EMPTY>
+<!ATTLIST contact
+    <!-- Contact email. -->
+    email       %String;        #IMPLIED
+    <!-- Contact address. -->
+    address     %String;        #IMPLIED
+    <!-- Contact phone number(s). -->
+    phone       %String;        #IMPLIED
+>
+
+<!-- Department of the licensee to which the license was granted. -->
+<!ELEMENT department (#PCDATA)>

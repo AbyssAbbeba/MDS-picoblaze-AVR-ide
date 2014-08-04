@@ -713,7 +713,7 @@ void PicoBlazeGrid::deviceReset()
 }
 
 
-void PicoBlazeGrid::setReadOnly(bool readOnly)
+void PicoBlazeGrid::setReadOnly(bool /*readOnly*/)
 {
     
 }

@@ -30,6 +30,7 @@
 #include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
 #include "../widgets/LicenseWidget/licensewidget.h"
 #include "../widgets/LoopGen/loop_gen.h"
+#include "../widgets/AboutWidget/aboutwidget.h"
 #include "../guicfg/guicfg.h"
 
 
@@ -273,6 +274,8 @@ MainForm::~MainForm()
     {
         projectMan->closeProject(projectMan->getActive());
     }
+
+    GuiCfg::getInstance().saveConfig();
 }
 
 
@@ -289,6 +292,12 @@ void MainForm::createMenu()
     fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
+    QList<QString> recentFiles = GuiCfg::getInstance().getRecentFiles();
+    for (int i = recentFiles.count() -1; i >= 0 ; i--)
+    {
+        QAction *recent = new QAction(recentFiles.at(i), recentFilesMenu);
+        recentFilesMenu->addAction(recent);
+    }
     fileMenu->addSeparator();
     //fileMenu->addAction(addAct);
     fileMenu->addAction(saveAct);
@@ -316,6 +325,14 @@ void MainForm::createMenu()
     projectMenu = menuBar()->addMenu(tr("&Project"));
     projectMenu->addAction(newProjAct);
     projectMenu->addAction(openProjAct);
+    recentProjectsMenu = projectMenu->addMenu(tr("Open Recent"));
+    QList<QString> recentProjects = GuiCfg::getInstance().getRecentProjects();
+    for (int i = recentProjects.count() -1; i >= 0 ; i--)
+    {
+        QAction *recent = new QAction(recentProjects.at(i), recentProjectsMenu);
+        recentProjectsMenu->addAction(recent);
+    }
+    
     projectMenu->addAction(saveProjAct);
     projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectCompileAct);
@@ -537,6 +554,7 @@ void MainForm::createActions()
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     aboutAct = new QAction(tr("About"), this);
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     helpActionAct = new QAction(tr("Help"), this);
@@ -807,6 +825,7 @@ void MainForm::openFile()
             wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
             wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
             wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
+            GuiCfg::getInstance().fileOpened(path);
         }
     }
     //qDebug() << "MainForm: return openFile()";
@@ -859,8 +878,6 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 {
                     //TODO: something
                     //WHAT DOES IT MEAN? Session restoration?
-                    //IF YOU ARE BLIND AND LIVING BY THE RIVER...
-                    //WHAT?!
                 }
             }
             else
@@ -1124,7 +1141,7 @@ bool MainForm::openProject(QString path)
             return true;
         }
     }
-    qDebug() << "MainForm: return openProject()";
+    qDebug() << "MainForm: return openProject() false";
     return false;
 }
 
@@ -1170,7 +1187,7 @@ void MainForm::projectOpened()
 
     if (projectMan->getActive()->prjPath != "untracked")
     {
-        GuiCfg::getInstance().recentAppend(projectMan->getActive()->prjName, projectMan->getActive()->prjPath);
+        GuiCfg::getInstance().projectOpened(projectMan->getActive()->prjPath);
     }
     qDebug() << "MainForm: projectOpened done";
 }
@@ -2204,7 +2221,7 @@ void MainForm::simulationFlowHandle()
  */
 void MainForm::toolConvertor()
 {
-    ConvertorTool *a = new ConvertorTool(0);
+    /*ConvertorTool *a = */new ConvertorTool(0);
 }
 
 
@@ -2213,7 +2230,7 @@ void MainForm::toolConvertor()
  */
 void MainForm::toolDisplay()
 {
-    DisplayTool *a = new DisplayTool(0);
+    /*DisplayTool *a = */new DisplayTool(0);
 }
 
 
@@ -2409,6 +2426,7 @@ void MainForm::addUntrackedFile(QString name, QString path)
 void MainForm::startProjectConfig(Project *project)
 {
     ProjectConfigDialog_Core *cfgdlg = new ProjectConfigDialog_Core(this, project);
+    connect(cfgdlg, SIGNAL(reloadTree()), project, SLOT(reloadProjectTree()));
     cfgdlg->exec();
 }
 
@@ -2418,7 +2436,7 @@ void MainForm::startProjectConfig(Project *project)
  */
 void MainForm::help()
 {
-    HelpWidget *helpWidget = new HelpWidget(0, this->width(), this->height());
+    /*HelpWidget *helpWidget = */new HelpWidget(0, this->width(), this->height());
 }
 
 
@@ -2505,7 +2523,7 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
  */
 void MainForm::toolFileConvert()
 {
-    FileConvertDlg *dlg = new FileConvertDlg(this);
+    /*FileConvertDlg *dlg = */new FileConvertDlg(this);
 }
 
 
@@ -3076,4 +3094,11 @@ void MainForm::loopGen()
 {
     loop_gen *widget = new loop_gen(0);
     widget->show();
+}
+
+
+void MainForm::about()
+{
+    AboutWidget *widget = new AboutWidget(this);
+    widget->exec();
 }

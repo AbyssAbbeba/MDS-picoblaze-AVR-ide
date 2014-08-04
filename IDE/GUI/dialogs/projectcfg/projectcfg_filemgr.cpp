@@ -126,6 +126,11 @@ void ProjectCfg_FileMgr::addFile()
         QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), ui.lstFiles);
         newItem->setToolTip(path);
         ui.lstFiles->addItem(newItem);
+        if (reloadFiles == false && this->project != NULL)
+        {
+            emit reloadTree();
+            reloadFiles = true;
+        }
         /*if (reloadFiles == false)
         {
             emit reloadTree();
@@ -145,6 +150,11 @@ void ProjectCfg_FileMgr::setMainFile()
         if (this->project != NULL)
         {
             project->setMainFile(ui.lstFiles->currentItem()->toolTip(), ui.lstFiles->currentItem()->text());
+        }
+        if (reloadFiles == false && this->project != NULL)
+        {
+            emit reloadTree();
+            reloadFiles = true;
         }
         /*if (reloadFiles == false)
         {

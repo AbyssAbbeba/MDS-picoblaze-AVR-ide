@@ -85,6 +85,7 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
     if ( TARGET_OS STREQUAL "Windows" )
+        # For some reason QtCLucene4 is required on windows, and CMake ignores that fact.
         list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
     endif()
     list ( APPEND LIB_FILES_TO_INSTALL ${QT_LIBS_TO_INSTALL} )
@@ -93,11 +94,82 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
     filter_release_only ( BOOST_LIBS_TO_INSTALL ${Boost_LIBRARIES} )
     list ( APPEND LIB_FILES_TO_INSTALL ${BOOST_LIBS_TO_INSTALL} )
 
+    #
+    ## On Linux we also need to add the whole tree of library dependencies.
+    #
+    if ( TARGET_OS STREQUAL "Linux" )
+        set ( dep ${LIB_FILES_TO_INSTALL} )
+
+        foreach ( lib ${LIB_FILES_TO_INSTALL} )
+            execute_process ( COMMAND bash -c "ldd ${lib} | gawk '/=>/ {print($3)}'"
+                              OUTPUT_VARIABLE ldd
+                              ERROR_VARIABLE lddErrors )
+            string ( REPLACE "\n" ";" ldd ${ldd} )
+            list ( APPEND dep ${ldd} )
+        endforeach()
+
+        set ( LIB_FILES_TO_INSTALL "" )
+
+        foreach ( file ${dep} )
+            if ( EXISTS file )
+                get_filename_component ( file ${file} REALPATH  )
+                list ( APPEND LIB_FILES_TO_INSTALL ${file} )
+            endif()
+        endforeach()
+
+        list ( REMOVE_DUPLICATES LIB_FILES_TO_INSTALL )
+    endif()
+
+    #
+    ## On Linux we also need to create proper symlinks to the library files.
+    #
+    if ( TARGET_OS STREQUAL "Linux" )
+        set ( symLinks "" )
+        foreach ( lib ${LIB_FILES_TO_INSTALL} )
+            get_filename_component ( filename ${lib} NAME )         # lib.so.m.n.p
+            get_filename_component ( basename ${filename} NAME_WE ) # lib
+
+            string ( REGEX MATCH "[0-9]+(\\.[0-9]+(\\.[0-9]+)?)?$" version "${filename}" )
+            string ( REGEX MATCH "^[0-9]+" versionMayor "${version}" )
+            string ( REGEX MATCH "^[0-9]+\\.[0-9]+" versionMinor "${version}}" )
+            string ( REGEX MATCH "[0-9]+$" versionMinor "${versionMinor}" )
+            string ( REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" versionPatch "${version}" )
+            string ( REGEX MATCH "[0-9]+$" versionPatch "${versionPatch}" )
+
+            set ( libName    "${basename}.so" )
+            set ( libNameM   "${libName}.${versionMayor}" )
+            set ( libNameMN  "${libNameM}.${versionMinor}" )
+            set ( libNameMNP "${libNameMN}.${versionPatch}" )
+
+            string ( REGEX REPLACE "\\.+$" "" libNameM ${libNameM} )
+            string ( REGEX REPLACE "\\.+$" "" libNameMN ${libNameMN} )
+            string ( REGEX REPLACE "\\.+$" "" libNameMNP ${libNameMNP} )
+
+            set ( i 0 )
+            foreach ( name ${libName} ${libNameM} ${libNameMN} ${libNameMNP} )
+                if ( NOT filename STREQUAL name )
+                    # message ( "lib='${lib}' | '${name}' --> '${filename}' | target='symlink-${basename}-${i}'" )
+                    list ( APPEND symLinks ${name} )
+                    if ( NOT EXISTS name )
+                        add_custom_target ( symlink-${basename}-${i} ALL
+                                            COMMAND ln -s ${filename} ${name}
+                                            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                                            VERBATIM )
+                        math ( EXPR i "${i} + 1" )
+                    endif()
+                endif()
+            endforeach()
+        endforeach()
+
+        install ( FILES ${symLinks} DESTINATION ${TARGET_DIRECTORY} )
+        set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${symLinks}" )
+    endif()
+
+    # Set selected files to install.
     message ( STATUS "3rd party libraries to install as files:" )
     foreach ( FILE_NAME ${LIB_FILES_TO_INSTALL} )
-        get_filename_component ( REAL_FILE ${FILE_NAME} REALPATH  )
-        install ( FILES ${REAL_FILE} DESTINATION ${TARGET_DIRECTORY} )
-        message ( STATUS "    * \"${REAL_FILE}\"" )
+        install ( FILES ${FILE_NAME} DESTINATION ${TARGET_DIRECTORY} )
+        message ( STATUS "    * \"${FILE_NAME}\"" )
     endforeach()
 endmacro()
 
@@ -115,13 +187,18 @@ if ( TARGET_OS STREQUAL "Linux" )
     set ( CPACK_PACKAGING_INSTALL_PREFIX "${INSTALL_DIR_PREFIX}" )
 
     if ( INDEPENDENT_PACKAGES )
-        file ( GLOB COMPILER_DIR "/usr/lib/gcc/x86_64*linux*/${gccVersion}/" )
-        file ( GLOB COMPILER_DIR2 "/usr/lib/gcc/x86_64*linux*/4.8*/" )
-        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB_3RD_PARTY}" "${COMPILER_DIR};${COMPILER_DIR2}" )
+        if ( TARGET_ARCH STREQUAL "x86_64" )
+            set ( gccLibDirPrefix "x86_64" )
+        elseif ( TARGET_ARCH STREQUAL "x86" )
+            set ( gccLibDirPrefix "i686" )
+        endif()
+        file ( GLOB compilerDir "/usr/lib/gcc/${gccLibDirPrefix}*linux*/${gccVersion}/" )
+        file ( GLOB compilerDir2 "/usr/lib/gcc/${gccLibDirPrefix}*linux*/${GCC_VERSION_MAYOR}.${GCC_VERSION_MINOR}*/" )
+        INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE ( "${INSTALL_DIR_LIB_3RD_PARTY}" "${compilerDir};${compilerDir2}" )
     endif()
 
     set ( CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE PARENT_SCOPE )
-    set ( CMAKE_INSTALL_RPATH "${INSTALL_DIR_LIB_3RD_PARTY};${CPACK_PACKAGING_INSTALL_PREFIX}/${INSTALL_DIR_LIB}" PARENT_SCOPE )
+    set ( CMAKE_INSTALL_RPATH "${INSTALL_DIR_LIB_3RD_PARTY};${INSTALL_DIR_LIB}" PARENT_SCOPE )
 
     # Install .desktop spec and application icon
     install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_MAIN_SHARE}/pixmaps/" )
@@ -161,7 +238,7 @@ endif()
 set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} ${MDS_GRADE} for ${MDS_TARGET} in ${MDS_VARIANT} version" )
-set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform that combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced tested and reliable tools to your development arsenal. Our focus is efficiency and precision." )
+set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced and reliable tools to your development arsenal. Our focus is efficiency and precision." )
 set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
 
@@ -212,7 +289,7 @@ elseif ( TARGET_ARCH STREQUAL "x86" )
 endif()
 set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= ${GLIBC_MIN_VER})" )
 if ( NOT INDEPENDENT_PACKAGES )
-    set ( CPACK_DEBIAN_PACKAGE_DEPENDS "${CPACK_DEBIAN_PACKAGE_DEPENDS}, libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
+    set ( CPACK_DEBIAN_PACKAGE_DEPENDS "libc6 (>= ${GLIBC_MIN_VER}), libqt4-core (>= ${QT_MIN_VER}), libqt4-gui (>= ${QT_MIN_VER}), libqt4-xml (>= ${QT_MIN_VER}), libqt4-help (>= ${QT_MIN_VER}), libboost-regex (= ${BOOST_MIN_VER}), libboost-filesystem (= ${BOOST_MIN_VER}), libboost-system (= ${BOOST_MIN_VER}), libgcc1 (>= ${GCC_MIN_VER}), libstdc++6 (>= ${GCC_MIN_VER})" )
 endif()
 set ( CPACK_DEBIAN_PACKAGE_RECOMMENDS "" )
 set ( CPACK_DEBIAN_PACKAGE_SUGGESTS "" )
@@ -227,7 +304,7 @@ set ( CPACK_DEBIAN_PACKAGE_DESCRIPTION "${PACKAGE_DETAILED_DESCRIPTION}" )
 
 set ( CPACK_RPM_PACKAGE_REQUIRES "glibc >= ${GLIBC_MIN_VER}" )
 if ( NOT INDEPENDENT_PACKAGES )
-    set ( CPACK_RPM_PACKAGE_REQUIRES "${CPACK_RPM_PACKAGE_REQUIRES}, qt-x11 >= ${QT_MIN_VER}, boost-filesystem = ${BOOST_MIN_VER}, boost-system = ${BOOST_MIN_VER}, libboost-regex = ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
+    set ( CPACK_RPM_PACKAGE_REQUIRES "glibc >= ${GLIBC_MIN_VER}, qt-x11 >= ${QT_MIN_VER}, boost-filesystem = ${BOOST_MIN_VER}, boost-system = ${BOOST_MIN_VER}, libboost-regex = ${BOOST_MIN_VER}, libgcc >= ${GCC_MIN_VER}, libstdc++ >= ${GCC_MIN_VER} " )
 endif()
 set ( CPACK_RPM_PACKAGE_AUTOREQPROV OFF )
 set ( CPACK_RPM_PACKAGE_RELOCATABLE OFF )
@@ -236,7 +313,6 @@ set ( CPACK_RPM_PACKAGE_URL "http://www.moravia-microsystems.com" )
 set ( CPACK_RPM_PACKAGE_GROUP "Development/Tools/IDE" )
 set ( CPACK_RPM_PACKAGE_LICENSE "Moravia Microsystems license" )
 set ( CPACK_RPM_PACKAGE_DESCRIPTION "${PACKAGE_DETAILED_DESCRIPTION}" )
-
 
 #
 ## Options for the "NSIS" generator (Windows).
