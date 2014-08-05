@@ -1460,11 +1460,84 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \end{description}
 
         \section{Symbol table}
+            Symbol table contains list of macros in your source code with additional informations.
+            {
+                ~\\
+                \usecodefont\\
+                \verb'  +-------------------//------------------//-----------------------+'\\
+                \verb'  |  name  |  group  |  value   |  usage  |  type  |  declaration  |'\\
+                \verb'  +-------------------//------------------//-----------------------+'\\
+            }\\
+            \begin{description}
+             \item[NAME] Describes the name of symbol.
+             \item[GROUP] Defines what given symbol is and how will compiler handle it. Compiler will warn you, if you for example want to load symbol
+             defined as group "PORT" into register. Symbols can be one of the following types.
+                \begin{itemize}
+                 \item REGISTER: Symbol represents one of the internal registers.
+                 \item PORT: Symbol should be used as PORT\_id indicator.
+                 \item DATA: Symbol should be handled only as a scatch\-pad ram data.
+                 \item EXPRESION: Symbol is defined as an expression, which is evaluated later.
+                 \item LABEL: Symbol is label defining address in program memory.
+                 \item NUMBER: Symbol does not have specified type.
+                \end{itemize}
+             \item[VALUE] Value which is represented by the symbol.
+             \item[USAGE] If it was USED or NOT USED in your source code.
+             \item[TYPE] Tells you some additional info.
+                \begin{itemize}
+                 \item IMPLICIT: Symbol is defined by default.
+                 \item LOCAL: Local symbol can be only used in macro body. 
+                 \item REDEFINABLE: Symbol can be redefined everywhere in the source code.
+                 \item CONSTANT: Symbol cannot be redefined.
+                \end{itemize}
+             \item[DECLARATION] Information where is the symbol defined. Two scenarios. First can be location in your source code
+             It consist of name of the file and line + column number with format: <nameoffile>:<firstlinenumber>.<columns>.<lastlinenumber>.
+             Second is IMPLICIT, which means symbol is defined by default, not in your code.
+            \end{description}
+
         \section{Macro table}
+            Macro table contains list of macros in your source code with additional informations.
+            {
+                ~\\
+                \usecodefont\\
+                \verb'  +-------------------//----------------------+'\\
+                \verb'  |  name  |  usage  |  type  |  declaration  |'\\
+                \verb'  +-------------------//----------------------+'\\
+            }\\
+            \begin{description}
+             \item[NAME] Describes the name of Macro.
+             \item[USAGE] It tells you how many times Macro was USED or NOT USED in your source code. Compiler will add number of macro expansions.
+             \item[TYPE] Tells you some additional info.
+             \item[DECLARATION] Information where is the macro defined. Two scenarios. First can be location in your source code
+             It consist of name of the file and line + column number with format: <nameoffile>:<firstlinenumber>.<columns>.<lastlinenumber>.
+             Second is IMPLICIT, which means symbol is defined by default, not in your code.
+            \end{description}
+            
         \section{Mem File}
         \section{RawHex file}
+             RawHex is very simple. File starts with OPcode of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2
+             and so on. If there is no instruction on a certain address, it is filled with zeroes.\\\\
+             Example:
+            {
+                ~\\
+                \usecodefont\\
+                \verb'; Starting at address 0x0'\\
+                \verb'011F7'\\
+                \verb'01299'\\
+                \verb'0132E'\\
+                \verb'19101'\\
+                \verb'00000'\\
+                \verb'19201'\\
+                \verb'00000'\\
+                \verb'19301'\\
+                \verb'00000'\\
+                \verb'00000'\\
+                \verb'00...'\\
+                \verb'.....'\\
+                \verb'...00'\\
+                \verb'; end of program memory'\\
+            }
         \section{Bin file}
-        binarní programová paměť, big endian, 0x12345 > 16b,18b je rozdil 44  444   , zbytek pameti vyplní nulama
+        binarní programová paměť, big endian, 0x12345 > 16b,18b je rozdil 44  444   , po posledni pouzitou hodnotu
 
         \section{Motorola SRec format}
                 Motorola S-records are a form of simple ASCII encoding for binary data.
