@@ -1513,6 +1513,26 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \end{description}
             
         \section{Mem File}
+            Mem file contains program memory in special format. There is seventeen 4byte wide columns, first is starting with \@ and represents starting address.
+            Every other position increments address by one. Unused memory is filled with zeroes.\\\\
+            Example:
+            {
+                ~\\
+                \usecodefont\\
+                \verb'; Starting address 0x0000, sixteen OPcodes'\\
+                \verb'@0000 000011F7 00001299 0000132E ... ... ... ... ... ... 00004577 00007789 000015A4'\\
+                \verb'; Starting address 0x0040'\\
+                \verb'@0040 000004DF 000047F4 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'@0080 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'@00C0 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'@0100 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'...'\\
+                \verb'...'\\
+                \verb'...'\\
+                \verb'@3F80 000011F7 00001299 0000132E ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'@3FC0 000011F7 00001299 0000132E ... ... ... ... ... ... 00000000 00000000 00000000'\\
+                \verb'; end of program memory'\\
+            }
         \section{RawHex file}
              RawHex is very simple. File starts with OPcode of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2
              and so on. If there is no instruction on a certain address, it is filled with zeroes.\\\\
