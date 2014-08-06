@@ -39,7 +39,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>638</width>
+     <width>646</width>
      <height>275</height>
     </rect>
    </property>
@@ -89,7 +89,7 @@
            </size>
           </property>
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please provide valid license certificate to verify that you are licensee&lt;br/&gt;of this product.&lt;/p&gt;&lt;p&gt;Visit &lt;a href=&quot;www.moravia-microsystems.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.moravia-microsystems.com&lt;/span&gt;&lt;/a&gt; to obtain certificate online.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please provide valid license certificate to verify that you are licensee&lt;br/&gt;of this product.&lt;/p&gt;&lt;p&gt;You may visit &lt;a href=&quot;www.moravia-microsystems.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;www.moravia-microsystems.com&lt;/span&gt;&lt;/a&gt; to obtain certificate online.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
          </widget>
         </item>
@@ -114,7 +114,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="lineEdit">
+         <widget class="QLineEdit" name="lePath">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -123,9 +123,12 @@
           </property>
           <property name="maximumSize">
            <size>
-            <width>560</width>
+            <width>565</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -165,7 +168,7 @@
        <widget class="QTextBrowser" name="tbInfo">
         <property name="maximumSize">
          <size>
-          <width>610</width>
+          <width>619</width>
           <height>16777215</height>
          </size>
         </property>
@@ -238,9 +241,6 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <zorder>lineEdit</zorder>
-  <zorder>btnLoad</zorder>
-  <zorder>gridLayoutWidget</zorder>
  </widget>
  <resources>
   <include location="../../icons.qrc"/>
