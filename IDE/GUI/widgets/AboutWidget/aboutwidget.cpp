@@ -25,7 +25,7 @@ AboutWidget::AboutWidget(QWidget *parent)
     //this->setLayout(ui.verticalLayout);
     this->setWindowTitle("About MDS");
     this->setMinimumWidth(800);
-    this->setMinimumHeight(400);
+    this->setMinimumHeight(420);
 
     QVBoxLayout *coreLayout = new QVBoxLayout(this);
     this->setLayout(coreLayout);
@@ -41,7 +41,7 @@ AboutWidget::AboutWidget(QWidget *parent)
     
     generalLayout->addWidget(editGeneral);
     tabWidgetGeneral->setLayout(generalLayout);
-    tabWidget->addTab(tabWidgetGeneral, "General");
+    tabWidget->addTab(tabWidgetGeneral, "About MDS");
 
     QWidget *tabWidgetOthers = new QWidget(this);
     QVBoxLayout *othersLayout = new QVBoxLayout(tabWidgetOthers);
@@ -51,7 +51,7 @@ AboutWidget::AboutWidget(QWidget *parent)
     editOthers->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     othersLayout->addWidget(editOthers);
     tabWidgetOthers->setLayout(othersLayout);
-    tabWidget->addTab(tabWidgetOthers, "3rd party");
+    tabWidget->addTab(tabWidgetOthers, "Thanks to");
 
     //editGeneral->setSource(QUrl("qrc:/resources/html/about-general.html"));
     //editOthers->setSource(QUrl("qrc:/resources/html/about-3rd.html"));

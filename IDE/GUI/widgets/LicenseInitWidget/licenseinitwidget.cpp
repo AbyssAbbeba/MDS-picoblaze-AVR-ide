@@ -81,12 +81,31 @@ void LicenseInitWidget::load()
             {
                 this->license = true;
                 ui.tbInfo->clear();
+                ui.tbInfo->append("Licensee name:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
+                ui.tbInfo->append("Product name:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_designation.c_str()));
+                ui.tbInfo->append("Product variant:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_variant.c_str()));
+                ui.tbInfo->append("Product grade:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
+                ui.tbInfo->append("Product target:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
+                ui.tbInfo->append("License count:\t");
+                ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
             }
             else
             {
                 ui.tbInfo->clear();
                 this->license = false;
-                ui.tbInfo->insertPlainText("NOT VALID!");
+                ui.tbInfo->setHtml(
+                    QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd\">"
+                            "<html><head><meta name=\"qrichtext\" content=q\"1\" /><style type=\"text/css\">"
+                            "p, li { white-space: pre-wrap; }"
+                            "</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">"
+                            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/resources/icons/dialog-warning.png\" /><span style=\" font-size:30px; color:#ff0000;\">CERTIFICATE NOT VALID!</span></p></body></html>"
+                           )
+                );
             }
 
             ifs.close();

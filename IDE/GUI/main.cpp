@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
     if ( false == crt.m_isValid )
     {
-        error(ERR_NO_LICENSE);
+        //error(ERR_NO_LICENSE);
         LicenseInitWidget *widget = new LicenseInitWidget(0);
         if (QDialog::Rejected == widget->exec())
         {
