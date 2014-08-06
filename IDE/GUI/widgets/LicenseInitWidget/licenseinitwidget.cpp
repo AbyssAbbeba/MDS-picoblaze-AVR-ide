@@ -77,7 +77,14 @@ void LicenseInitWidget::tryLoad()
 
 void LicenseInitWidget::load()
 {
-    this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    QByteArray rootArray;
+    #ifdef Q_OS_LINUX
+        rootArray = qgetenv("HOME");
+    #elif defined(Q_OS_WIN32)
+        rootArray = qgetenv("USERPROFILE");
+    #endif
+    QString root(rootArray);
+    this->licensePath = QFileDialog::getOpenFileName(this, tr("Certificate File"), root, tr("MDS Certificate (*.cert)"));
     if (this->licensePath != NULL)
     {
         ui.lePath->setText(this->licensePath);
