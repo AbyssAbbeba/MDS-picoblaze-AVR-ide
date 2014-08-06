@@ -17,6 +17,7 @@
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
+#include "../../../mds.h"
 
 
 LicenseInitWidget::LicenseInitWidget(QWidget *parent)
