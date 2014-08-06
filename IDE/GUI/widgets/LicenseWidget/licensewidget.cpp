@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "licensewidget.h"
+#include "../LicenseInitWidget/licenseinitwidget.h"
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
@@ -44,7 +45,7 @@ void LicenseWidget::tryLoad()
     this->licensePath = GuiCfg::getInstance().getLicensePath();
     std::ifstream ifs;
 
-    ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
+    ifs.open(this->licensePath.toStdString(), std::ios_base::binary);
 
     if (ifs.is_open())
     {
@@ -80,13 +81,27 @@ void LicenseWidget::tryLoad()
                 this->setResult(QDialog::Accepted);
             }
         }
+        else
+        {
+            ui.teInfo->clear();
+            this->license = false;
+            ui.teInfo->insertPlainText("<invalid certificate>");
+            this->setResult(QDialog::Rejected);
+        }
+    }
+    else
+    {
+        ui.teInfo->clear();
+        this->license = false;
+        ui.teInfo->insertPlainText("<invalid certificate>");
+        this->setResult(QDialog::Rejected);
     }
 }
 
 
 void LicenseWidget::load()
 {
-    this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    /*this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (this->licensePath != NULL)
     {
         //ui.lePath->setText(this->licensePath);
@@ -144,7 +159,12 @@ void LicenseWidget::load()
             ifs.close();
         }
 
-    }
+    }*/
+    LicenseInitWidget *widget = new LicenseInitWidget(0);
+    this->hide();
+    widget->exec();
+    this->show();
+    this->tryLoad();
 }
 
 
