@@ -24,7 +24,7 @@ LicenseInitWidget::LicenseInitWidget(QWidget *parent)
 {
     this->setModal(true);
     ui.setupUi(this);
-    this->setLayout(ui.verticalLayout);
+    this->setLayout(ui.gridLayout);
     ui.tbInfo->setReadOnly(true);
     connect(ui.btnLoad, SIGNAL(clicked()), this, SLOT(load()));
 
@@ -57,6 +57,18 @@ void LicenseInitWidget::tryLoad()
         {
             this->license = true;
             ui.tbInfo->clear();
+            ui.tbInfo->append("Licensee name:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
+            ui.tbInfo->append("Product name:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_designation.c_str()));
+            ui.tbInfo->append("Product variant:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_variant.c_str()));
+            ui.tbInfo->append("Product grade:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
+            ui.tbInfo->append("Product target:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
+            ui.tbInfo->append("License count:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
             this->setResult(QDialog::Accepted);
         }
     }
@@ -68,7 +80,7 @@ void LicenseInitWidget::load()
     this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (this->licensePath != NULL)
     {
-        //ui.lePath->setText(this->licensePath);
+        ui.lePath->setText(this->licensePath);
         std::ifstream ifs;
 
         ifs.open (this->licensePath.toStdString(), std::ios_base::binary);

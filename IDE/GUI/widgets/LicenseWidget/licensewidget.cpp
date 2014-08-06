@@ -162,6 +162,7 @@ void LicenseWidget::load()
     }*/
     LicenseInitWidget *widget = new LicenseInitWidget(0);
     this->hide();
+    widget->tryLoad();
     widget->exec();
     this->show();
     this->tryLoad();

@@ -44,8 +44,8 @@ MainForm::MainForm()
 {
     //this->statusBar()->showMessage("Loading", 0);
     //qDebug() << "MainForm: MainForm()";
-    this->setMinimumWidth(640);
-    this->setMinimumHeight(480);
+    this->setMinimumWidth(800);
+    this->setMinimumHeight(600);
     this->projectTabConnected = false;
     this->simulationStatus = false;
     this->simulationRunStatus = false;
