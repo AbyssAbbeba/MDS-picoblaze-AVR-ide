@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(LicenseWidget)
+project(LicenseInitWidget)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -17,18 +17,18 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
 SET( SAMPLE_SRCS
-        ./licensewidget.cpp
+        ./licenseinitwidget.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-        ./licensewidget.h
+        ./licenseinitwidget.h
 )
 
 
 # some .ui files
 SET( SAMPLE_UIS
-        ./licensewidget.ui
+        ./licenseinitwidget.ui
 )
 
 # ------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} GuiCfg LicenseCertificate LicenseInitWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} GuiCfg LicenseCertificate)
 
 
 

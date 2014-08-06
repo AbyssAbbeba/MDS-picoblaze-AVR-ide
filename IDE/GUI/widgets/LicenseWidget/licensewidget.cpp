@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "licensewidget.h"
+#include "../LicenseInitWidget/licenseinitwidget.h"
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
@@ -44,7 +45,7 @@ void LicenseWidget::tryLoad()
     this->licensePath = GuiCfg::getInstance().getLicensePath();
     std::ifstream ifs;
 
-    ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
+    ifs.open(this->licensePath.toStdString(), std::ios_base::binary);
 
     if (ifs.is_open())
     {
@@ -60,33 +61,47 @@ void LicenseWidget::tryLoad()
                 ui.teInfo->setHtml(QString::fromUtf8(file.readAll()));
                 QTextCursor cur(ui.teInfo->document());
                 cur = ui.teInfo->document()->find("__NAME__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
                 cur = ui.teInfo->document()->find("__EMAIL__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_email.c_str()));
                 cur = ui.teInfo->document()->find("__PHONE__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_phone.c_str()));
                 cur = ui.teInfo->document()->find("__STREET__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_street.c_str()));
                 cur = ui.teInfo->document()->find("__NUMBER__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_number.c_str()));
                 cur = ui.teInfo->document()->find("__POST__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_post.c_str()));
                 cur = ui.teInfo->document()->find("__CITY__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_municipality.c_str()));
                 cur = ui.teInfo->document()->find("__STATE__");
-                cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_country.c_str()));
                 ui.teInfo->setTextCursor(cur);
                 file.close();
                 this->setResult(QDialog::Accepted);
             }
         }
+        else
+        {
+            ui.teInfo->clear();
+            this->license = false;
+            ui.teInfo->insertPlainText("<invalid certificate>");
+            this->setResult(QDialog::Rejected);
+        }
+    }
+    else
+    {
+        ui.teInfo->clear();
+        this->license = false;
+        ui.teInfo->insertPlainText("<invalid certificate>");
+        this->setResult(QDialog::Rejected);
     }
 }
 
 
 void LicenseWidget::load()
 {
-    this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    /*this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
     if (this->licensePath != NULL)
     {
         //ui.lePath->setText(this->licensePath);
@@ -108,21 +123,21 @@ void LicenseWidget::load()
                     ui.teInfo->setHtml(file.readAll());
                     QTextCursor cur(ui.teInfo->document());
                     cur = ui.teInfo->document()->find("__NAME__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_name));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
                     cur = ui.teInfo->document()->find("__EMAIL__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_email));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_email.c_str()));
                     cur = ui.teInfo->document()->find("__PHONE__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_phone));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_phone.c_str()));
                     cur = ui.teInfo->document()->find("__STREET__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_street));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_street.c_str()));
                     cur = ui.teInfo->document()->find("__NUMBER__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_number));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_number.c_str()));
                     cur = ui.teInfo->document()->find("__POST__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_post));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_post.c_str()));
                     cur = ui.teInfo->document()->find("__CITY__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_municipality));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_municipality.c_str()));
                     cur = ui.teInfo->document()->find("__STATE__");
-                    cur.insertText(QString::fromStdString(crt.m_licensee.m_address.m_country));
+                    cur.insertText(QString::fromUtf8(crt.m_licensee.m_address.m_country.c_str()));
                     ui.teInfo->setTextCursor(cur);
                     file.close();
                 }
@@ -144,7 +159,12 @@ void LicenseWidget::load()
             ifs.close();
         }
 
-    }
+    }*/
+    LicenseInitWidget *widget = new LicenseInitWidget(0);
+    this->hide();
+    widget->exec();
+    this->show();
+    this->tryLoad();
 }
 
 
