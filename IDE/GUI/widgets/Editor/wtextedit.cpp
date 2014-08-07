@@ -265,17 +265,31 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 }
             }
         }
-        if ( keyEvent->key() == Qt::Key_Tab
-          && true == this->tabToSpaces
-           )
+        if (keyEvent->key() == Qt::Key_Tab)
         {
-            QTextCursor cursor(this->textCursor());
-            for (int i = 0; i < this->spacesInTab; i++)
+            if (true == this->tabToSpaces)
             {
-                cursor.insertText(" ");
+                QTextCursor cursor(this->textCursor());
+                int charsToAdd;
+                if (cursor.positionInBlock()%this->spacesInTab > 0)
+                {
+                    charsToAdd = this->spacesInTab - cursor.positionInBlock()%this->spacesInTab;
+                }
+                else
+                {
+                    charsToAdd = this->spacesInTab;
+                }
+                for (int i = 0; i < charsToAdd; i++)
+                {
+                    cursor.insertText(" ");
+                }
+                this->setTextCursor(cursor);
+                return true;
             }
-            this->setTextCursor(cursor);
-            return true;
+            else
+            {
+                
+            }
         }
         //paste ctrl+v
         /*if ( (keyEvent->modifiers() & Qt::ControlModifier)

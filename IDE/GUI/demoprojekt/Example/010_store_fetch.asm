@@ -8,11 +8,11 @@
 ;
 numero               EQU                0b01010101
 cnt                  SET                1
-uart_byte        	 REG                sD
-;
+uart_byte            REG                sD
+;       ddd
 ;                MACRO DECLARATIONS
-;
-;
+;d . 
+;dd
 ;
 roll       MACRO        num                                ; rotate macro declaration
 
