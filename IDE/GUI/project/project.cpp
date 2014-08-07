@@ -2444,7 +2444,7 @@ int Project::start(QString file, QString dumpFiles)
             return 4;
         }
         qDebug() << "Orig ASM:" << asmPath;
-        qDebug() << "ASM:" << hexPath;
+        qDebug() << "HEX:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
 
         
@@ -2521,8 +2521,8 @@ int Project::start(QString file, QString dumpFiles)
         m_simControlUnit->setBreakPoints(breakpointsVector);
     }*/
     //qDebug() << "Project: getLineNumber";
-    std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
-    m_simControlUnit->setBreakPoints(breakpointsVector);
+    //std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+    //m_simControlUnit->setBreakPoints(breakpointsVector);
     m_simControlUnit->getLineNumber(this->currSim);
     //qDebug() << "Project: getLineNumber check";
     if (this->currSim.empty() == true)
@@ -2576,6 +2576,7 @@ void Project::setBreakpoints(bool set)
                     breakpointsSet.insert(value);
                 }
                 std::pair<std::string, std::set<unsigned int>> breakpointsPair;
+                qDebug() << "Path" << this->breakPoints.at(i).first;
                 breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
                 breakpointsPair.second = breakpointsSet;
                 breakpointsVector.push_back(breakpointsPair);

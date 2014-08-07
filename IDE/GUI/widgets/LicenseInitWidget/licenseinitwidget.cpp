@@ -17,6 +17,7 @@
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
+#include "../../../mds.h"
 
 
 LicenseInitWidget::LicenseInitWidget(QWidget *parent)
@@ -24,7 +25,7 @@ LicenseInitWidget::LicenseInitWidget(QWidget *parent)
 {
     this->setModal(true);
     ui.setupUi(this);
-    this->setLayout(ui.verticalLayout);
+    this->setLayout(ui.gridLayout);
     ui.tbInfo->setReadOnly(true);
     connect(ui.btnLoad, SIGNAL(clicked()), this, SLOT(load()));
 
@@ -57,6 +58,18 @@ void LicenseInitWidget::tryLoad()
         {
             this->license = true;
             ui.tbInfo->clear();
+            ui.tbInfo->append("Licensee name:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
+            ui.tbInfo->append("Product name:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_designation.c_str()));
+            ui.tbInfo->append("Product variant:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_variant.c_str()));
+            ui.tbInfo->append("Product grade:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
+            ui.tbInfo->append("Product target:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
+            ui.tbInfo->append("Number of licenses:\t");
+            ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
             this->setResult(QDialog::Accepted);
         }
     }
@@ -65,10 +78,17 @@ void LicenseInitWidget::tryLoad()
 
 void LicenseInitWidget::load()
 {
-    this->licensePath = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    QByteArray rootArray;
+    #ifdef Q_OS_LINUX
+        rootArray = qgetenv("HOME");
+    #elif defined(Q_OS_WIN32)
+        rootArray = qgetenv("USERPROFILE");
+    #endif
+    QString root(rootArray);
+    this->licensePath = QFileDialog::getOpenFileName(this, tr("Certificate File"), root, tr("MDS Certificate (*.cert)"));
     if (this->licensePath != NULL)
     {
-        //ui.lePath->setText(this->licensePath);
+        ui.lePath->setText(this->licensePath);
         std::ifstream ifs;
 
         ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
@@ -79,6 +99,68 @@ void LicenseInitWidget::load()
             LicenseCertificate crt(ifs);
             if ( true == crt.m_isValid )
             {
+                #ifdef MDS_VARIANT_COMMERCIAL
+                    if (crt.m_product.m_variant != "Commercial")
+                    {
+                        qDebug() << "LicenseInitWidget: not commercial";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_variant.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_VARIANT_NONCOMMERCIAL
+                    if (crt.m_product.m_variant != "Noncommercial")
+                    {
+                        qDebug() << "LicenseInitWidget: not noncommercial";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_variant.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_GRADE_BASIC
+                    if (crt.m_product.m_grade != "Basic")
+                    {
+                        qDebug() << "LicenseInitWidget: not basic";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_grade.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_GRADE_PREMIUM
+                    if (crt.m_product.m_grade != "Premium")
+                    {
+                        qDebug() << "LicenseInitWidget: not premium";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_grade.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_GRADE_PROFESSIONAL
+                    if (crt.m_product.m_grade != "Professional")
+                    {
+                        qDebug() << "LicenseInitWidget: not professional";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_grade.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_GRADE_ULTIMATE
+                    if (crt.m_product.m_grade != "Ultimate")
+                    {
+                        qDebug() << "LicenseInitWidget: not ultimate";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_grade.c_str());
+                        printError();
+                        return;
+                    }
+                #endif
+                #ifdef MDS_TARGET_PICOBLAZE
+                    if (crt.m_product.m_target != "PicoBlaze")
+                    {
+                        qDebug() << "LicenseInitWidget: not PicoBlaze";
+                        qDebug() << QString::fromUtf8(crt.m_product.m_target.c_str());
+                        this->license = true;
+                    }
+                #endif
                 this->license = true;
                 ui.tbInfo->clear();
                 ui.tbInfo->append("Licensee name:\t");
@@ -91,21 +173,12 @@ void LicenseInitWidget::load()
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
                 ui.tbInfo->append("Product target:\t");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
-                ui.tbInfo->append("License count:\t");
+                ui.tbInfo->append("Number of licenses:\t");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
             }
             else
             {
-                ui.tbInfo->clear();
-                this->license = false;
-                ui.tbInfo->setHtml(
-                    QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd\">"
-                            "<html><head><meta name=\"qrichtext\" content=q\"1\" /><style type=\"text/css\">"
-                            "p, li { white-space: pre-wrap; }"
-                            "</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">"
-                            "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/resources/icons/dialog-warning.png\" /><span style=\" font-size:30px; color:#ff0000;\">CERTIFICATE NOT VALID!</span></p></body></html>"
-                           )
-                );
+                printError();
             }
 
             ifs.close();
@@ -114,6 +187,20 @@ void LicenseInitWidget::load()
     }
 }
 
+
+void LicenseInitWidget::printError()
+{
+    ui.tbInfo->clear();
+    this->license = false;
+    ui.tbInfo->setHtml(
+        QString("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd\">"
+                "<html><head><meta name=\"qrichtext\" content=q\"1\" /><style type=\"text/css\">"
+                "p, li { white-space: pre-wrap; }"
+                "</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">"
+                "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><img src=\":/resources/icons/dialog-warning.png\" /><span style=\" font-size:30px; color:#ff0000;\">CERTIFICATE NOT VALID!</span></p></body></html>"
+                )
+    );
+}
 
 /*void LicenseInitWidget::closeEvent(QCloseEvent *)
 {

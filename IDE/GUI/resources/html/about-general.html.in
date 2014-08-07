@@ -6,20 +6,20 @@
 </center>
 <br/>
 <p>
-    <b>MDS v__VERSION__ __GRADE__ for __TARGET__ in __VARIANT__ version</b><br/>
-    by <a href="http://www.moravia-microsystems.com">Moravia Microsystems, s.r.o.</a>
+    <b>MDS v@PRODUCT_VERSION@ @MDS_GRADE@ for @MDS_TARGET@ in @MDS_VARIANT@ version</b><br/>
+    Copyright (C) @COPYRIGHT_YEARS@ <a href="http://www.moravia-microsystems.com">Moravia Microsystems, s.r.o.</a>
 </p><p>
     MDS - Multitarget Development System - is a window-based software development platform that combines robust and
     modern editor with a project manager,
     integrating all the tools needed to develop embedded applications including macro assembler, and HEX, VHDL, and
     Verilog file generator. MDS helps expedite the development process of embedded applications. Read
-    <a href="http://www.moravia-microsystems.com">more about MDS</a> at our web page.
+    <a href="http://www.moravia-microsystems.com/multitarget-development-system/">more about MDS</a> at our web page.
 </p><p>
     If you find time please fill <a href="http://www.moravia-microsystems.com/feedback">product feedback</a>, we
-    are glad for your opinions which help us make our software better.
+    value your opinions which help us make our software better.
     If you find a bug, please contact our <a href="http://www.moravia-microsystems.com/support">customer support</a>, or
     better yet fill up the <a href="http://www.moravia-microsystems.com/bugreport">bug report</a> form directly on our
-    corporate web page.
+    corporate web page. You may also <a href="http://www.moravia-microsystems.com/feature-request/">request a new feature</a>, if you miss something important in the MDS.
 </p><p>
     <i>Thank you for using the Multitarget Development System, and have a lot of success with it...!</i>
 </p>

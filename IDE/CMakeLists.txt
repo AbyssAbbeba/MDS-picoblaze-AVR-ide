@@ -140,10 +140,6 @@ string ( TOUPPER "${MDS_VARIANT}" MDS_VARIANT_UPPER_CASE )
 string ( TOUPPER "${MDS_GRADE}" MDS_GRADE_UPPER_CASE )
 string ( TOUPPER "${MDS_TARGET}" MDS_TARGET_UPPER_CASE )
 
-set ( MDS_BUILD_CFG_DEFS "-DMDS_VARIANT_${MDS_VARIANT_UPPER_CASE} -DMDS_GRADE_${MDS_GRADE_UPPER_CASE} -DMDS_TARGET_${MDS_TARGET_UPPER_CASE}" )
-set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${MDS_BUILD_CFG_DEFS}" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MDS_BUILD_CFG_DEFS}" )
-
 # Target architecture.
 set ( HOST_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}" )
 if ( HOST_ARCH STREQUAL "AMD64" )
@@ -325,6 +321,19 @@ set ( INSTALL_DIR_DEMOPROJECT "${INSTALL_DIR_PREFIX}share/mds/demoproject" )
 set ( INSTALL_DIR_MAIN_SHARE    "/usr/share" )
 set ( INSTALL_DIR_MAN           "${INSTALL_DIR_MAIN_SHARE}/man/man1" )
 set ( INSTALL_DIR_LIB_3RD_PARTY "/opt/mds-libs" )
+
+# ----------------------------------------------------------------------------------------------------------------------
+# GENERATE "mds.h"
+# ----------------------------------------------------------------------------------------------------------------------
+
+file ( WRITE "mds.h" "// Basic definitions for MDS, generated automatically by CMake.\n" )
+
+file ( APPEND "mds.h" "#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
+file ( APPEND "mds.h" "#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
+file ( APPEND "mds.h" "#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
+
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "mds.h" )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
