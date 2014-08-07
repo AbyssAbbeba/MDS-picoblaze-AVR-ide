@@ -1,6 +1,3 @@
-\section{Short introduction}
-
-
 
 \section{Main simulation panel}
     This panel is the main part of the simulator user interface. Simulator simulates instruction set of PicoBlaze family and his copies.
@@ -49,39 +46,73 @@
             \end{tabular}
         \end{table}
 
+    \subsection{Adding breakpoints and bookmarks}
+        Our simulator supports breakpoints. The breakpoint is associated wth location in programming code that, when reached, triggers a temporary halt in the program.
+        You can use breakpoints to test and debug programs by causing the program to stop at scheduled intervals so that the status of
+        the program can be examined in stages. Note: Breakpoints will slow down the simulator. If you want maximum speed, click on top panel
+        button dissable all breakpoints.
+        
+        Another usefull thing are bookmarks. When you are editiong one location in your source code multiple times, it is usefull to add a bookmark to it,
+        so you can quickly get back when you need.
+        
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=.4\textwidth]{img/NewImg/breakpoints1.png}
+            \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
+        \end{figure}
 
-\section{List of macros and symbols}
-% warningy dodelat
+    \subsection{Simulation cursor}
+        Simulation cursor shows what instruction will be executed in next step. Two previous instructions are less and less highlighted, so you can track
+        two previous steps. following figure displays actual cursor on line 8, one step before is on line 5 and another step is on 4.
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=\textwidth]{img/NewImg/simulationcursor1.png}
+            \caption{Simulation cursor}
+        \end{figure}
+        
+        MDS has special behavior when simulator encounters macro expansion. For better orientation, cursor will appear on two locations.
+        On macro expansion and in macro declaration, showing your actual step. If you have macro expanded in your macro declaration, you will have
+        three cursors and so on. For better understanding, following figure shows simulation cursor behavior with macros.
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=\textwidth]{img/NewImg/simulationcursor2.png}
+            \caption{Simulation cursor}
+        \end{figure}        
+    
+
+    \subsection{List of macros, breakpoints and bookmarks}
+        You can find 
     \begin{table}[h!]
-        \begin{tabular}{cc}
-            \includegraphics[width=.33\textwidth]{img/macro_panel.png}
+        \begin{tabular}{ccc}
+            \includegraphics[width=.3\textwidth]{img/NewImg/listmacros.png}
                 &
-            \includegraphics[width=.33\textwidth]{img/right_panel.png}
-                \\
-            Macros & Breakpoints
+            \includegraphics[width=.3\textwidth]{img/NewImg/listbreakpoints.png}
+                &
+            \includegraphics[width=.3\textwidth]{img/NewImg/listbookmarks.png}
+            \\
+            Macros & Breakpoints & Bookmarks
         \end{tabular}
     \end{table}
 
     
-\section{Modes of simulation}
-    There are 4 modes of simulation:
+    \subsection{Modes of simulation}
+        There are 4 modes of simulation:
 
-    \begin{figure}[h!]
-        \centering{}
-        \includegraphics[width=.4\textwidth]{img/simulation_panel.png}
-        \caption{Simulator toolbar.}
-    \end{figure}
-    
-    \begin{itemize}
-        \item STEP: Execute exactly one intruction, no matter how many machine cycles it will take. This does not apply for macro-instruction, in that case each instruction of the macro is executed separately.
-        \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
-        \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
-        \item RESET: Resets everything to the initial state of program.
-        \item UNHIGHLIGHT: Cleans up all highlighted text.
+        \begin{figure}[h!]
+            \centering{}
+            \includegraphics[width=.4\textwidth]{img/simulation_panel.png}
+            \caption{Simulator toolbar.}
+        \end{figure}
 
-%         \item STEP OVER: Execute as many instructions as possible until simulator cursor changes its location from one line of source code to another.
-        \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
-        \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
-%         \item STEP BACK: Take back the last performed step. There is limited number of step which can be taken back.
+        \begin{itemize}
+            \item STEP: Execute exactly one intruction, no matter how many machine cycles it will take. This does not apply for macro-instruction, in that case each instruction of the macro is executed separately.
+            \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
+            \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
+            \item RESET: Resets everything to the initial state of program.
+            \item UNHIGHLIGHT: Cleans up all highlighted text.
 
-    \end{itemize}
+    %         \item STEP OVER: Execute as many instructions as possible until simulator cursor changes its location from one line of source code to another.
+            \item ANIMATE: Do the same as step, but in a loop, one after another until stopped by a waring condition or user request.
+            \item RUN: This is generally the same as animate, but much faster, because GUI is not updated so often as in the animate mode.
+    %         \item STEP BACK: Take back the last performed step. There is limited number of step which can be taken back.
+        \end{itemize}
