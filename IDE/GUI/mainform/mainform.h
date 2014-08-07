@@ -145,6 +145,7 @@ class MainForm : public QMainWindow
         void manageLicense();
         void loopGen();
         void about();
+        void refreshProjectTree();
 
     signals:
         void unhighlightSim();
@@ -275,6 +276,8 @@ class MainForm : public QMainWindow
         bool simulationBreakpointsEnabled;
 
         bool simulationBreakpointsReload;
+
+        QTabBar *projectTabs;
 
     protected:
         void closeEvent(QCloseEvent *event);

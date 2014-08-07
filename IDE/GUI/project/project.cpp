@@ -485,7 +485,8 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 xmlBreakpointNode = xmlBreakpointNode.nextSibling();
                             }
                             //TODO:
-                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBreakpointFileElement.attribute("path"); 
+                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBreakpointFileElement.attribute("path");
+                            qDebug() << "Project: breakpoint path" << absolutePath;
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->breakPoints.append(pair);
                             xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
@@ -1206,7 +1207,9 @@ void Project::saveProject()
     QDomElement xmlBreakpoints = domDoc.createElement("Breakpoints");
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
+
         relativePath = project.relativeFilePath(this->breakPoints.at(i).first);
+        qDebug() << "Project: breakpoint relative path" << relativePath;
         QDomElement xmlBreakpointFile = domDoc.createElement("BreakpointFile");
         xmlBreakpointFile.setAttribute("path", relativePath);
         foreach (unsigned int value, this->breakPoints.at(i).second)
