@@ -6,26 +6,49 @@
     This panel is the main part of the simulator user interface. Simulator simulates instruction set of PicoBlaze family and his copies.
     Following picture shows main window of the simulator. You can find here internal registers, scratchpad ram, input and output ports, stack,
     program counter, elapsed time and cycles, actual clock and internal flags: CARRY and ZERO. All those features can be edited during
-    processor simulation.
-    \begin{description}
-     \item [Register field] You can find here values of internal processor registers. First column represents name, second value in decimal, third
-     hexadecimal and last binary.
-     \item [Scratch-pad RAM] This hex editor represents values stored in scratch-pad RAM. Address of particular field is adition of line number
-     and column number. 
-    \end{description}
-
+    processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place it to, for example, another display.
+    
    \begin{figure}[h!]
         \centering
         \includegraphics[width=\textwidth]{img/bottom_panel.png}
         \caption{Main simulator panel}
     \end{figure}
 
+    \begin{description}
+     \item [Register field] You can find here values of internal processor registers. First column represents name, second value in decimal, third
+     hexadecimal and last binary.
+     \item [Scratch-pad RAM] This hex editor represents values stored in scratch-pad RAM. Address of particular field is adition of line number
+     and column number.
+     \item [Ports] Output ports are represented by hex editors and you can determine value of each field by adition of column number and line number.
+     You can also see status of picoblaze RD and WR pins. It can be usefull to see their status for better debuging.
+     \item [Stack] Stack window represents actual values stored in stack. Top field represents virtual stack pointer and you can also push or pop values into the stack
+     by inserting desired number to the field under "Stack" sign.
+     \item [Info panel] Panel on the right side of simulation panel gives you general information about simulated code. You can find here program counter
+     value, number of executed cycles, set  frekvency, elapsed time and Carry, Zero and Interrupt flag status. You can generate interrupt by clicking on "Interrupt button"
+    \end{description}
 
-   \begin{figure}[h!]
-        \centering
-        \includegraphics[width=\textwidth]{img/compiler_panel.png}
-        \caption{Compiler info panel}
-    \end{figure}
+    \subsection{Simulator warnings}
+        MDS offers some warnings to ensure your debuging procces will be less painfull. It handles some common mistakes like PC overflow, stack overflow and
+        some other problems. See pictures for more info or go to Interface -> Config -> Simulator warnings.
+        
+        \begin{table}[h!]
+            \begin{tabular}{cc}
+                \includegraphics[width=.45\textwidth]{img/NewImg/interface4.png}
+                    &
+                \includegraphics[width=.45\textwidth]{img/NewImg/interface5.png}
+                    \\
+                Simulator - Warnings -> Memory & Simulator - Warnings -> Stack
+            \end{tabular}
+        \end{table}
+
+        \begin{table}[h!]
+            \begin{tabular}{c}
+                \includegraphics[width=.5\textwidth]{img/NewImg/interface4.png}
+                \\
+                Simulator - Warnings -> CPU 
+            \end{tabular}
+        \end{table}
+
 
 \section{List of macros and symbols}
 % warningy dodelat
