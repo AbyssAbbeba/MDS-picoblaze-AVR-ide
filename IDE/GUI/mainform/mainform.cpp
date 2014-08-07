@@ -53,6 +53,7 @@ MainForm::MainForm()
     this->simulationRequest = false;
     this->simulationBreakpointsReload = true;
     this->simulationBreakpointsEnabled = true;
+    this->projectTabs = NULL;
     
     projectMan = new ProjectMan(this);
     connect(projectMan,
@@ -1161,12 +1162,16 @@ void MainForm::projectOpened()
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
         if (tabList.size() > 1)
         {
+            qDebug() << "MainForm: tab connected";
             projectTabConnected = true;
             connect(tabList.at(tabList.size()-1),
                     SIGNAL(currentChanged(int)),
                     this,
                     SLOT(activeProjectChanged(int))
                    );
+            qDebug() << "projectTabs = ";
+            projectTabs = tabList.at(tabList.size()-1);
+            qDebug() << "projectTabs = done";
         }
     }
     this->createDockWidgets();
@@ -1185,6 +1190,12 @@ void MainForm::projectOpened()
         {
             wDockManager->getCentralWidget()->setBookmarksLines(projectMan->getActive()->getBookmarksForFileAbsolute(wDockManager->getCentralWidget()->getPath()));
         }*/
+    }
+    if (projectTabs != NULL )
+    {
+        //qDebug() << "count: " << projectTabs->count();
+        //projectTabs->setCurrentIndex(projectTabs->count()-1);
+        QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
     }
 
     if (projectMan->getActive()->prjPath != "untracked")
@@ -2214,6 +2225,7 @@ void MainForm::simulationFlowHandle()
         simulationUnhighlightAct->setDisabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
+        this->wDockManager->getCentralTextEdit()->clearHighlight();
     }
 }
 
@@ -3103,4 +3115,12 @@ void MainForm::about()
 {
     AboutWidget *widget = new AboutWidget(this);
     widget->exec();
+}
+
+
+void MainForm::refreshProjectTree()
+{
+        qDebug() << "count: " << projectTabs->count();
+        projectTabs->setCurrentIndex(projectTabs->count()-1);
+        qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
