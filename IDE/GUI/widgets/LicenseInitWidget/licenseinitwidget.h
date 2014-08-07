@@ -34,6 +34,8 @@ class LicenseInitWidget : public QDialog
         void tryReject();
 
     private:
+        void printError();
+        
         Ui_LicenseInitWidget ui;
         bool license;
         QString licensePath;

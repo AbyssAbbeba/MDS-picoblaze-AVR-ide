@@ -14,6 +14,14 @@ windres_rc ( OUTPUT_VAR         RC_FILE
              YEARS              ${COPYRIGHT_YEARS} )
 
 
+    file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license-${MDS_VARIANT}.html licenseTerms )
+    file ( WRITE ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html "${licenseTerms}" )
+    configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html.in
+                     ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html @ONLY )
+    set_directory_properties ( PROPERTIES
+                               ADDITIONAL_MAKE_CLEAN_FILES "resources/html/about-general.html;resources/html/license.html" )
+
+
   # with SET() command you can change variables or define new ones
   # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
   # note that we don't need \ at the end of line
