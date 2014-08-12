@@ -46,6 +46,7 @@ ConvertorTool::ConvertorTool(QWidget *parent)
     layout->addWidget(le_dec2, 2, 2);
     layout->addWidget(le_dec3, 3, 2);
     this->setLayout(layout);
+    this->setWindowTitle("Converter");
     this->show();
     //this->setWindowFlags(Qt::WindowStaysOnTopHint);
     
