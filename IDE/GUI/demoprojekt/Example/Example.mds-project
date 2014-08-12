@@ -20,10 +20,13 @@
  </Files>
  <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
  <Breakpoints>
-  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
-  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+  <BreakpointFile path="demoprojekt/Example/010_store_fetch.asm"/>
  </Breakpoints>
- <Bookmarks/>
+ <Bookmarks>
+  <BookmarkFile path="demoprojekt/Example/010_store_fetch.asm"/>
+ </Bookmarks>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>
  </Simulator>
