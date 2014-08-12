@@ -334,3 +334,50 @@
             \caption{Convertor}
     \end{wrapfigure}
     This tool is very usefull, when you want to find out the representation of given number in other number bases.
+
+
+\section{Command line tools}
+    Assembler, Disassembler, and Assembler Translator may also be invoked from command line and therefore used in your scripts.
+    On Linux versions there is also man page for each one of them.
+    \subsection{Assembler}
+        \subsubsection{Description}
+        MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors
+        simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging
+        output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special
+        macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze
+        soft-core processors.\\
+
+        USAGE:
+        {
+            ~\\
+            \usecodefont
+            \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'\\
+        }
+        \subsubsection{Options}
+
+            --dbg, -d <MDS-native-debug-file>
+            Specify output file with code for MCU simulator and other debugging tools.
+            --srec <Motorola-S-REC-file>
+            Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
+            --binary <binary-file>
+            Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
+            --lst, -l <code-listing>
+            Specify output file where code listing generated during compilation will be stored.
+            --mtable, -m <table-of-macros>
+            Specify file in which the compiler will put table of macros defined in your code.
+
+    \subsection{Disassembler}
+    \subsection{Assembler translator}
+
+
+
+
+
+
+
+
+
+
+
+
+    
