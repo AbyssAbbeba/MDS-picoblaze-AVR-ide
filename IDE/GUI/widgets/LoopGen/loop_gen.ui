@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>loop_gen</string>
+   <string>Loop Generator</string>
   </property>
   <widget class="QPushButton" name="push_Generate">
    <property name="geometry">
