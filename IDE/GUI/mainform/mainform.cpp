@@ -337,8 +337,10 @@ void MainForm::createMenu()
     }
     
     projectMenu->addAction(saveProjAct);
-    projectMenu->addAction(saveProjConfigAct);
+    projectMenu->addAction(closeProjectAct);
+    projectMenu->addSeparator();
     projectMenu->addAction(projectCompileAct);
+    projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectConfigAct);
 
     simulationMenu = menuBar()->addMenu(tr("&Simulation"));
@@ -467,6 +469,10 @@ void MainForm::createActions()
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
 
+    closeProjectAct = new QAction(tr("Close Project"), this);
+    connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
+    closeProjectAct->setDisabled(true);
+
     saveProjConfigAct = new QAction(tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);
 
@@ -545,9 +551,9 @@ void MainForm::createActions()
     connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     toolTranslatorAct = new QAction(tr("ASM Translator"), this);
     connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
-    toolFileConvertAct = new QAction(tr("DataFile Convertor"), this);
+    toolFileConvertAct = new QAction(tr("DataFile Converter"), this);
     connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
-    toolConvertorAct = new QAction(tr("Convertor"), this);
+    toolConvertorAct = new QAction(tr("Converter"), this);
     connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     toolDisplayAct = new QAction(tr("Segment Display"), this);
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
@@ -562,7 +568,7 @@ void MainForm::createActions()
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     helpActionAct = new QAction(tr("Help"), this);
     connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("Example Project"), this);
+    example1Act = new QAction(tr("See Example Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":/resources//icons//cross.png");
@@ -2124,6 +2130,7 @@ void MainForm::simulationFlowHandle()
             simulationDisableBreakpointsAct->setEnabled(true);
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
+            projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
@@ -2223,6 +2230,7 @@ void MainForm::simulationFlowHandle()
         simulationDisableBreakpointsAct->setDisabled(true);
         simulationResetAct->setDisabled(true);
         simulationUnhighlightAct->setDisabled(true);
+        projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
         this->wDockManager->getCentralTextEdit()->clearHighlight();
