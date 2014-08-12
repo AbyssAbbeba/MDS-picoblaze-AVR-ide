@@ -339,8 +339,8 @@ void MainForm::createMenu()
     projectMenu->addAction(saveProjAct);
     projectMenu->addAction(closeProjectAct);
     projectMenu->addSeparator();
-    projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectCompileAct);
+    projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectConfigAct);
 
     simulationMenu = menuBar()->addMenu(tr("&Simulation"));
