@@ -15,7 +15,7 @@
 #   - DNPR=1 : Do Not PRint final result at the end (it will be written to the
 #              file specified in the RESFILE variable instead).
 #   - Use @GENQHP_KEYWORDS@ and @GENQHP_SECTIONS@ in the .qhp.in file, these
-#     will be automatically replaced with appropriate XML tag sequences by this 
+#     will be automatically replaced with appropriate XML tag sequences by this
 #     script.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
@@ -75,10 +75,10 @@ function genIndentation ( level ) {
 /div class="tableofcontents"/ {
     start = 1
 
-    sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, NAME, INDEX_FILE )
+#     sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, NAME, INDEX_FILE )
 
     lastClass = "C"
-    indent++
+#     indent++
     genIndentation(indent)
 }
 
@@ -144,7 +144,7 @@ function genIndentation ( level ) {
         sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
     }
 
-    indent--
-    genIndentation(indent)
-    sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+#     indent--
+#     genIndentation(indent)
+#     sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
 }

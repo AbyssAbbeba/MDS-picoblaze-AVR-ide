@@ -19,8 +19,18 @@
   <File path="../../../../../../Demonstration project/looptest.asm" name="test.asm"/>
  </Files>
  <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
- <Breakpoints/>
- <Bookmarks/>
+ <Breakpoints>
+<<<<<<< HEAD
+  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+=======
+  <BreakpointFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+>>>>>>> 18b747c2b8440740692c87c84d737e412fcac07c
+  <BreakpointFile path="demoprojekt/Example/010_store_fetch.asm"/>
+ </Breakpoints>
+ <Bookmarks>
+  <BookmarkFile path="demoprojekt/Example/010_store_fetch.asm"/>
+ </Bookmarks>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>
  </Simulator>
