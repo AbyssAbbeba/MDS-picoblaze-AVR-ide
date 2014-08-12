@@ -16,6 +16,7 @@
 #include "hwcanvas.h"
 
 HWCanvas::HWCanvas(QWidget *parent)
+    :QWidget(parent)
 {
     
 }
