@@ -337,6 +337,8 @@ void MainForm::createMenu()
     }
     
     projectMenu->addAction(saveProjAct);
+    projectMenu->addAction(closeProjectAct);
+    projectMenu->addSeparator();
     projectMenu->addAction(saveProjConfigAct);
     projectMenu->addAction(projectCompileAct);
     projectMenu->addAction(projectConfigAct);
@@ -466,6 +468,10 @@ void MainForm::createActions()
     saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
+
+    closeProjectAct = new QAction(tr("Close Project"), this);
+    connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
+    closeProjectAct->setDisabled(true);
 
     saveProjConfigAct = new QAction(tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);

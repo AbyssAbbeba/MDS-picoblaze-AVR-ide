@@ -207,6 +207,7 @@ class MainForm : public QMainWindow
         QAction *openProjAct;
         QAction *saveProjAct;
         QAction *saveProjConfigAct;
+        QAction *closeProjectAct;
         QAction *projectCompileAct;
         QAction *projectConfigAct;
 
