@@ -713,13 +713,137 @@
                 Print disassembler version and exit.\\\\
                 NOTES:\\
                 `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
-
-                
-
     \subsection{Assembler translator}
+        \subsubsection{Description}
+            mds-translator is tool for translating assembly language source code from one dialect to another; in this case it translates
+            into assembly language used by MDS (Multitarget Development System) from dialect used by other companies or projects.\\
 
+            USAGE:
+            {
+                ~\\
+                \usecodefont
+                \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'\\
+            }
+            \subsubsection{Options}
+                {
+                ~\\
+                \usecodefont
 
+                \verb'--type, -t <asm-variant>'\\
+                }
+                Specify variant of assembly language used in the input file, possible options are:
+                \begin{description}
+                  \item [1:] Xilinx KCPSMx
+                  \item [2:] Mediatronix KCPSMx
+                  \item [3:] openPICIDE KCPSMx
+                \end{description}
+                {
+                ~\\
+                \usecodefont
 
+                \verb'--output, -o <file.asm>'\\
+                }
+                Specify output file.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-ind <indentation>'\\
+                }
+                Indent with:
+                \begin{description}
+                 \item [keep:] Do not alter original indentation.
+                 \item [Spaces:] Indent with spaces.
+                 \item [Tabs:] Indent with tabs.
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-tabsz <n>'\\
+                }
+                Consider tab to be displayed at most n spaces wide, here it is by default 8.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-eof <end-of-line-character>'\\
+                }
+                Specify line separator, available options are:
+                \begin{description}
+                  \item [clrf:] [WINDOWS] use sequence of carriage return and line feed characters
+                  \item [If:] [UNIX] use a single line feed character (0x0a = ') (default),
+                  \item [cr:] [APPLE] use single carriage return (0x0d = '').
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--short-inst <true|false>'\\
+                }
+                Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-lc-sym <character>'\\
+                }
+                Use uppercase, or lowercase characters for symbols:
+                \begin{description}
+                    \item [l:] Lowercase.
+                    \item [u:] Uppercase.
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-lc-dir <character>'\\
+                }
+                Use uppercase, or lowercase characters for directives:
+                \begin{description}
+                    \item [l:] Lowercase.
+                    \item [u:] Uppercase.
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-lc-inst <character>'\\
+                }
+                Use uppercase, or lowercase characters for instructions:
+                \begin{description}
+                    \item [l:] Lowercase.
+                    \item [u:] Uppercase.
+                \end{description}
+                                {
+                ~\\
+                \usecodefont
+
+                \verb'--backup, -b'\\
+                }
+                Enable generation of backup files.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--version, -V'\\
+                }
+                Print version and exit.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--help, -h'\\
+                }
+                Print help message.\\\\
+                NOTES:\\
+                `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+            \subsubsection{EXAMPLES}
+                {
+                ~\\
+                \usecodefont
+                \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
+                }
 
 
 
