@@ -354,19 +354,368 @@
             \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'\\
         }
         \subsubsection{Options}
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--arch, -a <architecture>'\\
+            }
+            Specify target architecture, supported architectures are: \textbf{PicoBlaze}
+            {
+            ~\\
+            \usecodefont
 
-            --dbg, -d <MDS-native-debug-file>
+            \verb'--plang, -p <programming language>'\\
+            }
+            Specify programming language, supported languages are: \textbf{ASM:} assembly language
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--hex, -x <intel HEX-file>'\\
+            }
+            Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--dbg, -d <MDS-native-debug-file>'\\
+            }
             Specify output file with code for MCU simulator and other debugging tools.
-            --srec <Motorola-S-REC-file>
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--srec <Motorola-S-REC-file>'\\
+            }
             Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
-            --binary <binary-file>
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--srec --binary <binary-file>'\\
+            }            
             Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
-            --lst, -l <code-listing>
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--lst, -l <code-listing>'\\
+            }
             Specify output file where code listing generated during compilation will be stored.
-            --mtable, -m <table-of-macros>
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--mtable, -m <table-of-macros>'\\
+            }
             Specify file in which the compiler will put table of macros defined in your code.
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--stable, -s <table-of-symbols>'\\
+            }
+            Specify file in which the compiler will put table of symbols defined in your code.
+            {
+            ~\\
+            \usecodefont
+            
+            \verb'--help, -h'\\
+            }
+            Print help message.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--version, -V'\\
+            }
+            Print compiler version and exit.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--check, -c'\\
+            }
+            Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--no-backup'\\
+            }
+            Don't generate backup files.\\
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--brief-msg'\\
+            }
+            Print only unique messages.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--no-strict'\\
+            }
+            Disable certain error and warning messages.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--no-warnings'\\
+            }
+            Do not print any warnings.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--no-errors'\\
+            }
+            Do not print any errors.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--no-remarks'\\
+            }
+            Do not print any remarks.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--silent'\\
+            }
+            Do not print any warnings, errors, or any other messages, stay completely silent.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--include, -I <directory>'\\
+            }
+            Add directory where the compiler will search for include files.
+             {
+            ~\\
+            \usecodefont
+            
+            \verb'--dev, -D <device>'\\
+            }
+            Specify exact target device, options are:
+            For PicoBlaze : \textbf{kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3 and kcpsm6}
+            {
+            ~\\
+            \usecodefont
 
+            \verb'--precompile, -P <.prc-file>'\\
+            }
+            Specify target file for generation of precompiled code.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--vhdl <.vhd-file>'\\
+            }
+            Specify target file for generation of VHDL code.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--vhdl-tmpl <.vhd-file>'\\
+            }
+             Specify VHDL template file.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--verilog <.v-file>'\\
+            }
+           Specify target file for generation of verilog code.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--verilog-tmpl <.v-file>'\\
+            }
+            Specify verilog template file.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--mem <.mem-file>'\\
+            }
+            Specify target file for generation of MEM file.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'--raw-hex-dump <.hex-file>'\\
+            }
+            Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).\\
+
+        \subsubsection{NOTES}
+            `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.\\
+
+            When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
+        \subsubsection{EXAMPLES}
+            {
+            ~\\
+            \usecodefont
+
+            \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
+            }
+            Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
+            }
+            Do the same at the above, only in this case we have used another variant of usage of switches with argument.
+             {
+            ~\\
+            \usecodefont
+
+            \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
+            }
+            Do the same at the above, only in this case we have used short version of the switches.\\
+
+            
     \subsection{Disassembler}
+        \subsubsection{Description}
+            Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain level of
+            capability of reversing the assembly process and regaining the original source code from any object code.\\
+
+            USAGE:
+            {
+                ~\\
+                \usecodefont
+                \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'\\
+            }
+            \subsubsection{Options}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--arch, -a <architecture>'\\
+                }
+                Specify target architecture, supported architectures are: \textbf{PicoBlaze}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--family, -f <family>'\\
+                }
+                Specify processor family, supported families for the given architectures are:  For \textbf{PicoBlaze:} kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--out, -o <output-file>'\\
+                }
+                Specify output file where the resulting assembly language code will be stored.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--type, -t <input-file-format>'\\
+                }
+                 Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
+                 \begin{description}
+                  \item [hex:]I ntel 8 HEX, or Intel 16 HEX.
+                  \item [srec:] Motorola S-Record.
+                  \item [bin:] Raw binary file.
+                  \item [mem:] Xilinx MEM file (for PicoBlaze only).
+                  \item [vhd:] VHDL file (for PicoBlaze only).
+                  \item [v:] Verilog file (for PicoBlaze only).
+                 \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-ind <indentation>'\\
+                }
+                Indent with:
+                \begin{description}
+                  \item [Spaces:] Indent with spaces (default).
+                  \item [Tabs:] Indent with tabs.
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-tabsz <n>'\\
+                }
+                Consider tab to be displayed at most n spaces wide, here it is by default 8.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-eof <end-of-line-character>'\\
+                }
+                Specify line separator, available options are:
+                \begin{description}
+                  \item [clrf:] [WINDOWS] use sequence of carriage return and line feed characters
+                  \item [If:] [UNIX] use a single line feed character (0x0a = ') (default),
+                  \item [cr:] [APPLE] use single carriage return (0x0d = '').
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-sym <symbols>'\\
+                }
+                Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers, available options are:
+                \begin{description}
+                    \item [c:] Program memory.
+                    \item [d:] Data memory.
+                    \item [r:] Register file.
+                    \item [p:] Port address.
+                    \item [k:] Immediate constants.
+                \end{description}
+                 This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-lc <character>'\\
+                }
+                Use uppercase, or lowercase characters:
+                \begin{description}
+                    \item [l:] Lowercase.
+                    \item [u:] Uppercase.
+                \end{description}
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--cfg-radix <radix>'\\
+                }
+                Radix, available options are:
+                \begin{description}
+                    \item [h:] Hexadecimal.
+                    \item [d:] Decimal.
+                    \item [b:] Binary.
+                    \item [o:] Octal.
+                \end{description}
+                                {
+                ~\\
+                \usecodefont
+
+                \verb'--help, -h'\\
+                }
+                Print help message.
+                {
+                ~\\
+                \usecodefont
+
+                \verb'--version, -V'\\
+                }
+                Print disassembler version and exit.\\\\
+                NOTES:\\
+                `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+
+                
+
     \subsection{Assembler translator}
 
 
