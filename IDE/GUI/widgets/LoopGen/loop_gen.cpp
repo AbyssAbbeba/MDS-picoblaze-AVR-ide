@@ -466,7 +466,7 @@ void loop_gen::loop(unsigned int type)
         {
             if ( ui->radio_Cycles->isChecked() == true )
             {
-                cursor.insertText(";Generated loop for " + QString::number(CyclesFinal, 'f', 0)
+                cursor.insertText(";Generated loop for " + QString::number(CyclesFinal * 2, 'f', 0)
                                   + " cycles \n");
                 cursor.insertText(";----------------------------------\n");
                 ui->Vystup_text->setTextCursor(cursor);
