@@ -21,6 +21,9 @@
  <Mainfile enabled="false" path="demo_4_buttons_leds.asm" name="demo_4_buttons_leds.asm"/>
  <Breakpoints>
   <BreakpointFile path="demoprojekt/Example/Demonstration project/looptest.asm"/>
+  <BreakpointFile path="010_store_fetch.asm">
+   <Breakpoint line="1"/>
+  </BreakpointFile>
  </Breakpoints>
  <Bookmarks>
   <BookmarkFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
