@@ -309,7 +309,7 @@ double loop_gen::TimeToCycles()
 
         //ui->Vstup_Cas->setText( QString::number( CycleTime ));
         Steps = temp1.toDouble() / 2;
-        return temp1.toDouble();                         // dod2lat steps
+        return temp1.toDouble() / 2;                         // dod2lat steps
     }
     ui->Vstup_Cycles->setDisabled(false);
     // get inserted frekvency value
