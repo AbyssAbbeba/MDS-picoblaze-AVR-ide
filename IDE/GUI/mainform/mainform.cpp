@@ -537,7 +537,9 @@ void MainForm::createActions()
     connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
     simulationUnhighlightAct->setDisabled(true);
 
-    simulationBreakpointAct = new QAction(tr("Breakpoint"), this);
+    this->pm_breakpoint = new QPixmap(":/resources//icons//breakpoint.png");
+    this->icon_breakpoint = new QIcon(*pm_breakpoint);
+    simulationBreakpointAct = new QAction(*icon_breakpoint, tr("Breakpoint"), this);
     simulationBreakpointAct->setDisabled(true);
     connect(simulationBreakpointAct, SIGNAL(triggered()), this, SLOT(breakpointActHandle()));
 
@@ -571,7 +573,7 @@ void MainForm::createActions()
     example1Act = new QAction(tr("See Example Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
-    this->pm_cross = new QPixmap(":/resources//icons//cross.png");
+    this->pm_cross = new QPixmap(":/resources//icons//pause.png");
     //qDebug() << "MainForm: return CreateActions()";
 }
 

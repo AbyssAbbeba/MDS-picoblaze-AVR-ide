@@ -469,6 +469,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                     }
                     else if (xmlElement.tagName() == "Breakpoints")
                     {
+                        QDir project(QFileInfo(prjPath).dir());
                         QDomNode xmlBreakpointFileNode = xmlElement.firstChild();
                         QDomElement xmlBreakpointFileElement;
                         QString absolutePath;
@@ -484,8 +485,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 set << xmlBreakpointElement.attribute("line").toInt();
                                 xmlBreakpointNode = xmlBreakpointNode.nextSibling();
                             }
-                            //TODO:
-                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBreakpointFileElement.attribute("path");
+                            absolutePath = project.absoluteFilePath(xmlBreakpointFileElement.attribute("path"));
                             qDebug() << "Project: breakpoint path" << absolutePath;
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->breakPoints.append(pair);
@@ -494,6 +494,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                     }
                     else if (xmlElement.tagName() == "Bookmarks")
                     {
+                        QDir project(QFileInfo(prjPath).dir());
                         QDomNode xmlBookmarkFileNode = xmlElement.firstChild();
                         QDomElement xmlBookmarkFileElement;
                         QString absolutePath;
@@ -510,7 +511,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 xmlBookmarkNode = xmlBookmarkNode.nextSibling();
                             }
                             //TODO:
-                            absolutePath = prjPath.section('/', 0, -2) + "/" + xmlBookmarkFileElement.attribute("path");
+                            absolutePath = project.absoluteFilePath(xmlBookmarkFileElement.attribute("path"));
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->bookmarks.append(pair);
                             xmlBookmarkFileNode = xmlBookmarkFileNode.nextSibling();

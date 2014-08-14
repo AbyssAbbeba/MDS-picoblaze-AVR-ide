@@ -247,6 +247,10 @@ class MainForm : public QMainWindow
         QPixmap *pm_simUnhighlight;
         QPixmap *pm_toolDis;
         QPixmap *pm_cross;
+        QPixmap *pm_breakpoint;
+        QPixmap *pm_breakpointEnable;
+        QPixmap *pm_breakpointDisable;
+        QPixmap *pm_bookmark;
 
         QIcon *icon_projNewAdd;
         QIcon *icon_projNew;
@@ -260,6 +264,8 @@ class MainForm : public QMainWindow
         QIcon *icon_simReset;
         QIcon *icon_simUnhighlight;
         QIcon *icon_toolDis;
+        QIcon *icon_breakpoint;
+        QIcon *icon_bookmark;
         
 
         // simulation status - start/stop
