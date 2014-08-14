@@ -97,6 +97,7 @@ loop_gen::loop_gen(QWidget *parent) :
 void loop_gen::Cycles_click()
 {
     ui->Vstup_Cas->setDisabled(true);
+    ui->Vstup_Cycles->setDisabled(false);
 }
 
 
@@ -511,6 +512,20 @@ void loop_gen::loop(unsigned int type)
                 cursor.insertText("         NOP\n");
             }
             ui->Vystup_text->setTextCursor(cursor);
+            
+            if ( true == ui->Button_Macro->isChecked())
+                {
+                    if ( ui->check_upper->isChecked() == true )
+                    {
+                        endmacro = QString ("%1").arg(macroend.toUpper());
+                        cursor.insertText(endmacro + "\n");
+                    }
+                    else
+                    {
+                        endmacro = QString ("%1").arg(macroend);
+                        cursor.insertText(endmacro + "\n");
+                    }
+                }
             break;
     //=======================================================================================================
         case first_1r:
