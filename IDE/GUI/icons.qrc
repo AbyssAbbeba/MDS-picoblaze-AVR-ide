@@ -15,12 +15,16 @@
      <file>resources/icons/terminal.png</file>
      <file>resources/icons/disassemble.png</file>
      <file>resources/icons/unhighlight.png</file>
-     <file>resources/icons/cross.png</file>
+     <file>resources/icons/pause.png</file>
      <file>resources/icons/drive_magnify.png</file>
      <file>resources/icons/logo_big.png</file>
      <file>resources/icons/logo_small.png</file>
      <file>resources/icons/logo_smaller.png</file>
      <file>resources/icons/dialog-warning.png</file>
+     <file>resources/icons/breakpoint.png</file>
+     <file>resources/icons/bookmark.png</file>
+     <file>resources/icons/breakpoint_enable.png</file>
+     <file>resources/icons/breakpoint_disable.png</file>
      <file>resources/xml/mcuspecfile.xml</file>
      <file>resources/fonts/Ubuntu/UbuntuMono-R.ttf</file>
      <file>resources/fonts/Ubuntu/UbuntuMono-RI.ttf</file>
