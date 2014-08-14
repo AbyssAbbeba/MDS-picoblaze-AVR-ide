@@ -34,8 +34,10 @@ std::ostream & operator << ( std::ostream & out,
     out << definition.m_flags << std::endl;
 
     out << "== Instruction Set ==" << std::endl;
+    unsigned int number = 0;
     for ( const AdjSimProcDef::Instruction & i : definition.m_instructionSet )
     {
+        out << "Instruction " << number++ << std::endl;
         out << i << std::endl;
     }
 
@@ -141,9 +143,9 @@ std::ostream & operator << ( std::ostream & out,
     out << "Has Negative: " << definition.m_hasNegative << std::endl;
     out << "Has Half: " << definition.m_hasHalf << std::endl;
     out << "Has Parity: " << definition.m_hasParity << std::endl;
-    out << "Backup When Interruped: " << definition.m_backupWhenInterruped << std::endl;
-    out << "Auto Disable Interrputs: " << definition.m_autoDisableInterrputs << std::endl;
-    out << "Auto Enable Interrputs: " << definition.m_autoEnableInterrputs << std::endl;
+    out << "Backup When Interrupted: " << definition.m_backupWhenInterrupted << std::endl;
+    out << "Auto Disable Interrupts: " << definition.m_autoDisableInterrupts << std::endl;
+    out << "Auto Enable Interrupts: " << definition.m_autoEnableInterrupts << std::endl;
 
     return out;
 }
@@ -151,5 +153,111 @@ std::ostream & operator << ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const AdjSimProcDef::Instruction & definition )
 {
+    out << "Mnemonic: \"" << definition.m_mnemonic << "\"" << std::endl;
+    out << "Operation: " << definition.m_operation << std::endl;
+    out << "Time: POS=" << definition.m_time.m_positive << " NEG=" << definition.m_time.m_negative << std::endl;
+    out << "Next OP: POS=" << definition.m_next.m_positive << " NEG=" << definition.m_next.m_negative << std::endl;
+    out << "Condition: " << definition.m_condition.m_type;
+    if ( AdjSimProcDef::Instruction::Condition::T_UNCONDITIONAL != definition.m_condition.m_type )
+    {
+        out << " for flag " << definition.m_condition.m_flag;
+    }
+    out << std::endl;
 
+    out << "Flag effect:" << std::endl;
+    for ( int i = 0; i < AdjSimProcDef::Instruction::FLAG__MAX__; i++ )
+    {
+        out << "    " << AdjSimProcDef::Instruction::ProcessorFlag(i) << " - ";
+        switch ( definition.m_flags[i] )
+        {
+            case AdjSimProcDef::Instruction::FE_DO_NOT_CHANGE:    out << "do not change";     break;
+            case AdjSimProcDef::Instruction::FE_ALWAYS_SET:       out << "always set";        break;
+            case AdjSimProcDef::Instruction::FE_ALWAYS_CLEAR:     out << "always clear";      break;
+            case AdjSimProcDef::Instruction::FE_DEPENS_ON_RESULT: out << "depends on result"; break;
+        }
+        out << std::endl;
+    }
+
+    out << "Operation parameters:" << std::endl;
+    out << "    Result: ";
+    switch ( definition.m_operParameters.m_result )
+    {
+        case AdjSimProcDef::Instruction::OperParameters::RES_STORE_IN_1ST: out << "store in 1st operand"; break;
+        case AdjSimProcDef::Instruction::OperParameters::RES_STORE_IN_3RD: out << "store in 3rd operand"; break;
+        case AdjSimProcDef::Instruction::OperParameters::RES_DISCARD:      out << "discard result";       break;
+    }
+    out << std::endl;
+    out << "    Parity: ";
+    switch ( definition.m_operParameters.m_parity )
+    {
+        case AdjSimProcDef::Instruction::OperParameters::P_EVEN: out << "even"; break;
+        case AdjSimProcDef::Instruction::OperParameters::P_ODD:  out << "odd";  break;
+    }
+    out << std::endl;
+    out << "    Ignore Carry flag: " << definition.m_operParameters.m_ignoreCarryFlag << std::endl;
+
+    out << "OP code: 0b";
+    for ( int i = ( definition.m_opCode.size() - 1 ); i >= 0 ; i-- )
+    {
+        switch ( definition.m_opCode[i] )
+        {
+            case AdjSimProcDef::Instruction::OCB_ZERO:      out << '0';
+            case AdjSimProcDef::Instruction::OCB_ONE:       out << '1';
+            case AdjSimProcDef::Instruction::OCB_DONT_CARE: out << '-';
+        }
+    }
+    out << std::endl;
+
+    out << "Operands:" << std::endl;
+    for ( unsigned int i = 0; i < definition.m_operands.size(); i++ )
+    {
+        out << "    Operand " << i << std::endl;
+        out << "        Type: ";
+        switch ( definition.m_operands[i].m_type )
+        {
+            case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE: out << "IMMEDIATE"; break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_DIR:   out << "REG DIR";   break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_INDR:  out << "REG INDR";  break;
+            case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:  out << "DATA DIR";  break;
+            case AdjSimProcDef::Instruction::Operand::T_DATA_INDR: out << "DATA INDR"; break;
+            case AdjSimProcDef::Instruction::Operand::T_PROGRAM:   out << "PROGRAM";   break;
+            case AdjSimProcDef::Instruction::Operand::T_PORT:      out << "PORT";      break;
+        }
+        out << std::endl;
+        out << "        Size: " << definition.m_operands[i].m_size << std::endl;
+        out << "        Fixed Value: " << definition.m_operands[i].m_fixedValue << std::endl;
+        if ( false == definition.m_operands[i].m_OPCodePermutation.empty() )
+        {
+            out << "        Permutation: ";
+            for ( int j = ( definition.m_operands[i].m_OPCodePermutation.size() - 1 ); j >= 0; j-- )
+            {
+                out << definition.m_operands[i].m_OPCodePermutation[j];
+                if ( 0 != i )
+                {
+                    out << ", ";
+                }
+            }
+            out << std::endl;
+        }
+    }
+
+    return out;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const AdjSimProcDef::Instruction::ProcessorFlag & flag )
+{
+    switch ( flag )
+    {
+        case AdjSimProcDef::Instruction::FLAG_ZERO:        out << "ZERO";        break;
+        case AdjSimProcDef::Instruction::FLAG_CARRY:       out << "CARRY";       break;
+        case AdjSimProcDef::Instruction::FLAG_OVERFLOW:    out << "OVERFLOW";    break;
+        case AdjSimProcDef::Instruction::FLAG_NEGATIVE:    out << "NEGATIVE";    break;
+        case AdjSimProcDef::Instruction::FLAG_HALF_CARRY:  out << "HALF_CARRY";  break;
+        case AdjSimProcDef::Instruction::FLAG_INTR_ENABLE: out << "INTR_ENABLE"; break;
+        case AdjSimProcDef::Instruction::FLAG_PARITY:      out << "PARITY";      break;
+        case AdjSimProcDef::Instruction::FLAG_FLAG:        out << "FLAG";        break;
+        case AdjSimProcDef::Instruction::FLAG__MAX__:      out << "<invalid>";   break;
+    }
+    return out;
 }

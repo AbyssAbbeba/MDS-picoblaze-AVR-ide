@@ -47,7 +47,7 @@ class AdjSimProcDef
                 FLAG_CARRY,
                 FLAG_OVERFLOW,
                 FLAG_NEGATIVE,
-                FLAG_HALFLAG_CARRY,
+                FLAG_HALF_CARRY,
                 FLAG_INTR_ENABLE,
                 FLAG_PARITY,
                 FLAG_FLAG,
@@ -62,22 +62,17 @@ class AdjSimProcDef
                 OCB_DONT_CARE
             };
 
-            std::string m_mnemonic;
-            std::vector<OpCodeBit> m_opCode;
-
             struct Next
             {
                 int m_positive; ///< -1 means not set
                 int m_negative; ///< -1 means not set
-            } m_next;
+            };
 
             struct Time
             {
                 unsigned int m_positive;
                 unsigned int m_negative;
-            } m_time;
-
-            AdaptableSimOperationID::ID m_operation;
+            };
 
             struct Condition
             {
@@ -88,7 +83,7 @@ class AdjSimProcDef
                     T_IF_ONE
                 } m_type;
                 ProcessorFlag m_flag;
-            } m_condition;
+            };
 
             struct Operand
             {
@@ -114,7 +109,7 @@ class AdjSimProcDef
                 FE_ALWAYS_SET,
                 FE_ALWAYS_CLEAR,
                 FE_DEPENS_ON_RESULT
-            } m_flags[FLAG__MAX__];
+            };
 
             struct OperParameters
             {
@@ -122,7 +117,7 @@ class AdjSimProcDef
                 {
                     RES_STORE_IN_1ST,
                     RES_STORE_IN_3RD,
-                    RES_DISCART
+                    RES_DISCARD
                 } m_result;
 
                 enum Parity
@@ -132,8 +127,16 @@ class AdjSimProcDef
                 } m_parity;
 
                 bool m_ignoreCarryFlag;
-            } m_operParameters;
+            };
 
+            Next m_next;
+            Time m_time;
+            FlagEffect m_flags[FLAG__MAX__];
+            Condition m_condition;
+            AdaptableSimOperationID::ID m_operation;
+            OperParameters m_operParameters;
+            std::string m_mnemonic;
+            std::vector<OpCodeBit> m_opCode;
             std::vector<Operand> m_operands;
         };
 
@@ -224,9 +227,9 @@ class AdjSimProcDef
 
         struct Flags
         {
-            bool m_backupWhenInterruped;
-            bool m_autoDisableInterrputs; // When when entering ISR.
-            bool m_autoEnableInterrputs; // When when leaving ISR.
+            bool m_backupWhenInterrupted;
+            bool m_autoDisableInterrupts; // When when entering ISR.
+            bool m_autoEnableInterrupts; // When when leaving ISR.
 
             bool m_hasZero;
             bool m_hasCarry;
@@ -275,6 +278,9 @@ class AdjSimProcDef
 
     std::ostream & operator << ( std::ostream & out,
                                  const AdjSimProcDef::Stack::SimpleStack::Space & definition );
+
+    std::ostream & operator << ( std::ostream & out,
+                                 const AdjSimProcDef::Instruction::ProcessorFlag & flag );
 //@}
 
 #endif // ADJSIMPROCDEF_H
