@@ -190,7 +190,7 @@
     <item row="0" column="1">
      <widget class="QRadioButton" name="radio_Cycles">
       <property name="text">
-       <string>Cycles</string>
+       <string>Clock cycles</string>
       </property>
      </widget>
     </item>
