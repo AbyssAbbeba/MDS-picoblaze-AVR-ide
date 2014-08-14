@@ -54,7 +54,7 @@ void AdaptableSimStatusFlags::interrupt()
 {
     m_interrupted++;
 
-    if ( true == m_config.m_backupWhenInterruped )
+    if ( true == m_config.m_backupWhenInterrupted )
     {
         m_preCarry     = m_carry;
         m_preZero      = m_zero;
@@ -63,7 +63,7 @@ void AdaptableSimStatusFlags::interrupt()
         m_preParity    = m_parity;
     }
 
-    if ( true == m_config.m_autoDisableInterrputs )
+    if ( true == m_config.m_autoDisableInterrupts )
     {
         m_inte = false;
     }
@@ -73,7 +73,7 @@ void AdaptableSimStatusFlags::returni()
 {
     m_interrupted--;
 
-    if ( true == m_config.m_backupWhenInterruped )
+    if ( true == m_config.m_backupWhenInterrupted )
     {
         m_carry     = m_preCarry;
         m_zero      = m_preZero;
@@ -83,7 +83,7 @@ void AdaptableSimStatusFlags::returni()
         m_parity    = m_preParity;
     }
 
-    if ( true == m_config.m_autoEnableInterrputs )
+    if ( true == m_config.m_autoEnableInterrupts )
     {
         m_inte = true;
     }

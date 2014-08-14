@@ -56,9 +56,9 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
          */
         struct Config
         {
-            bool m_backupWhenInterruped;
-            bool m_autoDisableInterrputs; // When when entering ISR.
-            bool m_autoEnableInterrputs; // When when leaving ISR.
+            bool m_backupWhenInterrupted;
+            bool m_autoDisableInterrupts; // When when entering ISR.
+            bool m_autoEnableInterrupts; // When when leaving ISR.
         };
 
     ////    Constructors and Destructors    ////
