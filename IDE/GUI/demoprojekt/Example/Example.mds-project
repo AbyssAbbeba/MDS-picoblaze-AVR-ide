@@ -24,6 +24,7 @@
   <BreakpointFile path="010_store_fetch.asm">
    <Breakpoint line="1"/>
   </BreakpointFile>
+  <BreakpointFile path="abcc.asm"/>
  </Breakpoints>
  <Bookmarks>
   <BookmarkFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
