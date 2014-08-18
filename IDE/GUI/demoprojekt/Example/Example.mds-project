@@ -28,6 +28,7 @@
  </Breakpoints>
  <Bookmarks>
   <BookmarkFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
+  <BookmarkFile path="abcc.asm"/>
  </Bookmarks>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>
