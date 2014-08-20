@@ -635,11 +635,19 @@ void MainForm::createToolbar()
     simulationToolBar->addAction(simulationBreakpointAct);
     simulationToolBar->addAction(simulationDisableBreakpointsAct);
 
+    QToolBar *toolBar = addToolBar("");
+    QWidget* spacer = new QWidget();
+    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    // toolBar is a pointer to an existing toolbar
+    toolBar->addWidget(spacer);
+    toolBar->addAction("NON-COMMERCIAL");
+
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     //fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
     addToolBar(Qt::TopToolBarArea, projectToolBar);
     addToolBar(Qt::TopToolBarArea, simulationToolBar);
+    addToolBar(Qt::TopToolBarArea, toolBar);
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
     //qDebug() << "MainForm: return CreateToolbar()";
 }
