@@ -18,6 +18,7 @@
 
 // Forward declarations
 class McuDeviceSpec;
+class AdjSimProcDef;
 class McuSimCfgMgrAVR8;
 class McuSimCfgMgrPIC8;
 
@@ -71,10 +72,12 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          * @brief
          * @param[in] mcuName
          * @param[out] mcuConfig
+         * @param[in] procDef
          * @return
          */
         bool setupSimulator ( const char * mcuName,
-                              MCUSimConfig & mcuConfig ) const;
+                              MCUSimConfig & mcuConfig,
+                              const AdjSimProcDef * procDef = NULL ) const;
 
         /**
          * @brief

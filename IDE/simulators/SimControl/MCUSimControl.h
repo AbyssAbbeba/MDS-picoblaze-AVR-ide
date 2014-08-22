@@ -20,6 +20,7 @@
 class DbgFile;
 class DataFile;
 class McuDeviceSpec;
+class AdjSimProcDef;
 class MCUSimObserver;
 
 #include "../MCUSim/MCUSim.h"
@@ -126,8 +127,10 @@ class MCUSimControl : public QThread
         /**
          * @brief
          * @param[in] deviceName
+         * @param[in] procDef
          */
-        MCUSimControl ( const char * deviceName );
+        MCUSimControl ( const char * deviceName,
+                        const AdjSimProcDef * procDef = NULL );
 
         /**
          * @brief Destructor
@@ -356,9 +359,11 @@ class MCUSimControl : public QThread
         /**
          * @brief
          * @param[in] deviceName
+         * @param[in] procDef
          * @return
          */
-        bool changeDevice ( const char * deviceName );
+        bool changeDevice ( const char * deviceName,
+                            const AdjSimProcDef * procDef = NULL );
 
     ////    Qt Signals    ////
     signals:

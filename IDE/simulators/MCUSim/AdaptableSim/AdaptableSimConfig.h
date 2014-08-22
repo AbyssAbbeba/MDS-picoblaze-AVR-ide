@@ -66,12 +66,6 @@ class AdaptableSimConfig : public MCUSimConfig
             return m_isLinked;
         }
 
-        /**
-         * @brief
-         * @param[in] dev
-         */
-        void configure ( MCUSim::Family dev );
-
     ////    Public Attributes    ////
     public:
         /**

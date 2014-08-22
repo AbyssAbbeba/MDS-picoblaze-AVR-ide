@@ -235,7 +235,7 @@ class AdjSimProcDef
             bool m_hasCarry;
             bool m_hasOverflow;
             bool m_hasNegative;
-            bool m_hasHalf;
+            bool m_hasHalfCarry;
             bool m_hasParity;
         };
 

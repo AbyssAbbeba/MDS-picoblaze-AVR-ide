@@ -45,8 +45,3 @@ void AdaptableSimConfig::link ( AdaptableSimSim * system )
     m_configStack               = & ( system -> m_stack               -> m_config );
     m_configIO                  = & ( system -> m_io                  -> m_config );
 }
-
-void AdaptableSimConfig::configure ( MCUSim::Family dev )
-{
-    m_family = dev;
-}
