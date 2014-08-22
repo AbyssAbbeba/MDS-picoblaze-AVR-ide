@@ -141,7 +141,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "Has Carry: " << definition.m_hasCarry << std::endl;
     out << "Has Overflow: " << definition.m_hasOverflow << std::endl;
     out << "Has Negative: " << definition.m_hasNegative << std::endl;
-    out << "Has Half: " << definition.m_hasHalf << std::endl;
+    out << "Has Half: " << definition.m_hasHalfCarry << std::endl;
     out << "Has Parity: " << definition.m_hasParity << std::endl;
     out << "Backup When Interrupted: " << definition.m_backupWhenInterrupted << std::endl;
     out << "Auto Disable Interrupts: " << definition.m_autoDisableInterrupts << std::endl;
