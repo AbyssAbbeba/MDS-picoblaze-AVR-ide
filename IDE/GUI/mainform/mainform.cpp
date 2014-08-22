@@ -32,6 +32,7 @@
 #include "../widgets/LoopGen/loop_gen.h"
 #include "../widgets/AboutWidget/aboutwidget.h"
 #include "../guicfg/guicfg.h"
+#include "../../mds.h"
 
 
 
@@ -46,6 +47,10 @@ MainForm::MainForm()
     //qDebug() << "MainForm: MainForm()";
     this->setMinimumWidth(800);
     this->setMinimumHeight(600);
+    this->setWindowTitle("MDS");
+    #ifdef MDS_VARIANT_NONCOMMERCIAL
+        this->setWindowTitle("MDS NON-COMMERCIAL");
+    #endif
     this->projectTabConnected = false;
     this->simulationStatus = false;
     this->simulationRunStatus = false;
@@ -635,11 +640,23 @@ void MainForm::createToolbar()
     simulationToolBar->addAction(simulationBreakpointAct);
     simulationToolBar->addAction(simulationDisableBreakpointsAct);
 
+
+
     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     //fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
     addToolBar(Qt::TopToolBarArea, projectToolBar);
     addToolBar(Qt::TopToolBarArea, simulationToolBar);
+    #ifdef MDS_VARIANT_NONCOMMERCIAL
+        QToolBar *toolBar = addToolBar("NON-COMMERCIAL");
+        QWidget* spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        // toolBar is a pointer to an existing toolbar
+        toolBar->addWidget(spacer);
+        toolBar->addAction("NON-COMMERCIAL");
+        toolBar->setAllowedAreas(Qt::TopToolBarArea);
+        addToolBar(Qt::TopToolBarArea, toolBar);
+    #endif
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
     //qDebug() << "MainForm: return CreateToolbar()";
 }

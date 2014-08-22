@@ -423,7 +423,7 @@
     </rect>
    </property>
    <property name="title">
-    <string>Frekvency</string>
+    <string>Frequency</string>
    </property>
    <widget class="QLineEdit" name="Vstup_Frekvency">
     <property name="geometry">
