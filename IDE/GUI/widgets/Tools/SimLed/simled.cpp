@@ -97,11 +97,11 @@ void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int 
                 this->value = m_plio->getOutputArray()[this->address];
                 break;
             }
-            case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
-            {
-                this->value = m_plio->getOutputArray()[this->address];
-                break;
-            }
+     //       case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
+     //       {
+     //           this->value = m_plio->getOutputArray()[this->address];
+     //           break;
+     //       }
             default:
             {
                 qDebug("PicoBlazeGrid: Invalid event (plio) received, event ignored.");
@@ -109,6 +109,7 @@ void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int 
             }
         }
     }
+    ValueChanged();
 }
 
 
@@ -141,6 +142,9 @@ void Leds_sim::addrChanged()
 {
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << "changed address" << address;
+    
+    this->value = m_plio->getOutputArray()[this->address];
+    
     ValueChanged();
 }
 
