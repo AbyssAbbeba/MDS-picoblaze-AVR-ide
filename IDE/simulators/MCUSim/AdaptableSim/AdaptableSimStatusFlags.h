@@ -59,6 +59,13 @@ class AdaptableSimStatusFlags : public MCUSimSubsys,
             bool m_backupWhenInterrupted;
             bool m_autoDisableInterrupts; // When when entering ISR.
             bool m_autoEnableInterrupts; // When when leaving ISR.
+
+            bool m_hasZero;
+            bool m_hasCarry;
+            bool m_hasOverflow;
+            bool m_hasNegative;
+            bool m_hasHalfCarry;
+            bool m_hasParity;
         };
 
     ////    Constructors and Destructors    ////

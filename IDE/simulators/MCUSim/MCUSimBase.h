@@ -98,6 +98,11 @@ class MCUSimBase
                 FAMILY_KCPSM6,       ///<
             //@}
 
+            /// @name AdaptableSim
+            //@{
+                FAMILY_ADAPTABLE_0,
+            //@}
+
             FAMILY__MAX__            ///<
         };
 

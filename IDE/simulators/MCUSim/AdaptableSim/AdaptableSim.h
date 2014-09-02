@@ -9,7 +9,7 @@
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
- * @file AdaptableSimSim.h
+ * @file AdaptableSim.h
  */
 // =============================================================================
 
@@ -35,9 +35,9 @@ class AdaptableSimInterruptController;
 /**
  * @brief
  * @ingroup AdaptableSim
- * @class AdaptableSimSim
+ * @class AdaptableSim
  */
-class AdaptableSimSim : public MCUSim
+class AdaptableSim : public MCUSim
 {
     ////    Friend classes    ////
     friend class AdaptableSimConfig;
@@ -47,12 +47,12 @@ class AdaptableSimSim : public MCUSim
         /**
          * @brief
          */
-        AdaptableSimSim();
+        AdaptableSim();
 
         /**
          * @brief
          */
-        virtual ~AdaptableSimSim();
+        virtual ~AdaptableSim();
 
     ////    Public Operations    ////
     public:

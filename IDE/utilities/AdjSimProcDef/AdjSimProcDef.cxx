@@ -141,7 +141,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "Has Carry: " << definition.m_hasCarry << std::endl;
     out << "Has Overflow: " << definition.m_hasOverflow << std::endl;
     out << "Has Negative: " << definition.m_hasNegative << std::endl;
-    out << "Has Half: " << definition.m_hasHalf << std::endl;
+    out << "Has Half: " << definition.m_hasHalfCarry << std::endl;
     out << "Has Parity: " << definition.m_hasParity << std::endl;
     out << "Backup When Interrupted: " << definition.m_backupWhenInterrupted << std::endl;
     out << "Auto Disable Interrupts: " << definition.m_autoDisableInterrupts << std::endl;
@@ -226,6 +226,7 @@ std::ostream & operator << ( std::ostream & out,
         out << std::endl;
         out << "        Size: " << definition.m_operands[i].m_size << std::endl;
         out << "        Fixed Value: " << definition.m_operands[i].m_fixedValue << std::endl;
+        out << "        Number: " << definition.m_operands[i].m_number << std::endl;
         if ( false == definition.m_operands[i].m_OPCodePermutation.empty() )
         {
             out << "        Permutation: ";

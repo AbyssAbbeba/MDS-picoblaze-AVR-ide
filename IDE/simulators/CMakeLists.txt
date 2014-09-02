@@ -52,6 +52,7 @@ add_library ( ${PROJECT_NAME} SHARED
               $<TARGET_OBJECTS:AVR8Sim>
               $<TARGET_OBJECTS:PIC8Sim>
               $<TARGET_OBJECTS:PicoBlazeSim>
+              $<TARGET_OBJECTS:AdaptableSim>
 
               # Support functions.
               $<TARGET_OBJECTS:SimControl>

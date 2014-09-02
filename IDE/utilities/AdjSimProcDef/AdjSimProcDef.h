@@ -21,7 +21,7 @@
 #include <string>
 #include <iostream>
 
-#include "simulators/MCUSim/AdaptableSim/AdaptableSimOperationID.h"
+#include "../../simulators/MCUSim/AdaptableSim/AdaptableSimOperationID.h"
 
 /**
  * @brief
@@ -79,8 +79,8 @@ class AdjSimProcDef
                 enum Type
                 {
                     T_UNCONDITIONAL,
-                    T_IF_ZERO,
-                    T_IF_ONE
+                    T_IF_ONE,
+                    T_IF_ZERO
                 } m_type;
                 ProcessorFlag m_flag;
             };
@@ -100,6 +100,7 @@ class AdjSimProcDef
 
                 int m_size; ///< -1 means operand is not present
                 int m_fixedValue; /// -1 means do not use fixed value and use permutation instead
+                unsigned int m_number; /// Operand number as appears in source code line, starting with 0.
                 std::vector<int> m_OPCodePermutation; ///< size is either 0, or consistent with m_size
             };
 
@@ -235,7 +236,7 @@ class AdjSimProcDef
             bool m_hasCarry;
             bool m_hasOverflow;
             bool m_hasNegative;
-            bool m_hasHalf;
+            bool m_hasHalfCarry;
             bool m_hasParity;
         };
 
