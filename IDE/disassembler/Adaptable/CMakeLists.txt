@@ -19,7 +19,8 @@ project ( DAsmAdaptable )
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/" )
+include_directories ( "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/"
+                      "${CMAKE_SOURCE_DIR}/simulators/MCUSim/AdaptableSim/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will produce static C++ library.

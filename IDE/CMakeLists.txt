@@ -331,6 +331,9 @@ file ( WRITE "mds.h" "// Basic definitions for MDS, generated automatically by C
 file ( APPEND "mds.h" "#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
 file ( APPEND "mds.h" "#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
 file ( APPEND "mds.h" "#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
+if ( MDS_VARIANT STREQUAL "Trial" )
+    file ( APPEND "mds.h" "#define MDS_TRIAL_PERIOD 30\n" )
+endif()
 
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "mds.h" )
