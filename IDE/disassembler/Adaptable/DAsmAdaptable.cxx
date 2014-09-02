@@ -15,8 +15,6 @@
 
 #include "DAsmAdaptable.h"
 
-#include "AdaptableSimOperationID.h"
-
 // Used for i18n only.
 #include <QObject>
 
@@ -123,72 +121,108 @@ bool DAsmAdaptable::phase1 ( unsigned int code,
         return false;
     }
 
-    std::vector<unsigned int> operands;
+    std::vector<int> operands;
     getOperands(code, instruction, operands);
 
-    switch ( instruction.m_operation )
+    m_usedCode.insert(addr);
+
+    for ( unsigned int i = 0; i < operands.size(); i++ )
     {
-        case AdaptableSimOperationID::OP_NONE:
-        case AdaptableSimOperationID::OP_ABS_JUMP:
-        case AdaptableSimOperationID::OP_ABS_CALL:
-        case AdaptableSimOperationID::OP_REL_JUMP:
-        case AdaptableSimOperationID::OP_REL_CALL:
-        case AdaptableSimOperationID::OP_OFS_JUMP:
-        case AdaptableSimOperationID::OP_OFS_CALL:
-        case AdaptableSimOperationID::OP_IDX_JUMP:
-        case AdaptableSimOperationID::OP_IDX_CALL:
-        case AdaptableSimOperationID::OP_RETURN:
-        case AdaptableSimOperationID::OP_ISR_RETURN:
-        case AdaptableSimOperationID::OP_SET_BANK:
-        case AdaptableSimOperationID::OP_MOVE:
-        case AdaptableSimOperationID::OP_CB_MOVE:
-        case AdaptableSimOperationID::OP_MOVE_BIT:
-        case AdaptableSimOperationID::OP_CB_MOVE_BIT:
-        case AdaptableSimOperationID::OP_SWAP:
-        case AdaptableSimOperationID::OP_CB_SWAP:
-        case AdaptableSimOperationID::OP_SWAP_BIT:
-        case AdaptableSimOperationID::OP_CB_SWAP_BIT:
-        case AdaptableSimOperationID::OP_CPL:
-        case AdaptableSimOperationID::OP_BIT_TEST:
-        case AdaptableSimOperationID::OP_ADD:
-        case AdaptableSimOperationID::OP_SUB:
-        case AdaptableSimOperationID::OP_AND:
-        case AdaptableSimOperationID::OP_OR:
-        case AdaptableSimOperationID::OP_XOR:
-        case AdaptableSimOperationID::OP_SHIFT_LEFT_0:
-        case AdaptableSimOperationID::OP_SHIFT_RIGHT_0:
-        case AdaptableSimOperationID::OP_SHIFT_LEFT_1:
-        case AdaptableSimOperationID::OP_SHIFT_RIGHT_1:
-        case AdaptableSimOperationID::OP_SHIFT_LEFT_R:
-        case AdaptableSimOperationID::OP_SHIFT_RIGHT_R:
-        case AdaptableSimOperationID::OP_SHIFT_LEFT_C:
-        case AdaptableSimOperationID::OP_SHIFT_RIGHT_C:
-        case AdaptableSimOperationID::OP_ROTATE_LEFT:
-        case AdaptableSimOperationID::OP_ROTATE_RIGHT:
-            break;
+        if ( -1 == operands[i] )
+        {
+            continue;
+        }
+
+        switch ( instruction.m_operands[i].m_type )
+        {
+            case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE:
+                    m_addresses[CONST].insert(operands[i]);
+                    break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
+            case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
+                    m_addresses[REG].insert(operands[i]);
+                    break;
+            case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:
+            case AdjSimProcDef::Instruction::Operand::T_DATA_INDR:
+                    m_addresses[DATA].insert(operands[i]);
+                    break;
+            case AdjSimProcDef::Instruction::Operand::T_PROGRAM:
+                    m_addresses[CODE].insert(operands[i]);
+                    break;
+            case AdjSimProcDef::Instruction::Operand::T_PORT:
+                    m_addresses[PORT].insert(operands[i]);
+                    break;
+        }
     }
+
+    return true;
 }
 
 void DAsmAdaptable::phase2 ( unsigned int code,
                              unsigned int addr )
 {
+    m_lastAddr++;
+    if ( addr != m_lastAddr )
+    {
+        m_code.push_back(std::string());
+        std::string & ln = m_code.back();
 
+        m_lastAddr = addr;
+
+        indent(ln, 16);
+        appendStr(ln, "ORG");
+
+        indent(ln, 32);
+        appendStr(ln, num2str(addr));
+    }
+
+    m_code.push_back(std::string());
+    std::string & line = m_code.back();
+
+    if ( m_addresses[CODE].end() != m_addresses[CODE].find(addr) )
+    {
+        label(line, addr, true);
+    }
+
+    AdjSimProcDef::Instruction instruction;
+    if ( false == recognizeInstruction(code, instruction) )
+    {
+        appendStr(line, "DB");
+        indent(line, 32);
+        appendStr(line, num2str(code));
+        return;
+    }
+
+    indent(line, 16);
+
+    appendStr(line, instruction.m_mnemonic);
+    indent(line, 32);
+    
 }
 
 void DAsmAdaptable::getOperands ( unsigned int code,
                                   const AdjSimProcDef::Instruction & instruction,
-                                  std::vector<unsigned int> & operands )
+                                  std::vector<int> & operands )
 {
     operands.clear();
 
     for ( const AdjSimProcDef::Instruction::Operand & operand : instruction.m_operands )
     {
-        unsigned int value = 0;
-        unsigned int bitNumber = 0;
-        for ( int perm : operand.m_OPCodePermutation )
+        int value = 0;
+        int bitNumber = 0;
+
+        if ( true == operand.m_OPCodePermutation.empty() )
         {
-            value |= ( ( ( code & ( 1 << perm ) ) >> perm ) << bitNumber++ );
+            value = -1;
         }
+        else
+        {
+            for ( int perm : operand.m_OPCodePermutation )
+            {
+                value |= ( ( ( code & ( 1 << perm ) ) >> perm ) << bitNumber++ );
+            }
+        }
+
         operands.push_back(value);
     }
 }
@@ -204,7 +238,7 @@ bool DAsmAdaptable::recognizeInstruction ( unsigned int code,
         {
             if ( AdjSimProcDef::Instruction::OCB_ZERO == bit )
             {
-                if ( 0 != code & ( 1 << bitNo ) )
+                if ( 0 != ( code & ( 1 << bitNo ) ) )
                 {
                     found = false;
                     break;
@@ -212,7 +246,7 @@ bool DAsmAdaptable::recognizeInstruction ( unsigned int code,
             }
             else if ( AdjSimProcDef::Instruction::OCB_ONE == bit )
             {
-                if ( 0 == code & ( 1 << bitNo ) )
+                if ( 0 == ( code & ( 1 << bitNo ) ) )
                 {
                     found = false;
                     break;
