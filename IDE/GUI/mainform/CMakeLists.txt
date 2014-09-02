@@ -39,7 +39,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 #QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager Simulator MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg GuiCfg LicenseWidget LoopGen AboutWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager Simulator MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg GuiCfg LicenseWidget LoopGen AboutWidget SimLed)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

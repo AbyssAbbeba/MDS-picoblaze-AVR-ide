@@ -31,6 +31,9 @@
 #include "../widgets/LicenseWidget/licensewidget.h"
 #include "../widgets/LoopGen/loop_gen.h"
 #include "../widgets/AboutWidget/aboutwidget.h"
+#include "../widgets/Tools/Display/displaytool.h"
+#include "../widgets/Tools/Convertor/convertortool.h"
+#include "../widgets/Tools/SimLed/simled.h"
 #include "../guicfg/guicfg.h"
 #include "../../mds.h"
 
@@ -371,6 +374,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
     toolsMenu->addAction(toolLoopGenAct);
+    toolsMenu->addAction(toolSimLedsAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(licenseAct);
@@ -571,6 +575,8 @@ void MainForm::createActions()
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     toolLoopGenAct = new QAction(tr("Loop Generator"), this);
     connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
+    toolSimLedsAct = new QAction(tr("LED panel"), this);
+    connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
 
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -3173,7 +3179,18 @@ void MainForm::refreshProjectTree()
         qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
 
+
 void MainForm::showWebSite(QAction */*action*/)
 {
     QDesktopServices::openUrl(QUrl("http://www.moravia-microsystems.com"));
+}
+
+
+void MainForm::simLeds()
+{
+    if (true == this->simulationStatus)
+    {
+        Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
 }
