@@ -19,12 +19,14 @@ project ( SimControl )
 
 # Add include directories to the build.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/AVR8"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PIC8"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PicoBlaze"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/AVR8/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PIC8/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/PicoBlaze/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/AdaptableSim/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../MCUSim/McuSimCfgMgr/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/DbgFile/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/MCUDataFiles/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../../utilities/AdjSimProcDef/" )
 
 # Produce moc files for all the listed  .h files.
 qt4_wrap_cpp ( QT_MOC_GENERATED_CPP_FILES

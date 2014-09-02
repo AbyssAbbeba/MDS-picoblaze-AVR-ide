@@ -12,7 +12,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( AdaptableSimSim )
+project ( AdaptableSim )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -25,7 +25,7 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../../utilities" )
  # in this case it will produce dynamic C++ library.
 add_library ( ${PROJECT_NAME} OBJECT
               AdaptableSimIO.cxx
-              AdaptableSimSim.cxx
+              AdaptableSim.cxx
               AdaptableSimStack.cxx
               AdaptableSimConfig.cxx
               AdaptableSimRegisters.cxx

@@ -18,11 +18,13 @@
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
 #include "McuDeviceSpecPIC8.h"
+#include "McuDeviceSpecAdaptable.h"
 #include "AVR8/AVR8Config.h"
 #include "PIC8/PIC8Config.h"
 #include "PicoBlaze/PicoBlazeConfig.h"
 #include "McuSimCfgMgrAVR8.h"
 #include "McuSimCfgMgrPIC8.h"
+#include "AdjSimProcDef/AdjSimProcDef.h"
 
 #include <QFile>
 #include <QXmlInputSource>
@@ -206,7 +208,8 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
 }
 
 bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
-                                    MCUSimConfig & mcuConfig ) const
+                                    MCUSimConfig & mcuConfig,
+                                    const AdjSimProcDef * procDef ) const
 {
     if ( MCUSim::ARCH_PICOBLAZE == mcuConfig.getArch() )
     {
@@ -238,6 +241,11 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
         }
 
         dynamic_cast<PicoBlazeConfig&>(mcuConfig).configure(dev);
+        return true;
+    }
+    else if ( MCUSim::ARCH_ADAPTABLE == mcuConfig.getArch() )
+    {
+        McuDeviceSpecAdaptable(*procDef).setupSimulator(dynamic_cast<AdaptableSimConfig&>(mcuConfig));
         return true;
     }
 

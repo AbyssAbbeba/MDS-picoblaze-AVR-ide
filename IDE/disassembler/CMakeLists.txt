@@ -24,6 +24,9 @@ set ( DISASSEMBLER_EXEC "mds-disasm" )
 # Build disassembler for PicoBlaze.
 add_subdirectory ( PicoBlaze )
 
+# Adaptable Disassembler.
+add_subdirectory ( Adaptable )
+
 # ------------------------------------------------------------------------------
 # WINDRES RC FILES.
 # Windows only: generate windres RC file(s) to provide information for Windows.
@@ -68,6 +71,7 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
 add_library ( ${PROJECT_NAME} SHARED
               ${LIB_RC_FILE}
               $<TARGET_OBJECTS:DAsmPicoBlaze>
+              $<TARGET_OBJECTS:DAsmAdaptable>
               DAsm.cxx
               DAsmCore.cxx )
 

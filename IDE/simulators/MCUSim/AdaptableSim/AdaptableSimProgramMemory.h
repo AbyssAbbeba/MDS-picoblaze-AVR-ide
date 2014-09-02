@@ -38,8 +38,18 @@ class AdaptableSimProgramMemory : public MCUSimMemory
          */
         enum WordSize
         {
-            WS_16b, ///<
-            WS_18b  ///<
+            WORD_1B, ///<
+            WORD_2B, ///<
+            WORD_3B  ///<
+        };
+
+        /**
+         * @brief
+         */
+        enum Endian
+        {
+            END_BIG,   ///<
+            END_LITTLE ///<
         };
 
         /**
@@ -56,6 +66,7 @@ class AdaptableSimProgramMemory : public MCUSimMemory
             int m_undefinedValue; ///< -1 means random
             unsigned int m_size;  ///<
             WordSize m_wordSize;  ///<
+            Endian m_endian;      ///<
         };
 
     ////    Constructors and Destructors    ////

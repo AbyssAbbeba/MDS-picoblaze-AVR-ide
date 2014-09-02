@@ -36,6 +36,9 @@
 #include "PicoBlazeSim.h"
 #include "PicoBlazeProgramMemory.h"
 
+#include "AdaptableSim.h"
+#include "AdjSimProcDef.h"
+
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
@@ -51,7 +54,8 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include "boost/filesystem.hpp"
 
-MCUSimControl::MCUSimControl ( const char * deviceName )
+MCUSimControl::MCUSimControl ( const char * deviceName,
+                               const AdjSimProcDef * procDef )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
 {
@@ -59,7 +63,7 @@ MCUSimControl::MCUSimControl ( const char * deviceName )
     m_running = false;
 
     m_breakPointsEnabled = true;
-    changeDevice(deviceName);
+    changeDevice(deviceName, procDef);
 }
 
 MCUSimControl::~MCUSimControl()
@@ -611,7 +615,8 @@ void MCUSimControl::resetProgram()
     m_lastBrkPntStop.clear();
 }
 
-bool MCUSimControl::changeDevice ( const char * deviceName )
+bool MCUSimControl::changeDevice ( const char * deviceName,
+                                   const AdjSimProcDef * procDef )
 {
     if ( nullptr != m_simulator )
     {
@@ -631,6 +636,10 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
        )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
+    }
+    else if ( 0 == strcmp("AdaptableSim", deviceName) )
+    {
+        m_architecture = MCUSim::ARCH_ADAPTABLE;
     }
     else
     {
@@ -656,14 +665,16 @@ bool MCUSimControl::changeDevice ( const char * deviceName )
         case MCUSim::ARCH_PICOBLAZE:
             m_simulator = new PicoBlazeSim();
             break;
+        case MCUSim::ARCH_ADAPTABLE:
+            m_simulator = new AdaptableSim();
+            break;
         default:
             m_messages.push_back(QObject::tr("Unknown device architecture." ).toStdString());
             return false;
-
     }
 
     m_simulatorLog = m_simulator->getLog();
-    McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig());
+    McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig(), procDef);
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
 
