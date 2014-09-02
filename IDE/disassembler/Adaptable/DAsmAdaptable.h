@@ -162,7 +162,7 @@ class DAsmAdaptable : public DAsmCore
          */
         void getOperands ( unsigned int code,
                            const AdjSimProcDef::Instruction & instruction,
-                           std::vector<unsigned int> & operands );
+                           std::vector<int> & operands );
 
         /**
          * @brief

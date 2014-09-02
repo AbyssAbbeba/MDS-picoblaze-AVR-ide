@@ -19,15 +19,30 @@
 #include "errordialog/errordlg.h"
 #include "../utilities/LicenseCertificate/LicenseCertificate.h"
 #include <iostream>
+#include "../mds.h"
+#include "dialogs/TrialExpired/trialexpired.h"
 
 int main(int argc, char *argv[])
 {
     QApplication::setDesktopSettingsAware(false);
     QApplication::setStyle("Plastique");
     QApplication app(argc, argv);
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        if (  MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) <= 0
+           || MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) > MDS_TRIAL_PERIOD
+           )
+        {
+            TrialExpired trial(0);
+            trial.exec();
+            return 0;
+        }
+    #endif
     //qDebug() << QStyleFactory::keys();
     Q_INIT_RESOURCE(icons);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
+
+
     QFontDatabase fdb;
     //fdb.addApplicationFont("./resources/fonts/MostlyMono/MostlyMono.ttf");
     if (fdb.addApplicationFont(":/resources/fonts/Ubuntu/UbuntuMono-R.ttf") < 0 )
@@ -73,20 +88,22 @@ int main(int argc, char *argv[])
         }
     }
     GuiCfg::getInstance().loadConfig();
-    
-    std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);
-    LicenseCertificate crt(file);
-    file.close();
 
-    if ( false == crt.m_isValid )
-    {
-        //error(ERR_NO_LICENSE);
-        LicenseInitWidget *widget = new LicenseInitWidget(0);
-        if (QDialog::Rejected == widget->exec())
+    #ifndef MDS_VARIANT_TRIAL
+        std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);
+        LicenseCertificate crt(file);
+        file.close();
+
+        if ( false == crt.m_isValid )
         {
-            return 1;
+            //error(ERR_NO_LICENSE);
+            LicenseInitWidget *widget = new LicenseInitWidget(0);
+            if (QDialog::Rejected == widget->exec())
+            {
+                return 1;
+            }
         }
-    }
+    #endif
 
 
     /*qDebug() << "CodeEdit: available encoding";
