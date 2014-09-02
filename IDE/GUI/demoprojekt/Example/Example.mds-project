@@ -23,6 +23,7 @@
   <BreakpointFile path="demoprojekt/Example/Demonstration project/looptest.asm"/>
   <BreakpointFile path="abcc.asm"/>
   <BreakpointFile path="010_store_fetch.asm"/>
+  <BreakpointFile path="../../../../../../Demonstration project/looptest.asm"/>
  </Breakpoints>
  <Bookmarks/>
  <Simulator>
