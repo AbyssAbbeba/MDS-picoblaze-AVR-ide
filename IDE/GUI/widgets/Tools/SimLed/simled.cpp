@@ -104,7 +104,6 @@ void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int 
      //       }
             default:
             {
-                qDebug("PicoBlazeGrid: Invalid event (plio) received, event ignored.");
                 break;
             }
         }

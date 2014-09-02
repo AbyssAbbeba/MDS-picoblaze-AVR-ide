@@ -36,7 +36,6 @@ class TrialExpired : public QDialog
         QLabel *lblOptions;
         QPushButton *btnPath;
         QDialogButtonBox *buttonBox;*/
-        
 };
 
 #endif
