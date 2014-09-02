@@ -112,7 +112,7 @@ bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) c
         instruction.m_timeN = (unsigned short) inst.m_time.m_negative;
         instruction.m_nextP = (unsigned short) inst.m_next.m_positive;
         instruction.m_nextN = (unsigned short) inst.m_next.m_negative;
-        instruction.m_operation = inst.m_operation;
+        instruction.m_operation = translateOP(inst.m_operation);
 
         instruction.m_parameters.m_data = 0;
         instruction.m_fixedOperands.m_data = 0;
@@ -176,4 +176,53 @@ bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) c
     }
 
     return true;
+}
+
+inline AdaptableSimOperationID::ID McuDeviceSpecAdaptable::translateOP ( AdjSimProcDef::Instruction::Operation o ) const
+{
+    using namespace AdaptableSimOperationID;
+
+    switch ( o )
+    {
+        case AdjSimProcDef::Instruction::OP_NONE:               return OP_NONE;
+        case AdjSimProcDef::Instruction::OP_ABS_JUMP:           return OP_ABS_JUMP;
+        case AdjSimProcDef::Instruction::OP_ABS_CALL:           return OP_ABS_CALL;
+        case AdjSimProcDef::Instruction::OP_REL_JUMP:           return OP_REL_JUMP;
+        case AdjSimProcDef::Instruction::OP_REL_CALL:           return OP_REL_CALL;
+        case AdjSimProcDef::Instruction::OP_OFS_JUMP:           return OP_OFS_JUMP;
+        case AdjSimProcDef::Instruction::OP_OFS_CALL:           return OP_OFS_CALL;
+        case AdjSimProcDef::Instruction::OP_IDX_JUMP:           return OP_IDX_JUMP;
+        case AdjSimProcDef::Instruction::OP_IDX_CALL:           return OP_IDX_CALL;
+        case AdjSimProcDef::Instruction::OP_RETURN:             return OP_RETURN;
+        case AdjSimProcDef::Instruction::OP_ISR_RETURN:         return OP_ISR_RETURN;
+        case AdjSimProcDef::Instruction::OP_SET_BANK:           return OP_SET_BANK;
+        case AdjSimProcDef::Instruction::OP_MOVE:               return OP_MOVE;
+        case AdjSimProcDef::Instruction::OP_CB_MOVE:            return OP_CB_MOVE;
+        case AdjSimProcDef::Instruction::OP_MOVE_BIT:           return OP_MOVE_BIT;
+        case AdjSimProcDef::Instruction::OP_CB_MOVE_BIT:        return OP_CB_MOVE_BIT;
+        case AdjSimProcDef::Instruction::OP_SWAP:               return OP_SWAP;
+        case AdjSimProcDef::Instruction::OP_CB_SWAP:            return OP_CB_SWAP;
+        case AdjSimProcDef::Instruction::OP_SWAP_BIT:           return OP_SWAP_BIT;
+        case AdjSimProcDef::Instruction::OP_CB_SWAP_BIT:        return OP_CB_SWAP_BIT;
+        case AdjSimProcDef::Instruction::OP_CPL:                return OP_CPL;
+        case AdjSimProcDef::Instruction::OP_BIT_TEST:           return OP_BIT_TEST;
+        case AdjSimProcDef::Instruction::OP_ADD:                return OP_ADD;
+        case AdjSimProcDef::Instruction::OP_SUB:                return OP_SUB;
+        case AdjSimProcDef::Instruction::OP_AND:                return OP_AND;
+        case AdjSimProcDef::Instruction::OP_OR:                 return OP_OR;
+        case AdjSimProcDef::Instruction::OP_XOR:                return OP_XOR;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_0:       return OP_SHIFT_LEFT_0;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_0:      return OP_SHIFT_RIGHT_0;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_1:       return OP_SHIFT_LEFT_1;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_1:      return OP_SHIFT_RIGHT_1;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_R:       return OP_SHIFT_LEFT_R;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_R:      return OP_SHIFT_RIGHT_R;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_C:       return OP_SHIFT_LEFT_C;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_C:      return OP_SHIFT_RIGHT_C;
+        case AdjSimProcDef::Instruction::OP_ROTATE_LEFT:        return OP_ROTATE_LEFT;
+        case AdjSimProcDef::Instruction::OP_ROTATE_RIGHT:       return OP_ROTATE_RIGHT;
+    }
+
+    // Just to eliminate one compiler (GCC) warning.
+    return OP_NONE;
 }

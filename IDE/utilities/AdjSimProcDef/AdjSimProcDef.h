@@ -21,8 +21,6 @@
 #include <string>
 #include <iostream>
 
-#include "../../simulators/MCUSim/AdaptableSim/AdaptableSimOperationID.h"
-
 /**
  * @brief
  * @ingroup AdjSimProcDef
@@ -137,11 +135,53 @@ class AdjSimProcDef
                 bool m_ignoreCarryFlag;
             };
 
+            enum Operation
+            {
+                OP_NONE,            ///<
+
+                OP_ABS_JUMP,        ///<
+                OP_ABS_CALL,        ///<
+                OP_REL_JUMP,        ///<
+                OP_REL_CALL,        ///<
+                OP_OFS_JUMP,        ///<
+                OP_OFS_CALL,        ///<
+                OP_IDX_JUMP,        ///<
+                OP_IDX_CALL,        ///<
+                OP_RETURN,          ///<
+                OP_ISR_RETURN,      ///<
+                OP_SET_BANK,        ///<
+                OP_MOVE,            ///<
+                OP_CB_MOVE,         ///<
+                OP_MOVE_BIT,        ///<
+                OP_CB_MOVE_BIT,     ///<
+                OP_SWAP,            ///<
+                OP_CB_SWAP,         ///<
+                OP_SWAP_BIT,        ///<
+                OP_CB_SWAP_BIT,     ///<
+                OP_CPL,             ///<
+                OP_BIT_TEST,        ///<
+                OP_ADD,             ///<
+                OP_SUB,             ///<
+                OP_AND,             ///<
+                OP_OR,              ///<
+                OP_XOR,             ///<
+                OP_SHIFT_LEFT_0,    ///<
+                OP_SHIFT_RIGHT_0,   ///<
+                OP_SHIFT_LEFT_1,    ///<
+                OP_SHIFT_RIGHT_1,   ///<
+                OP_SHIFT_LEFT_R,    ///<
+                OP_SHIFT_RIGHT_R,   ///<
+                OP_SHIFT_LEFT_C,    ///<
+                OP_SHIFT_RIGHT_C,   ///<
+                OP_ROTATE_LEFT,     ///<
+                OP_ROTATE_RIGHT     ///<
+            };
+
             Next m_next;
             Time m_time;
             FlagEffect m_flags[FLAG__MAX__];
             Condition m_condition;
-            AdaptableSimOperationID::ID m_operation;
+            Operation m_operation;
             OperParameters m_operParameters;
             std::string m_mnemonic;
             std::vector<OpCodeBit> m_opCode;
@@ -250,6 +290,7 @@ class AdjSimProcDef
     ////    Public Attributes    ////
     public:
         std::string m_name;
+        std::string m_description;
         unsigned int m_interruptVector;
         Ports m_ports;
         Memory m_memory;
@@ -289,6 +330,9 @@ class AdjSimProcDef
 
     std::ostream & operator << ( std::ostream & out,
                                  const AdjSimProcDef::Instruction::ProcessorFlag & flag );
+
+    std::ostream & operator << ( std::ostream & out,
+                                 const AdjSimProcDef::Instruction::Operation operation );
 //@}
 
 #endif // ADJSIMPROCDEF_H
