@@ -11,8 +11,8 @@ Each list element is being parsed and splitted into an address reference, a comm
         ~\\
         \usecodefont
         \verb'; Example of instructions operating with constants'\\
-        \verb'LOAD    s0, #0b000111   ; compiler now know, that this number is a constant'\\
-        \verb'LOAD    s0,  0b000111   ; and this compiler takes as an adrress'\\
+        \verb'LOAD    s0, #0b00000111   ; compiler now know, that this number is a constant'\\
+        \verb'LOAD    s0,  0b00000111   ; and this compiler takes as an adrress'\\
     }
 
 \section{Statements}
@@ -24,7 +24,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
         \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
         \verb'            symbol         directive argument                       [ ;comment ]'\\
-        \verb'            directive      symbol, argument                         [ ;comment ]'\\
+        \verb'            directive      symbol, argument                         [ ;comment ]'\\\\
     }
     Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive, so after that directive the code do not have to be syntactically valid. Empty lines are allowed as well as line containing only comment or label. Statements can be separated by spaces, NBSP characters and tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
@@ -1084,12 +1084,12 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         {
             ~\\
             \usecodefont
-            \verb'IF         s0 == \#10'\\
-            \verb'           LOAD  s0, \#10h'\\
-            \verb'ELSEIF     B >= \#100'\\
+            \verb'IF         s0 == #10'\\
+            \verb'           LOAD  s0, #10h'\\
+            \verb'ELSEIF     B >= #100'\\
             \verb'           SR0   s0'\\
             \verb'ELSE       A >= 5'\\
-            \verb'           INPUT   s0,RX\_data'\\
+            \verb'           INPUT   s0,RX_data'\\
             \verb'ENDIF'
         }
        
@@ -1112,7 +1112,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             ~\\
             \usecodefont
             \verb'WHILE       s0 == #10'\\
-            \verb'      ADDCY    S1,\#1'\\
+            \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
         }\\
         {
@@ -1557,8 +1557,18 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                 \verb'; end of program memory'\\
             }
         \section{Bin file}
-        Bin file gives you raw data from program memory. It contains OPcodes of instructions  
-        binarní programová paměť, big endian, 0x12345 > 16b,18b je rozdil 44  444   , po posledni pouzitou hodnotu
+        Bin file gives you raw data from program memory. It contains OPcodes of instructions in 3bytes(18bit instructions) or 2bytes(16bit instructions)
+        sorted in a line. It does not contain unused memory.\\\\
+            Example:
+            {
+                ~\\
+                \usecodefont\\
+                \verb'; Starting at address 0x0'\\
+                \verb'; Displayed OPcodes 22045, 3EF45, 08FF0 (18bit instr.) would be:'\\
+                \verb'  02204503EF45008FF0 '\\\\
+                \verb'; Displayed OPcodes 2045, 3EF4, 08F0 (16bit instr.) would be:'\\
+                \verb'  20453EF408F0 '\\
+            }
 
         \section{Motorola SRec format}
                 Motorola S-records are a form of simple ASCII encoding for binary data.
