@@ -18,6 +18,7 @@
 #include "McuDeviceSpec.h"
 #include "McuDeviceSpecAVR8.h"
 #include "McuDeviceSpecPIC8.h"
+#include "McuDeviceSpecAdaptable.h"
 #include "AVR8/AVR8Config.h"
 #include "PIC8/PIC8Config.h"
 #include "PicoBlaze/PicoBlazeConfig.h"
@@ -244,7 +245,7 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
     }
     else if ( MCUSim::ARCH_ADAPTABLE == mcuConfig.getArch() )
     {
-        McuDeviceSpecAdaptable(*procDef)->setupSimulator(dynamic_cast<AdaptableSimConfig&>(mcuConfig));
+        McuDeviceSpecAdaptable(*procDef).setupSimulator(dynamic_cast<AdaptableSimConfig&>(mcuConfig));
         return true;
     }
 

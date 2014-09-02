@@ -14,7 +14,7 @@
 // =============================================================================
 
 #include "AdaptableSimConfig.h"
-#include "AdaptableSimSim.h"
+#include "AdaptableSim.h"
 
 AdaptableSimConfig::AdaptableSimConfig() : MCUSimConfig ( MCUSim::ARCH_ADAPTABLE )
 {
@@ -31,7 +31,7 @@ AdaptableSimConfig::AdaptableSimConfig() : MCUSimConfig ( MCUSim::ARCH_ADAPTABLE
     m_configIO                  = nullptr;
 }
 
-void AdaptableSimConfig::link ( AdaptableSimSim * system )
+void AdaptableSimConfig::link ( AdaptableSim * system )
 {
     m_isLinked = true;
 

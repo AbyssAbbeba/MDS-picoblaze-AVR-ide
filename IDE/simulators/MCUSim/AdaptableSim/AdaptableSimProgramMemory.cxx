@@ -50,7 +50,15 @@ void AdaptableSimProgramMemory::loadDataFile ( const DataFile * file )
         int byte;
         bool undefined = false;
 
-        for ( int shift = ( ( WS_18b == m_config.m_wordSize ) ? 16 : 8 ); shift >= 0; shift -= 8 )
+        int init = 0;
+        switch ( m_config.m_wordSize )
+        {
+            case WORD_1B: init = 0; break;
+            case WORD_2B: init = 8; break;
+            case WORD_3B: init = 16; break;
+        }
+
+        for ( int shift = init; shift >= 0; shift -= 8 )
         {
             if ( fileAddr < fileSize )
             {
@@ -66,7 +74,7 @@ void AdaptableSimProgramMemory::loadDataFile ( const DataFile * file )
                 undefined = true;
                 byte = 0;
             }
-            word |= byte << shift;
+            word |= ( byte << ( ( ( END_BIG == m_config.m_endian ) ? 0 : init ) - shift ) );
             fileAddr++;
         }
 
@@ -91,6 +99,20 @@ void AdaptableSimProgramMemory::storeInDataFile ( DataFile * file ) const
     unsigned int fileSize = file->maxSize();
     file->clear();
 
+    unsigned int mask[3];
+    if ( END_BIG == m_config.m_endian )
+    {
+        mask[2] = 0xff0000;
+        mask[1] = 0x00ff00;
+        mask[0] = 0x0000ff;
+    }
+    else
+    {
+        mask[2] = 0x0000ff;
+        mask[1] = 0x00ff00;
+        mask[0] = 0xff0000;
+    }
+
     for ( unsigned int fileAddr = 0, memAddr = 0;
           ( fileAddr < fileSize ) && ( memAddr < m_size );
           fileAddr++, memAddr++ )
@@ -99,21 +121,27 @@ void AdaptableSimProgramMemory::storeInDataFile ( DataFile * file ) const
 
         if ( MFLAG_UNDEFINED & byte )
         {
-            if ( WS_18b == m_config.m_wordSize )
+            if ( WORD_3B == m_config.m_wordSize )
             {
                 file -> unset ( fileAddr++ );
             }
-            file -> unset ( fileAddr++ );
+            if ( ( WORD_3B == m_config.m_wordSize ) || ( WORD_2B == m_config.m_wordSize ) )
+            {
+                file -> unset ( fileAddr++ );
+            }
             file -> unset ( fileAddr );
         }
         else
         {
-            if ( WS_18b == m_config.m_wordSize )
+            if ( WORD_3B == m_config.m_wordSize )
             {
-                file -> set ( fileAddr++, ( byte & 0xff0000 ) >> 16 );
+                file -> set ( fileAddr++, ( byte & mask[2] ) >> 16 );
             }
-            file -> set ( fileAddr++, ( byte & 0x00ff00 ) >>  8 );
-            file -> set ( fileAddr, ( byte & 0x0000ff ) >>  0 );
+            if ( ( WORD_3B == m_config.m_wordSize ) || ( WORD_2B == m_config.m_wordSize ) )
+            {
+                file -> set ( fileAddr++, ( byte & mask[1] ) >>  8 );
+            }
+            file -> set ( fileAddr, ( byte & mask[0] ) >>  0 );
         }
     }
 }

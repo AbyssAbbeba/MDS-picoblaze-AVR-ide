@@ -60,6 +60,10 @@ void LicenseWidget::tryLoad()
             {
                 ui.teInfo->setHtml(QString::fromUtf8(file.readAll()));
                 QTextCursor cur(ui.teInfo->document());
+                cur = ui.teInfo->document()->find("__LICENSES__");
+                cur.insertText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
+                cur = ui.teInfo->document()->find("__TRIAL__");
+                cur.insertText("30");
                 cur = ui.teInfo->document()->find("__NAME__");
                 cur.insertText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
                 cur = ui.teInfo->document()->find("__EMAIL__");
