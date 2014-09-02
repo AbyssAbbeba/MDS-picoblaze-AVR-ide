@@ -19,6 +19,7 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 {
     ui.setupUi(this);
     this->setWindowTitle("LED panel");
+    this->setWindowFlags(Qt::WindowStaysOnTopHint);
     if ( NULL == controlUnit )
     {
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
