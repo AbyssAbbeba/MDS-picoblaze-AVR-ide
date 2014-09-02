@@ -15,6 +15,8 @@
 
 #include "DAsmAdaptable.h"
 
+#include "AdaptableSimOperationID.h"
+
 // Used for i18n only.
 #include <QObject>
 
@@ -124,7 +126,47 @@ bool DAsmAdaptable::phase1 ( unsigned int code,
     std::vector<unsigned int> operands;
     getOperands(code, instruction, operands);
 
-    
+    switch ( instruction.m_operation )
+    {
+        case AdaptableSimOperationID::OP_NONE:
+        case AdaptableSimOperationID::OP_ABS_JUMP:
+        case AdaptableSimOperationID::OP_ABS_CALL:
+        case AdaptableSimOperationID::OP_REL_JUMP:
+        case AdaptableSimOperationID::OP_REL_CALL:
+        case AdaptableSimOperationID::OP_OFS_JUMP:
+        case AdaptableSimOperationID::OP_OFS_CALL:
+        case AdaptableSimOperationID::OP_IDX_JUMP:
+        case AdaptableSimOperationID::OP_IDX_CALL:
+        case AdaptableSimOperationID::OP_RETURN:
+        case AdaptableSimOperationID::OP_ISR_RETURN:
+        case AdaptableSimOperationID::OP_SET_BANK:
+        case AdaptableSimOperationID::OP_MOVE:
+        case AdaptableSimOperationID::OP_CB_MOVE:
+        case AdaptableSimOperationID::OP_MOVE_BIT:
+        case AdaptableSimOperationID::OP_CB_MOVE_BIT:
+        case AdaptableSimOperationID::OP_SWAP:
+        case AdaptableSimOperationID::OP_CB_SWAP:
+        case AdaptableSimOperationID::OP_SWAP_BIT:
+        case AdaptableSimOperationID::OP_CB_SWAP_BIT:
+        case AdaptableSimOperationID::OP_CPL:
+        case AdaptableSimOperationID::OP_BIT_TEST:
+        case AdaptableSimOperationID::OP_ADD:
+        case AdaptableSimOperationID::OP_SUB:
+        case AdaptableSimOperationID::OP_AND:
+        case AdaptableSimOperationID::OP_OR:
+        case AdaptableSimOperationID::OP_XOR:
+        case AdaptableSimOperationID::OP_SHIFT_LEFT_0:
+        case AdaptableSimOperationID::OP_SHIFT_RIGHT_0:
+        case AdaptableSimOperationID::OP_SHIFT_LEFT_1:
+        case AdaptableSimOperationID::OP_SHIFT_RIGHT_1:
+        case AdaptableSimOperationID::OP_SHIFT_LEFT_R:
+        case AdaptableSimOperationID::OP_SHIFT_RIGHT_R:
+        case AdaptableSimOperationID::OP_SHIFT_LEFT_C:
+        case AdaptableSimOperationID::OP_SHIFT_RIGHT_C:
+        case AdaptableSimOperationID::OP_ROTATE_LEFT:
+        case AdaptableSimOperationID::OP_ROTATE_RIGHT:
+            break;
+    }
 }
 
 void DAsmAdaptable::phase2 ( unsigned int code,
@@ -137,7 +179,18 @@ void DAsmAdaptable::getOperands ( unsigned int code,
                                   const AdjSimProcDef::Instruction & instruction,
                                   std::vector<unsigned int> & operands )
 {
+    operands.clear();
 
+    for ( const AdjSimProcDef::Instruction::Operand & operand : instruction.m_operands )
+    {
+        unsigned int value = 0;
+        unsigned int bitNumber = 0;
+        for ( int perm : operand.m_OPCodePermutation )
+        {
+            value |= ( ( ( code & ( 1 << perm ) ) >> perm ) << bitNumber++ );
+        }
+        operands.push_back(value);
+    }
 }
 
 bool DAsmAdaptable::recognizeInstruction ( unsigned int code,

@@ -98,9 +98,16 @@ class AdjSimProcDef
                     T_PORT
                 } m_type;
 
+                enum Number
+                {
+                    N_FIRST,
+                    N_SECOND,
+                    N_THIRD,
+                    N_HIDDEN
+                } m_number;
+
                 int m_size; ///< -1 means operand is not present
                 int m_fixedValue; /// -1 means do not use fixed value and use permutation instead
-                unsigned int m_number; /// Operand number as appears in source code line, starting with 0.
                 std::vector<int> m_OPCodePermutation; ///< size is either 0, or consistent with m_size
             };
 

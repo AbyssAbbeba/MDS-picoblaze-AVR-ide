@@ -226,7 +226,24 @@ std::ostream & operator << ( std::ostream & out,
         out << std::endl;
         out << "        Size: " << definition.m_operands[i].m_size << std::endl;
         out << "        Fixed Value: " << definition.m_operands[i].m_fixedValue << std::endl;
-        out << "        Number: " << definition.m_operands[i].m_number << std::endl;
+        out << "        Order/Number: ";
+        switch ( definition.m_operands[i].m_number )
+        {
+            case AdjSimProcDef::Instruction::Operand::N_FIRST:
+                out << "1st";
+                break;
+            case AdjSimProcDef::Instruction::Operand::N_SECOND:
+                out << "2nd";
+                break;
+            case AdjSimProcDef::Instruction::Operand::N_THIRD:
+                out << "3rd";
+                break;
+            case AdjSimProcDef::Instruction::Operand::N_HIDDEN:
+                out << "hidden";
+                break;
+        }
+        out << std::endl;
+
         if ( false == definition.m_operands[i].m_OPCodePermutation.empty() )
         {
             out << "        Permutation: ";
