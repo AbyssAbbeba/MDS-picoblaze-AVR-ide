@@ -23,11 +23,9 @@
   <BreakpointFile path="demoprojekt/Example/Demonstration project/looptest.asm"/>
   <BreakpointFile path="abcc.asm"/>
   <BreakpointFile path="010_store_fetch.asm"/>
+  <BreakpointFile path="../../../../../../Demonstration project/looptest.asm"/>
  </Breakpoints>
- <Bookmarks>
-  <BookmarkFile path="demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/demoprojekt/Example/010_store_fetch.asm"/>
-  <BookmarkFile path="abcc.asm"/>
- </Bookmarks>
+ <Bookmarks/>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>
  </Simulator>

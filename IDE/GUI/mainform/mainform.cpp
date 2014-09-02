@@ -31,6 +31,9 @@
 #include "../widgets/LicenseWidget/licensewidget.h"
 #include "../widgets/LoopGen/loop_gen.h"
 #include "../widgets/AboutWidget/aboutwidget.h"
+#include "../widgets/Tools/Display/displaytool.h"
+#include "../widgets/Tools/Convertor/convertortool.h"
+#include "../widgets/Tools/SimLed/simled.h"
 #include "../guicfg/guicfg.h"
 #include "../../mds.h"
 
@@ -371,6 +374,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
     toolsMenu->addAction(toolLoopGenAct);
+    toolsMenu->addAction(toolSimLedsAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(licenseAct);
@@ -402,21 +406,21 @@ void MainForm::createActions()
 
 
 
-    /*QPixmap *pm_projAdd = new QPixmap(":/resources//icons//projAdd.png");
+    /*QPixmap *pm_projAdd = new QPixmap(":resources/icons/projAdd.png");
     QIcon *icon_projAdd = new QIcon(*pm_projAdd);
     addAct = new QAction(*icon_projAdd, tr("Add to Project"), this);
     connect(addAct, SIGNAL(triggered()), this, SLOT(addFile()));
     addAct->setDisabled(true);*/
 
 
-    this->pm_projNewAdd = new QPixmap(":/resources//icons//projNewAdd.png");
+    this->pm_projNewAdd = new QPixmap(":resources/icons/projNewAdd.png");
     this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
     newAddAct = new QAction(*icon_projNewAdd, tr("New Project File"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
     newAddAct->setDisabled(true);
 
 
-    /*QPixmap *pm_projRemoveFile = new QPixmap("src//resources//icons//projDelete.png");
+    /*QPixmap *pm_projRemoveFile = new QPixmap("src//resources/icons/projDelete.png");
     QIcon *icon_projRemoveFile = new QIcon(*pm_projRemoveFile);
     removeFileAct = new QAction(*icon_projRemoveFile, tr("&Remove file"), this);
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeProjFile()));*/
@@ -463,17 +467,17 @@ void MainForm::createActions()
 
 
     
-    this->pm_projNew = new QPixmap(":/resources//icons//projNew.png");
+    this->pm_projNew = new QPixmap(":resources/icons/projNew.png");
     this->icon_projNew = new QIcon(*pm_projNew);
     newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    this->pm_projOpen = new QPixmap(":/resources//icons//projOpen.png");
+    this->pm_projOpen = new QPixmap(":resources/icons/projOpen.png");
     this->icon_projOpen = new QIcon(*pm_projOpen);
     openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    this->pm_projSave = new QPixmap(":/resources//icons//projSave.png");
+    this->pm_projSave = new QPixmap(":resources/icons/projSave.png");
     this->icon_projSave = new QIcon(*pm_projSave);
     saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
@@ -489,7 +493,7 @@ void MainForm::createActions()
     exitAct = new QAction(tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
-    this->pm_projComp = new QPixmap(":/resources//icons//compile.png");
+    this->pm_projComp = new QPixmap(":resources/icons/compile.png");
     this->icon_projComp = new QIcon(*pm_projComp);
     projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
@@ -502,8 +506,8 @@ void MainForm::createActions()
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
 
 
-    this->pm_simFlowStart = new QPixmap(":/resources//icons//simulationStart.png");
-    this->pm_simFlowStop = new QPixmap(":/resources//icons//simulationStop.png");
+    this->pm_simFlowStart = new QPixmap(":resources/icons/simulationStart.png");
+    this->pm_simFlowStop = new QPixmap(":resources/icons/simulationStop.png");
     this->icon_simFlow = new QIcon(*pm_simFlowStart);
     simulationFlowAct = new QAction(*icon_simFlow, tr("Start Simulation"), this);
     connect(simulationFlowAct, SIGNAL(triggered()), this, SLOT(simulationFlowHandle()));
@@ -513,41 +517,41 @@ void MainForm::createActions()
     simulationFlowAct->setDisabled(true);
     simulationFlowAct->setShortcut(Qt::Key_F6);
 
-    this->pm_simRun = new QPixmap(":/resources//icons//simulationRun.png");
+    this->pm_simRun = new QPixmap(":resources/icons/simulationRun.png");
     this->icon_simRun = new QIcon(*pm_simRun);
     simulationRunAct = new QAction(*icon_simRun, tr("Run"), this);
     connect(simulationRunAct, SIGNAL(triggered()), this, SLOT(simulationRunHandle()));
     simulationRunAct->setDisabled(true);
     simulationRunAct->setShortcut(Qt::Key_F7);
 
-    this->pm_simAnimate = new QPixmap(":/resources//icons//simulationAnimate.png");
+    this->pm_simAnimate = new QPixmap(":resources/icons/simulationAnimate.png");
     this->icon_simAnimate = new QIcon(*pm_simAnimate);
     simulationAnimateAct = new QAction(*icon_simAnimate, tr("Animate"), this);
     connect(simulationAnimateAct, SIGNAL(triggered()), this, SLOT(simulationAnimateHandle()));
     simulationAnimateAct->setDisabled(true);
     simulationAnimateAct->setShortcut(Qt::Key_F8);
 
-    this->pm_simStep = new QPixmap(":/resources//icons//simulationStep.png");
+    this->pm_simStep = new QPixmap(":resources/icons/simulationStep.png");
     this->icon_simStep = new QIcon(*pm_simStep);
     simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
     simulationStepAct->setDisabled(true);
     simulationStepAct->setShortcut(Qt::Key_F9);
 
-    this->pm_simReset = new QPixmap(":/resources//icons//simulationReset.png");
+    this->pm_simReset = new QPixmap(":resources/icons/simulationReset.png");
     this->icon_simReset = new QIcon(*pm_simReset);
     simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
     simulationResetAct->setShortcut(Qt::Key_F10);
 
-    this->pm_simUnhighlight = new QPixmap(":/resources//icons//unhighlight.png");
+    this->pm_simUnhighlight = new QPixmap(":resources/icons/unhighlight.png");
     this->icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
     simulationUnhighlightAct = new QAction(*icon_simUnhighlight, tr("Unhighlight"), this);
     connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
     simulationUnhighlightAct->setDisabled(true);
 
-    this->pm_breakpoint = new QPixmap(":/resources//icons//breakpoint.png");
+    this->pm_breakpoint = new QPixmap(":resources/icons/breakpoint.png");
     this->icon_breakpoint = new QIcon(*pm_breakpoint);
     simulationBreakpointAct = new QAction(*icon_breakpoint, tr("Breakpoint"), this);
     simulationBreakpointAct->setDisabled(true);
@@ -557,7 +561,7 @@ void MainForm::createActions()
     simulationDisableBreakpointsAct->setDisabled(true);
     connect(simulationDisableBreakpointsAct, SIGNAL(triggered()), this, SLOT(disableBreakpointsHandle()));
 
-    this->pm_toolDis = new QPixmap(":/resources//icons//disassemble.png");
+    this->pm_toolDis = new QPixmap(":resources/icons/disassemble.png");
     this->icon_toolDis = new QIcon(*pm_toolDis);
     toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassembler"), this);
     connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
@@ -571,6 +575,9 @@ void MainForm::createActions()
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     toolLoopGenAct = new QAction(tr("Loop Generator"), this);
     connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
+    toolSimLedsAct = new QAction(tr("LED panel"), this);
+    toolSimLedsAct->setDisabled(true);
+    connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
 
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -583,7 +590,7 @@ void MainForm::createActions()
     example1Act = new QAction(tr("See Example Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
-    this->pm_cross = new QPixmap(":/resources//icons//pause.png");
+    this->pm_cross = new QPixmap(":resources/icons/pause.png");
     //qDebug() << "MainForm: return CreateActions()";
 }
 
@@ -2170,6 +2177,7 @@ void MainForm::simulationFlowHandle()
             simulationDisableBreakpointsAct->setEnabled(true);
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
+            toolSimLedsAct->setEnabled(true);
             projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
@@ -2270,6 +2278,7 @@ void MainForm::simulationFlowHandle()
         simulationDisableBreakpointsAct->setDisabled(true);
         simulationResetAct->setDisabled(true);
         simulationUnhighlightAct->setDisabled(true);
+        toolSimLedsAct->setDisabled(true);
         projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
@@ -3173,7 +3182,18 @@ void MainForm::refreshProjectTree()
         qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
 
+
 void MainForm::showWebSite(QAction */*action*/)
 {
     QDesktopServices::openUrl(QUrl("http://www.moravia-microsystems.com"));
+}
+
+
+void MainForm::simLeds()
+{
+    if (true == this->simulationStatus)
+    {
+        Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
 }
