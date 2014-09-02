@@ -267,28 +267,61 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
         }
         if (keyEvent->key() == Qt::Key_Tab)
         {
-            if (true == this->tabToSpaces)
+            if (keyEvent->modifiers() & Qt::ShiftModifier)
             {
                 QTextCursor cursor(this->textCursor());
-                int charsToAdd;
-                if (cursor.positionInBlock()%this->spacesInTab > 0)
+                if (true == cursor.hasSelection())
                 {
-                    charsToAdd = this->spacesInTab - cursor.positionInBlock()%this->spacesInTab;
+                    //TODO:
                 }
                 else
                 {
-                    charsToAdd = this->spacesInTab;
+                    //TODO:
                 }
-                for (int i = 0; i < charsToAdd; i++)
-                {
-                    cursor.insertText(" ");
-                }
-                this->setTextCursor(cursor);
                 return true;
             }
             else
             {
-                
+                if (true == this->tabToSpaces)
+                {
+                    QTextCursor cursor(this->textCursor());
+                    if (true == cursor.hasSelection())
+                    {
+                        //TODO:
+                    }
+                    else
+                    {
+                        int charsToAdd;
+                        if (cursor.positionInBlock()%this->spacesInTab > 0)
+                        {
+                            charsToAdd = this->spacesInTab - cursor.positionInBlock()%this->spacesInTab;
+                        }
+                        else
+                        {
+                            charsToAdd = this->spacesInTab;
+                        }
+                        for (int i = 0; i < charsToAdd; i++)
+                        {
+                            cursor.insertText(" ");
+                        }
+                        this->setTextCursor(cursor);
+                    }
+                    return true;
+                }
+                else
+                {
+                    QTextCursor cursor(this->textCursor());
+                    if (true == cursor.hasSelection())
+                    {
+                        //TODO:
+                    }
+                    else
+                    {
+                        cursor.insertText("\t");
+                        this->setTextCursor(cursor);
+                    }
+                    return true;
+                }
             }
         }
         //paste ctrl+v

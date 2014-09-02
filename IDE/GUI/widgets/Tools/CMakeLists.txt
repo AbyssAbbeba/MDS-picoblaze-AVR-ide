@@ -20,3 +20,4 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Build the simulator widgets
 add_subdirectory(Display)
 add_subdirectory(Convertor)
+add_subdirectory(SimLed)

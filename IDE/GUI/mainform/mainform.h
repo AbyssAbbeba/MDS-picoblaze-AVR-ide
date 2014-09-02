@@ -25,8 +25,6 @@
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/DockManager/wdockmanager.h"
 #include "../widgets/CompileInfo/compileinfo.h"
-#include "../widgets/Tools/Display/displaytool.h"
-#include "../widgets/Tools/Convertor/convertortool.h"
 #include "../project/project.h"
 #include "../../compiler/CompilerThread.h"
 #include "../../compiler/core/CompilerOptions.h"
@@ -146,6 +144,8 @@ class MainForm : public QMainWindow
         void loopGen();
         void about();
         void refreshProjectTree();
+        void showWebSite(QAction *action);
+        void simLeds();
 
     signals:
         void unhighlightSim();
@@ -226,6 +226,7 @@ class MainForm : public QMainWindow
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
         QAction *toolLoopGenAct;
+        QAction *toolSimLedsAct;
 
         QAction *licenseAct;
         QAction *aboutAct;

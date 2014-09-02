@@ -31,6 +31,9 @@
 #include "../widgets/LicenseWidget/licensewidget.h"
 #include "../widgets/LoopGen/loop_gen.h"
 #include "../widgets/AboutWidget/aboutwidget.h"
+#include "../widgets/Tools/Display/displaytool.h"
+#include "../widgets/Tools/Convertor/convertortool.h"
+#include "../widgets/Tools/SimLed/simled.h"
 #include "../guicfg/guicfg.h"
 #include "../../mds.h"
 
@@ -50,6 +53,11 @@ MainForm::MainForm()
     this->setWindowTitle("MDS");
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         this->setWindowTitle("MDS NON-COMMERCIAL");
+    #endif
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QString trial = QString("MDS TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        this->setWindowTitle(trial); 
     #endif
     this->projectTabConnected = false;
     this->simulationStatus = false;
@@ -366,6 +374,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolConvertorAct);
     toolsMenu->addAction(toolDisplayAct);
     toolsMenu->addAction(toolLoopGenAct);
+    toolsMenu->addAction(toolSimLedsAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(licenseAct);
@@ -566,6 +575,8 @@ void MainForm::createActions()
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     toolLoopGenAct = new QAction(tr("Loop Generator"), this);
     connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
+    toolSimLedsAct = new QAction(tr("LED panel"), this);
+    connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
 
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -649,6 +660,7 @@ void MainForm::createToolbar()
     addToolBar(Qt::TopToolBarArea, simulationToolBar);
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         QToolBar *toolBar = addToolBar("NON-COMMERCIAL");
+        toolBar->setFloatable(false);
         QWidget* spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         // toolBar is a pointer to an existing toolbar
@@ -656,6 +668,21 @@ void MainForm::createToolbar()
         toolBar->addAction("NON-COMMERCIAL");
         toolBar->setAllowedAreas(Qt::TopToolBarArea);
         addToolBar(Qt::TopToolBarArea, toolBar);
+        connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
+    #endif
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QString trial = QString("TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        QToolBar *toolBar = addToolBar(trial);
+        toolBar->setFloatable(false);
+        QWidget* spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        // toolBar is a pointer to an existing toolbar
+        toolBar->addWidget(spacer);
+        toolBar->addAction(trial);
+        toolBar->setAllowedAreas(Qt::TopToolBarArea);
+        addToolBar(Qt::TopToolBarArea, toolBar);
+        connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
     #endif
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
     //qDebug() << "MainForm: return CreateToolbar()";
@@ -3150,4 +3177,20 @@ void MainForm::refreshProjectTree()
         qDebug() << "count: " << projectTabs->count();
         projectTabs->setCurrentIndex(projectTabs->count()-1);
         qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
+}
+
+
+void MainForm::showWebSite(QAction */*action*/)
+{
+    QDesktopServices::openUrl(QUrl("http://www.moravia-microsystems.com"));
+}
+
+
+void MainForm::simLeds()
+{
+    if (true == this->simulationStatus)
+    {
+        Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
 }
