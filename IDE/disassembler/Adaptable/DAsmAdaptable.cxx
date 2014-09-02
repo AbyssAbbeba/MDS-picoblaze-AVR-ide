@@ -123,6 +123,8 @@ bool DAsmAdaptable::phase1 ( unsigned int code,
 
     std::vector<unsigned int> operands;
     getOperands(code, instruction, operands);
+
+    
 }
 
 void DAsmAdaptable::phase2 ( unsigned int code,
