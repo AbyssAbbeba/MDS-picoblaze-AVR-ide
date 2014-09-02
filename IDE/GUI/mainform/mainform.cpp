@@ -51,6 +51,11 @@ MainForm::MainForm()
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         this->setWindowTitle("MDS NON-COMMERCIAL");
     #endif
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QString trial = QString("MDS TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        this->setWindowTitle(trial); 
+    #endif
     this->projectTabConnected = false;
     this->simulationStatus = false;
     this->simulationRunStatus = false;
@@ -649,6 +654,7 @@ void MainForm::createToolbar()
     addToolBar(Qt::TopToolBarArea, simulationToolBar);
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         QToolBar *toolBar = addToolBar("NON-COMMERCIAL");
+        toolBar->setFloatable(false);
         QWidget* spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         // toolBar is a pointer to an existing toolbar
@@ -656,6 +662,21 @@ void MainForm::createToolbar()
         toolBar->addAction("NON-COMMERCIAL");
         toolBar->setAllowedAreas(Qt::TopToolBarArea);
         addToolBar(Qt::TopToolBarArea, toolBar);
+        connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
+    #endif
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QString trial = QString("TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
+        QToolBar *toolBar = addToolBar(trial);
+        toolBar->setFloatable(false);
+        QWidget* spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        // toolBar is a pointer to an existing toolbar
+        toolBar->addWidget(spacer);
+        toolBar->addAction(trial);
+        toolBar->setAllowedAreas(Qt::TopToolBarArea);
+        addToolBar(Qt::TopToolBarArea, toolBar);
+        connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
     #endif
     //addToolBar(Qt::TopToolBarArea, fileToolBar);
     //qDebug() << "MainForm: return CreateToolbar()";
@@ -3150,4 +3171,9 @@ void MainForm::refreshProjectTree()
         qDebug() << "count: " << projectTabs->count();
         projectTabs->setCurrentIndex(projectTabs->count()-1);
         qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
+}
+
+void MainForm::showWebSite(QAction */*action*/)
+{
+    QDesktopServices::openUrl(QUrl("http://www.moravia-microsystems.com"));
 }

@@ -146,6 +146,7 @@ class MainForm : public QMainWindow
         void loopGen();
         void about();
         void refreshProjectTree();
+        void showWebSite(QAction *action);
 
     signals:
         void unhighlightSim();
