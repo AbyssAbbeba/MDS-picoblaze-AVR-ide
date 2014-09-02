@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Leds_sim</class>
+ <widget class="QWidget" name="Leds_sim">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>491</width>
+    <height>116</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Sim LED</string>
+  </property>
+  <widget class="QComboBox" name="ledBox_7">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_5">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_6">
+   <property name="geometry">
+    <rect>
+     <x>85</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_2">
+   <property name="geometry">
+    <rect>
+     <x>305</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_4">
+   <property name="geometry">
+    <rect>
+     <x>195</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_3">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_1">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="ledBox_0">
+   <property name="geometry">
+    <rect>
+     <x>415</x>
+     <y>60</y>
+     <width>33</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>90</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Port address:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEditAddress">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>90</y>
+     <width>31</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Output port address, 0-255</string>
+   </property>
+   <property name="text">
+    <string>00</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboDecoder">
+   <property name="geometry">
+    <rect>
+     <x>398</x>
+     <y>91</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Virtual coder</string>
+   </property>
+   <property name="whatsThis">
+    <string extracomment="Use virtual coder"/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>90</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use decoder:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>60</y>
+     <width>31</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pins</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_change">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>90</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Change</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
