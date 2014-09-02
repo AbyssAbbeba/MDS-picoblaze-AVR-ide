@@ -44,6 +44,15 @@ class McuDeviceSpecAdaptable : public McuDeviceSpec
          */
         bool setupSimulator ( AdaptableSimConfig & mcuConfig ) const;
 
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] operation
+         * @return
+         */
+        inline AdaptableSimOperationID::ID translateOP ( AdjSimProcDef::Instruction::Operation operation ) const;
+
     ////    Private Attributes    ////
     private:
         /// @brief
