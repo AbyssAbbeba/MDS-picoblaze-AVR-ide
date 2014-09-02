@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>118</height>
+    <width>491</width>
+    <height>116</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,12 @@
     <rect>
      <x>30</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_5">
@@ -28,9 +31,12 @@
     <rect>
      <x>140</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_6">
@@ -38,9 +44,12 @@
     <rect>
      <x>85</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_2">
@@ -48,9 +57,12 @@
     <rect>
      <x>305</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_4">
@@ -58,9 +70,12 @@
     <rect>
      <x>195</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_3">
@@ -68,9 +83,12 @@
     <rect>
      <x>250</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_1">
@@ -78,9 +96,12 @@
     <rect>
      <x>360</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QComboBox" name="ledBox_0">
@@ -88,9 +109,12 @@
     <rect>
      <x>415</x>
      <y>60</y>
-     <width>31</width>
+     <width>33</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Select pin</string>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -98,7 +122,7 @@
     <rect>
      <x>20</x>
      <y>90</y>
-     <width>71</width>
+     <width>91</width>
      <height>21</height>
     </rect>
    </property>
@@ -109,9 +133,9 @@
   <widget class="QLineEdit" name="lineEditAddress">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>110</x>
      <y>90</y>
-     <width>21</width>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
@@ -125,10 +149,10 @@
   <widget class="QComboBox" name="comboDecoder">
    <property name="geometry">
     <rect>
-     <x>410</x>
-     <y>90</y>
-     <width>69</width>
-     <height>22</height>
+     <x>398</x>
+     <y>91</y>
+     <width>81</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -141,9 +165,9 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>310</x>
      <y>90</y>
-     <width>71</width>
+     <width>91</width>
      <height>21</height>
     </rect>
    </property>
@@ -156,7 +180,7 @@
     <rect>
      <x>460</x>
      <y>60</y>
-     <width>21</width>
+     <width>31</width>
      <height>21</height>
     </rect>
    </property>
@@ -167,9 +191,9 @@
   <widget class="QPushButton" name="push_change">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>150</x>
      <y>90</y>
-     <width>51</width>
+     <width>61</width>
      <height>23</height>
     </rect>
    </property>
