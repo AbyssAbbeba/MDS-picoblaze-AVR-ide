@@ -197,7 +197,79 @@ void DAsmAdaptable::phase2 ( unsigned int code,
 
     appendStr(line, instruction.m_mnemonic);
     indent(line, 32);
-    
+
+
+    static const unsigned int OPERANDS_MAX = 3;
+
+    bool first = true;
+    std::vector<int> operands;
+    std::pair<int, AdjSimProcDef::Instruction::Operand::Type> valueTypePairs[OPERANDS_MAX];
+    getOperands(code, instruction, operands);
+
+    for ( unsigned int i = 0; i < OPERANDS_MAX; i++ )
+    {
+        valueTypePairs[i].first = -1;
+    }
+
+    for ( unsigned int i = 0; i < operands.size(); i++ )
+    {
+        int index = -1;
+
+        switch ( instruction.m_operands[i].m_number )
+        {
+            case AdjSimProcDef::Instruction::Operand::N_FIRST:  index =  0; break;
+            case AdjSimProcDef::Instruction::Operand::N_SECOND: index =  1; break;
+            case AdjSimProcDef::Instruction::Operand::N_THIRD:  index =  2; break;
+            case AdjSimProcDef::Instruction::Operand::N_HIDDEN: index = -1; break;
+        }
+
+        if ( -1 == index )
+        {
+            valueTypePairs[index].first = operands[i];
+            valueTypePairs[index].second = instruction.m_operands[i].m_type;
+        }
+    }
+
+    for ( unsigned int i = 0; i < OPERANDS_MAX; i++ )
+    {
+        if ( -1 == valueTypePairs[i].first )
+        {
+            continue;
+        }
+
+        if ( false == first )
+        {
+            appendStr(line, ", ");
+        }
+        first = false;
+
+        switch ( valueTypePairs[i].second )
+        {
+            case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE:
+                imm(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
+                reg(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
+                appendStr(line, "@");
+                reg(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:
+                data(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_DATA_INDR:
+                appendStr(line, "@");
+                data(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_PROGRAM:
+                label(line, valueTypePairs[i].first);
+                break;
+            case AdjSimProcDef::Instruction::Operand::T_PORT:
+                port(line, valueTypePairs[i].first);
+                break;
+        }
+    }
 }
 
 void DAsmAdaptable::getOperands ( unsigned int code,
