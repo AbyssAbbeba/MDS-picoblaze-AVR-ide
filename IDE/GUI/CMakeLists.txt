@@ -69,7 +69,7 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform GuiCfg LicenseInitWidget ErrorDialog LicenseCertificate)
+  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform GuiCfg LicenseInitWidget ErrorDialog LicenseCertificate TrialExpired)
 
 
   # we need this to be able to include headers produced by uic in our code
