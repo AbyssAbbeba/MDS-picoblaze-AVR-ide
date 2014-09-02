@@ -9,11 +9,11 @@
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableSim
- * @file AdaptableSimSim.cxx
+ * @file AdaptableSim.cxx
  */
 // =============================================================================
 
-#include "AdaptableSimSim.h"
+#include "AdaptableSim.h"
 
 #include "AdaptableSimIO.h"
 #include "AdaptableSimStack.h"
@@ -26,7 +26,7 @@
 
 #include <cassert>
 
-AdaptableSimSim::AdaptableSimSim()
+AdaptableSim::AdaptableSim()
 {
     m_config                = new AdaptableSimConfig();
     m_eventLogger           = new MCUSimEventLogger();
@@ -68,7 +68,7 @@ AdaptableSimSim::AdaptableSimSim()
     m_config->link(this);
 }
 
-AdaptableSimSim::~AdaptableSimSim()
+AdaptableSim::~AdaptableSim()
 {
     deleteSubSystems();
 
@@ -76,7 +76,7 @@ AdaptableSimSim::~AdaptableSimSim()
     delete m_eventLogger;
 }
 
-inline void AdaptableSimSim::deleteSubSystems()
+inline void AdaptableSim::deleteSubSystems()
 {
     for ( auto subsys : m_subSystems )
     {
@@ -84,7 +84,7 @@ inline void AdaptableSimSim::deleteSubSystems()
     }
 }
 
-inline void AdaptableSimSim::checkSubSystems() const
+inline void AdaptableSim::checkSubSystems() const
 {
     #ifndef NDEBUG
         for ( const auto subsys : m_subSystems )
@@ -94,12 +94,12 @@ inline void AdaptableSimSim::checkSubSystems() const
     #endif // NDEBUG
 }
 
-inline void AdaptableSimSim::regSubSys ( MCUSimSubsys * subSystem )
+inline void AdaptableSim::regSubSys ( MCUSimSubsys * subSystem )
 {
     m_subSystems.push_back(subSystem);
 }
 
-inline void AdaptableSimSim::unregSubSys ( const MCUSimSubsys * subSystem )
+inline void AdaptableSim::unregSubSys ( const MCUSimSubsys * subSystem )
 {
     for ( auto it = m_subSystems.begin();
           it != m_subSystems.end();
@@ -112,7 +112,7 @@ inline void AdaptableSimSim::unregSubSys ( const MCUSimSubsys * subSystem )
     }
 }
 
-MCUSimSubsys * AdaptableSimSim::getSubsys ( MCUSimSubsys::SubsysId id )
+MCUSimSubsys * AdaptableSim::getSubsys ( MCUSimSubsys::SubsysId id )
 {
     switch ( id )
     {
@@ -130,12 +130,12 @@ MCUSimSubsys * AdaptableSimSim::getSubsys ( MCUSimSubsys::SubsysId id )
     }
 }
 
-MCUSimClock::ClockSource & AdaptableSimSim::getClockSource()
+MCUSimClock::ClockSource & AdaptableSim::getClockSource()
 {
     return m_clockControl->m_clockSource;
 }
 
-void AdaptableSimSim::reset ( ResetMode mode )
+void AdaptableSim::reset ( ResetMode mode )
 {
     for ( auto subsys : m_subSystems )
     {
@@ -159,41 +159,41 @@ void AdaptableSimSim::reset ( ResetMode mode )
     }
 }
 
-MCUSimConfig & AdaptableSimSim::getConfig()
+MCUSimConfig & AdaptableSim::getConfig()
 {
     return * m_config;
 }
 
-MCUSim::Family AdaptableSimSim::family() const
+MCUSim::Family AdaptableSim::family() const
 {
     return m_config->m_family;
 }
 
-const char * AdaptableSimSim::name() const
+const char * AdaptableSim::name() const
 {
     return m_config->m_name.c_str();
 }
 
-MCUSim::Arch AdaptableSimSim::arch() const
+MCUSim::Arch AdaptableSim::arch() const
 {
     return m_config->getArch();
 }
 
-inline void AdaptableSimSim::resetToInitialValues()
+inline void AdaptableSim::resetToInitialValues()
 {
     m_clockPeriod = ( 1.0 / m_clockControl->getFrequency() );
 }
 
-inline void AdaptableSimSim::loadConfig()
+inline void AdaptableSim::loadConfig()
 {
 }
 
-inline void AdaptableSimSim::mcuReset()
+inline void AdaptableSim::mcuReset()
 {
     m_time = 0;
 }
 
-int AdaptableSimSim::executeInstruction()
+int AdaptableSim::executeInstruction()
 {
     m_io->clockCycle();
 
@@ -213,7 +213,7 @@ int AdaptableSimSim::executeInstruction()
     return 1;
 }
 
-int AdaptableSimSim::timeStep ( float timeStep )
+int AdaptableSim::timeStep ( float timeStep )
 {
     m_time += timeStep;
 

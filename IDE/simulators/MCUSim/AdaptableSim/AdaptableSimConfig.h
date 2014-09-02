@@ -17,7 +17,7 @@
 #define ADAPTABLESIMCONFIG_H
 
 // Forward declarations.
-class AdaptableSimSim;
+class AdaptableSim;
 
 #include "../MCUSim.h"
 
@@ -53,7 +53,7 @@ class AdaptableSimConfig : public MCUSimConfig
          * @brief
          * @param[in,out] system
          */
-        void link ( AdaptableSimSim * system );
+        void link ( AdaptableSim * system );
 
     ////    Inline Public Operations    ////
     public:

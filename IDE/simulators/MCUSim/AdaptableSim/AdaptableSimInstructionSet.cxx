@@ -204,7 +204,7 @@ void AdaptableSimInstructionSet::performOP ( unsigned short id,
                                              unsigned int & time,
                                              unsigned int opCode )
 {
-    if ( m_microCycles > MICRO_CYCLES_MAX )
+    if ( ++m_microCycles > MICRO_CYCLES_MAX )
     {
         logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_TOO_MANY_MICRO_CYCLES, m_pc );
         return;

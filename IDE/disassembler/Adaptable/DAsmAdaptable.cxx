@@ -8,26 +8,34 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup DisasmPicoBlaze
- * @file DAsmPicoBlazeCore.cxx
+ * @ingroup Disassembler
+ * @file DAsmAdaptable.cxx
  */
 // =============================================================================
 
-#include "DAsmPicoBlazeCore.h"
+#include "DAsmAdaptable.h"
 
 // Used for i18n only.
 #include <QObject>
 
-bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
+bool DAsmAdaptable::disassemble ( const DataFile & source )
 {
-    const int initShift = ( ( IS_18b == m_instSize ) ? 16 : 8 );
     unsigned int addr = 0;
     bool result = true;
+
+    int initShift = 0;
+    switch ( m_procDef.m_memory.m_program.m_word )
+    {
+        case AdjSimProcDef::Memory::Program::WORD_1B: initShift = 0;  break;
+        case AdjSimProcDef::Memory::Program::WORD_2B: initShift = 8;  break;
+        case AdjSimProcDef::Memory::Program::WORD_3B: initShift = 16; break;
+    }
 
     m_lastAddr = 0;
     for ( unsigned int i = 0; i < source.maxSize(); )
     {
         unsigned int code = 0;
+
         for ( int shift = initShift; shift >= 0; shift -= 8 )
         {
             int byte = -1;
@@ -40,21 +48,22 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
             {
                 if ( initShift == shift )
                 {
-                    code |= 0x200000;
+                    code |= 0x20000000;
                 }
                 else
                 {
-                    code |= 0x100000;
+                    code |= 0x10000000;
                 }
                 continue;
             }
 
-            code |= ( byte << shift );
+            code |= ( byte << ( ( ( AdjSimProcDef::Memory::Program::END_BIG == m_procDef.m_memory.m_program.m_endian )
+                                  ? 0 : initShift ) - shift ) );
         }
 
-        if ( 0 == ( 0x200000 & code ) )
+        if ( 0 == ( 0x20000000 & code ) )
         {
-            if ( 0x100000 & code )
+            if ( 0x10000000 & code )
             {
                 result = false;
                 m_messages.push_back ( QObject::tr("Incomplete OP code at address: %1.").arg(addr).toStdString() );
@@ -85,13 +94,14 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
 
             if ( -1 == byte )
             {
-                code |= 0x200000;
+                code |= 0x20000000;
                 continue;
             }
-            code |= ( byte << shift );
+            code |= ( byte << ( ( ( AdjSimProcDef::Memory::Program::END_BIG == m_procDef.m_memory.m_program.m_endian )
+                                  ? 0 : initShift ) - shift ) );
         }
 
-        if ( 0 == ( 0x200000 & code ) )
+        if ( 0 == ( 0x20000000 & code ) )
         {
             phase2(code, addr);
         }
@@ -102,17 +112,81 @@ bool DAsmPicoBlazeCore::disassemble ( const DataFile & source )
     return result;
 }
 
-const std::vector<std::string> & DAsmPicoBlazeCore::getSourceCode() const
+bool DAsmAdaptable::phase1 ( unsigned int code,
+                             unsigned int addr )
+{
+    AdjSimProcDef::Instruction instruction;
+    if ( false == recognizeInstruction(code, instruction) )
+    {
+        return false;
+    }
+
+    std::vector<unsigned int> operands;
+    getOperands(code, instruction, operands);
+}
+
+void DAsmAdaptable::phase2 ( unsigned int code,
+                             unsigned int addr )
+{
+
+}
+
+void DAsmAdaptable::getOperands ( unsigned int code,
+                                  const AdjSimProcDef::Instruction & instruction,
+                                  std::vector<unsigned int> & operands )
+{
+
+}
+
+bool DAsmAdaptable::recognizeInstruction ( unsigned int code,
+                                           AdjSimProcDef::Instruction & instruction )
+{
+    for ( const AdjSimProcDef::Instruction & inst : m_procDef.m_instructionSet )
+    {
+        bool found = true;
+        unsigned int bitNo = 0;
+        for ( const AdjSimProcDef::Instruction::OpCodeBit bit : inst.m_opCode )
+        {
+            if ( AdjSimProcDef::Instruction::OCB_ZERO == bit )
+            {
+                if ( 0 != code & ( 1 << bitNo ) )
+                {
+                    found = false;
+                    break;
+                }
+            }
+            else if ( AdjSimProcDef::Instruction::OCB_ONE == bit )
+            {
+                if ( 0 == code & ( 1 << bitNo ) )
+                {
+                    found = false;
+                    break;
+                }
+            }
+            bitNo++;
+        }
+
+        if ( true == found )
+        {
+            instruction = inst;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+const std::vector<std::string> & DAsmAdaptable::getSourceCode() const
 {
     return m_code;
 }
 
-const std::vector<std::string> & DAsmPicoBlazeCore::getMessages() const
+const std::vector<std::string> & DAsmAdaptable::getMessages() const
 {
     return m_messages;
 }
 
-void DAsmPicoBlazeCore::clear()
+void DAsmAdaptable::clear()
 {
     for ( int i = 0; i < AS_MAX_; i++ )
     {
@@ -127,7 +201,7 @@ void DAsmPicoBlazeCore::clear()
 }
 
 
-inline void DAsmPicoBlazeCore::phase1Leave()
+inline void DAsmAdaptable::phase1Leave()
 {
     static const struct
     {
@@ -177,10 +251,10 @@ inline void DAsmPicoBlazeCore::phase1Leave()
     }
 }
 
-inline void DAsmPicoBlazeCore::appendAddr ( std::string & line,
-                                            unsigned int addr,
-                                            AddressSpace addrSp,
-                                            Config::SymbolsToGenerate stg )
+inline void DAsmAdaptable::appendAddr ( std::string & line,
+                                        unsigned int addr,
+                                        AddressSpace addrSp,
+                                        Config::SymbolsToGenerate stg )
 {
     if ( stg & m_config.m_symbolsToGenerate )
     {
@@ -195,33 +269,33 @@ inline void DAsmPicoBlazeCore::appendAddr ( std::string & line,
     appendStr ( line, num2str(addr) );
 }
 
-void DAsmPicoBlazeCore::reg ( std::string & line,
-                              unsigned int addr )
+void DAsmAdaptable::reg ( std::string & line,
+                          unsigned int addr )
 {
     appendAddr ( line, addr, REG, Config::STG_REG );
 }
 
-void DAsmPicoBlazeCore::port ( std::string & line,
-                               unsigned int addr )
+void DAsmAdaptable::port ( std::string & line,
+                           unsigned int addr )
 {
     appendAddr ( line, addr, PORT, Config::STG_PORT );
 }
 
-void DAsmPicoBlazeCore::data ( std::string & line,
-                               unsigned int addr )
+void DAsmAdaptable::data ( std::string & line,
+                           unsigned int addr )
 {
     appendAddr ( line, addr, DATA, Config::STG_DATA );
 }
 
-void DAsmPicoBlazeCore::imm ( std::string & line,
-                              unsigned int addr )
+void DAsmAdaptable::imm ( std::string & line,
+                          unsigned int addr )
 {
     appendAddr ( line, addr, CONST, Config::STG_CONST );
 }
 
-void DAsmPicoBlazeCore::label ( std::string & line,
-                                unsigned int addr,
-                                bool definition )
+void DAsmAdaptable::label ( std::string & line,
+                            unsigned int addr,
+                            bool definition )
 {
     appendAddr ( line, addr, CODE, Config::STG_CODE );
 

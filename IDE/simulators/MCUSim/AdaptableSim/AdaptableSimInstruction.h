@@ -45,7 +45,7 @@ class AdaptableSimInstruction
             uint64_t m_data;
 
             bool use ( unsigned int operand ) const { return (bool) ( m_data >> ( 24 + operand ) ); }
-            unsigned int value ( unsigned int operand ) const { return ( 0xf & ( m_data >> ( 16 * operand )) ); }
+            unsigned int value ( unsigned int operand ) const { return ( 0xffff & ( m_data >> ( 16 * operand )) ); }
         };
 
         /**
