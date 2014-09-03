@@ -10,6 +10,12 @@
     <height>397</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>MDS Processor Definition Tool</string>
   </property>
@@ -22,8 +28,14 @@
      <height>371</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>1</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tabGeneral">
     <attribute name="title">
@@ -42,7 +54,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Processor Name</string>
+         <string>Processor name</string>
         </property>
        </widget>
       </item>
@@ -86,7 +98,7 @@
       <item row="0" column="0">
        <widget class="QGroupBox" name="groupBox_2">
         <property name="title">
-         <string>Program Memory</string>
+         <string>Program memory</string>
         </property>
         <widget class="QWidget" name="formLayoutWidget_3">
          <property name="geometry">
@@ -108,7 +120,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Word Size</string>
+             <string>Word size</string>
             </property>
            </widget>
           </item>
@@ -137,21 +149,132 @@
         <property name="title">
          <string>Stack</string>
         </property>
-        <widget class="QWidget" name="formLayoutWidget">
+        <widget class="QWidget" name="verticalLayoutWidget">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>30</y>
+           <y>20</y>
            <width>191</width>
-           <height>281</height>
+           <height>291</height>
           </rect>
          </property>
-         <layout class="QFormLayout" name="formLayout">
-          <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_14">
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QRadioButton" name="radioButton">
             <property name="text">
-             <string>Supported</string>
+             <string>Do not use stack</string>
             </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_2">
+            <property name="text">
+             <string>Use designated stack</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_3">
+            <property name="text">
+             <string>Use data memory or reg.</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_10">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Designated stack</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>20</y>
+               <width>171</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>Size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="spinBox_4"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="title">
+             <string>Data memory / Register file</string>
+            </property>
+            <widget class="QWidget" name="formLayoutWidget_6">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>20</y>
+               <width>176</width>
+               <height>96</height>
+              </rect>
+             </property>
+             <layout class="QFormLayout" name="formLayout_6">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Operation</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="comboBox_3"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Content offset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>Content space</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="comboBox_4"/>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="lineEdit_6"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -161,7 +284,7 @@
       <item row="2" column="0">
        <widget class="QGroupBox" name="groupBox_4">
         <property name="title">
-         <string>Register File</string>
+         <string>Register file</string>
         </property>
         <widget class="QWidget" name="formLayoutWidget_5">
          <property name="geometry">
@@ -207,7 +330,7 @@
       <item row="1" column="0">
        <widget class="QGroupBox" name="groupBox_3">
         <property name="title">
-         <string>Data Memory</string>
+         <string>Data memory</string>
         </property>
         <widget class="QWidget" name="formLayoutWidget_4">
          <property name="geometry">
@@ -245,7 +368,7 @@
    </widget>
    <widget class="QWidget" name="tabInstructionSet">
     <attribute name="title">
-     <string>Instruction Set</string>
+     <string>Instruction set</string>
     </attribute>
    </widget>
    <widget class="QWidget" name="tabMiscellaneous">
@@ -280,14 +403,14 @@
           <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Address Width</string>
+             <string>Address width</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Data Width</string>
+             <string>Data width</string>
             </property>
            </widget>
           </item>
@@ -354,7 +477,7 @@
           <item row="1" column="1">
            <widget class="QCheckBox" name="checkBox_6">
             <property name="text">
-             <string>Half Carry</string>
+             <string>Half carry</string>
             </property>
            </widget>
           </item>
@@ -393,7 +516,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Interrupt Vector</string>
+             <string>Interrupt vector</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
