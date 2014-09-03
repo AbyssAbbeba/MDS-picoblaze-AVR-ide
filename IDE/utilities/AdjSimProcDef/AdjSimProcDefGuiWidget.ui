@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AdjSimProcDefGuiWidget</class>
+ <widget class="QWidget" name="AdjSimProcDefGuiWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>479</width>
+    <height>397</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MDS Processor Definition Tool</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>461</width>
+     <height>371</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>1</number>
+   </property>
+   <widget class="QWidget" name="tabGeneral">
+    <attribute name="title">
+     <string>General</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>421</width>
+       <height>311</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Processor Name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Description</string>
+        </property>
+        <widget class="QTextEdit" name="textEdit">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>401</width>
+           <height>241</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabMemory">
+    <attribute name="title">
+     <string>Memory</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>431</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="title">
+         <string>Program Memory</string>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget_3">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>29</y>
+           <width>191</width>
+           <height>78</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Word Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Endian</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_5"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboBox"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="comboBox_2"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="1" rowspan="3">
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="title">
+         <string>Stack</string>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>191</width>
+           <height>281</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_14">
+            <property name="text">
+             <string>Supported</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="title">
+         <string>Register File</string>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>191</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Banks</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_3"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QSpinBox" name="spinBox_3"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_13">
+            <property name="text">
+             <string>Supported</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="title">
+         <string>Data Memory</string>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>191</width>
+           <height>71</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_4"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox_12">
+            <property name="text">
+             <string>Supported</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tabInstructionSet">
+    <attribute name="title">
+     <string>Instruction Set</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabMiscellaneous">
+    <attribute name="title">
+     <string>Miscellaneous</string>
+    </attribute>
+    <widget class="QWidget" name="gridLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>9</y>
+       <width>431</width>
+       <height>321</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="1">
+       <widget class="QGroupBox" name="groupBox_6">
+        <property name="title">
+         <string>Ports</string>
+        </property>
+        <widget class="QWidget" name="formLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>29</y>
+           <width>191</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <layout class="QFormLayout" name="formLayout_2">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Address Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Data Width</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QCheckBox" name="checkBox">
+            <property name="text">
+             <string>Supported</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBox"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSpinBox" name="spinBox_2"/>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QGroupBox" name="groupBox_7">
+        <property name="title">
+         <string>Available Flags</string>
+        </property>
+        <widget class="QWidget" name="gridLayoutWidget_4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>191</width>
+           <height>81</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBox_2">
+            <property name="text">
+             <string>Zero</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBox_3">
+            <property name="text">
+             <string>Carry</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="checkBox_4">
+            <property name="text">
+             <string>Overflow</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="checkBox_5">
+            <property name="text">
+             <string>Negative</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="checkBox_6">
+            <property name="text">
+             <string>Half Carry</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="checkBox_7">
+            <property name="text">
+             <string>Parity</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="title">
+         <string>Interrupts</string>
+        </property>
+        <widget class="QWidget" name="gridLayoutWidget_5">
+         <property name="geometry">
+          <rect>
+           <x>12</x>
+           <y>23</y>
+           <width>401</width>
+           <height>131</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Interrupt Vector</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBox_9">
+            <property name="text">
+             <string>Backup flags when entering ISR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBox_10">
+            <property name="text">
+             <string>Automatcaly disable interruprs when entering ISR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBox_11">
+            <property name="text">
+             <string>Automatcaly re-enable interruprs when leaving ISR</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QCheckBox" name="checkBox_8">
+            <property name="text">
+             <string>Supported</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -14,3 +14,9 @@
 // =============================================================================
 
 #include "AdjSimProcDefGui.h"
+
+AdjSimProcDefGui::AdjSimProcDefGui ( QWidget * parent )
+                                   : QWidget(parent)
+{
+    setupUi(this);
+}
