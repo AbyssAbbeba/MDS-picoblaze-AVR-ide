@@ -51,6 +51,7 @@ class Leds_sim : public QWidget, public MCUSimObserver //8
         void handleUpdateRequest(int mask);
         void addrChanged();
         void ValueChanged();
+        void handleChange(int o);
 
     protected:
         void paintEvent(QPaintEvent *e);
