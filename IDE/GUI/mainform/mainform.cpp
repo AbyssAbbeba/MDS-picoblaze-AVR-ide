@@ -34,6 +34,7 @@
 #include "../widgets/Tools/Display/displaytool.h"
 #include "../widgets/Tools/Convertor/convertortool.h"
 #include "../widgets/Tools/SimLed/simled.h"
+#include "../widgets/Tools/Sim7Seg/sim7seg.h"
 #include "../guicfg/guicfg.h"
 #include "../../mds.h"
 
@@ -375,6 +376,7 @@ void MainForm::createMenu()
     toolsMenu->addAction(toolDisplayAct);
     toolsMenu->addAction(toolLoopGenAct);
     toolsMenu->addAction(toolSimLedsAct);
+    toolsMenu->addAction(toolSim7SegAct);
     
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(licenseAct);
@@ -575,9 +577,12 @@ void MainForm::createActions()
     connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     toolLoopGenAct = new QAction(tr("Loop Generator"), this);
     connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
-    toolSimLedsAct = new QAction(tr("LED panel"), this);
+    toolSimLedsAct = new QAction(tr("LED panel Simulation"), this);
     toolSimLedsAct->setDisabled(true);
     connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
+    toolSim7SegAct = new QAction(tr("7 Segment Simulation"), this);
+    toolSim7SegAct->setDisabled(true);
+    connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
 
     licenseAct = new QAction(tr("License"), this);
     connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -2179,6 +2184,7 @@ void MainForm::simulationFlowHandle()
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
             toolSimLedsAct->setEnabled(true);
+            toolSim7SegAct->setEnabled(true);
             projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
@@ -2280,6 +2286,7 @@ void MainForm::simulationFlowHandle()
         simulationResetAct->setDisabled(true);
         simulationUnhighlightAct->setDisabled(true);
         toolSimLedsAct->setDisabled(true);
+        toolSim7SegAct->setDisabled(true);
         projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
@@ -3195,6 +3202,16 @@ void MainForm::simLeds()
     if (true == this->simulationStatus)
     {
         Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
+}
+
+
+void MainForm::sim7Seg()
+{
+    if (true == this->simulationStatus)
+    {
+        Sim7Seg *widget = new Sim7Seg(0, this->projectMan->getSimulated()->getSimControl());
         widget->show();
     }
 }

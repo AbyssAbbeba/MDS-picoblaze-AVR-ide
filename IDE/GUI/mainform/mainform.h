@@ -146,6 +146,7 @@ class MainForm : public QMainWindow
         void refreshProjectTree();
         void showWebSite(QAction *action);
         void simLeds();
+        void sim7Seg();
 
     signals:
         void unhighlightSim();
@@ -227,6 +228,7 @@ class MainForm : public QMainWindow
         QAction *toolDisplayAct;
         QAction *toolLoopGenAct;
         QAction *toolSimLedsAct;
+        QAction *toolSim7SegAct;
 
         QAction *licenseAct;
         QAction *aboutAct;
