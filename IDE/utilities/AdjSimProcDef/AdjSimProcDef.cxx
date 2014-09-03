@@ -19,6 +19,7 @@ std::ostream & operator << ( std::ostream & out,
                              const AdjSimProcDef & definition )
 {
     out << "Name: \"" << definition.m_name << '"' << std::endl;
+    out << "Description: \"" << definition.m_description << '"' << std::endl;
     out << "Interrupt Vector: " << definition.m_interruptVector << std::endl;
 
     out << "== Ports ==" << std::endl;
@@ -277,5 +278,58 @@ std::ostream & operator << ( std::ostream & out,
         case AdjSimProcDef::Instruction::FLAG_FLAG:        out << "FLAG";        break;
         case AdjSimProcDef::Instruction::FLAG__MAX__:      out << "<invalid>";   break;
     }
+
+    return out;
+}
+
+std::ostream & operator << ( std::ostream & out,
+                             const AdjSimProcDef::Instruction::Operation operation )
+{
+
+    switch ( operation )
+    {
+        case AdjSimProcDef::Instruction::OP_NONE:          out << "NONE";                  break;
+        case AdjSimProcDef::Instruction::OP_ABS_JUMP:      out << "ABS JUMP";              break;
+        case AdjSimProcDef::Instruction::OP_ABS_CALL:      out << "ABS CALL";              break;
+        case AdjSimProcDef::Instruction::OP_REL_JUMP:      out << "REL CALL";              break;
+        case AdjSimProcDef::Instruction::OP_REL_CALL:      out << "REL CALL";              break;
+        case AdjSimProcDef::Instruction::OP_OFS_JUMP:      out << "OFS CALL";              break;
+        case AdjSimProcDef::Instruction::OP_OFS_CALL:      out << "OFS CALL";              break;
+        case AdjSimProcDef::Instruction::OP_IDX_JUMP:      out << "IDX CALL";              break;
+        case AdjSimProcDef::Instruction::OP_IDX_CALL:      out << "IDX CALL";              break;
+        case AdjSimProcDef::Instruction::OP_RETURN:        out << "RETURN";                break;
+        case AdjSimProcDef::Instruction::OP_ISR_RETURN:    out << "ISR RETURN";            break;
+        case AdjSimProcDef::Instruction::OP_SET_BANK:      out << "SET BANK";              break;
+        case AdjSimProcDef::Instruction::OP_MOVE:          out << "MOVE";                  break;
+        case AdjSimProcDef::Instruction::OP_CB_MOVE:       out << "CROSS BANK MOVE";       break;
+        case AdjSimProcDef::Instruction::OP_MOVE_BIT:      out << "MOVE BIT";              break;
+        case AdjSimProcDef::Instruction::OP_CB_MOVE_BIT:   out << "CROSS BANK MOVE BIT";   break;
+        case AdjSimProcDef::Instruction::OP_SWAP:          out << "SWAP";                  break;
+        case AdjSimProcDef::Instruction::OP_CB_SWAP:       out << "CROSS BANK SWAP";       break;
+        case AdjSimProcDef::Instruction::OP_SWAP_BIT:      out << "SWAP BIT";              break;
+        case AdjSimProcDef::Instruction::OP_CB_SWAP_BIT:   out << "CROSS BANK SWAPBIT";    break;
+        case AdjSimProcDef::Instruction::OP_CPL:           out << "CPL";                   break;
+        case AdjSimProcDef::Instruction::OP_BIT_TEST:      out << "BIT TEST";              break;
+        case AdjSimProcDef::Instruction::OP_ADD:           out << "ADD";                   break;
+        case AdjSimProcDef::Instruction::OP_SUB:           out << "SUB";                   break;
+        case AdjSimProcDef::Instruction::OP_AND:           out << "AND";                   break;
+        case AdjSimProcDef::Instruction::OP_OR:            out << "OR";                    break;
+        case AdjSimProcDef::Instruction::OP_XOR:           out << "XOR";                   break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_0:  out << "SHIFT LEFT 0";          break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_0: out << "SHIFT RIGHT 0";         break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_1:  out << "SHIFT LEFT 1";          break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_1: out << "SHIFT RIGHT 1";         break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_R:  out << "SHIFT LEFT R";          break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_R: out << "SHIFT RIGHT R";         break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_LEFT_C:  out << "SHIFT LEFT C";          break;
+        case AdjSimProcDef::Instruction::OP_SHIFT_RIGHT_C: out << "SHIFT RIGHT C";         break;
+        case AdjSimProcDef::Instruction::OP_ROTATE_LEFT:   out << "ROTATE LEFT";           break;
+        case AdjSimProcDef::Instruction::OP_ROTATE_RIGHT:  out << "ROTATE RIGHT";          break;
+
+        default:
+            out << "<ERROR:Unknown!>";
+            break;
+    }
+
     return out;
 }
