@@ -272,11 +272,37 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 QTextCursor cursor(this->textCursor());
                 if (true == cursor.hasSelection())
                 {
-                    //TODO:
+                    if (true == this->tabToSpaces)
+                    {
+                        //TODO:
+                        QTextCursor curTemp(cursor);
+                        curTemp.clearSelection();
+                    }
+                    else
+                    {
+                        //TODO:
+                    }
                 }
                 else
                 {
-                    //TODO:
+                    if (true == this->tabToSpaces)
+                    {
+                        //TODO: done
+                        int prevPos = cursor.position();
+                        cursor.setPosition(cursor.position() - cursor.positionInBlock());
+                        cursor.setPosition(cursor.position()+1, QTextCursor::KeepAnchor);
+                        if (cursor.selectedText() == "\t")
+                        {
+                            cursor.removeSelectedText();
+                            prevPos--;
+                        }
+                        cursor.setPosition(prevPos);
+                        this->setTextCursor(cursor);
+                    }
+                    else
+                    {
+                        //TODO:
+                    }
                 }
                 return true;
             }
