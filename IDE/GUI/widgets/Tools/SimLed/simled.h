@@ -35,7 +35,7 @@ class Leds_sim : public QWidget, public MCUSimObserver //8
         void CreateItems(void);
         unsigned char value,address;
         void ValueDecode(void);
-        void DisplayNumber(void);
+        void DisplayNumber(unsigned char Numero);
 
         
         Ui_Leds_sim ui;
@@ -48,6 +48,7 @@ class Leds_sim : public QWidget, public MCUSimObserver //8
         flag_7;
 
     private slots:
+        void DecoderChanged(int o);
         void handleUpdateRequest(int mask);
         void addrChanged();
         void ValueChanged();

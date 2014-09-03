@@ -2639,6 +2639,15 @@ void Project::stop()
 void Project::reset()
 {
     m_simControlUnit->resetProgram();
+    this->prevSim.clear();
+    this->prevSim2.clear();
+    m_simControlUnit->getLineNumber(this->currSim);
+    if (this->currSim.empty() == true)
+    {
+        return;
+    }
+    emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
+    this->prevSim = this->currSim;
 }
 
 

@@ -165,14 +165,14 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>330</x>
      <y>90</y>
-     <width>91</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Use decoder:</string>
+    <string>Use coder:</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
@@ -186,19 +186,6 @@
    </property>
    <property name="text">
     <string>Pins</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="push_change">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>90</y>
-     <width>51</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Change</string>
    </property>
   </widget>
  </widget>
