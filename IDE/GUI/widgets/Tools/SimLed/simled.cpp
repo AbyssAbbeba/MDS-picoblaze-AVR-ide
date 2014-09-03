@@ -19,7 +19,6 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 {
     ui.setupUi(this);
     this->setWindowTitle("LED panel");
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);
     if ( NULL == controlUnit )
     {
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
@@ -46,7 +45,7 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask); //8
 
     connect(ui.push_change,
-            SIGNAL(clicked()),
+            SIGNAL(editingFinished()),
             this,
             SLOT(addrChanged())
            );
@@ -57,11 +56,25 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
             this,
             SLOT(handleUpdateRequest(int))
            );
+    
+        connect(ui.ledBox_0 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_1 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_2 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_3 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_4 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_5 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_6 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
+        connect(ui.ledBox_7 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
 
     deviceChanged();  //8
+    ValueChanged();
     
 }
 
+void Leds_sim::handleChange(int o)
+{
+    ValueChanged();
+}
 
 void Leds_sim::deviceChanged()  //8
 {
@@ -80,11 +93,12 @@ void Leds_sim::deviceChanged()  //8
 
 void Leds_sim::deviceReset()  //8
 {
-    
+    ValueChanged();          
 }
 
 void Leds_sim::handleUpdateRequest(int mask) //8
 {
+    
 }
 
 void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
@@ -117,20 +131,11 @@ void Leds_sim::setReadOnly(bool /*readOnly*/)
 {
 }
 
-/*Leds_sim::~Leds_sim()
-{
-    delete ui;
-}*/
-
 // main loop, event
 void Leds_sim::ValueChanged()
 {
-    //painter
 
-    // tadz ymenis value podle nastavene adresy
-
-
-    if ( ui.comboDecoder->currentIndex() != 2 )
+    if ( ui.comboDecoder->currentIndex() != 0 )
     {
         ValueDecode();
     }
@@ -144,6 +149,7 @@ void Leds_sim::addrChanged()
     qDebug() << "changed address" << address;
     
     this->value = m_plio->getOutputArray()[this->address];
+    
     
     ValueChanged();
 }
@@ -228,7 +234,7 @@ void Leds_sim::DisplayNumber(void)
 void Leds_sim::ValueDecode(void)
 {
     // Bin to BCD
-    if ( ui.comboDecoder->currentIndex() == 0 )
+    if ( ui.comboDecoder->currentIndex() == 1 )
     {
         unsigned char HighNibble = 0, LowNibble = 0;
 
@@ -255,7 +261,7 @@ void Leds_sim::ValueDecode(void)
        return;
     }
 
-    if ( ui.comboDecoder->currentIndex() == 1 )
+    if ( ui.comboDecoder->currentIndex() == 2 )
     {
         // Bin to Gray
         value = (value >> 1) ^ value;
@@ -801,10 +807,10 @@ void Leds_sim::CreateItems(void)
     ui.ledBox_6->setCurrentIndex(6);
     ui.ledBox_7->setCurrentIndex(7);
 
+    ui.comboDecoder->addItem(QString("NONE"));
     ui.comboDecoder->addItem(QString("BCD"));
     ui.comboDecoder->addItem(QString("GRAY"));
-    ui.comboDecoder->addItem(QString("NONE"));
-    ui.comboDecoder->setCurrentIndex(2);
+    ui.comboDecoder->setCurrentIndex(1);
 
 }
 
