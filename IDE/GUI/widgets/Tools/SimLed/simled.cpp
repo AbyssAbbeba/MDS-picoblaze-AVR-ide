@@ -44,10 +44,16 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
                             };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask); //8
 
-    connect(ui.push_change,
+    connect(ui.lineEditAddress,
             SIGNAL(editingFinished()),
             this,
             SLOT(addrChanged())
+           );
+
+        connect(ui.comboDecoder,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(ValueChanged())
            );
 
 
@@ -71,7 +77,12 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
     
 }
 
-void Leds_sim::handleChange(int o)
+void Leds_sim::DecoderChanged(int o)
+{
+    ValueChanged();
+}
+
+void Leds_sim::handleChange(int /*o*/)
 {
     ValueChanged();
 }
@@ -96,7 +107,7 @@ void Leds_sim::deviceReset()  //8
     ValueChanged();          
 }
 
-void Leds_sim::handleUpdateRequest(int mask) //8
+void Leds_sim::handleUpdateRequest(int /*mask*/) //8
 {
     
 }
@@ -112,11 +123,6 @@ void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int 
                 this->value = m_plio->getOutputArray()[this->address];
                 break;
             }
-     //       case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
-     //       {
-     //           this->value = m_plio->getOutputArray()[this->address];
-     //           break;
-     //       }
             default:
             {
                 break;
@@ -134,12 +140,14 @@ void Leds_sim::setReadOnly(bool /*readOnly*/)
 // main loop, event
 void Leds_sim::ValueChanged()
 {
-
     if ( ui.comboDecoder->currentIndex() != 0 )
     {
         ValueDecode();
     }
-    DisplayNumber();
+    else
+    {
+        DisplayNumber(value);
+    }
     update();
 }
 
@@ -148,15 +156,13 @@ void Leds_sim::addrChanged()
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << "changed address" << address;
     
-    this->value = m_plio->getOutputArray()[this->address];
-    
-    
+    this->value = m_plio->getOutputArray()[this->address];  
     ValueChanged();
 }
 
-void Leds_sim::DisplayNumber(void)
+void Leds_sim::DisplayNumber(unsigned char Numero)
 {
-    if ( value & bit0)
+    if ( Numero & bit0)
     {
         flag_0 = false;
     }
@@ -165,7 +171,7 @@ void Leds_sim::DisplayNumber(void)
         flag_0 = true;
     }
 //--------------------------
-    if ( value & bit1)
+    if ( Numero & bit1)
     {
         flag_1 = false;
     }
@@ -174,7 +180,7 @@ void Leds_sim::DisplayNumber(void)
         flag_1 = true;
     }
 //--------------------------
-    if ( value & bit2)
+    if ( Numero & bit2)
     {
         flag_2 = false;
     }
@@ -183,7 +189,7 @@ void Leds_sim::DisplayNumber(void)
         flag_2 = true;
     }
 //--------------------------
-    if ( value & bit3)
+    if ( Numero & bit3)
     {
         flag_3 = false;
     }
@@ -193,7 +199,7 @@ void Leds_sim::DisplayNumber(void)
     }
 
 //--------------------------
-    if ( value & bit4)
+    if ( Numero & bit4)
     {
         flag_4 = false;
     }
@@ -202,7 +208,7 @@ void Leds_sim::DisplayNumber(void)
         flag_4 = true;
     }
 //--------------------------
-    if ( value & bit5)
+    if ( Numero & bit5)
     {
         flag_5 = false;
     }
@@ -211,7 +217,7 @@ void Leds_sim::DisplayNumber(void)
         flag_5 = true;
     }
 //--------------------------
-    if ( value & bit6)
+    if ( Numero & bit6)
     {
         flag_6 = false;
     }
@@ -220,7 +226,7 @@ void Leds_sim::DisplayNumber(void)
         flag_6 = true;
     }
 //--------------------------
-    if ( value & bit7)
+    if ( Numero & bit7)
     {
         flag_7 = false;
     }
@@ -263,10 +269,14 @@ void Leds_sim::ValueDecode(void)
 
     if ( ui.comboDecoder->currentIndex() == 2 )
     {
+        unsigned char gray_value = 0;
         // Bin to Gray
-        value = (value >> 1) ^ value;
-        value = ~value;
-        qDebug() << value << " Gray value";
+        gray_value = value;
+        gray_value = (gray_value >> 1) ^ gray_value;
+        gray_value = ~gray_value;
+        qDebug() << gray_value << " Gray value";
+        qDebug() << value << " value";
+        DisplayNumber(gray_value);
         return;
     }
     return;
@@ -810,7 +820,7 @@ void Leds_sim::CreateItems(void)
     ui.comboDecoder->addItem(QString("NONE"));
     ui.comboDecoder->addItem(QString("BCD"));
     ui.comboDecoder->addItem(QString("GRAY"));
-    ui.comboDecoder->setCurrentIndex(1);
+    ui.comboDecoder->setCurrentIndex(0);
 
 }
 
