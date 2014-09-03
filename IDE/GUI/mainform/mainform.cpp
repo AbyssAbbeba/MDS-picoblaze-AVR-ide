@@ -2084,6 +2084,7 @@ void MainForm::simulationReset()
     if (true == simulationStatus)
     {
         projectMan->getSimulated()->reset();
+        //this->wDockManager->getCentralTextEdit()->clearHighlight();
     }
 }
 
