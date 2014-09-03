@@ -36,6 +36,10 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 
     QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{2}"), this);
     ui.lineEditAddress->setValidator(hexValidator);
+
+    ui.lineEditHex->setReadOnly(true);
+    ui.lineEditDec->setReadOnly(true);
+    
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << address;
 
@@ -149,6 +153,8 @@ void Leds_sim::ValueChanged()
     {
         DisplayNumber(value);
     }
+        ui.lineEditDec->setText(QString::number(value,10));
+        ui.lineEditHex->setText(QString::number(value,16).toUpper());
     update();
 }
 
@@ -243,31 +249,23 @@ void Leds_sim::ValueDecode(void)
     // Bin to BCD
     if ( ui.comboDecoder->currentIndex() == 1 )
     {
-        unsigned char HighNibble = 0, LowNibble = 0;
+        unsigned char bcd_value = 0, bcd_value_des = 0, bcd_value_jedn = 0, bcd_value_sto = 0;
 
-        LowNibble = (value & 0x0f);
-        qDebug() << LowNibble << " low";
-        HighNibble = (value & 0xf0) >> 4;
-        qDebug() << HighNibble << " high";
+        bcd_value = value;
 
-        switch( HighNibble )
-        {
-            default:    qDebug() << "wrong value";
-                break;
-            case     0b00000000:    HighNibble = 0b00000000;          break;
-            case     0b00000001:    HighNibble = 0b00000001;          break;
-            case     0b00000010:    HighNibble = 0b00000010;          break;
-            case     0b00000011:    HighNibble = 0b00000000;          break;
-            case     0b00000100:    HighNibble = 0b00000000;          break;
-            case     0b00000101:    HighNibble = 0b00000000;          break;
-            case     0b00000110:    HighNibble = 0b00000000;          break;
-            case     0b00000111:    HighNibble = 0b00000000;          break;
-            case     0b00001000:    HighNibble = 0b00000000;          break;
-            case     0b00001001:    HighNibble = 0b00000000;          break;
-      }
-       return;
+        bcd_value_sto   = bcd_value / 100;
+        bcd_value      -= (bcd_value_sto * 100);
+        bcd_value_des   = bcd_value / 10; 
+        bcd_value_jedn  = bcd_value - (bcd_value_des * 10);
+        
+        bcd_value = 0;
+        bcd_value = ( bcd_value_des << 4);
+        bcd_value = bcd_value | bcd_value_jedn;
+        DisplayNumber(bcd_value);
+        return;
     }
 
+    // bin to gray
     if ( ui.comboDecoder->currentIndex() == 2 )
     {
         unsigned char gray_value = 0;
