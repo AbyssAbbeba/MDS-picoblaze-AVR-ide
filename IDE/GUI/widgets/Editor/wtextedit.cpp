@@ -376,6 +376,10 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     //TODO:
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
+                    QString line;
+                    int spaces, spacesToInsert;
+                    int finalSpaces = 0;
+                    int firstSpaces = 0;
                     cursor.setPosition(prevPosStart);
                     int blockCount = cursor.blockNumber();
                     QTextBlock block = cursor.block();
@@ -384,10 +388,33 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     for (int i = 0; i < blockCount; i++)
                     {
                         cursor.setPosition(block.position());
+                        QString line = block.text();
+                        spaces = 0;
+                        for (int i = 0; i < line.size(); i++)
+                        {
+                            if (line.at(i) == ' ')
+                            {
+                                spaces++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        spacesToInsert = this->spacesInTab-spaces%this->spacesInTab;
+                        for (int i = 0; i < spacesToInsert; i++)
+                        {
+                            cursor.insertText(" ");
+                        }
+                        finalSpaces = finalSpaces + spacesToInsert;
+                        if (i == 0)
+                        {
+                            firstSpaces = spacesToInsert;
+                        }
                         block = block.next();
                     }
-                    /*cursor.setPosition(prevPosStart);
-                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);*/
+                    cursor.setPosition(prevPosStart+firstSpaces);
+                    cursor.setPosition(prevPosEnd+finalSpaces, QTextCursor::KeepAnchor);
                     this->setTextCursor(cursor);
                 }
                 else
