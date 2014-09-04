@@ -297,44 +297,59 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     //QPixmap pix_green(":resources/icons/button-green.png");
     //QPixmap pix_red  (":resources/icons/button-red.png");
 
-    painter.setBrush(Qt::gray);
-    painter.setBrush(Qt::red);
     painter.setPen(blackpen);
-
     painter.setBrush(Qt::white);
+//         0 top
+//         1 levej
+//         2 pravej
+//         3 prostredek
+//         4 levej
+//         5 pravej
+//         6 spodek
+//         7 tečka
+        //    rectangle.translate(offset,0);
+     //   painter.drawEllipse(rectangle);
+     //   if ( painter.brush().color() == Qt::gray)
+     //   {
+     //       painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_green.scaledToHeight(rectangle.height()));
+    //    }
+//         else
+//         {
+//             painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_red.scaledToHeight(rectangle.height()));
+//         }
 
-    for (unsigned int i =0;i <= 6; i++)
-    {
-        painter.drawConvexPolygon(*(list.at(i)));
-    }
+//     for (unsigned int i =0;i <= 6; i++)
+//     {
+//         painter.drawConvexPolygon(*(list.at(i)));
+//     }
 
     // led 7
     index = ui.ledBox_7->currentIndex();
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
@@ -347,101 +362,104 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
         break;
     }
+    // paint
+    painter.drawConvexPolygon(*(list.at(6)));
+
 ----------------------------------------------------
     // led 5
     index = ui.ledBox_5->currentIndex();
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-
+    painter.drawConvexPolygon(*(list.at(5)));
 //--------------------------------------------------------------------
     // led 4
     index = ui.ledBox_4->currentIndex();
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-
+    painter.drawConvexPolygon(*(list.at(4)));
 
 //--------------------------------------------------------------------
     // led 3
@@ -449,68 +467,68 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-
+    painter.drawConvexPolygon(*(list.at(3)));
 //----------------------------------------------------------
     // led 2
     index = ui.ledBox_2->currentIndex();
 
     switch ( index )
     {
-    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+    case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+    case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+    case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+    case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+    case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+    case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+    case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
-    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+    case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
             else                    { painter.setBrush(Qt::red) ;}
         break;
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-
+    painter.drawConvexPolygon(*(list.at(2)));
 
     //--------------------------------------------------------------------
         // led 1
@@ -518,73 +536,74 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
         switch ( index )
         {
-        case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+        case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+        case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+        case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+        case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+        case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+        case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+        case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+        case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
         default: qDebug()<< "default in painting, wrong";
             break;
         }
-
+        painter.drawConvexPolygon(*(list.at(1)));
     //----------------------------------------------------------
         // led 0
         index = ui.ledBox_0->currentIndex();
 
         switch ( index )
         {
-        case 0: if ( flag_0  == false ) { painter.setBrush(Qt::gray);}
+        case 0: if ( flag_0  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 1: if ( flag_1  == false ) { painter.setBrush(Qt::gray);}
+        case 1: if ( flag_1  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 2: if ( flag_2  == false ) { painter.setBrush(Qt::gray);}
+        case 2: if ( flag_2  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 3: if ( flag_3  == false ) { painter.setBrush(Qt::gray);}
+        case 3: if ( flag_3  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 4: if ( flag_4  == false ) { painter.setBrush(Qt::gray);}
+        case 4: if ( flag_4  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 5: if ( flag_5  == false ) { painter.setBrush(Qt::gray);}
+        case 5: if ( flag_5  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 6: if ( flag_6  == false ) { painter.setBrush(Qt::gray);}
+        case 6: if ( flag_6  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
-        case 7: if ( flag_7  == false ) { painter.setBrush(Qt::gray);}
+        case 7: if ( flag_7  == false ) { painter.setBrush(Qt::white);}
                 else                    { painter.setBrush(Qt::red) ;}
             break;
         default: qDebug()<< "default in painting, wrong";
             break;
         }
+        painter.drawConvexPolygon(*(list.at(0)));
     //    rectangle.translate(offset,0);
      //   painter.drawEllipse(rectangle);
      //   if ( painter.brush().color() == Qt::gray)
      //   {
      //       painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_green.scaledToHeight(rectangle.height()));
-        }
+    //    }
 //         else
 //         {
 //             painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_red.scaledToHeight(rectangle.height()));
@@ -685,8 +704,8 @@ void Sim7Seg::CreateItems(void)
     ui.comboDecoder->setCurrentIndex(0);
 
     unsigned int y_pos,x_pos;
-    x_pos = 35 + 150;
-    y_pos = 25;
+    x_pos = 35 + 67;
+    y_pos = 25 - 10;
     QVector<QPointF> points0; //0 10   10 0    61 0    71 10  61 20   10 20
     points0.append(QPointF(0.0 + x_pos, 10.0 + y_pos));
     points0.append(QPointF(10.0 + x_pos, 0.0 +  y_pos));
@@ -697,8 +716,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon0 = new QPolygonF(points0);
     list.append(widgetPolygon0);
 
-    x_pos = 13 + 150;
-    y_pos = 40;
+    x_pos = 13 + 67;
+    y_pos = 40 - 10;
     QVector<QPointF> points1; //19 0  29 10  21 54  9 66  0 57   8 11
     points1.append(QPointF(19.0 + x_pos, 0.0 + y_pos));
     points1.append(QPointF(29.0 + x_pos, 10.0 + y_pos));
@@ -709,8 +728,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon1 = new QPolygonF(points1);
     list.append(widgetPolygon1);
 
-    x_pos = 90 + 150;
-    y_pos = 40;
+    x_pos = 90 + 67;
+    y_pos = 40 - 10;
     QVector<QPointF> points2; //19 0  29 10  21 54  9 66  0 57   8 11
     points2.append(QPointF(19.0 + x_pos, 0.0 + y_pos));
     points2.append(QPointF(29.0 + x_pos, 10.0 + y_pos));
@@ -721,8 +740,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon2 = new QPolygonF(points2);
     list.append(widgetPolygon2);
 
-    x_pos = 23 + 150;
-    y_pos = 102;
+    x_pos = 23 + 67;
+    y_pos = 102 - 10;
     QVector<QPointF> points3; //0 10   10 0    61 0    71 10  61 20   10 20
     points3.append(QPointF(0.0 + x_pos, 10.0 + y_pos));
     points3.append(QPointF(10.0 + x_pos, 0.0 + y_pos));
@@ -733,8 +752,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon3 = new QPolygonF(points3);
     list.append(widgetPolygon3);
 
-    x_pos = 0 + 150;
-    y_pos = 115;
+    x_pos = 0 + 67;
+    y_pos = 115 - 10;
     QVector<QPointF> points4; //19 0  29 10  21 54  9 66  0 57   8 11
     points4.append(QPointF(19.0 + x_pos, 0.0 + y_pos));
     points4.append(QPointF(29.0 + x_pos, 10.0 + y_pos));
@@ -745,8 +764,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon4 = new QPolygonF(points4);
     list.append(widgetPolygon4);
 
-    x_pos = 80 + 150;
-    y_pos = 115;
+    x_pos = 80 + 67;
+    y_pos = 115 - 10;
     QVector<QPointF> points5; //19 0  29 10  21 54  9 66  0 57   8 11
     points5.append(QPointF(19.0 + x_pos, 0.0 + y_pos));
     points5.append(QPointF(29.0 + x_pos, 10.0 + y_pos));
@@ -757,8 +776,8 @@ void Sim7Seg::CreateItems(void)
     QPolygonF *widgetPolygon5 = new QPolygonF(points5);
     list.append(widgetPolygon5);
 
-    x_pos = 14 + 150;
-    y_pos = 173;
+    x_pos = 14 + 67;
+    y_pos = 173 - 10;
     QVector<QPointF> points6; //0 10   10 0    61 0    71 10  61 20   10 20
     points6.append(QPointF(0.0 + x_pos, 10.0 + y_pos));
     points6.append(QPointF(10.0 + x_pos, 0.0 + y_pos));
