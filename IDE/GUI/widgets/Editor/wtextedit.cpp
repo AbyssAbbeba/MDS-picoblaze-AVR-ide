@@ -265,89 +265,180 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 }
             }
         }
-        if (keyEvent->key() == Qt::Key_Tab)
+        if (keyEvent->key() == Qt::Key_Backtab)
         {
-            if (keyEvent->modifiers() & Qt::ShiftModifier)
+            QTextCursor cursor(this->textCursor());
+            if (true == cursor.hasSelection())
             {
-                QTextCursor cursor(this->textCursor());
-                if (true == cursor.hasSelection())
+                if (true == this->tabToSpaces)
                 {
-                    if (true == this->tabToSpaces)
+                    //TODO:
+                    int prevPosStart = cursor.selectionStart();
+                    int prevPosEnd = cursor.selectionEnd();
+                    cursor.setPosition(prevPosStart);
+                    int blockCount = cursor.blockNumber();
+                    QTextBlock block = cursor.block();
+                    cursor.setPosition(prevPosEnd);
+                    blockCount = cursor.blockNumber() - blockCount + 1;
+                    for (int i = 0; i < blockCount; i++)
                     {
-                        //TODO:
-                        QTextCursor curTemp(cursor);
-                        curTemp.clearSelection();
+                        cursor.setPosition(block.position());
+                        block = block.next();
                     }
-                    else
-                    {
-                        //TODO:
-                    }
+                    /*cursor.setPosition(prevPosStart);
+                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);*/
+                    this->setTextCursor(cursor);
                 }
                 else
                 {
-                    if (true == this->tabToSpaces)
+                    int prevPosStart = cursor.selectionStart();
+                    int prevPosEnd = cursor.selectionEnd();
+                    cursor.setPosition(prevPosStart);
+                    bool onStart = cursor.atBlockStart();
+                    bool firstInt = false;
+                    int blockCount = cursor.blockNumber();
+                    int blankLines = 0;
+                    QTextBlock block = cursor.block();
+                    cursor.setPosition(prevPosEnd);
+                    blockCount = cursor.blockNumber() - blockCount + 1;
+                    for (int i = 0; i < blockCount; i++)
                     {
-                        //TODO: done
-                        int prevPos = cursor.position();
-                        cursor.setPosition(cursor.position() - cursor.positionInBlock());
+                        cursor.setPosition(block.position());
                         cursor.setPosition(cursor.position()+1, QTextCursor::KeepAnchor);
                         if (cursor.selectedText() == "\t")
                         {
                             cursor.removeSelectedText();
-                            prevPos--;
+                            if (i == 0)
+                            {
+                                firstInt = true;
+                            }
                         }
-                        cursor.setPosition(prevPos);
-                        this->setTextCursor(cursor);
+                        else
+                        {
+                            blankLines++;
+                        }
+                        block = block.next();
+                    }
+                    /*if (true == onStart && blankLines == 0)
+                    {
+                        prevPosStart++;
+                    }
+                    if (blockCount == 1)
+                    {
+                        prevPosStart--;
+                    }*/
+                    blockCount = blockCount - blankLines;
+                    if (0 == blockCount || true == onStart || false == firstInt)
+                    {
+                        cursor.setPosition(prevPosStart);
                     }
                     else
                     {
-                        //TODO:
+                        cursor.setPosition(prevPosStart-1);
                     }
+                    cursor.setPosition(prevPosEnd-blockCount, QTextCursor::KeepAnchor);
+                    this->setTextCursor(cursor);
                 }
-                return true;
             }
             else
             {
                 if (true == this->tabToSpaces)
                 {
-                    QTextCursor cursor(this->textCursor());
-                    if (true == cursor.hasSelection())
-                    {
-                        //TODO:
-                    }
-                    else
-                    {
-                        int charsToAdd;
-                        if (cursor.positionInBlock()%this->spacesInTab > 0)
-                        {
-                            charsToAdd = this->spacesInTab - cursor.positionInBlock()%this->spacesInTab;
-                        }
-                        else
-                        {
-                            charsToAdd = this->spacesInTab;
-                        }
-                        for (int i = 0; i < charsToAdd; i++)
-                        {
-                            cursor.insertText(" ");
-                        }
-                        this->setTextCursor(cursor);
-                    }
-                    return true;
+                    //TODO:
                 }
                 else
                 {
-                    QTextCursor cursor(this->textCursor());
-                    if (true == cursor.hasSelection())
+                    int prevPos = cursor.position();
+                    bool onStart = cursor.atBlockStart();
+                    cursor.setPosition(cursor.position() - cursor.positionInBlock());
+                    cursor.setPosition(cursor.position()+1, QTextCursor::KeepAnchor);
+                    if (cursor.selectedText() == "\t")
                     {
-                        //TODO:
+                        cursor.removeSelectedText();
+                        //if (true == onStart)
+                        //{
+                            prevPos--;
+                        //}
+                    }
+                    cursor.setPosition(prevPos);
+                    this->setTextCursor(cursor);
+                }
+            }
+            return true;
+        }
+        if (keyEvent->key() == Qt::Key_Tab)
+        {
+            if (true == this->tabToSpaces)
+            {
+                QTextCursor cursor(this->textCursor());
+                if (true == cursor.hasSelection())
+                {
+                    //TODO:
+                    int prevPosStart = cursor.selectionStart();
+                    int prevPosEnd = cursor.selectionEnd();
+                    cursor.setPosition(prevPosStart);
+                    int blockCount = cursor.blockNumber();
+                    QTextBlock block = cursor.block();
+                    cursor.setPosition(prevPosEnd);
+                    blockCount = cursor.blockNumber() - blockCount + 1;
+                    for (int i = 0; i < blockCount; i++)
+                    {
+                        cursor.setPosition(block.position());
+                        block = block.next();
+                    }
+                    /*cursor.setPosition(prevPosStart);
+                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);*/
+                    this->setTextCursor(cursor);
+                }
+                else
+                {
+                    int charsToAdd;
+                    if (cursor.positionInBlock()%this->spacesInTab > 0)
+                    {
+                        charsToAdd = this->spacesInTab - cursor.positionInBlock()%this->spacesInTab;
                     }
                     else
                     {
-                        cursor.insertText("\t");
-                        this->setTextCursor(cursor);
+                        charsToAdd = this->spacesInTab;
                     }
-                    return true;
+                    for (int i = 0; i < charsToAdd; i++)
+                    {
+                        cursor.insertText(" ");
+                    }
+                    this->setTextCursor(cursor);
                 }
+                return true;
+            }
+            else
+            {
+                QTextCursor cursor(this->textCursor());
+                if (true == cursor.hasSelection())
+                {
+                    int prevPosStart = cursor.selectionStart();
+                    int prevPosEnd = cursor.selectionEnd();
+                    cursor.setPosition(prevPosStart);
+                    //bool onStart = cursor.atBlockStart();
+                    int blockCount = cursor.blockNumber();
+                    QTextBlock block = cursor.block();
+                    cursor.setPosition(prevPosEnd);
+                    blockCount = cursor.blockNumber() - blockCount + 1;
+                    for (int i = 0; i < blockCount; i++)
+                    {
+                        cursor.setPosition(block.position());
+                        cursor.insertText("\t");
+                        block = block.next();
+                    }
+                    prevPosStart++;
+                    cursor.setPosition(prevPosStart);
+                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);
+                    this->setTextCursor(cursor);
+                }
+                else
+                {
+                    cursor.insertText("\t");
+                    this->setTextCursor(cursor);
+                }
+                return true;
             }
         }
         //paste ctrl+v
