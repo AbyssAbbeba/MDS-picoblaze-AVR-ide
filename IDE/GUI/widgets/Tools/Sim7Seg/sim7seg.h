@@ -42,6 +42,7 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
         QPolygonF *widgetPolygon;
         MCUSimControl *controlUnit; //8
         MCUSimPureLogicIO * m_plio; //8
+        QList<QPolygonF*> list;
 
 
         bool flag_0, flag_1, flag_2, flag_3, flag_4, flag_5, flag_6,
