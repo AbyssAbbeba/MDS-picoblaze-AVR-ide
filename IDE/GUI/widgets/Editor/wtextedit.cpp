@@ -291,11 +291,11 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 }
                 else
                 {
-                    //TODO:
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
                     cursor.setPosition(prevPosStart);
                     bool onStart = cursor.atBlockStart();
+                    bool firstInt = false;
                     int blockCount = cursor.blockNumber();
                     int blankLines = 0;
                     QTextBlock block = cursor.block();
@@ -308,24 +308,34 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                         if (cursor.selectedText() == "\t")
                         {
                             cursor.removeSelectedText();
+                            if (i == 0)
+                            {
+                                firstInt = true;
+                            }
                         }
                         else
                         {
                             blankLines++;
-                            qDebug() << "blank line";
                         }
                         block = block.next();
                     }
-                    if (true == onStart)
+                    /*if (true == onStart && blankLines == 0)
                     {
                         prevPosStart++;
                     }
                     if (blockCount == 1)
                     {
                         prevPosStart--;
-                    }
+                    }*/
                     blockCount = blockCount - blankLines;
-                    cursor.setPosition(prevPosStart-blockCount+1);
+                    if (0 == blockCount || true == onStart || false == firstInt)
+                    {
+                        cursor.setPosition(prevPosStart);
+                    }
+                    else
+                    {
+                        cursor.setPosition(prevPosStart-1);
+                    }
                     cursor.setPosition(prevPosEnd-blockCount, QTextCursor::KeepAnchor);
                     this->setTextCursor(cursor);
                 }
@@ -345,10 +355,10 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     if (cursor.selectedText() == "\t")
                     {
                         cursor.removeSelectedText();
-                        if (true == onStart)
-                        {
+                        //if (true == onStart)
+                        //{
                             prevPos--;
-                        }
+                        //}
                     }
                     cursor.setPosition(prevPos);
                     this->setTextCursor(cursor);
