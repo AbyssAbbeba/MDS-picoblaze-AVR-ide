@@ -299,6 +299,8 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     painter.setPen(blackpen);
     painter.setBrush(Qt::white);
+    unsigned int x = 14 + 80,y = 173 - 10,w = 16,h = 16;
+    QRectF rectangle(x, y, w, h);
 //         0 top
 //         1 levej
 //         2 pravej
@@ -307,21 +309,6 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 //         5 pravej
 //         6 spodek
 //         7 tečka
-        //    rectangle.translate(offset,0);
-     //   painter.drawEllipse(rectangle);
-     //   if ( painter.brush().color() == Qt::gray)
-     //   {
-     //       painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_green.scaledToHeight(rectangle.height()));
-    //    }
-//         else
-//         {
-//             painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_red.scaledToHeight(rectangle.height()));
-//         }
-
-//     for (unsigned int i =0;i <= 6; i++)
-//     {
-//         painter.drawConvexPolygon(*(list.at(i)));
-//     }
 
     // led 7
     index = ui.ledBox_7->currentIndex();
@@ -355,7 +342,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-
+    painter.drawEllipse(rectangle);
 //--------------------------------------------------------------------
     // led 6
     index = ui.ledBox_6->currentIndex();
