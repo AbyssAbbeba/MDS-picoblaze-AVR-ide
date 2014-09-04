@@ -36,6 +36,7 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
         unsigned char value,address;
         void ValueDecode(void);
         void DisplayNumber(unsigned char Numero);
+        
 
         
         Ui_Sim7Seg ui;
@@ -44,12 +45,12 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
         MCUSimPureLogicIO * m_plio; //8
         QList<QPolygonF*> list;
 
-
+        unsigned char pin_status[7];
         bool flag_0, flag_1, flag_2, flag_3, flag_4, flag_5, flag_6,
         flag_7;
 
     private slots:
-        void DecoderChanged(int o);
+        void comboChanged(int c);
         void handleUpdateRequest(int mask);
         void addrChanged();
         void ValueChanged();

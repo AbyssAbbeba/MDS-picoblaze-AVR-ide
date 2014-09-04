@@ -57,7 +57,7 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
         connect(ui.comboDecoder,
             SIGNAL(currentIndexChanged(int)),
             this,
-            SLOT(ValueChanged())
+            SLOT(comboChanged(int))
            );
 
 
@@ -81,8 +81,40 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
     
 }
 
-void Sim7Seg::DecoderChanged(int o)
+
+
+void Sim7Seg::comboChanged(int c)
 {
+    switch ( c )
+    {
+        case 0:            
+            break;
+        case 1:
+                    pin_status[0] = ui.ledBox_0.currentIndex();
+                    pin_status[1] = ui.ledBox_1.currentIndex();
+                    pin_status[2] = ui.ledBox_2.currentIndex();
+                    pin_status[3] = ui.ledBox_3.currentIndex();
+                    pin_status[4] = ui.ledBox_4.currentIndex();
+                    pin_status[5] = ui.ledBox_5.currentIndex();
+                    pin_status[6] = ui.ledBox_6.currentIndex();
+                    pin_status[7] = ui.ledBox_7.currentIndex();
+                    ui.ledBox_0.setDisabled(true);       
+
+            break;
+        case 2:           
+                    pin_status[0] = ui.ledBox_0.currentIndex();
+                    pin_status[1] = ui.ledBox_1.currentIndex();
+                    pin_status[2] = ui.ledBox_2.currentIndex();
+                    pin_status[3] = ui.ledBox_3.currentIndex();
+                    pin_status[4] = ui.ledBox_4.currentIndex();
+                    pin_status[5] = ui.ledBox_5.currentIndex();
+                    pin_status[6] = ui.ledBox_6.currentIndex();
+                    pin_status[7] = ui.ledBox_7.currentIndex();
+
+            break;
+        default: qDebug()  << "combobox change fault";
+            break;
+    }
     ValueChanged();
 }
 
@@ -111,9 +143,12 @@ void Sim7Seg::deviceReset()  //8
     ValueChanged();          
 }
 
-void Sim7Seg::handleUpdateRequest(int /*mask*/) //8
+void Sim7Seg::handleUpdateRequest(int mask) //8
 {
-    
+    if ( 4 & mask)
+    {
+        ValueChanged();
+    }
 }
 
 void Sim7Seg::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
@@ -246,38 +281,54 @@ void Sim7Seg::DisplayNumber(unsigned char Numero)
 void Sim7Seg::ValueDecode(void)
 {
     // Bin to BCD
+    // low nibble
     if ( ui.comboDecoder->currentIndex() == 1 )
     {
-        unsigned char bcd_value = 0, bcd_value_des = 0, bcd_value_jedn = 0, bcd_value_sto = 0;
+        unsigned char bcd_value = 0;
 
-        bcd_value = value;
+        bcd_value = value & 0x0F;
 
-        bcd_value_sto   = bcd_value / 100;
-        bcd_value      -= (bcd_value_sto * 100);
-        bcd_value_des   = bcd_value / 10; 
-        bcd_value_jedn  = bcd_value - (bcd_value_des * 10);
+        switch ( bcd_value )
+        {
+            case 0b00000000:    bcd_value = ~0b00111111; break;
+            case 0b00000001:    bcd_value = ~0b00000110; break;
+            case 0b00000010:    bcd_value = ~0b01011011; break;
+            case 0b00000011:    bcd_value = ~0b01001111; break;
+            case 0b00000100:    bcd_value = ~0b01100110; break;
+            case 0b00000101:    bcd_value = ~0b01101101; break;
+            case 0b00000110:    bcd_value = ~0b01111101; break;
+            case 0b00000111:    bcd_value = ~0b00000111; break;
+            case 0b00001000:    bcd_value = ~0b01111111; break;
+            case 0b00001001:    bcd_value = ~0b01100111; break;
+        }
         
-        bcd_value = 0;
-        bcd_value = ( bcd_value_des << 4);
-        bcd_value = bcd_value | bcd_value_jedn;
         DisplayNumber(bcd_value);
         return;
     }
-
-    // bin to gray
+    // high nibble
     if ( ui.comboDecoder->currentIndex() == 2 )
     {
-        unsigned char gray_value = 0;
-        // Bin to Gray
-        gray_value = value;
-        gray_value = (gray_value >> 1) ^ gray_value;
-        gray_value = ~gray_value;
-        qDebug() << gray_value << " Gray value";
-        qDebug() << value << " value";
-        DisplayNumber(gray_value);
+        unsigned char bcd_value = 0;
+
+        bcd_value = value & 0xF0;
+
+        switch ( bcd_value )
+        {
+            case 0b00000000:    bcd_value = ~0b00111111; break;
+            case 0b00010000:    bcd_value = ~0b00000110; break;
+            case 0b00100000:    bcd_value = ~0b01011011; break;
+            case 0b00110000:    bcd_value = ~0b01001111; break;
+            case 0b01000000:    bcd_value = ~0b01100110; break;
+            case 0b01010000:    bcd_value = ~0b01101101; break;
+            case 0b01100000:    bcd_value = ~0b01111101; break;
+            case 0b01110000:    bcd_value = ~0b00000111; break;
+            case 0b10000000:    bcd_value = ~0b01111111; break;
+            case 0b10010000:    bcd_value = ~0b01100111; break;
+        }
+
+        DisplayNumber(bcd_value);
         return;
     }
-    return;
 }
 
 void Sim7Seg::paintEvent(QPaintEvent */*e*/)
@@ -299,7 +350,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     painter.setPen(blackpen);
     painter.setBrush(Qt::white);
-    unsigned int x = 14 + 80,y = 173 - 10,w = 16,h = 16;
+    unsigned int x = 171,y = 173 - 10,w = 20,h = 20;
     QRectF rectangle(x, y, w, h);
 //         0 top
 //         1 levej
@@ -343,6 +394,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         break;
     }
     painter.drawEllipse(rectangle);
+    painter.drawText(rectangle.adjusted(0, -1, -1, -1), QString(QChar('P')), QTextOption(Qt::AlignCenter));
 //--------------------------------------------------------------------
     // led 6
     index = ui.ledBox_6->currentIndex();
@@ -377,7 +429,8 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         break;
     }
     // paint
-    painter.drawConvexPolygon(*(list.at(6)));
+    painter.drawConvexPolygon(*(list.at(3)));
+    painter.drawText((list.at(3))->boundingRect(), QString(QChar('G')), QTextOption(Qt::AlignCenter));
 
 ----------------------------------------------------
     // led 5
@@ -412,7 +465,9 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-    painter.drawConvexPolygon(*(list.at(5)));
+    painter.drawConvexPolygon(*(list.at(1)));
+    painter.drawText((list.at(1))->boundingRect(), QString(QChar('F')), QTextOption(Qt::AlignCenter));
+
 //--------------------------------------------------------------------
     // led 4
     index = ui.ledBox_4->currentIndex();
@@ -447,6 +502,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         break;
     }
     painter.drawConvexPolygon(*(list.at(4)));
+    painter.drawText((list.at(4))->boundingRect(), QString(QChar('E')), QTextOption(Qt::AlignCenter));
 
 //--------------------------------------------------------------------
     // led 3
@@ -481,7 +537,9 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-    painter.drawConvexPolygon(*(list.at(3)));
+    painter.drawConvexPolygon(*(list.at(6)));
+    painter.drawText((list.at(6))->boundingRect(), QString(QChar('D')), QTextOption(Qt::AlignCenter));
+
 //----------------------------------------------------------
     // led 2
     index = ui.ledBox_2->currentIndex();
@@ -515,7 +573,8 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     default: qDebug()<< "default in painting, wrong";
         break;
     }
-    painter.drawConvexPolygon(*(list.at(2)));
+    painter.drawConvexPolygon(*(list.at(5)));
+    painter.drawText((list.at(5))->boundingRect(), QString(QChar('C')), QTextOption(Qt::AlignCenter));
 
     //--------------------------------------------------------------------
         // led 1
@@ -550,7 +609,9 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         default: qDebug()<< "default in painting, wrong";
             break;
         }
-        painter.drawConvexPolygon(*(list.at(1)));
+        painter.drawConvexPolygon(*(list.at(2)));
+        painter.drawText((list.at(2))->boundingRect(), QString(QChar('B')), QTextOption(Qt::AlignCenter));
+
     //----------------------------------------------------------
         // led 0
         index = ui.ledBox_0->currentIndex();
@@ -585,18 +646,9 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
             break;
         }
         painter.drawConvexPolygon(*(list.at(0)));
-    //    rectangle.translate(offset,0);
-     //   painter.drawEllipse(rectangle);
-     //   if ( painter.brush().color() == Qt::gray)
-     //   {
-     //       painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_green.scaledToHeight(rectangle.height()));
-    //    }
-//         else
-//         {
-//             painter.drawPixmap(QPoint(rectangle.x(),rectangle.y()),pix_red.scaledToHeight(rectangle.height()));
-//         }
-//         //pix.scaledToHeight(rectangle.height());
-//     painter.end();
+        painter.drawText((list.at(0))->boundingRect(), QString(QChar('A')), QTextOption(Qt::AlignCenter));
+
+    painter.end();
 }
 
 
@@ -686,8 +738,8 @@ void Sim7Seg::CreateItems(void)
     ui.ledBox_7->setCurrentIndex(7);
 
     ui.comboDecoder->addItem(QString("NONE"));
-    ui.comboDecoder->addItem(QString("BCD"));
-    ui.comboDecoder->addItem(QString("GRAY"));
+    ui.comboDecoder->addItem(QString("BCDlowNibb"));
+    ui.comboDecoder->addItem(QString("BCDhighNibb"));
     ui.comboDecoder->setCurrentIndex(0);
 
     unsigned int y_pos,x_pos;
