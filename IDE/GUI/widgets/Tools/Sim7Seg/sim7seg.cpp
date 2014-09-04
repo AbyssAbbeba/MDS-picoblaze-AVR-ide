@@ -299,8 +299,6 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     painter.setPen(blackpen);
     painter.setBrush(Qt::white);
-    x_pos = ;
-    y_pos = ;
     unsigned int x = 14 + 80,y = 173 - 10,w = 16,h = 16;
     QRectF rectangle(x, y, w, h);
 //         0 top
