@@ -275,6 +275,10 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     //TODO:
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
+                    QString line;
+                    int spaces, spacesToInsert;
+                    int finalSpaces = 0;
+                    int firstSpaces = 0;
                     cursor.setPosition(prevPosStart);
                     int blockCount = cursor.blockNumber();
                     QTextBlock block = cursor.block();
@@ -283,19 +287,42 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     for (int i = 0; i < blockCount; i++)
                     {
                         cursor.setPosition(block.position());
+                        line = block.text();
+                        spaces = 0;
+                        for (int i = 0; i < line.size(); i++)
+                        {
+                            if (line.at(i) == ' ')
+                            {
+                                spaces++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        spacesToInsert = spaces%this->spacesInTab;
+                        for (int i = 0; i < spacesToInsert; i++)
+                        {
+                            cursor.deleteChar();
+                        }
+                        finalSpaces = finalSpaces + spacesToInsert;
+                        if (i == 0)
+                        {
+                            firstSpaces = spacesToInsert;
+                        }
                         block = block.next();
                     }
-                    /*cursor.setPosition(prevPosStart);
-                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);*/
+                    cursor.setPosition(prevPosStart-firstSpaces);
+                    cursor.setPosition(prevPosEnd-finalSpaces, QTextCursor::KeepAnchor);
                     this->setTextCursor(cursor);
                 }
                 else
                 {
-                    //TODO:
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
                     cursor.setPosition(prevPosStart);
                     bool onStart = cursor.atBlockStart();
+                    bool firstInt = false;
                     int blockCount = cursor.blockNumber();
                     int blankLines = 0;
                     QTextBlock block = cursor.block();
@@ -308,24 +335,34 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                         if (cursor.selectedText() == "\t")
                         {
                             cursor.removeSelectedText();
+                            if (i == 0)
+                            {
+                                firstInt = true;
+                            }
                         }
                         else
                         {
                             blankLines++;
-                            qDebug() << "blank line";
                         }
                         block = block.next();
                     }
-                    if (true == onStart)
+                    /*if (true == onStart && blankLines == 0)
                     {
                         prevPosStart++;
                     }
                     if (blockCount == 1)
                     {
                         prevPosStart--;
-                    }
+                    }*/
                     blockCount = blockCount - blankLines;
-                    cursor.setPosition(prevPosStart-blockCount+1);
+                    if (0 == blockCount || true == onStart || false == firstInt)
+                    {
+                        cursor.setPosition(prevPosStart);
+                    }
+                    else
+                    {
+                        cursor.setPosition(prevPosStart-1);
+                    }
                     cursor.setPosition(prevPosEnd-blockCount, QTextCursor::KeepAnchor);
                     this->setTextCursor(cursor);
                 }
@@ -334,21 +371,63 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             {
                 if (true == this->tabToSpaces)
                 {
-                    //TODO:
+                    int prevPos = cursor.position();
+                    QString line;
+                    int spaces, spacesToDelete;
+                    bool onStart = cursor.atBlockStart();
+                    cursor.setPosition(cursor.block().position());
+                    line = cursor.block().text();
+                    spaces = 0;
+                    for (int i = 0; i < line.size(); i++)
+                    {
+                        if (line.at(i) == ' ')
+                        {
+                            spaces++;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    spacesToDelete = spaces%this->spacesInTab;
+                    if (spacesToDelete == 0 && spaces > 0)
+                    {
+                        if (spaces/this->spacesInTab > 0)
+                        {
+                            spacesToDelete = this->spacesInTab;
+                        }
+                        else
+                        {
+                            spacesToDelete = spaces;
+                        }
+                    }
+                    for (int i = 0; i < spacesToDelete; i++)
+                    {
+                        cursor.deleteChar();
+                    }
+                    if (true == onStart)
+                    {
+                        cursor.setPosition(prevPos);
+                    }
+                    else
+                    {
+                        cursor.setPosition(prevPos-spacesToDelete);
+                    }
+                    this->setTextCursor(cursor);
                 }
                 else
                 {
                     int prevPos = cursor.position();
-                    bool onStart = cursor.atBlockStart();
+                    //bool onStart = cursor.atBlockStart();
                     cursor.setPosition(cursor.position() - cursor.positionInBlock());
                     cursor.setPosition(cursor.position()+1, QTextCursor::KeepAnchor);
                     if (cursor.selectedText() == "\t")
                     {
                         cursor.removeSelectedText();
-                        if (true == onStart)
-                        {
+                        //if (true == onStart)
+                        //{
                             prevPos--;
-                        }
+                        //}
                     }
                     cursor.setPosition(prevPos);
                     this->setTextCursor(cursor);
@@ -363,9 +442,12 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                 QTextCursor cursor(this->textCursor());
                 if (true == cursor.hasSelection())
                 {
-                    //TODO:
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
+                    QString line;
+                    int spaces, spacesToInsert;
+                    int finalSpaces = 0;
+                    int firstSpaces = 0;
                     cursor.setPosition(prevPosStart);
                     int blockCount = cursor.blockNumber();
                     QTextBlock block = cursor.block();
@@ -374,10 +456,33 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                     for (int i = 0; i < blockCount; i++)
                     {
                         cursor.setPosition(block.position());
+                        line = block.text();
+                        spaces = 0;
+                        for (int i = 0; i < line.size(); i++)
+                        {
+                            if (line.at(i) == ' ')
+                            {
+                                spaces++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        spacesToInsert = this->spacesInTab-spaces%this->spacesInTab;
+                        for (int i = 0; i < spacesToInsert; i++)
+                        {
+                            cursor.insertText(" ");
+                        }
+                        finalSpaces = finalSpaces + spacesToInsert;
+                        if (i == 0)
+                        {
+                            firstSpaces = spacesToInsert;
+                        }
                         block = block.next();
                     }
-                    /*cursor.setPosition(prevPosStart);
-                    cursor.setPosition(prevPosEnd+blockCount, QTextCursor::KeepAnchor);*/
+                    cursor.setPosition(prevPosStart+firstSpaces);
+                    cursor.setPosition(prevPosEnd+finalSpaces, QTextCursor::KeepAnchor);
                     this->setTextCursor(cursor);
                 }
                 else
