@@ -392,6 +392,13 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     QPen blackpen   (Qt::black);
 
     painter.setPen(graypen);
+     static const QPointF points[4] = {
+     QPointF(10.0, 80.0),
+     QPointF(20.0, 10.0),
+     QPointF(80.0, 30.0),
+     QPointF(90.0, 70.0)
+ };
+    painter.drawPoints(points);
 
     //QPixmap pix_green(":resources/icons/button-green.png");
     //QPixmap pix_red  (":resources/icons/button-red.png");
