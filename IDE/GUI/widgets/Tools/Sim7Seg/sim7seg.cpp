@@ -24,10 +24,12 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
         return;
     }
+    flag_change = false;
 
     //variable initializations
     value = 0;
     address = 0;
+    unsigned char pin_status[7] = {0};
     flag_0 = false; flag_1 = false; flag_2 = false; flag_3 = false;
     flag_4 = false; flag_5 = false; flag_6 = false;
     
@@ -87,30 +89,76 @@ void Sim7Seg::comboChanged(int c)
 {
     switch ( c )
     {
-        case 0:            
+        case 0:     ui.ledBox_0->setDisabled(false);
+                    ui.ledBox_1->setDisabled(false);
+                    ui.ledBox_2->setDisabled(false);
+                    ui.ledBox_3->setDisabled(false);
+                    ui.ledBox_4->setDisabled(false);
+                    ui.ledBox_5->setDisabled(false);
+                    ui.ledBox_6->setDisabled(false);
+                    ui.ledBox_7->setDisabled(false);
+                    ui.ledBox_0->setCurrentIndex(pin_status[0]);
+                    ui.ledBox_1->setCurrentIndex(pin_status[1]);
+                    ui.ledBox_2->setCurrentIndex(pin_status[2]);
+                    ui.ledBox_3->setCurrentIndex(pin_status[3]);
+                    ui.ledBox_4->setCurrentIndex(pin_status[4]);
+                    ui.ledBox_5->setCurrentIndex(pin_status[5]);
+                    ui.ledBox_6->setCurrentIndex(pin_status[6]);
+                    ui.ledBox_7->setCurrentIndex(pin_status[7]);
             break;
         case 1:
-                    pin_status[0] = ui.ledBox_0.currentIndex();
-                    pin_status[1] = ui.ledBox_1.currentIndex();
-                    pin_status[2] = ui.ledBox_2.currentIndex();
-                    pin_status[3] = ui.ledBox_3.currentIndex();
-                    pin_status[4] = ui.ledBox_4.currentIndex();
-                    pin_status[5] = ui.ledBox_5.currentIndex();
-                    pin_status[6] = ui.ledBox_6.currentIndex();
-                    pin_status[7] = ui.ledBox_7.currentIndex();
-                    ui.ledBox_0.setDisabled(true);       
-
+                    flag_change = true;
+                    pin_status[0] = ui.ledBox_0->currentIndex();
+                    pin_status[1] = ui.ledBox_1->currentIndex();
+                    pin_status[2] = ui.ledBox_2->currentIndex();
+                    pin_status[3] = ui.ledBox_3->currentIndex();
+                    pin_status[4] = ui.ledBox_4->currentIndex();
+                    pin_status[5] = ui.ledBox_5->currentIndex();
+                    pin_status[6] = ui.ledBox_6->currentIndex();
+                    pin_status[7] = ui.ledBox_7->currentIndex();
+                    ui.ledBox_0->setCurrentIndex(0);
+                    ui.ledBox_1->setCurrentIndex(1);
+                    ui.ledBox_2->setCurrentIndex(2);
+                    ui.ledBox_3->setCurrentIndex(3);
+                    ui.ledBox_4->setCurrentIndex(4);
+                    ui.ledBox_5->setCurrentIndex(5);
+                    ui.ledBox_6->setCurrentIndex(6);
+                    ui.ledBox_7->setCurrentIndex(7);
+                    ui.ledBox_0->setDisabled(true);
+                    ui.ledBox_1->setDisabled(true);
+                    ui.ledBox_2->setDisabled(true);
+                    ui.ledBox_3->setDisabled(true);
+                    ui.ledBox_4->setDisabled(true);
+                    ui.ledBox_5->setDisabled(true);
+                    ui.ledBox_6->setDisabled(true);
+                    ui.ledBox_7->setDisabled(true);
             break;
-        case 2:           
-                    pin_status[0] = ui.ledBox_0.currentIndex();
-                    pin_status[1] = ui.ledBox_1.currentIndex();
-                    pin_status[2] = ui.ledBox_2.currentIndex();
-                    pin_status[3] = ui.ledBox_3.currentIndex();
-                    pin_status[4] = ui.ledBox_4.currentIndex();
-                    pin_status[5] = ui.ledBox_5.currentIndex();
-                    pin_status[6] = ui.ledBox_6.currentIndex();
-                    pin_status[7] = ui.ledBox_7.currentIndex();
-
+        case 2:
+                    flag_change = true;
+                    pin_status[0] = ui.ledBox_0->currentIndex();
+                    pin_status[1] = ui.ledBox_1->currentIndex();
+                    pin_status[2] = ui.ledBox_2->currentIndex();
+                    pin_status[3] = ui.ledBox_3->currentIndex();
+                    pin_status[4] = ui.ledBox_4->currentIndex();
+                    pin_status[5] = ui.ledBox_5->currentIndex();
+                    pin_status[6] = ui.ledBox_6->currentIndex();
+                    pin_status[7] = ui.ledBox_7->currentIndex();
+                    ui.ledBox_0->setCurrentIndex(0);
+                    ui.ledBox_1->setCurrentIndex(1);
+                    ui.ledBox_2->setCurrentIndex(2);
+                    ui.ledBox_3->setCurrentIndex(3);
+                    ui.ledBox_4->setCurrentIndex(4);
+                    ui.ledBox_5->setCurrentIndex(5);
+                    ui.ledBox_6->setCurrentIndex(6);
+                    ui.ledBox_7->setCurrentIndex(7);
+                    ui.ledBox_0->setDisabled(true);
+                    ui.ledBox_1->setDisabled(true);
+                    ui.ledBox_2->setDisabled(true);
+                    ui.ledBox_3->setDisabled(true);
+                    ui.ledBox_4->setDisabled(true);
+                    ui.ledBox_5->setDisabled(true);
+                    ui.ledBox_6->setDisabled(true);
+                    ui.ledBox_7->setDisabled(true);
             break;
         default: qDebug()  << "combobox change fault";
             break;
