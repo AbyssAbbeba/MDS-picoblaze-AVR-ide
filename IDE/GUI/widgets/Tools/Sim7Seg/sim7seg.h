@@ -58,6 +58,7 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
 
     protected:
         void paintEvent(QPaintEvent *e);
+        void mousePressEvent(QMouseEvent *);
 };
 
 #endif // SIM7SEG_H
