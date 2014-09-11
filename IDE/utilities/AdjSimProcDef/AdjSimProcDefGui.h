@@ -16,9 +16,10 @@
 #ifndef ADJSIMPROCDEFGUI_H
 #define ADJSIMPROCDEFGUI_H
 
-#include <QWidget>
-
 #include "ui_AdjSimProcDefGuiWidget.h"
+
+#include <QWidget>
+#include <QString>
 
 /**
  * @brief
@@ -37,6 +38,74 @@ class AdjSimProcDefGui : public QWidget,
          * @param[in,out] parent
          */
         AdjSimProcDefGui ( QWidget * parent = nullptr );
+
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] fileName
+         */
+        void openFile ( const QString & fileName );
+
+        /**
+         * @brief
+         * @return
+         */
+        const QString & getFileName() const;
+
+    ////    Private Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in] fileName
+         */
+        void setFileName ( const QString & fileName );
+
+        /**
+         * @brief
+         * @param[in] fileName
+         */
+        void saveFile ( const QString & fileName );
+
+        /**
+         * @brief
+         */
+        void clearModified();
+
+        /**
+         * @brief
+         */
+        inline void setupConnections();
+
+    ////    Private Attributes    ////
+    private:
+        /// @brief
+        QString m_fileName;
+
+        /// @brief
+        bool m_modified;
+
+    ////    Private Slots    ////
+    private slots:
+        void setModified();
+        void setModified(int);
+        void setModified(bool);
+        void setModified ( const QString & );
+
+        /**
+         * @brief
+         * @param[in] checkState
+         */
+        void disenaRegFile ( int checkState );
+
+        /**
+         * @brief
+         * @param[in] checkState
+         */
+        void disenaDataMem ( int checkState );
+
+        void on_pushButtonOpenFile_clicked();
+        bool on_pushButtonSaveAs_clicked();
 };
 
 #endif // ADJSIMPROCDEFGUI_H

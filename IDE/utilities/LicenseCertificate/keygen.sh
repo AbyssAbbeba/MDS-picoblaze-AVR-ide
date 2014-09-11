@@ -62,4 +62,4 @@ openssl rsa -in "${1}" -pubout -outform DER 2>/dev/null | od --format=x1 --addre
             size++
         }
     }
-' > "${2}"
+' > "LicenseCertificateKey.h"

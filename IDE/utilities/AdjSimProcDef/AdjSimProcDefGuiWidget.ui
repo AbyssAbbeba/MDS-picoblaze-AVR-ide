@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -34,7 +34,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit"/>
+          <widget class="QLineEdit" name="lineEditProcessorName"/>
          </item>
         </layout>
        </item>
@@ -45,7 +45,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QTextEdit" name="textEdit"/>
+           <widget class="QTextEdit" name="textEditDescription"/>
           </item>
          </layout>
         </widget>
@@ -85,7 +85,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QComboBox" name="comboBox_2">
+           <widget class="QComboBox" name="comboBoxProgramEndian">
             <item>
              <property name="text">
               <string>Big</string>
@@ -99,10 +99,20 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="spinBox_10"/>
+           <widget class="QSpinBox" name="spinBoxProgramSize">
+            <property name="maximum">
+             <number>65536</number>
+            </property>
+            <property name="singleStep">
+             <number>512</number>
+            </property>
+            <property name="value">
+             <number>4096</number>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_11">
+           <widget class="QSpinBox" name="spinBoxProgramWordSize">
             <property name="minimum">
              <number>4</number>
             </property>
@@ -124,9 +134,12 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_12">
+           <widget class="QCheckBox" name="checkBoxDataMemory">
             <property name="text">
              <string>Supported</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -138,7 +151,17 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_6"/>
+           <widget class="QSpinBox" name="spinBoxDataMemorySize">
+            <property name="maximum">
+             <number>65536</number>
+            </property>
+            <property name="singleStep">
+             <number>8</number>
+            </property>
+            <property name="value">
+             <number>256</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -150,9 +173,12 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox_13">
+           <widget class="QCheckBox" name="checkBoxRegisterFile">
             <property name="text">
              <string>Supported</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -171,10 +197,21 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="spinBox_3"/>
+           <widget class="QSpinBox" name="spinBoxRegisterFileBanks">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>32</number>
+            </property>
+           </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox_7"/>
+           <widget class="QSpinBox" name="spinBoxRegisterFileSize">
+            <property name="maximum">
+             <number>65536</number>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -199,21 +236,24 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout">
           <item>
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="radioButtonStackMode0">
             <property name="text">
              <string>Do not use stack</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="radioButtonStackMode1">
             <property name="text">
              <string>Use designated stack</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QRadioButton" name="radioButton_3">
+           <widget class="QRadioButton" name="radioButtonStackMode2">
             <property name="text">
              <string>Use data memory or reg.</string>
             </property>
@@ -239,7 +279,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QSpinBox" name="spinBox_4"/>
+              <widget class="QSpinBox" name="spinBoxStackDSize"/>
              </item>
             </layout>
            </widget>
@@ -402,7 +442,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>180</width>
+            <width>191</width>
             <height>351</height>
            </rect>
           </property>
@@ -452,8 +492,8 @@
                          <property name="geometry">
                           <rect>
                            <x>0</x>
-                           <y>-33</y>
-                           <width>126</width>
+                           <y>0</y>
+                           <width>128</width>
                            <height>109</height>
                           </rect>
                          </property>
@@ -623,9 +663,9 @@
                 <widget class="QWidget" name="scrollAreaWidgetContents">
                  <property name="geometry">
                   <rect>
-                   <x>-162</x>
+                   <x>0</x>
                    <y>0</y>
-                   <width>332</width>
+                   <width>196</width>
                    <height>55</height>
                   </rect>
                  </property>
@@ -747,8 +787,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-59</y>
-            <width>171</width>
+            <y>0</y>
+            <width>167</width>
             <height>375</height>
            </rect>
           </property>
@@ -1096,8 +1136,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>188</width>
-            <height>316</height>
+            <width>202</width>
+            <height>247</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1502,9 +1542,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_47">
+      <widget class="QLabel" name="labelFileName">
        <property name="text">
-        <string>/file/name</string>
+        <string>&lt;untitled&gt;</string>
        </property>
       </widget>
      </item>
@@ -1522,14 +1562,14 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_5">
+      <widget class="QPushButton" name="pushButtonOpenFile">
        <property name="text">
         <string>Open file</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="pushButtonSaveAs">
        <property name="text">
         <string>Save as</string>
        </property>

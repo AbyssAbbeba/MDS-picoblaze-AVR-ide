@@ -23,7 +23,7 @@ set_directory_properties ( PROPERTIES
 
 if ( "${CMAKE_CURRENT_SOURCE_DIR}/LicenseKey.pem" IS_NEWER_THAN "${CMAKE_CURRENT_SOURCE_DIR}/LicenseCertificateKey.h" )
     add_custom_target ( ${PROJECT_NAME}-key ALL
-                        COMMAND bash keygen.sh LicenseKey.pem LicenseCertificateKey.h
+                        COMMAND bash keygen.sh LicenseKey.pem
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                         COMMENT "Converting RSA public key from PEM to ASN.1 DER in form of C++ code."
                         VERBATIM
