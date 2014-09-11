@@ -409,17 +409,17 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     //C
     painter.drawLine(174,131,209,131);
     //D
-    painter.drawLine(228,181,228,188);
-    painter.drawLine(228,188,119,188);
-    painter.drawLine(119,184,119,188);
+    painter.drawLine(228,181,228,153);
+    painter.drawLine(228,153,119,153);
+    painter.drawLine(119,184,119,153);
         //E
     painter.drawLine(47,170,59,170);
     painter.drawLine(59,170,59,155);
     painter.drawLine(59,155,74,155);
         //F
     painter.drawLine(49,133,59,133);
-    painter.drawLine(59,133,59,55);
-    painter.drawLine(59,55,87,55);
+    painter.drawLine(59,133,59,85);
+    painter.drawLine(59,85,87,85);
         //G
     painter.drawLine(48,70,128,70);
     painter.drawLine(128,70,128,94);
@@ -478,7 +478,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         break;
     }
     painter.drawEllipse(rectangle);
-    painter.drawText(rectangle.adjusted(0, -1, -1, -1), QString(QChar('P')), QTextOption(Qt::AlignCenter));
+    painter.drawText(rectangle.adjusted(+3, 0, -1, -1), QString(QChar('P')), QTextOption(Qt::AlignCenter));
 //--------------------------------------------------------------------
     // led 6
     index = ui.ledBox_6->currentIndex();
