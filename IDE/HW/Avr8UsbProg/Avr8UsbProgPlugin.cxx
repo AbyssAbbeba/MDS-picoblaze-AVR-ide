@@ -338,13 +338,14 @@ void Avr8UsbProgPlugin::on_speedToDefaultButton_clicked()
 void Avr8UsbProgPlugin::on_speedSlider_valueChanged(int value)
 {
     bool kHz = false;
-    switch(value) {
-                case 7: // 8 MHz (highest)
-                        value = 8;
-                        break;
-                case 6: // 4 MHz
-                        value = 4;
-                        break;
+    switch(value)
+    {
+        case 7: // 8 MHz (highest)
+            value = 8;
+            break;
+        case 6: // 4 MHz
+            value = 4;
+            break;
         case 5: // 2 MHz
             value = 2;
             break;
@@ -352,15 +353,15 @@ void Avr8UsbProgPlugin::on_speedSlider_valueChanged(int value)
             value = 1;
             break;
         case 3: // 100 kHz
-                        kHz = true;
+            kHz = true;
             value=100;
             break;
         case 2: // 250 kHz
-                        kHz = true;
+            kHz = true;
             value=250;
             break;
         case 1: // 125 kHz (lowest)
-                        kHz = true;
+            kHz = true;
             value=125;
             break;
     }
