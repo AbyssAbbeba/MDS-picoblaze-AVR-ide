@@ -47,7 +47,7 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
 
         unsigned char pin_status[7];
         bool flag_0, flag_1, flag_2, flag_3, flag_4, flag_5, flag_6,
-        flag_7;
+        flag_7,flag_change;
 
     private slots:
         void comboChanged(int c);
@@ -58,6 +58,7 @@ class Sim7Seg : public QWidget, public MCUSimObserver //8
 
     protected:
         void paintEvent(QPaintEvent *e);
+        void mousePressEvent(QMouseEvent *);
 };
 
 #endif // SIM7SEG_H
