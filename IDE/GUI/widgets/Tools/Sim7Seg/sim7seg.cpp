@@ -24,10 +24,12 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
         qDebug() << "PicoBlazeGrid: controlUnit is NULL";
         return;
     }
+    flag_change = false;
 
     //variable initializations
     value = 0;
     address = 0;
+    unsigned char pin_status[7] = {0};
     flag_0 = false; flag_1 = false; flag_2 = false; flag_3 = false;
     flag_4 = false; flag_5 = false; flag_6 = false;
     
@@ -81,36 +83,86 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
     
 }
 
-
+void Sim7Seg::mousePressEvent(QMouseEvent  *event)
+{
+    qDebug()<< event->x() << "x";
+    qDebug()<< event->y()<<  "y";    
+}
 
 void Sim7Seg::comboChanged(int c)
 {
     switch ( c )
     {
-        case 0:            
+        case 0:     ui.ledBox_0->setDisabled(false);
+                    ui.ledBox_1->setDisabled(false);
+                    ui.ledBox_2->setDisabled(false);
+                    ui.ledBox_3->setDisabled(false);
+                    ui.ledBox_4->setDisabled(false);
+                    ui.ledBox_5->setDisabled(false);
+                    ui.ledBox_6->setDisabled(false);
+                    ui.ledBox_7->setDisabled(false);
+                    ui.ledBox_0->setCurrentIndex(pin_status[0]);
+                    ui.ledBox_1->setCurrentIndex(pin_status[1]);
+                    ui.ledBox_2->setCurrentIndex(pin_status[2]);
+                    ui.ledBox_3->setCurrentIndex(pin_status[3]);
+                    ui.ledBox_4->setCurrentIndex(pin_status[4]);
+                    ui.ledBox_5->setCurrentIndex(pin_status[5]);
+                    ui.ledBox_6->setCurrentIndex(pin_status[6]);
+                    ui.ledBox_7->setCurrentIndex(pin_status[7]);
             break;
         case 1:
-                    pin_status[0] = ui.ledBox_0.currentIndex();
-                    pin_status[1] = ui.ledBox_1.currentIndex();
-                    pin_status[2] = ui.ledBox_2.currentIndex();
-                    pin_status[3] = ui.ledBox_3.currentIndex();
-                    pin_status[4] = ui.ledBox_4.currentIndex();
-                    pin_status[5] = ui.ledBox_5.currentIndex();
-                    pin_status[6] = ui.ledBox_6.currentIndex();
-                    pin_status[7] = ui.ledBox_7.currentIndex();
-                    ui.ledBox_0.setDisabled(true);       
-
+                    flag_change = true;
+                    pin_status[0] = ui.ledBox_0->currentIndex();
+                    pin_status[1] = ui.ledBox_1->currentIndex();
+                    pin_status[2] = ui.ledBox_2->currentIndex();
+                    pin_status[3] = ui.ledBox_3->currentIndex();
+                    pin_status[4] = ui.ledBox_4->currentIndex();
+                    pin_status[5] = ui.ledBox_5->currentIndex();
+                    pin_status[6] = ui.ledBox_6->currentIndex();
+                    pin_status[7] = ui.ledBox_7->currentIndex();
+                    ui.ledBox_0->setCurrentIndex(0);
+                    ui.ledBox_1->setCurrentIndex(1);
+                    ui.ledBox_2->setCurrentIndex(2);
+                    ui.ledBox_3->setCurrentIndex(3);
+                    ui.ledBox_4->setCurrentIndex(4);
+                    ui.ledBox_5->setCurrentIndex(5);
+                    ui.ledBox_6->setCurrentIndex(6);
+                    ui.ledBox_7->setCurrentIndex(7);
+                    ui.ledBox_0->setDisabled(true);
+                    ui.ledBox_1->setDisabled(true);
+                    ui.ledBox_2->setDisabled(true);
+                    ui.ledBox_3->setDisabled(true);
+                    ui.ledBox_4->setDisabled(true);
+                    ui.ledBox_5->setDisabled(true);
+                    ui.ledBox_6->setDisabled(true);
+                    ui.ledBox_7->setDisabled(true);
             break;
-        case 2:           
-                    pin_status[0] = ui.ledBox_0.currentIndex();
-                    pin_status[1] = ui.ledBox_1.currentIndex();
-                    pin_status[2] = ui.ledBox_2.currentIndex();
-                    pin_status[3] = ui.ledBox_3.currentIndex();
-                    pin_status[4] = ui.ledBox_4.currentIndex();
-                    pin_status[5] = ui.ledBox_5.currentIndex();
-                    pin_status[6] = ui.ledBox_6.currentIndex();
-                    pin_status[7] = ui.ledBox_7.currentIndex();
-
+        case 2:
+                    flag_change = true;
+                    pin_status[0] = ui.ledBox_0->currentIndex();
+                    pin_status[1] = ui.ledBox_1->currentIndex();
+                    pin_status[2] = ui.ledBox_2->currentIndex();
+                    pin_status[3] = ui.ledBox_3->currentIndex();
+                    pin_status[4] = ui.ledBox_4->currentIndex();
+                    pin_status[5] = ui.ledBox_5->currentIndex();
+                    pin_status[6] = ui.ledBox_6->currentIndex();
+                    pin_status[7] = ui.ledBox_7->currentIndex();
+                    ui.ledBox_0->setCurrentIndex(0);
+                    ui.ledBox_1->setCurrentIndex(1);
+                    ui.ledBox_2->setCurrentIndex(2);
+                    ui.ledBox_3->setCurrentIndex(3);
+                    ui.ledBox_4->setCurrentIndex(4);
+                    ui.ledBox_5->setCurrentIndex(5);
+                    ui.ledBox_6->setCurrentIndex(6);
+                    ui.ledBox_7->setCurrentIndex(7);
+                    ui.ledBox_0->setDisabled(true);
+                    ui.ledBox_1->setDisabled(true);
+                    ui.ledBox_2->setDisabled(true);
+                    ui.ledBox_3->setDisabled(true);
+                    ui.ledBox_4->setDisabled(true);
+                    ui.ledBox_5->setDisabled(true);
+                    ui.ledBox_6->setDisabled(true);
+                    ui.ledBox_7->setDisabled(true);
             break;
         default: qDebug()  << "combobox change fault";
             break;
@@ -342,13 +394,45 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
 
     QPen graypen    (Qt::gray);
     QPen blackpen   (Qt::black);
-
-    painter.setPen(graypen);
+    QPen redpen    (Qt::red);
+    
+    painter.setPen(blackpen);
+    // draw
+   QPointF p1(210,160);
+   //A
+    painter.drawLine(138,19,138,10);
+    painter.drawLine(220,10,138,10);
+    painter.drawLine(220,10,220,17);
+    //B
+    painter.drawLine(183,56,223,56);
+    painter.drawLine(223,59,223,56);
+    //C
+    painter.drawLine(174,131,209,131);
+    //D
+    painter.drawLine(228,181,228,153);
+    painter.drawLine(228,153,119,153);
+    painter.drawLine(119,184,119,153);
+        //E
+    painter.drawLine(47,170,59,170);
+    painter.drawLine(59,170,59,155);
+    painter.drawLine(59,155,74,155);
+        //F
+    painter.drawLine(49,133,59,133);
+    painter.drawLine(59,133,59,85);
+    painter.drawLine(59,85,87,85);
+        //G
+    painter.drawLine(48,70,128,70);
+    painter.drawLine(128,70,128,94);
+        //P
+    painter.drawLine(14,31,7,31);
+    painter.drawLine(7,31,7,193);
+    painter.drawLine(183,193,7,193);
+    painter.drawLine(183,193,183,180);
+ // list.at(4)->boundingRect().center()
 
     //QPixmap pix_green(":resources/icons/button-green.png");
     //QPixmap pix_red  (":resources/icons/button-red.png");
 
-    painter.setPen(blackpen);
     painter.setBrush(Qt::white);
     unsigned int x = 171,y = 173 - 10,w = 20,h = 20;
     QRectF rectangle(x, y, w, h);
@@ -394,7 +478,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
         break;
     }
     painter.drawEllipse(rectangle);
-    painter.drawText(rectangle.adjusted(0, -1, -1, -1), QString(QChar('P')), QTextOption(Qt::AlignCenter));
+    painter.drawText(rectangle.adjusted(+3, 0, -1, -1), QString(QChar('P')), QTextOption(Qt::AlignCenter));
 //--------------------------------------------------------------------
     // led 6
     index = ui.ledBox_6->currentIndex();
