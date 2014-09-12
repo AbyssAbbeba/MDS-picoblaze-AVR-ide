@@ -237,12 +237,19 @@ endif()
 ## General options.
 #
 
-set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
 set ( CPACK_PACKAGE_VENDOR "${COMPANY_NAME}" )
+set ( CPACK_PACKAGE_NAME "${PRODUCT_NAME_SHORT}" )
+set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" )
+set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
 set ( CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PRODUCT_NAME} ${MDS_GRADE} for ${MDS_TARGET} in ${MDS_VARIANT} version" )
 set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS is a window-based software development platform combining robust and modern tools for development of embedded applications. This integrated development environment is intended to expedite the development process by adding advanced and reliable tools to your development arsenal. Our focus is efficiency and precision." )
-set ( CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" )
-set ( CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/pkgdesc-${MDS_VARIANT}.txt" )
+
+file ( READ "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" licenseTerms )
+file ( WRITE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" "${licenseTerms}" )
+configure_file ( "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" @ONLY )
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES
+                           "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt;${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" )
 
 #
 ## Package version.
