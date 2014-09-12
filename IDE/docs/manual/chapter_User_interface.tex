@@ -327,6 +327,32 @@
     \end{wrapfigure}
     With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED display. In the left part of the dialog window, you can find numerical val ues corresponding to the digit displayed in the middle part. These values are represented for both common cathode and anode and in three numerical bases, hexadecimal, decimal and oc tal. Buttons on left side from entry boxes copies value from adjacent entry box into clipboard. In the right part of the window you can set what port pin is connected to what LED segment.
 
+\subsection{LED panel simulator}
+    \begin{wrapfigure}{r}{0pt}
+        \centering{}
+        \includegraphics[width=110pt]{img/Led_panel.png}
+        \caption{8-segment editor}
+    \end{wrapfigure}
+    Simple LED panel simulator. You can observe output port behavior with visual presentation of eight leds. You can activate coder to simulate common FPGA logic.
+
+    \begin{description}
+        \item[GRAY] Converts output port value to gray code.
+        \item[BCD] Output port value will be presented as BCD. Remember that bigger number than 99 cannot be displayed.
+    \end{description}
+    
+\subsection{7-segment simulator}
+    \begin{wrapfigure}{r}{0pt}
+        \centering{}
+        \includegraphics[width=110pt]{img/7seg_sim.png}
+        \caption{7-segment simulator}
+    \end{wrapfigure}
+    You can simulate 7-segment display connected to output port(common anode). You can assign PORT bits to any display segment.
+    You can activate decoder to simulate commonly used FPGA logic.
+    \begin{description}
+        \item[GRAY] Converts output port value to gray code.
+        \item[BCD] Output port value will be presented as BCD. Remember that bigger number than 99 cannot be displayed.
+    \end{description}
+    
 \subsection{Number base converter}
     \begin{wrapfigure}{r}{0pt}
             \centering
