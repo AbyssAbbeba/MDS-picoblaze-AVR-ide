@@ -311,14 +311,15 @@ void GuiCfg::setDefaultPaths(bool release)
 {
     if (true == release)
     {
-        QByteArray rootArray;
+        /*QByteArray rootArray;
         #ifdef Q_OS_LINUX
             rootArray = qgetenv("HOME");
         #elif defined(Q_OS_WIN32)
             rootArray = qgetenv("USERPROFILE");
         #endif
-        QString root(rootArray);
-        QDir homeDir(root + "/.mds");
+        QString root(rootArray);*/
+        //QDir homeDir(root + "/.mds");
+        QDir homeDir(QDesktopServices::storageLocation(QDesktopServices::HomeLocation) + "/.mds");
         //if (false == homeDir.exists())
         //{
         //    homeDir.mkpath(".");

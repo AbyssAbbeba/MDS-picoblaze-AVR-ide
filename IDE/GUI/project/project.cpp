@@ -2463,6 +2463,9 @@ int Project::start(QString file, QString dumpFiles)
         qDebug() << "HEX:" << hexPath;
         std::string stdPath = hexPath.toUtf8().constData();
 
+        PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+        set->m_config.m_interruptVector = (unsigned int)this->intVector;
+        set->m_config.m_hwbuild = (uint8_t)this->hwBuild; 
         
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_NATIVE,
