@@ -36,8 +36,10 @@
 #include "PicoBlazeSim.h"
 #include "PicoBlazeProgramMemory.h"
 
-#include "AdaptableSim.h"
-#include "AdjSimProcDef.h"
+#ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+    #include "AdaptableSim.h"
+    #include "AdjSimProcDef.h"
+#endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
@@ -637,10 +639,12 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
+    #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
     else if ( 0 == strcmp("AdaptableSim", deviceName) )
     {
         m_architecture = MCUSim::ARCH_ADAPTABLE;
     }
+    #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
     else
     {
         m_deviceSpec = McuSimCfgMgr::getInstance()->getDeviceSpec(deviceName);
@@ -665,9 +669,11 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
         case MCUSim::ARCH_PICOBLAZE:
             m_simulator = new PicoBlazeSim();
             break;
+        #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
         case MCUSim::ARCH_ADAPTABLE:
             m_simulator = new AdaptableSim();
             break;
+        #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
         default:
             m_messages.push_back(QObject::tr("Unknown device architecture." ).toStdString());
             return false;

@@ -39,7 +39,7 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 
     ui.lineEditHex->setReadOnly(true);
     ui.lineEditDec->setReadOnly(true);
-    
+
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << address;
 
@@ -67,7 +67,7 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
             this,
             SLOT(handleUpdateRequest(int))
            );
-    
+
         connect(ui.ledBox_0 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
         connect(ui.ledBox_1 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
         connect(ui.ledBox_2 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
@@ -79,10 +79,10 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 
     deviceChanged();  //8
     ValueChanged();
-    
+
 }
 
-void Leds_sim::DecoderChanged(int o)
+void Leds_sim::DecoderChanged(int /*o*/)
 {
     ValueChanged();
 }
@@ -110,7 +110,7 @@ void Leds_sim::deviceChanged()  //8
 void Leds_sim::deviceReset()  //8
 {
     this->value = m_plio->getOutputArray()[this->address];
-    ValueChanged();          
+    ValueChanged();
 }
 
 void Leds_sim::handleUpdateRequest(int mask) //8
@@ -122,7 +122,7 @@ void Leds_sim::handleUpdateRequest(int mask) //8
     }
 }
 
-void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
+void Leds_sim::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/) //8
 {
     if (MCUSimSubsys::ID_PLIO == subsysId)
     {
@@ -167,8 +167,8 @@ void Leds_sim::addrChanged()
 {
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << "changed address" << address;
-    
-    this->value = m_plio->getOutputArray()[this->address];  
+
+    this->value = m_plio->getOutputArray()[this->address];
     ValueChanged();
 }
 
@@ -260,9 +260,9 @@ void Leds_sim::ValueDecode(void)
 
         bcd_value_sto   = bcd_value / 100;
         bcd_value      -= (bcd_value_sto * 100);
-        bcd_value_des   = bcd_value / 10; 
+        bcd_value_des   = bcd_value / 10;
         bcd_value_jedn  = bcd_value - (bcd_value_des * 10);
-        
+
         bcd_value = 0;
         bcd_value = ( bcd_value_des << 4);
         bcd_value = bcd_value | bcd_value_jedn;
