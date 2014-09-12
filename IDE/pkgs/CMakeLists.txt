@@ -85,8 +85,10 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
     # Include Qt framework libraries.
     filter_release_only ( QT_LIBS_TO_INSTALL ${QT_LIBRARIES} )
     if ( TARGET_OS STREQUAL "Windows" )
-        # For some reason QtCLucene4 is required on windows, and CMake ignores that fact.
+        # QtCLucene4 is required on windows but tends to CMake ignore that.
         list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
+        # QHelp required this file in "sqldrivers" directory.
+        install ( FILES "${QT_PLUGINS_DIR}/sqldrivers/qsqlite4.dll" DESTINATION "${TARGET_DIRECTORY}/sqldrivers/" )
     endif()
     list ( APPEND LIB_FILES_TO_INSTALL ${QT_LIBS_TO_INSTALL} )
 
