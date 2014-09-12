@@ -98,14 +98,7 @@ int main(int argc, char *argv[])
 
     if (true == release)
     {
-        QByteArray rootArray;
-        #ifdef Q_OS_LINUX
-            rootArray = qgetenv("HOME");
-        #elif defined(Q_OS_WIN32)
-            rootArray = qgetenv("USERPROFILE");
-        #endif
-        QString root(rootArray);
-        QDir homeDir(root + "/.mds");
+        QDir homeDir(QDesktopServices::storageLocation(QDesktopServices::HomeLocation) + "/.mds");
         if (false == homeDir.exists())
         {
             homeDir.mkpath(".");
@@ -116,7 +109,7 @@ int main(int argc, char *argv[])
         std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);
         if (!file.is_open())
         {
-            qDebug() << "Main: license file not opened";
+            //qDebug() << "Main: license file not opened";
         }
         LicenseCertificate crt(file);
         file.close();
