@@ -35,6 +35,26 @@ class WDockManager;
 class CodeEdit;
 class Project;
 
+/*
+#ifdef MDS_FEATURE_FILECONVERTER
+#endif
+#ifdef MDS_FEATURE_DISASSEMBLER
+#endif
+#ifdef MDS_FEATURE_TRANSLATOR
+#endif
+#ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+#endif
+#ifdef MDS_FEATURE_CONVERTER_TOOL
+#endif
+#ifdef MDS_FEATURE_LOOP_GENERATOR
+#endif
+#ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+#endif
+#ifdef MDS_FEATURE_SIM_LED_PANEL
+#endif
+#ifdef MDS_FEATURE_SIM_7_SEGMENT
+#endif
+*/
 
 /**
  * @brief MainForm uses QMainWindow and adds functions for file streams, tools/simulation executing and other basic stuff

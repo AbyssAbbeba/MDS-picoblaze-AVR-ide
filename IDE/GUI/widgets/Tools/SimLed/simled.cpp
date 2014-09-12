@@ -109,12 +109,17 @@ void Leds_sim::deviceChanged()  //8
 
 void Leds_sim::deviceReset()  //8
 {
+    this->value = m_plio->getOutputArray()[this->address];
     ValueChanged();          
 }
 
-void Leds_sim::handleUpdateRequest(int /*mask*/) //8
+void Leds_sim::handleUpdateRequest(int mask) //8
 {
-    
+    if ( 4 & mask)
+    {
+        this->value = m_plio->getOutputArray()[this->address];
+        ValueChanged();
+    }
 }
 
 void Leds_sim::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
