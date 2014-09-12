@@ -1,0 +1,47 @@
+<!DOCTYPE MDSProject>
+<MDSProject>
+ <General>
+  <Name name="MDSExample"/>
+  <Family family="kcpsm6"/>
+  <Language language="0"/>
+  <ScratchpadSize value="256"/>
+  <ProgMemSize value="4096"/>
+  <IntVector value="1023"/>
+  <HWBuild value="0"/>
+ </General>
+ <Files>
+  <File path="Example1.asm" name="Example1.asm"/>
+  <File path="Example2.asm" name="Example2.asm"/>
+  <File path="Example_7segment.asm" name="Example_7segment.asm"/>
+  <File path="Example_LCD.asm" name="Example_LCD.asm"/>
+  <File path="Example_UART.asm" name="Example_UART.asm"/>
+  <File path="Example_errors.asm" name="Example_errors.asm"/>
+ </Files>
+ <Mainfile enabled="true" path="" name=""/>
+ <Breakpoints/>
+ <Bookmarks/>
+ <Simulator>
+  <Clock clockMult="0" clock="0"/>
+ </Simulator>
+ <Compiler>
+  <Options>
+   <SymbolTable enable="true"/>
+   <MacroTable enable="true"/>
+   <DebugFile enable="true"/>
+   <CodeTree enable="false"/>
+   <ListFile enable="true"/>
+   <HexFile enable="true"/>
+   <BinFile enable="false"/>
+   <SRecFile enable="false"/>
+   <MemFile enable="false"/>
+   <RawHexFile enable="false"/>
+   <VerilogFile enable="false"/>
+   <VHDLFile enable="false"/>
+  </Options>
+  <Templates>
+   <VHDL default="true" path=""/>
+   <Verilog default="true" path=""/>
+  </Templates>
+  <IncludePaths/>
+ </Compiler>
+</MDSProject>

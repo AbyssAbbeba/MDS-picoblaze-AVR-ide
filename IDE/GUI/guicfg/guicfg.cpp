@@ -327,7 +327,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->sessionPath = homeDir.absolutePath() + "/session.xml";
         this->licensePath = homeDir.absolutePath() + "/certificate.cert";
         this->compilerPath = "../include/mds";
-        this->examplePath = "../share/mds/demoproject";
+        this->examplePath = "../share/mds/MDSExample";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
         this->helpPath = "../doc/mds";
@@ -340,7 +340,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->sessionPath = "./resources/xml/session.xml";
             this->licensePath = "./resources/xml/certificate.cert";
             this->compilerPath = "../compiler/include";
-            this->examplePath = "./demoprojekt/Example";
+            this->examplePath = "./resources/projects/MDSExample";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./temp";
             this->helpPath = "../docs/manual";
@@ -350,7 +350,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->sessionPath = "./GUI/resources/xml/session.xml";
             this->licensePath = "./GUI/resources/xml/certificate.cert";
             this->compilerPath = "./compiler/include";
-            this->examplePath = "./GUI/demoprojekt/Example";
+            this->examplePath = "./GUI/resources/projects/MDSExample";
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
             this->helpPath = "./docs/manual";
