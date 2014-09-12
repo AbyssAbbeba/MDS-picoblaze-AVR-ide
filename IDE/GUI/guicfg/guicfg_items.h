@@ -182,6 +182,7 @@ class GuiCfg_Items
         QString helpPath;
         QString sessionPath;
         QString licensePath;
+        QString userGuidePath;
 
         //session
         QList<QString> sessionProjectPaths;

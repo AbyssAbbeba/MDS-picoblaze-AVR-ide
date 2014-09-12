@@ -147,6 +147,7 @@ class MainForm : public QMainWindow
         void showWebSite(QAction *action);
         void simLeds();
         void sim7Seg();
+        void userGuide();
 
     signals:
         void unhighlightSim();
