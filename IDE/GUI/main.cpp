@@ -13,15 +13,19 @@
 
 
 #include <QtGui>
+#include "../mds.h"
 #include "mainform/mainform.h"
 #include "guicfg/guicfg.h"
-#include "widgets/LicenseInitWidget/licenseinitwidget.h"
+#ifndef MDS_FEATURE_TRIAL
+    #include "widgets/LicenseInitWidget/licenseinitwidget.h"
+#endif // MDS_FEATURE_TRIAL
 #include "errordialog/errordlg.h"
-#include "../utilities/LicenseCertificate/LicenseCertificate.h"
+#ifndef MDS_FEATURE_TRIAL
+    #include "../utilities/LicenseCertificate/LicenseCertificate.h"
+#endif // MDS_FEATURE_TRIAL
 #include <iostream>
-#include "../mds.h"
 #ifdef MDS_FEATURE_TRIAL
-#include "dialogs/TrialExpired/trialexpired.h"
+    #include "dialogs/TrialExpired/trialexpired.h"
 #endif // MDS_FEATURE_TRIAL
 
 int main(int argc, char *argv[])
@@ -43,7 +47,6 @@ int main(int argc, char *argv[])
     //qDebug() << QStyleFactory::keys();
     Q_INIT_RESOURCE(icons);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
-
 
     QFontDatabase fdb;
     //fdb.addApplicationFont("./resources/fonts/MostlyMono/MostlyMono.ttf");
@@ -73,10 +76,12 @@ int main(int argc, char *argv[])
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
     bool openFile = false;
+    bool release = true;
     if (argc > 1)
     {
         if (QString::fromLocal8Bit(argv[1]) == "--debug")
         {
+            release = false;
             GuiCfg::getInstance().setDefaultPaths(false);
         }
         else if (QString::fromLocal8Bit(argv[1]).section('.',-1) == "mds-project")
@@ -90,6 +95,22 @@ int main(int argc, char *argv[])
         }
     }
     GuiCfg::getInstance().loadConfig();
+
+    if (true == release)
+    {
+        QByteArray rootArray;
+        #ifdef Q_OS_LINUX
+            rootArray = qgetenv("HOME");
+        #elif defined(Q_OS_WIN32)
+            rootArray = qgetenv("USERPROFILE");
+        #endif
+        QString root(rootArray);
+        QDir homeDir(root + "/.mds");
+        if (false == homeDir.exists())
+        {
+            homeDir.mkpath(".");
+        }
+    }
 
     #ifndef MDS_VARIANT_TRIAL
         std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);

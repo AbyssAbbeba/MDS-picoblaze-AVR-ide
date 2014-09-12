@@ -61,6 +61,9 @@ void LicenseInitWidget::tryLoad()
             if ( true == crt.m_isValid )
             {
                 this->license = true;
+                QTextCursor cur = ui.tbInfo->textCursor();
+                cur.setPosition(0);
+                ui.tbInfo->setTextCursor(cur);
                 ui.tbInfo->clear();
                 ui.tbInfo->append("Licensee name:\t");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
@@ -81,6 +84,9 @@ void LicenseInitWidget::tryLoad()
     #ifdef MDS_VARIANT_TRIAL
         //qDebug() << "MDS_VARIANT_TRIAL";
         QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QTextCursor cur = ui.tbInfo->textCursor();
+        cur.setPosition(0);
+        ui.tbInfo->setTextCursor(cur);
         ui.tbInfo->clear();
         ui.tbInfo->append("Trial period:\t");
         ui.tbInfo->insertPlainText(QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left"));
@@ -178,6 +184,9 @@ void LicenseInitWidget::load()
                         }
                     #endif
                     this->license = true;
+                    QTextCursor cur = ui.tbInfo->textCursor();
+                    cur.setPosition(0);
+                    ui.tbInfo->setTextCursor(cur);
                     ui.tbInfo->clear();
                     ui.tbInfo->append("Licensee name:\t");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
