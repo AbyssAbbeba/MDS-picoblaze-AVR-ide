@@ -17,7 +17,7 @@
   <File path="Example_UART.asm" name="Example_UART.asm"/>
   <File path="Example_errors.asm" name="Example_errors.asm"/>
  </Files>
- <Mainfile enabled="true" path="" name=""/>
+ <Mainfile enabled="false" path="" name=""/>
  <Breakpoints/>
  <Bookmarks/>
  <Simulator>

@@ -29,7 +29,6 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
     //variable initializations
     value = 0;
     address = 0;
-    unsigned char pin_status[7] = {0};
     flag_0 = false; flag_1 = false; flag_2 = false; flag_3 = false;
     flag_4 = false; flag_5 = false; flag_6 = false;
     
@@ -192,6 +191,7 @@ void Sim7Seg::deviceChanged()  //8
 
 void Sim7Seg::deviceReset()  //8
 {
+    this->value = m_plio->getOutputArray()[this->address];
     ValueChanged();          
 }
 
@@ -199,6 +199,7 @@ void Sim7Seg::handleUpdateRequest(int mask) //8
 {
     if ( 4 & mask)
     {
+        this->value = m_plio->getOutputArray()[this->address];
         ValueChanged();
     }
 }
