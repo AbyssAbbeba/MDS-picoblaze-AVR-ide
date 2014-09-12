@@ -10,33 +10,70 @@
  * @ingroup MainForm
  * @file mainform.cpp
  */
-
+/*#ifdef MDS_FEATURE_FILECONVERTER
+#endif
+#ifdef MDS_FEATURE_DISASSEMBLER
+#endif
+#ifdef MDS_FEATURE_TRANSLATOR
+#endif
+#ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+#endif
+#ifdef MDS_FEATURE_CONVERTER_TOOL
+#endif
+#ifdef MDS_FEATURE_LOOP_GENERATOR
+#endif
+#ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+#endif
+#ifdef MDS_FEATURE_SIM_LED_PANEL
+#endif
+#ifdef MDS_FEATURE_SIM_7_SEGMENT
+#endif*/
 
 #include <QtGui>
 #include <unistd.h>
+#include "../../mds.h"
 //#include <QtHelp/QHelpEngineCore>
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
-#include "../dialogs/disasmdlg/disasmdlg.h"
-#include "../dialogs/translatordlg/translatordlg.h"
-#include "../dialogs/fileconvertdlg/fileconvertdlg.h"
+#ifdef MDS_FEATURE_DISASSEMBLER
+    #include "../dialogs/disasmdlg/disasmdlg.h"
+#endif
+#ifdef MDS_FEATURE_TRANSLATOR
+    #include "../dialogs/translatordlg/translatordlg.h"
+#endif
+#ifdef MDS_FEATURE_FILECONVERTER
+    #include "../dialogs/fileconvertdlg/fileconvertdlg.h"
+#endif
 #include "../errordialog/errordlg.h"
-#include "pluginman_gui.h"
+//#include "pluginman_gui.h"
 #include "../dialogs/projectcfg/projectcfgdlg_core.h"
 #include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
 #include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
-#include "../widgets/LicenseWidget/licensewidget.h"
-#include "../widgets/LoopGen/loop_gen.h"
+#ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+    #include "../widgets/LicenseWidget/licensewidget.h"
+#endif
+#ifdef MDS_FEATURE_LOOP_GENERATOR
+    #include "../widgets/LoopGen/loop_gen.h"
+#endif
 #include "../widgets/AboutWidget/aboutwidget.h"
-#include "../widgets/Tools/Display/displaytool.h"
-#include "../widgets/Tools/Convertor/convertortool.h"
-#include "../widgets/Tools/SimLed/simled.h"
-#include "../widgets/Tools/Sim7Seg/sim7seg.h"
+#ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+    #include "../widgets/Tools/Display/displaytool.h"
+#endif
+#ifdef MDS_FEATURE_CONVERTER_TOOL
+    #include "../widgets/Tools/Convertor/convertortool.h"
+#endif
+#ifdef MDS_FEATURE_SIM_LED_PANEL
+    #include "../widgets/Tools/SimLed/simled.h"
+#endif
+#ifdef MDS_FEATURE_SIM_7_SEGMENT
+    #include "../widgets/Tools/Sim7Seg/sim7seg.h"
+#endif
 #include "../guicfg/guicfg.h"
-#include "../../mds.h"
+
+
 
 
 
@@ -368,18 +405,37 @@ void MainForm::createMenu()
     simulationMenu->addAction(simulationBreakpointAct);
     simulationMenu->addAction(simulationDisableBreakpointsAct);
 
+
     toolsMenu = menuBar()->addMenu(tr("&Tools"));
-    toolsMenu->addAction(toolDisassemblerAct);
-    toolsMenu->addAction(toolTranslatorAct);
-    toolsMenu->addAction(toolFileConvertAct);
-    toolsMenu->addAction(toolConvertorAct);
-    toolsMenu->addAction(toolDisplayAct);
-    toolsMenu->addAction(toolLoopGenAct);
-    toolsMenu->addAction(toolSimLedsAct);
-    toolsMenu->addAction(toolSim7SegAct);
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        toolsMenu->addAction(toolDisassemblerAct);
+    #endif
+    #ifdef MDS_FEATURE_TRANSLATOR
+        toolsMenu->addAction(toolTranslatorAct);
+    #endif
+    #ifdef MDS_FEATURE_FILECONVERTER
+        toolsMenu->addAction(toolFileConvertAct);
+    #endif
+    #ifdef MDS_FEATURE_CONVERTER_TOOL
+        toolsMenu->addAction(toolConvertorAct);
+    #endif
+    #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+        toolsMenu->addAction(toolDisplayAct);
+    #endif
+    #ifdef MDS_FEATURE_LOOP_GENERATOR
+        toolsMenu->addAction(toolLoopGenAct);
+    #endif
+    #ifdef MDS_FEATURE_SIM_LED_PANEL
+        toolsMenu->addAction(toolSimLedsAct);
+    #endif
+    #ifdef MDS_FEATURE_SIM_7_SEGMENT
+        toolsMenu->addAction(toolSim7SegAct);
+    #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(licenseAct);
+    #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+        helpMenu->addAction(licenseAct);
+    #endif
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQTAct);
     helpMenu->addAction(helpActionAct);
@@ -563,29 +619,47 @@ void MainForm::createActions()
     simulationDisableBreakpointsAct->setDisabled(true);
     connect(simulationDisableBreakpointsAct, SIGNAL(triggered()), this, SLOT(disableBreakpointsHandle()));
 
-    this->pm_toolDis = new QPixmap(":resources/icons/disassemble.png");
-    this->icon_toolDis = new QIcon(*pm_toolDis);
-    toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassembler"), this);
-    connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
-    toolTranslatorAct = new QAction(tr("ASM Translator"), this);
-    connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
-    toolFileConvertAct = new QAction(tr("DataFile Converter"), this);
-    connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
-    toolConvertorAct = new QAction(tr("Converter"), this);
-    connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
-    toolDisplayAct = new QAction(tr("Segment Display"), this);
-    connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
-    toolLoopGenAct = new QAction(tr("Loop Generator"), this);
-    connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
-    toolSimLedsAct = new QAction(tr("LED panel Simulation"), this);
-    toolSimLedsAct->setDisabled(true);
-    connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
-    toolSim7SegAct = new QAction(tr("7 Segment Simulation"), this);
-    toolSim7SegAct->setDisabled(true);
-    connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        this->pm_toolDis = new QPixmap(":resources/icons/disassemble.png");
+        this->icon_toolDis = new QIcon(*pm_toolDis);
+        toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassembler"), this);
+        connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
+    #endif
+    #ifdef MDS_FEATURE_TRANSLATOR
+        toolTranslatorAct = new QAction(tr("ASM Translator"), this);
+        connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
+    #endif
+    #ifdef MDS_FEATURE_FILECONVERTER
+        toolFileConvertAct = new QAction(tr("DataFile Converter"), this);
+        connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
+    #endif
+    #ifdef MDS_FEATURE_CONVERTER_TOOL
+        toolConvertorAct = new QAction(tr("Converter"), this);
+        connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
+    #endif
+    #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+        toolDisplayAct = new QAction(tr("Segment Display"), this);
+        connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
+    #endif
+    #ifdef MDS_FEATURE_LOOP_GENERATOR
+        toolLoopGenAct = new QAction(tr("Loop Generator"), this);
+        connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
+    #endif
+    #ifdef MDS_FEATURE_SIM_LED_PANEL
+        toolSimLedsAct = new QAction(tr("LED panel Simulation"), this);
+        toolSimLedsAct->setDisabled(true);
+        connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
+    #endif
+    #ifdef MDS_FEATURE_SIM_7_SEGMENT
+        toolSim7SegAct = new QAction(tr("7 Segment Simulation"), this);
+        toolSim7SegAct->setDisabled(true);
+        connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
+    #endif
 
-    licenseAct = new QAction(tr("License"), this);
-    connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
+    #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+        licenseAct = new QAction(tr("License"), this);
+        connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
+    #endif
     aboutAct = new QAction(tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
@@ -887,6 +961,7 @@ void MainForm::openFile()
             wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
             wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
             GuiCfg::getInstance().fileOpened(path);
+            QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
     //qDebug() << "MainForm: return openFile()";
@@ -955,6 +1030,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             {
                 qDebug() << "MainForm: openfilepath - some error here";
             }
+            QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
     //qDebug() << "MainForm: return openFilePath()";
@@ -2295,21 +2371,29 @@ void MainForm::simulationFlowHandle()
 }
 
 
+
+
+
 /**
- * @brief Slot. Shows tool - convertor.
- */
+* @brief Slot. Shows tool - convertor.
+*/
 void MainForm::toolConvertor()
 {
-    /*ConvertorTool *a = */new ConvertorTool(0);
+    #ifdef MDS_FEATURE_CONVERTER_TOOL
+        /*ConvertorTool *a = */new ConvertorTool(0);
+    #endif
 }
 
 
+
 /**
- * @brief Slot. Shown tool - 8 Segment Editor.
- */
+* @brief Slot. Shown tool - 8 Segment Editor.
+*/
 void MainForm::toolDisplay()
 {
-    /*DisplayTool *a = */new DisplayTool(0);
+    #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+        /*DisplayTool *a = */new DisplayTool(0);
+    #endif
 }
 
 
@@ -2520,91 +2604,102 @@ void MainForm::help()
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::toolDisassemble()
 {
-    DisAsmDialog *dlg = new DisAsmDialog(this);
-    connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(disassembleOutput(std::vector<std::string>)));
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        DisAsmDialog *dlg = new DisAsmDialog(this);
+        connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(disassembleOutput(std::vector<std::string>)));
+    #endif
 }
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::disassembleOutput(std::vector<std::string> text)
 {
-    QStringList qText;
-    for (unsigned int i = 0; i < text.size(); i++)
-    {
-        qText.append(QString::fromStdString(text.at(i)));
-    }
-    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
-    this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
-    getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
-    //getWDockManager()->getCentralWidget()->connectAct();
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        QStringList qText;
+        for (unsigned int i = 0; i < text.size(); i++)
+        {
+            qText.append(QString::fromStdString(text.at(i)));
+        }
+        //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+        this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
+        getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+        //getWDockManager()->getCentralWidget()->connectAct();
+    #endif
 }
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::toolTranslate()
 {
-    TranslatorDlg *dlg = new TranslatorDlg(this);
-    connect(dlg,
-            SIGNAL(output(std::vector<std::string> &)),
-            this,
-            SLOT(translatorOutput(std::vector<std::string> &)));
-    connect(dlg,
-            SIGNAL(outputError(const std::vector<std::pair<unsigned int, std::string>> &)),
-            this,
-            SLOT(translatorOutput(const std::vector<std::pair<unsigned int, std::string>> &)));
+    #ifdef MDS_FEATURE_TRANSLATOR
+        TranslatorDlg *dlg = new TranslatorDlg(this);
+        connect(dlg,
+                SIGNAL(output(std::vector<std::string> &)),
+                this,
+                SLOT(translatorOutput(std::vector<std::string> &)));
+        connect(dlg,
+                SIGNAL(outputError(const std::vector<std::pair<unsigned int, std::string>> &)),
+                this,
+                SLOT(translatorOutput(const std::vector<std::pair<unsigned int, std::string>> &)));
+    #endif
 }
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::translatorOutput(std::vector<std::string> & text)
 {
-    QStringList qText;
-    for (unsigned int i = 0; i < text.size(); i++)
-    {
-        qText.append(QString::fromStdString(text.at(i)));
-    }
-    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
-    this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
-    getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
-    //getWDockManager()->getCentralWidget()->connectAct();
+    #ifdef MDS_FEATURE_TRANSLATOR
+        QStringList qText;
+        for (unsigned int i = 0; i < text.size(); i++)
+        {
+            qText.append(QString::fromStdString(text.at(i)));
+        }
+        //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+        this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
+        getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+        //getWDockManager()->getCentralWidget()->connectAct();
+    #endif
 }
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::string>> & text)
 {
-    QStringList qText;
-    for (unsigned int i = 0; i < text.size(); i++)
-    {
-        qText.append(QString::fromStdString(std::get<1>(text.at(i))));
-    }
-    //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
-    this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
-    this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
-    //getWDockManager()->getCentralWidget()->connectAct();
+    #ifdef MDS_FEATURE_TRANSLATOR
+        QStringList qText;
+        for (unsigned int i = 0; i < text.size(); i++)
+        {
+            qText.append(QString::fromStdString(std::get<1>(text.at(i))));
+        }
+        //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
+        this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
+        this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+        //getWDockManager()->getCentralWidget()->connectAct();
+    #endif
 }
 
 
 /**
- * @brief
- */
+* @brief
+*/
 void MainForm::toolFileConvert()
 {
-    /*FileConvertDlg *dlg = */new FileConvertDlg(this);
+    #ifdef MDS_FEATURE_FILECONVERTER
+        /*FileConvertDlg *dlg = */new FileConvertDlg(this);
+    #endif
 }
-
 
 /**
  *
@@ -2853,15 +2948,15 @@ void MainForm::sessionRestorationSlot()
 {
     qDebug() << "MainForm: session restoration";
     QApplication::processEvents();
-    qDebug() << "MainForm: height" << this->height();
+    //qDebug() << "MainForm: height" << this->height();
     //open projects and files
-    if (this->height() == this->startHeight)
+    /*if (this->height() == this->startHeight)
     {
         qDebug() << "Mainform not visible";
         qDebug() << "MainForm: session not loaded, Mainform not visible";
         QTimer::singleShot(50, this, SLOT(sessionRestorationSlot()));
         return;
-    }
+    }*/
     QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
     QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
     QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
@@ -3163,18 +3258,20 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 
 void MainForm::manageLicense()
 {
-    LicenseWidget *widget = new LicenseWidget(this);
-    widget->tryLoad();
-    widget->exec();
+    #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+        LicenseWidget *widget = new LicenseWidget(this);
+        widget->tryLoad();
+        widget->exec();
+    #endif
 }
-
 
 void MainForm::loopGen()
 {
-    loop_gen *widget = new loop_gen(0);
-    widget->show();
+    #ifdef MDS_FEATURE_LOOP_GENERATOR
+        loop_gen *widget = new loop_gen(0);
+        widget->show();
+    #endif
 }
-
 
 void MainForm::about()
 {
@@ -3199,21 +3296,25 @@ void MainForm::showWebSite(QAction */*action*/)
 
 void MainForm::simLeds()
 {
-    if (true == this->simulationStatus)
-    {
-        Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
-        widget->show();
-    }
+    #ifdef MDS_FEATURE_SIM_LED_PANEL
+        if (true == this->simulationStatus)
+        {
+            Leds_sim *widget = new Leds_sim(0, this->projectMan->getSimulated()->getSimControl());
+            widget->show();
+        }
+    #endif
 }
-
+    
 
 void MainForm::sim7Seg()
 {
-    if (true == this->simulationStatus)
-    {
-        Sim7Seg *widget = new Sim7Seg(0, this->projectMan->getSimulated()->getSimControl());
-        widget->show();
-    }
+    #ifdef MDS_FEATURE_SIM_7_SEGMENT
+        if (true == this->simulationStatus)
+        {
+            Sim7Seg *widget = new Sim7Seg(0, this->projectMan->getSimulated()->getSimControl());
+            widget->show();
+        }
+    #endif
 }
 
 
