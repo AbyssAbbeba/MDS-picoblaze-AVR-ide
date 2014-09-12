@@ -93,6 +93,10 @@ int main(int argc, char *argv[])
 
     #ifndef MDS_VARIANT_TRIAL
         std::ifstream file(GuiCfg::getInstance().getLicensePath().toStdString(), std::ios_base::binary);
+        if (!file.is_open())
+        {
+            qDebug() << "Main: license file not opened";
+        }
         LicenseCertificate crt(file);
         file.close();
 
@@ -139,7 +143,7 @@ int main(int argc, char *argv[])
         if (true == GuiCfg::getInstance().loadSession())
         {
             //MainGUI.emitSessionRestorationSignal();
-            QTimer::singleShot(50, &MainGUI, SLOT(sessionRestorationSlot()));
+            QTimer::singleShot(200, &MainGUI, SLOT(sessionRestorationSlot()));
         }
         else
         {
