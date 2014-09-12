@@ -37,10 +37,14 @@ add_custom_target ( test_analysis
 add_subdirectory ( compiler )
 
 # Unit tests for Assembly language support library.
-add_subdirectory ( AsmTranslator )
+if ( MDS_FEATURE_TRANSLATOR )
+    add_subdirectory ( AsmTranslator )
+endif()
 
 # Tests for disassembler
-add_subdirectory ( disassembler )
+if ( MDS_FEATURE_DISASSEMBLER )
+    add_subdirectory ( disassembler )
+endif()
 
 # Tests for simulator
 add_subdirectory ( simulator )

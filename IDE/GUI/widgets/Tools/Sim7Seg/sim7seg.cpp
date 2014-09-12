@@ -31,7 +31,7 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
     address = 0;
     flag_0 = false; flag_1 = false; flag_2 = false; flag_3 = false;
     flag_4 = false; flag_5 = false; flag_6 = false;
-    
+
     CreateItems();
 
     QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{2}"), this);
@@ -39,7 +39,7 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
 
     ui.lineEditHex->setReadOnly(true);
     ui.lineEditDec->setReadOnly(true);
-    
+
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << address;
 
@@ -67,7 +67,7 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
             this,
             SLOT(handleUpdateRequest(int))
            );
-    
+
         connect(ui.ledBox_0 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
         connect(ui.ledBox_1 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
         connect(ui.ledBox_2 ,SIGNAL(currentIndexChanged(int)),this,SLOT(handleChange(int)));
@@ -79,13 +79,13 @@ Sim7Seg::Sim7Seg(QWidget *parent, MCUSimControl *controlUnit) :
 
     deviceChanged();  //8
     ValueChanged();
-    
+
 }
 
 void Sim7Seg::mousePressEvent(QMouseEvent  *event)
 {
     qDebug()<< event->x() << "x";
-    qDebug()<< event->y()<<  "y";    
+    qDebug()<< event->y()<<  "y";
 }
 
 void Sim7Seg::comboChanged(int c)
@@ -192,7 +192,7 @@ void Sim7Seg::deviceChanged()  //8
 void Sim7Seg::deviceReset()  //8
 {
     this->value = m_plio->getOutputArray()[this->address];
-    ValueChanged();          
+    ValueChanged();
 }
 
 void Sim7Seg::handleUpdateRequest(int mask) //8
@@ -204,7 +204,7 @@ void Sim7Seg::handleUpdateRequest(int mask) //8
     }
 }
 
-void Sim7Seg::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
+void Sim7Seg::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/) //8
 {
     if (MCUSimSubsys::ID_PLIO == subsysId)
     {
@@ -249,8 +249,8 @@ void Sim7Seg::addrChanged()
 {
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << "changed address" << address;
-    
-    this->value = m_plio->getOutputArray()[this->address];  
+
+    this->value = m_plio->getOutputArray()[this->address];
     ValueChanged();
 }
 
@@ -354,7 +354,7 @@ void Sim7Seg::ValueDecode(void)
             case 0b00001000:    bcd_value = ~0b01111111; break;
             case 0b00001001:    bcd_value = ~0b01100111; break;
         }
-        
+
         DisplayNumber(bcd_value);
         return;
     }
@@ -396,7 +396,7 @@ void Sim7Seg::paintEvent(QPaintEvent */*e*/)
     QPen graypen    (Qt::gray);
     QPen blackpen   (Qt::black);
     QPen redpen    (Qt::red);
-    
+
     painter.setPen(blackpen);
     // draw
    QPointF p1(210,160);
