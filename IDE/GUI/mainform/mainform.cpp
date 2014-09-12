@@ -2329,7 +2329,7 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     qDebug() << "MainForm: exampleOpen";
-    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/Example.mds-project"))
+    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project"))
     {
         return;
     }

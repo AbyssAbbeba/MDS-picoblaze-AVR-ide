@@ -239,8 +239,8 @@ void Sim7Seg::ValueChanged()
     {
         DisplayNumber(value);
     }
-        ui.lineEditDec->setText(QString::number(value,10));
-        ui.lineEditHex->setText(QString::number(value,16).toUpper());
+    ui.lineEditDec->setText(QString::number(value,10));
+    ui.lineEditHex->setText(QString::number(value,16).toUpper());
     update();
 }
 

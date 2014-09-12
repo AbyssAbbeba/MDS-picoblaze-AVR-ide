@@ -60,7 +60,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             {
                 textEdit = new WTextEdit(this, C);
             }
-            else if (text == ".asm")
+            else if (text == ".asm" || text == ".psm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
                 textEdit = new WTextEdit(this, PICOBLAZEASM);
@@ -246,7 +246,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         {
             textEdit = new WTextEdit(this, C);
         }
-        else if (text == ".asm")
+        else if (text == ".asm" || text == ".psm")
         {
             //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
             textEdit = new WTextEdit(this, PICOBLAZEASM);
