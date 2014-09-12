@@ -1,7 +1,5 @@
 ; MDS PicoBlaze IDE - Demonstration code
-
-; Macro instructions
-; See manual for more info
+; If you are a professional, you can turn warnings off
 
 ; You may find some useful advices how to use this
 ; IDE more efficiently
@@ -12,21 +10,16 @@
 ; You can easily modify this example and use it in your aplication.
 ;
 ; Press Start simulation and Animate to run the program
-;
-; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
 
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        s3          REG         RXdata        ; RX data
-        s4          REG         TXdata        ; TX data
-        s5          REG         LED_reg       ; Leds data register
-; Declaration of some registers
-        Temp1         REG       s0
-        Temp2         REG       s1
-        Temp3         REG       s2
+        RX_data          REG         s3        ; RX data
+        TXdata          REG         s4        ; TX data
+        LED_reg         REG         s5        ; Leds data register
+
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
         RX_id       PORT        0x02          ;  data register port ID
@@ -95,6 +88,9 @@ SendCRLF            MACRO
 ; Waiting loops
 ;==============================================================================;
 wait_for_1s         MACRO
+                    local    wait_1s
+                    local    wait_1s_i
+
 wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #200          ; Load Temp3 register
@@ -107,6 +103,9 @@ wait_1s_i:          SUB       Temp1, #1
                     ENDM
 
 wait_for_100ms      MACRO
+                    local    wait_100ms
+                    local    wait_100ms_i
+
 wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
                     LOAD      Temp2, #249          ; Load Temp2 register
                     LOAD      Temp3, #20           ; Load Temp3 register
@@ -167,7 +166,7 @@ INTERRUPT:          SendChar  'I'
                     SendChar  'P'
                     SendChar  'T'
                     SendCRLF
-                    RETURNI
+                    RETURNI ENABLE
 ; Start of main program
 Start:
                     wait_for_1s             ; wait for initialization of FPGA circuits
