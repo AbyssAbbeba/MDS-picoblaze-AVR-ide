@@ -327,7 +327,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->sessionPath = homeDir.absolutePath() + "/session.xml";
         this->licensePath = homeDir.absolutePath() + "/certificate.cert";
         this->compilerPath = "../include/mds";
-        this->examplePath = "../share/mds/MDSExample";
+        this->examplePath = "../share/mds/demoproject";
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
         this->helpPath = "../doc/mds";
