@@ -28,7 +28,9 @@ add_subdirectory ( PIC8 )
 add_subdirectory ( PicoBlaze )
 
 # Build the Adaptable Simulator
-add_subdirectory ( AdaptableSim )
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    add_subdirectory ( AdaptableSim )
+endif()
 
 # Build the MCU simulator configuration management
 add_subdirectory ( McuSimCfgMgr )

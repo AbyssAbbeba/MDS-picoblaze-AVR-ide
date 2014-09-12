@@ -65,11 +65,21 @@ windres_rc ( OUTPUT_VAR         RC_FILE
   ADD_EXECUTABLE( mds-ide ${win32} ${RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
 
 
+# List of additional libraries which can be enabled or disabled for this particular build.
+set ( MDS_ADDITONAL_LIBS "" )
+
+if ( MDS_FEATURE_TRIAL )
+    list ( APPEND MDS_ADDITONAL_LIBS "TrialExpired" )
+endif()
+if ( MDS_FEATURE_LICENCE_CERTIFICATE )
+    list ( APPEND MDS_ADDITONAL_LIBS "LicenseInitWidget" "LicenseCertificate" )
+endif()
+
   # here we instruct CMake to build "mmIDE" executable from all of the source files
 
   # last thing we have to do is to tell CMake what libraries our executable needs,
   # luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} Mainform GuiCfg LicenseInitWidget ErrorDialog LicenseCertificate TrialExpired)
+  TARGET_LINK_LIBRARIES( mds-ide ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS} Mainform GuiCfg ErrorDialog  )
 
 
   # we need this to be able to include headers produced by uic in our code

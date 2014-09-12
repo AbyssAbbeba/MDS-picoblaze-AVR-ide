@@ -17,8 +17,23 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
+# Build the special development tools
+
+if ( MDS_FEATURE_8_SEGMENT_EDITOR )
+    add_subdirectory(Display)
+endif()
+
+if ( MDS_FEATURE_CONVERTER_TOOL )
+    add_subdirectory(Convertor)
+endif()
+
 # Build the simulator widgets
-add_subdirectory(Display)
-add_subdirectory(Convertor)
-add_subdirectory(SimLed)
-add_subdirectory(Sim7Seg)
+
+if ( MDS_FEATURE_SIM_LED_PANEL )
+    add_subdirectory(SimLed)
+endif()
+
+if ( MDS_FEATURE_SIM_7_SEGMENT )
+    add_subdirectory(Sim7Seg)
+endif()
+

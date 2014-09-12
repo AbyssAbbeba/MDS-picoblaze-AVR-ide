@@ -73,6 +73,8 @@ target_link_libraries ( ${TRANSLATOR_EXEC_TARGET} ${PROJECT_NAME} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME} ${TRANSLATOR_EXEC_TARGET}
-          RUNTIME DESTINATION ${INSTALL_DIR_BIN}
-          LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+if ( NOT MDS_GRADE STREQUAL "Basic" )
+    install ( TARGETS ${PROJECT_NAME} ${TRANSLATOR_EXEC_TARGET}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

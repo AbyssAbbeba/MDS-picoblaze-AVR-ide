@@ -1,45 +1,73 @@
-##
+# ==============================================================================
+#
+# Central component of the GUI.
+#
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(Mainform)
+project ( Mainform )
 
-# Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.8)
+# ------------------------------------------------------------------------------
+# CONFIGURE FEATURE SET
+# ------------------------------------------------------------------------------
 
-# Create verbose makefiles if on
-set(CMAKE_VERBOSE_MAKEFILE OFF)
+# List of additional libraries which can be enabled or disabled for this particular build.
+set ( MDS_ADDITONAL_LIBS "" )
 
-# with SET() command you can change variables or define new ones
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files
-# note that we don't need \ at the end of line
-SET( SAMPLE_SRCS
-        ./mainform.cpp
-)
-
-# another list, this time it includes all header files that should be treated with moc
-SET( SAMPLE_MOC_HDRS
-        ./mainform.h
-)
-
+if ( MDS_FEATURE_FILECONVERTER )
+    list ( APPEND MDS_ADDITONAL_LIBS "FileConvertDlg" )
+endif()
+if ( MDS_FEATURE_DISASSEMBLER )
+    list ( APPEND MDS_ADDITONAL_LIBS "DisAsmDlg" )
+endif()
+if ( MDS_FEATURE_TRANSLATOR )
+    list ( APPEND MDS_ADDITONAL_LIBS "TranslatorDlg" )
+endif()
+if ( MDS_FEATURE_LICENCE_CERTIFICATE )
+    list ( APPEND MDS_ADDITONAL_LIBS "LicenseWidget" )
+endif()
+if ( MDS_FEATURE_CONVERTER_TOOL )
+    list ( APPEND MDS_ADDITONAL_LIBS "ConvertorTool" )
+endif()
+if ( MDS_FEATURE_LOOP_GENERATOR )
+    list ( APPEND MDS_ADDITONAL_LIBS "LoopGen" )
+endif()
+if ( MDS_FEATURE_8_SEGMENT_EDITOR )
+    list ( APPEND MDS_ADDITONAL_LIBS "DisplayTool" )
+endif()
+if ( MDS_FEATURE_SIM_LED_PANEL )
+    list ( APPEND MDS_ADDITONAL_LIBS "SimLed" )
+endif()
+if ( MDS_FEATURE_SIM_7_SEGMENT )
+    list ( APPEND MDS_ADDITONAL_LIBS "Sim7Seg" )
+endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# and finally this will run moc:
-QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
+# Take Qt specific C++ header file(s) and compile them using Qt Meta Object Compiler.
+qt4_wrap_cpp ( MOC_FILES mainform.h )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+# Add a library to the project using the specified source files
+add_library ( ${PROJECT_NAME}
+              ${MOC_FILES} mainform.cpp )
 
-#QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Project ProjectTree Editor ProjectDlg ProjectCfg WDockManager Simulator MCUDataFiles ConvertorTool DisplayTool compiler HelpWidget DisAsmDlg TranslatorDlg FileConvertDlg CompileInfo InterfaceCfg GuiCfg LicenseWidget LoopGen AboutWidget SimLed Sim7Seg)
+# Link the target to the specified libraries.
+target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
+                        WDockManager    MCUDataFiles    InterfaceCfg    ErrorDialog     ProjectTree
+                        AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
+                        Simulator       compiler        Project         Editor          GuiCfg )
+
+# ------------------------------------------------------------------------------
+# INSTALLATION OPTIONS
+# ------------------------------------------------------------------------------
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
