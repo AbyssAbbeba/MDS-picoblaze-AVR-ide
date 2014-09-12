@@ -370,6 +370,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     //qDebug() << "Project: Project()";
     mainFileName = "";
     mainFilePath = "";
+    useMainFile = false;
     for (int i = 0; i < 12; i++)
     {
         compileOpt.append(false);
@@ -946,6 +947,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
+    this->useMainFile = false;
+    this->mainFileName = "";
+    this->mainFilePath = "";
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
@@ -1694,7 +1698,7 @@ void Project::setMainFile(QString path, QString name)
  */ 
 void Project::setUseMainFile(bool enabled)
 {
-    //qDebug() << "Project: setMainFile()";
+    qDebug() << "Project: setUseMainFile()";
     //QDir project(QFileInfo(prjPath).dir());
 
     //QDir project(QFileInfo(prjPath).dir());
@@ -1747,7 +1751,7 @@ void Project::setUseMainFile(bool enabled)
             xmlStream << domDoc.toString();
         }
     }*/
-    //qDebug() << "Project: return setMainFile()";
+    qDebug() << "Project: return setUseMainFile()";
 }
 
 

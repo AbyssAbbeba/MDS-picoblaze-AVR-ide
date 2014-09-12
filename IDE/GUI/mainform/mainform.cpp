@@ -2259,8 +2259,12 @@ void MainForm::simulationFlowHandle()
             simulationDisableBreakpointsAct->setEnabled(true);
             simulationResetAct->setEnabled(true);
             simulationUnhighlightAct->setEnabled(true);
-            toolSimLedsAct->setEnabled(true);
-            toolSim7SegAct->setEnabled(true);
+            #ifdef MDS_FEATURE_SIM_LED_PANEL
+                toolSimLedsAct->setEnabled(true);
+            #endif
+            #ifdef MDS_FEATURE_SIM_7_SEGMENT
+                toolSim7SegAct->setEnabled(true);
+            #endif
             projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
@@ -2361,8 +2365,12 @@ void MainForm::simulationFlowHandle()
         simulationDisableBreakpointsAct->setDisabled(true);
         simulationResetAct->setDisabled(true);
         simulationUnhighlightAct->setDisabled(true);
-        toolSimLedsAct->setDisabled(true);
-        toolSim7SegAct->setDisabled(true);
+        #ifdef MDS_FEATURE_SIM_LED_PANEL
+            toolSimLedsAct->setDisabled(true);
+        #endif
+        #ifdef MDS_FEATURE_SIM_7_SEGMENT
+            toolSim7SegAct->setDisabled(true);
+        #endif
         projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
