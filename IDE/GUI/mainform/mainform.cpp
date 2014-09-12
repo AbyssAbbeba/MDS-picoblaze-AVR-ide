@@ -190,11 +190,11 @@ MainForm::MainForm()
             this,
             SLOT(help())
            );
-    /*connect(wDockManager,
+    connect(wDockManager,
             SIGNAL(welcomeScrGuideSig()),
             this,
-            SLOT()
-           );*/
+            SLOT(userGuide())
+           );
     connect(wDockManager,
             SIGNAL(welcomeScrRecentSig(QString)),
             this,
@@ -3042,12 +3042,12 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         {
             for (unsigned int i = 0; i < prev.size(); i++)
             {
-                files << QString::fromStdString(*(std::get<0>(prev.at(i))));
+                files << QString::fromStdString(*(std::get<0>(prev.at(i)))).replace('\\', '/');
             }
         }
         else
         {
-            files << QString::fromStdString(*(std::get<0>(prev.at(0))));
+            files << QString::fromStdString(*(std::get<0>(prev.at(0)))).replace('\\', '/');
         }
     }
     if (prev2.size() > 0)
@@ -3056,12 +3056,12 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         {
             for (unsigned int i = 0; i < prev2.size(); i++)
             {
-                files << QString::fromStdString(*(std::get<0>(prev2.at(i))));
+                files << QString::fromStdString(*(std::get<0>(prev2.at(i)))).replace('\\', '/');
             }
         }
         else
         {
-            files << QString::fromStdString(*(std::get<0>(prev2.at(0))));
+            files << QString::fromStdString(*(std::get<0>(prev2.at(0)))).replace('\\', '/');
         }
     }
     if (curr.size() > 0)
@@ -3070,12 +3070,12 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         {
             for (unsigned int i = 0; i < curr.size(); i++)
             {
-                files << QString::fromStdString(*(std::get<0>(curr.at(i))));
+                files << QString::fromStdString(*(std::get<0>(curr.at(i)))).replace('\\', '/');
             }
         }
         else
         {
-            files << QString::fromStdString(*(std::get<0>(curr.at(0))));
+            files << QString::fromStdString(*(std::get<0>(curr.at(0)))).replace('\\', '/');
         }
     }
     
@@ -3214,4 +3214,12 @@ void MainForm::sim7Seg()
         Sim7Seg *widget = new Sim7Seg(0, this->projectMan->getSimulated()->getSimControl());
         widget->show();
     }
+}
+
+
+void MainForm::userGuide()
+{
+    QDir dir(GuiCfg::getInstance().getUserGuidePath() + "/QuickUserGuideAssembler.pdf");
+    QDesktopServices::openUrl(QUrl("file:///" + dir.absolutePath()));
+    qDebug() << "user guide:" << dir.absolutePath();
 }

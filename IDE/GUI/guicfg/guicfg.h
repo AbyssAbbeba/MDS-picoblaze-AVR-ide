@@ -166,6 +166,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         QString getLicensePath();
 
+        QString getUserGuidePath();
+
         bool getProjectDefVHDL();
         
         bool getProjectDefVerilog();

@@ -1086,15 +1086,17 @@ void WDockManager::changeSimWidget(int index)
     qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
     if (this->getDockWidget(wSimulationInfo) == NULL)
     {
-        //qDebug() << "fuck, null";
+        qDebug() << "fuck, null";
         return;
     }
-    if (this->openSimWidgets.at(index) == NULL)
+    if (index >= openSimWidgets.size())
     {
-        //qDebug() << "fuck, null, list";
-        return;
+        this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(openSimWidgets.size()-1));
     }
-    this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
+    else
+    {
+        this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
+    }
     qDebug() << "WDockManager: changeSimWidget done";
 }
 

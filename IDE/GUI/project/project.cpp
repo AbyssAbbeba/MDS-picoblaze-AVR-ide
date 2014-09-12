@@ -196,7 +196,15 @@ void ProjectMan::setActiveByIndex(int index)
 {
     qDebug() << "ProjectMan: setActiveByIndex" << index;
     qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
-    activeProject = openProjects.at(index);
+    qDebug() << "ProjectMan: openProject count" << openProjects.count();
+    if (index >= openProjects.count())
+    {
+        activeProject = openProjects.at(openProjects.count()-1);
+    }
+    else
+    {
+        activeProject = openProjects.at(index);
+    }
     qDebug() << "ProjectMan: return setActiveByIndex";
 }
 

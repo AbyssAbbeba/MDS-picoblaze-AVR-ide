@@ -331,6 +331,7 @@ void GuiCfg::setDefaultPaths(bool release)
         this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
         this->tempPath = "../share/mds/temp";
         this->helpPath = "../doc/mds";
+        this->userGuidePath = "../doc/mds";
     }
     else
     {
@@ -343,6 +344,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./temp";
             this->helpPath = "../docs/manual";
+            this->userGuidePath = "../docs/manual";
         #elif defined(Q_OS_WIN32)
             this->configPath = "./GUI/resources/xml/config.xml";
             this->sessionPath = "./GUI/resources/xml/session.xml";
@@ -352,6 +354,7 @@ void GuiCfg::setDefaultPaths(bool release)
             this->templatePath = this->compilerPath + "/assembler/PicoBlaze";
             this->tempPath = "./GUI/temp";
             this->helpPath = "./docs/manual";
+            this->userGuidePath = "./docs/manual";
         #endif
     }
 }
@@ -651,6 +654,12 @@ QString GuiCfg::getTempPath()
 QString GuiCfg::getHelpPath()
 {
     return this->helpPath;
+}
+
+
+QString GuiCfg::getUserGuidePath()
+{
+    return this->userGuidePath;
 }
 
 
