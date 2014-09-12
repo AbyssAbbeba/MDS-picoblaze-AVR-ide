@@ -24,7 +24,9 @@ if ( BUILD_TESTING )
 endif()
 
 # Build Crypto++ library.
-add_subdirectory ( CryptoPP )
+if ( MDS_FEATURE_LICENCE_CERTIFICATE )
+    add_subdirectory ( CryptoPP )
+endif()
 
 # Build hidapi library.
 # add_subdirectory ( hidapi )

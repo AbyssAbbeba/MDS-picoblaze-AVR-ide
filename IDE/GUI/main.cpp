@@ -20,7 +20,9 @@
 #include "../utilities/LicenseCertificate/LicenseCertificate.h"
 #include <iostream>
 #include "../mds.h"
+#ifdef MDS_FEATURE_TRIAL
 #include "dialogs/TrialExpired/trialexpired.h"
+#endif // MDS_FEATURE_TRIAL
 
 int main(int argc, char *argv[])
 {
@@ -67,7 +69,7 @@ int main(int argc, char *argv[])
     //    qDebug() << pattern;
     //}
 
-    
+
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
     bool openFile = false;
@@ -130,7 +132,7 @@ int main(int argc, char *argv[])
     MainGUI.showMaximized();
     //qDebug() << "Main: height" << MainGUI.height();
     MainGUI.startHeight = MainGUI.height();
-    
+
     if (true == openFile)
     {
         QTimer::singleShot(200, &MainGUI, SLOT(openProject(QString::fromLocal8Bit(argv[1]))));
@@ -148,7 +150,7 @@ int main(int argc, char *argv[])
             MainGUI.createWelcome();
         }
     }
-    
+
     return app.exec();
-    
+
 }

@@ -30,13 +30,19 @@ add_subdirectory ( McuSpecFileDesigner )
 add_subdirectory ( os )
 
 # Assembly language support library.
-add_subdirectory ( AsmTranslator )
+if ( MDS_FEATURE_TRANSLATOR )
+    add_subdirectory ( AsmTranslator )
+endif()
 
 # Library for validating license certificates.
-add_subdirectory ( LicenseCertificate )
+if ( MDS_FEATURE_LICENCE_CERTIFICATE )
+    add_subdirectory ( LicenseCertificate )
+endif()
 
 # Library for working with processor definition files used Adjustable Simulator.
-add_subdirectory ( AdjSimProcDef )
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    add_subdirectory ( AdjSimProcDef )
+endif()
 
 # Library for automated testing environment using libCUnit.
 if ( BUILD_TESTING )
