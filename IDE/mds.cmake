@@ -10,6 +10,9 @@
 # Set internal configuration variables.
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Trial period [days] (valid only for trial version).
+set ( MDS_TRIAL_PERIOD 30 )
+
 if ( MDS_GRADE STREQUAL "Basic" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
     set ( MDS_FEATURE_8_SEGMENT_EDITOR          TRUE )
@@ -72,7 +75,7 @@ file ( APPEND "mds.h" "#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
 file ( APPEND "mds.h" "#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
 
 if ( MDS_VARIANT STREQUAL "Trial" )
-    file ( APPEND "mds.h" "#define MDS_TRIAL_PERIOD 30\n" )
+    file ( APPEND "mds.h" "#define MDS_TRIAL_PERIOD ${MDS_TRIAL_PERIOD}\n" )
 endif()
 
 foreach ( var   MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        MDS_FEATURE_TRANSLATOR
