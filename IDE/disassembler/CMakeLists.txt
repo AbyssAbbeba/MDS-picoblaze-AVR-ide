@@ -25,7 +25,9 @@ set ( DISASSEMBLER_EXEC "mds-disasm" )
 add_subdirectory ( PicoBlaze )
 
 # Adaptable Disassembler.
-add_subdirectory ( Adaptable )
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    add_subdirectory ( Adaptable )
+endif()
 
 # ------------------------------------------------------------------------------
 # WINDRES RC FILES.
@@ -67,11 +69,18 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
 ## Disassembler as shared library.
 #
 
+# List of additional libraries which can be enabled or disabled for this particular build.
+set ( MDS_ADDITONAL_LIBS "" )
+
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    list ( APPEND MDS_ADDITONAL_LIBS $<TARGET_OBJECTS:DAsmAdaptable> )
+endif()
+
 # Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
               ${LIB_RC_FILE}
+              ${MDS_ADDITONAL_LIBS}
               $<TARGET_OBJECTS:DAsmPicoBlaze>
-              $<TARGET_OBJECTS:DAsmAdaptable>
               DAsm.cxx
               DAsmCore.cxx )
 
