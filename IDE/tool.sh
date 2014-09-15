@@ -46,6 +46,7 @@ function build() {
 
     cmake -G "${cmakeGenerator}"                \
           -DTEST_COVERAGE=OFF                   \
+          -DINDEPENDENT_PACKAGES=ON             \
           -DTARGET_OS="${os}"                   \
           -DTARGET_ARCH="${arch}"               \
           -DBUILD_TESTING=${btest:-on}          \

@@ -115,8 +115,8 @@ else()
 endif()
 
 if ( NOT MDS_GRADE )
-    message ( STATUS "MDS_GRADE not set, options are: \"Basic\", \"Premium\", \"Professional\" (default), and \"Ultimate\"." )
-    set ( MDS_GRADE "Commercial" )
+    message ( STATUS "MDS_GRADE not set, options are: \"Basic\", \"Premium\", \"Professional\", and \"Ultimate\" (default)." )
+    set ( MDS_GRADE "Ultimate" )
 elseif ( ( NOT MDS_GRADE STREQUAL "Basic" ) AND
          ( NOT MDS_GRADE STREQUAL "Premium" ) AND
          ( NOT MDS_GRADE STREQUAL "Professional" ) AND
@@ -127,8 +127,8 @@ else()
 endif()
 
 if ( NOT MDS_TARGET )
-    message ( STATUS "MDS_TARGET not set, options are: \"PicoBlaze\" (default), \"AVR8\", and \"All\"." )
-    set ( MDS_TARGET "Commercial" )
+    message ( STATUS "MDS_TARGET not set, options are: \"PicoBlaze\", \"AVR8\", and \"All\" (default)." )
+    set ( MDS_TARGET "All" )
 elseif ( ( NOT MDS_TARGET STREQUAL "PicoBlaze" ) AND
          ( NOT MDS_TARGET STREQUAL "AVR8" ) AND
          ( NOT MDS_TARGET STREQUAL "All" ) )
