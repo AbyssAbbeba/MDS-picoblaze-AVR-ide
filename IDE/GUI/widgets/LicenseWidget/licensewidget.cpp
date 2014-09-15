@@ -47,14 +47,14 @@ void LicenseWidget::tryLoad()
 {
     #ifndef MDS_VARIANT_TRIAL
         this->licensePath = GuiCfg::getInstance().getLicensePath();
-        std::ifstream ifs;
-
-        ifs.open(this->licensePath.toStdString(), std::ios_base::binary);
-
-        if (ifs.is_open())
+        static const long long int MAX_SIZE = 10240;
+        char data [ MAX_SIZE ];
+        size_t len;
+        QFile file(GuiCfg::getInstance().getLicensePath());
+        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1LL !=  (len = file.read(data, MAX_SIZE))))
         {
             //load info
-            LicenseCertificate crt(ifs);
+            LicenseCertificate crt(std::string(data,len));
             if ( true == crt.m_isValid )
             {
                 this->license = true;
