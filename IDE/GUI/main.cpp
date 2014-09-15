@@ -72,7 +72,19 @@ int main(int argc, char *argv[])
     //    qDebug() << pattern;
     //}
 
-
+    //qDebug() << "Uživatel";
+    //qDebug() << QString("Uživatel");
+    qDebug() << QString::fromUtf8("Uživatel");
+    QString a = "Uživatel";
+    qDebug() << a;
+    //qDebug() << QString::fromUtf8(a.toStdString());
+    qDebug() << QString::fromLocal8Bit("Uživatel");
+    //qDebug() << QString::fromUtf16("Uživatel");
+    //qDebug("%s", qPrintable("Uživatel"));
+    qDebug() << QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    a = QDesktopServices::storageLocation(QDesktopServices::HomeLocation);
+    qDebug() << a;
+    
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
     bool openFile = false;
