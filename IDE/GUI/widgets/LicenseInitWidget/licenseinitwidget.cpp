@@ -33,7 +33,7 @@ LicenseInitWidget::LicenseInitWidget(QWidget *parent)
 
     connect(ui.btnBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui.btnBox, SIGNAL(rejected()), this, SLOT(reject()));
-    
+
     connect(this, SIGNAL(accepted()), this, SLOT(tryAccept()));
     connect(this, SIGNAL(rejected()), this, SLOT(tryReject()));
 
@@ -50,14 +50,14 @@ void LicenseInitWidget::tryLoad()
     #ifndef MDS_VARIANT_TRIAL
         //qDebug() << "MDS_VARIANT_NONTRIAL";
         this->licensePath = GuiCfg::getInstance().getLicensePath();
-        std::ifstream ifs;
-
-        ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
-
-        if (ifs.is_open())
+        static const long long int MAX_SIZE = 10240;
+        char data [ MAX_SIZE ];
+        size_t len;
+        QFile file(GuiCfg::getInstance().getLicensePath());
+        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data, MAX_SIZE))))
         {
             //load info
-            LicenseCertificate crt(ifs);
+            LicenseCertificate crt(std::string(data,len));
             if ( true == crt.m_isValid )
             {
                 this->license = true;
@@ -99,25 +99,18 @@ void LicenseInitWidget::tryLoad()
 void LicenseInitWidget::load()
 {
     #ifndef MDS_VARIANT_TRIAL
-        QByteArray rootArray;
-        #ifdef Q_OS_LINUX
-            rootArray = qgetenv("HOME");
-        #elif defined(Q_OS_WIN32)
-            rootArray = qgetenv("USERPROFILE");
-        #endif
-        QString root(rootArray);
-        this->licensePath = QFileDialog::getOpenFileName(this, tr("Certificate File"), root, tr("MDS Certificate (*.cert)"));
+        this->licensePath = QFileDialog::getOpenFileName(this, tr("Certificate File"), QDir::homePath(), tr("MDS Certificate (*.cert)"));
         if (this->licensePath != NULL)
         {
             ui.lePath->setText(this->licensePath);
-            std::ifstream ifs;
-
-            ifs.open (this->licensePath.toStdString(), std::ios_base::binary);
-
-            if (ifs.is_open())
+            static const long long int MAX_SIZE = 10240;
+            char data [ MAX_SIZE ];
+            size_t len;
+            QFile file(this->licensePath);
+            if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data, MAX_SIZE))))
             {
                 //load info
-                LicenseCertificate crt(ifs);
+                LicenseCertificate crt(std::string(data,len));
                 if ( true == crt.m_isValid )
                 {
                     #ifdef MDS_VARIANT_COMMERCIAL
@@ -128,8 +121,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_VARIANT_NONCOMMERCIAL
+                    #elif defined(MDS_VARIANT_NONCOMMERCIAL)
                         if (crt.m_product.m_variant != "Noncommercial")
                         {
                             qDebug() << "LicenseInitWidget: not noncommercial";
@@ -137,8 +129,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_GRADE_BASIC
+                    #elif defined(MDS_GRADE_BASIC)
                         if (crt.m_product.m_grade != "Basic")
                         {
                             qDebug() << "LicenseInitWidget: not basic";
@@ -146,8 +137,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_GRADE_PREMIUM
+                    #elif defined(MDS_GRADE_PREMIUM)
                         if (crt.m_product.m_grade != "Premium")
                         {
                             qDebug() << "LicenseInitWidget: not premium";
@@ -155,8 +145,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_GRADE_PROFESSIONAL
+                    #elif defined(MDS_GRADE_PROFESSIONAL)
                         if (crt.m_product.m_grade != "Professional")
                         {
                             qDebug() << "LicenseInitWidget: not professional";
@@ -164,8 +153,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_GRADE_ULTIMATE
+                    #elif defined(MDS_GRADE_ULTIMATE)
                         if (crt.m_product.m_grade != "Ultimate")
                         {
                             qDebug() << "LicenseInitWidget: not ultimate";
@@ -173,8 +161,7 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #endif
-                    #ifdef MDS_TARGET_PICOBLAZE
+                    #elif defined(MDS_TARGET_PICOBLAZE)
                         if (crt.m_product.m_target != "PicoBlaze")
                         {
                             qDebug() << "LicenseInitWidget: not PicoBlaze";
@@ -182,8 +169,12 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
+                    #else
+                            printError();
+                            return;
                     #endif
                     this->license = true;
+                    this->setResult(QDialog::Accepted);
                     QTextCursor cur = ui.tbInfo->textCursor();
                     cur.setPosition(0);
                     ui.tbInfo->setTextCursor(cur);
@@ -205,8 +196,7 @@ void LicenseInitWidget::load()
                 {
                     printError();
                 }
-
-                ifs.close();
+                file.close();
             }
 
         }
@@ -253,11 +243,19 @@ void LicenseInitWidget::tryAccept()
 {
     if (true == this->license)
     {
+        //qDebug() << "LicenseInitWidget: trying to copy to" << GuiCfg::getInstance().getLicensePath();
         #ifndef MDS_VARIANT_TRIAL
             if (QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath()) == false)
             {
                 QFile::remove(GuiCfg::getInstance().getLicensePath());
                 QFile::copy(this->licensePath, GuiCfg::getInstance().getLicensePath());
+                /*{
+                    qDebug() << "LicenseInitWidget: copy done";
+                }
+                else
+                {
+                    qDebug() << "LicenseInitWidget: copy not done";
+                }*/
             }
         #endif
         this->setResult(QDialog::Accepted);
