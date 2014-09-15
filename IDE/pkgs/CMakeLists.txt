@@ -88,6 +88,7 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
         # QtCLucene4 is required on windows but tends to CMake ignore that.
         list ( APPEND QT_LIBS_TO_INSTALL "${QT_LIBRARY_DIR}/QtCLucene4.dll" )
         # QHelp required this file in "sqldrivers" directory.
+        message ( STATUS "qsqlite4.dll will be installed in ${TARGET_DIRECTORY}/sqldrivers/" )
         install ( FILES "${QT_PLUGINS_DIR}/sqldrivers/qsqlite4.dll" DESTINATION "${TARGET_DIRECTORY}/sqldrivers/" )
     endif()
     list ( APPEND LIB_FILES_TO_INSTALL ${QT_LIBS_TO_INSTALL} )
@@ -113,7 +114,7 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
         set ( LIB_FILES_TO_INSTALL "" )
 
         foreach ( file ${dep} )
-            if ( EXISTS file )
+            if ( EXISTS "${file}" )
                 get_filename_component ( file ${file} REALPATH  )
                 list ( APPEND LIB_FILES_TO_INSTALL ${file} )
             endif()
@@ -147,17 +148,13 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
             string ( REGEX REPLACE "\\.+$" "" libNameMN ${libNameMN} )
             string ( REGEX REPLACE "\\.+$" "" libNameMNP ${libNameMNP} )
 
-            set ( i 0 )
             foreach ( name ${libName} ${libNameM} ${libNameMN} ${libNameMNP} )
                 if ( NOT filename STREQUAL name )
                     # message ( "lib='${lib}' | '${name}' --> '${filename}' | target='symlink-${basename}-${i}'" )
                     list ( APPEND symLinks ${name} )
-                    if ( NOT EXISTS name )
-                        add_custom_target ( symlink-${basename}-${i} ALL
-                                            COMMAND ln -s ${filename} ${name}
-                                            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                                            VERBATIM )
-                        math ( EXPR i "${i} + 1" )
+                    if ( NOT EXISTS "${name}" )
+                        execute_process ( COMMAND ln -fs ${filename} ${name}
+                                          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
                     endif()
                 endif()
             endforeach()

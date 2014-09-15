@@ -92,6 +92,12 @@ add_subdirectory ( include )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME} ${COMPILER_EXEC_TARGET}
+install ( TARGETS ${PROJECT_NAME}
           RUNTIME DESTINATION ${INSTALL_DIR_BIN}
           LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+
+if ( MDS_FEATURE_COMPILER_CLI )
+    install ( TARGETS ${COMPILER_EXEC_TARGET}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
