@@ -15,6 +15,9 @@
 
 #include "CompilerModules.h"
 
+// Feature set configuration.
+#include "../../mds.h"
+
 /*
  * Make sure that the data type of semantic values is declared (see Bison manual).
  * Actually the compiler core does not work with this data type, it is used only by
@@ -26,28 +29,60 @@
 #endif
 
 // Include all implemented semantic analyzers we have in this compiler collection.
-#include "C/CompilerCSemanticAnalyzer.h"
-#include "assembler/avr8/AsmAvr8SemanticAnalyzer.h"
-#include "assembler/pic8/AsmPic8SemanticAnalyzer.h"
-#include "assembler/mcs51/AsmMcs51SemanticAnalyzer.h"
-#include "assembler/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
+#ifdef MDS_FEATURE_C_COMPILER
+#   include "C/CompilerCSemanticAnalyzer.h"
+#endif // MDS_FEATURE_C_COMPILER
+#ifdef MDS_FEATURE_AVR8
+#   include "assembler/avr8/AsmAvr8SemanticAnalyzer.h"
+#endif // MDS_FEATURE_AVR8
+#ifdef MDS_FEATURE_PIC8
+#   include "assembler/pic8/AsmPic8SemanticAnalyzer.h"
+#endif // MDS_FEATURE_PIC8
+#ifdef MDS_FEATURE_MCS51
+#   include "assembler/mcs51/AsmMcs51SemanticAnalyzer.h"
+#endif // MDS_FEATURE_MCS51
+#ifdef MDS_FEATURE_PICOBLAZE
+#   include "assembler/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
+#endif // MDS_FEATURE_PICOBLAZE
 
 // Include lexer prototypes (they are used by the core to initialize and destroy a lexer).
-#include "C/CompilerCLexer.h"
-#include "assembler/avr8/AsmAvr8Lexer.h"
-#include "assembler/pic8/AsmPic8Lexer.h"
-#include "assembler/mcs51/AsmMcs51Lexer.h"
-#include "assembler/PicoBlaze/AsmPicoBlazeLexer.h"
+#ifdef MDS_FEATURE_C_COMPILER
+#   include "C/CompilerCLexer.h"
+#endif // MDS_FEATURE_C_COMPILER
+#ifdef MDS_FEATURE_AVR8
+#   include "assembler/avr8/AsmAvr8Lexer.h"
+#endif // MDS_FEATURE_AVR8
+#ifdef MDS_FEATURE_PIC8
+#   include "assembler/pic8/AsmPic8Lexer.h"
+#endif // MDS_FEATURE_PIC8
+#ifdef MDS_FEATURE_MCS51
+#   include "assembler/mcs51/AsmMcs51Lexer.h"
+#endif // MDS_FEATURE_MCS51
+#ifdef MDS_FEATURE_PICOBLAZE
+#   include "assembler/PicoBlaze/AsmPicoBlazeLexer.h"
+#endif // MDS_FEATURE_PICOBLAZE
 
 // Include additional compiler specific header files.
-#include "C/CompilerCPreprocessor.h"
+#ifdef MDS_FEATURE_C_COMPILER
+#   include "C/CompilerCPreprocessor.h"
+#endif // MDS_FEATURE_C_COMPILER
 
 // Parser prototypes (the core uses them to initiate syntactical analysis).
-int CompilerCParser_parse    ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-int AsmAvr8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-int AsmPic8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-int AsmMcs51Parser_parse     ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
-int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#ifdef MDS_FEATURE_C_COMPILER
+    int CompilerCParser_parse    ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_C_COMPILER
+#ifdef MDS_FEATURE_AVR8
+    int AsmAvr8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_AVR8
+#ifdef MDS_FEATURE_PIC8
+    int AsmPic8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_PIC8
+#ifdef MDS_FEATURE_MCS51
+    int AsmMcs51Parser_parse     ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_MCS51
+#ifdef MDS_FEATURE_PICOBLAZE
+    int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_PICOBLAZE
 
 // Compiler header files.
 #include "CompilerCore.h"
@@ -101,6 +136,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
         // -------------------------------------------------------------------------------------------------------------
         // C language.
         // -------------------------------------------------------------------------------------------------------------
+        #ifdef MDS_FEATURE_C_COMPILER
         case CompilerBase::LI_C:
         {
             switch ( arch )
@@ -108,29 +144,37 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 /*
                  * AVR-8 microcontroller.
                  */
+                #ifdef MDS_FEATURE_AVR8
                 case CompilerBase::TA_AVR8:
                 {
                     return MESC_ARCH_NOT_SUPPORTED;
                 }
+                #endif // MDS_FEATURE_AVR8
 
                 /*
                  * PIC-8 microcontroller.
                  */
+                #ifdef MDS_FEATURE_PIC8
                 case CompilerBase::TA_PIC8:
                 {
                     return MESC_ARCH_NOT_SUPPORTED;
                 }
+                #endif // MDS_FEATURE_PIC8
+
                 /*
                  * MCS-51 microcontroller.
                  */
+                #ifdef MDS_FEATURE_MCS51
                 case CompilerBase::TA_MCS51:
                 {
                     return MESC_ARCH_NOT_SUPPORTED;
                 }
+                #endif // MDS_FEATURE_MCS51
 
                 /*
                  * PicoBlaze soft-core processor.
                  */
+                #ifdef MDS_FEATURE_PICOBLAZE
                 case CompilerBase::TA_PICOBLAZE:
                 {
                     // Setup compiler's semantic analyzer.
@@ -170,6 +214,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done.
                     return MESC_OK;
                 }
+                #endif // MDS_FEATURE_PICOBLAZE
 
                 /*
                  * Error.
@@ -178,6 +223,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     return MESC_ARCH_NOT_SUPPORTED;
             }
         }
+        #endif // MDS_FEATURE_C_COMPILER
 
         // -------------------------------------------------------------------------------------------------------------
         // Assembly language.
@@ -189,6 +235,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 /*
                  * AVR-8 macro-assembler.
                  */
+                #ifdef MDS_FEATURE_AVR8
                 case CompilerBase::TA_AVR8:
                 {
                     // Setup compiler's semantic analyzer.
@@ -207,10 +254,12 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done.
                     return MESC_OK;
                 }
+                #endif // MDS_FEATURE_AVR8
 
                 /*
                  * PIC-8 macro-assembler.
                  */
+                #ifdef MDS_FEATURE_PIC8
                 case CompilerBase::TA_PIC8:
                 {
                     // Setup compiler's semantic analyzer.
@@ -229,10 +278,12 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done...
                     return MESC_OK;
                 }
+                #endif // MDS_FEATURE_PIC8
 
                 /*
                  * MCS-51 macro-assembler.
                  */
+                #ifdef MDS_FEATURE_MCS51
                 case CompilerBase::TA_MCS51:
                 {
                     // Setup compiler's semantic analyzer.
@@ -251,10 +302,12 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done.
                     return MESC_OK;
                 }
+                #endif // MDS_FEATURE_MCS51
 
                 /*
                  * PicoBlaze macro-assembler.
                  */
+                #ifdef MDS_FEATURE_PICOBLAZE
                 case CompilerBase::TA_PICOBLAZE:
                 {
                     // Setup compiler's semantic analyzer.
@@ -273,6 +326,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Done.
                     return MESC_OK;
                 }
+                #endif // MDS_FEATURE_PICOBLAZE
 
                 /*
                  * Error.

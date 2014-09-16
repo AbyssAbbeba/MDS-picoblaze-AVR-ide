@@ -15,11 +15,17 @@
 project ( CompilerModules )
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# BUILD COMPONENTS IN THE SUBDIRECTORIES & CONFIGURE FEATURES
 # ------------------------------------------------------------------------------
 
+# List of additional compiler modules which can be enabled or disabled for this particular build.
+set ( MDS_ADDITONAL_MODULES "" )
+
 # Compiler module for C language.
-add_subdirectory ( C )
+if ( MDS_FEATURE_C_COMPILER )
+    add_subdirectory ( C )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleC" )
+endif()
 
 # Compiler modules for assembler.
 add_subdirectory ( assembler )
@@ -38,7 +44,7 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/DbgFile/"
 add_library ( ${PROJECT_NAME} CompilerModules.cxx )
 
 # Link target to given libraries.
-target_link_libraries ( ${PROJECT_NAME} CompilerModuleC
+target_link_libraries ( ${PROJECT_NAME} ${MDS_ADDITONAL_MODULES}
                                         CompilerModulesAsm )
 
 # ------------------------------------------------------------------------------

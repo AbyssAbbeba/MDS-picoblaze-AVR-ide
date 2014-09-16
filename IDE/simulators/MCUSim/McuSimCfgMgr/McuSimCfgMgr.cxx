@@ -39,25 +39,39 @@ McuSimCfgMgr * McuSimCfgMgr::m_instance = nullptr;
 
 McuSimCfgMgr::McuSimCfgMgr()
 {
+  #ifdef MDS_FEATURE_AVR8
     m_mcuSimCfgMgrAVR8 = new McuSimCfgMgrAVR8 ( &m_devices,
                                                 &m_currentXMLElement,
                                                 &m_expectedXMLElements,
                                                 &m_expectCharacters,
                                                 &m_auxInt0,
                                                 &m_auxInt1 );
+  #else // MDS_FEATURE_AVR8
+    m_mcuSimCfgMgrAVR8 = nullptr;
+  #endif // MDS_FEATURE_AVR8
 
+  #ifdef MDS_FEATURE_PIC8
     m_mcuSimCfgMgrPIC8 = new McuSimCfgMgrPIC8 ( &m_devices,
                                                 &m_currentXMLElement,
                                                 &m_expectedXMLElements,
                                                 &m_expectCharacters,
                                                 &m_auxInt0,
                                                 &m_auxInt1 );
+  #else // MDS_FEATURE_PIC8
+    m_mcuSimCfgMgrPIC8 = nullptr;
+  #endif // MDS_FEATURE_PIC8
 }
 
 McuSimCfgMgr::~McuSimCfgMgr()
 {
+  #ifdef MDS_FEATURE_AVR8
     delete m_mcuSimCfgMgrAVR8;
+  #endif // MDS_FEATURE_AVR8
+
+  #ifdef MDS_FEATURE_PIC8
     delete m_mcuSimCfgMgrPIC8;
+  #endif // MDS_FEATURE_PIC8
+
     clear();
 }
 
@@ -133,10 +147,16 @@ bool McuSimCfgMgr::characters ( const QString & characters )
     {
         switch ( m_devices.last()->m_arch )
         {
+          #ifdef MDS_FEATURE_AVR8
             case MCUSim::Arch::ARCH_AVR8:
                 return m_mcuSimCfgMgrAVR8->characters(ch);
+          #endif // MDS_FEATURE_AVR8
+
+          #ifdef MDS_FEATURE_PIC8
             case MCUSim::Arch::ARCH_PIC8:
                 return m_mcuSimCfgMgrPIC8->characters(ch);
+          #endif // MDS_FEATURE_PIC8
+
             default:
                 qDebug() << "Unknown architecture";
                 return false;
@@ -156,10 +176,18 @@ bool McuSimCfgMgr::endElement
     return true;
 }
 
-bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
+bool McuSimCfgMgr::startElement ( const QString &
+                                  #if defined(MDS_FEATURE_AVR8) || defined(MDS_FEATURE_PIC8)
+                                    namespaceURI
+                                  #endif
+                                  ,
                                   const QString & localName,
                                   const QString & qName,
-                                  const QXmlAttributes & atts )
+                                  const QXmlAttributes &
+                                  #if defined(MDS_FEATURE_AVR8) || defined(MDS_FEATURE_PIC8)
+                                    atts
+                                  #endif
+                                )
 {
     if ( false == m_expectedXMLElements.contains(localName) )
     {
@@ -179,15 +207,19 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
     {
         if ( "avr8:device" == qName )
         {
+          #ifdef MDS_FEATURE_AVR8
             m_expectedXMLElements << "adc";
             m_devices.append(new McuDeviceSpecAVR8());
             return m_mcuSimCfgMgrAVR8->attributes(localName, atts);
+          #endif // MDS_FEATURE_AVR8
         }
         else if ( "pic8:device" == qName )
         {
+          #ifdef MDS_FEATURE_PIC8
             m_expectedXMLElements << "instructionset";
             m_devices.append(new McuDeviceSpecPIC8());
             return m_mcuSimCfgMgrPIC8->attributes(localName, atts);
+          #endif // MDS_FEATURE_PIC8
         }
         else
         {
@@ -198,10 +230,16 @@ bool McuSimCfgMgr::startElement ( const QString & namespaceURI,
     {
         switch ( m_devices.last()->m_arch )
         {
+          #ifdef MDS_FEATURE_AVR8
             case MCUSim::Arch::ARCH_AVR8:
                 return m_mcuSimCfgMgrAVR8->startElement(namespaceURI, localName, qName, atts);
+          #endif // MDS_FEATURE_AVR8
+
+          #ifdef MDS_FEATURE_PIC8
             case MCUSim::Arch::ARCH_PIC8:
                 return m_mcuSimCfgMgrPIC8->startElement(namespaceURI, localName, qName, atts);
+          #endif // MDS_FEATURE_PIC8
+
             default:
                 qDebug() << "Unknown architecture";
                 return false;
@@ -218,7 +256,9 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
                                     #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
                                    ) const
 {
-    if ( MCUSim::ARCH_PICOBLAZE == mcuConfig.getArch() )
+    if ( false ) {}
+  #ifdef MDS_FEATURE_PICOBLAZE
+    else if ( MCUSim::ARCH_PICOBLAZE == mcuConfig.getArch() )
     {
         MCUSimBase::Family dev;
 
@@ -250,13 +290,14 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
         dynamic_cast<PicoBlazeConfig&>(mcuConfig).configure(dev);
         return true;
     }
-    #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+  #endif // MDS_FEATURE_PICOBLAZE
+  #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
     else if ( MCUSim::ARCH_ADAPTABLE == mcuConfig.getArch() )
     {
         McuDeviceSpecAdaptable(*procDef).setupSimulator(dynamic_cast<AdaptableSimConfig&>(mcuConfig));
         return true;
     }
-    #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+  #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
     const QString name = mcuName;
     const int size = m_devices.size();
@@ -283,10 +324,15 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
 
     switch ( m_devices[idx]->m_arch )
     {
+      #ifdef MDS_FEATURE_AVR8
         case MCUSim::Arch::ARCH_AVR8:
             return dynamic_cast<McuDeviceSpecAVR8*>(m_devices[idx])->setupSimulator(dynamic_cast<AVR8Config&>(mcuConfig));
+      #endif // MDS_FEATURE_AVR8
+
+      #ifdef MDS_FEATURE_PIC8
         case MCUSim::Arch::ARCH_PIC8:
             return dynamic_cast<McuDeviceSpecPIC8*>(m_devices[idx])->setupSimulator(dynamic_cast<PIC8Config&>(mcuConfig));
+      #endif // MDS_FEATURE_PIC8
         default:
             qDebug() << "Unknown architecture";
             return false;
