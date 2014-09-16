@@ -200,7 +200,7 @@ function printHelp() {
     echo "    btest=<on|off>  Build test binaries  (normal: 'on', tests: [always on])."
     echo "    variant=<Commercial|Noncommercial|Trial> Set \"MDS variant\"."
     echo "    grade=<Basic|Premium|Professional|Ultimate> Set \"MDS grade\"."
-    echo "    target=<PicoBlaze|AVR8|All> Set \"MDS target\"."
+    echo "    target=<PicoBlaze|AVR8|PIC8|MCS51|All> Set \"MDS target\"."
     echo ""
     echo "Example:"
     echo "    bt=Release cov=off ./tool.sh -t     # Run tests without coverage and with binaries built for release."

@@ -32,10 +32,16 @@ add_library ( MCUSimTestScript
 # ------------------------------------------------------------------------------
 
 # Tests for PicoBlaze Simulator.
-add_subdirectory ( PicoBlaze )
+if ( MDS_FEATURE_PICOBLAZE )
+    add_subdirectory ( PicoBlaze )
+endif()
 
 # Tests for PIC8 Simulator.
-add_subdirectory ( PIC8 )
+if ( MDS_FEATURE_PIC8 )
+    add_subdirectory ( PIC8 )
+endif()
 
 # Tests for AVR8 Simulator.
-add_subdirectory ( AVR8 )
+if ( MDS_FEATURE_AVR8 )
+    add_subdirectory ( AVR8 )
+endif()

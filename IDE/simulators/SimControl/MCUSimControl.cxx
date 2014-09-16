@@ -15,6 +15,8 @@
 
 #include "MCUSimControl.h"
 
+#include "../../mds.h"
+
 #include "MCUSimObserver.h"
 
 #include "DbgFileCDB.h"
@@ -27,24 +29,31 @@
 #include "SrecFile.h"
 #include "ObjectDataFile.h"
 
-#include "AVR8Sim.h"
-#include "AVR8ProgramMemory.h"
+#ifdef MDS_FEATURE_AVR8
+    #include "AVR8Sim.h"
+    #include "AVR8ProgramMemory.h"
+    #include "McuDeviceSpecAVR8.h"
+#endif // MDS_FEATURE_AVR8
 
-#include "PIC8Sim.h"
-#include "PIC8ProgramMemory.h"
+#ifdef MDS_FEATURE_PIC8
+    #include "PIC8Sim.h"
+    #include "PIC8ProgramMemory.h"
+    #include "McuDeviceSpecPIC8.h"
+#endif // MDS_FEATURE_PIC8
 
-#include "PicoBlazeSim.h"
-#include "PicoBlazeProgramMemory.h"
+#ifdef MDS_FEATURE_PICOBLAZE
+    #include "PicoBlazeSim.h"
+    #include "PicoBlazeProgramMemory.h"
+#endif // MDS_FEATURE_PICOBLAZE
 
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
     #include "AdaptableSim.h"
     #include "AdjSimProcDef.h"
+    #include "AdaptableSimProgramMemory.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 #include "McuSimCfgMgr.h"
 #include "McuDeviceSpec.h"
-#include "McuDeviceSpecAVR8.h"
-#include "McuDeviceSpecPIC8.h"
 
 #include <ctime>
 #include <cstring>
@@ -223,15 +232,29 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
     // Start simulator
     switch ( m_architecture )
     {
+      #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
             dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_AVR8
+
+      #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #ifdef MDS_FEATURE_PIC8
+
+      #endif // MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
             dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_PICOBLAZE
+
+      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+        case MCUSim::ARCH_ADAPTABLE:
+            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+
         default:
             // TODO: implement a proper error handling here
             m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
@@ -259,15 +282,29 @@ bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
     // Start simulator
     switch ( m_architecture )
     {
+      #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
             dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_AVR8
+
+      #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #ifdef MDS_FEATURE_PIC8
+
+      #endif // MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
             dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_PICOBLAZE
+
+      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+        case MCUSim::ARCH_ADAPTABLE:
+            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+
         default:
             // TODO: implement a proper error handling here
             m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
@@ -414,15 +451,29 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
     // Start simulator
     switch ( m_architecture )
     {
+      #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
             dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_AVR8
+
+      #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #ifdef MDS_FEATURE_PIC8
+
+      #endif // MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
             dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
+      #endif // MDS_FEATURE_PICOBLAZE
+
+      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+        case MCUSim::ARCH_ADAPTABLE:
+            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+
         default:
             // TODO: implement a proper error handling here
             m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
@@ -626,6 +677,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
     }
 
     if (
+        #ifdef MDS_FEATURE_PICOBLAZE
            ( 0 == strcmp("kcpsm1cpld", deviceName) )
                ||
            ( 0 == strcmp("kcpsm1", deviceName) )
@@ -635,6 +687,9 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
            ( 0 == strcmp("kcpsm3", deviceName) )
                ||
            ( 0 == strcmp("kcpsm6", deviceName) )
+        #else // MDS_FEATURE_PICOBLAZE
+           false
+        #endif // MDS_FEATURE_PICOBLAZE
        )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
@@ -660,20 +715,26 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
 
     switch ( m_architecture )
     {
+      #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
             m_simulator = new AVR8Sim();
             break;
+      #endif // MDS_FEATURE_AVR8
+      #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
             m_simulator = new PIC8Sim();
             break;
+      #endif // MDS_FEATURE_PIC8
+      #ifdef MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
             m_simulator = new PicoBlazeSim();
             break;
-        #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+      #endif // MDS_FEATURE_PICOBLAZE
+      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
         case MCUSim::ARCH_ADAPTABLE:
             m_simulator = new AdaptableSim();
             break;
-        #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
         default:
             m_messages.push_back(QObject::tr("Unknown device architecture." ).toStdString());
             return false;
@@ -984,6 +1045,7 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
 
     switch ( m_architecture )
     {
+        #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
         {
             const McuDeviceSpecAVR8 * devSpec = dynamic_cast<const McuDeviceSpecAVR8*>(m_deviceSpec);
@@ -1014,6 +1076,9 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
 
             break;
         }
+        #endif // MDS_FEATURE_AVR8
+
+        #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
         {
             const McuDeviceSpecPIC8 * devSpec = dynamic_cast<const McuDeviceSpecPIC8*>(m_deviceSpec);
@@ -1044,11 +1109,16 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
 
             break;
         }
+        #endif // MDS_FEATURE_PIC8
+
+        #ifdef MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
         {
             // There are no SFR (Special Function Registers) on KCPSM3 (PicoBlaze)
             break;
         }
+        #endif // MDS_FEATURE_PICOBLAZE
+
         default:
         {
             return false;

@@ -127,12 +127,14 @@ else()
 endif()
 
 if ( NOT MDS_TARGET )
-    message ( STATUS "MDS_TARGET not set, options are: \"PicoBlaze\", \"AVR8\", and \"All\" (default)." )
+    message ( STATUS "MDS_TARGET not set, options are: \"PicoBlaze\", \"AVR8\", \"PIC8\", \"MCS51\", and \"All\" (default)." )
     set ( MDS_TARGET "All" )
 elseif ( ( NOT MDS_TARGET STREQUAL "PicoBlaze" ) AND
          ( NOT MDS_TARGET STREQUAL "AVR8" ) AND
+         ( NOT MDS_TARGET STREQUAL "PIC8" ) AND
+         ( NOT MDS_TARGET STREQUAL "MCS51" ) AND
          ( NOT MDS_TARGET STREQUAL "All" ) )
-    message ( SEND_ERROR "MDS_TARGET has to be set one of {PicoBlaze, AVR8, All}, \"${MDS_TARGET}\" is not a valid value." )
+    message ( SEND_ERROR "MDS_TARGET has to be set one of {PicoBlaze, AVR8, PIC8, MCS51, All}, \"${MDS_TARGET}\" is not a valid value." )
 else()
     message ( STATUS "MDS target: ${MDS_TARGET}" )
 endif()
@@ -346,7 +348,9 @@ add_subdirectory ( compiler )
 add_subdirectory ( GUI )
 
 # Build Moravia Script language support.
-# add_subdirectory ( moraviascript )
+if ( MDS_FEATURE_C_TESTBENCH )
+    add_subdirectory ( moraviascript )
+endif()
 
 # Build dev. hardware support software.
 add_subdirectory ( HW )

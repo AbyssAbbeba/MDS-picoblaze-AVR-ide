@@ -15,20 +15,35 @@
 project ( CompilerModulesAsm )
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# BUILD COMPONENTS IN THE SUBDIRECTORIES & CONFIGURE FEATURES
 # ------------------------------------------------------------------------------
 
+# List of additional compiler modules which can be enabled or disabled for this particular build.
+set ( MDS_ADDITONAL_MODULES "" )
+
 # Compiler modules for assembly language for AVR8.
-add_subdirectory ( avr8 )
+if ( MDS_FEATURE_AVR8 )
+    add_subdirectory ( avr8 )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmAvr8" )
+endif()
 
 # Compiler modules for assembly language for MCS-51.
-add_subdirectory ( mcs51 )
+if ( MDS_FEATURE_MCS51 )
+    add_subdirectory ( mcs51 )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmMcs51" )
+endif()
 
 # Compiler modules for assembly language for PIC8.
-add_subdirectory ( pic8 )
+if ( MDS_FEATURE_PIC8 )
+    add_subdirectory ( pic8 )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmPic8" )
+endif()
 
 # Compiler modules for assembly language for PicoBlaze.
-add_subdirectory ( PicoBlaze )
+if ( MDS_FEATURE_PICOBLAZE )
+    add_subdirectory ( PicoBlaze )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmPicoBlaze" )
+endif()
 
 # Code generators.
 add_subdirectory ( generators )
@@ -47,10 +62,7 @@ add_library ( ${PROJECT_NAME} CompilerModulesAsm.cxx )
 
 # Link target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        CompilerModuleAsmAvr8
-                                        CompilerModuleAsmMcs51
-                                        CompilerModuleAsmPic8
-                                        CompilerModuleAsmPicoBlaze )
+                                        ${MDS_ADDITONAL_MODULES} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
