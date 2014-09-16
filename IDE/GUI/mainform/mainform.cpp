@@ -2269,10 +2269,12 @@ void MainForm::simulationFlowHandle()
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
+                qDebug() << "MainForm: simulationBreakpointsEnabled true";
                 projectMan->getSimulated()->setBreakpoints(true);
             }
             else
             {
+                qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 projectMan->getSimulated()->setBreakpoints(false);
             }
         }
