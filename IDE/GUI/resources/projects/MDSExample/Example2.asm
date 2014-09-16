@@ -38,7 +38,7 @@ endm
 ; Program start
 ; --------------------
 start:  load    s1, #0x0F
-        load    s3, #0x1E
+        load    s3, #0xF0
         jump    main
 
 ; Main loop
