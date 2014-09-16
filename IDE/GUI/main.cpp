@@ -210,22 +210,6 @@ int main(int argc, char *argv[])
         }
     #endif
 
-
-    /*qDebug() << "CodeEdit: available encoding";
-    QList<QByteArray> list = QTextCodec::availableCodecs();
-    for (int i = 0; i < list.count(); i++)
-    {
-        qDebug() << "CodeEdit: codec" << i << list.at(i);
-    }*/
-    //QTextCodec::setCodecForLocale(QTextCodec::codecForName("UTF-16"));
-    //qDebug() << "CodeEdit: current encoding" << QTextCodec::codecForLocale()->name();
-
-    /*QStringList list = fdb.families();
-
-    foreach (QString string, list)
-    {
-        qDebug() << string;
-    }*/
     //QResource::registerResource("icons.rcc");
     MainForm MainGUI;
     MainGUI.showMaximized();
