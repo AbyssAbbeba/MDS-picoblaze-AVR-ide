@@ -19,4 +19,6 @@ project ( testsDisassembler )
 # ------------------------------------------------------------------------------
 
 # Tests for PicoBlaze disassembler
-add_subdirectory ( PicoBlaze )
+if ( MDS_FEATURE_PICOBLAZE )
+    add_subdirectory ( PicoBlaze )
+endif()

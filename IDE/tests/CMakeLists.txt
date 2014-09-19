@@ -53,4 +53,6 @@ add_subdirectory ( simulator )
 add_subdirectory ( MCUDataFiles )
 
 # Unit tests for Moravia Script.
-# add_subdirectory ( MScript )
+if ( MDS_FEATURE_C_TESTBENCH )
+    add_subdirectory ( MScript )
+endif()

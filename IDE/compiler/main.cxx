@@ -34,6 +34,9 @@
 // OS compatibility.
 #include "../utilities/os/os.h"
 
+// Feature set configuration.
+#include "../mds.h"
+
 /**
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
@@ -77,14 +80,24 @@ void printHelp ( const char * executable )
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
               << QObject::tr("        Specify target architecture, supported architectures are:")
                             .toStdString() << std::endl
-//               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
-//               << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
-//               << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+            #ifdef MDS_FEATURE_AVR8
+              << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
+            #endif // MDS_FEATURE_AVR8
+            #ifdef MDS_FEATURE_PIC8
+              << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
+            #endif // MDS_FEATURE_PIC8
+            #ifdef MDS_FEATURE_MCS51
+              << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+            #endif // MDS_FEATURE_MCS51
+            #ifdef MDS_FEATURE_PICOBLAZE
               << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
+            #endif // MDS_FEATURE_PICOBLAZE
                             .toStdString() << std::endl
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
               << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
-//               << QObject::tr("            - c   : C language,").toStdString() << std::endl
+            #ifdef MDS_FEATURE_C_COMPILER
+              << QObject::tr("            - c   : C language,").toStdString() << std::endl
+            #endif // MDS_FEATURE_C_COMPILER
               << QObject::tr("            - asm : assembly language.").toStdString() << std::endl
               << QObject::tr("    -x, --hex <Intel HEX file>").toStdString() << std::endl
               << QObject::tr("        Specify output file with machine code generated as a result of compilation,")
@@ -154,10 +167,12 @@ void printHelp ( const char * executable )
               << QObject::tr("    --raw-hex-dump <.hex file>").toStdString() << std::endl
               << QObject::tr("        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal "
                              "numbers separated by CRLF sequence).").toStdString() << std::endl
-//               << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
-//               << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
-//                              "used by the compiler itself, it's intended for the user (valid for C language "
-//                              "only).").toStdString() << std::endl
+            #ifdef MDS_FEATURE_C_COMPILER
+              << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
+                             "used by the compiler itself, it's intended for the user (valid for C language "
+                             "only).").toStdString() << std::endl
+            #endif // MDS_FEATURE_C_COMPILER
               << std::endl;
 
     std::cout << QObject::tr("Notes:").toStdString() << std::endl
@@ -209,22 +224,31 @@ void printUsage ( const char * executable )
  */
 CompilerBase::TargetArch whichArch ( const char * optarg )
 {
-    if ( 0 == strcmp(optarg, "avr8") )
+    if ( false ) {}
+  #ifdef MDS_FEATURE_AVR8
+    else if ( 0 == strcmp(optarg, "avr8") )
     {
         return CompilerBase::TA_AVR8;
     }
+  #endif // MDS_FEATURE_AVR8
+  #ifdef MDS_FEATURE_PIC8
     else if ( 0 == strcmp(optarg, "pic8") )
     {
         return CompilerBase::TA_PIC8;
     }
+  #endif // MDS_FEATURE_PIC8
+  #ifdef MDS_FEATURE_MCS51
     else if ( 0 == strcmp(optarg, "mcs51") )
     {
         return CompilerBase::TA_MCS51;
     }
+  #endif // MDS_FEATURE_MCS51
+  #ifdef MDS_FEATURE_PICOBLAZE
     else if ( 0 == strcmp(optarg, "PicoBlaze") )
     {
         return CompilerBase::TA_PICOBLAZE;
     }
+  #endif // MDS_FEATURE_PICOBLAZE
     else
     {
         std::cerr << QObject::tr("Error: invalid architecture specification `%1'.").arg(optarg).toStdString()
@@ -240,14 +264,16 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
  */
 CompilerBase::LangId whichLang ( const char * optarg )
 {
-    if ( 0 == strcmp(optarg, "c") )
-    {
-        return CompilerBase::LI_C;
-    }
-    else if ( 0 == strcmp(optarg, "asm") )
+    if ( 0 == strcmp(optarg, "asm") )
     {
         return CompilerBase::LI_ASM;
     }
+  #ifdef MDS_FEATURE_C_COMPILER
+    else if ( 0 == strcmp(optarg, "c") )
+    {
+        return CompilerBase::LI_C;
+    }
+  #endif // MDS_FEATURE_C_COMPILER
     else
     {
         std::cerr << QObject::tr("Error: invalid language specification `%1'.").arg(optarg).toStdString() << std::endl;

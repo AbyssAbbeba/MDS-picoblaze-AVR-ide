@@ -7,6 +7,7 @@
 counter         reg     s5      ; Counter of Px shifts
 x               set     100     ; Some variable
 inc_dec         reg     100 / X ; Flag: Increment/Decrement counter
+temp            reg     s6
 
 
 ; Macro instructions
@@ -24,9 +25,9 @@ shift   macro   reg0, reg1
         endif
 
         ; Shift
-        load    reg1, reg0
+        load    temp,reg0
         load    reg0, reg1
-
+        load    reg1, temp
 endm
 
 ; Program initialization
@@ -37,7 +38,7 @@ endm
 ; Program start
 ; --------------------
 start:  load    s1, #0x0F
-        load    s3, #0x1E
+        load    s3, #0xF0
         jump    main
 
 ; Main loop
