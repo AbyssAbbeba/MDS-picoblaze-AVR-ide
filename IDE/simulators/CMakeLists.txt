@@ -41,15 +41,31 @@ windres_rc ( OUTPUT_VAR         RC_FILE
              YEARS              ${COPYRIGHT_YEARS} )
 
 # ------------------------------------------------------------------------------
-# COMPILATION OPTIONS
+# CONFIGURE FEATURES
 # ------------------------------------------------------------------------------
 
 # List of additional simulator modules which can be enabled or disabled for this particular build.
 set ( MDS_ADDITONAL_SIM_MODS "" )
 
+if ( MDS_FEATURE_AVR8 )
+    list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:AVR8Sim> )
+endif()
+
+if ( MDS_FEATURE_PIC8 )
+    list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:PIC8Sim> )
+endif()
+
+if ( MDS_FEATURE_PICOBLAZE )
+    list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:PicoBlazeSim> )
+endif()
+
 if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
     list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:AdaptableSim> )
 endif()
+
+# ------------------------------------------------------------------------------
+# COMPILATION OPTIONS
+# ------------------------------------------------------------------------------
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
@@ -57,9 +73,6 @@ add_library ( ${PROJECT_NAME} SHARED
 
               # Simulators.
               ${MDS_ADDITONAL_SIM_MODS}
-              $<TARGET_OBJECTS:AVR8Sim>
-              $<TARGET_OBJECTS:PIC8Sim>
-              $<TARGET_OBJECTS:PicoBlazeSim>
 
               # Support functions.
               $<TARGET_OBJECTS:SimControl>

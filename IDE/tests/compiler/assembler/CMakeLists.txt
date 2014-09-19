@@ -19,4 +19,6 @@ project ( testsAssembler )
 # ------------------------------------------------------------------------------
 
 # Tests for PicoBlaze assembler.
-add_subdirectory ( PicoBlaze )
+if ( MDS_FEATURE_PICOBLAZE )
+    add_subdirectory ( PicoBlaze )
+endif()
