@@ -48,6 +48,9 @@ if ( MDS_FEATURE_SIM_7_SEGMENT )
     list ( APPEND MDS_ADDITONAL_LIBS "Sim7Seg" )
 endif()
 
+list ( APPEND MDS_ADDITONAL_LIBS "SimSwitch" )
+list ( APPEND MDS_ADDITONAL_LIBS "SimPortLogger" )
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------

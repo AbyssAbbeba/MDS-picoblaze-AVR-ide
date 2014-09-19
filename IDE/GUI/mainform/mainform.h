@@ -167,6 +167,8 @@ class MainForm : public QMainWindow
         void showWebSite(QAction *action);
         void simLeds();
         void sim7Seg();
+        void simSwitch();
+        void simPortLogger();
         void userGuide();
 
     signals:
@@ -193,6 +195,7 @@ class MainForm : public QMainWindow
         QMenu *projectMenu;
         QMenu *simulationMenu;
         QMenu *toolsMenu;
+        QMenu *simToolsMenu;
         QMenu *helpMenu;
 
         QMenu *recentFilesMenu;
@@ -248,8 +251,11 @@ class MainForm : public QMainWindow
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
         QAction *toolLoopGenAct;
+
         QAction *toolSimLedsAct;
         QAction *toolSim7SegAct;
+        QAction *toolSimSwitchAct;
+        QAction *toolSimLoggerAct;
 
         QAction *licenseAct;
         QAction *aboutAct;
