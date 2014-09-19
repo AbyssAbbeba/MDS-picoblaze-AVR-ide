@@ -52,6 +52,7 @@
 //#include "../widgets/CompileWidget/compilewidget.h"
 #include "../widgets/HelpWidget/helpwidget.h"
 #include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
+
 #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
     #include "../widgets/LicenseWidget/licensewidget.h"
 #endif
@@ -71,6 +72,10 @@
 #ifdef MDS_FEATURE_SIM_7_SEGMENT
     #include "../widgets/Tools/Sim7Seg/sim7seg.h"
 #endif
+
+#include "../widgets/Tools/SimSwitch/simswitch.h"
+#include "../widgets/Tools/SimPortLogger/simportlogger.h"
+
 #include "../guicfg/guicfg.h"
 
 
@@ -425,11 +430,17 @@ void MainForm::createMenu()
     #ifdef MDS_FEATURE_LOOP_GENERATOR
         toolsMenu->addAction(toolLoopGenAct);
     #endif
-    #ifdef MDS_FEATURE_SIM_LED_PANEL
-        toolsMenu->addAction(toolSimLedsAct);
-    #endif
-    #ifdef MDS_FEATURE_SIM_7_SEGMENT
-        toolsMenu->addAction(toolSim7SegAct);
+
+    #if defined(MDS_FEATURE_SIM_LED_PANEL) || defined(MDS_FEATURE_SIM_7_SEGMENT)
+        simToolsMenu = menuBar()->addMenu(tr("Simulation tools"));
+        #ifdef MDS_FEATURE_SIM_LED_PANEL
+            simToolsMenu->addAction(toolSimLedsAct);
+        #endif
+        #ifdef MDS_FEATURE_SIM_7_SEGMENT
+            simToolsMenu->addAction(toolSim7SegAct);
+        #endif
+        simToolsMenu->addAction(toolSimSwitchAct);
+        simToolsMenu->addAction(toolSimLoggerAct);
     #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -646,20 +657,27 @@ void MainForm::createActions()
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
     #ifdef MDS_FEATURE_SIM_LED_PANEL
-        toolSimLedsAct = new QAction(tr("LED panel Simulation"), this);
+        toolSimLedsAct = new QAction(tr("LED panel"), this);
         toolSimLedsAct->setDisabled(true);
         connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
     #endif
     #ifdef MDS_FEATURE_SIM_7_SEGMENT
-        toolSim7SegAct = new QAction(tr("7 Segment Simulation"), this);
+        toolSim7SegAct = new QAction(tr("7 Segment"), this);
         toolSim7SegAct->setDisabled(true);
         connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
     #endif
+    toolSimSwitchAct = new QAction(tr("Switch"), this);
+    toolSimSwitchAct->setDisabled(true);
+    connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
+    toolSimLoggerAct = new QAction(tr("Port Logger"), this);
+    toolSimLoggerAct->setDisabled(true);
+    connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
         licenseAct = new QAction(tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
+   
     aboutAct = new QAction(tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
@@ -2265,6 +2283,9 @@ void MainForm::simulationFlowHandle()
             #ifdef MDS_FEATURE_SIM_7_SEGMENT
                 toolSim7SegAct->setEnabled(true);
             #endif
+                //TODO:ifdef
+                toolSimLoggerAct->setEnabled(true);
+                toolSimSwitchAct->setEnabled(true);
             projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
@@ -2373,6 +2394,9 @@ void MainForm::simulationFlowHandle()
         #ifdef MDS_FEATURE_SIM_7_SEGMENT
             toolSim7SegAct->setDisabled(true);
         #endif
+            //TODO:ifdef
+            toolSimLoggerAct->setDisabled(true);
+            toolSimSwitchAct->setDisabled(true);
         projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
@@ -3325,6 +3349,28 @@ void MainForm::sim7Seg()
             widget->show();
         }
     #endif
+}
+
+
+void MainForm::simSwitch()
+{
+    //TODO: ifdef
+    if (true == this->simulationStatus)
+    {
+        SimSwitch *widget = new SimSwitch(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
+}
+
+
+void MainForm::simPortLogger()
+{
+    //TODO: ifdef
+    if (true == this->simulationStatus)
+    {
+        SimPortLogger *widget = new SimPortLogger(0, this->projectMan->getSimulated()->getSimControl());
+        widget->show();
+    }
 }
 
 
