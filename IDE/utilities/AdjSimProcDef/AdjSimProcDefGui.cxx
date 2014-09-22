@@ -60,10 +60,32 @@ inline void AdjSimProcDefGui::setupConnections()
     connect ( spinBoxRegisterFileSize,  SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
     connect ( spinBoxRegisterFileBanks, SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
     // Stack
+    connect ( radioButtonStackMode0,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
+    connect ( radioButtonStackMode1,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
+    connect ( radioButtonStackMode2,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
     connect ( radioButtonStackMode0,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
     connect ( radioButtonStackMode1,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
     connect ( radioButtonStackMode2,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
     connect ( spinBoxStackDSize,        SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    // Available Flags
+    connect ( checkBoxHasFlagZero,      SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagCarry,     SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagOverflow,  SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagNegative,  SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagHalfCarry, SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagParity,    SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    // Ports
+    connect ( checkBoxPortsSupported,   SIGNAL(stateChanged(int)),           SLOT(disenaPorts(int)) );
+    connect ( checkBoxPortsSupported,   SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( spinBoxPortsAddressWidth, SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( spinBoxPortsDataWidth,    SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    // Interrupts
+    connect ( checkBoxHasInterrupts,    SIGNAL(stateChanged(int)),           SLOT(disenaInterrupts(int)) );
+    connect ( checkBoxHasInterrupts,    SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( spinBoxInterruptVector,   SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxInterruptBackupFlags, SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
+    connect ( checkBoxInterruptAutoDisable, SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
+    connect ( checkBoxInterruptAutoEnable,  SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
 }
 
 void AdjSimProcDefGui::openFile ( const QString & fileName )
@@ -156,22 +178,7 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
         procDef.m_memory.m_register.m_banks = 0;
     }
 
-// /// Location where the stacked values are stored.
-// struct Content
-// {
-// Space m_space; ///< Memory space.
-// int m_offset;  ///< This value is added to the stack pointer value before accessing stack memory.
-// } m_content;
-//
-// /// Location designated for the stack pointer.
-// struct Pointer
-// {
-// Space m_space;   ///< Memory space.
-// int m_address;   ///< Address in the designated memory space.
-// int m_maxSize; ///< Maximum allowed stack pointer value, -1 means no limit.
-// bool m_indirect; ///< If true, "m_address" is threated as indirect address.
-// } m_pointer;
-
+    // Stack
     if ( true == radioButtonStackMode0->isChecked() )
     {
         procDef.m_stack.m_size = 0;
@@ -187,22 +194,83 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
         procDef.m_stack.m_size = 0;
         procDef.m_stack.m_useDesignatedStack = false;
 
-//         procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREINC
-//         procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTINC
-//         procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREDEC
-//         procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTDEC
-//
-//         procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG
-//         procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA
-//         procDef.m_stack.m_simpleStack.m_content.m_offset
-//         procDef.m_stack.m_simpleStack.m_pointer.m_space
-//         procDef.m_stack.m_simpleStack.m_pointer.m_address
-//         procDef.m_stack.m_simpleStack.m_pointer.m_maxSize
-//         procDef.m_stack.m_simpleStack.m_pointer.m_indirect
+        switch ( comboBoxStackOperation->currentIndex() )
+        {
+            case 0:
+                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREINC;
+                break;
+            case 1:
+                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTINC;
+                break;
+            case 2:
+                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREDEC;
+                break;
+            case 3:
+                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTDEC;
+                break;
+        }
+
+        procDef.m_stack.m_simpleStack.m_content.m_offset = (unsigned int) spinBoxStackContentOffset->value();
+
+        switch ( comboBoxStackContentSpace->currentIndex() )
+        {
+            case 0:
+                procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
+                break;
+            case 1:
+                procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
+                break;
+        }
+
+        switch ( comboBoxStackPointerSpace->currentIndex() )
+        {
+            case 0:
+                procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
+                break;
+            case 1:
+                procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
+                break;
+        }
+
+        procDef.m_stack.m_simpleStack.m_pointer.m_address = (unsigned int) spinBoxStackPointerAddress->value();
+        procDef.m_stack.m_simpleStack.m_pointer.m_maxSize = (unsigned int) spinBoxStackPointerMax->value();
+
+        procDef.m_stack.m_simpleStack.m_pointer.m_indirect = ( Qt::Checked == checkBoxStackIndirectPtr->checkState() );
     }
 
+    /*
+     * Instruction set
+     */
 
 
+
+
+    // Available flags
+    procDef.m_flags.m_hasZero = ( Qt::Checked == checkBoxHasFlagZero->checkState() );
+    procDef.m_flags.m_hasCarry = ( Qt::Checked == checkBoxHasFlagCarry->checkState() );
+    procDef.m_flags.m_hasOverflow = ( Qt::Checked == checkBoxHasFlagOverflow->checkState() );
+    procDef.m_flags.m_hasNegative = ( Qt::Checked == checkBoxHasFlagNegative->checkState() );
+    procDef.m_flags.m_hasHalfCarry = ( Qt::Checked == checkBoxHasFlagHalfCarry->checkState() );
+    procDef.m_flags.m_hasParity = ( Qt::Checked == checkBoxHasFlagParity->checkState() );
+    // Ports
+    if ( Qt::Checked == checkBoxPortsSupported->checkState() )
+    {
+        procDef.m_ports.m_addrWidth = (unsigned int) spinBoxPortsAddressWidth->value();
+        procDef.m_ports.m_dataWidth = (unsigned int) spinBoxPortsDataWidth->value();
+    }
+    else
+    {
+        procDef.m_ports.m_addrWidth = 0;
+        procDef.m_ports.m_dataWidth = 0;
+    }
+    // Interrupts
+    procDef.m_hasInterrupts = ( Qt::Checked == checkBoxHasInterrupts->checkState() );
+    procDef.m_interruptVector = (unsigned int) spinBoxInterruptVector->value();
+    procDef.m_flags.m_backupWhenInterrupted = ( Qt::Checked == checkBoxInterruptBackupFlags->checkState() );
+    procDef.m_flags.m_autoDisableInterrupts = ( Qt::Checked == checkBoxInterruptAutoDisable->checkState() );
+    procDef.m_flags.m_autoEnableInterrupts = ( Qt::Checked == checkBoxInterruptAutoEnable->checkState() );
+
+    // Save the generated processor definition into a file.
     QFile file(fileName, this);
     AdjSimProcDefGenerator generator(procDef);
     if ( ( false == file.open(QIODevice::WriteOnly) ) || ( -1LL == file.write(generator.data().c_str()) ) )
@@ -275,6 +343,36 @@ void AdjSimProcDefGui::disenaRegFile ( int checkState )
 void AdjSimProcDefGui::disenaDataMem ( int checkState )
 {
     spinBoxDataMemorySize->setEnabled ( Qt::Checked == checkState );
+}
+
+void AdjSimProcDefGui::disenaStack ( bool )
+{
+    bool enableDesignated = radioButtonStackMode1->isChecked();
+    bool enableSimple = radioButtonStackMode2->isChecked();
+
+    spinBoxStackDSize->setEnabled(enableDesignated);
+
+    comboBoxStackOperation->setEnabled(enableSimple);
+    spinBoxStackContentOffset->setEnabled(enableSimple);
+    comboBoxStackContentSpace->setEnabled(enableSimple);
+    comboBoxStackPointerSpace->setEnabled(enableSimple);
+    spinBoxStackPointerAddress->setEnabled(enableSimple);
+    spinBoxStackPointerMax->setEnabled(enableSimple);
+    checkBoxStackIndirectPtr->setEnabled(enableSimple);
+}
+
+void AdjSimProcDefGui::disenaPorts ( int checkState )
+{
+    spinBoxPortsAddressWidth->setEnabled ( Qt::Checked == checkState );
+    spinBoxPortsDataWidth->setEnabled ( Qt::Checked == checkState );
+}
+
+void AdjSimProcDefGui::disenaInterrupts ( int checkState )
+{
+    spinBoxInterruptVector->setEnabled ( Qt::Checked == checkState );
+    checkBoxInterruptBackupFlags->setEnabled ( Qt::Checked == checkState );
+    checkBoxInterruptAutoDisable->setEnabled ( Qt::Checked == checkState );
+    checkBoxInterruptAutoEnable->setEnabled ( Qt::Checked == checkState );
 }
 
 void AdjSimProcDefGui::on_pushButtonOpenFile_clicked()

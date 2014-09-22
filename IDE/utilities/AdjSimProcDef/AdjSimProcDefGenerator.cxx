@@ -62,6 +62,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
     m_data += '\n';
 
     // Interrupt Vector
+    writeBool ( m_data, def.m_hasInterrupts );
     writeInt ( m_data, buffer, def.m_interruptVector );
 
     // Ports

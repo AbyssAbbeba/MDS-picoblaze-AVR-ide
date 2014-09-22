@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -304,7 +304,7 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="comboBox_3">
+              <widget class="QComboBox" name="comboBoxStackOperation">
                <item>
                 <property name="text">
                  <string>++SP</string>
@@ -356,45 +356,45 @@
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QSpinBox" name="spinBox_5"/>
+              <widget class="QSpinBox" name="spinBoxStackPointerMax"/>
              </item>
              <item row="3" column="1">
-              <widget class="QComboBox" name="comboBox_5">
-               <item>
-                <property name="text">
-                 <string>Data memory</string>
-                </property>
-               </item>
+              <widget class="QComboBox" name="comboBoxStackPointerSpace">
                <item>
                 <property name="text">
                  <string>Registers</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>Data memory</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item row="6" column="0" colspan="2">
-              <widget class="QCheckBox" name="checkBox_14">
+              <widget class="QCheckBox" name="checkBoxStackIndirectPtr">
                <property name="text">
                 <string>Indirect pointer</string>
                </property>
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QSpinBox" name="spinBox_8"/>
+              <widget class="QSpinBox" name="spinBoxStackContentOffset"/>
              </item>
              <item row="4" column="1">
-              <widget class="QSpinBox" name="spinBox_9"/>
+              <widget class="QSpinBox" name="spinBoxStackPointerAddress"/>
              </item>
              <item row="2" column="1">
-              <widget class="QComboBox" name="comboBox_4">
+              <widget class="QComboBox" name="comboBoxStackContentSpace">
                <item>
                 <property name="text">
-                 <string>Data memory</string>
+                 <string>Registers</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>Registers</string>
+                 <string>Data memory</string>
                 </property>
                </item>
               </widget>
@@ -1366,7 +1366,14 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox"/>
+           <widget class="QSpinBox" name="spinBoxPortsAddressWidth">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>16</number>
+            </property>
+           </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_5">
@@ -1376,12 +1383,22 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="spinBox_2"/>
+           <widget class="QSpinBox" name="spinBoxPortsDataWidth">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>16</number>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="checkBoxPortsSupported">
             <property name="text">
              <string>Supported</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -1395,42 +1412,48 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <item row="2" column="1">
-           <widget class="QCheckBox" name="checkBox_7">
+           <widget class="QCheckBox" name="checkBoxHasFlagParity">
             <property name="text">
              <string>Parity</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="checkBoxHasFlagZero">
             <property name="text">
              <string>Zero</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QCheckBox" name="checkBox_3">
+           <widget class="QCheckBox" name="checkBoxHasFlagCarry">
             <property name="text">
              <string>Carry</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QCheckBox" name="checkBox_4">
+           <widget class="QCheckBox" name="checkBoxHasFlagOverflow">
             <property name="text">
              <string>Overflow</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QCheckBox" name="checkBox_6">
+           <widget class="QCheckBox" name="checkBoxHasFlagHalfCarry">
             <property name="text">
              <string>Half carry</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QCheckBox" name="checkBox_5">
+           <widget class="QCheckBox" name="checkBoxHasFlagNegative">
             <property name="text">
              <string>Negative</string>
             </property>
@@ -1461,16 +1484,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="lineEdit_2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="2">
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -1485,30 +1498,52 @@
            </spacer>
           </item>
           <item row="2" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkBox_9">
+           <widget class="QCheckBox" name="checkBoxInterruptBackupFlags">
             <property name="text">
              <string>Backup flags when entering ISR</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkBox_10">
+           <widget class="QCheckBox" name="checkBoxInterruptAutoDisable">
             <property name="text">
              <string>Automatcaly disable interrupts when entering ISR</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="4" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkBox_11">
+           <widget class="QCheckBox" name="checkBoxInterruptAutoEnable">
             <property name="text">
              <string>Automatcaly re-enable interrupts when leaving ISR</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
           <item row="0" column="0" colspan="3">
-           <widget class="QCheckBox" name="checkBox_8">
+           <widget class="QCheckBox" name="checkBoxHasInterrupts">
             <property name="text">
              <string>Supported</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spinBoxInterruptVector">
+            <property name="maximum">
+             <number>65356</number>
+            </property>
+            <property name="value">
+             <number>4095</number>
             </property>
            </widget>
           </item>

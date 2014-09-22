@@ -20,7 +20,11 @@ std::ostream & operator << ( std::ostream & out,
 {
     out << "Name: \"" << definition.m_name << '"' << std::endl;
     out << "Description: \"" << definition.m_description << '"' << std::endl;
-    out << "Interrupt Vector: " << definition.m_interruptVector << std::endl;
+    out << "Supports interrupt(s): " << definition.m_hasInterrupts << std::endl;
+    if ( true == definition.m_hasInterrupts )
+    {
+        out << "Interrupt Vector: " << definition.m_interruptVector << std::endl;
+    }
 
     out << "== Ports ==" << std::endl;
     out << definition.m_ports << std::endl;
