@@ -184,7 +184,7 @@ unsigned long long loop_gen::reg_3_Loop( unsigned long long loop, unsigned int i
 {
     // calculate register numbers
     // 1024 - 132000 - init_nop
-    unsigned long long local3 = 0, temp_cycles = 0;
+    unsigned long long temp_cycles = 0;
     //-------------------------------------------
     temp_cycles = loop - init_nop;
 
@@ -212,7 +212,7 @@ unsigned long long loop_gen::reg_4_Loop( unsigned long long loop, unsigned int i
 {
     // calculate register numbers
     // 1024 - 132000 - init_nop
-    unsigned long long local3 = 0, temp_cycles = 0;
+    unsigned long long temp_cycles = 0;
     //-------------------------------------------
     temp_cycles = loop - init_nop;
 
@@ -240,7 +240,7 @@ unsigned long long loop_gen::reg_5_Loop( unsigned long long loop, unsigned int i
 {
     // calculate register numbers
     // 1024 - 132000 - init_nop
-    unsigned long long local3 = 0, temp_cycles = 0;
+    unsigned long long temp_cycles = 0;
     //-------------------------------------------
     temp_cycles = loop - init_nop;
 
@@ -268,7 +268,7 @@ unsigned long long loop_gen::reg_6_Loop( unsigned long long loop, unsigned int i
 {
     // calculate register numbers
     // 1024 - 132000 - init_nop
-    unsigned long long local3 = 0, temp_cycles = 0;
+    unsigned long long temp_cycles = 0;
     //-------------------------------------------
     temp_cycles = loop - init_nop;
 
