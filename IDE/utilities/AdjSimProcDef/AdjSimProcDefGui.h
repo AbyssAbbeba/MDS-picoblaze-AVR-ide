@@ -104,6 +104,24 @@ class AdjSimProcDefGui : public QWidget,
          */
         void disenaDataMem ( int checkState );
 
+        /**
+         * @brief
+         * @param[in] -
+         */
+        void disenaStack ( bool );
+
+        /**
+         * @brief
+         * @param[in] checkState
+         */
+        void disenaPorts ( int checkState );
+
+        /**
+         * @brief
+         * @param[in] checkState
+         */
+        void disenaInterrupts ( int checkState );
+
         void on_pushButtonOpenFile_clicked();
         bool on_pushButtonSaveAs_clicked();
 };

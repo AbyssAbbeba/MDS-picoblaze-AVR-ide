@@ -130,6 +130,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
         readString(def, m_data.m_description, pos);
 
         // Interrupt Vector
+        readBool(def, m_data.m_hasInterrupts, pos);
         readUInt(def, m_data.m_interruptVector, pos);
 
         // Ports
