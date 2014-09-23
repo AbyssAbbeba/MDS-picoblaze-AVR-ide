@@ -31,6 +31,8 @@
 
 #include <cassert>
 
+#include<iostream>//DEBUG!
+
 PicoBlazeSim::PicoBlazeSim()
 {
     m_config                = new PicoBlazeConfig();
@@ -45,7 +47,7 @@ PicoBlazeSim::PicoBlazeSim()
     m_programMemory         = new PicoBlazeProgramMemory();
     m_instructionSet        = new PicoBlazeInstructionSet3();
     m_interruptController   = new PicoBlazeInterruptController();
-
+std::cout << "m_dataMemory <= " << (void*) m_programMemory << "\n";
     regSubSys ( m_io             -> link ( m_eventLogger ) );
     regSubSys ( m_stack          -> link ( m_eventLogger ) );
     regSubSys ( m_registers      -> link ( m_eventLogger ) );
@@ -120,7 +122,10 @@ MCUSimSubsys * PicoBlazeSim::getSubsys ( MCUSimSubsys::SubsysId id )
     switch ( id )
     {
         case MCUSimSubsys::ID_MEM_CODE:       return m_programMemory;
-        case MCUSimSubsys::ID_MEM_DATA:       return m_dataMemory;
+        case MCUSimSubsys::ID_MEM_DATA:
+            std::cout << "returning m_dataMemory (" << (void*) m_programMemory << ")\n";
+            std::cout << "Note: m_dataMemory->size() == " << m_dataMemory->size() << '\n';
+            return m_dataMemory;
         case MCUSimSubsys::ID_MEM_REGISTERS:  return m_registers;
         case MCUSimSubsys::ID_CPU:            return m_instructionSet;
         case MCUSimSubsys::ID_PLIO:           return m_io;
