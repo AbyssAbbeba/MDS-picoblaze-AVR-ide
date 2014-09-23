@@ -753,6 +753,7 @@ qDebug() << "m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);"; //DEBUG
 
 qDebug() << "allObservers_deviceChanged();"; //DEBUG
     allObservers_deviceChanged();
+qDebug() << "MCUSimControl::changeDevice [LEAVE]"; //DEBUG
     return true;
 }
 
