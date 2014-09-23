@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>555</width>
+    <width>562</width>
     <height>478</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -433,7 +433,10 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout_11">
        <item row="0" column="1">
-        <widget class="QToolBox" name="toolBox">
+        <widget class="QToolBox" name="toolBoxInstructions">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="currentIndex">
           <number>0</number>
          </property>
@@ -442,7 +445,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>191</width>
+            <width>194</width>
             <height>351</height>
            </rect>
           </property>
@@ -493,7 +496,7 @@
                           <rect>
                            <x>0</x>
                            <y>0</y>
-                           <width>128</width>
+                           <width>131</width>
                            <height>109</height>
                           </rect>
                          </property>
@@ -621,7 +624,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QLineEdit" name="lineEditInstMnemonic"/>
            </item>
            <item row="4" column="0" colspan="2">
             <spacer name="verticalSpacer_4">
@@ -644,7 +647,7 @@
             </widget>
            </item>
            <item row="1" column="1">
-            <widget class="QComboBox" name="comboBox"/>
+            <widget class="QComboBox" name="comboBoxInstOperation"/>
            </item>
            <item row="2" column="0" colspan="2">
             <widget class="QGroupBox" name="groupBox_11">
@@ -653,14 +656,14 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
-               <widget class="QScrollArea" name="scrollArea">
+               <widget class="QScrollArea" name="scrollAreaOPCode">
                 <property name="frameShape">
                  <enum>QFrame::NoFrame</enum>
                 </property>
                 <property name="widgetResizable">
                  <bool>true</bool>
                 </property>
-                <widget class="QWidget" name="scrollAreaWidgetContents">
+                <widget class="QWidget" name="scrollAreaOPCodeWidgetContents">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
@@ -787,8 +790,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>167</width>
+            <y>-59</y>
+            <width>187</width>
             <height>375</height>
            </rect>
           </property>
@@ -859,7 +862,7 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="comboBox_10">
+               <widget class="QComboBox" name="comboBoxInstFlagZero">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -883,7 +886,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="comboBox_11">
+               <widget class="QComboBox" name="comboBoxInstFlagCarry">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -907,7 +910,7 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QComboBox" name="comboBox_13">
+               <widget class="QComboBox" name="comboBoxInstFlagOverflow">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -931,7 +934,7 @@
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QComboBox" name="comboBox_14">
+               <widget class="QComboBox" name="comboBoxInstFlagNegative">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -955,7 +958,7 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QComboBox" name="comboBox_15">
+               <widget class="QComboBox" name="comboBoxInstFlagHalfCarry">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -979,7 +982,7 @@
                </widget>
               </item>
               <item row="5" column="1">
-               <widget class="QComboBox" name="comboBox_16">
+               <widget class="QComboBox" name="comboBoxInstFlagIE">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -1003,7 +1006,7 @@
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QComboBox" name="comboBox_17">
+               <widget class="QComboBox" name="comboBoxInstFlagParity">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -1027,7 +1030,7 @@
                </widget>
               </item>
               <item row="7" column="1">
-               <widget class="QComboBox" name="comboBox_18">
+               <widget class="QComboBox" name="comboBoxInstFlagFlag">
                 <item>
                  <property name="text">
                   <string>Keep</string>
@@ -1067,7 +1070,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="comboBox_20">
+               <widget class="QComboBox" name="comboBoxInstResult">
                 <item>
                  <property name="text">
                   <string>=&gt; 1st</string>
@@ -1086,7 +1089,7 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="comboBox_19">
+               <widget class="QComboBox" name="comboBoxInstParity">
                 <item>
                  <property name="text">
                   <string>Even</string>
@@ -1107,7 +1110,7 @@
                </widget>
               </item>
               <item row="2" column="0" colspan="2">
-               <widget class="QCheckBox" name="checkBox_15">
+               <widget class="QCheckBox" name="checkBoxIgnoreCarry">
                 <property name="text">
                  <string>Ignore carry flag</string>
                 </property>
@@ -1136,8 +1139,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>202</width>
-            <height>247</height>
+            <width>204</width>
+            <height>316</height>
            </rect>
           </property>
           <attribute name="label">
@@ -1151,7 +1154,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_18">
               <item row="0" column="0">
-               <widget class="QComboBox" name="comboBox_21">
+               <widget class="QComboBox" name="comboBoxInstConditionType">
                 <item>
                  <property name="text">
                   <string>unconditional</string>
@@ -1170,7 +1173,7 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="comboBox_22">
+               <widget class="QComboBox" name="comboBoxInstConditionFlag">
                 <item>
                  <property name="text">
                   <string>Z</string>
@@ -1237,10 +1240,10 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBox_15"/>
+               <widget class="QSpinBox" name="spinBoxInstTimePositive"/>
               </item>
               <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBox_16"/>
+               <widget class="QSpinBox" name="spinBoxInstTimeNegative"/>
               </item>
              </layout>
             </widget>
@@ -1266,10 +1269,10 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit_5"/>
+               <widget class="QLineEdit" name="lineEditInstNextPositive"/>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="lineEdit_6"/>
+               <widget class="QLineEdit" name="lineEditInstNextNegative"/>
               </item>
              </layout>
             </widget>
@@ -1296,7 +1299,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="pushButton_2">
+            <widget class="QPushButton" name="pushButtonNewInstruction">
              <property name="text">
               <string>New instruction</string>
              </property>
@@ -1316,7 +1319,10 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="pushButtonRemoveInstruction">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Remove instruction</string>
              </property>
@@ -1325,7 +1331,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTreeWidget" name="treeWidget">
+          <widget class="QTreeWidget" name="treeWidgetInstructions">
            <column>
             <property name="text">
              <string>ID</string>

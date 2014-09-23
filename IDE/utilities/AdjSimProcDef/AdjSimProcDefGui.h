@@ -16,8 +16,19 @@
 #ifndef ADJSIMPROCDEFGUI_H
 #define ADJSIMPROCDEFGUI_H
 
+// Forward declarations.
+class QTreeWidgetItem;
+
+// Standard header files.
+#include <map>
+
+// MDS processor definition.
+#include "AdjSimProcDef.h"
+
+// UI header files.
 #include "ui_AdjSimProcDefGuiWidget.h"
 
+// Qt header files.
 #include <QWidget>
 #include <QString>
 
@@ -83,14 +94,20 @@ class AdjSimProcDefGui : public QWidget,
         QString m_fileName;
 
         /// @brief
+        std::map<QTreeWidgetItem*, AdjSimProcDef::Instruction*> m_instructions;
+
+        /// @brief
+        unsigned int m_idCounter;
+
+        /// @brief
         bool m_modified;
 
     ////    Private Slots    ////
     private slots:
+        /**
+         * @brief
+         */
         void setModified();
-        void setModified(int);
-        void setModified(bool);
-        void setModified ( const QString & );
 
         /**
          * @brief
@@ -122,8 +139,31 @@ class AdjSimProcDefGui : public QWidget,
          */
         void disenaInterrupts ( int checkState );
 
-        void on_pushButtonOpenFile_clicked();
+        /**
+         * @brief
+         * @return
+         */
         bool on_pushButtonSaveAs_clicked();
+
+        /**
+         * @brief
+         */
+        void on_pushButtonOpenFile_clicked();
+
+        /**
+         * @brief
+         */
+        void on_pushButtonNewInstruction_clicked();
+
+        /**
+         * @brief
+         */
+        void on_pushButtonRemoveInstruction_clicked();
+
+        /**
+         * @brief
+         */
+        void on_treeWidgetInstructions_itemSelectionChanged();
 };
 
 #endif // ADJSIMPROCDEFGUI_H

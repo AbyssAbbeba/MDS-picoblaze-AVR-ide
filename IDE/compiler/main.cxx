@@ -13,6 +13,9 @@
  */
 // =============================================================================
 
+// Feature set configuration.
+#include "../mds.h"
+
 // Common compiler header files.
 #include "Compiler.h"
 #include "CompilerMsgIntfStdout.h"
@@ -33,9 +36,6 @@
 
 // OS compatibility.
 #include "../utilities/os/os.h"
-
-// Feature set configuration.
-#include "../mds.h"
 
 /**
  * @brief Program version string.

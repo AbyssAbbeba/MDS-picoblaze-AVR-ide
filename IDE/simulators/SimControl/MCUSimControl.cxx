@@ -676,8 +676,9 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
         delete m_simulator;
     }
 
-    if (
-        #ifdef MDS_FEATURE_PICOBLAZE
+    if ( false ) {}
+    #ifdef MDS_FEATURE_PICOBLAZE
+    else if (
            ( 0 == strcmp("kcpsm1cpld", deviceName) )
                ||
            ( 0 == strcmp("kcpsm1", deviceName) )
@@ -687,13 +688,11 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
            ( 0 == strcmp("kcpsm3", deviceName) )
                ||
            ( 0 == strcmp("kcpsm6", deviceName) )
-        #else // MDS_FEATURE_PICOBLAZE
-           false
-        #endif // MDS_FEATURE_PICOBLAZE
        )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
+    #endif // MDS_FEATURE_PICOBLAZE
     #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
     else if ( 0 == strcmp("AdaptableSim", deviceName) )
     {
