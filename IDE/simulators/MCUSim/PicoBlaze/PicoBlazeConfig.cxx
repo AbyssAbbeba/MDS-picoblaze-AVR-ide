@@ -53,7 +53,7 @@ void PicoBlazeConfig::configure ( MCUSim::Family dev )
     switch ( dev )
     {
         case MCUSim::FAMILY_KCPSM1CPLD:
-            m_name = "kcpsm1CPLD";
+            m_name = "kcpsm1cpld";
             m_configDataMemory->m_size = 0;
             m_configInstructionSet->m_dev = MCUSim::FAMILY_KCPSM1CPLD;
             m_configInstructionSet->m_interruptVector = 0xff;
