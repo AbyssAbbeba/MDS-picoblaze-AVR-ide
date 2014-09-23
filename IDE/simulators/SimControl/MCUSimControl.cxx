@@ -671,6 +671,7 @@ void MCUSimControl::resetProgram()
 bool MCUSimControl::changeDevice ( const char * deviceName,
                                    const AdjSimProcDef * procDef )
 {
+qDebug() << "MCUSimControl::changeDevice [ENTER]"; //DEBUG
     if ( nullptr != m_simulator )
     {
         delete m_simulator;
@@ -690,6 +691,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
            ( 0 == strcmp("kcpsm6", deviceName) )
        )
     {
+qDebug() << "m_architecture = MCUSim::ARCH_PICOBLAZE"; //DEBUG
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
     #endif // MDS_FEATURE_PICOBLAZE
@@ -726,6 +728,7 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
       #endif // MDS_FEATURE_PIC8
       #ifdef MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
+qDebug() << "m_simulator = new PicoBlazeSim();"; //DEBUG
             m_simulator = new PicoBlazeSim();
             break;
       #endif // MDS_FEATURE_PICOBLAZE
@@ -739,11 +742,16 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
             return false;
     }
 
+qDebug() << "m_simulatorLog = m_simulator->getLog();"; //DEBUG
     m_simulatorLog = m_simulator->getLog();
+qDebug() << "McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig(), procDef);"; //DEBUG
     McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig(), procDef);
+qDebug() << "m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);"; //DEBUG
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
+qDebug() << "m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);"; //DEBUG
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
 
+qDebug() << "allObservers_deviceChanged();"; //DEBUG
     allObservers_deviceChanged();
     return true;
 }
