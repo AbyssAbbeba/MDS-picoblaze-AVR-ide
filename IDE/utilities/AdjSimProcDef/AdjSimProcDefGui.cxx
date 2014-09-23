@@ -450,8 +450,8 @@ void AdjSimProcDefGui::on_pushButtonRemoveInstruction_clicked()
     auto iter = m_instructions.find(item);
     if ( m_instructions.cend() != iter )
     {
+        delete iter->second;
         m_instructions.erase(iter);
-        delete iter;
     }
     delete item;
 }
