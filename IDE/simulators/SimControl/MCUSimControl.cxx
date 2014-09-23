@@ -242,9 +242,9 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
         case MCUSim::ARCH_PIC8:
             dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
-      #ifdef MDS_FEATURE_PIC8
+      #endif // MDS_FEATURE_PIC8
 
-      #endif // MDS_FEATURE_PICOBLAZE
+      #ifdef MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
             dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
             break;
