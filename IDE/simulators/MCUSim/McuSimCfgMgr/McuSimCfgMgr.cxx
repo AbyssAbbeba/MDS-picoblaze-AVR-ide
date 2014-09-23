@@ -13,6 +13,9 @@
  */
 // =============================================================================
 
+// Feature set configuration.
+#include "../../../mds.h"
+
 #include "McuSimCfgMgr.h"
 
 #include "McuDeviceSpec.h"

@@ -30,6 +30,7 @@
 AdjSimProcDefGui::AdjSimProcDefGui ( QWidget * parent )
                                    : QWidget(parent)
 {
+    m_idCounter = 0;
     m_modified = false;
 
     setupUi(this);
@@ -44,48 +45,49 @@ const QString & AdjSimProcDefGui::getFileName() const
 inline void AdjSimProcDefGui::setupConnections()
 {
     // Processor Name & Description
-    connect ( lineEditProcessorName,    SIGNAL(textEdited(const QString &)), SLOT(setModified(const QString &)) );
+    connect ( lineEditProcessorName,    SIGNAL(textEdited(const QString &)), SLOT(setModified()) );
     connect ( textEditDescription,      SIGNAL(textChanged()),               SLOT(setModified()) );
     // Program Memory
-    connect ( spinBoxProgramSize,       SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxProgramWordSize,   SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
-    connect ( comboBoxProgramEndian,    SIGNAL(currentIndexChanged(int)),    SLOT(setModified(int)) );
+    connect ( spinBoxProgramSize,       SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxProgramWordSize,   SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( comboBoxProgramEndian,    SIGNAL(currentIndexChanged(int)),    SLOT(setModified()) );
     // Data Memory
     connect ( checkBoxDataMemory,       SIGNAL(stateChanged(int)),           SLOT(disenaDataMem(int)) );
-    connect ( checkBoxDataMemory,       SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxDataMemorySize,    SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxDataMemory,       SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxDataMemorySize,    SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     // Register File
     connect ( checkBoxRegisterFile,     SIGNAL(stateChanged(int)),           SLOT(disenaRegFile(int)) );
-    connect ( checkBoxRegisterFile,     SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxRegisterFileSize,  SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxRegisterFileBanks, SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxRegisterFile,     SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxRegisterFileSize,  SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxRegisterFileBanks, SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     // Stack
     connect ( radioButtonStackMode0,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
     connect ( radioButtonStackMode1,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
     connect ( radioButtonStackMode2,    SIGNAL(toggled(bool)),               SLOT(disenaStack(bool)) );
-    connect ( radioButtonStackMode0,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
-    connect ( radioButtonStackMode1,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
-    connect ( radioButtonStackMode2,    SIGNAL(toggled(bool)),               SLOT(setModified(bool)) );
-    connect ( spinBoxStackDSize,        SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( radioButtonStackMode0,    SIGNAL(toggled(bool)),               SLOT(setModified()) );
+    connect ( radioButtonStackMode1,    SIGNAL(toggled(bool)),               SLOT(setModified()) );
+    connect ( radioButtonStackMode2,    SIGNAL(toggled(bool)),               SLOT(setModified()) );
+    connect ( spinBoxStackDSize,        SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     // Available Flags
-    connect ( checkBoxHasFlagZero,      SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxHasFlagCarry,     SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxHasFlagOverflow,  SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxHasFlagNegative,  SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxHasFlagHalfCarry, SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxHasFlagParity,    SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxHasFlagZero,      SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxHasFlagCarry,     SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxHasFlagOverflow,  SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxHasFlagNegative,  SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxHasFlagHalfCarry, SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxHasFlagParity,    SIGNAL(stateChanged(int)),           SLOT(setModified()) );
     // Ports
     connect ( checkBoxPortsSupported,   SIGNAL(stateChanged(int)),           SLOT(disenaPorts(int)) );
-    connect ( checkBoxPortsSupported,   SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxPortsAddressWidth, SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxPortsDataWidth,    SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
+    connect ( checkBoxPortsSupported,   SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxPortsAddressWidth, SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxPortsDataWidth,    SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     // Interrupts
     connect ( checkBoxHasInterrupts,    SIGNAL(stateChanged(int)),           SLOT(disenaInterrupts(int)) );
-    connect ( checkBoxHasInterrupts,    SIGNAL(stateChanged(int)),           SLOT(setModified(int)) );
-    connect ( spinBoxInterruptVector,   SIGNAL(valueChanged(int)),           SLOT(setModified(int)) );
-    connect ( checkBoxInterruptBackupFlags, SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
-    connect ( checkBoxInterruptAutoDisable, SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
-    connect ( checkBoxInterruptAutoEnable,  SIGNAL(stateChanged(int)),       SLOT(setModified(int)) );
+    connect ( checkBoxHasInterrupts,    SIGNAL(stateChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxInterruptVector,   SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( checkBoxInterruptBackupFlags, SIGNAL(stateChanged(int)),       SLOT(setModified()) );
+    connect ( checkBoxInterruptAutoDisable, SIGNAL(stateChanged(int)),       SLOT(setModified()) );
+    connect ( checkBoxInterruptAutoEnable,  SIGNAL(stateChanged(int)),       SLOT(setModified()) );
+    // Instruction Set
 }
 
 void AdjSimProcDefGui::openFile ( const QString & fileName )
@@ -116,6 +118,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
         return;
     }
 
+    m_idCounter = 0;
     setFileName(fileName);
 
     const AdjSimProcDef & procDef = parser.data();
@@ -246,12 +249,12 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
 
 
     // Available flags
-    procDef.m_flags.m_hasZero = ( Qt::Checked == checkBoxHasFlagZero->checkState() );
-    procDef.m_flags.m_hasCarry = ( Qt::Checked == checkBoxHasFlagCarry->checkState() );
-    procDef.m_flags.m_hasOverflow = ( Qt::Checked == checkBoxHasFlagOverflow->checkState() );
-    procDef.m_flags.m_hasNegative = ( Qt::Checked == checkBoxHasFlagNegative->checkState() );
-    procDef.m_flags.m_hasHalfCarry = ( Qt::Checked == checkBoxHasFlagHalfCarry->checkState() );
-    procDef.m_flags.m_hasParity = ( Qt::Checked == checkBoxHasFlagParity->checkState() );
+    procDef.m_flags.m_hasZero      = ( Qt::Checked == checkBoxHasFlagZero       -> checkState() );
+    procDef.m_flags.m_hasCarry     = ( Qt::Checked == checkBoxHasFlagCarry      -> checkState() );
+    procDef.m_flags.m_hasOverflow  = ( Qt::Checked == checkBoxHasFlagOverflow   -> checkState() );
+    procDef.m_flags.m_hasNegative  = ( Qt::Checked == checkBoxHasFlagNegative   -> checkState() );
+    procDef.m_flags.m_hasHalfCarry = ( Qt::Checked == checkBoxHasFlagHalfCarry  -> checkState() );
+    procDef.m_flags.m_hasParity    = ( Qt::Checked == checkBoxHasFlagParity     -> checkState() );
     // Ports
     if ( Qt::Checked == checkBoxPortsSupported->checkState() )
     {
@@ -268,7 +271,7 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
     procDef.m_interruptVector = (unsigned int) spinBoxInterruptVector->value();
     procDef.m_flags.m_backupWhenInterrupted = ( Qt::Checked == checkBoxInterruptBackupFlags->checkState() );
     procDef.m_flags.m_autoDisableInterrupts = ( Qt::Checked == checkBoxInterruptAutoDisable->checkState() );
-    procDef.m_flags.m_autoEnableInterrupts = ( Qt::Checked == checkBoxInterruptAutoEnable->checkState() );
+    procDef.m_flags.m_autoEnableInterrupts =  ( Qt::Checked == checkBoxInterruptAutoEnable->checkState() );
 
     // Save the generated processor definition into a file.
     QFile file(fileName, this);
@@ -308,21 +311,6 @@ void AdjSimProcDefGui::clearModified()
         setWindowTitle(windowTitle().remove(0, tr("[modified] ").size()));
     }
     m_modified = false;
-}
-
-void AdjSimProcDefGui::setModified ( int )
-{
-    setModified();
-}
-
-void AdjSimProcDefGui::setModified ( bool )
-{
-    setModified();
-}
-
-void AdjSimProcDefGui::setModified ( const QString & )
-{
-    setModified();
 }
 
 void AdjSimProcDefGui::setModified()
@@ -441,4 +429,60 @@ bool AdjSimProcDefGui::on_pushButtonSaveAs_clicked()
     }
 
     return false;
+}
+
+void AdjSimProcDefGui::on_pushButtonNewInstruction_clicked()
+{
+    setModified();
+
+    QTreeWidgetItem * item = new QTreeWidgetItem ( treeWidgetInstructions,
+                                                   QStringList ( {QString("%1").arg(m_idCounter++),"--","--"} ) );
+    treeWidgetInstructions->setCurrentItem(item);
+
+    m_instructions.insert(std::make_pair(item, new AdjSimProcDef::Instruction()));
+}
+
+void AdjSimProcDefGui::on_pushButtonRemoveInstruction_clicked()
+{
+    setModified();
+
+    QTreeWidgetItem * item = treeWidgetInstructions->selectedItems().front();
+    auto iter = m_instructions.find(item);
+    if ( m_instructions.cend() != iter )
+    {
+        m_instructions.erase(iter);
+        delete iter;
+    }
+    delete item;
+}
+
+void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
+{
+    bool instructionSelected = ( false == treeWidgetInstructions->selectedItems().isEmpty() );
+
+    pushButtonRemoveInstruction->setEnabled(instructionSelected);
+    toolBoxInstructions->setEnabled(instructionSelected);
+
+/*
+    lineEditInstMnemonic
+    comboBoxInstOperation
+
+    comboBoxInstFlagZero
+    comboBoxInstFlagCarry
+    comboBoxInstFlagOverflow
+    comboBoxInstFlagNegative
+    comboBoxInstFlagHalfCarry
+    comboBoxInstFlagIE
+    comboBoxInstFlagParity
+    comboBoxInstFlagFlag
+    comboBoxInstParity
+    comboBoxInstResult
+    checkBoxIgnoreCarry
+    comboBoxInstConditionType
+    comboBoxInstConditionFlag
+    spinBoxInstTimePositive
+    spinBoxInstTimeNegative
+    lineEditInstNextPositive
+    lineEditInstNextNegative
+*/
 }

@@ -15,6 +15,9 @@
 #ifndef MAINFORM_H
 #define MAINFORM_H
 
+// Feature set configuration.
+#include "../../mds.h"
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QDockWidget>
@@ -259,7 +262,7 @@ class MainForm : public QMainWindow
 
         QAction *licenseAct;
         QAction *aboutAct;
-        QAction *aboutQTAct;        
+        QAction *aboutQTAct;
         QAction *helpActionAct;
         QAction *example1Act;
 
@@ -296,11 +299,11 @@ class MainForm : public QMainWindow
         QIcon *icon_toolDis;
         QIcon *icon_breakpoint;
         QIcon *icon_bookmark;
-        
+
 
         // simulation status - start/stop
         bool simulationStatus;
-        
+
         // sim run status
         bool simulationRunStatus;
         // sim animate status
