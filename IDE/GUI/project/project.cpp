@@ -2386,7 +2386,9 @@ void Project::setupSim()
     //"kcpsm3"
     if (this->m_simControlUnit == NULL)
     {
+        qDebug() << "Project: setupSim() family:" << family;
         this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
+        qDebug() << "Project: setupSim() done";
         connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
         connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
     }
