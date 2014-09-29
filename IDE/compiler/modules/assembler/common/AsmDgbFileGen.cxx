@@ -136,8 +136,8 @@ inline void AsmDgbFileGen::outputToContainer ( CompilerSemanticInterface * compi
         {
             if ( location.m_fileNumber < numberOfFiles )
             {
-                locationTrace2.push_back ( std::make_pair ( (unsigned int) location.m_fileNumber,
-                                                            (unsigned int) location.m_lineStart ) );
+                locationTrace2.push_back ( { (unsigned int) location.m_fileNumber,
+                                             (unsigned int) location.m_lineStart } );
             }
         }
 

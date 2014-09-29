@@ -71,15 +71,17 @@ include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
 
 # List of additional libraries which can be enabled or disabled for this particular build.
 set ( MDS_ADDITONAL_LIBS "" )
+set ( MDS_ADDITONAL_MODULES "" )
 
 if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
-    list ( APPEND MDS_ADDITONAL_LIBS $<TARGET_OBJECTS:DAsmAdaptable> )
+    list ( APPEND MDS_ADDITONAL_MODULES $<TARGET_OBJECTS:DAsmAdaptable> )
+    list ( APPEND MDS_ADDITONAL_LIBS "AdjSimProcDef" )
 endif()
 
 # Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
               ${LIB_RC_FILE}
-              ${MDS_ADDITONAL_LIBS}
+              ${MDS_ADDITONAL_MODULES}
               $<TARGET_OBJECTS:DAsmPicoBlaze>
               DAsm.cxx
               DAsmCore.cxx )
@@ -87,6 +89,7 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES}
+                                        ${MDS_ADDITONAL_LIBS}
                                         MCUDataFiles )
 
 #

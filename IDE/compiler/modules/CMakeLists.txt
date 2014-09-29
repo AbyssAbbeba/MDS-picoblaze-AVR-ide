@@ -38,7 +38,7 @@ add_subdirectory ( assembler )
 include_directories ( "${CMAKE_SOURCE_DIR}/utilities/DbgFile/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../core/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/assembler/generators/" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/assembler/common/" )
 
 # Add library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} CompilerModules.cxx )

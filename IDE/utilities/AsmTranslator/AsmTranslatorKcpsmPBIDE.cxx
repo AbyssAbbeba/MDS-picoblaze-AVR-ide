@@ -118,8 +118,8 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
                     boost::regex_search(begin, line.cend(), match, m_reWord);
                     if ( true == match[0].matched )
                     {
-                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
-                                                                       std::distance(lineStartIt, match[0].second)));
+                        lineFields.m_operands.push_back({std::distance(lineStartIt, match[0].first),
+                                                         std::distance(lineStartIt, match[0].second)});
 
                         begin = match[0].second;
                         boost::regex_search(begin, line.cend(), match, m_reWord);
@@ -128,8 +128,8 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
                             return true;
                         }
 
-                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
-                                                                       std::distance(lineStartIt, match[0].second)));
+                        lineFields.m_operands.push_back({std::distance(lineStartIt, match[0].first),
+                                                         std::distance(lineStartIt, match[0].second)});
 
 
                         for ( int i = 0; i < 2; i++ )
@@ -177,8 +177,8 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
             }
 
             begin = match[0].second;
-            lineFields.m_operands.push_back ( std::make_pair ( std::distance(lineStartIt, match[0].first),
-                                                               std::distance(lineStartIt, match[0].second) ) );
+            lineFields.m_operands.push_back ( { std::distance(lineStartIt, match[0].first),
+                                                std::distance(lineStartIt, match[0].second) } );
 
             // Find operand separator.
             boost::regex_search(begin, line.cend(), match, m_reOperandSep);
@@ -211,10 +211,10 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
 
     if ( ( false == secondPass ) && ( line.cend() != begin ) )
     {
-        messages.push_back ( std::make_pair ( lineNumber,
-                                              QObject::tr ( "Error: line not understood: `%1'." )
-                                                          . arg ( line.c_str() )
-                                                          . toStdString() ) );
+        messages.push_back ( { lineNumber,
+                               QObject::tr ( "Error: line not understood: `%1'." )
+                                           . arg ( line.c_str() )
+                                           . toStdString() } );
         return false;
     }
 
@@ -277,10 +277,10 @@ inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( std::vector<std::pair<u
             substitute += lineFields.getComment();
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
-            messages.push_back ( std::make_pair ( lineNumber,
-                                                  QObject::tr ( "Warning: directive `constant' should be used prior to "
-                                                                "any instructions." )
-                                                              . toStdString() ) );
+            messages.push_back ( { lineNumber,
+                                   QObject::tr ( "Warning: directive `constant' should be used prior to "
+                                                 "any instructions." )
+                                               . toStdString() } );
         }
         else
         {
@@ -531,10 +531,10 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
         }
         else
         {
-            messages.push_back ( std::make_pair ( lineNumber,
-                                                  QObject::tr ( "Error: instruction not understood, `reti enable' or"
-                                                                " `reti disable' was expeced." )
-                                                              . toStdString() ) );
+            messages.push_back ( { lineNumber,
+                                   QObject::tr ( "Error: instruction not understood, `reti enable' or"
+                                                 " `reti disable' was expeced." )
+                                               . toStdString() } );
             lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
             return false;
         }

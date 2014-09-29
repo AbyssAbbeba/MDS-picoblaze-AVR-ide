@@ -59,14 +59,14 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
         m_registers.insert(reg);
     }
 
-    m_defaultSymbols.insert ( std::make_pair ( "NUL", "'\\0'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "BEL", "'\\a'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "BS",  "'\\b'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "HT",  "'\\t'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "LF",  "'\\n'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "VT",  "'\\v'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "CR",  "'\\r'" ) );
-    m_defaultSymbols.insert ( std::make_pair ( "ESC", "'\\e'" ) );
+    m_defaultSymbols.insert ( { "NUL", "'\\0'" } );
+    m_defaultSymbols.insert ( { "BEL", "'\\a'" } );
+    m_defaultSymbols.insert ( { "BS",  "'\\b'" } );
+    m_defaultSymbols.insert ( { "HT",  "'\\t'" } );
+    m_defaultSymbols.insert ( { "LF",  "'\\n'" } );
+    m_defaultSymbols.insert ( { "VT",  "'\\v'" } );
+    m_defaultSymbols.insert ( { "CR",  "'\\r'" } );
+    m_defaultSymbols.insert ( { "ESC", "'\\e'" } );
 }
 
 bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::string> > & messages,
@@ -193,8 +193,8 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
                     boost::regex_search(begin, line.cend(), match, m_reWord);
                     if ( true == match[0].matched )
                     {
-                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
-                                                                       std::distance(lineStartIt, match[0].second)));
+                        lineFields.m_operands.push_back({std::distance(lineStartIt, match[0].first),
+                                                         std::distance(lineStartIt, match[0].second)});
 
                         begin = match[0].second;
                         boost::regex_search(begin, line.cend(), match, m_reWord);
@@ -203,8 +203,8 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
                             return true;
                         }
 
-                        lineFields.m_operands.push_back(std::make_pair(std::distance(lineStartIt, match[0].first),
-                                                                       std::distance(lineStartIt, match[0].second)));
+                        lineFields.m_operands.push_back({std::distance(lineStartIt, match[0].first),
+                                                         std::distance(lineStartIt, match[0].second)});
 
 
                         for ( int i = 0; i < 2; i++ )
@@ -255,8 +255,8 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
             }
 
             begin = match[0].second;
-            lineFields.m_operands.push_back ( std::make_pair ( std::distance(lineStartIt, match[0].first),
-                                                               std::distance(lineStartIt, match[0].second) ) );
+            lineFields.m_operands.push_back ( { std::distance(lineStartIt, match[0].first),
+                                                std::distance(lineStartIt, match[0].second) } );
 
             // Find operand separator.
             boost::regex_search(begin, end, match, m_reOperandSep);
@@ -280,10 +280,10 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
 
     if ( ( false == secondPass ) && ( end != begin ) )
     {
-        messages.push_back ( std::make_pair ( lineNumber,
-                                              QObject::tr ( "Error: line not understood: `%1'." )
-                                                          . arg ( line.c_str() )
-                                                          . toStdString() ) );
+        messages.push_back ( { lineNumber,
+                               QObject::tr ( "Error: line not understood: `%1'." )
+                                           . arg ( line.c_str() )
+                                           . toStdString() } );
         return false;
     }
 
@@ -366,10 +366,10 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
             substitute += lineFields.getComment();
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
-            messages.push_back ( std::make_pair ( lineNumber,
-                                                  QObject::tr ( "Warning: directive `constant' should be used prior to "
-                                                                "any instructions." )
-                                                              . toStdString() ) );
+            messages.push_back ( { lineNumber,
+                                   QObject::tr ( "Warning: directive `constant' should be used prior to "
+                                                 "any instructions." )
+                                               . toStdString() } );
         }
         else
         {
@@ -747,10 +747,10 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
         }
         else
         {
-            messages.push_back ( std::make_pair ( lineNumber,
-                                                  QObject::tr ( "Error: instruction not understood, `returni enable' or"
-                                                                " `returni disable' was expeced." )
-                                                              . toStdString() ) );
+            messages.push_back ( { lineNumber,
+                                   QObject::tr ( "Error: instruction not understood, `returni enable' or"
+                                                 " `returni disable' was expeced." )
+                                               . toStdString() } );
             lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
             return false;
         }
@@ -878,7 +878,7 @@ std::string AsmTranslatorKcpsmMed::newIdentifier ( const std::string & id )
         }
 
         m_usedIDs.insert(newId);
-        m_idTranslationMap.insert(std::make_pair(id, newId));
+        m_idTranslationMap.insert({id, newId});
 
         return newId;
     }

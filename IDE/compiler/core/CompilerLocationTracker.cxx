@@ -18,7 +18,7 @@
 int CompilerLocationTracker::add ( const CompilerSourceLocation & location,
                                    int next )
 {
-    m_locations.push_back(std::make_pair(location, next));
+    m_locations.push_back({location, next});
     return (int) (m_locations.size() - 1);
 }
 
@@ -106,7 +106,7 @@ void CompilerLocationTracker::deserialize ( CompilerSerializer & input )
     for ( size_t i = 0; i < size; i++ )
     {
         input >> location;
-        m_locations.push_back ( std::make_pair ( location, input.translateLOrigin(input.read_ui32()) ) );
+        m_locations.push_back ( { location, input.translateLOrigin(input.read_ui32()) } );
     }
 }
 

@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Compiler semantic analyzer for assembly language for AVR8.
+# Common code used by assemblers.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #
@@ -12,31 +12,27 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project ( CompilerModuleAsmAvr8 )
+project ( CompilerModuleAsmCommon )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# Generate lexical and syntax analyzers.
-flex_bison_pair ( AsmAvr8Lexer AsmAvr8Parser AsmAvr8LexerParser )
-
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/" )
+include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
+                      "${CMAKE_SOURCE_DIR}/utilities/DbgFile/"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/" )
 
-# Add a library to the project using the specified source files.
-add_library ( ${PROJECT_NAME}
-              AsmAvr8SemanticAnalyzer.cxx )
+## Add a library to the project using the specified source files,
+ # in this case it will procude static C++ library.
+add_library ( ${PROJECT_NAME} AsmMachineCodeGen.cxx
+                              AsmDgbFileGen.cxx )
 
-# Link target to given libraries
-target_link_libraries ( AsmAvr8LexerParser CompilerCore )
-
-# Link target to given libraries
+# Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        MCUDataFiles
+                                        DbgFile
                                         CompilerCore
-                                        AsmAvr8LexerParser
-                                        CompilerModuleAsmCommon )
+                                        MCUDataFiles )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

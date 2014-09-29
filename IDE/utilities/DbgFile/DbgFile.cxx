@@ -37,8 +37,8 @@ void DbgFile::getLinesByAddr ( unsigned int addr,
             continue;
         }
 
-        lines.push_back ( std::make_pair ( & m_fileNames [ fileNumber ],
-                                           m_lineRecords [ lineRecordIdx ].m_lineNumber ) );
+        lines.push_back ( { & m_fileNames [ fileNumber ],
+                            m_lineRecords [ lineRecordIdx ].m_lineNumber } );
     }
 }
 

@@ -292,7 +292,7 @@ inline void CompilerCore::setOpenedFile ( const std::string & filename,
     else
     {
         m_fileNumber = m_openedFiles.size();
-        m_openedFiles.push_back(std::make_pair(filename, *fileHandle));
+        m_openedFiles.push_back({filename, *fileHandle});
     }
 }
 

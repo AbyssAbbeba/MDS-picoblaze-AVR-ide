@@ -54,7 +54,7 @@ function build() {
           -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
           -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
           -DMDS_VARIANT=${variant:=Commercial}  \
-          -DMDS_GRADE=${grade:-Professional}    \
+          -DMDS_GRADE=${grade:-Ultimate}        \
           -DMDS_TARGET=${target:-PicoBlaze}     \
           . || exit 1
 

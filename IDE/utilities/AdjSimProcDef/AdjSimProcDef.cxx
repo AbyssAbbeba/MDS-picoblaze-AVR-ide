@@ -15,6 +15,39 @@
 
 #include "AdjSimProcDef.h"
 
+AdjSimProcDef::Instruction::Instruction()
+{
+    m_next.m_negative = -1;
+    m_next.m_positive = -1;
+    m_time.m_positive = 1;
+    m_time.m_negative = 1;
+    for ( int i = 0; i < FLAG__MAX__; i++ )
+    {
+        m_flags[i] = FE_DO_NOT_CHANGE;
+    }
+    m_condition.m_flag = FLAG_ZERO;
+    m_condition.m_type = Condition::T_UNCONDITIONAL;
+    m_operation = OP_NONE;
+    m_operParameters.m_result = OperParameters::RES_DISCARD;
+    m_operParameters.m_parity = OperParameters::P_EVEN;
+    m_operParameters.m_ignoreCarryFlag = false;
+    m_opCode.assign(24, OCB_DONT_CARE);
+    m_operands.resize(3);
+    m_operands[0].m_number = Operand::N_FIRST;
+    m_operands[1].m_number = Operand::N_SECOND;
+    m_operands[2].m_number = Operand::N_THIRD;
+}
+
+AdjSimProcDef::Instruction::Operand::Operand()
+{
+    m_type = T_IMMEDIATE;
+    m_number = N_HIDDEN;
+
+    m_size = 16;
+    m_fixedValue = -1;
+    m_OPCodePermutation.assign(16, -1);
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const AdjSimProcDef & definition )
 {

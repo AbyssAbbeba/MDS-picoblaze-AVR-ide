@@ -52,7 +52,7 @@ windres_rc ( OUTPUT_VAR         EXEC_RC_FILE
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/core"
                       "${CMAKE_CURRENT_SOURCE_DIR}/modules"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/modules/generators" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/modules/common" )
 
 ## Create moc code from a list of files containing Qt class with the Q_OBJECT declaration.
  # Per-directory preprocessor definitions are also added.

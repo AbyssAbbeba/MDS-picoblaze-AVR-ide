@@ -91,7 +91,7 @@ CompilerSerializer::CompilerSerializer ( std::istream & input,
             if ( false == found )
             {
                 fileNumber++;
-                files.push_back(std::make_pair(filename, (FILE*)nullptr));
+                files.push_back({filename, (FILE*)nullptr});
             }
 
             m_fileNumberMap.push_back(fileNumber);

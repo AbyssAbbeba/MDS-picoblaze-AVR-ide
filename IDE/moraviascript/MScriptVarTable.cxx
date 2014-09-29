@@ -187,7 +187,7 @@ void MScriptVarTable::declare ( const std::string & variable,
             varObject.m_value.m_scalar = MScriptValue();
         }
 
-        m_varTables.back().insert(std::make_pair(bareId, varObject));
+        m_varTables.back().insert({bareId, varObject});
     }
     else if ( var->second.m_flags != flags )
     {
@@ -220,8 +220,8 @@ bool MScriptVarTable::declare ( MScriptNamespaces::NsDesc * ns,
     MScriptVariable var;
     var.m_ns = ns;
     var.m_id = id;
-    m_varTables[0].insert ( std::make_pair ( variable, var ) );
-    m_id2nameMap.insert ( std::make_pair ( id, variable ) );
+    m_varTables[0].insert ( { variable, var } );
+    m_id2nameMap.insert ( { id, variable } );
     return true;
 }
 
@@ -485,7 +485,7 @@ inline MScriptValue * MScriptVarTable::newArrayElementKey ( const std::string & 
         }
         else
         {
-            var->m_value.m_hash->insert ( std::make_pair ( *i, MScriptVariable() ) );
+            var->m_value.m_hash->insert ( { *i, MScriptVariable() } );
 
             it = var->m_value.m_hash->find(*i);
             var = &( it->second );

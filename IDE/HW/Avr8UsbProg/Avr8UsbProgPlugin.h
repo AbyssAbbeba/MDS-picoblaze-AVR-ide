@@ -203,7 +203,7 @@ private slots:
     void directoryContentsChanged(const QString & path);
 
     // Intercomunication with the programmer HW driver thread
-        void programmerThread_newProgrammersFound(const QStringList & programmers);
+    void programmerThread_newProgrammersFound(const QStringList & programmers);
 
     void programmerThread_aborted();
     void programmerThread_errorOccured(QString errorInfo);

@@ -39,6 +39,8 @@ class AdjSimProcDef
          */
         struct Instruction
         {
+            Instruction();
+
             enum ProcessorFlag
             {
                 FLAG_ZERO,
@@ -85,6 +87,8 @@ class AdjSimProcDef
 
             struct Operand
             {
+                Operand();
+
                 enum Type
                 {
                     T_IMMEDIATE,
