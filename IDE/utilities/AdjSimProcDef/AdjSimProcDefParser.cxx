@@ -209,6 +209,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
 
             // OP Code Bits
             readUInt(def, size, pos );
+            instruction.m_opCode.clear();
             for ( unsigned int i = 0; i < size; i++ )
             {
                 readInt(def, value, pos );
@@ -217,6 +218,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
 
             // Operands
             readUInt(def, size, pos );
+            instruction.m_operands.clear();
             for ( unsigned int i = 0; i < size; i++ )
             {
                 AdjSimProcDef::Instruction::Operand operand;

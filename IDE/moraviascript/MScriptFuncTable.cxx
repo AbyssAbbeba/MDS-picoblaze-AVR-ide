@@ -195,7 +195,7 @@ void MScriptFuncTable::define ( const std::string & name,
         }
     }
 
-    m_funcTable.insert ( std::make_pair ( name, Function ( params, code, location, argsRequired, ns ) ) );
+    m_funcTable.insert ( { name, Function ( params, code, location, argsRequired, ns ) } );
 }
 
 bool MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
@@ -218,8 +218,8 @@ bool MScriptFuncTable::define ( MScriptNamespaces::NsDesc * ns,
         }
     }
 
-    m_funcTable.insert ( std::make_pair ( name, Function ( params, id, ( params->size() - defaults ), ns ) ) );
-    m_id2nameMap.insert ( std::make_pair(id, name) );
+    m_funcTable.insert ( { name, Function ( params, id, ( params->size() - defaults ), ns ) } );
+    m_id2nameMap.insert ( { id, name } );
     return true;
 }
 

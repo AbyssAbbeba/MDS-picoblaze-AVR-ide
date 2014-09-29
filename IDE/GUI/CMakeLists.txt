@@ -14,12 +14,15 @@ windres_rc ( OUTPUT_VAR         RC_FILE
              YEARS              ${COPYRIGHT_YEARS} )
 
 
-    file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license-${MDS_VARIANT}.html licenseTerms )
+file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license-${MDS_VARIANT}.html licenseTerms )
+file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html licenseTerms2 )
+if ( NOT "${licenseTerms}" STREQUAL "${licenseTerms2}" )
     file ( WRITE ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html "${licenseTerms}" )
-    configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html.in
-                     ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html @ONLY )
-    set_directory_properties ( PROPERTIES
-                               ADDITIONAL_MAKE_CLEAN_FILES "resources/html/about-general.html;resources/html/license.html" )
+endif()
+configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html.in
+                    ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html @ONLY )
+set_directory_properties ( PROPERTIES
+                           ADDITIONAL_MAKE_CLEAN_FILES "resources/html/about-general.html;resources/html/license.html" )
 
 
   # with SET() command you can change variables or define new ones

@@ -36,7 +36,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
                                         CompilerCore
                                         AsmMcs51LexerParser
-                                        CompilerModuleAsmGenerators )
+                                        CompilerModuleAsmCommon )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

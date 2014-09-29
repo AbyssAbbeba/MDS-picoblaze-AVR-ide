@@ -106,17 +106,17 @@ else()
 endif()
 
 # ----------------------------------------------------------------------------------------------------------------------
-# GENERATE "mds.h"
+# (RE-)GENERATE "mds.h"
 # ----------------------------------------------------------------------------------------------------------------------
 
-file ( WRITE "mds.h" "// Basic definitions for MDS, generated automatically by CMake.\n" )
+set ( MDS_H "// Basic definitions for MDS, generated automatically by CMake.\n" )
 
-file ( APPEND "mds.h" "#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
-file ( APPEND "mds.h" "#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
-file ( APPEND "mds.h" "#define MDS_FEATURE_${MDS_FEATURE_UPPER_CASE}\n" )
+set ( MDS_H "${MDS_H}#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
+set ( MDS_H "${MDS_H}#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
+set ( MDS_H "${MDS_H}#define MDS_FEATURE_${MDS_FEATURE_UPPER_CASE}\n" )
 
 if ( MDS_VARIANT STREQUAL "Trial" )
-    file ( APPEND "mds.h" "#define MDS_TRIAL_PERIOD ${MDS_TRIAL_PERIOD}\n" )
+    set ( MDS_H "${MDS_H}#define MDS_TRIAL_PERIOD ${MDS_TRIAL_PERIOD}\n" )
 endif()
 
 foreach ( var   MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        MDS_FEATURE_TRANSLATOR
@@ -126,9 +126,16 @@ foreach ( var   MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        
                 MDS_FEATURE_PICOBLAZE           MDS_FEATURE_AVR8                MDS_FEATURE_PIC8
                 MDS_FEATURE_MCS51               MDS_FEATURE_C_COMPILER          MDS_FEATURE_C_TESTBENCH )
     if ( ${var} )
-        file ( APPEND "mds.h" "#define ${var}\n" )
+        set ( MDS_H "${MDS_H}#define ${var}\n" )
     endif()
 endforeach()
+
+file ( READ "mds.h" MDS_H_READ )
+string ( COMPARE EQUAL "${MDS_H}" "${MDS_H_READ}" MDS_H_DONT_UPDATE )
+
+if ( NOT MDS_H_DONT_UPDATE )
+    file ( WRITE "mds.h" "${MDS_H}" )
+endif()
 
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "mds.h" )

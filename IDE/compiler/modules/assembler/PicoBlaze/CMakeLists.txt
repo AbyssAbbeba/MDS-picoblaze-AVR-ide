@@ -24,7 +24,7 @@ flex_bison_pair ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../generators/" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../common/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
@@ -53,7 +53,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         MCUDataFiles
                                         CompilerCore
                                         AsmPicoBlazeLexerParser
-                                        CompilerModuleAsmGenerators )
+                                        CompilerModuleAsmCommon )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

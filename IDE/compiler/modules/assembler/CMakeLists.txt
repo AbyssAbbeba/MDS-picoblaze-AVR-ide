@@ -21,32 +21,38 @@ project ( CompilerModulesAsm )
 # List of additional compiler modules which can be enabled or disabled for this particular build.
 set ( MDS_ADDITONAL_MODULES "" )
 
-# Compiler modules for assembly language for AVR8.
+# Compiler module for assembly language for AVR8.
 if ( MDS_FEATURE_AVR8 )
     add_subdirectory ( avr8 )
     list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmAvr8" )
 endif()
 
-# Compiler modules for assembly language for MCS-51.
+# Compiler module for assembly language for MCS-51.
 if ( MDS_FEATURE_MCS51 )
     add_subdirectory ( mcs51 )
     list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmMcs51" )
 endif()
 
-# Compiler modules for assembly language for PIC8.
+# Compiler module for assembly language for PIC8.
 if ( MDS_FEATURE_PIC8 )
     add_subdirectory ( pic8 )
     list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmPic8" )
 endif()
 
-# Compiler modules for assembly language for PicoBlaze.
+# Compiler module for assembly language for PicoBlaze.
 if ( MDS_FEATURE_PICOBLAZE )
     add_subdirectory ( PicoBlaze )
     list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmPicoBlaze" )
 endif()
 
-# Code generators.
-add_subdirectory ( generators )
+# Compiler module for Adaptable Assembler.
+if ( MDS_FEATURE_PICOBLAZE )
+    add_subdirectory ( Adaptable )
+    list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmAdaptable" )
+endif()
+
+# Common code used by assemblers.
+add_subdirectory ( common )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS

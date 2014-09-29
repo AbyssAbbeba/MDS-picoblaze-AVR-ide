@@ -44,14 +44,13 @@ qt4_wrap_cpp ( MOC_FILES AdjSimProcDefGui.h )
 include_directories ( ${CMAKE_SOURCE_DIR} )
 
 # Add a library to the project using the specified source files.
-add_library ( ${PROJECT_NAME}
-              ${RC_FILE}
-              ${UI_FILES}
-              ${MOC_FILES}
-              AdjSimProcDef.cxx
-              AdjSimProcDefGui.cxx
-              AdjSimProcDefParser.cxx
-              AdjSimProcDefGenerator.cxx )
+add_library ( ${PROJECT_NAME} ${RC_FILE}
+                              ${UI_FILES}
+                              ${MOC_FILES}
+                              AdjSimProcDef.cxx
+                              AdjSimProcDefGui.cxx
+                              AdjSimProcDefParser.cxx
+                              AdjSimProcDefGenerator.cxx )
 
 # Link a target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )

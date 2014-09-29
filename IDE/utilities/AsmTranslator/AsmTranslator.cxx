@@ -55,9 +55,9 @@ bool AsmTranslator::translate ( Variant variant,
 
     if ( nullptr == translator )
     {
-        m_messages.push_back ( std::make_pair ( 0,
-                                                QObject::tr ( "Error: specified assembler variant is not supported." )
-                                                           . toStdString() ) );
+        m_messages.push_back ( { 0,
+                                 QObject::tr ( "Error: specified assembler variant is not supported." )
+                                            . toStdString() } );
         return false;
     }
 
@@ -79,7 +79,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         std::getline(input, buffer.back());
         if ( true == input.bad() )
         {
-            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: input failure.").toStdString()) );
+            m_messages.push_back ( { 0, QObject::tr("Error: input failure.").toStdString() } );
             return false;
         }
     }
@@ -127,7 +127,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         output << line << eol;
         if ( true == output.bad() )
         {
-            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: output failure.").toStdString()) );
+            m_messages.push_back ( { 0, QObject::tr("Error: output failure.").toStdString() } );
             return false;
         }
     }
@@ -136,7 +136,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         output << line << eol;
         if ( true == output.bad() )
         {
-            m_messages.push_back ( std::make_pair(0, QObject::tr("Error: output failure.").toStdString()) );
+            m_messages.push_back ( { 0, QObject::tr("Error: output failure.").toStdString() } );
             return false;
         }
     }

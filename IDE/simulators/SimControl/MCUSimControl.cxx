@@ -518,7 +518,7 @@ void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, u
         const std::string * filename = &( m_dbgFile->fileNumber2Name(lineRecord.m_fileNumber) );
         unsigned int lineNumber = lineRecord.m_lineNumber;
 
-        lines.push_back(std::make_pair(filename, lineNumber));
+        lines.push_back({filename, lineNumber});
     }
 }
 
@@ -819,7 +819,7 @@ void MCUSimControl::registerObserver ( MCUSimObserver * observer,
     registerObserver(observer, simSubsysToObserve, events);
 
     unregisterSpecificObserver(MCUSimSubsys::SubsysId(simSubsysToObserve), observer);
-    m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
+    m_observers[simSubsysToObserve].push_back({observer, events});
 
     observer->setControlUnit(this);
 }
@@ -829,7 +829,7 @@ inline void MCUSimControl::registerObserver ( MCUSimObserver * observer,
                                               uint64_t events )
 {
     unregisterSpecificObserver(MCUSimSubsys::SubsysId(simSubsysToObserve), observer);
-    m_observers[simSubsysToObserve].push_back(std::make_pair(observer, events));
+    m_observers[simSubsysToObserve].push_back({observer, events});
 
     observer->setControlUnit(this);
 }

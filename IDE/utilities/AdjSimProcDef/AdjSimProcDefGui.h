@@ -17,7 +17,9 @@
 #define ADJSIMPROCDEFGUI_H
 
 // Forward declarations.
+class QCloseEvent;
 class QTreeWidgetItem;
+class QRegExpValidator;
 
 // Standard header files.
 #include <map>
@@ -49,6 +51,11 @@ class AdjSimProcDefGui : public QWidget,
          * @param[in,out] parent
          */
         AdjSimProcDefGui ( QWidget * parent = nullptr );
+
+        /**
+         * @brief
+         */
+        ~AdjSimProcDefGui();
 
     ////    Public Operations    ////
     public:
@@ -85,8 +92,32 @@ class AdjSimProcDefGui : public QWidget,
 
         /**
          * @brief
+         * @return
+         */
+        bool maybeSave();
+
+        /**
+         * @brief
+         * @return
+         */
+        int checkIDs();
+
+        /**
+         * @brief
          */
         inline void setupConnections();
+
+        /**
+         * @brief
+         */
+        inline void setupValidators();
+
+    ////    Private Static Constants    ////
+    private:
+        /**
+         * @brief
+         */
+        static const AdjSimProcDef::Instruction m_emptyInstruction;
 
     ////    Private Attributes    ////
     private:
@@ -94,20 +125,31 @@ class AdjSimProcDefGui : public QWidget,
         QString m_fileName;
 
         /// @brief
-        std::map<QTreeWidgetItem*, AdjSimProcDef::Instruction*> m_instructions;
+        std::map<const QTreeWidgetItem *, AdjSimProcDef::Instruction *> m_instructions;
 
         /// @brief
         unsigned int m_idCounter;
 
         /// @brief
-        bool m_modified;
+        bool m_lock;
 
     ////    Private Slots    ////
     private slots:
         /**
          * @brief
+         * @param[in,out] event
+         */
+        void closeEvent ( QCloseEvent * event );
+
+        /**
+         * @brief
          */
         void setModified();
+
+        /**
+         * @brief
+         */
+        void instModified();
 
         /**
          * @brief
