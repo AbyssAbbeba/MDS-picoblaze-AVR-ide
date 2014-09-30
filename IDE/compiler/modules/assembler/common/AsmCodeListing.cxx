@@ -8,15 +8,15 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeCodeListing.cxx
+ * @ingroup Assembler
+ * @file AsmCodeListing.cxx
  */
 // =============================================================================
 
-#include "AsmPicoBlazeCodeListing.h"
+#include "AsmCodeListing.h"
 
-// PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
+//  assembler semantic analyzer header files.
+#include "AsmSymbolTable.h"
 
 // Standard headers.
 #include <cstdio>
@@ -29,7 +29,7 @@
 // Used for i18n only
 #include <QObject>
 
-AsmPicoBlazeCodeListing::LstLine::LstLine()
+AsmCodeListing::LstLine::LstLine()
 {
     m_address    = -1;
     m_inclusion  = -1;
@@ -38,7 +38,7 @@ AsmPicoBlazeCodeListing::LstLine::LstLine()
     m_noList     = 0;
 }
 
-AsmPicoBlazeCodeListing::LstLine::LstLine ( const char * line )
+AsmCodeListing::LstLine::LstLine ( const char * line )
 {
     m_address    = -1;
     m_inclusion  = -1;
@@ -48,28 +48,30 @@ AsmPicoBlazeCodeListing::LstLine::LstLine ( const char * line )
     m_line       = line;
 }
 
-AsmPicoBlazeCodeListing::Message::Message()
+AsmCodeListing::Message::Message()
 {
     m_type = CompilerBase::MT_INVALID;
     m_subsequent = false;
 }
 
-AsmPicoBlazeCodeListing::Message::Message ( CompilerBase::MessageType type,
-                                            const std::string & text,
-                                            bool subsequent )
+AsmCodeListing::Message::Message ( CompilerBase::MessageType type,
+                                   const std::string & text,
+                                   bool subsequent )
 {
     m_type = type;
     m_text = text;
     m_subsequent = subsequent;
 }
 
-AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                                   CompilerOptions * opts,
-                                                   AsmPicoBlazeSymbolTable * symbolTable )
-                                                 :
-                                                   m_compilerCore ( compilerCore ),
-                                                   m_opts ( opts ),
-                                                   m_symbolTable ( symbolTable )
+AsmCodeListing::AsmCodeListing ( CompilerSemanticInterface * compilerCore,
+                                 const CompilerOptions * opts,
+                                 AsmSymbolTable * symbolTable,
+                                 AsmCodeGenerator * codeGenerator )
+                               :
+                                 m_compilerCore ( compilerCore ),
+                                 m_opts ( opts ),
+                                 m_symbolTable ( symbolTable ),
+                                 m_codeGenerator ( codeGenerator )
 {
     m_messageLimit = 0;
     m_compilerCore->registerMsgObserver(this);
@@ -77,7 +79,7 @@ AsmPicoBlazeCodeListing::AsmPicoBlazeCodeListing ( CompilerSemanticInterface * c
     clear();
 }
 
-void AsmPicoBlazeCodeListing::clear()
+void AsmCodeListing::clear()
 {
     m_msgCounter     = 0;
     m_numberOfFiles  = 0;
@@ -94,11 +96,11 @@ void AsmPicoBlazeCodeListing::clear()
     m_lastMsgLocation = CompilerSourceLocation();
 }
 
-AsmPicoBlazeCodeListing::~AsmPicoBlazeCodeListing()
+AsmCodeListing::~AsmCodeListing()
 {
 }
 
-void AsmPicoBlazeCodeListing::loadSourceFiles()
+void AsmCodeListing::loadSourceFiles()
 {
     char * line = nullptr;
     size_t bufSize = 0;
@@ -153,12 +155,12 @@ void AsmPicoBlazeCodeListing::loadSourceFiles()
     processMsgQueue();
 }
 
-void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
-                                                 bool & outputEnabled,
-                                                 unsigned int & lineNumber,
-                                                 unsigned int fileNumber,
-                                                 unsigned int inclusionLevel,
-                                                 unsigned int macroLevel ) const
+void AsmCodeListing::printCodeListing ( std::ostream & out,
+                                        bool & outputEnabled,
+                                        unsigned int & lineNumber,
+                                        unsigned int fileNumber,
+                                        unsigned int inclusionLevel,
+                                        unsigned int macroLevel ) const
 {
     char buffer [ 16 ];
     std::string output;
@@ -317,7 +319,7 @@ void AsmPicoBlazeCodeListing::printCodeListing ( std::ostream & out,
     }
 }
 
-void AsmPicoBlazeCodeListing::output()
+void AsmCodeListing::output()
 {
     if ( m_opts->m_lstFile.empty() )
     {
@@ -347,8 +349,8 @@ void AsmPicoBlazeCodeListing::output()
     }
 }
 
-bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & location,
-                                              bool silent )
+bool AsmCodeListing::checkLocation ( const CompilerSourceLocation & location,
+                                     bool silent )
 {
     if ( m_files2skip.end() != m_files2skip.find(location.m_fileNumber) )
     {
@@ -375,13 +377,13 @@ bool AsmPicoBlazeCodeListing::checkLocation ( const CompilerSourceLocation & loc
     return false;
 }
 
-void AsmPicoBlazeCodeListing::setTitle ( const std::string & title )
+void AsmCodeListing::setTitle ( const std::string & title )
 {
     m_title = title;
 }
 
-void AsmPicoBlazeCodeListing::setNoList ( CompilerSourceLocation location,
-                                          bool flag )
+void AsmCodeListing::setNoList ( CompilerSourceLocation location,
+                                 bool flag )
 {
     if ( true == checkLocation ( location ) )
     {
@@ -390,8 +392,8 @@ void AsmPicoBlazeCodeListing::setNoList ( CompilerSourceLocation location,
     }
 }
 
-void AsmPicoBlazeCodeListing::setInclusion ( CompilerSourceLocation location,
-                                             int fileNumber )
+void AsmCodeListing::setInclusion ( CompilerSourceLocation location,
+                                    int fileNumber )
 {
     if ( ( true == checkLocation ( location ) ) && ( -1 != fileNumber ) )
     {
@@ -400,9 +402,9 @@ void AsmPicoBlazeCodeListing::setInclusion ( CompilerSourceLocation location,
     }
 }
 
-void AsmPicoBlazeCodeListing::setCode ( CompilerSourceLocation location,
-                                        int code,
-                                        int address )
+void AsmCodeListing::setCode ( CompilerSourceLocation location,
+                               int code,
+                               int address )
 {
     if ( true == checkLocation ( location ) )
     {
@@ -416,8 +418,8 @@ void AsmPicoBlazeCodeListing::setCode ( CompilerSourceLocation location,
     }
 }
 
-void AsmPicoBlazeCodeListing::setValue ( CompilerSourceLocation location,
-                                         int value )
+void AsmCodeListing::setValue ( CompilerSourceLocation location,
+                                int value )
 {
     if ( true == checkLocation ( location ) )
     {
@@ -426,9 +428,9 @@ void AsmPicoBlazeCodeListing::setValue ( CompilerSourceLocation location,
     }
 }
 
-void AsmPicoBlazeCodeListing::expandMacro ( CompilerSourceLocation location,
-                                            const CompilerStatement * definition,
-                                            CompilerStatement * expansion )
+void AsmCodeListing::expandMacro ( CompilerSourceLocation location,
+                                   const CompilerStatement * definition,
+                                   CompilerStatement * expansion )
 {
     if ( false == checkLocation ( location ) )
     {
@@ -449,8 +451,8 @@ void AsmPicoBlazeCodeListing::expandMacro ( CompilerSourceLocation location,
     rewriteMacroLoc(&lineCounter, expansion, formerOrigin);
 }
 
-void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
-                                              const CompilerStatement * macro )
+void AsmCodeListing::copyMacroBody ( unsigned int * lastLine,
+                                     const CompilerStatement * macro )
 {
     for ( const CompilerStatement * node = macro;
           nullptr != node;
@@ -477,9 +479,9 @@ void AsmPicoBlazeCodeListing::copyMacroBody ( unsigned int * lastLine,
     }
 }
 
-void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
-                                                CompilerStatement * macro,
-                                                int origin )
+void AsmCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
+                                       CompilerStatement * macro,
+                                       int origin )
 {
     for ( CompilerStatement * node = macro;
           node != nullptr;
@@ -503,9 +505,9 @@ void AsmPicoBlazeCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
     }
 }
 
-void AsmPicoBlazeCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
-                                                 CompilerStatement * code,
-                                                 int origin )
+void AsmCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
+                                        CompilerStatement * code,
+                                        int origin )
 {
     for ( CompilerStatement * node = code;
           node != nullptr;
@@ -529,9 +531,9 @@ void AsmPicoBlazeCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
     }
 }
 
-void AsmPicoBlazeCodeListing::repeatCode ( CompilerSourceLocation location,
-                                           CompilerStatement * code,
-                                           bool first )
+void AsmCodeListing::repeatCode ( CompilerSourceLocation location,
+                                  CompilerStatement * code,
+                                  bool first )
 {
     if ( false == checkLocation ( location ) )
     {
@@ -558,8 +560,8 @@ void AsmPicoBlazeCodeListing::repeatCode ( CompilerSourceLocation location,
     rewriteRepeatLoc(&lineCounter, code, formerOrigin);
 }
 
-void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
-                                              CompilerStatement * code )
+void AsmCodeListing::generatedCode ( CompilerSourceLocation location,
+                                     CompilerStatement * code )
 {
     if ( false == checkLocation ( location ) )
     {
@@ -568,7 +570,7 @@ void AsmPicoBlazeCodeListing::generatedCode ( CompilerSourceLocation location,
 
     m_numberOfMacros++;
 
-int origin = m_compilerCore->locationTrack().add(location);
+    int origin = m_compilerCore->locationTrack().add(location);
 
     location.m_lineStart--;
     m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
@@ -586,16 +588,16 @@ int origin = m_compilerCore->locationTrack().add(location);
         }
 
         m_listing[index].push_back(LstLine());
-        m_codeGenerator.toSourceLine(m_listing[index].back().m_line, node);
+        m_codeGenerator->toSourceLine(m_listing[index].back().m_line, node);
         node->m_location.m_fileNumber = index;
         node->m_location.m_lineStart  = lineNumber;
         node->m_location.m_lineEnd    = lineNumber;
-node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
+        node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
         lineNumber++;
     }
 }
 
-inline void AsmPicoBlazeCodeListing::processMsgQueue()
+inline void AsmCodeListing::processMsgQueue()
 {
     for ( const auto & msg : m_messageQueue )
     {
@@ -605,10 +607,10 @@ inline void AsmPicoBlazeCodeListing::processMsgQueue()
     m_messageQueue.clear();
 }
 
-void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
-                                        CompilerBase::MessageType type,
-                                        const std::string & text,
-                                        bool subsequent )
+void AsmCodeListing::message ( const CompilerSourceLocation & location,
+                               CompilerBase::MessageType type,
+                               const std::string & text,
+                               bool subsequent )
 {
     if ( 0 != m_messageLimit )
     {
@@ -673,9 +675,9 @@ void AsmPicoBlazeCodeListing::message ( const CompilerSourceLocation & location,
     }
 }
 
-inline void AsmPicoBlazeCodeListing::insertMessage ( const CompilerSourceLocation & location,
-                                                     CompilerBase::MessageType type,
-                                                     const std::string & text )
+inline void AsmCodeListing::insertMessage ( const CompilerSourceLocation & location,
+                                            CompilerBase::MessageType type,
+                                            const std::string & text )
 {
     LstLine & lstLine = m_listing[location.m_fileNumber][location.m_lineStart - 1];
 
@@ -689,18 +691,18 @@ inline void AsmPicoBlazeCodeListing::insertMessage ( const CompilerSourceLocatio
     m_messages[msgIdx].push_back(Message(type, text));
 }
 
-void AsmPicoBlazeCodeListing::setMaxNumberOfMessages ( unsigned int limit )
+void AsmCodeListing::setMaxNumberOfMessages ( unsigned int limit )
 {
     m_messageLimit = limit;
 }
 
-void AsmPicoBlazeCodeListing::reset()
+void AsmCodeListing::reset()
 {
     m_msgCounter = 0;
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const AsmPicoBlazeCodeListing * codeListing )
+                             const AsmCodeListing * codeListing )
 {
     if ( false == codeListing->m_title.empty() )
     {

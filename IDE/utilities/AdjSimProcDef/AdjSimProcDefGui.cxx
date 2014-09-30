@@ -220,7 +220,7 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
     AdjSimProcDef procDef;
 
     // Processor Name & Description
-    procDef.m_name = lineEditProcessorName->text().toStdString();
+    procDef.m_name = lineEditProcessorName->text().toUpper().toStdString();
     procDef.m_description = textEditDescription->toPlainText().toStdString();
 
     // Program memory

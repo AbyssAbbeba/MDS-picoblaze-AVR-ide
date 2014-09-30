@@ -8,24 +8,24 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeSymbolTable.cxx
+ * @ingroup Assembler
+ * @file AsmSymbolTable.cxx
  */
 // =============================================================================
 
-#include "AsmPicoBlazeSymbolTable.h"
-#include "AsmPicoBlazeMacros.h"
+#include "AsmSymbolTable.h"
+#include "AsmMacros.h"
 
 // Standard headers.
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 
-AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
-                                          const CompilerSourceLocation * location,
-                                          SymbolType type,
-                                          int finalValue,
-                                          bool redefinable )
+AsmSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
+                                 const CompilerSourceLocation * location,
+                                 SymbolType type,
+                                 int finalValue,
+                                 bool redefinable )
 {
     m_type = type;
     m_masked = false;
@@ -48,7 +48,7 @@ AsmPicoBlazeSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
     }
 }
 
-AsmPicoBlazeSymbolTable::Symbol::Symbol ( const AsmPicoBlazeSymbolTable::Symbol & obj )
+AsmSymbolTable::Symbol::Symbol ( const AsmSymbolTable::Symbol & obj )
 {
 
     m_type       = obj.m_type;
@@ -60,17 +60,17 @@ AsmPicoBlazeSymbolTable::Symbol::Symbol ( const AsmPicoBlazeSymbolTable::Symbol 
     m_finalValue = obj.m_finalValue;
 }
 
-AsmPicoBlazeSymbolTable::~AsmPicoBlazeSymbolTable()
+AsmSymbolTable::~AsmSymbolTable()
 {
     clear();
 }
 
-int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
-                                         const CompilerExpr * value,
-                                         const CompilerSourceLocation * location,
-                                         const SymbolType type,
-                                         bool resolve,
-                                         bool redefinable )
+int AsmSymbolTable::addSymbol ( const std::string & name,
+                                const CompilerExpr * value,
+                                const CompilerSourceLocation * location,
+                                const SymbolType type,
+                                bool resolve,
+                                bool redefinable )
 {
     int finalValue = -1;
 
@@ -118,7 +118,7 @@ int AsmPicoBlazeSymbolTable::addSymbol ( const std::string & name,
     return finalValue;
 }
 
-AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const std::string & name )
+AsmSymbolTable::SymbolType AsmSymbolTable::getType ( const std::string & name )
 {
     auto it = m_table.find(name);
     if ( it != m_table.end() )
@@ -131,7 +131,7 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const std
     }
 }
 
-void AsmPicoBlazeSymbolTable::maskNonLabels()
+void AsmSymbolTable::maskNonLabels()
 {
     for ( auto & symbol : m_table )
     {
@@ -142,7 +142,7 @@ void AsmPicoBlazeSymbolTable::maskNonLabels()
     }
 }
 
-AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const CompilerExpr * expr )
+AsmSymbolTable::SymbolType AsmSymbolTable::getType ( const CompilerExpr * expr )
 {
     if ( CompilerExpr::OPER_NONE != expr->oper() )
     {
@@ -166,8 +166,8 @@ AsmPicoBlazeSymbolTable::SymbolType AsmPicoBlazeSymbolTable::getType ( const Com
     return STYPE_UNSPECIFIED;
 }
 
-void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
-                                               int codePointer )
+void AsmSymbolTable::resolveSymbols ( CompilerExpr * expr,
+                                      int codePointer )
 {
     for ( ; nullptr != expr; expr = expr->next() )
     {
@@ -212,9 +212,9 @@ void AsmPicoBlazeSymbolTable::resolveSymbols ( CompilerExpr * expr,
     }
 }
 
-void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
-                                             const CompilerSourceLocation & location,
-                                             const SymbolType type )
+void AsmSymbolTable::removeSymbol ( const std::string & name,
+                                    const CompilerSourceLocation & location,
+                                    const SymbolType type )
 {
     auto it = m_table.find(name);
     if ( it == m_table.end() )
@@ -230,8 +230,8 @@ void AsmPicoBlazeSymbolTable::removeSymbol ( const std::string & name,
     }
 }
 
-bool AsmPicoBlazeSymbolTable::isDefined ( const std::string & name,
-                                          const SymbolType type ) const
+bool AsmSymbolTable::isDefined ( const std::string & name,
+                                 const SymbolType type ) const
 {
     auto it = m_table.find(name);
     if ( ( it != m_table.cend() ) && ( STYPE_UNSPECIFIED == type || type == it->second.m_type ) )
@@ -242,11 +242,11 @@ bool AsmPicoBlazeSymbolTable::isDefined ( const std::string & name,
     return false;
 }
 
-int AsmPicoBlazeSymbolTable::assignValue ( const std::string & name,
-                                           const CompilerExpr * value,
-                                           const CompilerSourceLocation * location,
-                                           const SymbolType type,
-                                           bool resolve )
+int AsmSymbolTable::assignValue ( const std::string & name,
+                                  const CompilerExpr * value,
+                                  const CompilerSourceLocation * location,
+                                  const SymbolType type,
+                                  bool resolve )
 {
     int finalValue = -1;
 
@@ -285,8 +285,8 @@ int AsmPicoBlazeSymbolTable::assignValue ( const std::string & name,
     return finalValue;
 }
 
-const CompilerExpr * AsmPicoBlazeSymbolTable::getValue ( const std::string & name,
-                                                         const SymbolType type )
+const CompilerExpr * AsmSymbolTable::getValue ( const std::string & name,
+                                                const SymbolType type )
 {
     std::map<std::string,Symbol>::iterator it = m_table.find(name);
     if (
@@ -304,9 +304,9 @@ const CompilerExpr * AsmPicoBlazeSymbolTable::getValue ( const std::string & nam
     return nullptr;
 }
 
-int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
-                                            const CompilerExpr * expr,
-                                            const CompilerExpr * argList )
+int AsmSymbolTable::getExprValue ( ExprValSide side,
+                                   const CompilerExpr * expr,
+                                   const CompilerExpr * argList )
 {
     const CompilerValue * value;
 
@@ -387,8 +387,8 @@ int AsmPicoBlazeSymbolTable::getExprValue ( ExprValSide side,
     return 1;
 }
 
-inline CompilerExpr * AsmPicoBlazeSymbolTable::substituteArgs ( const CompilerExpr * expr,
-                                                                const CompilerExpr * argList )
+inline CompilerExpr * AsmSymbolTable::substituteArgs ( const CompilerExpr * expr,
+                                                       const CompilerExpr * argList )
 {
     CompilerExpr * result = expr->copyEntireChain();
 
@@ -410,9 +410,9 @@ inline CompilerExpr * AsmPicoBlazeSymbolTable::substituteArgs ( const CompilerEx
     return result;
 }
 
-bool AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
-                                         const CompilerExpr * subst,
-                                         const int position )
+bool AsmSymbolTable::substArg ( CompilerExpr * expr,
+                                const CompilerExpr * subst,
+                                const int position )
 {
     bool result = false;
 
@@ -472,9 +472,9 @@ bool AsmPicoBlazeSymbolTable::substArg ( CompilerExpr * expr,
     return result;
 }
 
-unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbol,
-                                                   const CompilerExpr * newSymbol,
-                                                   CompilerExpr * expr )
+unsigned int AsmSymbolTable::substitute ( const std::string & origSymbol,
+                                          const CompilerExpr * newSymbol,
+                                          CompilerExpr * expr )
 {
     unsigned int result = 0;
 
@@ -516,8 +516,8 @@ unsigned int AsmPicoBlazeSymbolTable::substitute ( const std::string & origSymbo
     return result;
 }
 
-int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
-                                           const CompilerExpr * argList )
+int AsmSymbolTable::computeExpr ( const CompilerExpr * expr,
+                                  const CompilerExpr * argList )
 {
     switch ( expr->m_operator )
     {
@@ -612,8 +612,8 @@ int AsmPicoBlazeSymbolTable::computeExpr ( const CompilerExpr * expr,
     return 1;
 }
 
-unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
-                                                    int bitsMax )
+unsigned int AsmSymbolTable::resolveExpr ( const CompilerExpr * expr,
+                                           int bitsMax )
 {
     int resultOrig = computeExpr(expr);
     unsigned int result = (unsigned int) resultOrig;
@@ -673,10 +673,10 @@ unsigned int AsmPicoBlazeSymbolTable::resolveExpr ( const CompilerExpr * expr,
     return result;
 }
 
-void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
-                                               const CompilerSourceLocation & newLocation,
-                                               int origin,
-                                               bool keepColumns ) const
+void AsmSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
+                                      const CompilerSourceLocation & newLocation,
+                                      int origin,
+                                      bool keepColumns ) const
 {
     if ( -1 == origin )
     {
@@ -712,7 +712,7 @@ void AsmPicoBlazeSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
     }
 }
 
-void AsmPicoBlazeSymbolTable::output()
+void AsmSymbolTable::output()
 {
     if ( true == m_opts->m_symbolTable.empty() )
     {
@@ -742,7 +742,7 @@ void AsmPicoBlazeSymbolTable::output()
     }
 }
 
-void AsmPicoBlazeSymbolTable::clear()
+void AsmSymbolTable::clear()
 {
     for ( const auto & symbol : m_table )
     {
@@ -757,8 +757,8 @@ void AsmPicoBlazeSymbolTable::clear()
     m_deletedSymbols.clear();
 }
 
-void AsmPicoBlazeSymbolTable::printSymLocation ( std::ostream & out,
-                                                 const CompilerSourceLocation & location ) const
+void AsmSymbolTable::printSymLocation ( std::ostream & out,
+                                        const CompilerSourceLocation & location ) const
 {
     if ( false == location.isSet() )
     {
@@ -768,20 +768,20 @@ void AsmPicoBlazeSymbolTable::printSymLocation ( std::ostream & out,
     out << m_compilerCore->locationToStr(location);
 }
 
-const char * AsmPicoBlazeSymbolTable::symType2Str ( const AsmPicoBlazeSymbolTable::SymbolType symbolType,
-                                                    bool constLength )
+const char * AsmSymbolTable::symType2Str ( const AsmSymbolTable::SymbolType symbolType,
+                                           bool constLength )
 {
     if ( true == constLength )
     {
         switch ( symbolType )
         {
-            case AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED: return "       ";
-            case AsmPicoBlazeSymbolTable::STYPE_NUMBER:      return "NUMBER ";
-            case AsmPicoBlazeSymbolTable::STYPE_REGISTER:    return "REG.   ";
-            case AsmPicoBlazeSymbolTable::STYPE_LABEL:       return "LABEL  ";
-            case AsmPicoBlazeSymbolTable::STYPE_PORT:        return "PORT   ";
-            case AsmPicoBlazeSymbolTable::STYPE_EXPRESSION:  return "EXPR.  ";
-            case AsmPicoBlazeSymbolTable::STYPE_DATA:        return "DATA   ";
+            case AsmSymbolTable::STYPE_UNSPECIFIED: return "       ";
+            case AsmSymbolTable::STYPE_NUMBER:      return "NUMBER ";
+            case AsmSymbolTable::STYPE_REGISTER:    return "REG.   ";
+            case AsmSymbolTable::STYPE_LABEL:       return "LABEL  ";
+            case AsmSymbolTable::STYPE_PORT:        return "PORT   ";
+            case AsmSymbolTable::STYPE_EXPRESSION:  return "EXPR.  ";
+            case AsmSymbolTable::STYPE_DATA:        return "DATA   ";
         }
     }
     else
@@ -789,13 +789,13 @@ const char * AsmPicoBlazeSymbolTable::symType2Str ( const AsmPicoBlazeSymbolTabl
         switch ( symbolType )
         {
             default:
-            case AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED: return "";
-            case AsmPicoBlazeSymbolTable::STYPE_NUMBER:      return "NUMBER";
-            case AsmPicoBlazeSymbolTable::STYPE_REGISTER:    return "REG.";
-            case AsmPicoBlazeSymbolTable::STYPE_LABEL:       return "LABEL";
-            case AsmPicoBlazeSymbolTable::STYPE_PORT:        return "PORT";
-            case AsmPicoBlazeSymbolTable::STYPE_EXPRESSION:  return "EXPR.";
-            case AsmPicoBlazeSymbolTable::STYPE_DATA:        return "DATA";
+            case AsmSymbolTable::STYPE_UNSPECIFIED: return "";
+            case AsmSymbolTable::STYPE_NUMBER:      return "NUMBER";
+            case AsmSymbolTable::STYPE_REGISTER:    return "REG.";
+            case AsmSymbolTable::STYPE_LABEL:       return "LABEL";
+            case AsmSymbolTable::STYPE_PORT:        return "PORT";
+            case AsmSymbolTable::STYPE_EXPRESSION:  return "EXPR.";
+            case AsmSymbolTable::STYPE_DATA:        return "DATA";
         }
     }
 
@@ -803,9 +803,9 @@ const char * AsmPicoBlazeSymbolTable::symType2Str ( const AsmPicoBlazeSymbolTabl
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const AsmPicoBlazeSymbolTable * symbolTable )
+                             const AsmSymbolTable * symbolTable )
 {
-    const std::map<std::string,AsmPicoBlazeSymbolTable::Symbol> * table = &(symbolTable->m_table);
+    const std::map<std::string,AsmSymbolTable::Symbol> * table = &(symbolTable->m_table);
 
     for ( int i = 0; i < 2; i++ )
     {
@@ -825,7 +825,7 @@ std::ostream & operator << ( std::ostream & out,
                 }
             }
 
-            out << " " << AsmPicoBlazeSymbolTable::symType2Str(symbol.second.m_type, true);
+            out << " " << AsmSymbolTable::symType2Str(symbol.second.m_type, true);
 
             if ( -1 == symbol.second.m_finalValue )
             {
@@ -856,7 +856,7 @@ std::ostream & operator << ( std::ostream & out,
                 out << "REDEFINABLE ";
             }
 
-            if ( AsmPicoBlazeMacros::MANGLE_PREFIX == symbol.first[0] )
+            if ( AsmMacros::MANGLE_PREFIX == symbol.first[0] )
             {
                 out << "LOCAL";
             }
@@ -890,17 +890,17 @@ std::ostream & operator << ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const AsmPicoBlazeSymbolTable::SymbolType symbolType )
+                             const AsmSymbolTable::SymbolType symbolType )
 {
     switch ( symbolType )
     {
-        case AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED: out << "STYPE_UNSPECIFIED"; break;
-        case AsmPicoBlazeSymbolTable::STYPE_NUMBER:      out << "STYPE_NUMBER";      break;
-        case AsmPicoBlazeSymbolTable::STYPE_REGISTER:    out << "STYPE_REGISTER";    break;
-        case AsmPicoBlazeSymbolTable::STYPE_LABEL:       out << "STYPE_LABEL";       break;
-        case AsmPicoBlazeSymbolTable::STYPE_PORT:        out << "STYPE_PORT";        break;
-        case AsmPicoBlazeSymbolTable::STYPE_EXPRESSION:  out << "STYPE_EXPRESSION";  break;
-        case AsmPicoBlazeSymbolTable::STYPE_DATA:        out << "STYPE_DATA";        break;
+        case AsmSymbolTable::STYPE_UNSPECIFIED: out << "STYPE_UNSPECIFIED"; break;
+        case AsmSymbolTable::STYPE_NUMBER:      out << "STYPE_NUMBER";      break;
+        case AsmSymbolTable::STYPE_REGISTER:    out << "STYPE_REGISTER";    break;
+        case AsmSymbolTable::STYPE_LABEL:       out << "STYPE_LABEL";       break;
+        case AsmSymbolTable::STYPE_PORT:        out << "STYPE_PORT";        break;
+        case AsmSymbolTable::STYPE_EXPRESSION:  out << "STYPE_EXPRESSION";  break;
+        case AsmSymbolTable::STYPE_DATA:        out << "STYPE_DATA";        break;
     }
 
     return out;

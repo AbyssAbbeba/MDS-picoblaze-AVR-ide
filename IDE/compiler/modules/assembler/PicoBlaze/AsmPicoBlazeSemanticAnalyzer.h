@@ -17,13 +17,14 @@
 #define ASMPICOBLAZESEMANTICANALYSER_H
 
 // Forward declarations.
+class AsmMacros;
+class AsmMemoryPtr;
 class AsmDgbFileGen;
-class AsmPicoBlazeMacros;
-class AsmPicoBlazeMemoryPtr;
-class AsmPicoBlazeSymbolTable;
+class AsmSymbolTable;
+class AsmCodeListing;
 class AsmPicoBlazeTreeDecoder;
-class AsmPicoBlazeCodeListing;
 class AsmPicoBlazeSpecialMacros;
+class AsmPicoBlazeCodeGenerator;
 class AsmPicoBlazeInstructionSet;
 
 // Common compiler header files.
@@ -109,31 +110,34 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
     ////    Protected Attributes    ////
     protected:
         ///
-        AsmMachineCodeGen * m_machineCode;
+        AsmMacros * m_macros;
 
         ///
         AsmDgbFileGen * m_dgbFile;
 
         ///
-        AsmPicoBlazeSymbolTable * m_symbolTable;
+        AsmMemoryPtr * m_memoryPtr;
 
         ///
-        AsmPicoBlazeCodeListing * m_codeListing;
+        AsmSymbolTable * m_symbolTable;
 
         ///
-        AsmPicoBlazeInstructionSet * m_instructionSet;
+        AsmCodeListing * m_codeListing;
 
         ///
-        AsmPicoBlazeMacros * m_macros;
+        AsmMachineCodeGen * m_machineCode;
 
         ///
-        AsmPicoBlazeMemoryPtr * m_memoryPtr;
+        AsmPicoBlazeTreeDecoder * m_treeDecoder;
 
         ///
         AsmPicoBlazeSpecialMacros * m_specialMacros;
 
         ///
-        AsmPicoBlazeTreeDecoder * m_treeDecoder;
+        AsmPicoBlazeCodeGenerator * m_codeGenerator;
+
+        ///
+        AsmPicoBlazeInstructionSet * m_instructionSet;
 
         ///
         Device m_device;

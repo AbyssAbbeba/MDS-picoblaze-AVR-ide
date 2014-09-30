@@ -8,16 +8,16 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeMacros.cxx
+ * @ingroup Assembler
+ * @file AsmMacros.cxx
  */
 // =============================================================================
 
-// PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeMacros.h"
-#include "AsmPicoBlazeCommons.h"
-#include "AsmPicoBlazeSymbolTable.h"
-#include "AsmPicoBlazeCodeListing.h"
+//  assembler semantic analyzer header files.
+#include "AsmMacros.h"
+#include "AsmCommons.h"
+#include "AsmSymbolTable.h"
+#include "AsmCodeListing.h"
 
 // Common compiler header files.
 #include "CompilerStatementTypes.h"
@@ -27,38 +27,38 @@
 #include <cstdint>
 #include <fstream>
 
-AsmPicoBlazeMacros::Macro::Macro()
+AsmMacros::Macro::Macro()
 {
     m_definition = nullptr;
     m_id = -1;
 }
 
-AsmPicoBlazeMacros::AsmPicoBlazeMacros ( CompilerSemanticInterface * compilerCore,
-                                         CompilerOptions * opts,
-                                         AsmPicoBlazeSymbolTable * symbolTable,
-                                         AsmPicoBlazeCodeListing * codeListing )
-                                       : m_compilerCore ( compilerCore ),
-                                         m_opts ( opts ),
-                                         m_symbolTable ( symbolTable ),
-                                         m_codeListing ( codeListing )
+AsmMacros::AsmMacros ( CompilerSemanticInterface * compilerCore,
+                       CompilerOptions * opts,
+                       AsmSymbolTable * symbolTable,
+                       AsmCodeListing * codeListing )
+                     : m_compilerCore ( compilerCore ),
+                       m_opts ( opts ),
+                       m_symbolTable ( symbolTable ),
+                       m_codeListing ( codeListing )
 {
     clear();
 }
 
-AsmPicoBlazeMacros::~AsmPicoBlazeMacros()
+AsmMacros::~AsmMacros()
 {
     clear();
 }
 
-void AsmPicoBlazeMacros::setExpEnabled ( bool enabled )
+void AsmMacros::setExpEnabled ( bool enabled )
 {
     m_expEnabled = enabled;
 }
 
-void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
-                                  const std::string & name,
-                                  const CompilerExpr * parameters,
-                                  CompilerStatement * macroDef )
+void AsmMacros::define ( CompilerSourceLocation location,
+                         const std::string & name,
+                         const CompilerExpr * parameters,
+                         CompilerStatement * macroDef )
 {
     if ( m_table.cend() != m_table.find(name) )
     {
@@ -120,12 +120,12 @@ void AsmPicoBlazeMacros::define ( CompilerSourceLocation location,
     }
 }
 
-bool AsmPicoBlazeMacros::isFromMacro ( const CompilerStatement * node ) const
+bool AsmMacros::isFromMacro ( const CompilerStatement * node ) const
 {
-    return ( 0 != ( AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData ) );
+    return ( 0 != ( AsmCommons::UD_MACRO_COUNTER & node->m_userData ) );
 }
 
-void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
+void AsmMacros::incrMacroCounter ( CompilerStatement * macro ) const
 {
     if ( nullptr == macro )
     {
@@ -136,17 +136,17 @@ void AsmPicoBlazeMacros::incrMacroCounter ( CompilerStatement * macro ) const
           nullptr != node;
           node = node->next() )
     {
-        uint16_t macroCounter = ( AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData );
+        uint16_t macroCounter = ( AsmCommons::UD_MACRO_COUNTER & node->m_userData );
         macroCounter++;
-        node->m_userData = ( ~AsmPicoBlazeCommons::UD_MACRO_COUNTER & node->m_userData ) |
-                           (  AsmPicoBlazeCommons::UD_MACRO_COUNTER & macroCounter );
+        node->m_userData = ( ~AsmCommons::UD_MACRO_COUNTER & node->m_userData ) |
+                           (  AsmCommons::UD_MACRO_COUNTER & macroCounter );
         incrMacroCounter(node->branch());
     }
 }
 
-CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & location,
-                                                 const std::string & name,
-                                                 const CompilerExpr * arguments )
+CompilerStatement * AsmMacros::expand ( const CompilerSourceLocation & location,
+                                        const std::string & name,
+                                        const CompilerExpr * arguments )
 {
     if ( false == m_expEnabled )
     {
@@ -220,11 +220,11 @@ CompilerStatement * AsmPicoBlazeMacros::expand ( const CompilerSourceLocation & 
     return result;
 }
 
-bool AsmPicoBlazeMacros::mangleName ( const CompilerSourceLocation & location,
-                                      std::vector<std::string> * localSymbols,
-                                      const std::string & local,
-                                      const std::string & macroName,
-                                      CompilerStatement * node )
+bool AsmMacros::mangleName ( const CompilerSourceLocation & location,
+                             std::vector<std::string> * localSymbols,
+                             const std::string & local,
+                             const std::string & macroName,
+                             CompilerStatement * node )
 {
     if ( nullptr == node )
     {
@@ -261,9 +261,9 @@ bool AsmPicoBlazeMacros::mangleName ( const CompilerSourceLocation & location,
     return result;
 }
 
-bool AsmPicoBlazeMacros::symbolSubst ( const std::string & parameter,
-                                       const CompilerExpr * argument,
-                                       CompilerStatement * target )
+bool AsmMacros::symbolSubst ( const std::string & parameter,
+                              const CompilerExpr * argument,
+                              CompilerStatement * target )
 {
     if ( nullptr == target )
     {
@@ -287,7 +287,7 @@ bool AsmPicoBlazeMacros::symbolSubst ( const std::string & parameter,
 }
 
 
-void AsmPicoBlazeMacros::output()
+void AsmMacros::output()
 {
     if ( m_opts->m_macroTable.empty() )
     {
@@ -317,7 +317,7 @@ void AsmPicoBlazeMacros::output()
     }
 }
 
-void AsmPicoBlazeMacros::clear()
+void AsmMacros::clear()
 {
     m_idCounter = 0;
     m_expCounter = 0;
@@ -331,8 +331,8 @@ void AsmPicoBlazeMacros::clear()
     m_table.clear();
 }
 
-void AsmPicoBlazeMacros::printSymLocation ( std::ostream & out,
-                                           const CompilerSourceLocation & location ) const
+void AsmMacros::printSymLocation ( std::ostream & out,
+                                   const CompilerSourceLocation & location ) const
 {
     if ( false == location.isSet() )
     {
@@ -343,7 +343,7 @@ void AsmPicoBlazeMacros::printSymLocation ( std::ostream & out,
 }
 
 std::ostream & operator << ( std::ostream & out,
-                             const AsmPicoBlazeMacros * macros )
+                             const AsmMacros * macros )
 {
     for ( auto mac = macros->m_table.cbegin();
           mac != macros->m_table.cend();

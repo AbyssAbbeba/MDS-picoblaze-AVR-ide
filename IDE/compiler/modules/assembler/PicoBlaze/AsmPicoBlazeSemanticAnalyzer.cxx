@@ -16,15 +16,16 @@
 #include "AsmPicoBlazeSemanticAnalyzer.h"
 
 // Common compiler header files.
+#include "AsmMacros.h"
+#include "AsmMemoryPtr.h"
 #include "AsmDgbFileGen.h"
+#include "AsmSymbolTable.h"
+#include "AsmCodeListing.h"
 #include "CompilerStatementTypes.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeMacros.h"
-#include "AsmPicoBlazeMemoryPtr.h"
+#include "AsmPicoBlazeCodeGenerator.h"
 #include "AsmPicoBlazeTreeDecoder.h"
-#include "AsmPicoBlazeSymbolTable.h"
-#include "AsmPicoBlazeCodeListing.h"
 #include "AsmPicoBlazeSpecialMacros.h"
 #include "AsmPicoBlazeInstructionSet.h"
 #include "AsmPicoBlazeInstructionSet6.h"
@@ -54,10 +55,11 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
 {
     m_dgbFile        = new AsmDgbFileGen();
     m_machineCode    = new AsmMachineCodeGen();
-    m_memoryPtr      = new AsmPicoBlazeMemoryPtr ( compilerCore );
-    m_symbolTable    = new AsmPicoBlazeSymbolTable ( compilerCore, opts );
-    m_codeListing    = new AsmPicoBlazeCodeListing ( compilerCore, opts, m_symbolTable );
-    m_macros         = new AsmPicoBlazeMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
+    m_memoryPtr      = new AsmMemoryPtr ( compilerCore );
+    m_symbolTable    = new AsmSymbolTable ( compilerCore, opts );
+    m_codeGenerator  = new AsmPicoBlazeCodeGenerator();
+    m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
+    m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
     m_specialMacros  = new AsmPicoBlazeSpecialMacros ( compilerCore, m_symbolTable, m_codeListing );
     m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable, &m_device );
     m_treeDecoder    = new AsmPicoBlazeTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,

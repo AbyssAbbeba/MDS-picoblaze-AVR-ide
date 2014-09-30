@@ -8,13 +8,13 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeSymbolTable.h
+ * @ingroup Assembler
+ * @file AsmSymbolTable.h
  */
 // =============================================================================
 
-#ifndef ASMPICOBLAZESYMBOLTABLE_H
-#define ASMPICOBLAZESYMBOLTABLE_H
+#ifndef ASMSYMBOLTABLE_H
+#define ASMSYMBOLTABLE_H
 
 // Common compiler header files.
 #include "CompilerOptions.h"
@@ -27,14 +27,14 @@
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
- * @class AsmPicoBlazeSymbolTable
+ * @ingroup Assembler
+ * @class AsmSymbolTable
  */
-class AsmPicoBlazeSymbolTable
+class AsmSymbolTable
 {
     ////    Friends    ////
     friend std::ostream & operator << ( std::ostream & out,
-                                        const AsmPicoBlazeSymbolTable * symbolTable );
+                                        const AsmSymbolTable * symbolTable );
 
     ////    Public Datatypes    ////
     public:
@@ -114,15 +114,15 @@ class AsmPicoBlazeSymbolTable
          * @param[in] opts
          * @return
          */
-        AsmPicoBlazeSymbolTable ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions * opts )
-                                : m_compilerCore ( compilerCore ),
-                                  m_opts ( opts ) {};
+        AsmSymbolTable ( CompilerSemanticInterface * compilerCore,
+                         CompilerOptions * opts )
+                       : m_compilerCore ( compilerCore ),
+                         m_opts ( opts ) {};
 
         /**
          * @brief
          */
-        ~AsmPicoBlazeSymbolTable();
+        ~AsmSymbolTable();
 
     ////    Public Operations    ////
     public:
@@ -340,7 +340,7 @@ class AsmPicoBlazeSymbolTable
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const AsmPicoBlazeSymbolTable * symbolTable );
+                                 const AsmSymbolTable * symbolTable );
 
     /**
      * @brief
@@ -349,7 +349,7 @@ class AsmPicoBlazeSymbolTable
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const AsmPicoBlazeSymbolTable::SymbolType symbolType );
+                                 const AsmSymbolTable::SymbolType symbolType );
 //@}
 
-#endif // ASMPICOBLAZESYMBOLTABLE_H
+#endif // ASMSYMBOLTABLE_H

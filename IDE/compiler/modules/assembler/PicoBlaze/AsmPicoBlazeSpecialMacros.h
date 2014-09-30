@@ -20,11 +20,11 @@
 class CompilerExpr;
 class CompilerStatement;
 class CompilerSourceLocation;
-class AsmPicoBlazeCodeListing;
+class AsmCodeListing;
 class CompilerSemanticInterface;
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
+#include "AsmSymbolTable.h"
 
 // Standard headers.
 #include <string>
@@ -71,8 +71,8 @@ class AsmPicoBlazeSpecialMacros
          * @return
          */
         AsmPicoBlazeSpecialMacros ( CompilerSemanticInterface * compilerCore,
-                                    AsmPicoBlazeSymbolTable   * symbolTable,
-                                    AsmPicoBlazeCodeListing   * codeListing );
+                                    AsmSymbolTable   * symbolTable,
+                                    AsmCodeListing   * codeListing );
 
         /**
          * @brief
@@ -211,7 +211,7 @@ class AsmPicoBlazeSpecialMacros
          * @param[in] location
          */
         inline void checkType ( bool regOrNumber,
-                                AsmPicoBlazeSymbolTable::SymbolType type,
+                                AsmSymbolTable::SymbolType type,
                                 const CompilerSourceLocation & location );
 
         /**
@@ -230,10 +230,10 @@ class AsmPicoBlazeSpecialMacros
         CompilerSemanticInterface * const m_compilerCore;
 
         ///
-        AsmPicoBlazeSymbolTable * const m_symbolTable;
+        AsmSymbolTable * const m_symbolTable;
 
         ///
-        AsmPicoBlazeCodeListing * const m_codeListing;
+        AsmCodeListing * const m_codeListing;
 
         ///
         std::vector<int> m_forLoopIterRegs;

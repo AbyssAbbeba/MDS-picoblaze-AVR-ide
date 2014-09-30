@@ -14,8 +14,8 @@
 // =============================================================================
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeCommons.h"
-#include "AsmPicoBlazeCodeListing.h"
+#include "AsmCommons.h"
+#include "AsmCodeListing.h"
 #include "AsmPicoBlazeSpecialMacros.h"
 
 // Common compiler header files.
@@ -30,8 +30,8 @@
 #include <cstdint>
 
 AsmPicoBlazeSpecialMacros::AsmPicoBlazeSpecialMacros ( CompilerSemanticInterface * compilerCore,
-                                                       AsmPicoBlazeSymbolTable      * symbolTable,
-                                                       AsmPicoBlazeCodeListing      * codeListing )
+                                                       AsmSymbolTable      * symbolTable,
+                                                       AsmCodeListing      * codeListing )
                                                      : m_compilerCore ( compilerCore ),
                                                        m_symbolTable  ( symbolTable  ),
                                                        m_codeListing  ( codeListing  )
@@ -295,7 +295,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::evaluateCondition ( const Compile
     struct CndVal
     {
         const CompilerExpr * m_expr;
-        AsmPicoBlazeSymbolTable::SymbolType m_type;
+        AsmSymbolTable::SymbolType m_type;
         int m_val;
         bool m_reg;
     } cndVal[2];
@@ -802,17 +802,17 @@ inline const std::string & AsmPicoBlazeSpecialMacros::generateLabel ( std::strin
 }
 
 inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
-                                                   AsmPicoBlazeSymbolTable::SymbolType type,
+                                                   AsmSymbolTable::SymbolType type,
                                                    const CompilerSourceLocation & location )
 {
-    if ( AsmPicoBlazeSymbolTable::STYPE_EXPRESSION == type )
+    if ( AsmSymbolTable::STYPE_EXPRESSION == type )
     {
         return;
     }
 
     if ( true == regOrNumber )
     {
-        if ( AsmPicoBlazeSymbolTable::STYPE_REGISTER != type )
+        if ( AsmSymbolTable::STYPE_REGISTER != type )
         {
             m_compilerCore->semanticMessage ( location,
                                               CompilerBase::MT_WARNING,
@@ -822,7 +822,7 @@ inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
                                               true );
         }
     }
-    else if ( AsmPicoBlazeSymbolTable::STYPE_NUMBER != type )
+    else if ( AsmSymbolTable::STYPE_NUMBER != type )
     {
         m_compilerCore->semanticMessage ( location,
                                           CompilerBase::MT_WARNING,
@@ -835,7 +835,7 @@ inline void AsmPicoBlazeSpecialMacros::checkType ( bool regOrNumber,
 
 bool AsmPicoBlazeSpecialMacros::isFromSpecMacro ( const CompilerStatement * node ) const
 {
-    return (bool) ( AsmPicoBlazeCommons::UD_SPEC_MACRO & node->m_userData );
+    return (bool) ( AsmCommons::UD_SPEC_MACRO & node->m_userData );
 }
 
 inline CompilerStatement * AsmPicoBlazeSpecialMacros::markAsFromSpecMacro ( CompilerStatement * tree )
@@ -844,7 +844,7 @@ inline CompilerStatement * AsmPicoBlazeSpecialMacros::markAsFromSpecMacro ( Comp
           nullptr != node;
           node = node->next() )
     {
-        node->m_userData |= AsmPicoBlazeCommons::UD_SPEC_MACRO;
+        node->m_userData |= AsmCommons::UD_SPEC_MACRO;
         markAsFromSpecMacro(node->branch());
     }
 

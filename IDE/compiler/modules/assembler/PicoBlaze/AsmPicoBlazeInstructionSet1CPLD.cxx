@@ -16,7 +16,7 @@
 #include "AsmPicoBlazeInstructionSet1CPLD.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
+#include "AsmSymbolTable.h"
 #include "AsmPicoBlazeInstructionSet.h"
 
 unsigned int AsmPicoBlazeInstructionSet1CPLD::getAAA ( const CompilerStatement * stmt,

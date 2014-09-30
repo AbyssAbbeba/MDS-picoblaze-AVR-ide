@@ -8,21 +8,21 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeMacros.h
+ * @ingroup Assembler
+ * @file AsmMacros.h
  */
 // =============================================================================
 
-#ifndef ASMPICOBLAZEMACROS_H
-#define ASMPICOBLAZEMACROS_H
+#ifndef ASMMACROS_H
+#define ASMMACROS_H
 
 // Forward declarations.
-class AsmPicoBlazeSymbolTable;
-class AsmPicoBlazeCodeListing;
+class AsmSymbolTable;
+class AsmCodeListing;
 
 // Common compiler header files.
-#include "CompilerSemanticInterface.h"
 #include "CompilerOptions.h"
+#include "CompilerSemanticInterface.h"
 
 // Standard headers.
 #include <map>
@@ -32,14 +32,14 @@ class AsmPicoBlazeCodeListing;
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
- * @class AsmPicoBlazeMacros
+ * @ingroup Assembler
+ * @class AsmMacros
  */
-class AsmPicoBlazeMacros
+class AsmMacros
 {
     ////    Friends    ////
     friend std::ostream & operator << ( std::ostream & out,
-                                        const AsmPicoBlazeMacros * macros );
+                                        const AsmMacros * macros );
 
     ////    Public Static Constants    ////
     public:
@@ -97,15 +97,15 @@ class AsmPicoBlazeMacros
          * @param[in,out] codeListing
          * @return
          */
-        AsmPicoBlazeMacros ( CompilerSemanticInterface * compilerCore,
-                             CompilerOptions * opts,
-                             AsmPicoBlazeSymbolTable * symbolTable,
-                             AsmPicoBlazeCodeListing * codeListing );
+        AsmMacros ( CompilerSemanticInterface * compilerCore,
+                    CompilerOptions * opts,
+                    AsmSymbolTable * symbolTable,
+                    AsmCodeListing * codeListing );
 
         /**
          * @brief
          */
-        ~AsmPicoBlazeMacros();
+        ~AsmMacros();
 
     ////    Public Operations    ////
     public:
@@ -122,7 +122,7 @@ class AsmPicoBlazeMacros
                       CompilerStatement * macroDef );
 
         /**
-         * @brief 
+         * @brief
          * @param[in] location
          * @param[in] name
          * @param[in] arguments
@@ -215,10 +215,10 @@ class AsmPicoBlazeMacros
         CompilerOptions * const m_opts;
 
         ///
-        AsmPicoBlazeSymbolTable * const m_symbolTable;
+        AsmSymbolTable * const m_symbolTable;
 
         ///
-        AsmPicoBlazeCodeListing * const m_codeListing;
+        AsmCodeListing * const m_codeListing;
 
         ///
         bool m_expEnabled;
@@ -233,7 +233,7 @@ class AsmPicoBlazeMacros
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const AsmPicoBlazeMacros * macros );
+                                 const AsmMacros * macros );
 //@}
 
-#endif // ASMPICOBLAZEMACROS_H
+#endif // ASMMACROS_H

@@ -23,7 +23,7 @@ AsmPicoBlazeInstructionSetN::AsmPicoBlazeInstructionSetN()
 }
 
 void AsmPicoBlazeInstructionSetN::init ( AsmPicoBlazeInstructionSet * instructionSet,
-                                         AsmPicoBlazeSymbolTable * symbolTable )
+                                         AsmSymbolTable * symbolTable )
 {
     m_instructionSet = instructionSet;
     m_symbolTable = symbolTable;

@@ -8,13 +8,13 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeMemoryPtr.h
+ * @ingroup Assembler
+ * @file AsmMemoryPtr.h
  */
 // =============================================================================
 
-#ifndef ASMPICOBLAZEMEMORYPTR_H
-#define ASMPICOBLAZEMEMORYPTR_H
+#ifndef ASMMEMORYPTR_H
+#define ASMMEMORYPTR_H
 
 // Forward declarations.
 class CompilerSemanticInterface;
@@ -28,10 +28,10 @@ class CompilerSemanticInterface;
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
- * @class AsmPicoBlazeMemoryPtr
+ * @ingroup Assembler
+ * @class AsmMemoryPtr
  */
-class AsmPicoBlazeMemoryPtr
+class AsmMemoryPtr
 {
     ////    Public Datatypes    ////
     public:
@@ -65,7 +65,7 @@ class AsmPicoBlazeMemoryPtr
          * @brief
          * @param[in,out] compilerCore
          */
-        AsmPicoBlazeMemoryPtr ( CompilerSemanticInterface * compilerCore );
+        AsmMemoryPtr ( CompilerSemanticInterface * compilerCore );
 
     ////    Public Operations    ////
     public:
@@ -127,4 +127,4 @@ class AsmPicoBlazeMemoryPtr
         CompilerSemanticInterface * const m_compilerCore;
 };
 
-#endif // ASMPICOBLAZEMEMORYPTR_H
+#endif // ASMMEMORYPTR_H

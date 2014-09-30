@@ -17,7 +17,7 @@
 #define ASMPICOBLAZEINSTRUCTIONSETN_H
 
 // Forward declarations.
-class AsmPicoBlazeSymbolTable;
+class AsmSymbolTable;
 class AsmPicoBlazeInstructionSet;
 
 // Common compiler header files.
@@ -57,12 +57,12 @@ class AsmPicoBlazeInstructionSetN
          * @param[in,out] symbolTable
          */
         void init ( AsmPicoBlazeInstructionSet * instructionSet,
-                    AsmPicoBlazeSymbolTable * symbolTable );
+                    AsmSymbolTable * symbolTable );
 
     ////    Protected Attributes    ////
     protected:
         ///
-        AsmPicoBlazeSymbolTable * m_symbolTable;
+        AsmSymbolTable * m_symbolTable;
 
         ///
         AsmPicoBlazeInstructionSet * m_instructionSet;

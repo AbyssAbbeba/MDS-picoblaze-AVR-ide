@@ -24,10 +24,10 @@
 #include "CompilerSemanticInterface.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeMacros.h"
-#include "AsmPicoBlazeMemoryPtr.h"
-#include "AsmPicoBlazeSymbolTable.h"
-#include "AsmPicoBlazeCodeListing.h"
+#include "AsmMacros.h"
+#include "AsmMemoryPtr.h"
+#include "AsmSymbolTable.h"
+#include "AsmCodeListing.h"
 #include "AsmPicoBlazeSpecialMacros.h"
 #include "AsmPicoBlazeInstructionSet.h"
 
@@ -52,10 +52,10 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    CompilerOptions                      * opts,
                                                    AsmDgbFileGen                        * dgbFile,
                                                    AsmMachineCodeGen                    * machineCode,
-                                                   AsmPicoBlazeMacros                   * macros,
-                                                   AsmPicoBlazeMemoryPtr                * memoryPtr,
-                                                   AsmPicoBlazeSymbolTable              * symbolTable,
-                                                   AsmPicoBlazeCodeListing              * codeListing,
+                                                   AsmMacros                   * macros,
+                                                   AsmMemoryPtr                * memoryPtr,
+                                                   AsmSymbolTable              * symbolTable,
+                                                   AsmCodeListing              * codeListing,
                                                    AsmPicoBlazeSpecialMacros            * specialMacros,
                                                    AsmPicoBlazeInstructionSet           * instructionSet,
                                                    AsmPicoBlazeSemanticAnalyzer::Device & device )
@@ -206,7 +206,7 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
                     int address = m_machineCode->setCode ( (uint32_t) code );
                     m_codeListing -> setCode ( node->location(), (int) code, address );
                     m_dgbFile -> setCode ( node->location(), (int) code, address );
-                    m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_CODE, address );
+                    m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_CODE, address );
                 }
                 break;
 
@@ -227,7 +227,7 @@ void AsmPicoBlazeTreeDecoder::phase2 ( CompilerStatement * codeTree )
                     int address = m_machineCode -> setCode ( opcode );
                     m_codeListing -> setCode ( node->location(), opcode, address );
                     m_dgbFile -> setCode ( node->location(), opcode, address );
-                    m_memoryPtr->tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_CODE, address );
+                    m_memoryPtr->tryReserve ( node->location(), AsmMemoryPtr::MS_CODE, address );
                 }
                 break;
             }
@@ -327,13 +327,13 @@ void AsmPicoBlazeTreeDecoder::phase3()
 
                 m_machineCode->setCode(addr, data[i]);
                 m_dgbFile->setCode(*loc, data[i], addr);
-                m_memoryPtr->tryReserve(*loc, AsmPicoBlazeMemoryPtr::MS_CODE, addr);
+                m_memoryPtr->tryReserve(*loc, AsmMemoryPtr::MS_CODE, addr);
             }
             for ( int i = size; i < ( m_opts->m_processorlimits.m_iDataMemSize / 2 ); i++, addr++ )
             {
                 m_machineCode->setCode(addr, 0);
                 m_dgbFile->setCode(m_mergeSprLoc, 0, addr);
-                m_memoryPtr->tryReserve(m_mergeSprLoc, AsmPicoBlazeMemoryPtr::MS_CODE, addr);
+                m_memoryPtr->tryReserve(m_mergeSprLoc, AsmMemoryPtr::MS_CODE, addr);
             }
         }
 
@@ -344,7 +344,7 @@ void AsmPicoBlazeTreeDecoder::phase3()
     {
         if ( true == m_opts->m_strict )
         {
-            if ( AsmPicoBlazeSymbolTable::STYPE_LABEL != m_symbolTable->getType(m_failjmp->args()) )
+            if ( AsmSymbolTable::STYPE_LABEL != m_symbolTable->getType(m_failjmp->args()) )
             {
                 m_compilerCore->semanticMessage ( m_failjmp->location(),
                                                   CompilerBase::MT_WARNING,
@@ -367,7 +367,7 @@ void AsmPicoBlazeTreeDecoder::phase3()
 
             for ( int addr = 0; addr < memSize; addr++ )
             {
-                if ( false == m_memoryPtr->isReserved ( AsmPicoBlazeMemoryPtr::MS_CODE, (unsigned int) addr ) )
+                if ( false == m_memoryPtr->isReserved ( AsmMemoryPtr::MS_CODE, (unsigned int) addr ) )
                 {
                     m_machineCode->setCode(addr, opcode);
                     m_dgbFile->setCode(m_failjmp->location(), opcode, addr);
@@ -475,7 +475,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
     using namespace CompilerStatementTypes;
 
     int addr;
-    AsmPicoBlazeSymbolTable::SymbolType symbolType;
+    AsmSymbolTable::SymbolType symbolType;
 
     if ( ASMPICOBLAZE_DIR_AUTOSPR == node->type() )
     {
@@ -512,11 +512,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 
         addr = m_memoryPtr->m_data;
         m_memoryPtr->m_data += size;
-        symbolType = AsmPicoBlazeSymbolTable::STYPE_DATA;
+        symbolType = AsmSymbolTable::STYPE_DATA;
 
         for ( int i = 0; i < size; i++ )
         {
-            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, ( addr + i ) );
+            m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_DATA, ( addr + i ) );
         }
     }
     else
@@ -528,9 +528,9 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 
         addr = m_memoryPtr->m_reg;
         m_memoryPtr->m_reg++;
-        symbolType = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+        symbolType = AsmSymbolTable::STYPE_REGISTER;
 
-        m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_REG, addr );
+        m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_REG, addr );
     }
 
     CompilerExpr value(addr);
@@ -576,14 +576,14 @@ inline void AsmPicoBlazeTreeDecoder::dir_INITSPR ( CompilerStatement * node )
     m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                  &value,
                                  &( node->location() ),
-                                 AsmPicoBlazeSymbolTable::STYPE_DATA,
+                                 AsmSymbolTable::STYPE_DATA,
                                  true );
     m_codeListing->setValue(node->location(), addr);
 
     m_memoryPtr->m_data += size;
     for ( int i = 0; i < size; i++ )
     {
-        m_memoryPtr->tryReserve( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, addr);
+        m_memoryPtr->tryReserve( node->location(), AsmMemoryPtr::MS_DATA, addr);
         m_sprInit.push_back ( { node->location(), (unsigned int) addr, initData[i] } );
         addr++;
     }
@@ -1020,7 +1020,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node )
         value = m_symbolTable -> assignValue ( name,
                                                node->args()->next(),
                                                &( node->location() ),
-                                               AsmPicoBlazeSymbolTable::STYPE_NUMBER,
+                                               AsmSymbolTable::STYPE_NUMBER,
                                                true );
     }
     else
@@ -1028,7 +1028,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node )
         value = m_symbolTable -> addSymbol ( name,
                                              node->args()->next(),
                                              &( node->location() ),
-                                             AsmPicoBlazeSymbolTable::STYPE_NUMBER,
+                                             AsmSymbolTable::STYPE_NUMBER,
                                              true,
                                              true );
     }
@@ -1041,7 +1041,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DEFINE ( CompilerStatement * node )
     int value = m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
                                              node->args()->next(),
                                              &( node->location() ),
-                                             AsmPicoBlazeSymbolTable::STYPE_EXPRESSION,
+                                             AsmSymbolTable::STYPE_EXPRESSION,
                                              false );
 
     m_codeListing->setValue(node->location(), value);
@@ -1065,7 +1065,7 @@ inline void AsmPicoBlazeTreeDecoder::label ( CompilerStatement * node )
     int value = m_symbolTable -> addSymbol ( label->lVal().m_data.m_symbol,
                                              &e,
                                              &( node->location() ),
-                                             AsmPicoBlazeSymbolTable::STYPE_LABEL,
+                                             AsmSymbolTable::STYPE_LABEL,
                                              true );
 
     m_codeListing->setValue(node->location(), value);
@@ -1100,11 +1100,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_FAILJMP ( CompilerStatement * node )
     m_failjmp = node->copyChainLink();
     m_failjmp->m_type = CompilerStatementTypes::ASMPICOBLAZE_INS_JUMP_AAA;
 
-    AsmPicoBlazeSymbolTable::SymbolType argType = m_symbolTable->getType(node->args());
+    AsmSymbolTable::SymbolType argType = m_symbolTable->getType(node->args());
 
-    if ( ( AsmPicoBlazeSymbolTable::STYPE_LABEL != argType )
+    if ( ( AsmSymbolTable::STYPE_LABEL != argType )
              &&
-         ( AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED != argType ) )
+         ( AsmSymbolTable::STYPE_UNSPECIFIED != argType ) )
     {
         int targetAddr = m_symbolTable->resolveExpr(node->args());
 
@@ -1152,27 +1152,27 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
-    AsmPicoBlazeSymbolTable::SymbolType symbolType;
+    AsmSymbolTable::SymbolType symbolType;
 
     switch ( (int) node->type() )
     {
         case ASMPICOBLAZE_DIR_CODE:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_LABEL;
+            symbolType = AsmSymbolTable::STYPE_LABEL;
             break;
         case ASMPICOBLAZE_DIR_DATA:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_DATA;
+            symbolType = AsmSymbolTable::STYPE_DATA;
             break;
         case ASMPICOBLAZE_DIR_PORT:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_PORT;
+            symbolType = AsmSymbolTable::STYPE_PORT;
             break;
         case ASMPICOBLAZE_DIR_REG:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+            symbolType = AsmSymbolTable::STYPE_REGISTER;
             break;
         case ASMPICOBLAZE_DIR_EQU:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_NUMBER;
+            symbolType = AsmSymbolTable::STYPE_NUMBER;
             break;
         default:
-            symbolType = AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED;
+            symbolType = AsmSymbolTable::STYPE_UNSPECIFIED;
             break;
     }
 
@@ -1188,11 +1188,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
     {
         if ( node->type() == ASMPICOBLAZE_DIR_REG )
         {
-            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_REG, (unsigned int) value );
+            m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_REG, (unsigned int) value );
         }
         else if ( node->type() == ASMPICOBLAZE_DIR_DATA )
         {
-            m_memoryPtr -> tryReserve ( node->location(), AsmPicoBlazeMemoryPtr::MS_DATA, (unsigned int) value );
+            m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_DATA, (unsigned int) value );
         }
     }
 }
