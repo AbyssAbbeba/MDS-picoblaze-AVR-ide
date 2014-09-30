@@ -2700,6 +2700,7 @@ void MainForm::translatorOutput(std::vector<std::string> & text)
         }
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
+        //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
         getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
     #endif
@@ -2719,6 +2720,7 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
         }
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
+        //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
         this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
     #endif

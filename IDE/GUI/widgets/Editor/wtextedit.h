@@ -44,6 +44,11 @@ class WTextEdit : public QPlainTextEdit
         void scrollToLine(int line);
         void selectLine(int line);
 
+        //only use in CodeEdit::loadCodeEdit(...)
+        //SourceType getSourceType();
+        //void setSourceType(SourceType type);
+        void deleteHighlighter();
+
         /*WTextEdit & operator<< (QString const &str)
         {
             append(str);
