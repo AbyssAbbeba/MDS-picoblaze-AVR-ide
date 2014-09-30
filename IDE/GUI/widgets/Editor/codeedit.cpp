@@ -39,7 +39,17 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
         //qDebug() << "CodeEdit: untracked";
-        textEdit = new WTextEdit(this, PLAIN);
+        if (wPath == "untracked")
+        {
+            if (wName == "ASM Translator" || wName == "ASM Translator error")
+            {
+                textEdit = new WTextEdit(this, PICOBLAZEASM);
+            }
+        }
+        else
+        {
+            textEdit = new WTextEdit(this, PLAIN);
+        }
         this->textEdit->setPlainText(" ");
     }
     else
@@ -638,6 +648,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     {
         this->textEdit->setPlainText(" ");
     }*/
+    this->textEdit->deleteHighlighter();
     this->textEdit->setDocument(editor->getTextEdit()->document());
     //this->show();
     //this->update();
