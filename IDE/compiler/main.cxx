@@ -91,8 +91,11 @@ void printHelp ( const char * executable )
             #endif // MDS_FEATURE_MCS51
             #ifdef MDS_FEATURE_PICOBLAZE
               << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
-            #endif // MDS_FEATURE_PICOBLAZE
                             .toStdString() << std::endl
+            #endif // MDS_FEATURE_PICOBLAZE
+            #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+              << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
+            #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << QObject::tr("    -p, --plang <programming language>").toStdString() << std::endl
               << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
             #ifdef MDS_FEATURE_C_COMPILER
@@ -249,6 +252,12 @@ CompilerBase::TargetArch whichArch ( const char * optarg )
         return CompilerBase::TA_PICOBLAZE;
     }
   #endif // MDS_FEATURE_PICOBLAZE
+  #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+    else if ( 0 == strcmp(optarg, "Adaptable") )
+    {
+        return CompilerBase::TA_ADAPTABLE;
+    }
+  #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
     else
     {
         std::cerr << QObject::tr("Error: invalid architecture specification `%1'.").arg(optarg).toStdString()

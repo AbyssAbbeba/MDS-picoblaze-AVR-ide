@@ -23,8 +23,8 @@ flex_bison_pair ( AsmPicoBlazeLexer AsmPicoBlazeParser AsmPicoBlazeLexerParser )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
-                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/../common/" )
+                      "${CMAKE_CURRENT_SOURCE_DIR}/../common/"
+                      "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/" )
 
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
