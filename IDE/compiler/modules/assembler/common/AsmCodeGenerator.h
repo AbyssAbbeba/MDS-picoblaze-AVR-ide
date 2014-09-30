@@ -29,6 +29,13 @@ class CompilerStatement;
  */
 class AsmCodeGenerator
 {
+    ////    Constructors and Destructors    ////
+    public:
+        /**
+         * @brief
+         */
+        virtual ~AsmCodeGenerator() {}
+
     ////    Public Operations    ////
     public:
         /**

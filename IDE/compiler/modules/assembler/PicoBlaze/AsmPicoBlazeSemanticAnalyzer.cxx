@@ -81,6 +81,7 @@ AsmPicoBlazeSemanticAnalyzer::~AsmPicoBlazeSemanticAnalyzer()
     delete m_machineCode;
     delete m_codeListing;
     delete m_specialMacros;
+    delete m_codeGenerator;
     delete m_instructionSet;
 }
 
