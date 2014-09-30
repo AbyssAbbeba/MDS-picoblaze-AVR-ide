@@ -46,7 +46,7 @@ if ( MDS_FEATURE_PICOBLAZE )
 endif()
 
 # Compiler module for Adaptable Assembler.
-if ( MDS_FEATURE_PICOBLAZE )
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
     add_subdirectory ( Adaptable )
     list ( APPEND MDS_ADDITONAL_MODULES "CompilerModuleAsmAdaptable" )
 endif()

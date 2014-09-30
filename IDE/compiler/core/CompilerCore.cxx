@@ -394,6 +394,9 @@ std::string CompilerCore::getBaseIncludeDir()
         case TA_PICOBLAZE:
             result += "/PicoBlaze";
             break;
+        case TA_ADAPTABLE:
+            result += "/Adaptable";
+            break;
     }
 
     result += "/";

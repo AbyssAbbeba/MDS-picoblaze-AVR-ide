@@ -43,7 +43,8 @@ class CompilerBase
             TA_AVR8,       ///<
             TA_PIC8,       ///<
             TA_MCS51,      ///<
-            TA_PICOBLAZE   ///<
+            TA_PICOBLAZE,  ///<
+            TA_ADAPTABLE   ///<
         };
 
         /**

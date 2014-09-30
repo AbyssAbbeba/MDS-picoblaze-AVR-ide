@@ -44,6 +44,9 @@
 #ifdef MDS_FEATURE_PICOBLAZE
 #   include "assembler/PicoBlaze/AsmPicoBlazeSemanticAnalyzer.h"
 #endif // MDS_FEATURE_PICOBLAZE
+#ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+#   include "assembler/Adaptable/AsmAdaptableSemanticAnalyzer.h"
+#endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // Include lexer prototypes (they are used by the core to initialize and destroy a lexer).
 #ifdef MDS_FEATURE_C_COMPILER
@@ -61,6 +64,9 @@
 #ifdef MDS_FEATURE_PICOBLAZE
 #   include "assembler/PicoBlaze/AsmPicoBlazeLexer.h"
 #endif // MDS_FEATURE_PICOBLAZE
+#ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+#   include "assembler/Adaptable/AsmAdaptableLexer.h"
+#endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // Include additional compiler specific header files.
 #ifdef MDS_FEATURE_C_COMPILER
@@ -83,6 +89,9 @@
 #ifdef MDS_FEATURE_PICOBLAZE
     int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
 #endif // MDS_FEATURE_PICOBLAZE
+#ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+    int AsmAdaptableParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+#endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // Compiler header files.
 #include "CompilerCore.h"
@@ -216,6 +225,13 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 }
                 #endif // MDS_FEATURE_PICOBLAZE
 
+                #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+                case CompilerBase::TA_ADAPTABLE:
+                {
+                    return MESC_ARCH_NOT_SUPPORTED;
+                }
+                #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+
                 /*
                  * Error.
                  */
@@ -327,6 +343,27 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     return MESC_OK;
                 }
                 #endif // MDS_FEATURE_PICOBLAZE
+
+                #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+                case CompilerBase::TA_ADAPTABLE:
+                {
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmAdaptableSemanticAnalyzer(compilerCore, options) );
+
+                    // Attempt to open the source files.
+                    OPEN_ALL_SOURCE_FILES();
+
+                    // Initiate language analyzers.
+                    AsmAdaptableLexer_lex_init_extra ( compilerCore, &yyscanner );
+                    AsmAdaptableLexer_set_in ( sourceFiles[0], yyscanner );
+                    PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAdaptableLexer);
+                    AsmAdaptableParser_parse ( yyscanner, compilerCore );
+                    AsmAdaptableLexer_lex_destroy ( yyscanner );
+
+                    // Done.
+                    return MESC_OK;
+                }
+                #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
                 /*
                  * Error.
