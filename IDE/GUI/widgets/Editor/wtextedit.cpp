@@ -19,7 +19,10 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)
 {
     //qDebug() << "WTextEdit: WTextEdit()";
+    //qDebug() << "WTextEdit: sourceType" << type;
+    highlighter = NULL;
     this->sourceType = type;
+    //qDebug() << "WTextEdit: present sourceType" << this->sourceType;
     this->prevBlock = 0;
     this->cursorLineColor = new QColor(0xE9, 0xE9, 0xE9);
     this->installEventFilter(this);
@@ -49,9 +52,12 @@ WTextEdit::WTextEdit(QWidget *parent, SourceType type)
 void WTextEdit::reloadHighlighter(SourceType type)
 {
     //qDebug() << "WTextEdit: reloadHighlighter()";
-    if (this->sourceType != PLAIN)
+    //qDebug() << "WTextEdit: sourceType" << type;
+    //qDebug() << "WTextEdit: present sourceType" << this->sourceType;
+    if (this->sourceType != PLAIN && highlighter != NULL)
     {
         delete highlighter;
+        highlighter = NULL;
     }
     if (type != PLAIN)
     {
@@ -1138,4 +1144,27 @@ void WTextEdit::clearHighlight()
 {
     //qDebug() << "WTextEdit: clearHighlight()";
     this->setExtraSelections(QList<QTextEdit::ExtraSelection>());
+}
+
+
+/*SourceType WTextEdit::getSourceType()
+{
+    return this->sourceType;
+}
+
+
+void WTextEdit::setSourceType(SourceType type)
+{
+    this->sourceType = type;
+}*/
+
+
+void WTextEdit::deleteHighlighter()
+{
+    if (highlighter != NULL)
+    {
+        delete highlighter;
+        this->sourceType = PLAIN;
+        highlighter = NULL;
+    }
 }

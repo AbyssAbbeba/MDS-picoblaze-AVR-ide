@@ -44,6 +44,7 @@
 #include "../AsmMacroAnalyser/asmmacroanalyser.h"
 //#include "../ShowHideWidget/showhidewidget.h"
 #include "../WelcomeScr/welcomescr.h"
+#include "../../enums/enums.h"
 
 class WDock;
 class CodeEdit;
