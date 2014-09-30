@@ -8,24 +8,24 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeCodeListing.h
+ * @ingroup Assembler
+ * @file AsmCodeListing.h
  */
 // =============================================================================
 
-#ifndef ASMPICOBLAZECODELISTING_H
-#define ASMPICOBLAZECODELISTING_H
+#ifndef ASMCODELISTING_H
+#define ASMCODELISTING_H
 
 // Forward declarations.
-class AsmPicoBlazeSymbolTable;
+class AsmSymbolTable;
 
 // Common compiler header files.
 #include "CompilerOptions.h"
 #include "CompilerMsgObserver.h"
 #include "CompilerSemanticInterface.h"
 
-// PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeCodeGenerator.h"
+//  assembler semantic analyzer header files.
+#include "AsmCodeGenerator.h"
 
 // Standard headers.
 #include <set>
@@ -36,14 +36,14 @@ class AsmPicoBlazeSymbolTable;
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
- * @class AsmPicoBlazeCodeListing
+ * @ingroup Assembler
+ * @class AsmCodeListing
  */
-class AsmPicoBlazeCodeListing : public CompilerMsgObserver
+class AsmCodeListing : public CompilerMsgObserver
 {
     ////    Friends    ////
     friend std::ostream & operator << ( std::ostream & out,
-                                        const AsmPicoBlazeCodeListing * codeListing );
+                                        const AsmCodeListing * codeListing );
 
     ////    Constructors and Destructors    ////
     public:
@@ -52,16 +52,18 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
          * @param[in,out] compilerCore
          * @param[in] opts
          * @param[in,out] symbolTable
+         * @param[in,out] codeGenerator
          * @return
          */
-        AsmPicoBlazeCodeListing ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions * opts,
-                                  AsmPicoBlazeSymbolTable * symbolTable );
+        AsmCodeListing ( CompilerSemanticInterface * compilerCore,
+                         const CompilerOptions * opts,
+                         AsmSymbolTable * symbolTable,
+                         AsmCodeGenerator * codeGenerator );
 
         /**
          * @brief
          */
-        virtual ~AsmPicoBlazeCodeListing();
+        virtual ~AsmCodeListing();
 
     ////    Public Datatypes    ////
     public:
@@ -335,13 +337,13 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
         CompilerSemanticInterface * const m_compilerCore;
 
         ///
-        CompilerOptions * const m_opts;
+        const CompilerOptions * const m_opts;
 
         ///
-        AsmPicoBlazeSymbolTable * const m_symbolTable;
+        AsmSymbolTable * const m_symbolTable;
 
         ///
-        AsmPicoBlazeCodeGenerator m_codeGenerator;
+        AsmCodeGenerator * const m_codeGenerator;
 
         ///
         std::string m_title;
@@ -377,7 +379,7 @@ class AsmPicoBlazeCodeListing : public CompilerMsgObserver
      * @return
      */
     std::ostream & operator << ( std::ostream & out,
-                                 const AsmPicoBlazeCodeListing * codeListing );
+                                 const AsmCodeListing * codeListing );
 //@}
 
-#endif // ASMPICOBLAZECODELISTING_H
+#endif // ASMCODELISTING_H

@@ -8,12 +8,12 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeMemoryPtr.cxx
+ * @ingroup Assembler
+ * @file AsmMemoryPtr.cxx
  */
 // =============================================================================
 
-#include "AsmPicoBlazeMemoryPtr.h"
+#include "AsmMemoryPtr.h"
 
 // Common compiler header files.
 #include "CompilerSemanticInterface.h"
@@ -21,15 +21,15 @@
 // Standard header files.
 #include <cstddef>
 
-AsmPicoBlazeMemoryPtr::AsmPicoBlazeMemoryPtr ( CompilerSemanticInterface * compilerCore )
-                                             : m_compilerCore ( compilerCore )
+AsmMemoryPtr::AsmMemoryPtr ( CompilerSemanticInterface * compilerCore )
+                           : m_compilerCore ( compilerCore )
 {
     m_hardLimits.m_reg  = 32;
     m_hardLimits.m_data = 64;
     m_hardLimits.m_code = 4096;
 }
 
-void AsmPicoBlazeMemoryPtr::clear()
+void AsmMemoryPtr::clear()
 {
     m_reg  = 0;
     m_data = 0;
@@ -41,8 +41,8 @@ void AsmPicoBlazeMemoryPtr::clear()
     }
 }
 
-void AsmPicoBlazeMemoryPtr::reserve ( AsmPicoBlazeMemoryPtr::MemorySpace where,
-                                      unsigned int address )
+void AsmMemoryPtr::reserve ( AsmMemoryPtr::MemorySpace where,
+                             unsigned int address )
 {
     unsigned int addrA = ( address / sizeof(unsigned int) );
     unsigned int addrB = ( address % sizeof(unsigned int) );
@@ -60,8 +60,8 @@ void AsmPicoBlazeMemoryPtr::reserve ( AsmPicoBlazeMemoryPtr::MemorySpace where,
     m_reserved[where][addrA] |= ( 1 << addrB );
 }
 
-bool AsmPicoBlazeMemoryPtr::isReserved ( AsmPicoBlazeMemoryPtr::MemorySpace where,
-                                         unsigned int address ) const
+bool AsmMemoryPtr::isReserved ( AsmMemoryPtr::MemorySpace where,
+                                unsigned int address ) const
 {
     unsigned int addrA = ( address / sizeof(unsigned int) );
     unsigned int addrB = ( address % sizeof(unsigned int) );
@@ -74,9 +74,9 @@ bool AsmPicoBlazeMemoryPtr::isReserved ( AsmPicoBlazeMemoryPtr::MemorySpace wher
     return ( bool ) ( m_reserved[where][addrA] & ( 1 << addrB ) );
 }
 
-bool AsmPicoBlazeMemoryPtr::tryReserve ( const CompilerSourceLocation & location,
-                                         AsmPicoBlazeMemoryPtr::MemorySpace where,
-                                         unsigned int address )
+bool AsmMemoryPtr::tryReserve ( const CompilerSourceLocation & location,
+                                AsmMemoryPtr::MemorySpace where,
+                                unsigned int address )
 {
     unsigned int hardLimit = 0;
     const char * memName = "<error-invalid>";

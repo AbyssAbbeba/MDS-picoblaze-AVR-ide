@@ -17,9 +17,12 @@
 #define ASMPICOBLAZECODEGENERATOR_H
 
 // Forward declarations.
-class CompilerStatement;
-class CompilerValue;
 class CompilerExpr;
+class CompilerValue;
+class CompilerStatement;
+
+// Common compiler header files.
+#include "AsmCodeGenerator.h"
 
 // Standard headers.
 #include <string>
@@ -29,7 +32,7 @@ class CompilerExpr;
  * @ingroup PicoBlazeAsm
  * @class AsmPicoBlazeCodeGenerator
  */
-class AsmPicoBlazeCodeGenerator
+class AsmPicoBlazeCodeGenerator : public AsmCodeGenerator
 {
     ////    Public Operations    ////
     public:
@@ -38,8 +41,8 @@ class AsmPicoBlazeCodeGenerator
          * @param[out] result
          * @param[in] node
          */
-        static void toSourceLine ( std::string & result,
-                                   const CompilerStatement * node );
+        virtual void toSourceLine ( std::string & result,
+                                    const CompilerStatement * node ) final override;
 
     ////    Private Operations    ////
     private:

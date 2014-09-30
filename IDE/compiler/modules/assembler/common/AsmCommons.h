@@ -8,20 +8,20 @@
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
- * @ingroup PicoBlazeAsm
- * @file AsmPicoBlazeCommons.h
+ * @ingroup Assembler
+ * @file AsmCommons.h
  */
 // =============================================================================
 
-#ifndef ASMPICOBLAZECOMMONS_H
-#define ASMPICOBLAZECOMMONS_H
+#ifndef ASMCOMMONS_H
+#define ASMCOMMONS_H
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
- * @namespace AsmPicoBlazeCommons
+ * @ingroup Assembler
+ * @namespace AsmCommons
  */
-namespace AsmPicoBlazeCommons
+namespace AsmCommons
 {
     ////    Datatypes    ////
     enum UserData
@@ -31,4 +31,4 @@ namespace AsmPicoBlazeCommons
     };
 };
 
-#endif // ASMPICOBLAZECOMMONS_H
+#endif // ASMCOMMONS_H

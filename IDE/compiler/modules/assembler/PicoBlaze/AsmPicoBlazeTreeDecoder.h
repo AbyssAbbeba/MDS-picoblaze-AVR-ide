@@ -22,12 +22,12 @@ class CompilerStatement;
 class CompilerSemanticInterface;
 
 // Forward declarations (PicoBlaze Assembler common).
+class AsmMacros;
+class AsmMemoryPtr;
 class AsmDgbFileGen;
+class AsmSymbolTable;
+class AsmCodeListing;
 class AsmMachineCodeGen;
-class AsmPicoBlazeMacros;
-class AsmPicoBlazeMemoryPtr;
-class AsmPicoBlazeSymbolTable;
-class AsmPicoBlazeCodeListing;
 class AsmPicoBlazeSpecialMacros;
 class AsmPicoBlazeInstructionSet;
 
@@ -104,10 +104,10 @@ class AsmPicoBlazeTreeDecoder
                                   CompilerOptions                      * opts,
                                   AsmDgbFileGen                        * dgbFile,
                                   AsmMachineCodeGen                    * machineCode,
-                                  AsmPicoBlazeMacros                   * macros,
-                                  AsmPicoBlazeMemoryPtr                * memoryPtr,
-                                  AsmPicoBlazeSymbolTable              * symbolTable,
-                                  AsmPicoBlazeCodeListing              * codeListing,
+                                  AsmMacros                   * macros,
+                                  AsmMemoryPtr                * memoryPtr,
+                                  AsmSymbolTable              * symbolTable,
+                                  AsmCodeListing              * codeListing,
                                   AsmPicoBlazeSpecialMacros            * specialMacros,
                                   AsmPicoBlazeInstructionSet           * instructionSet,
                                   AsmPicoBlazeSemanticAnalyzer::Device & device );
@@ -394,16 +394,16 @@ class AsmPicoBlazeTreeDecoder
         AsmMachineCodeGen * const m_machineCode;
 
         ///
-        AsmPicoBlazeMacros * const m_macros;
+        AsmMacros * const m_macros;
 
         ///
-        AsmPicoBlazeMemoryPtr * const m_memoryPtr;
+        AsmMemoryPtr * const m_memoryPtr;
 
         ///
-        AsmPicoBlazeSymbolTable * const m_symbolTable;
+        AsmSymbolTable * const m_symbolTable;
 
         ///
-        AsmPicoBlazeCodeListing * const m_codeListing;
+        AsmCodeListing * const m_codeListing;
 
         ///
         AsmPicoBlazeSpecialMacros * const m_specialMacros;

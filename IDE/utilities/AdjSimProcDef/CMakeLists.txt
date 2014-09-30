@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Library for working with processor definition files used Adjustable Simulator.
+# Library for working with processor definition files used Adaptable Simulator.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #

@@ -16,7 +16,7 @@
 #include "AsmPicoBlazeInstructionSet1.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
+#include "AsmSymbolTable.h"
 #include "AsmPicoBlazeInstructionSet.h"
 
 unsigned int AsmPicoBlazeInstructionSet1::getAAA ( const CompilerStatement * stmt,

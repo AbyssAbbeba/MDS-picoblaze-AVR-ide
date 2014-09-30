@@ -16,7 +16,7 @@
 #include "AsmPicoBlazeInstructionSet.h"
 
 // PicoBlaze assembler semantic analyzer header files.
-#include "AsmPicoBlazeSymbolTable.h"
+#include "AsmSymbolTable.h"
 #include "AsmPicoBlazeInstructionSetN.h"
 #include "AsmPicoBlazeInstructionSet6.h"
 
@@ -109,8 +109,8 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
 {
     using namespace CompilerStatementTypes;
 
-    acceptableTypes[0] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
-    acceptableTypes[1] = (int) ( AsmPicoBlazeSymbolTable::STYPE_NUMBER | AsmPicoBlazeSymbolTable::STYPE_EXPRESSION );
+    acceptableTypes[0] = (int) ( AsmSymbolTable::STYPE_NUMBER | AsmSymbolTable::STYPE_EXPRESSION );
+    acceptableTypes[1] = (int) ( AsmSymbolTable::STYPE_NUMBER | AsmSymbolTable::STYPE_EXPRESSION );
 
     switch ( (int) stmt->type() )
     {
@@ -126,11 +126,11 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_CALL_NC_AAA:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_LABEL;
+                acceptableTypes[0] = AsmSymbolTable::STYPE_LABEL;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_LABEL;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_LABEL;
             }
             break;
 
@@ -162,11 +162,11 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_COMPARECY_SX_KK:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] = AsmSymbolTable::STYPE_REGISTER;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
             }
             break;
 
@@ -191,13 +191,13 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_STAR_SX_SY:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
-                acceptableTypes[1] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] = AsmSymbolTable::STYPE_REGISTER;
+                acceptableTypes[1] = AsmSymbolTable::STYPE_REGISTER;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
-                acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
+                acceptableTypes[1] |= AsmSymbolTable::STYPE_REGISTER;
             }
             break;
 
@@ -214,11 +214,11 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_HWBUILD_SX:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] = AsmSymbolTable::STYPE_REGISTER;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
             }
             break;
 
@@ -226,30 +226,30 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_FETCH_SX_SS:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0] = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] = AsmSymbolTable::STYPE_REGISTER;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
             }
-            acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_DATA;
+            acceptableTypes[1] |= AsmSymbolTable::STYPE_DATA;
             break;
 
         case ASMPICOBLAZE_INS_OUTPUT_SX_PP:
         case ASMPICOBLAZE_INS_INPUT_SX_PP:
             if ( true == m_opts->m_strict )
             {
-                acceptableTypes[0]  = AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0]  = AsmSymbolTable::STYPE_REGISTER;
             }
             else
             {
-                acceptableTypes[0] |= AsmPicoBlazeSymbolTable::STYPE_REGISTER;
+                acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
             }
-            acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
+            acceptableTypes[1] |= AsmSymbolTable::STYPE_PORT;
             break;
 
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:
-            acceptableTypes[1] |= AsmPicoBlazeSymbolTable::STYPE_PORT;
+            acceptableTypes[1] |= AsmSymbolTable::STYPE_PORT;
             break;
 
         default:
@@ -340,12 +340,12 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
 {
     std::string result;
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_NUMBER )
+    if ( types & AsmSymbolTable::STYPE_NUMBER )
     {
         result += "number";
     }
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_REGISTER )
+    if ( types & AsmSymbolTable::STYPE_REGISTER )
     {
         if ( false == result.empty() )
         {
@@ -354,7 +354,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
         result += "register";
     }
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_LABEL )
+    if ( types & AsmSymbolTable::STYPE_LABEL )
     {
         if ( false == result.empty() )
         {
@@ -363,7 +363,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
         result += "label";
     }
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_PORT )
+    if ( types & AsmSymbolTable::STYPE_PORT )
     {
         if ( false == result.empty() )
         {
@@ -372,7 +372,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
         result += "port";
     }
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_DATA )
+    if ( types & AsmSymbolTable::STYPE_DATA )
     {
         if ( false == result.empty() )
         {
@@ -381,7 +381,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
         result += "data";
     }
 
-    if ( types & AsmPicoBlazeSymbolTable::STYPE_EXPRESSION )
+    if ( types & AsmSymbolTable::STYPE_EXPRESSION )
     {
         if ( false == result.empty() )
         {
@@ -411,7 +411,7 @@ void AsmPicoBlazeInstructionSet::encapsulate ( CompilerStatement * stmt,
     {
         int symbolType = (int) m_symbolTable->getType(arg);
 
-        if ( AsmPicoBlazeSymbolTable::STYPE_UNSPECIFIED == symbolType )
+        if ( AsmSymbolTable::STYPE_UNSPECIFIED == symbolType )
         {
             continue;
         }

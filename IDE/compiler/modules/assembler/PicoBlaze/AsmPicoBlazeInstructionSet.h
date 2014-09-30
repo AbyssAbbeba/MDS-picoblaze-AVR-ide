@@ -19,7 +19,7 @@
 // Forward declarations
 class CompilerStatement;
 class CompilerOptions;
-class AsmPicoBlazeSymbolTable;
+class AsmSymbolTable;
 class AsmPicoBlazeInstructionSetN;
 
 // Common compiler header files.
@@ -57,7 +57,7 @@ class AsmPicoBlazeInstructionSet
          */
         AsmPicoBlazeInstructionSet ( CompilerSemanticInterface * compilerCore,
                                      CompilerOptions * opts,
-                                     AsmPicoBlazeSymbolTable * symbolTable,
+                                     AsmSymbolTable * symbolTable,
                                      AsmPicoBlazeSemanticAnalyzer::Device * device )
                                    : m_compilerCore ( compilerCore ),
                                      m_opts ( opts ),
@@ -151,7 +151,7 @@ class AsmPicoBlazeInstructionSet
         CompilerOptions * const m_opts;
 
         ///
-        AsmPicoBlazeSymbolTable * const m_symbolTable;
+        AsmSymbolTable * const m_symbolTable;
 
         ///
         AsmPicoBlazeInstructionSetN * m_strategy;

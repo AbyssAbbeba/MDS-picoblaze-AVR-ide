@@ -29,12 +29,8 @@ include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
 ## Add a library to the project using the specified source files,
  # in this case it will procude static C++ library.
 add_library ( ${PROJECT_NAME}
-#               AsmPicoBlazeMacros.cxx
-#               AsmPicoBlazeMemoryPtr.cxx
-#               AsmPicoBlazeTreeDecoder.cxx
-#               AsmPicoBlazeSymbolTable.cxx
-#               AsmPicoBlazeCodeListing.cxx
-#               AsmPicoBlazeCodeGenerator.cxx
+              AsmAdaptableTreeDecoder.cxx
+              AsmAdaptableCodeGenerator.cxx
               AsmAdaptableSemanticAnalyzer.cxx )
 
 # Link a target to given libraries
@@ -42,10 +38,8 @@ target_link_libraries ( AsmAdaptableLexerParser CompilerCore )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
-                                        MCUDataFiles
-                                        CompilerCore
-                                        AsmAdaptableLexerParser
-                                        CompilerModuleAsmCommon )
+                                        CompilerModuleAsmCommon
+                                        AsmAdaptableLexerParser )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
