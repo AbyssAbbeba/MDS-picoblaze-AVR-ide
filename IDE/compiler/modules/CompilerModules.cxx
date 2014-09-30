@@ -48,7 +48,7 @@
 #   include "assembler/Adaptable/AsmAdaptableSemanticAnalyzer.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
-// Include lexer prototypes (they are used by the core to initialize and destroy a lexer).
+// Include lexer prototypes (they are used by the core to initialize and destroy lexer).
 #ifdef MDS_FEATURE_C_COMPILER
 #   include "C/CompilerCLexer.h"
 #endif // MDS_FEATURE_C_COMPILER
