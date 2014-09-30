@@ -15,8 +15,12 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 
 
 file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license-${MDS_VARIANT}.html licenseTerms )
-file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html licenseTerms2 )
-if ( NOT "${licenseTerms}" STREQUAL "${licenseTerms2}" )
+if ( EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html )
+    file ( READ ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html licenseTerms2 )
+    if ( NOT "${licenseTerms}" STREQUAL "${licenseTerms2}" )
+        file ( WRITE ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html "${licenseTerms}" )
+    endif()
+else()
     file ( WRITE ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/license.html "${licenseTerms}" )
 endif()
 configure_file ( ${CMAKE_CURRENT_SOURCE_DIR}/resources/html/about-general.html.in

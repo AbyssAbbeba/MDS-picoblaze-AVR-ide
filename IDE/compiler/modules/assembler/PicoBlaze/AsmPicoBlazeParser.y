@@ -184,9 +184,6 @@
 %token M_RTIF           M_RTELSEIF      M_RTELSE        M_RTENDIF       M_RTWHILE
 %token M_RTENDW         M_RTFOR         M_RTENDF
 
-/* Fixed operands, i.e. those which have no value */
-%token Z NZ C NC
-
 /* Other terminal symbols */
 %token COMMENT
 %token AT
@@ -444,10 +441,6 @@ params:         // List of identifiers, e.g. `target, source, offset, size, mode
 ;
 opr:            // Matches any operand, intended for error recovery only
       expr                          { $expr->completeDelete(); }
-    | Z
-    | NZ
-    | C
-    | NC
 ;
 oprs:           // Matches any set of operands, intended for error recovery only
       oprs "," opr                  { }

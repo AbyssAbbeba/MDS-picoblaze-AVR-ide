@@ -130,8 +130,13 @@ foreach ( var   MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        
     endif()
 endforeach()
 
-file ( READ "mds.h" MDS_H_READ )
-string ( COMPARE EQUAL "${MDS_H}" "${MDS_H_READ}" MDS_H_DONT_UPDATE )
+
+if ( EXISTS "mds.h" )
+    file ( READ "mds.h" MDS_H_READ )
+    string ( COMPARE EQUAL "${MDS_H}" "${MDS_H_READ}" MDS_H_DONT_UPDATE )
+else()
+    set ( MDS_H_DONT_UPDATE FALSE )
+endif()
 
 if ( NOT MDS_H_DONT_UPDATE )
     file ( WRITE "mds.h" "${MDS_H}" )
