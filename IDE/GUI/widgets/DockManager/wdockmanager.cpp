@@ -402,7 +402,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
 
 void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStringList text)
 {
-    qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
+    //qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
     for (int i = 0; i < wTab->count(); i++)
     {
@@ -415,6 +415,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
     if (found != true)
     {
         CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
+        //newEditor->getTextEdit()->reloadHighlighter(SourceType::PICOBLAZEASM);
         for (int i = 0; i < text.size(); i++)
         {
             newEditor->getTextEdit()->appendPlainText(text.at(i));
@@ -522,7 +523,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
                );*/
         newEditor->setChanged();
     }
-    qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
+    //qDebug() << "WDockManager: return addUntrackedCentralWidget(text)";
 }
 
 
