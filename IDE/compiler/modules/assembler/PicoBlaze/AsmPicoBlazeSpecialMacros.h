@@ -71,8 +71,8 @@ class AsmPicoBlazeSpecialMacros
          * @return
          */
         AsmPicoBlazeSpecialMacros ( CompilerSemanticInterface * compilerCore,
-                                    AsmSymbolTable   * symbolTable,
-                                    AsmCodeListing   * codeListing );
+                                    AsmSymbolTable            * symbolTable,
+                                    AsmCodeListing            * codeListing );
 
         /**
          * @brief

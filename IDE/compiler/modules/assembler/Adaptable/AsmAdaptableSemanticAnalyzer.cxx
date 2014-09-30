@@ -34,18 +34,18 @@
 AsmAdaptableSemanticAnalyzer::AsmAdaptableSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
 {
-//     m_dgbFile        = new AsmDgbFileGen();
-//     m_machineCode    = new AsmMachineCodeGen();
-//     m_memoryPtr      = new AsmMemoryPtr ( compilerCore );
-//     m_symbolTable    = new AsmSymbolTable ( compilerCore, opts );
-//     m_codeGenerator  = new AsmAdaptableCodeGenerator();
-//     m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
-//     m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
-//     m_treeDecoder    = new AsmAdaptableTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,
-//                                                      m_machineCode,     m_macros,       m_memoryPtr,
-//                                                      m_symbolTable,     m_codeListing,  m_device );
-//
-//     m_memoryPtr->clear();
+    m_dgbFile        = new AsmDgbFileGen();
+    m_machineCode    = new AsmMachineCodeGen();
+    m_memoryPtr      = new AsmMemoryPtr ( compilerCore );
+    m_symbolTable    = new AsmSymbolTable ( compilerCore, opts );
+    m_codeGenerator  = new AsmAdaptableCodeGenerator();
+    m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
+    m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
+    m_treeDecoder    = new AsmAdaptableTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,
+                                                     m_machineCode,     m_macros,       m_memoryPtr,
+                                                     m_symbolTable,     m_codeListing,  m_device );
+
+    m_memoryPtr->clear();
 }
 
 AsmAdaptableSemanticAnalyzer::~AsmAdaptableSemanticAnalyzer()
@@ -60,10 +60,10 @@ AsmAdaptableSemanticAnalyzer::~AsmAdaptableSemanticAnalyzer()
     delete m_codeGenerator;
 }
 
-void AsmAdaptableSemanticAnalyzer::process ( CompilerStatement * codeTree )
+void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceName )
 {
 }
 
-void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceName )
+void AsmAdaptableSemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
 }

@@ -30,8 +30,8 @@
 #include <cstdint>
 
 AsmPicoBlazeSpecialMacros::AsmPicoBlazeSpecialMacros ( CompilerSemanticInterface * compilerCore,
-                                                       AsmSymbolTable      * symbolTable,
-                                                       AsmCodeListing      * codeListing )
+                                                       AsmSymbolTable            * symbolTable,
+                                                       AsmCodeListing            * codeListing )
                                                      : m_compilerCore ( compilerCore ),
                                                        m_symbolTable  ( symbolTable  ),
                                                        m_codeListing  ( codeListing  )

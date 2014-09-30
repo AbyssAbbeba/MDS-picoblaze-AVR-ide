@@ -33,7 +33,7 @@ class AsmAdaptableCodeGenerator;
 
 /**
  * @brief
- * @ingroup PicoBlazeAsm
+ * @ingroup AdaptableAsm
  * @class AsmAdaptableSemanticAnalyzer
  */
 class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
