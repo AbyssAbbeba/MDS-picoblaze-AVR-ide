@@ -1497,6 +1497,13 @@ QString Project::addFile(QString path, QString name)
                 xmlStream << domDoc.toString();*/
                 QDir project(QFileInfo(this->prjPath).dir());
                 QString relativePath = project.relativeFilePath(path);
+                for (int i = 0; i < filePaths.count(); i++)
+                {
+                    if (relativePath == filePaths.at(i))
+                    {
+                        return "";
+                    }
+                }
                 fileNames.append(name);
                 fileCount++;
                 filePaths.append(relativePath);
@@ -1532,7 +1539,13 @@ QString Project::addFile(QString path, QString name)
     }
     else
     {
-
+        for (int i = 0; i < filePaths.count(); i++)
+        {
+            if (path == filePaths.at(i))
+            {
+                return "";
+            }
+        }
         QTreeWidgetItem *treeProjFile;
         int index = name.lastIndexOf(".");
         if (index > 0)
