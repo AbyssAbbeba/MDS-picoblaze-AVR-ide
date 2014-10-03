@@ -60,12 +60,14 @@
   <Option type="line" name="color" color="#66ccff"/>
   <Option type="update" name="color" color="#ffff00"/>
  </SimOthers>
- <RecentFiles/>
+ <RecentFiles>
+  <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/a.asm"/>
+ </RecentFiles>
  <RecentProjects>
-  <Project path="/home/abyss/Demonstration project/jh.mds-project"/>
-  <Project path="./resources/projects/MDSExample/MDSExample.mds-project"/>
   <Project path="/home/millenium/vbshare/demo2/saass.mds-project"/>
   <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdffsdf/weffwe.mds-project"/>
   <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/temp/erwrfwerfc.mds-project"/>
+  <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdad.mds-project"/>
+  <Project path="./resources/projects/MDSExample/MDSExample.mds-project"/>
  </RecentProjects>
 </config>

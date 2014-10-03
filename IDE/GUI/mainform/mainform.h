@@ -167,6 +167,7 @@ class MainForm : public QMainWindow
         void loopGen();
         void about();
         void refreshProjectTree();
+        //void refreshProjectTree(int index);
         void showWebSite(QAction *action);
         void simLeds();
         void sim7Seg();
