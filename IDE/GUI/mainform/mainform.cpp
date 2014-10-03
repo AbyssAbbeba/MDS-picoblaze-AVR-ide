@@ -307,19 +307,19 @@ MainForm::~MainForm()
         if (projectMan->getOpenProjects().count() > 0)
         {
             QList<Project*> projects = projectMan->getOpenProjects();
-            qDebug() << "Mainform: prepare to project session restoration";
+            //qDebug() << "Mainform: prepare to project session restoration";
             for (int i = 0; i < projects.count(); i++)
             {
-                qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+                //qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
                 GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
                 if (wDockManager->getTabCount() > 0)
                 {
-                    qDebug() << "Mainform: prepare to files session restoration";
+                    //qDebug() << "Mainform: prepare to files session restoration";
                     for (int j = 0; j < wDockManager->getTabCount(); j++)
                     {
                         if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
                         {
-                            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            //qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
                             GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
                             GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
                         }
@@ -1397,7 +1397,17 @@ void MainForm::compileProject()
     {
         //compile actual file with global settings, not error
         //error(ERR_UNTRACKED_PROJECT);
-        qDebug() << "MainForm: compiled untracked project, actual file";
+        QMessageBox warningBox(QMessageBox::Warning,
+                               "Compilation Warning",
+                               "Note: You are going to compile untracked project, do you wish to continue?",
+                               QMessageBox::Yes|QMessageBox::No,
+                               this
+                              );
+        if (warningBox.exec() != QMessageBox::Yes)
+        {
+            return;
+        }
+        qDebug() << "MainForm: compiled untracked project, untracked actual file";
 
         if (wDockManager->getCentralWidget() == NULL)
         {
@@ -1406,6 +1416,7 @@ void MainForm::compileProject()
         }
 
         this->saveFile();
+        this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
 
         options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
@@ -1683,17 +1694,50 @@ void MainForm::compileProject()
         }
         else
         {
+            QMessageBox warningBox(QMessageBox::Warning,
+                                   "Compilation Warning",
+                                   "Note: You are going to compile with configuration of the untracked project, do you wish to continue?",
+                                   QMessageBox::Yes|QMessageBox::No,
+                                   this
+                                  );
+            if (warningBox.exec() != QMessageBox::Yes)
+            {
+                return;
+            }
+
             qDebug() << "MainForm: compiled untracked project, actual file";
             if (this->projectMan->getUntracked() != NULL)
             {
                 this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
                 this->projectMan->setActive(this->projectMan->getUntracked());
+                if (projectTabs != NULL )
+                {
+                    QList<Project*> projects = projectMan->getOpenProjects();
+                    int index = 0;
+                    for (;index < projects.count(); index++)
+                    {
+                        if (projects.at(index) == projectMan->getUntracked())
+                        {
+                            break;
+                        }
+                    }
+                    if (projectTabs->count() <= index)
+                    {
+                        qDebug() << "MainForm: projectTabs overflow";
+                        projectTabs->setCurrentIndex(projectTabs->count()-1);
+                    }
+                    else
+                    {
+                        projectTabs->setCurrentIndex(index);
+                    }
+                }
             }
             else
             {
                 this->projectMan->addUntrackedProject();
                 this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
                 this->projectMan->setActive(this->projectMan->getUntracked());
+                QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
             options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
@@ -1748,10 +1792,15 @@ void MainForm::compileProject()
                 pathDir.mkpath(".");
             }
 
-            mainFile = QDir::cleanPath( GuiCfg::getInstance().getTempPath()
-                                      + "/"
-                                      +  wDockManager->getCentralPath().section('.',0,-2)
-                                      );
+            QDir prjDir;
+            mainFile = pathDir.absolutePath()
+                    + "/"
+                    +  wDockManager->getCentralName().section('.',0,-2);
+
+            //qDebug() << "MainForm: tempPath" << GuiCfg::getInstance().getTempPath();
+            //qDebug() << "MainForm: mainfile" << mainFile;
+            //qDebug() << "MainForm: section" << wDockManager->getCentralPath().section('/',-1);
+            //qDebug() << "MainForm: section2" << wDockManager->getCentralPath().section('/',-1).section('.',0,0);
 
 
             if (projectMan->getUntracked()->compileOpt.at(0))
@@ -2701,7 +2750,7 @@ void MainForm::translatorOutput(std::vector<std::string> & text)
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
         //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
-        getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+        //getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
     #endif
 }
@@ -2721,7 +2770,7 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
         //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
-        this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
+        //this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
     #endif
 }
@@ -3322,6 +3371,22 @@ void MainForm::refreshProjectTree()
         projectTabs->setCurrentIndex(projectTabs->count()-1);
         qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
+
+
+/*void MainForm::refreshProjectTree(int index)
+{
+        qDebug() << "count: " << projectTabs->count();
+        if (projectTabs->count <= index)
+        {
+            qDebug() << "MainForm: refreshProjectTree error";
+            projectTabs->setCurrentIndex(projectTabs->count()-1);
+        }
+        else
+        {
+            projectTabs->setCurrentIndex(index);
+        }
+        qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
+}*/
 
 
 void MainForm::showWebSite(QAction */*action*/)
