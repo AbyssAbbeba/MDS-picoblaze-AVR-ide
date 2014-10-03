@@ -435,7 +435,7 @@ bool CompilerCore::savePrecompiledCode ( const std::string & fileName,
         std::ofstream file ( fileName, (std::ios_base::out | std::ios_base::binary) );
         CompilerSerializer serializer(file, m_openedFiles, &m_locationTracker, m_lang, m_arch);
         code->serializeTree(serializer);
-        return ( !file.bad() );
+        return ( false == file.bad() );
     }
     catch ( const CompilerSerializer::Exception & )
     {
@@ -725,7 +725,14 @@ const std::vector<std::pair<std::string,FILE*>> & CompilerCore::listSourceFiles(
 
 const std::string & CompilerCore::getFileName ( int fileNumber ) const
 {
-    return m_openedFiles.at(fileNumber).first;
+    if ( -1 == fileNumber )
+    {
+        return m_openedFiles.back().first;
+    }
+    else
+    {
+        return m_openedFiles.at(fileNumber).first;
+    }
 }
 
 CompilerLocationTracker & CompilerCore::locationTrack()

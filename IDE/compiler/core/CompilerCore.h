@@ -266,7 +266,7 @@ class CompilerCore : public CompilerBase,
              * @param[in] fileNumber
              * @return
              */
-            virtual const std::string & getFileName ( int fileNumber ) const override;
+            virtual const std::string & getFileName ( int fileNumber = -1 ) const override;
 
             /**
              * @brief
@@ -304,6 +304,7 @@ class CompilerCore : public CompilerBase,
              */
             virtual CompilerStatement * loadDevSpecCode ( const std::string & deviceName,
                                                           CompilerBase::DevSpecLoaderFlag * flag = nullptr ) override;
+
             /**
              * @brief
              * @return
@@ -330,7 +331,7 @@ class CompilerCore : public CompilerBase,
 
         /**
          * @brief
-         * @param[in] directory Must be an absolute path (on Windows including c:\ and such stuff).
+         * @param[in] directory Must be an absolute path (on Windows including c:\ and such).
          */
         void setBaseIncludeDir ( const std::string & directory )
         {
