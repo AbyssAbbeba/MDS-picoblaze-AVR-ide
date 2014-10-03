@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdaptableAsm
@@ -30,6 +30,12 @@
 // Support for processor definition files used Adaptable Simulator
 #include "AdjSimProcDef.h"
 #include "AdjSimProcDefParser.h"
+
+// OS compatibility.
+#include "utilities/os/os.h"
+
+// Standard headers.
+#include <fstream>
 
 AsmAdaptableSemanticAnalyzer::AsmAdaptableSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
@@ -62,6 +68,32 @@ AsmAdaptableSemanticAnalyzer::~AsmAdaptableSemanticAnalyzer()
 
 void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceName )
 {
+    using namespace boost::filesystem;
+
+    path filenamePath = path(makeHomeSafe(deviceName)).make_preferred();
+    if ( false == filenamePath.is_absolute() )
+    {
+        path basePath = path(m_compilerCore->getFileName()).parent_path();
+        filenamePath = ( basePath / filenamePath );
+    }
+
+    std::ifstream file ( filenamePath.string(), (std::ios_base::in | std::ios_base::binary) );
+
+    if ( false == file.is_open() )
+    {
+        return;
+    }
+
+    while ( false == file.eof() )
+    {
+        if ( true == file.bad() )
+        {
+
+            return;
+        }
+    }
+
+//     AdjSimProcDefParser parser;
 }
 
 void AsmAdaptableSemanticAnalyzer::process ( CompilerStatement * codeTree )

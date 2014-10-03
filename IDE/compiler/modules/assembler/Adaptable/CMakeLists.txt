@@ -2,7 +2,7 @@
 #
 # Compiler semantic analyzer for Adaptable Assembler.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -22,7 +22,8 @@ project ( CompilerModuleAsmAdaptable )
 flex_bison_pair ( AsmAdaptableLexer AsmAdaptableParser AsmAdaptableLexerParser )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/compiler/core/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../common/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
                       "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/" )

@@ -121,7 +121,7 @@ void printHelp ( const char * executable )
               << std::endl;
 
     std::cout << QObject::tr("Examples of usage:").toStdString() << std::endl
-              << "    " << executable << " --type=1 --input=my_file.psm --output=final_file.asm" << std::endl
+              << "    " << executable << " --type=1 --output=final_file.asm input_file.psm" << std::endl
               << std::endl;
 }
 

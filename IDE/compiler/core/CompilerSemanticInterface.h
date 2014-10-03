@@ -83,7 +83,7 @@ class CompilerSemanticInterface
          * @param[in] fileNumber
          * @return
          */
-        virtual const std::string & getFileName ( int fileNumber ) const = 0;
+        virtual const std::string & getFileName ( int fileNumber = -1 ) const = 0;
 
         /**
          * @brief
