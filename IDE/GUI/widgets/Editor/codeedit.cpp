@@ -413,7 +413,7 @@ void CodeEdit::connectAct()
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    //qDebug() << "CodeEdit: setChanged()";
+    qDebug() << "CodeEdit: setChanged()";
     if (changed == false)
     {
         changed = true;
@@ -424,14 +424,18 @@ void CodeEdit::setChanged()
             emit changedTabStatus(this->name, this->path, true);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         }
+        else
+        {
+            emit changedTabStatus(this->name, this->path, true);
+        }
     }
-    //qDebug() << "CodeEdit: return setChanged()";
+    qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    //qDebug() << "CodeEdit: setSaved()";
+    qDebug() << "CodeEdit: setSaved()";
     if (changed == true)
     {
         changed = false;
@@ -451,7 +455,7 @@ void CodeEdit::setSaved()
     {
         qDebug() << "codeedit: not changed";
     }*/
-    //qDebug() << "CodeEdit: return setSaved()";
+    qDebug() << "CodeEdit: return setSaved()";
 }
 
 

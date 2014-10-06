@@ -57,20 +57,25 @@ void TabBar::tabAdded()
  */
 void TabBar::tabChanged(int index, bool changed)
 {
-    //qDebug() << "TabBar: tabChanged()";
+    qDebug() << "TabBar: tabChanged()";
     if (tabStats.at(index) != changed)
     {
         tabStats.replace(index, changed);
         if (changed == true)
         {
-            this->setTabTextColor(index, Qt::red);
+            qDebug() << "TabBar: tab changed";
+            //this->setTabTextColor(index, Qt::red);
+            this->setTabText(index, this->tabText(index).prepend('*'));
         }
         else
         {
-            this->setTabTextColor(index, Qt::black);
+            qDebug() << "TabBar: tab saved";
+            //if (this->tabText(index).startsWith('*'));
+            this->setTabText(index,this->tabText(index).remove(0,1));
+            //this->setTabTextColor(index, Qt::black);
         }
     }
-    //qDebug() << "TabBar: return tabChanged()";
+    qDebug() << "TabBar: return tabChanged()";
 }
 
 
