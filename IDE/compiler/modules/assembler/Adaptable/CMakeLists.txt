@@ -40,6 +40,7 @@ target_link_libraries ( AsmAdaptableLexerParser CompilerCore )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
+                                        AdjSimProcDef
                                         CompilerModuleAsmCommon
                                         AsmAdaptableLexerParser )
 

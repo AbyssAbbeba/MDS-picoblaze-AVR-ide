@@ -37,6 +37,7 @@ add_subdirectory ( assembler )
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/utilities/DbgFile/"
                       "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
+                      "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/../core/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/assembler/common/" )
 

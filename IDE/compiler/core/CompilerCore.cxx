@@ -689,28 +689,35 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
 
     if ( false == m_opts->m_device.empty() )
     {
-        DevSpecLoaderFlag loaderFlag;
-        CompilerStatement * devSpecCode = loadDevSpecCode(m_opts->m_device, &loaderFlag);
-        if ( nullptr == devSpecCode )
+        if ( TA_ADAPTABLE == m_arch )
         {
-            if ( DSLF_DOES_NOT_EXIST == loaderFlag )
-            {
-                coreMessage ( MT_ERROR, QObject::tr ( "device not supported: `%1'" )
-                                                    . arg ( m_opts->m_device.c_str() )
-                                                    . toStdString() );
-            }
-            return;
+            m_semanticAnalyzer->setDevice(m_opts->m_device);
         }
         else
         {
-            m_rootStatement->first()->insertLink(devSpecCode->next());
-            delete devSpecCode;
+            DevSpecLoaderFlag loaderFlag;
+            CompilerStatement * devSpecCode = loadDevSpecCode(m_opts->m_device, &loaderFlag);
+            if ( nullptr == devSpecCode )
+            {
+                if ( DSLF_DOES_NOT_EXIST == loaderFlag )
+                {
+                    coreMessage ( MT_ERROR, QObject::tr ( "device not supported: `%1'" )
+                                                        . arg ( m_opts->m_device.c_str() )
+                                                        . toStdString() );
+                }
+                return;
+            }
+            else
+            {
+                m_rootStatement->first()->insertLink(devSpecCode->next());
+                delete devSpecCode;
+            }
         }
     }
 
     if ( false == m_success )
     {
-        coreMessage ( MT_WARNING, QObject::tr ( "semantic analysis was not executed due to syntax error(s)" )
+        coreMessage ( MT_WARNING, QObject::tr ( "semantic analysis was not executed due to error(s)" )
                                               . toStdString() );
         return;
     }

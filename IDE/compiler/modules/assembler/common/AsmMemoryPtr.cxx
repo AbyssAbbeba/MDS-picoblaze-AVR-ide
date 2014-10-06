@@ -24,9 +24,6 @@
 AsmMemoryPtr::AsmMemoryPtr ( CompilerSemanticInterface * compilerCore )
                            : m_compilerCore ( compilerCore )
 {
-    m_hardLimits.m_reg  = 32;
-    m_hardLimits.m_data = 64;
-    m_hardLimits.m_code = 4096;
 }
 
 void AsmMemoryPtr::clear()

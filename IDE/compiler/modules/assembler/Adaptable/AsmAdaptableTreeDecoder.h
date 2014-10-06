@@ -110,6 +110,290 @@ class AsmAdaptableTreeDecoder
          * @brief
          */
         ~AsmAdaptableTreeDecoder();
+
+    ////    Public Operations    ////
+    public:
+        /**
+         * @brief
+         * @param[in,out] codeTree
+         * @param[in] macroName
+         * @return False, if critical error occured; true otherwise.
+         */
+        bool phase1 ( CompilerStatement * codeTree,
+                      const std::string * macroName = nullptr );
+
+        /**
+         * @brief
+         * @param[in,out] codeTree
+         */
+        void phase2 ( CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         */
+        void phase3();
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] expr
+         * @return
+         */
+        bool isBlank ( const CompilerExpr * expr ) const;
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] node
+         * @return
+         */
+        inline bool isInstruction ( const std::string & mnemonic );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction instruction2db ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_LIST ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_NOLIST ( CompilerStatement * node );
+
+        /**
+         * @brief
+         */
+        inline void dir_EXPAND();
+
+        /**
+         * @brief
+         */
+        inline void dir_NOEXPAND();
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_IF ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_AUTOxxx ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_DB ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_MACRO ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_TITLE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_MESSG ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_WARNING ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_ERROR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_INCLUDE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @param[in] macroName
+         * @param[in,out] localSymbols
+         */
+        inline void dir_LOCAL ( CompilerStatement * node,
+                                const std::string * macroName,
+                                std::vector<std::string> & localSymbols );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_SET ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_DEFINE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_UNDEFINE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void label ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_ORG ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_SKIP ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_LIMIT ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_FAILJMP ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_ORGSPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_INITSPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_MERGESPR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_EQU_etc ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction dir_EXITM ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction dir_REPT ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction dir_WHILE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction macro ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction dir_DEVICE ( CompilerStatement * node );
+
+    ////    Private Attributes    ////
+    private:
+        ///
+        CompilerSemanticInterface * const m_compilerCore;
+
+        ///
+        CompilerOptions * const m_opts;
+
+        ///
+        AsmDgbFileGen * const m_dgbFile;
+
+        ///
+        AsmMachineCodeGen * const m_machineCode;
+
+        ///
+        AsmMacros * const m_macros;
+
+        ///
+        AsmMemoryPtr * const m_memoryPtr;
+
+        ///
+        AsmSymbolTable * const m_symbolTable;
+
+        ///
+        AsmCodeListing * const m_codeListing;
+
+        ///
+        AdjSimProcDef * m_device;
+
+        ///
+        CompilerStatement * m_forceNext;
+
+        ///
+        CompilerStatement * m_failjmp;
+
+        ///
+        std::vector<SprInit> m_sprInit;
+
+        ///
+        int m_mergeAddr;
+
+        ///
+        CompilerSourceLocation m_mergeSprLoc;
 };
 
 #endif // ASMADAPTABLETREEDECODER_H
