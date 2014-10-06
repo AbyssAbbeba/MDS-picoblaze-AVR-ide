@@ -353,7 +353,7 @@ expr:
     | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3,    LOC(@$));  }
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,  $3,    LOC(@$));  }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,  $3,    LOC(@$));  }
-    | id "(" mac_args ")"           { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $args, LOC(@$));  }
+    | id "(" mac_args ")"           { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $mac_args, LOC(@$));  }
     | id "(" ")"                    {
                                         /* Syntax Error */
                                         $$ = $id;
@@ -367,7 +367,7 @@ mac_arg:       // One macro/instruction agrument
     | "@" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_AT,   LOC(@$)); }
 ;
 mac_args:       // List of macro/instruction agruments
-      mac_args "," mac_arg          { $$ = 1->appendLink($mac_arg); }
+      mac_args "," mac_arg          { $$ = $1->appendLink($mac_arg); }
     | mac_arg                       { $$ = $mac_arg;                }
 ;
 args:           // List of arguments without strings, e.g. `(1+3), XYZ, 0x4b'
