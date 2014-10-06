@@ -71,6 +71,7 @@ loop_gen::loop_gen(QWidget *parent) :
     QRegExpValidator *decValidator = new QRegExpValidator(QRegExp("[0-9]{18}"), this);
     ui->Vstup_Cas->setValidator(decValidator);
     ui->Vstup_Cycles->setValidator(decValidator);
+    ui->Vstup_Frekvency->setValidator(decValidator);
 
     ui->Vystup_text->setFont(GuiCfg::getInstance().getEditorFont());
     Highlighter *highlighter = new Highlighter(ui->Vystup_text->document(), SourceType::PICOBLAZEASM);
@@ -135,15 +136,19 @@ void loop_gen::reg_2_Loop( unsigned long long loop, unsigned int init_nop)
     temp2 = loop;
     temp2 -= init_nop;
     temp2 /= 512;
+    
+    qDebug() << " temp2 " << temp2;
    // temp2++;
     local3 = loop - init_nop;
     local3 -= (temp2 * 2);
 
     local3 -=  512 * (temp2 - 1);
 
+
     if ( local3 >= 512)
     {
         temp_help = local3 - 512;
+                qDebug() << " temphelp " << temp_help;
         if ( temp_help == 0)
         {
 
@@ -404,19 +409,20 @@ void loop_gen::GenerateLoop(void)
     {
         loop( third_1r);
     }
-    else if ( (132086 >= Steps) && (Steps >= 1024) )
+    else if ( (132086ULL >= Steps) && (Steps >= 1024ULL) )
     {
         loop( first_2r);
     }
-    else if ( (196351 >= Steps) && (Steps >= 131586) )
+    else if ( (196351ULL >= Steps) && (Steps >= 131586ULL) )
     {
         loop( second_2r);
     }
-    else if ( (261631 >= Steps) && (Steps >= 196351) )
-    {
-        loop( third_2r);
-    }
-    else if ( (33686019 >= Steps) && (Steps >= 261631) )
+//     else if ( (261631ULL >= Steps) && (Steps >= 196351ULL) )
+//     {
+//         loop( third_2r);
+//         qDebug()<< "third_2r";
+//     }
+    else if ( (33686019ULL >= Steps) && (Steps >= 196351ULL) )
     {
         loop( first_3r);
     }
@@ -1079,6 +1085,7 @@ void loop_gen::loop(unsigned int type)
           //=======================================================================================================
               case third_2r:
                   pokus = Steps;
+                  qDebug()<< "steps :"<< Steps;
 
                   // number of added nops
                   if ( (pokus % 2) == 0 )
@@ -1092,24 +1099,30 @@ void loop_gen::loop(unsigned int type)
                       qDebug() << "init nops " << init_nop;
                   }
 
-                  // calculate register numbers
-                  // 1024 - 132000 - init_nop
-                  temp2 = (Steps -  2) / 512;
-                  qDebug() << " prvni ardek" << temp2;
-                  temp1 = (Steps -  2) - 512 * (temp2 - 1);
-                  qDebug() << " druhy ardek" << temp1;
-                  temp1 -= (temp2 * 2);
-                  qDebug() << " druhy ardek" << temp1;
-                  temp1 /=  2;
+                reg_2_Loop(pokus, init_nop);
 
-                  qDebug() << " register value" << temp1;
-                  qDebug() << " register value" << temp2;
-                  if ( temp1 > 255)
-                  {
-                      temp1 -= 257;
-                      temp2++;
-                  }
 
+                qDebug() << " register value 1 " << temp1;
+                qDebug() << " register value 2 " << temp2;
+
+//                   // calculate register numbers
+//                   // 1024 - 132000 - init_nop
+//                   temp2 = (Steps -  2) / 512;
+//                   qDebug() << " prvni ardek" << temp2;
+//                   temp1 = (Steps -  2) - 512 * (temp2 - 1);
+//                   qDebug() << " druhy ardek" << temp1;
+//                   temp1 -= (temp2 * 2);
+//                   qDebug() << " druhy ardek" << temp1;
+//                   temp1 /=  2;
+//
+//                   qDebug() << " register value" << temp1;
+//                   qDebug() << " register value" << temp2;
+//                   if ( temp1 > 255)
+//                   {
+//                       temp1 -= 257;
+//                       temp2++;
+//                   }
+                  // new
                   // now print
                   if ( ui->check_upper->isChecked() == true )
                   {
