@@ -68,7 +68,11 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
                                                      m_instructionSet,  m_device );
 
     m_device = DEV_UNSPEC;
+
     m_memoryPtr->clear();
+    m_memoryPtr->m_hardLimits.m_reg  = 32;
+    m_memoryPtr->m_hardLimits.m_data = 64;
+    m_memoryPtr->m_hardLimits.m_code = 4096;
 }
 
 AsmPicoBlazeSemanticAnalyzer::~AsmPicoBlazeSemanticAnalyzer()
@@ -85,7 +89,7 @@ AsmPicoBlazeSemanticAnalyzer::~AsmPicoBlazeSemanticAnalyzer()
     delete m_instructionSet;
 }
 
-void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTree )
+inline void AsmPicoBlazeSemanticAnalyzer::printCodeTree ( const CompilerStatement * codeTree )
 {
     if ( true == m_opts->m_codeTree.empty() )
     {

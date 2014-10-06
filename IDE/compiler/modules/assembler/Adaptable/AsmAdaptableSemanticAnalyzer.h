@@ -19,7 +19,6 @@
 // Forward declarations.
 class AsmMacros;
 class AsmMemoryPtr;
-class AdjSimProcDef;
 class AsmDgbFileGen;
 class AsmSymbolTable;
 class AsmCodeListing;
@@ -30,6 +29,9 @@ class AsmAdaptableCodeGenerator;
 // Common compiler header files.
 #include "CompilerSemanticAnalyzer.h"
 #include "AsmMachineCodeGen.h"
+
+// Support for processor definition files used Adaptable Simulator
+#include "AdjSimProcDef.h"
 
 /**
  * @brief
@@ -65,7 +67,30 @@ class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
          * @brief
          * @param[in] deviceName
          */
-        virtual void setDevice ( const std::string & deviceName ) override;
+        virtual void setDevice ( const std::string & deviceDefFile ) override;
+
+    ////    Inline Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in] codeTree
+         */
+        inline void printCodeTree ( const CompilerStatement * codeTree );
+
+        /**
+         * @brief
+         */
+        inline void genMachineCode();
+
+        /**
+         * @brief
+         * @param[in] wordSize
+         * @param[in,out] dataFile
+         * @param[in] fileName
+         */
+        inline void saveHDL ( AsmMachineCodeGen::WordSize wordSize,
+                              DataFile & dataFile,
+                              const std::string & fileName );
 
     ////    Protected Attributes    ////
     protected:
@@ -94,7 +119,7 @@ class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
         AsmAdaptableCodeGenerator * m_codeGenerator;
 
         ///
-        AdjSimProcDef * m_device;
+        AdjSimProcDef m_device;
 };
 
 #endif // ASMADAPTABLESEMANTICANALYZER_H

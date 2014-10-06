@@ -213,7 +213,7 @@
  */
 // Expressions
 %type<expr>     expr            number          params          args            args_str
-%type<expr>     id              string          mark
+%type<expr>     id              string          mark            mac_args        mac_arg
 // Statements - general
 %type<stmt>     statements      stmt            label           dir_stmt        macro_stmt
 %type<stmt>     directive       macro
@@ -353,7 +353,7 @@ expr:
     | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3,    LOC(@$));  }
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,  $3,    LOC(@$));  }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,  $3,    LOC(@$));  }
-    | id "(" args ")"               { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $args, LOC(@$));  }
+    | id "(" mac_args ")"           { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $args, LOC(@$));  }
     | id "(" ")"                    {
                                         /* Syntax Error */
                                         $$ = $id;
@@ -361,6 +361,14 @@ expr:
                                                                   CompilerBase::MT_ERROR,
                                                                   QObject::tr("missing argument(s)").toStdString() );
                                     }
+;
+mac_arg:       // One macro/instruction agrument
+      "#" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_HASH, LOC(@$)); }
+    | "@" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_AT,   LOC(@$)); }
+;
+mac_args:       // List of macro/instruction agruments
+      mac_args "," mac_arg          { $$ = 1->appendLink($mac_arg); }
+    | mac_arg                       { $$ = $mac_arg;                }
 ;
 args:           // List of arguments without strings, e.g. `(1+3), XYZ, 0x4b'
       args "," expr                 { $$ = $1->appendLink($expr); }

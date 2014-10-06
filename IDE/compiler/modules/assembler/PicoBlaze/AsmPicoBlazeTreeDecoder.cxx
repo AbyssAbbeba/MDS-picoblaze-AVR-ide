@@ -822,6 +822,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                                         . toStdString(),
                                             true );
     }
+
     if ( nullptr != body)
     {
         node = node->prev();
