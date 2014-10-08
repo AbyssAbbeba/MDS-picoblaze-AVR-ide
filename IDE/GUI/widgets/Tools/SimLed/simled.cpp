@@ -34,7 +34,7 @@ Leds_sim::Leds_sim(QWidget *parent, MCUSimControl *controlUnit) :
 
     CreateItems();
 
-    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{2}"), this);
+    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{1,2}"), this);
     ui.lineEditAddress->setValidator(hexValidator);
 
     ui.lineEditHex->setReadOnly(true);
