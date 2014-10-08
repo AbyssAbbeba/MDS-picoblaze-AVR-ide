@@ -23,7 +23,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 {
     //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
-    this->prevCodeEdit = NULL;
+    this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -227,7 +227,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
 {
     //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
-    this->prevCodeEdit = NULL;
+    this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -655,17 +655,20 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         this->textEdit->setPlainText(" ");
     }*/
     //qDebug() << "is changed?" << editor->isChanged();
-    if (prevCodeEdit != NULL)
+    if (curCodeEdit != NULL)
     {
         if (true == this->changed)
         {
-            prevCodeEdit->setChanged();
+            curCodeEdit->setChanged();
         }
         else
         {
-            prevCodeEdit->setSaved();
+            curCodeEdit->setSaved();
         }
+        curCodeEdit->setScrollValue(this->textEdit->verticalScrollBar()->value());
+        curCodeEdit->setCursorValue(this->textEdit->textCursor());
     }
+    
     bool prevChanged = editor->isChanged();
     this->setName(editor->getName());
     this->setPath(editor->getPath());
@@ -726,7 +729,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     {
         emit changedTabStatus(this->name, this->path, false);
     }
-    prevCodeEdit = editor;
+    curCodeEdit = editor;
+    if (false == curCodeEdit->getCursorValue().isNull())
+    {
+        this->textEdit->setTextCursor(curCodeEdit->getCursorValue());
+    }
+    this->textEdit->verticalScrollBar()->setValue(curCodeEdit->getScrollValue());
     /*if (true == editor->isChanged())
     {
         //qDebug() << "CodeEdit: loadcodeedit is changed";
@@ -1096,4 +1104,28 @@ void CodeEdit::setBookmarksLines(QList<int> bookmarks)
         }
         this->lineCount->getWidget()->update();
     }
+}
+
+
+int CodeEdit::getScrollValue()
+{
+    return this->curScrollValue;
+}
+
+
+void CodeEdit::setScrollValue(int value)
+{
+    this->curScrollValue = value;
+}
+
+
+QTextCursor CodeEdit::getCursorValue()
+{
+    return this->curCursorPos;
+}
+
+
+void CodeEdit::setCursorValue(QTextCursor value)
+{
+    this->curCursorPos = value;
 }

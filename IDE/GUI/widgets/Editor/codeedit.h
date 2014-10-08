@@ -68,6 +68,10 @@ class CodeEdit : public QWidget
         void setBreakpointsLines(QList<int> breakpoints);
         void setBookmarksLines(QList<unsigned int> bookmarks);
         void setBookmarksLines(QList<int> bookmarks);
+        int getScrollValue();
+        void setScrollValue(int value);
+        QTextCursor getCursorValue();
+        void setCursorValue(QTextCursor value);
 
     public slots:
         void setChanged();
@@ -124,7 +128,9 @@ class CodeEdit : public QWidget
         int prevBlockCount;
         QList<int> *bookmarksLines;
         QList<int> *breakpointsLines;
-        CodeEdit *prevCodeEdit;
+        CodeEdit *curCodeEdit;
+        int curScrollValue;
+        QTextCursor curCursorPos;
 };
 
 
