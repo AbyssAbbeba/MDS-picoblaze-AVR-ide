@@ -357,6 +357,11 @@ void MainForm::createMenu()
         QAction *recent = new QAction(recentFiles.at(i), recentFilesMenu);
         recentFilesMenu->addAction(recent);
     }
+    connect(recentFilesMenu,
+            SIGNAL(triggered(QAction*)),
+            this,
+            SLOT(openRecentFileSlot(QAction*))
+           );
     fileMenu->addSeparator();
     //fileMenu->addAction(addAct);
     fileMenu->addAction(saveAct);
@@ -391,6 +396,11 @@ void MainForm::createMenu()
         QAction *recent = new QAction(recentProjects.at(i), recentProjectsMenu);
         recentProjectsMenu->addAction(recent);
     }
+    connect(recentProjectsMenu,
+            SIGNAL(triggered(QAction*)),
+            this,
+            SLOT(openRecentProjectSlot(QAction*))
+           );
 
     projectMenu->addAction(saveProjAct);
     projectMenu->addAction(closeProjectAct);
@@ -940,7 +950,7 @@ void MainForm::newAddFile()
     {
         wDockManager->addCentralWidget(path.section('/', -1), path);
         wDockManager->getCentralWidget()->setChanged();
-        wDockManager->getCentralWidget()->connectAct();
+        //wDockManager->getCentralWidget()->connectAct();
 
         //je sice prehlednejsi zavolat saveFile(), ale
         //vlozeni kodu pro ulozeni je rychlejsi a efektivnejsi
@@ -1008,11 +1018,8 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
         {
             file.close();
             //qDebug() << "MainForm: addCentralWidget";
-            wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             //qDebug() << "MainForm: connect";
-            CodeEdit *centralCodeEdit = wDockManager->getCentralWidget();
-            centralCodeEdit->connectAct();
             //qDebug() << "MainForm: set parent";
             if (parentProjectPath != "")
             {
@@ -1020,6 +1027,9 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 {
                     if (projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
                     {
+                        wDockManager->addCentralWidget(path.section('/', -1), path);
+                        CodeEdit *centralCodeEdit = wDockManager->getCentralWidget();
+                        //centralCodeEdit->connectAct();
                         centralCodeEdit->setParentProject(projectMan->getOpenProjects().at(i));
                         wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getOpenProjects().at(i));
                         centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
@@ -1030,12 +1040,19 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                 }
                 if (parentProjectPath == "untracked")
                 {
-                    //TODO: something
-                    //WHAT DOES IT MEAN? Session restoration?
+                    projectMan->addUntrackedFile(path, path.section('/', -1));
+                    wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
+                    //wDockManager->getCentralWidget()->connectAct();
+                    wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
+                    wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
+                    GuiCfg::getInstance().fileOpened(path);
                 }
             }
             else
             {
+                wDockManager->addCentralWidget(path.section('/', -1), path);
+                CodeEdit *centralCodeEdit = wDockManager->getCentralWidget();
+                //centralCodeEdit->connectAct();
                 centralCodeEdit->setParentProject(projectMan->getActive());
                 wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getActive());
                 centralCodeEdit->setBreakpointsLines(projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
@@ -1044,10 +1061,10 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
 
             }
             //wDockManager->getCentralWidget()->setSaved();
-            if (true == centralCodeEdit->isChanged())
+            /*if (true == centralCodeEdit->isChanged())
             {
                 qDebug() << "MainForm: openfilepath - some error here";
-            }
+            }*/
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -3446,4 +3463,16 @@ void MainForm::userGuide()
     QDir dir(GuiCfg::getInstance().getUserGuidePath() + "/QuickUserGuideAssembler.pdf");
     QDesktopServices::openUrl(QUrl("file:///" + dir.absolutePath()));
     qDebug() << "user guide:" << dir.absolutePath();
+}
+
+
+void MainForm::openRecentFileSlot(QAction *action)
+{
+    this->openFilePath(action->text(), "untracked");
+}
+
+
+void MainForm::openRecentProjectSlot(QAction *action)
+{
+    this->openProject(action->text());
 }

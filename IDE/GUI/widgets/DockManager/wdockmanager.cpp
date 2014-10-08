@@ -141,19 +141,35 @@ void WDockManager::changeCodeEditor(int index)
  */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
-    //qDebug() << "WDockManager: changeTabStatusSlot()";
+    qDebug() << "WDockManager: changeTabStatusSlot()";
     //wTab->setTabText(wTab->indexOf(editor), name);
-    for (int i = 0; i < wTab->count(); i++)
+    if (true == changed)
     {
-        if (wTab->tabText(i) == name && wTab->tabToolTip(i) == path)
+        for (int i = 0; i < wTab->count(); i++)
         {
-            //qDebug() << "wdockmanager: change tab status slot";
-            wTab->tabChanged(i, changed);
-            wTab->update();
-            break;
+            if (wTab->tabText(i) == name && wTab->tabToolTip(i) == path)
+            {
+                qDebug() << "wdockmanager: change tab status slot";
+                wTab->tabChanged(i, changed);
+                wTab->update();
+                break;
+            }
         }
     }
-    //qDebug() << "WDockManager: return changeTabStatusSlot()";
+    else
+    {
+        for (int i = 0; i < wTab->count(); i++)
+        {
+            if (wTab->tabText(i) == "*"+name && wTab->tabToolTip(i) == path)
+            {
+                qDebug() << "wdockmanager: change tab status slot";
+                wTab->tabChanged(i, changed);
+                wTab->update();
+                break;
+            }
+        }
+    }
+    qDebug() << "WDockManager: return changeTabStatusSlot()";
 }
 
 
@@ -305,6 +321,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             centralBase = new BaseEditor(splitter, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
+            //activeCodeEdit->connectAct();
             connect(activeCodeEdit,
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
@@ -373,7 +390,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
-        newEditor->connectAct();
+        //newEditor->connectAct();
         activeCodeEdit->connectAct();
         /*connect(newEditor,
                 SIGNAL(changedTabStatus(QString, QString, bool)),
@@ -431,6 +448,7 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
             centralBase = new BaseEditor(splitter, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
+            //activeCodeEdit->connectAct();
             connect(activeCodeEdit,
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
@@ -559,6 +577,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
             //qDebug() << "WDockManager: base2 height" << centralBase->height();
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
+            //activeCodeEdit->connectAct();
             connect(activeCodeEdit,
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
@@ -632,7 +651,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         wTab->tabAdded();
         wTab->setCurrentIndex(wTab->count()-1);
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
-        newEditor->connectAct();
+        //newEditor->connectAct();
         activeCodeEdit->connectAct();
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
