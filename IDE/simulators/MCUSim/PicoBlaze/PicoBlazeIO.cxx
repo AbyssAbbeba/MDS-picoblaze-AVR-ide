@@ -114,7 +114,7 @@ void PicoBlazeIO::write ( unsigned int port,
         m_inputBitArray [ port ] &= ~( 1 << bit );
     }
 
-    logEvent ( EVENT_PLIO_WRITE, port, m_inputBitArray [ port ] );
+    logEvent ( EVENT_PICOBLAZEIO_WRITE, port, m_inputBitArray [ port ] );
 }
 
 void PicoBlazeIO::write ( unsigned int port,
@@ -126,4 +126,6 @@ void PicoBlazeIO::write ( unsigned int port,
     }
 
     m_inputBitArray [ port ] = value;
+
+    logEvent ( EVENT_PICOBLAZEIO_WRITE, port, m_inputBitArray [ port ] );
 }
