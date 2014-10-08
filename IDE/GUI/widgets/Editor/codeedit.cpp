@@ -23,6 +23,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 {
     //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
+    this->prevCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -226,6 +227,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
 {
     //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
+    this->prevCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -652,12 +654,25 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     {
         this->textEdit->setPlainText(" ");
     }*/
+    //qDebug() << "is changed?" << editor->isChanged();
+    if (prevCodeEdit != NULL)
+    {
+        if (true == this->changed)
+        {
+            prevCodeEdit->setChanged();
+        }
+        else
+        {
+            prevCodeEdit->setSaved();
+        }
+    }
+    bool prevChanged = editor->isChanged();
+    this->setName(editor->getName());
+    this->setPath(editor->getPath());
     this->textEdit->deleteHighlighter();
     this->textEdit->setDocument(editor->getTextEdit()->document());
     //this->show();
     //this->update();
-    this->setName(editor->getName());
-    this->setPath(editor->getPath());
     this->breakpointsLines = editor->getBreakpointsLines();
     this->bookmarksLines = editor->getBookmarksLines();
     if (this->breakpointsLines == NULL)
@@ -706,7 +721,12 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     }*/
     emit CodeEditChanged(editor);
     this->changeHeight();
-    this->changed = editor->isChanged();
+    this->changed = prevChanged;
+    if (false == this->changed)
+    {
+        emit changedTabStatus(this->name, this->path, false);
+    }
+    prevCodeEdit = editor;
     /*if (true == editor->isChanged())
     {
         //qDebug() << "CodeEdit: loadcodeedit is changed";
