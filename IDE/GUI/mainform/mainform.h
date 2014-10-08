@@ -174,6 +174,8 @@ class MainForm : public QMainWindow
         void simSwitch();
         void simPortLogger();
         void userGuide();
+        void openRecentFileSlot(QAction *action);
+        void openRecentProjectSlot(QAction *action);
 
     signals:
         void unhighlightSim();
