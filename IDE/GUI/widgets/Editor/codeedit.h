@@ -124,6 +124,7 @@ class CodeEdit : public QWidget
         int prevBlockCount;
         QList<int> *bookmarksLines;
         QList<int> *breakpointsLines;
+        CodeEdit *prevCodeEdit;
 };
 
 
