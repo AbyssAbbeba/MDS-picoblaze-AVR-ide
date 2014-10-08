@@ -42,6 +42,15 @@ class PicoBlazeIO : public MCUSimPureLogicIO
         {
         };
 
+        /**
+         * @brief
+         */
+        enum Event
+        {
+            EVENT_PICOBLAZEIO_WRITE = EVENT_PLIO__MAX__, ///<
+            EVENT_PICOBLAZEIO__MAX__                     ///<
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
