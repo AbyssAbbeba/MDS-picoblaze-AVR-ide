@@ -1,5 +1,6 @@
 #include "simswitch.h"
 #include "ui_simswitch.h"
+#include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeIO.h"
 #include <QtGui>
 #include <QList>
 
@@ -62,16 +63,13 @@ SimSwitch::SimSwitch(QWidget *parent, MCUSimControl *controlUnit) :
 
     CreateItems();
 
-    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{2}"), this);
+    QRegExpValidator *hexValidator = new QRegExpValidator(QRegExp("[0-9A-Fa-f]{1,2}"), this);
     ui.lineEditAddress->setValidator(hexValidator);
 
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << address;
 
-    std::vector<int> mask = { //8
-                                MCUSimPureLogicIO::EVENT_PLIO_WRITE,
-                                MCUSimPureLogicIO::EVENT_PLIO_WRITE_END
-                            };
+    std::vector<int> mask = { PicoBlazeIO::EVENT_PICOBLAZEIO_WRITE };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask); //8
 
     connect(ui.lineEditAddress,
@@ -117,30 +115,39 @@ void SimSwitch::deviceChanged()  //8
 
 void SimSwitch::deviceReset()  //8
 {
-        m_plio->getInputArray()[address] = this->switchStatus; 
+    ui.Vystup->setText(QString::number(this->switchStatus));
+    m_plio->write(address,switchStatus); 
 }
 
 void SimSwitch::handleUpdateRequest(int mask) //8
 {
     if ( 4 & mask)
     {
-        m_plio->getInputArray()[address] = this->switchStatus; 
+        ui.Vystup->setText(QString::number(this->switchStatus));
+        m_plio->write(address,switchStatus);
     }
 }
 
-void SimSwitch::handleEvent(int subsysId, int eventId, int /*locationOrReason*/, int /*detail*/) //8
+void SimSwitch::handleEvent(int subsysId, int eventId, int locationOrReason, int detail) //8
 {
    
     if (MCUSimSubsys::ID_PLIO == subsysId)
     {
         switch ( eventId )
         {
-            case MCUSimPureLogicIO::EVENT_PLIO_READ:
+//             case MCUSimPureLogicIO::EVENT_PLIO_READ:
+//             {
+//                 m_plio->write(address)
+//                 break;
+//             }
+            case PicoBlazeIO::EVENT_PICOBLAZEIO_WRITE:
             {
-                //m_plio->getInputArray()[address] = this->switchStatus; 
-                //m_hexEditIn->getVal(address);
-                //this->value = m_plio->getOutputArray()[this->address];
-                break;
+                if ( locationOrReason == address)
+                {
+                    switchStatus = detail;
+                    ui.Vystup->setText(QString::number(this->switchStatus));
+                    update();
+                }
             }
             default:
             {
@@ -167,7 +174,8 @@ void SimSwitch::addrChanged()
     address = ui.lineEditAddress->text().toUInt(0,10);
     qDebug() << "changed address" << address;
 
-    m_plio->getInputArray()[address] = this->switchStatus; 
+    ui.Vystup->setText(QString::number(this->switchStatus));
+    m_plio->write(address,switchStatus);
 }
 
 void SimSwitch::paintEvent(QPaintEvent *e)
@@ -474,7 +482,6 @@ void SimSwitch::mousePressEvent(QMouseEvent* event)
 
     //QString hodnota = "0";
     ui.Vystup->setText(QString::number(this->switchStatus));
-    //m_plio->getInputArray()[address] = this->switchStatus;
     m_plio->write(address,switchStatus);
     update();
 }
@@ -497,6 +504,7 @@ void SimSwitch::rectClicked(int pos)
         default:    qDebug()<< " wrong box";                              break;
     }
     //switchState[]
+    
 
     switchStatus ^= (1 << groupBoxNumber);
     qDebug()<< switchStatus;

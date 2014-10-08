@@ -10,6 +10,7 @@
 #include "../../../../simulators/SimControl/MCUSimObserver.h"//8
 #include "../../../../simulators/MCUSim/MCUSim.h"            //8
 #include "../../../../simulators/MCUSim/MCUSimPureLogicIO.h" //8
+#include "../../../../simulators/MCUSim/PicoBlaze/PicoBlazeIO.h"
 
 
 class MCUSimControl; //8
@@ -30,7 +31,7 @@ class SimSwitch : public QWidget, public MCUSimObserver //8
         bool switchState[8];
         bool rectHighlight[8];
         bool flag_change;
-        unsigned char switchStatus;
+        unsigned char switchStatus, switchStatus_i;
         int boxNum[8];
 
     private:
