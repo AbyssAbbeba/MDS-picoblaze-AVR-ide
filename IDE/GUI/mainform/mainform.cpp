@@ -1127,11 +1127,11 @@ void MainForm::saveFile()
     //qDebug() << "MainForm: saveFile()";
     if (wDockManager->getCentralWidget()->isChanged() == true || wDockManager->getCentralPath() == "untracked")
     {
-        if (wDockManager->getCentralWidget()->isChanged() == true )
+        /*if (wDockManager->getCentralWidget()->isChanged() == true )
         {
             qDebug() << "MainForm: central is changed";
         }
-        qDebug() << "Mainform: saving file";
+        qDebug() << "Mainform: saving file";*/
         QString path;
         if (wDockManager->getCentralPath() == NULL || wDockManager->getCentralPath() == "untracked")
         {
@@ -1279,7 +1279,7 @@ void MainForm::newProject()
  */
 void MainForm::openProject()
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
     QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
@@ -1300,7 +1300,7 @@ void MainForm::openProject()
             file.close();
         }
     }
-    qDebug() << "MainForm: return openProject()";
+    //qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -1310,7 +1310,7 @@ void MainForm::openProject()
  */
 bool MainForm::openProject(QString path)
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     if (false == projectMan->isOpened(path))
     {
         QFile file(path);
@@ -1324,18 +1324,18 @@ bool MainForm::openProject(QString path)
             //nacteni obsahu do widgetu
             projectMan->openProject(&file);
             file.close();
-            qDebug() << "MainForm: return openProject()";
+            //qDebug() << "MainForm: return openProject()";
             return true;
         }
     }
-    qDebug() << "MainForm: return openProject() false";
+    //qDebug() << "MainForm: return openProject() false";
     return false;
 }
 
 
 void MainForm::projectOpened()
 {
-    qDebug() << "MainForm: projectOpened";
+    //qDebug() << "MainForm: projectOpened";
     wDockManager->deleteCentralWelcome();
     if (false == projectConfigAct->isEnabled())
     {
@@ -1346,16 +1346,16 @@ void MainForm::projectOpened()
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
         if (tabList.size() > 1)
         {
-            qDebug() << "MainForm: tab connected";
+            //qDebug() << "MainForm: tab connected";
             projectTabConnected = true;
             connect(tabList.at(tabList.size()-1),
                     SIGNAL(currentChanged(int)),
                     this,
                     SLOT(activeProjectChanged(int))
                    );
-            qDebug() << "projectTabs = ";
+            //qDebug() << "projectTabs = ";
             projectTabs = tabList.at(tabList.size()-1);
-            qDebug() << "projectTabs = done";
+            //qDebug() << "projectTabs = done";
         }
     }
     this->createDockWidgets();
@@ -1386,7 +1386,7 @@ void MainForm::projectOpened()
     {
         GuiCfg::getInstance().projectOpened(projectMan->getActive()->prjPath);
     }
-    qDebug() << "MainForm: projectOpened done";
+    //qDebug() << "MainForm: projectOpened done";
 }
 
 
@@ -1610,10 +1610,10 @@ void MainForm::compileProject()
         {
             //fileDir.setPath(QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i)));
             filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i));
-            qDebug() << prjDir.relativeFilePath(projectMan->getActive()->filePaths.at(i));
-            qDebug() << projectMan->getActive()->filePaths.at(i);
-            qDebug() << "fixed?" << prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i);
-            qDebug() << "MainForm: file dir" << filePath;
+            //qDebug() << prjDir.relativeFilePath(projectMan->getActive()->filePaths.at(i));
+            //qDebug() << projectMan->getActive()->filePaths.at(i);
+            //qDebug() << "fixed?" << prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i);
+            //qDebug() << "MainForm: file dir" << filePath;
             if (filePath == wDockManager->getCentralPath())
             {
                 found = true;
@@ -1643,7 +1643,7 @@ void MainForm::compileProject()
 
 
             mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName().section('.',0,-2);
-            qDebug() << mainFile;
+            //qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -2311,8 +2311,8 @@ void MainForm::simulationFlowHandle()
                                 );*/
                     //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
                     //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
-                    qDebug() << filePath;
-                    qDebug() << wDockManager->getCentralPath();
+                    //qDebug() << filePath;
+                    //qDebug() << wDockManager->getCentralPath();
                     if (filePath == wDockManager->getCentralPath())
                     {
                         found = true;
@@ -2342,8 +2342,8 @@ void MainForm::simulationFlowHandle()
                 //file = "";
             }
         }
-        qDebug() << "MainForm: sim file" << file;
-        qDebug() << "MainForm: sim dump file" << dumpFiles;
+        //qDebug() << "MainForm: sim file" << file;
+        //qDebug() << "MainForm: sim dump file" << dumpFiles;
         int start = projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
@@ -2375,12 +2375,12 @@ void MainForm::simulationFlowHandle()
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
-                qDebug() << "MainForm: simulationBreakpointsEnabled true";
+                //qDebug() << "MainForm: simulationBreakpointsEnabled true";
                 projectMan->getSimulated()->setBreakpoints(true);
             }
             else
             {
-                qDebug() << "MainForm: simulationBreakpointsEnabled false";
+                //qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 projectMan->getSimulated()->setBreakpoints(false);
             }
         }
@@ -2534,7 +2534,7 @@ ProjectMan* MainForm::getProjectMan()
  */
 void MainForm::exampleOpen()
 {
-    qDebug() << "MainForm: exampleOpen";
+    //qDebug() << "MainForm: exampleOpen";
     if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project"))
     {
         return;
@@ -2547,7 +2547,7 @@ void MainForm::exampleOpen()
         //qDebug() << "MainForm: loading";
         this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
-    qDebug() << "MainForm: return exampleOpen";
+    //qDebug() << "MainForm: return exampleOpen";
 }
 
 
@@ -2748,6 +2748,7 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
         {
             qText.append(QString::fromStdString(text.at(i)));
         }
+
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
         getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
@@ -2866,14 +2867,12 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    qDebug() << "MainForm: activeProjectChanged";
+    //qDebug() << "MainForm: activeProjectChanged";
     //if (false == this->simulationStatus)
     if (index >= 0)
     {
         projectMan->setActiveByIndex(index);
-    qDebug() << "MainForm: activeProjectChanged2";
         wDockManager->changeSimWidget(index);
-    qDebug() << "MainForm: activeProjectChanged3";
         if (wDockManager->getBreakpointList() != NULL)
         {
             wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
@@ -2883,7 +2882,7 @@ void MainForm::activeProjectChanged(int index)
             wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
         }
     }
-    qDebug() << "MainForm: return activeProjectChanged";
+    //qDebug() << "MainForm: return activeProjectChanged";
 }
 
 
@@ -2939,11 +2938,11 @@ void MainForm::closeProject()
             path.setPath(project->prjPath.section('/',0,-2));
             wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))));
         }
-        qDebug() << "MainForm: delete active sim widget";
+        //qDebug() << "MainForm: delete active sim widget";
         wDockManager->deleteActiveSimWidget();
-        qDebug() << "MainForm: remove dock widget";
+        //qDebug() << "MainForm: remove dock widget";
         this->removeDockWidget(project->prjDockWidget);
-        qDebug() << "MainForm: close project";
+        //qDebug() << "MainForm: close project";
         projectMan->closeProject(project);
         if (wDockManager->getBreakpointList() != NULL)
         {
@@ -2971,7 +2970,7 @@ void MainForm::closeProject()
 
 void MainForm::manageBreakpointEmit(QString file, int line)
 {
-    qDebug() << "MainForm: breakpoint:" << file << ":" << line + 1;
+    //qDebug() << "MainForm: breakpoint:" << file << ":" << line + 1;
     int result = projectMan->getActive()->handleBreakpoint(file, line + 1);
     //add
     if (0 == result)
@@ -3011,7 +3010,7 @@ void MainForm::breakpointsRemoveLines(QString file, int line, int linesRemoved)
 
 void MainForm::manageBookmarkEmit(QString file, int line)
 {
-    qDebug() << "MainForm: bookmark:" << file << ":" << line + 1;
+    //qDebug() << "MainForm: bookmark:" << file << ":" << line + 1;
     int result = projectMan->getActive()->handleBookmark(file, line + 1);
     //add
     if (0 == result)
@@ -3036,7 +3035,7 @@ void MainForm::manageBookmarkEmit(QString file, int line)
 
 void MainForm::bookmarksAddLines(QString file, int line, int linesAdded)
 {
-    qDebug() << "MainForm: bookmarksAddLines";
+    //qDebug() << "MainForm: bookmarksAddLines";
     projectMan->getActive()->moveBookmarksAdd(file, line + 1, linesAdded);
     wDockManager->getBookmarkList()->bookmarksAddLines(file, line + 1, linesAdded);
     wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesAdded, true);
@@ -3070,7 +3069,7 @@ void MainForm::bookmarksRemoveLines(QString file, int line, int linesRemoved)
 
 void MainForm::sessionRestorationSlot()
 {
-    qDebug() << "MainForm: session restoration";
+    //qDebug() << "MainForm: session restoration";
     QApplication::processEvents();
     //qDebug() << "MainForm: height" << this->height();
     //open projects and files
@@ -3406,9 +3405,9 @@ void MainForm::about()
 
 void MainForm::refreshProjectTree()
 {
-        qDebug() << "count: " << projectTabs->count();
+        //qDebug() << "count: " << projectTabs->count();
         projectTabs->setCurrentIndex(projectTabs->count()-1);
-        qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
+        //qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
 
 
@@ -3486,7 +3485,7 @@ void MainForm::userGuide()
 {
     QDir dir(GuiCfg::getInstance().getUserGuidePath() + "/QuickUserGuideAssembler.pdf");
     QDesktopServices::openUrl(QUrl("file:///" + dir.absolutePath()));
-    qDebug() << "user guide:" << dir.absolutePath();
+    //qDebug() << "user guide:" << dir.absolutePath();
 }
 
 
