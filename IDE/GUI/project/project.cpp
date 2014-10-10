@@ -44,7 +44,7 @@ ProjectMan::ProjectMan(QWidget *parent)
  */
 void ProjectMan::openProject(QFile *file)
 {
-    qDebug() << "ProjectMan: openProject()";
+    //qDebug() << "ProjectMan: openProject()";
     Project *newProject = new Project(file, this);
     emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
@@ -68,7 +68,7 @@ void ProjectMan::openProject(QFile *file)
     projectCount++;
     emit connectProject(newProject);
     emit projectOpened();
-    qDebug() << "ProjectMan: return openProject()";
+    //qDebug() << "ProjectMan: return openProject()";
 }
 
 
@@ -194,9 +194,9 @@ void ProjectMan::setActive(Project *activePrj)
 
 void ProjectMan::setActiveByIndex(int index)
 {
-    qDebug() << "ProjectMan: setActiveByIndex" << index;
-    qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
-    qDebug() << "ProjectMan: openProject count" << openProjects.count();
+    //qDebug() << "ProjectMan: setActiveByIndex" << index;
+    //qDebug() << "ProjectMan: setActiveByIndex name" << activeProject->prjName;
+    //qDebug() << "ProjectMan: openProject count" << openProjects.count();
     if (index >= openProjects.count())
     {
         activeProject = openProjects.at(openProjects.count()-1);
@@ -205,7 +205,7 @@ void ProjectMan::setActiveByIndex(int index)
     {
         activeProject = openProjects.at(index);
     }
-    qDebug() << "ProjectMan: return setActiveByIndex";
+    //qDebug() << "ProjectMan: return setActiveByIndex";
 }
 
 
@@ -495,7 +495,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 xmlBreakpointNode = xmlBreakpointNode.nextSibling();
                             }
                             absolutePath = project.absoluteFilePath(xmlBreakpointFileElement.attribute("path"));
-                            qDebug() << "Project: breakpoint path" << absolutePath;
+                            //qDebug() << "Project: breakpoint path" << absolutePath;
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->breakPoints.append(pair);
                             xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
@@ -1222,7 +1222,7 @@ void Project::saveProject()
     {
 
         relativePath = project.relativeFilePath(this->breakPoints.at(i).first);
-        qDebug() << "Project: breakpoint relative path" << relativePath;
+        //qDebug() << "Project: breakpoint relative path" << relativePath;
         QDomElement xmlBreakpointFile = domDoc.createElement("BreakpointFile");
         xmlBreakpointFile.setAttribute("path", relativePath);
         foreach (unsigned int value, this->breakPoints.at(i).second)
@@ -1711,7 +1711,7 @@ void Project::setMainFile(QString path, QString name)
  */ 
 void Project::setUseMainFile(bool enabled)
 {
-    qDebug() << "Project: setUseMainFile()";
+    //qDebug() << "Project: setUseMainFile()";
     //QDir project(QFileInfo(prjPath).dir());
 
     //QDir project(QFileInfo(prjPath).dir());
@@ -1764,7 +1764,7 @@ void Project::setUseMainFile(bool enabled)
             xmlStream << domDoc.toString();
         }
     }*/
-    qDebug() << "Project: return setUseMainFile()";
+    //qDebug() << "Project: return setUseMainFile()";
 }
 
 
@@ -2399,9 +2399,9 @@ void Project::setupSim()
     //"kcpsm3"
     if (this->m_simControlUnit == NULL)
     {
-        qDebug() << "Project: setupSim() family:" << family;
+        //qDebug() << "Project: setupSim() family:" << family;
         this->m_simControlUnit = new MCUSimControl(family.toUtf8().constData());
-        qDebug() << "Project: setupSim() done";
+        //qDebug() << "Project: setupSim() done";
         connect(m_simControlUnit, SIGNAL(updateRequest(int)), this, SLOT(handleUpdateRequest(int)));
         connect(m_simControlUnit, SIGNAL(breakpointReached()), this, SLOT(breakpointReachedSlot()));
     }
@@ -2416,12 +2416,12 @@ void Project::setupSim()
  */
 void Project::setupSim(QString family)
 {
-    qDebug() << "Project: setupSim()";
+    //qDebug() << "Project: setupSim()";
     //McuSimCfgMgr::getInstance()->openConfigFile(":/resources//xml//mcuspecfile.xml");
     //"kcpsm3"
     this->m_simControlUnit->changeDevice(family.toUtf8().constData());
     //qDebug() << architecture;
-    qDebug() << "Project: return setupSim()";
+    //qDebug() << "Project: return setupSim()";
 }
 
 
@@ -2432,11 +2432,11 @@ void Project::setupSim(QString family)
  */
 int Project::start(QString file, QString dumpFiles)
 {
-    qDebug() << "Project: start()";
+    //qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
     if (langType == LANG_ASM)
     {
-        qDebug() << "Project: start() after ";
+        //qDebug() << "Project: start() after ";
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         QString hexPath;
         QString asmPath;
@@ -2462,8 +2462,8 @@ int Project::start(QString file, QString dumpFiles)
         QFileInfo infoAsm(asmPath);
         QFileInfo infoHex(hexPath + ".ihex");
         QFileInfo infoDbg(hexPath + ".dbg");
-        qDebug() << "Project: sim file" << asmPath;
-        qDebug() << "Project: sim dump file" << hexPath;
+        //qDebug() << "Project: sim file" << asmPath;
+        //qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
             qDebug() << "Project: files do not exist";
@@ -2593,7 +2593,7 @@ void Project::setBreakpoints(bool set)
 {
     if (true == set)
     {
-        qDebug() << "Project: setBreakpoints(true)";
+        //qDebug() << "Project: setBreakpoints(true)";
         if (this->breakPoints.count() > 0)
         {
             if (false == m_simControlUnit->breakPointsEnabled())
@@ -2610,7 +2610,7 @@ void Project::setBreakpoints(bool set)
                     breakpointsSet.insert(value);
                 }
                 std::pair<std::string, std::set<unsigned int>> breakpointsPair;
-                qDebug() << "Path" << this->breakPoints.at(i).first;
+                //qDebug() << "Path" << this->breakPoints.at(i).first;
                 breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
                 breakpointsPair.second = breakpointsSet;
                 breakpointsVector.push_back(breakpointsPair);
@@ -2628,7 +2628,7 @@ void Project::setBreakpoints(bool set)
     }
     else
     {
-        qDebug() << "Project: setBreakpoints(false)";
+        //qDebug() << "Project: setBreakpoints(false)";
         m_simControlUnit->enableBreakPoints(false);
     }
 }
@@ -3134,7 +3134,7 @@ int Project::handleBreakpoint(QString file, int line)
     //{
     if (true == this->filePaths.contains(fileRelative))
     {
-        qDebug() << "Project: contains" << fileRelative;
+        //qDebug() << "Project: contains" << fileRelative;
         //if (this->filePaths.at(i) == fileRelative)
         //{
             //qDebug() << "Project:" << this->prjName << "contains file" << fileRelative;
@@ -3208,7 +3208,7 @@ int Project::handleBreakpoint(QString file, int line)
         }*/
         //}
     }
-    qDebug() << "Project: does not contain" << fileRelative;
+    //qDebug() << "Project: does not contain" << fileRelative;
     return -1;
 }
 
@@ -3343,7 +3343,7 @@ int Project::handleBookmark(QString file, int line)
     //{
     if (true == this->filePaths.contains(fileRelative))
     {
-        qDebug() << "Project: contains" << fileRelative;
+        //qDebug() << "Project: contains" << fileRelative;
         //if (this->filePaths.at(i) == fileRelative)
         //{
             //qDebug() << "Project:" << this->prjName << "contains file" << fileRelative;
@@ -3405,7 +3405,7 @@ int Project::handleBookmark(QString file, int line)
         }*/
         //}
     }
-    qDebug() << "Project: does not contain" << fileRelative;
+    //qDebug() << "Project: does not contain" << fileRelative;
     return -1;
 }
 
@@ -3526,7 +3526,7 @@ void Project::moveBookmarksRemove(QString file, int line, unsigned int linesRemo
 
 void Project::breakpointReachedSlot()
 {
-    qDebug() << "Project: breakpoint reached";
+    //qDebug() << "Project: breakpoint reached";
     emit breakpointReached();
 }
 

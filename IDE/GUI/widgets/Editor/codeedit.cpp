@@ -46,6 +46,10 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             {
                 textEdit = new WTextEdit(this, PICOBLAZEASM);
             }
+            else if (wName == "disasm")
+            {
+                textEdit = new WTextEdit(this, PICOBLAZEASM);
+            }
         }
         else
         {
@@ -415,7 +419,7 @@ void CodeEdit::connectAct()
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    qDebug() << "CodeEdit: setChanged()";
+    //qDebug() << "CodeEdit: setChanged()";
     if (changed == false)
     {
         changed = true;
@@ -431,13 +435,13 @@ void CodeEdit::setChanged()
             emit changedTabStatus(this->name, this->path, true);
         }
     }
-    qDebug() << "CodeEdit: return setChanged()";
+    //qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    qDebug() << "CodeEdit: setSaved()";
+    //qDebug() << "CodeEdit: setSaved()";
     if (changed == true)
     {
         changed = false;
@@ -457,7 +461,7 @@ void CodeEdit::setSaved()
     {
         qDebug() << "codeedit: not changed";
     }*/
-    qDebug() << "CodeEdit: return setSaved()";
+    //qDebug() << "CodeEdit: return setSaved()";
 }
 
 
@@ -899,7 +903,7 @@ QList<int>* CodeEdit::getBookmarksLines()
 
 void CodeEdit::breakpointsAddLines(int line, int linesAdded)
 {
-    qDebug() << "CodeEdit: breakpointsAddLines";
+    //qDebug() << "CodeEdit: breakpointsAddLines";
     emit breakpointsAddLines(this->path, line, linesAdded);
 }
 
@@ -980,7 +984,7 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
 
 void CodeEdit::bookmarksAddLines(int line, int linesAdded)
 {
-    qDebug() << "CodeEdit: bookmarksAddLines";
+    //qDebug() << "CodeEdit: bookmarksAddLines";
     emit bookmarksAddLines(this->path, line, linesAdded);
 }
 
