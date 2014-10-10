@@ -141,7 +141,7 @@ void WDockManager::changeCodeEditor(int index)
  */
 void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 {
-    qDebug() << "WDockManager: changeTabStatusSlot()";
+    //qDebug() << "WDockManager: changeTabStatusSlot()";
     //wTab->setTabText(wTab->indexOf(editor), name);
     if (true == changed)
     {
@@ -149,7 +149,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
         {
             if (wTab->tabText(i) == name && wTab->tabToolTip(i) == path)
             {
-                qDebug() << "wdockmanager: change tab status slot";
+                //qDebug() << "wdockmanager: change tab status slot";
                 wTab->tabChanged(i, changed);
                 wTab->update();
                 break;
@@ -162,14 +162,14 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
         {
             if (wTab->tabText(i) == "*"+name && wTab->tabToolTip(i) == path)
             {
-                qDebug() << "wdockmanager: change tab status slot";
+                //qDebug() << "wdockmanager: change tab status slot";
                 wTab->tabChanged(i, changed);
                 wTab->update();
                 break;
             }
         }
     }
-    qDebug() << "WDockManager: return changeTabStatusSlot()";
+    //qDebug() << "WDockManager: return changeTabStatusSlot()";
 }
 
 
@@ -179,7 +179,7 @@ void WDockManager::closeTab(int index)
     emit saveCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
     openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
-    wTab->tabRemoved(index);
+    //wTab->tabRemoved(index);
     if (wTab->currentIndex() < 0)
     {
         delete centralBase;
@@ -725,7 +725,7 @@ void WDockManager::addSimDockWidgetP1()
 
 void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
 {
-    qDebug() << "WDockManager: addSimDockWidgetP2()";
+    //qDebug() << "WDockManager: addSimDockWidgetP2()";
     if (false == this->dockWidgets)
     {
         WDock *newWDock = new WDock(this, wSimulationInfo, (QWidget *)(this->parent()), path, simControl);
@@ -753,7 +753,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         this->openSimWidgets.append(simWidget);
         simWidget->hide();
     }
-    qDebug() << "WDockManager: return addSimDockWidgetP2()";
+    //qDebug() << "WDockManager: return addSimDockWidgetP2()";
 }
 
 
@@ -1102,11 +1102,11 @@ void WDockManager::clockChangedSlot(double clock, int clockMult)
 
 void WDockManager::changeSimWidget(int index)
 {
-    qDebug() << "WDockManager: changeSimWidget index:" << index;
-    qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
+    //qDebug() << "WDockManager: changeSimWidget index:" << index;
+    //qDebug() << "WDockManager: openSimWidgets size:" <<openSimWidgets.size();
     if (this->getDockWidget(wSimulationInfo) == NULL)
     {
-        qDebug() << "fuck, null";
+        qDebug() << "Simulation Dock Widget is null, should never happen";
         return;
     }
     if (index >= openSimWidgets.size())
@@ -1117,13 +1117,13 @@ void WDockManager::changeSimWidget(int index)
     {
         this->getDockWidget(wSimulationInfo)->setWidget(this->openSimWidgets.at(index));
     }
-    qDebug() << "WDockManager: changeSimWidget done";
+    //qDebug() << "WDockManager: changeSimWidget done";
 }
 
 
 void WDockManager::deleteActiveSimWidget()
 {
-    qDebug() << "WDockManager: deleteActiveSimWidget";
+    //qDebug() << "WDockManager: deleteActiveSimWidget";
     PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(wSimulationInfo)->widget());
     int index = openSimWidgets.indexOf(tempGrid);
     if (openSimWidgets.count() > 1)
@@ -1156,7 +1156,7 @@ void WDockManager::deleteActiveSimWidget()
         //delete tempGrid;
         //tempGrid = NULL;
     }
-    qDebug() << "WDockManager: deleteActiveSimWidget done";
+    //qDebug() << "WDockManager: deleteActiveSimWidget done";
 }
 
 
@@ -1183,7 +1183,7 @@ void WDockManager::breakpointEmitSlot(QString file, int line)
 
 void WDockManager::breakpointsAddLinesSlot(QString file, int line, int linesAdded)
 {
-    qDebug() << "WDockManager: breakpointsAddLines";
+    //qDebug() << "WDockManager: breakpointsAddLines";
     emit breakpointsAddLines(file, line, linesAdded);
 }
 
@@ -1202,7 +1202,7 @@ void WDockManager::bookmarkEmitSlot(QString file, int line)
 
 void WDockManager::bookmarksAddLinesSlot(QString file, int line, int linesAdded)
 {
-    qDebug() << "WDockManager: bookmarksAddLines";
+    //qDebug() << "WDockManager: bookmarksAddLines";
     emit bookmarksAddLines(file, line, linesAdded);
 }
 
@@ -1221,7 +1221,7 @@ void WDockManager::bookmarksRemoveLinesSlot(QString file, int line, int linesRem
 
 void WDockManager::setCentralWelcome()
 {
-    qDebug() << "WDockManager: setCentralWelcome()";
+    //qDebug() << "WDockManager: setCentralWelcome()";
     if (this->splitter->count() == 0)
     {
         this->welcomeScr = new WelcomeScr(this->splitter);
@@ -1257,7 +1257,7 @@ void WDockManager::setCentralWelcome()
                 SLOT(welcomeScrRecent(QString))
                );
     }
-    qDebug() << "WDockManager: return setCentralWelcome()";
+    //qDebug() << "WDockManager: return setCentralWelcome()";
 }
 
 
@@ -1304,7 +1304,7 @@ void WDockManager::welcomeScrRecent(QString path)
 
 void WDockManager::deleteCentralWelcome()
 {
-    qDebug() << "WDockManager: deleteCentralWelcome();";
+    //qDebug() << "WDockManager: deleteCentralWelcome();";
     if (this->welcomeScr != NULL)
     {
         this->welcomeScr->disconnect();
@@ -1312,7 +1312,7 @@ void WDockManager::deleteCentralWelcome()
         //delete this->welcomeScr;
         this->welcomeScr = NULL;
     }
-    qDebug() << "WDockManager: return deleteCentralWelcome();";
+    //qDebug() << "WDockManager: return deleteCentralWelcome();";
 }
 
 
