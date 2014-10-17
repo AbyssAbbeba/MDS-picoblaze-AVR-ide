@@ -1017,7 +1017,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -1083,7 +1083,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
-    //qDebug() << "MainForm: return openFilePath()";
+    qDebug() << "MainForm: return openFilePath()";
 }
 
 
