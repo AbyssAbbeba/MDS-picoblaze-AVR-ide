@@ -55,10 +55,12 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
     m_data += FILE_VERSION;
     m_data += '\n';
 
-    // Processor Name & Description
+    // Processor Name, Description, and Fail jump
     m_data += def.m_name;
     m_data += '\n';
     m_data += def.m_description;
+    m_data += '\n';
+    m_data += def.m_failjmp;
     m_data += '\n';
 
     // Interrupt Vector

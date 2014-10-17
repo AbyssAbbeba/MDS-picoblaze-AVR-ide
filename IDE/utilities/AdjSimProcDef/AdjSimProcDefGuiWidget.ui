@@ -285,7 +285,11 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QSpinBox" name="spinBoxStackDSize"/>
+              <widget class="QSpinBox" name="spinBoxStackDSize">
+               <property name="value">
+                <number>30</number>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
@@ -486,7 +490,7 @@
                     <property name="currentIndex">
                      <number>0</number>
                     </property>
-                    <widget class="QWidget" name="tabWidgetInstOpr0Page1" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr0Page1">
                      <attribute name="title">
                       <string>In OP Code</string>
                      </attribute>
@@ -654,209 +658,209 @@
                           </item>
                           <item row="1" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit0">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="2" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit1">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit2">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="4" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit3">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="5" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit4">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="6" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit5">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="7" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit6">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="8" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit7">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="9" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit8">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="10" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit9">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="11" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit10">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="12" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit11">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="13" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit12">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="14" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit13">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="15" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit14">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="16" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr0Bit15">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
@@ -866,7 +870,7 @@
                       </item>
                      </layout>
                     </widget>
-                    <widget class="QWidget" name="tabWidgetInstOpr0Page2" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr0Page2">
                      <attribute name="title">
                       <string>Fixed value</string>
                      </attribute>
@@ -910,7 +914,7 @@
                     <property name="currentIndex">
                      <number>0</number>
                     </property>
-                    <widget class="QWidget" name="tabWidgetInstOpr1Page1" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr1Page1">
                      <attribute name="title">
                       <string>In OP Code</string>
                      </attribute>
@@ -1078,209 +1082,209 @@
                           </item>
                           <item row="1" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit0">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="2" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit1">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit2">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="4" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit3">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="5" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit4">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="6" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit5">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="7" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit6">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="8" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit7">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="9" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit8">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="10" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit9">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="11" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit10">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="12" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit11">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="13" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit12">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="14" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit13">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="15" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit14">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="16" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr1Bit15">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
@@ -1290,7 +1294,7 @@
                       </item>
                      </layout>
                     </widget>
-                    <widget class="QWidget" name="tabWidgetInstOpr1Page2" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr1Page2">
                      <attribute name="title">
                       <string>Fixed value</string>
                      </attribute>
@@ -1334,7 +1338,7 @@
                     <property name="currentIndex">
                      <number>0</number>
                     </property>
-                    <widget class="QWidget" name="tabWidgetInstOpr2Page1" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr2Page1">
                      <attribute name="title">
                       <string>In OP Code</string>
                      </attribute>
@@ -1502,209 +1506,209 @@
                           </item>
                           <item row="1" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit0">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="2" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit1">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="3" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit2">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="4" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit3">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="5" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit4">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="6" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit5">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="7" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit6">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="8" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit7">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="9" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit8">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="10" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit9">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="11" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit10">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="12" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit11">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="13" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit12">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="14" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit13">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="15" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit14">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
                           <item row="16" column="2">
                            <widget class="QSpinBox" name="spinBoxInstOpr2Bit15">
+                            <property name="minimum">
+                             <number>-1</number>
+                            </property>
                             <property name="maximum">
                              <number>23</number>
                             </property>
                             <property name="value">
-                             <number>-1</number>
-                            </property>
-                            <property name="minimum">
-                             <number>-1</number>
+                             <number>0</number>
                             </property>
                            </widget>
                           </item>
@@ -1714,7 +1718,7 @@
                       </item>
                      </layout>
                     </widget>
-                    <widget class="QWidget" name="tabWidgetInstOpr2Page2" native="true">
+                    <widget class="QWidget" name="tabWidgetInstOpr2Page2">
                      <attribute name="title">
                       <string>Fixed value</string>
                      </attribute>
@@ -3481,17 +3485,49 @@
         </widget>
        </item>
        <item row="2" column="0" colspan="2">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+        <widget class="QGroupBox" name="groupBox_18">
+         <property name="title">
+          <string>GroupBox</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+         <layout class="QGridLayout" name="gridLayout_25">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Fail jump instruction</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEditFailJump"/>
+          </item>
+          <item row="0" column="2">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>

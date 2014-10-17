@@ -295,6 +295,7 @@ class AdjSimProcDef
     public:
         std::string m_name;
         std::string m_description;
+        std::string m_failjmp;
         bool m_hasInterrupts;
         unsigned int m_interruptVector;
         Ports m_ports;
