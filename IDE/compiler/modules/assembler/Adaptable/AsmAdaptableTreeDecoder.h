@@ -16,19 +16,6 @@
 #ifndef ASMADAPTABLETREEDECODER_H
 #define ASMADAPTABLETREEDECODER_H
 
-// Forward declarations (Compiler common).
-class CompilerOptions;
-class CompilerStatement;
-class CompilerSemanticInterface;
-
-// Forward declarations (Adaptable Assembler common).
-class AsmMacros;
-class AsmMemoryPtr;
-class AsmDgbFileGen;
-class AsmSymbolTable;
-class AsmCodeListing;
-class AsmMachineCodeGen;
-
 // Adaptable assembler semantic analyzer header files.
 #include "CompilerSourceLocation.h"
 #include "AsmAdaptableSemanticAnalyzer.h"
@@ -84,27 +71,10 @@ class AsmAdaptableTreeDecoder
     ////    Constructors and Destructors    ////
     public:
         /**
-         * @brief
-         * @param[in,out] compilerCore
-         * @param[in,out] opts
-         * @param[in,out] dgbFile
-         * @param[in,out] machineCode
-         * @param[in,out] macros
-         * @param[in,out] memoryPtr
-         * @param[in,out] symbolTable
-         * @param[in,out] codeListing
-         * @param[in,out] device
+         * @param[in,out] semanticAnalyzer
          * @return
          */
-        AsmAdaptableTreeDecoder ( CompilerSemanticInterface * compilerCore,
-                                  CompilerOptions           * opts,
-                                  AsmDgbFileGen             * dgbFile,
-                                  AsmMachineCodeGen         * machineCode,
-                                  AsmMacros                 * macros,
-                                  AsmMemoryPtr              * memoryPtr,
-                                  AsmSymbolTable            * symbolTable,
-                                  AsmCodeListing            * codeListing,
-                                  AdjSimProcDef             * device );
+        AsmAdaptableTreeDecoder ( AsmAdaptableSemanticAnalyzer * semanticAnalyzer);
 
         /**
          * @brief
@@ -146,17 +116,10 @@ class AsmAdaptableTreeDecoder
     private:
         /**
          * @brief
-         * @param[in] node
+         * @param[in] mnemonic
          * @return
          */
         inline bool isInstruction ( const std::string & mnemonic );
-
-        /**
-         * @brief
-         * @param[in,out] node
-         * @return
-         */
-        inline CourseOfAction instruction2db ( CompilerStatement * node );
 
         /**
          * @brief
@@ -196,7 +159,7 @@ class AsmAdaptableTreeDecoder
          * @brief
          * @param[in,out] node
          */
-        inline void dir_DB ( CompilerStatement * node );
+        inline void dir_DB_phase2 ( CompilerStatement * node );
 
         /**
          * @brief
@@ -318,6 +281,22 @@ class AsmAdaptableTreeDecoder
 
         /**
          * @brief
+         * @param[in] mnemonic
+         * @param[in,out] node
+         * @return
+         */
+        inline CourseOfAction instruction2db ( const std::string & mnemonic,
+                                               CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in] node
+         * @return
+         */
+        inline CourseOfAction dir_DB ( const CompilerStatement * node );
+
+        /**
+         * @brief
          * @param[in,out] node
          * @return
          */
@@ -351,34 +330,19 @@ class AsmAdaptableTreeDecoder
          */
         inline CourseOfAction dir_DEVICE ( CompilerStatement * node );
 
+        /**
+         * @brief
+         * @param[in] mnemonic
+         * @param[in] node
+         * @return
+         */
+        inline CompilerStatement * resolveInstruction ( const std::string & mnemonic,
+                                                        const CompilerStatement * node );
+
     ////    Private Attributes    ////
     private:
         ///
-        CompilerSemanticInterface * const m_compilerCore;
-
-        ///
-        CompilerOptions * const m_opts;
-
-        ///
-        AsmDgbFileGen * const m_dgbFile;
-
-        ///
-        AsmMachineCodeGen * const m_machineCode;
-
-        ///
-        AsmMacros * const m_macros;
-
-        ///
-        AsmMemoryPtr * const m_memoryPtr;
-
-        ///
-        AsmSymbolTable * const m_symbolTable;
-
-        ///
-        AsmCodeListing * const m_codeListing;
-
-        ///
-        AdjSimProcDef * m_device;
+        AsmAdaptableSemanticAnalyzer * m_semanticAnalyzer;
 
         ///
         CompilerStatement * m_forceNext;

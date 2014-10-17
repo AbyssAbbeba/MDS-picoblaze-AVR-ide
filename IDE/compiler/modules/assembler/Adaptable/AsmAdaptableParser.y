@@ -363,7 +363,8 @@ expr:
                                     }
 ;
 mac_arg:       // One macro/instruction agrument
-      "#" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_HASH, LOC(@$)); }
+      expr                          { $$ = $expr; }
+    | "#" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_HASH, LOC(@$)); }
     | "@" expr                      { $$ = new CompilerExpr($expr, CompilerExpr::OPER_AT,   LOC(@$)); }
 ;
 mac_args:       // List of macro/instruction agruments

@@ -953,7 +953,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive `EXITM' cannot apper outside macro definition")
+                                          QObject::tr ( "directive `EXITM' cannot appear outside macro definition")
                                                       .toStdString(),
                                           true );
         return CA_NO_ACTION;
@@ -962,7 +962,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive `EXITM' cannot apper inside special macro (like "
+                                          QObject::tr ( "directive `EXITM' cannot appear inside special macro (like "
                                                         "run-time IF/ELSE, etc.), it would break its pairing rules" )
                                                       . toStdString(),
                                           true );
@@ -989,7 +989,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive `LOCAL' cannot apper outside macro "
+                                          QObject::tr ( "directive `LOCAL' cannot appear outside macro "
                                                         "definition" )
                                                       . toStdString(),
                                           true );

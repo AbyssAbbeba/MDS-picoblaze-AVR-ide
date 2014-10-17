@@ -99,9 +99,10 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
 
     const AdjSimProcDef & procDef = parser.data();
 
-    // Processor Name & Description
+    // Processor Name, Description, and Fail jump
     lineEditProcessorName->setText(QString::fromStdString(procDef.m_name));
     textEditDescription->setPlainText(QString::fromStdString(procDef.m_description));
+    lineEditFailJump->setText(QString::fromStdString(procDef.m_failjmp));
 
     // Program memory
     int wordSize = 0;
@@ -219,9 +220,10 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
 {
     AdjSimProcDef procDef;
 
-    // Processor Name & Description
+    // Processor Name, Description, and Fail jump
     procDef.m_name = lineEditProcessorName->text().toUpper().toStdString();
     procDef.m_description = textEditDescription->toPlainText().toStdString();
+    procDef.m_failjmp = lineEditFailJump->text().toUpper().toStdString();
 
     // Program memory
     procDef.m_memory.m_program.m_size = (unsigned int) spinBoxProgramSize->value();
@@ -671,7 +673,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
     }
     else
     {
-        lineEditInstMnemonic -> setText ( QString::fromStdString(inst -> m_mnemonic) );
+        lineEditInstMnemonic -> setText ( QString::fromStdString(inst->m_mnemonic) );
     }
 
     comboBoxInstOperation -> setCurrentIndex ( (int) (inst -> m_operation) );
@@ -817,7 +819,7 @@ void AdjSimProcDefGui::instModified()
     auto iter = m_instructions.find(item);
     AdjSimProcDef::Instruction * inst = iter->second;
 
-    inst->m_mnemonic = lineEditInstMnemonic->text().toStdString();
+    inst->m_mnemonic = lineEditInstMnemonic->text().toUpper().toStdString();
     inst->m_operation = (AdjSimProcDef::Instruction::Operation) (comboBoxInstOperation->currentIndex());
 
     inst->m_opCode[0]  = (AdjSimProcDef::Instruction::OpCodeBit) (comboBoxInstOpCode0 ->currentIndex());
@@ -991,9 +993,10 @@ void AdjSimProcDefGui::instModified()
 
 inline void AdjSimProcDefGui::setupConnections()
 {
-    // Processor Name & Description
+    // Processor Name, Description, and Fail jump
     connect ( lineEditProcessorName,        SIGNAL(textEdited(const QString &)), SLOT(setModified()) );
     connect ( textEditDescription,          SIGNAL(textChanged()),               SLOT(setModified()) );
+    connect ( lineEditFailJump,             SIGNAL(textEdited(const QString &)), SLOT(setModified()) );
     // Program Memory
     connect ( spinBoxProgramSize,           SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     connect ( spinBoxProgramWordSize,       SIGNAL(valueChanged(int)),           SLOT(setModified()) );
