@@ -4,7 +4,7 @@
     Following picture shows main window of the simulator. You can find here internal registers, scratchpad ram, input and output ports, stack,
     program counter, elapsed time and cycles, actual clock and internal flags: CARRY and ZERO. All those features can be edited during
     processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place it to, for example, another display.
-    
+
    \begin{figure}[h!]
         \centering
         \includegraphics[width=\textwidth]{img/bottom_panel.png}
@@ -27,12 +27,12 @@
     \subsection{Simulator warnings}
         MDS offers some warnings to ensure your debuging procces will be less painfull. It handles some common mistakes like PC overflow, stack overflow and
         some other problems. See pictures for more info or go to Interface -> Config -> Simulator warnings.
-        
+
         \begin{table}[h!]
             \begin{tabular}{cc}
-                \includegraphics[width=.45\textwidth]{img/NewImg/interface4.png}
+                \includegraphics[width=.45\textwidth]{img/interface4.png}
                     &
-                \includegraphics[width=.45\textwidth]{img/NewImg/interface5.png}
+                \includegraphics[width=.45\textwidth]{img/interface5.png}
                     \\
                 Simulator - Warnings -> Memory & Simulator - Warnings -> Stack
             \end{tabular}
@@ -40,9 +40,9 @@
 
         \begin{table}[h!]
             \begin{tabular}{c}
-                \includegraphics[width=.5\textwidth]{img/NewImg/interface4.png}
+                \includegraphics[width=.5\textwidth]{img/interface4.png}
                 \\
-                Simulator - Warnings -> CPU 
+                Simulator - Warnings -> CPU
             \end{tabular}
         \end{table}
 
@@ -51,13 +51,13 @@
         You can use breakpoints to test and debug programs by causing the program to stop at scheduled intervals so that the status of
         the program can be examined in stages. Note: Breakpoints will slow down the simulator. If you want maximum speed, click on top panel
         button dissable all breakpoints.
-        
+
         Another usefull thing are bookmarks. When you are editiong one location in your source code multiple times, it is usefull to add a bookmark to it,
         so you can quickly get back when you need.
-        
+
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=.4\textwidth]{img/NewImg/breakpoints1.png}
+            \includegraphics[width=.4\textwidth]{img/breakpoints1.png}
             \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
         \end{figure}
 
@@ -66,35 +66,35 @@
         two previous steps. following figure displays actual cursor on line 8, one step before is on line 5 and another step is on 4.
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{img/NewImg/simulationcursor1.png}
+            \includegraphics[width=\textwidth]{img/simulationcursor1.png}
             \caption{Simulation cursor}
         \end{figure}
-        
+
         MDS has special behavior when simulator encounters macro expansion. For better orientation, cursor will appear on two locations.
         On macro expansion and in macro declaration, showing your actual step. If you have macro expanded in your macro declaration, you will have
         three cursors and so on. For better understanding, following figure shows simulation cursor behavior with macros.
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{img/NewImg/simulationcursor2.png}
+            \includegraphics[width=\textwidth]{img/simulationcursor2.png}
             \caption{Simulation cursor}
-        \end{figure}        
-    
+        \end{figure}
+
 
     \subsection{List of macros, breakpoints and bookmarks}
         You can find important info about your simulation on the right panel. You can find here
     \begin{table}[h!]
         \begin{tabular}{ccc}
-            \includegraphics[width=.3\textwidth]{img/NewImg/listmacros.png}
+            \includegraphics[width=.3\textwidth]{img/listmacros.png}
                 &
-            \includegraphics[width=.3\textwidth]{img/NewImg/listbreakpoints.png}
+            \includegraphics[width=.3\textwidth]{img/listbreakpoints.png}
                 &
-            \includegraphics[width=.3\textwidth]{img/NewImg/listbookmarks.png}
+            \includegraphics[width=.3\textwidth]{img/listbookmarks.png}
             \\
             Macros & Breakpoints & Bookmarks
         \end{tabular}
     \end{table}
 
-    
+
     \subsection{Modes of simulation}
         There are four main modes of simulator operation.
 
