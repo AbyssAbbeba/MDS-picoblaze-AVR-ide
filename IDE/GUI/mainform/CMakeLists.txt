@@ -70,7 +70,8 @@ add_library ( ${PROJECT_NAME}
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         WDockManager    MCUDataFiles    InterfaceCfg    ErrorDialog     ProjectTree
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
-                        Simulator       compiler        Project         Editor          GuiCfg )
+                        Simulator       compiler        Project         Editor          GuiCfg
+                        WelcomeWidget )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
