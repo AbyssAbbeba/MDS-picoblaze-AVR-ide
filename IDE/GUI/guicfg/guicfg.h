@@ -183,7 +183,7 @@ class GuiCfg : public QObject, public GuiCfg_Items
         QList<QString> getSessionFileParentProjects();
 
         //xml parser
-        void loadConfig();
+        bool loadConfig();
         
         void saveConfig();
 
