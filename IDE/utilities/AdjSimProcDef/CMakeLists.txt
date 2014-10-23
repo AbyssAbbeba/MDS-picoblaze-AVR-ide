@@ -39,8 +39,9 @@ add_library ( ${PROJECT_NAME} ${UI_FILES}
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 # Build processor definition utility.
-add_executable ( mds-proc-def-util main.cxx )
-target_link_libraries ( mds-proc-def-util ${PROJECT_NAME} ${QT_LIBRARIES} )
+set ( PROC_DEF_UTIL_EXEC "mds-proc-def-util" )
+add_executable ( ${PROC_DEF_UTIL_EXEC} main.cxx )
+target_link_libraries ( ${PROC_DEF_UTIL_EXEC} ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
@@ -48,6 +49,12 @@ target_link_libraries ( mds-proc-def-util ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
+
+if ( MDS_FEATURE_COMPILER_CLI )
+    install ( TARGETS ${PROC_DEF_UTIL_EXEC}
               RUNTIME DESTINATION ${INSTALL_DIR_BIN}
               LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
 endif()
