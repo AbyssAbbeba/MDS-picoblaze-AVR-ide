@@ -41,7 +41,7 @@
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
  */
-static const char * VERSION = "1.0";
+static const char * VERSION = MDS_VERSION;
 
 /// @brief Program exit codes.
 enum ExitCode

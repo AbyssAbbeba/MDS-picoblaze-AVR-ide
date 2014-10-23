@@ -107,6 +107,7 @@ endif()
 
 set ( MDS_H "// Basic definitions for MDS, generated automatically by CMake.\n" )
 
+set ( MDS_H "${MDS_H}#define MDS_VERSION \"${PRODUCT_VERSION}\"\n" )
 set ( MDS_H "${MDS_H}#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
 set ( MDS_H "${MDS_H}#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
 set ( MDS_H "${MDS_H}#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
