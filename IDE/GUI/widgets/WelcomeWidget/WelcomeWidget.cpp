@@ -16,7 +16,13 @@
 WelcomeWidget::WelcomeWidget ( QWidget * parent ) : QWidget(parent)
 {
     setupUi(this);
-    textBrowser->setHtml(":/html/welcome.html");
+
+    QFile file(":/resources/html/welcome.html");
+    if ( true == file.open ( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+        textBrowser->setHtml ( QString::fromUtf8 ( file.readAll() ) );
+        file.close();
+    }
 }
 
 inline void WelcomeWidget::setupConnections()
