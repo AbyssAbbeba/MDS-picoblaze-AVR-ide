@@ -2476,7 +2476,7 @@ int Project::start(QString file, QString dumpFiles)
         }
         qDebug() << "Orig ASM:" << asmPath;
         qDebug() << "HEX:" << hexPath;
-        std::string stdPath = hexPath.toUtf8().constData();
+        std::string stdPath = hexPath.toLocal8Bit().constData();
 
         PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
         set->m_config.m_interruptVector = (unsigned int)this->intVector;
@@ -2505,7 +2505,7 @@ int Project::start(QString file, QString dumpFiles)
     {
         QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         //qDebug() << "C:" << hexPath;
-        std::string stdPath = hexPath.toUtf8().constData();
+        std::string stdPath = hexPath.toLocal8Bit().constData();
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_GCC,
                                                         m_simControlUnit->DBGFILEID_HEX)
