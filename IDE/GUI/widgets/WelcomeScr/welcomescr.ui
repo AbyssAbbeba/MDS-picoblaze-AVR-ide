@@ -118,7 +118,7 @@
     </font>
    </property>
    <property name="text">
-    <string>MDS manual</string>
+    <string>User manual</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btnExample">
@@ -136,7 +136,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Open demonstration project</string>
+    <string>Open tutorial project</string>
    </property>
   </widget>
   <widget class="QListWidget" name="lstProjects">
