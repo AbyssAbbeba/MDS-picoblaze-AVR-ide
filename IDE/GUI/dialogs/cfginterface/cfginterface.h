@@ -37,7 +37,7 @@ class CfgInterface : public QWidget
 
     private slots:
         void changeWidget(QTreeWidgetItem *curr, QTreeWidgetItem *prev);
-        
+
     private:
         QTreeWidget *menuList;
         QTreeWidgetItem *lastItem;
