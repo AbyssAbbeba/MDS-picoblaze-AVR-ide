@@ -19,7 +19,7 @@
 // Disassembler header files.
 #include "../DAsmCore.h"
 
-#include "AdjSimProcDef.h"
+#include "../../utilities/AdjSimProcDef/AdjSimProcDef.h"
 
 // Standard header files.
 #include <set>

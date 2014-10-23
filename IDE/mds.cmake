@@ -1,14 +1,32 @@
-# ==============================================================================
+# ======================================================================================================================
 #
 # Configure MDS fetures and generate "mds.h".
 #
 # (C) copyright 2014 Moravia Microsystems, s.r.o.
 #
-# ==============================================================================
+# ======================================================================================================================
+
+# ----------------------------------------------------------------------------------------------------------------------
+# MDS fetures - configuration variables.
+# ----------------------------------------------------------------------------------------------------------------------
+
+set ( MDS_FEATURES
+
+      MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        MDS_FEATURE_TRANSLATOR
+      MDS_FEATURE_CONVERTER_TOOL      MDS_FEATURE_LOOP_GENERATOR      MDS_FEATURE_8_SEGMENT_EDITOR
+      MDS_FEATURE_SIM_LED_PANEL       MDS_FEATURE_SIM_7_SEGMENT       MDS_FEATURE_ADAPTABLE_SIMULATOR
+      MDS_FEATURE_COMPILER_CLI        MDS_FEATURE_TRIAL               MDS_FEATURE_LICENCE_CERTIFICATE
+      MDS_FEATURE_PICOBLAZE           MDS_FEATURE_AVR8                MDS_FEATURE_PIC8
+      MDS_FEATURE_MCS51               MDS_FEATURE_C_COMPILER          MDS_FEATURE_C_TESTBENCH
+      MDS_FEATURE_SIM_SWITCH          MDS_FEATURE_SIM_PORT_LOGGER     )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Set internal configuration variables.
 # ----------------------------------------------------------------------------------------------------------------------
+
+foreach ( var ${MDS_FEATURES} )
+    set ( ${var} FALSE )
+endforeach()
 
 # Trial period [days] (valid only for trial version).
 set ( MDS_TRIAL_PERIOD 30 )
@@ -22,18 +40,6 @@ endif()
 if ( MDS_GRADE STREQUAL "Basic" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
     set ( MDS_FEATURE_8_SEGMENT_EDITOR          TRUE )
-    set ( MDS_FEATURE_COMPILER_CLI              FALSE )
-    set ( MDS_FEATURE_FILECONVERTER             FALSE )
-    set ( MDS_FEATURE_DISASSEMBLER              FALSE )
-    set ( MDS_FEATURE_TRANSLATOR                FALSE )
-    set ( MDS_FEATURE_LOOP_GENERATOR            FALSE )
-    set ( MDS_FEATURE_SIM_LED_PANEL             FALSE )
-    set ( MDS_FEATURE_SIM_7_SEGMENT             FALSE )
-    set ( MDS_FEATURE_SIM_SWITCH                FALSE )
-    set ( MDS_FEATURE_SIM_PORT_LOGGER           FALSE )
-    set ( MDS_FEATURE_ADAPTABLE_SIMULATOR       FALSE )
-    set ( MDS_FEATURE_C_COMPILER                FALSE )
-    set ( MDS_FEATURE_C_TESTBENCH               FALSE )
 
 elseif ( MDS_GRADE STREQUAL "Premium" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
@@ -46,10 +52,6 @@ elseif ( MDS_GRADE STREQUAL "Premium" )
     set ( MDS_FEATURE_SIM_LED_PANEL             TRUE )
     set ( MDS_FEATURE_SIM_7_SEGMENT             TRUE )
     set ( MDS_FEATURE_SIM_SWITCH                TRUE )
-    set ( MDS_FEATURE_SIM_PORT_LOGGER           FALSE )
-    set ( MDS_FEATURE_ADAPTABLE_SIMULATOR       FALSE )
-    set ( MDS_FEATURE_C_COMPILER                FALSE )
-    set ( MDS_FEATURE_C_TESTBENCH               FALSE )
 
 elseif ( MDS_GRADE STREQUAL "Professional" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
@@ -62,10 +64,8 @@ elseif ( MDS_GRADE STREQUAL "Professional" )
     set ( MDS_FEATURE_SIM_LED_PANEL             TRUE )
     set ( MDS_FEATURE_SIM_7_SEGMENT             TRUE )
     set ( MDS_FEATURE_SIM_SWITCH                TRUE )
-    set ( MDS_FEATURE_SIM_PORT_LOGGER           FALSE )
     set ( MDS_FEATURE_ADAPTABLE_SIMULATOR       TRUE )
     set ( MDS_FEATURE_C_COMPILER                TRUE )
-    set ( MDS_FEATURE_C_TESTBENCH               FALSE )
 
 elseif ( MDS_GRADE STREQUAL "Ultimate" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
@@ -78,7 +78,7 @@ elseif ( MDS_GRADE STREQUAL "Ultimate" )
     set ( MDS_FEATURE_SIM_LED_PANEL             TRUE )
     set ( MDS_FEATURE_SIM_7_SEGMENT             TRUE )
     set ( MDS_FEATURE_SIM_SWITCH                TRUE )
-    set ( MDS_FEATURE_SIM_PORT_LOGGER           FALSE )
+    set ( MDS_FEATURE_SIM_PORT_LOGGER           TRUE )
     set ( MDS_FEATURE_ADAPTABLE_SIMULATOR       TRUE )
     set ( MDS_FEATURE_C_COMPILER                TRUE )
     set ( MDS_FEATURE_C_TESTBENCH               TRUE )
@@ -86,23 +86,11 @@ endif()
 
 if ( MDS_TARGET STREQUAL "PicoBlaze" )
     set ( MDS_FEATURE_PICOBLAZE  TRUE )
-    set ( MDS_FEATURE_AVR8       FALSE )
-    set ( MDS_FEATURE_PIC8       FALSE )
-    set ( MDS_FEATURE_MCS51      FALSE )
 elseif ( MDS_TARGET STREQUAL "AVR8" )
-    set ( MDS_FEATURE_PICOBLAZE  FALSE )
     set ( MDS_FEATURE_AVR8       TRUE )
-    set ( MDS_FEATURE_PIC8       FALSE )
-    set ( MDS_FEATURE_MCS51      FALSE )
 elseif ( MDS_TARGET STREQUAL "PIC8" )
-    set ( MDS_FEATURE_PICOBLAZE  FALSE )
-    set ( MDS_FEATURE_AVR8       FALSE )
     set ( MDS_FEATURE_PIC8       TRUE )
-    set ( MDS_FEATURE_MCS51      FALSE )
 elseif ( MDS_TARGET STREQUAL "MCS51" )
-    set ( MDS_FEATURE_PICOBLAZE  FALSE )
-    set ( MDS_FEATURE_AVR8       FALSE )
-    set ( MDS_FEATURE_PIC8       FALSE )
     set ( MDS_FEATURE_MCS51      TRUE )
 elseif ( MDS_TARGET STREQUAL "All" )
     set ( MDS_FEATURE_PICOBLAZE  TRUE )
@@ -121,19 +109,13 @@ set ( MDS_H "// Basic definitions for MDS, generated automatically by CMake.\n" 
 
 set ( MDS_H "${MDS_H}#define MDS_VARIANT_${MDS_VARIANT_UPPER_CASE}\n" )
 set ( MDS_H "${MDS_H}#define MDS_GRADE_${MDS_GRADE_UPPER_CASE}\n" )
-set ( MDS_H "${MDS_H}#define MDS_FEATURE_${MDS_FEATURE_UPPER_CASE}\n" )
+set ( MDS_H "${MDS_H}#define MDS_TARGET_${MDS_TARGET_UPPER_CASE}\n" )
 
 if ( MDS_VARIANT STREQUAL "Trial" )
     set ( MDS_H "${MDS_H}#define MDS_TRIAL_PERIOD ${MDS_TRIAL_PERIOD}\n" )
 endif()
 
-foreach ( var   MDS_FEATURE_FILECONVERTER       MDS_FEATURE_DISASSEMBLER        MDS_FEATURE_TRANSLATOR
-                MDS_FEATURE_CONVERTER_TOOL      MDS_FEATURE_LOOP_GENERATOR      MDS_FEATURE_8_SEGMENT_EDITOR
-                MDS_FEATURE_SIM_LED_PANEL       MDS_FEATURE_SIM_7_SEGMENT       MDS_FEATURE_ADAPTABLE_SIMULATOR
-                MDS_FEATURE_COMPILER_CLI        MDS_FEATURE_TRIAL               MDS_FEATURE_LICENCE_CERTIFICATE
-                MDS_FEATURE_PICOBLAZE           MDS_FEATURE_AVR8                MDS_FEATURE_PIC8
-                MDS_FEATURE_MCS51               MDS_FEATURE_C_COMPILER          MDS_FEATURE_C_TESTBENCH
-                MDS_FEATURE_SIM_SWITCH          MDS_FEATURE_SIM_PORT_LOGGER     )
+foreach ( var ${MDS_FEATURES} )
     if ( ${var} )
         set ( MDS_H "${MDS_H}#define ${var}\n" )
     endif()

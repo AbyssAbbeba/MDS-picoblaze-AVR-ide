@@ -498,6 +498,12 @@ int main ( int argc, char ** argv )
         printIntro();
     }
 
+    if ( true == opts.m_sourceFiles.empty() )
+    {
+        std::cout << QObject::tr("Error: no source files specified.").toStdString() << std::endl;
+        return EXIT_ERROR_CLI;
+    }
+
     if ( true == compiler.compile ( targetLanguage, targetArchitecture, &opts ) )
     {
         std::cout << QObject::tr("Compilation successful.").toStdString() << std::endl;

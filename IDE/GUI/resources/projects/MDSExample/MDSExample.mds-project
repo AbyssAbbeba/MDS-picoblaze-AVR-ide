@@ -10,18 +10,18 @@
   <HWBuild value="0"/>
  </General>
  <Files>
-  <File path="Example1.asm" name="Example1.asm"/>
-  <File path="Example2.asm" name="Example2.asm"/>
-  <File path="Example_7segment.asm" name="Example_7segment.asm"/>
-  <File path="Example_LCD.asm" name="Example_LCD.asm"/>
-  <File path="Example_UART.asm" name="Example_UART.asm"/>
-  <File path="Example_errors.asm" name="Example_errors.asm"/>
+  <File path="Example1.psm" name="Example1.psm"/>
+  <File path="Example2.psm" name="Example2.psm"/>
+  <File path="Example3.psm" name="Example3.psm"/>
+  <File path="Example4.psm" name="Example4.psm"/>
+  <File path="Example5.psm" name="Example5.psm"/>
+  <File path="Example6.psm" name="Example6.psm"/>
  </Files>
  <Mainfile enabled="false" path="" name=""/>
  <Breakpoints/>
  <Bookmarks/>
  <Simulator>
-  <Clock clockMult="0" clock="0"/>
+  <Clock clockMult="1000000" clock="20"/>
  </Simulator>
  <Compiler>
   <Options>

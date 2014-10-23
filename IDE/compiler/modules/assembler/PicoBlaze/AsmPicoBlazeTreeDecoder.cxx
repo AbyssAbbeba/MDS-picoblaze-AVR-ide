@@ -110,6 +110,8 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_REG:
             case ASMPICOBLAZE_DIR_CODE:
             case ASMPICOBLAZE_DIR_PORT:
+            case ASMPICOBLAZE_DIR_PORTIN:
+            case ASMPICOBLAZE_DIR_PORTOUT:
             case ASMPICOBLAZE_DIR_DATA:
                 dir_EQU_etc(node);
                 break;
@@ -1013,8 +1015,13 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
 
 inline void AsmPicoBlazeTreeDecoder::dir_SET ( CompilerStatement * node )
 {
+    const CompilerValue * nameVal;
+    for ( nameVal = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == nameVal->m_type;
+          nameVal = &( nameVal->m_data.m_expr->lVal() ) );
+
+    std::string name = nameVal->m_data.m_symbol;
     int value;
-    std::string name = node->args()->lVal().m_data.m_symbol;
 
     if ( true == m_symbolTable->isDefined(name) )
     {
@@ -1166,6 +1173,12 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
         case ASMPICOBLAZE_DIR_PORT:
             symbolType = AsmSymbolTable::STYPE_PORT;
             break;
+        case ASMPICOBLAZE_DIR_PORTIN:
+            symbolType = AsmSymbolTable::STYPE_PORTIN;
+            break;
+        case ASMPICOBLAZE_DIR_PORTOUT:
+            symbolType = AsmSymbolTable::STYPE_PORTOUT;
+            break;
         case ASMPICOBLAZE_DIR_REG:
             symbolType = AsmSymbolTable::STYPE_REGISTER;
             break;
@@ -1177,7 +1190,14 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
             break;
     }
 
-    int value = m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
+    const CompilerValue * nameVal;
+    for ( nameVal = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == nameVal->m_type;
+          nameVal = &( nameVal->m_data.m_expr->lVal() ) );
+
+    std::string name = nameVal->m_data.m_symbol;
+
+    int value = m_symbolTable -> addSymbol ( name,
                                              node->args()->m_next,
                                              &( node->location() ),
                                              symbolType,

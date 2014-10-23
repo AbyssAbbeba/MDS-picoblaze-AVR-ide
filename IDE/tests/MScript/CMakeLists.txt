@@ -56,4 +56,4 @@ target_link_libraries ( ${PROJECT_NAME}
 # TESTS
 # ------------------------------------------------------------------------------
 
-# add_test_subject ( "Moravia_Script" ${PROJECT_NAME} )
+add_test_subject ( "Moravia_Script" ${PROJECT_NAME} )

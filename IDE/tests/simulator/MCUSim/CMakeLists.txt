@@ -36,6 +36,11 @@ if ( MDS_FEATURE_PICOBLAZE )
     add_subdirectory ( PicoBlaze )
 endif()
 
+# Tests for Adaptable Simulator.
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    add_subdirectory ( Adaptable )
+endif()
+
 # Tests for PIC8 Simulator.
 if ( MDS_FEATURE_PIC8 )
     add_subdirectory ( PIC8 )
