@@ -1170,6 +1170,10 @@ void WTextEdit::deleteHighlighter()
 }
 
 
+void WTextEdit::setShortcuts()
+{
+}
+
 
 void WTextEdit::shortcutBreakpoint()
 {
@@ -1196,7 +1200,7 @@ void WTextEdit::shortcutCut()
 }
 
 
-void shortcutSelectAll()
+void WTextEdit::shortcutSelectAll()
 {
 }
 
@@ -1278,5 +1282,20 @@ void WTextEdit::shortcutDeleteLine()
 
 
 void WTextEdit::shortcutSwitchChars()
+{
+}
+
+
+void shortcutSelectWordUnder()
+{
+}
+
+
+void shortcutSelectWordLeft()
+{
+}
+
+
+void shortcutSelectWordRight()
 {
 }
