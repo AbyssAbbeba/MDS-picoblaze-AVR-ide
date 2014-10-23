@@ -18,9 +18,7 @@
   <File path="Example6.psm" name="Example6.psm"/>
  </Files>
  <Mainfile enabled="false" path="" name=""/>
- <Breakpoints>
-  <BreakpointFile path="Example5.psm"/>
- </Breakpoints>
+ <Breakpoints/>
  <Bookmarks/>
  <Simulator>
   <Clock clockMult="1000000" clock="20"/>
