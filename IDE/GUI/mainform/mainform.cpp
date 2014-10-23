@@ -120,9 +120,6 @@ MainForm::MainForm()
     this->simulationBreakpointsEnabled = true;
     this->projectTabs = NULL;
 
-    WelcomeWidget *widget = new WelcomeWidget();
-    widget->show();
-
     projectMan = new ProjectMan(this);
     connect(projectMan,
             SIGNAL(addDockWidget(Qt::DockWidgetArea, QDockWidget*)),
@@ -271,6 +268,7 @@ MainForm::MainForm()
     createMenu();
     //createShortcuts();
     createToolbar();
+    this->welcomeDialog();
     //CreateDockWidgets();
     //CreateWelcome();
     //qDebug() << "MainForm: return MainForm()";
@@ -475,7 +473,8 @@ void MainForm::createMenu()
     #endif
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQTAct);
-    helpMenu->addAction(helpActionAct);
+    helpMenu->addAction(welcomeAct);
+    helpMenu->addAction(helpAct);
     helpMenu->addSeparator();
     helpMenu->addAction(example1Act);
     //qDebug() << "MainForm: return createMenu()";
@@ -712,8 +711,10 @@ void MainForm::createActions()
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    helpActionAct = new QAction(tr("Help"), this);
-    connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
+    welcomeAct = new QAction(tr("Welcome Dialog"), this);
+    connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
+    helpAct = new QAction(tr("Help"), this);
+    connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("See Example Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
@@ -1345,6 +1346,10 @@ void MainForm::projectOpened()
     if (false == projectConfigAct->isEnabled())
     {
         projectConfigAct->setEnabled(true);
+    }
+    if (false == closeProjectAct->isEnabled())
+    {
+        closeProjectAct->setEnabled(true);
     }
     if (false == projectTabConnected)
     {
@@ -3504,4 +3509,11 @@ void MainForm::openRecentFileSlot(QAction *action)
 void MainForm::openRecentProjectSlot(QAction *action)
 {
     this->openProject(action->text());
+}
+
+
+void MainForm::welcomeDialog()
+{
+    WelcomeWidget *widget = new WelcomeWidget();
+    widget->show();
 }
