@@ -45,6 +45,18 @@ class WelcomeWidget : public QWidget,
          * @brief
          */
         inline void setupConnections();
+
+    ////    Qt signals    ////
+    signals:
+        /**
+         * @brief Open the Example/Tutorial Project.
+         */
+        void tutorial();
+
+        /**
+         * @brief Open the User Manual.
+         */
+        void manual();
 };
 
 #endif // WELCOMEWIDGET_H

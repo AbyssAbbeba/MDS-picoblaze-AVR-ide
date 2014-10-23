@@ -707,7 +707,7 @@ void MainForm::createActions()
         licenseAct = new QAction(tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
-   
+
     aboutAct = new QAction(tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
@@ -3449,7 +3449,7 @@ void MainForm::simLeds()
         }
     #endif
 }
-    
+
 
 void MainForm::sim7Seg()
 {
