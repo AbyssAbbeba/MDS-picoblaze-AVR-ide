@@ -43,6 +43,7 @@ class WTextEdit : public QPlainTextEdit
         int getPosition();
         void scrollToLine(int line);
         void selectLine(int line);
+        void setShortcuts();
 
         //only use in CodeEdit::loadCodeEdit(...)
         //SourceType getSourceType();
@@ -71,6 +72,9 @@ class WTextEdit : public QPlainTextEdit
         void shortcutFirstToUpper();
         void shortcutDeleteLine();
         void shortcutSwitchChars();
+        void shortcutSelectWordUnder();
+        void shortcutSelectWordLeft();
+        void shortcutSelectWordRight();
 
         
 

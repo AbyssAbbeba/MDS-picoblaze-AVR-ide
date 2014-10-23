@@ -85,6 +85,8 @@
 
 #include "../guicfg/guicfg.h"
 
+#include "../widgets/WelcomeWidget/WelcomeWidget.h"
+
 
 
 
@@ -117,6 +119,9 @@ MainForm::MainForm()
     this->simulationBreakpointsReload = true;
     this->simulationBreakpointsEnabled = true;
     this->projectTabs = NULL;
+
+    WelcomeWidget *widget = new WelcomeWidget();
+    widget->show();
 
     projectMan = new ProjectMan(this);
     connect(projectMan,
@@ -1463,11 +1468,11 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
         }
 
         if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1476,11 +1481,11 @@ void MainForm::compileProject()
                                     + "/"
                                     + this->projectMan->getActive()->family
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
         }
 
 
@@ -1519,73 +1524,73 @@ void MainForm::compileProject()
             //options->m_symbolTable = (mainFile + ".stbl").toStdString();
             options->m_symbolTable = ( mainFile
                                      + ".stbl"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(1))
         {
             options->m_macroTable = ( mainFile
                                     + ".mtbl"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(2))
         {
             options->m_mdsDebugFile = ( mainFile
                                       + ".dbg"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(3))
         {
             options->m_codeTree = ( mainFile
                                   + ".ctr"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(4))
         {
             options->m_lstFile = ( mainFile
                                   + ".lst"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(5))
         {
             options->m_hexFile = ( mainFile
                                  + ".ihex"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(6))
         {
             options->m_binFile = ( mainFile
                                  + ".bin"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(7))
         {
             options->m_srecFile = ( mainFile
                                   + ".srec"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(8))
         {
             options->m_memFile = ( mainFile
                                  + ".mem"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(9))
         {
             options->m_rawHexDumpFile = ( mainFile
                                         + ".rawhex"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(10))
         {
             options->m_verilogFile = ( mainFile
                                      + ".v"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(11))
         {
             options->m_vhdlFile = ( mainFile
                                   + ".vhd"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         //return;
     }
@@ -1624,7 +1629,7 @@ void MainForm::compileProject()
         if (found == true)
         {
             qDebug() << "MainForm: compiled actual project, actual file";
-            options->m_sourceFiles.push_back(filePath.toStdString());
+            options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
 
 
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
@@ -1656,11 +1661,11 @@ void MainForm::compileProject()
                                             + "/"
                                             + this->projectMan->getActive()->family
                                             + ".v"
-                                            ).toStdString();
+                                            ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
             }
 
             if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1669,60 +1674,60 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".vhd"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
             if (projectMan->getActive()->compileOpt.at(0))
             {
-                options->m_symbolTable = (mainFile + ".stbl").toStdString();
+                options->m_symbolTable = (mainFile + ".stbl").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(1))
             {
-                options->m_macroTable = (mainFile + ".mtbl").toStdString();
+                options->m_macroTable = (mainFile + ".mtbl").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(2))
             {
-                options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+                options->m_mdsDebugFile = (mainFile + ".dbg").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(3))
             {
-                options->m_codeTree = (mainFile + ".ctr").toStdString();
+                options->m_codeTree = (mainFile + ".ctr").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(4))
             {
-                options->m_lstFile = (mainFile + ".lst").toStdString();
+                options->m_lstFile = (mainFile + ".lst").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(5))
             {
-                options->m_hexFile = (mainFile + ".ihex").toStdString();
+                options->m_hexFile = (mainFile + ".ihex").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(6))
             {
-                options->m_binFile = (mainFile + ".bin").toStdString();
+                options->m_binFile = (mainFile + ".bin").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(7))
             {
-                options->m_srecFile = (mainFile + ".srec").toStdString();
+                options->m_srecFile = (mainFile + ".srec").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(8))
             {
-                options->m_memFile = ( mainFile + ".mem").toStdString();
+                options->m_memFile = ( mainFile + ".mem").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(9))
             {
-                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(10))
             {
-                options->m_verilogFile = ( mainFile  + ".v").toStdString();
+                options->m_verilogFile = ( mainFile  + ".v").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(11))
             {
-                options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+                options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
             }
         }
         else
@@ -1772,7 +1777,7 @@ void MainForm::compileProject()
                 this->projectMan->setActive(this->projectMan->getUntracked());
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
-            options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+            options->m_sourceFiles.push_back(wDockManager->getCentralPath().toLocal8Bit().constData());
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -1784,11 +1789,11 @@ void MainForm::compileProject()
                                              + "/"
                                              + this->projectMan->getActive()->family
                                              + ".v"
-                                             ).toStdString();
+                                             ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
             }
 
             if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1797,11 +1802,11 @@ void MainForm::compileProject()
                                           + "/"
                                           + this->projectMan->getActive()->family
                                           + ".vhd"
-                                          ).toStdString();
+                                          ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
 
@@ -1841,73 +1846,73 @@ void MainForm::compileProject()
                 //options->m_symbolTable = (mainFile + ".stbl").toStdString();
                 options->m_symbolTable = ( mainFile
                                          + ".stbl"
-                                         ).toStdString();
+                                         ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(1))
             {
                 options->m_macroTable = ( mainFile
                                         + ".mtbl"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(2))
             {
                 options->m_mdsDebugFile = ( mainFile
                                         + ".dbg"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(3))
             {
                 options->m_codeTree = ( mainFile
                                       + ".ctr"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(4))
             {
                 options->m_lstFile = ( mainFile
                                      + ".lst"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(5))
             {
                 options->m_hexFile = ( mainFile
                                      + ".ihex"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(6))
             {
                 options->m_binFile = ( mainFile
                                      + ".bin"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(7))
             {
                 options->m_srecFile = ( mainFile
                                       + ".srec"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(8))
             {
                 options->m_memFile = ( mainFile
                                     + ".mem"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(9))
             {
                 options->m_rawHexDumpFile = ( mainFile
                                             + ".rawhex"
-                                            ).toStdString();
+                                            ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(10))
             {
                 options->m_verilogFile = ( mainFile
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(11))
             {
                 options->m_vhdlFile = ( mainFile
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
             }
         }
         //return;
@@ -1941,7 +1946,7 @@ void MainForm::compileProject()
         options->m_sourceFiles.push_back(  (projectMan->getActive()->prjPath.section('/',0, -2)
                                           + "/"
                                           +  this->projectMan->getActive()->mainFilePath
-                                           ).toStdString()
+                                           ).toLocal8Bit().constData()
                                         );
         QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
@@ -1966,11 +1971,11 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
         }
 
         if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1979,61 +1984,61 @@ void MainForm::compileProject()
                                     + "/"
                                     + this->projectMan->getActive()->family
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
         }
 
 
         if (projectMan->getActive()->compileOpt.at(0))
         {
-            options->m_symbolTable = (mainFile + ".stbl").toStdString();
+            options->m_symbolTable = (mainFile + ".stbl").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(1))
         {
-            options->m_macroTable = (mainFile + ".mtbl").toStdString();
+            options->m_macroTable = (mainFile + ".mtbl").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(2))
         {
-            options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+            options->m_mdsDebugFile = (mainFile + ".dbg").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(3))
         {
-            options->m_codeTree = (mainFile + ".ctr").toStdString();
+            options->m_codeTree = (mainFile + ".ctr").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(4))
         {
-            options->m_lstFile = (mainFile + ".lst").toStdString();
+            options->m_lstFile = (mainFile + ".lst").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(5))
         {
-            options->m_hexFile = (mainFile + ".ihex").toStdString();
+            options->m_hexFile = (mainFile + ".ihex").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(6))
         {
-            options->m_binFile = (mainFile + ".bin").toStdString();
+            options->m_binFile = (mainFile + ".bin").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(7))
         {
-            options->m_srecFile = (mainFile + ".srec").toStdString();
+            options->m_srecFile = (mainFile + ".srec").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(8))
         {
-            options->m_memFile = ( mainFile + ".mem").toStdString();
+            options->m_memFile = ( mainFile + ".mem").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(9))
         {
-            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(10))
         {
-            options->m_verilogFile = ( mainFile  + ".v").toStdString();
+            options->m_verilogFile = ( mainFile  + ".v").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(11))
         {
-            options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+            options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
         }
     }
 
