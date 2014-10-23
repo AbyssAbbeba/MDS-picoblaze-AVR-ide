@@ -16,6 +16,7 @@
 WelcomeWidget::WelcomeWidget ( QWidget * parent ) : QWidget(parent)
 {
     setupUi(this);
+    textBrowser->setHtml(":/html/welcome.html");
 }
 
 inline void WelcomeWidget::setupConnections()
