@@ -176,6 +176,7 @@ class MainForm : public QMainWindow
         void userGuide();
         void openRecentFileSlot(QAction *action);
         void openRecentProjectSlot(QAction *action);
+        void welcomeDialog();
 
     signals:
         void unhighlightSim();
@@ -266,7 +267,8 @@ class MainForm : public QMainWindow
         QAction *licenseAct;
         QAction *aboutAct;
         QAction *aboutQTAct;
-        QAction *helpActionAct;
+        QAction *welcomeAct;
+        QAction *helpAct;
         QAction *example1Act;
 
         QPixmap *pm_projNewAdd;
