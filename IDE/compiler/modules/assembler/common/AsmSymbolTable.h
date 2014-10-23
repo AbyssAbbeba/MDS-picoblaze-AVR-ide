@@ -58,8 +58,10 @@ class AsmSymbolTable
             STYPE_REGISTER    = 0x02, ///<
             STYPE_LABEL       = 0x04, ///<
             STYPE_PORT        = 0x08, ///<
-            STYPE_DATA        = 0x10, ///<
-            STYPE_EXPRESSION  = 0x20  ///<
+            STYPE_PORTIN      = 0x10, ///<
+            STYPE_PORTOUT     = 0x20, ///<
+            STYPE_DATA        = 0x40, ///<
+            STYPE_EXPRESSION  = 0x80  ///<
         };
 
         /**

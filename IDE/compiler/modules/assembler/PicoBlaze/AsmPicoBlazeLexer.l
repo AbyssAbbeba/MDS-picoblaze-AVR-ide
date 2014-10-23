@@ -206,12 +206,15 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"set"                { return D_SET;        }
 \.?"variable"           { return D_VARIABLE;   }
 \.?"port"               { return D_PORT;       }
+\.?"portin"             { return D_PORTIN;     }
+\.?"portout"            { return D_PORTOUT;    }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
 \.?"db"                 { return D_DB;         }
 \.?"error"              { return D_ERROR;      }
 \.?"warning"            { return D_WARNING;    }
 \.?"list"               { return D_LIST;       }
+\.?"message"            { return D_MESSG;      }
 \.?"messg"              { return D_MESSG;      }
 \.?"nolist"             { return D_NOLIST;     }
 \.?"skip"               { return D_SKIP;       }

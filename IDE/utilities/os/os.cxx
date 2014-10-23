@@ -85,11 +85,17 @@ namespace boost
         std::string makeHomeSafe ( const std::string & input )
         {
             #ifdef __linux__
+                if ( true == input.empty() )
+                {
+                    return "";
+                }
+
                 std::string result = input;
                 if ( '~' == result[0] )
                 {
                     result.replace(0, 1, getpwuid(getuid())->pw_dir);
                 }
+
                 return result;
             #else // __linux__
                 return input;

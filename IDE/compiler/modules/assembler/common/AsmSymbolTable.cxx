@@ -780,6 +780,8 @@ const char * AsmSymbolTable::symType2Str ( const AsmSymbolTable::SymbolType symb
             case AsmSymbolTable::STYPE_REGISTER:    return "REG.   ";
             case AsmSymbolTable::STYPE_LABEL:       return "LABEL  ";
             case AsmSymbolTable::STYPE_PORT:        return "PORT   ";
+            case AsmSymbolTable::STYPE_PORTIN:      return "PORTIN ";
+            case AsmSymbolTable::STYPE_PORTOUT:     return "PORTOUT";
             case AsmSymbolTable::STYPE_EXPRESSION:  return "EXPR.  ";
             case AsmSymbolTable::STYPE_DATA:        return "DATA   ";
         }
@@ -794,6 +796,8 @@ const char * AsmSymbolTable::symType2Str ( const AsmSymbolTable::SymbolType symb
             case AsmSymbolTable::STYPE_REGISTER:    return "REG.";
             case AsmSymbolTable::STYPE_LABEL:       return "LABEL";
             case AsmSymbolTable::STYPE_PORT:        return "PORT";
+            case AsmSymbolTable::STYPE_PORTIN:      return "PORTIN";
+            case AsmSymbolTable::STYPE_PORTOUT:     return "PORTOUT";
             case AsmSymbolTable::STYPE_EXPRESSION:  return "EXPR.";
             case AsmSymbolTable::STYPE_DATA:        return "DATA";
         }
@@ -899,6 +903,8 @@ std::ostream & operator << ( std::ostream & out,
         case AsmSymbolTable::STYPE_REGISTER:    out << "STYPE_REGISTER";    break;
         case AsmSymbolTable::STYPE_LABEL:       out << "STYPE_LABEL";       break;
         case AsmSymbolTable::STYPE_PORT:        out << "STYPE_PORT";        break;
+        case AsmSymbolTable::STYPE_PORTIN:      out << "STYPE_PORTIN";      break;
+        case AsmSymbolTable::STYPE_PORTOUT:     out << "STYPE_PORTOUT";     break;
         case AsmSymbolTable::STYPE_EXPRESSION:  out << "STYPE_EXPRESSION";  break;
         case AsmSymbolTable::STYPE_DATA:        out << "STYPE_DATA";        break;
     }

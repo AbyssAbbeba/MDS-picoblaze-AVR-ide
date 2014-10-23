@@ -118,6 +118,9 @@
  * @defgroup testsAssemblerPicoBlaze PicoBlaze assembler
  * @ingroup testsAssembler
  *
+ * @defgroup testsAssemblerAdaptable Adaptable assembler
+ * @ingroup testsAssembler
+ *
  * @defgroup testsMCUDataFiles MCUDataFiles
  * @ingroup tests
  *
@@ -133,10 +136,16 @@
  * @defgroup testsMCUSimPicoBlaze PicoBlaze Simulator
  * @ingroup testsMCUSim
  *
+ * @defgroup testsMCUSimAdaptable Adaptable Simulator
+ * @ingroup testsMCUSim
+ *
  * @defgroup testsDisasm Disassembler
  * @ingroup tests
  *
  * @defgroup testsDisasmPicoBlaze PicoBlaze Disassembler
+ * @ingroup testsDisasm
+ *
+ * @defgroup testsDisasmAdaptable Adaptable Disassembler
  * @ingroup testsDisasm
  *
  * @defgroup testsAsmTranslator AsmTranslator

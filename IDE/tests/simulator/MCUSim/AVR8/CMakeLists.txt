@@ -42,4 +42,4 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
 # TESTS
 # ------------------------------------------------------------------------------
 
-# add_test_subject ( "MCU_Simulator_AVR8" ${PROJECT_NAME} )
+add_test_subject ( "MCU_Simulator_AVR8" ${PROJECT_NAME} )

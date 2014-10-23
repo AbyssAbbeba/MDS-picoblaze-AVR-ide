@@ -711,6 +711,8 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_CODE,              ///<
             ASMPICOBLAZE_DIR_REG,               ///<
             ASMPICOBLAZE_DIR_PORT,              ///<
+            ASMPICOBLAZE_DIR_PORTIN,            ///<
+            ASMPICOBLAZE_DIR_PORTOUT,           ///<
             ASMPICOBLAZE_DIR_REPT,              ///<
             ASMPICOBLAZE_DIR_ENDR,              ///<
             ASMPICOBLAZE_DIR_WHILE,             ///<
@@ -851,7 +853,7 @@ namespace CompilerStatementTypes
             C_STMT_INLINE_FUNC,                 ///<
             C_STMT_TYPEDEF,                     ///<
             C_STMT_GOTO,                        ///<
-                                                
+
         //@}
 
         STATEMENTTYPE__MAX__                    ///<
