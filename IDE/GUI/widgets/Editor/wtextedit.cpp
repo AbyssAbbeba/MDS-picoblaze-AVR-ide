@@ -1168,3 +1168,115 @@ void WTextEdit::deleteHighlighter()
         highlighter = NULL;
     }
 }
+
+
+
+void WTextEdit::shortcutBreakpoint()
+{
+}
+
+
+void WTextEdit::shortcutBookmark()
+{
+}
+
+
+void WTextEdit::shortcutCopy()
+{
+}
+
+
+void WTextEdit::shortcutPaste()
+{
+}
+
+
+void WTextEdit::shortcutCut()
+{
+}
+
+
+void shortcutSelectAll()
+{
+}
+
+
+void WTextEdit::shortcutDeselect()
+{
+}
+
+
+void WTextEdit::shortcutComment()
+{
+}
+
+
+void WTextEdit::shortcutJmpToBookmarkNext()
+{
+}
+
+
+void WTextEdit::shortcutJmpToBookmarkPrev()
+{
+}
+
+
+void WTextEdit::shortcutJmpToLine()
+{
+}
+
+
+//TODO:
+void WTextEdit::shortcutFind()
+{
+}
+
+
+void WTextEdit::shortcutReplace()
+{
+}
+
+
+void WTextEdit::shortcutMoveLineUp()
+{
+}
+
+
+void WTextEdit::shortcutMoveLineDown()
+{
+}
+
+
+void WTextEdit::shortcutMoveWordLeft()
+{
+}
+
+
+void WTextEdit::shortcutMoveWordRight()
+{
+}
+
+
+void WTextEdit::shortcutToUpper()
+{
+}
+
+
+void WTextEdit::shortcutToLower()
+{
+}
+
+
+void WTextEdit::shortcutFirstToUpper()
+{
+}
+
+
+void WTextEdit::shortcutDeleteLine()
+{
+}
+
+
+void WTextEdit::shortcutSwitchChars()
+{
+}

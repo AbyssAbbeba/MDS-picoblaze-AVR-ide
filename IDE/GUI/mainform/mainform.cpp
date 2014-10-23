@@ -1450,7 +1450,8 @@ void MainForm::compileProject()
         this->saveFile();
         this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
 
-        options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+        options->m_sourceFiles.push_back(wDockManager->getCentralPath().toLocal8Bit().constData());
+        //options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
         options->m_device = this->projectMan->getActive()->family.toStdString();
 
