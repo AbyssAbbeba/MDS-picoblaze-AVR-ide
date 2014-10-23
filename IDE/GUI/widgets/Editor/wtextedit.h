@@ -48,6 +48,31 @@ class WTextEdit : public QPlainTextEdit
         //SourceType getSourceType();
         //void setSourceType(SourceType type);
         void deleteHighlighter();
+        void shortcutBreakpoint();
+        void shortcutBookmark();
+        void shortcutCopy();
+        void shortcutPaste();
+        void shortcutCut();
+        void shortcutSelectAll();
+        void shortcutDeselect();
+        void shortcutComment();
+        void shortcutJmpToBookmarkNext();
+        void shortcutJmpToBookmarkPrev();
+        void shortcutJmpToLine();
+        //TODO:
+        void shortcutFind();
+        void shortcutReplace();
+        void shortcutMoveLineUp();
+        void shortcutMoveLineDown();
+        void shortcutMoveWordLeft();
+        void shortcutMoveWordRight();
+        void shortcutToUpper();
+        void shortcutToLower();
+        void shortcutFirstToUpper();
+        void shortcutDeleteLine();
+        void shortcutSwitchChars();
+
+        
 
         /*WTextEdit & operator<< (QString const &str)
         {

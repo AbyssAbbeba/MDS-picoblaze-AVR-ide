@@ -71,6 +71,12 @@ int main(int argc, char *argv[])
     //{
     //    qDebug() << pattern;
     //}
+
+    QList<QByteArray> codecs = QTextCodec::availableCodecs();
+    foreach (QByteArray array, codecs)
+    {
+        qDebug() << array;
+    }
     
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
