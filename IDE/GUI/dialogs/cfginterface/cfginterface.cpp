@@ -32,7 +32,7 @@ CfgInterface::CfgInterface(QWidget *parent)
     this->widgetLabel = new QLabel(this);
     this->widgetLabel->setAlignment(Qt::AlignCenter);
     this->lastItem = NULL;
-    
+
     this->menuList->setHeaderHidden(true);
     //this->show();
     this->menuList->move(5,10);

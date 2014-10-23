@@ -1,9 +1,13 @@
 
 \section{Main simulation panel}
-    This panel is the main part of the simulator user interface. Simulator simulates instruction set of PicoBlaze family and his copies.
-    Following picture shows main window of the simulator. You can find here internal registers, scratchpad ram, input and output ports, stack,
-    program counter, elapsed time and cycles, actual clock and internal flags: CARRY and ZERO. All those features can be edited during
-    processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place it to, for example, another display.
+    This panel is the main part of the simulator user interface. Simulator mimics functionality of PicoBlaze instruction
+    set and provide detailed view in its registers, overview of input and output ports, etc., and displays warning when
+    the simulated program behaves strangely i.e. does something which under normal circumstances results an error.
+    Following picture shows main window of the simulator. You can find here internal registers, scratchpad ram, input
+    and output ports, stack, program counter, elapsed time and cycles, current clock and internal flags: CARRY and ZERO.
+    All those features can be edited during processor simulation. If some value changes state, it will turn yellow. You
+    can drag out whole simulation panel and place outside of the main window (for example another display/monitor on
+    your computer.
 
    \begin{figure}[h!]
         \centering
@@ -12,16 +16,17 @@
     \end{figure}
 
     \begin{description}
-     \item [Register field] You can find here values of internal processor registers. First column represents name, second value in decimal, third
-     hexadecimal and last binary.
-     \item [Scratch-pad RAM] This hex editor represents values stored in scratch-pad RAM. Address of particular field is adition of line number
-     and column number.
-     \item [Ports] Output ports are represented by hex editors and you can determine value of each field by adition of column number and line number.
-     You can also see status of picoblaze RD and WR pins. It can be usefull to see their status for better debuging.
-     \item [Stack] Stack window represents actual values stored in stack. Top field represents virtual stack pointer and you can also push or pop values into the stack
-     by inserting desired number to the field under "Stack" sign.
-     \item [Info panel] Panel on the right side of simulation panel gives you general information about simulated code. You can find here program counter
-     value, number of executed cycles, set  frequency, elapsed time and Carry, Zero and Interrupt flag status. You can generate interrupt by clicking on "Interrupt button"
+        \item [Registers]
+            You can find here values of internal processor registers. The first column represents name, second value in
+            decimal, third hexadecimal value, and last binary value.
+        \item [Scratch-pad RAM] This hex editor represents values stored in scratch-pad RAM. Address of a particular field
+        is addition of the line and column numbers.
+        \item [Ports] Output ports are represented by hex editors and you can determine value of each field by adition of column number and line number.
+        You can also see status of picoblaze RD and WR pins. It can be usefull to see their status for better debuging.
+        \item [Stack] Stack window represents actual values stored in stack. Top field represents virtual stack pointer and you can also push or pop values into the stack
+        by inserting desired number to the field under "Stack" sign.
+        \item [Info panel] Panel on the right side of simulation panel gives you general information about simulated code. You can find here program counter
+        value, number of executed cycles, set  frequency, elapsed time and Carry, Zero and Interrupt flag status. You can generate interrupt by clicking on "Interrupt button"
     \end{description}
 
     \subsection{Simulator warnings}
