@@ -1,26 +1,25 @@
 
-\section{Demonstration project}
-    The aim of the demonstration project is to provide an easy way to explore the IDE without reading long documents.
-    The demonstration project can be opened from tab on top panel ( Help -> Example Project).
-    Demonstration project should introduce new user into usage of the most common functions of the IDE like assembling the code,
-    running simulator and so on.
+\section{Tutorial project}
+    The aim of the tutorial project is to provide an easy way to explore the IDE without reading long documents.
+    The tutorial project can be opened from the [Main~Menu] -> [Help] -> [Tutorial~Project]. Demonstration project
+    should introduce a new user into the basics of usage of this IDE, this generally covers the most common functions
+    like assembling the code, running simulator, and so on.
     \begin{figure}[h]
         \centering{}
         \includegraphics[width=\textwidth]{img/demonstration_1.png}
-        \caption{Demonstration project}
+        \caption{Tutorial project}
     \end{figure}
 
 \section{Your first project}
-    There is actually not too much you have to do in order to start you first project. To keep things simple:
+    There is not too much you have to do to start you first project in MDS, to keep things simple:
     \begin{itemize}
-        \item Click on "New project" in the main menu (submenu Project).
+        \item Click on [Main~Menu] -> [Project] -> [New~Project].
         \item Choose a name for your project and directory in which you want to store files created in the IDE.
-        \item On next tab you can adjust size of scratchpad and program memory or change default interrupt vector.
-        \item On tab "Compiler" you can choose generated files. Then click OK.
-        \item Right click on left project tree and click "New file", choose a name, write your code, click on "Save".
-        \item Click on "Compile".
-        \item Click on "Start simulation", and press "Step" repeatedly to see actual simulation or animate to do this automaticaly.
-        \item Compiled files suitable for loading into FPGA can be found in the directory which you choose to be your project directory.
+        \item On next tab you can adjust size of the scratch-pad and program memory, or change default interrupt vector.
+        \item On Compiler tab you can choose files to generate by the assembler.
+        \item Then click OK, and you have your project.
+        \item Click on [Main~Menu] -> [File] -> [New~Project~File].
+        \item Edit your file as you wish, and save it by clicking on [Main~Menu] -> [File] -> [Save~File].
     \end{itemize}
 
     \begin{table}[h!]
@@ -35,19 +34,27 @@
         \end{tabular}
     \end{table}
 
-% \section{What is PicoBlaze?}
-%     PicoBlaze is the designation of a series of three free soft processor cores from Xilinx for use in their FPGA and CPLD products. They are based on a RISC architecture of 8 bits and can reach speeds up to 100 MIPS on the Virtex 4 FPGA"s family. The processors have an 8-bit address and data port for access to a wide range of peripherals. The license of the cores allows their free use, albeit only on Xilinx devices, and they come with development tools.
-%     All instructions execute in two clock cycles, making performance of the core instruction set deterministic. Interrupt response is not more than five clock cycles. As a resource optimization, it is possible for two PicoBlaze cores to share the same instruction PROM, taking advantage of the dual-ported implementation of this block on Xilinx FPGAs.
-%
-%     \paragraph{PicoBlaze features:}
-%         \begin{itemize}
-%             \item Harvard architecture processor core customizable to fit user specific requirements.
-%             \item General-purpose data registers.
-%             \item Byte-wide Arithmetic Logic Unit (ALU) with CARRY and ZERO indicator flags.
-%             \item Optional internal scratchpad RAM.
-%             \item 256 input and output ports for easy expansion and enhancement.
-%             \item Automatic CALL/RETURN stack.
-%             \item Predictable performance, always two clock cycles per instruction.
-%             \item Fast interrupt response; worst-case 5 clock cycles.
-%             \item Optimized for Xilinx FPGAs.
-%         \end{itemize}
+    To use what you have just created:
+    \begin{itemize}
+        \item To assemble your file click on [Main~Menu] -> [Project] -> [Compile].
+        \item To start simulation click on [Main~Menu] -> [Simulation] -> [Start~Simulation].
+        \item Compiled files suitable for loading into FPGA can be found in the directory which you choose to be your
+              project directory. Types of these files, and therefore their purpose, can be easily determined by their
+              extensions\footnote{These file extensions are only recommended, the actual extensions can be set by user
+              at any time.}:
+            \begin{description}
+                \item [.rawhex] is a raw hex file suitable for some JTAG loaders,
+                \item [.mem] is a decimal representation of the machine code suitable for a number of various tools,
+                \item [.ihex] is Intel 8 Hex,
+                \item [.srec] is Motorola S-Record,
+                \item [.bin] is plain binary file,
+                \item [.lst] is code listing,
+                \item [.stbl] is table of symbols,
+                \item [.mtbl] is table of macros,
+                \item [.dbg] is a file used the simulator for simulation, it has no other purpose,
+                \item [.vhd] is VHDL code with your machine code (generated from template which can be chosen by user),
+                \item [.v] is Verilog code with your machine code (generated from template which can be chosen by user),
+                \item [.ctr] is so called code tree, this file has normally no application for regular users, it
+                      contains textual representation of raw output from the syntax analyzer.
+            \end{description}
+    \end{itemize}
