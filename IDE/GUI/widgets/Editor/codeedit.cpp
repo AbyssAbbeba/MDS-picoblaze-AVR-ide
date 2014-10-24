@@ -21,7 +21,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    qDebug() << "CodeEdit: CodeEdit()";
+    //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
@@ -39,7 +39,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //}
     if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
-        qDebug() << "CodeEdit: untracked";
+        //qDebug() << "CodeEdit: untracked";
         if (wPath == "untracked")
         {
             if (wName == "ASM Translator" || wName == "ASM Translator error")
@@ -226,7 +226,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //this->show();
     this->changeHeight();
     textEdit->setShortcuts();
-    qDebug() << "CodeEdit: return CodeEdit()";
+    //qDebug() << "CodeEdit: return CodeEdit()";
 }
 
 
@@ -234,7 +234,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    qDebug() << "CodeEdit: CodeEdit()2";
+    //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
@@ -398,7 +398,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
     textEdit->setShortcuts();
-    qDebug() << "CodeEdit: return CodeEdit()2";
+    //qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
 
