@@ -196,16 +196,16 @@
     This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
     .srec, .mem, .rawhex, .v, and .vhd.
     \begin{description}
-        \item[Section Input File] Here you can select desired input data file which is going to be converted
-        \item[Section Input Options] In this section, you define what type of input file is going to be converted
-        \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl
-        \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record
-        \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18
-        \item[Section Output File] Defines target
+        \item[Section Input File] Here you can select desired input data file which will be converted.
+        \item[Section Input Options] In this section, you define what type of input file will be converted.
+        \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+        \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
+        \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
+        \item[Section Output File] Defines target.
         \item[Section Output Options] Here you can select desired output data file.
         \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
         \item[Tab size]  Define number of inserted spaces when you press Tab.
-        \item[Short instructions] Here you can allow short instructions like LD, RETI or others
+        \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
     \end{description}
 
     \begin{figure}[h]
@@ -216,7 +216,7 @@
 
 \subsection{ASM translator}
     With this tool, you can translate your previously written assembler code in different syntax.
-    You can sellect one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code should be without
+    You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
     errors.
     \begin{description}
         \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
@@ -246,9 +246,9 @@
         \item[Family] select processor family of selected architecture
         \item[Section Options] Indentation - Choose between Tabs or Spaces
         \item[TabSize] Number of spaces in one tab
-        \item[Radix] Binary,Octal, Decima or Hexadecimal
+        \item[Radix] Binary,Octal, Decimal or Hexadecimal
         \item[Linebreak] LF,CR or CRLF
-        \item[Case]  You can choose if you want disassemled file will be in upper or lower case
+        \item[Case]  You can choose if you want disassembler file will be in upper or lower case
         \item[Generate symbols] Select which symbols should be disassembled
     \end{description}
 
@@ -259,18 +259,18 @@
     \end{figure}
 
 \subsection{Waiting loop generator}
-    In many cases, it is usefull to have a tool for creating waiting loops. It can save some time in development process. This tool can generate
+    In many cases, it is useful to have a tool for creating waiting loops. It can save some time in development process. This tool can generate
     waiting loops using up to six registers. All you have to do is insert desired waiting time or number of cycles and valid frequency.
 
     \begin{description}
         \item[Section Input variable] You can choose between time or cycles
         \item[Section Desired waiting time] Insert number of executed time or cycles
-        \item[Section Frekvency] Set working frequency
+        \item[Section Frequency] Set working frequency
         \item[Section Register names] Optional selection. You can change register names in generated code
         \item[Section Generated code] Here is where code will appear
         \item[Instruction] Select instruction used in loop.
         \item[Type] Type of waiting loop you want to create (blank/macro).
-        \item[Checkboxes UpperCase and Comments]  You can turn off automaticaly added comments or change letter case
+        \item[Checkboxes Upper Case and Comments]  You can turn off automatically added comments or change letter case
         \item[Button Copy to clipboard] This will copy loop into your clipboard
         \item[Button Generate] When you have all set. This will generate loop
     \end{description}
@@ -287,7 +287,7 @@
         \includegraphics[width=110pt]{img/8segment.png}
         \caption{8-segment editor}
     \end{wrapfigure}
-    With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED display. In the left part of the dialog window, you can find numerical val ues corresponding to the digit displayed in the middle part. These values are represented for both common cathode and anode and in three numerical bases, hexadecimal, decimal and oc tal. Buttons on left side from entry boxes copies value from adjacent entry box into clipboard. In the right part of the window you can set what port pin is connected to what LED segment.
+    With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED display. In the left part of the dialog window, you can find numerical val use corresponding to the digit displayed in the middle part. These values are represented for both common cathode and anode and in three numerical bases, hexadecimal, decimal and octal. Buttons on left side from entry boxes copies value from adjacent entry box into clipboard. In the right part of the window you can set what port pin is connected to what LED segment.
 
 \subsection{LED panel simulator}
     \begin{wrapfigure}{r}{0pt}
@@ -295,7 +295,7 @@
         \includegraphics[width=150pt]{img/Led_panel.png}
         \caption{8-segment editor}
     \end{wrapfigure}
-    Simple LED panel simulator. You can observe output port behavior with visual presentation of eight leds. You can activate coder to simulate common FPGA logic.
+    Simple LED panel simulator. You can observe output port behavior with visual presentation of eight LEDs. You can activate coder to simulate common FPGA logic.
 
     \begin{description}
         \item[GRAY] Converts output port value to gray code.
@@ -321,4 +321,4 @@
             \includegraphics[width=90pt]{img/convertor.png}
             \caption{Convertor}
     \end{wrapfigure}
-    This tool is very usefull, when you want to find out the representation of given number in other number bases.
+    This tool is very useful, when you want to find out the representation of given number in other number bases.
