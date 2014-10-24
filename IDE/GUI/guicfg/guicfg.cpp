@@ -727,7 +727,7 @@ QList<QString> GuiCfg::getSessionFileParentProjects()
 //xml parsers
 
 
-void GuiCfg::loadConfig()
+bool GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
     //QFile cfgFile("./resources/xml/config.xml");
@@ -737,7 +737,7 @@ void GuiCfg::loadConfig()
         qDebug() << "GuiCfg: config file not found";
         this->setDefaultAll();
         this->saveConfig();
-        return;
+        return true;
     }
     if (!domDoc.setContent(&cfgFile))
     {
@@ -1121,6 +1121,7 @@ void GuiCfg::loadConfig()
     }
     cfgFile.close();
     this->setDefaultProject();
+    return false;
 }
 
 

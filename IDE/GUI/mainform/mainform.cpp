@@ -268,7 +268,7 @@ MainForm::MainForm()
     createMenu();
     //createShortcuts();
     createToolbar();
-    this->welcomeDialog();
+    //this->welcomeDialog();
     //CreateDockWidgets();
     //CreateWelcome();
     //qDebug() << "MainForm: return MainForm()";
@@ -715,7 +715,7 @@ void MainForm::createActions()
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
     helpAct = new QAction(tr("Help"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("See Example Project"), this);
+    example1Act = new QAction(tr("See Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":resources/icons/pause.png");
@@ -3516,4 +3516,6 @@ void MainForm::welcomeDialog()
 {
     WelcomeWidget *widget = new WelcomeWidget();
     widget->show();
+    connect(widget, SIGNAL(tutorial()), this, SLOT(exampleOpen()));
+    connect(widget, SIGNAL(manual()), this, SLOT(help()));
 }
