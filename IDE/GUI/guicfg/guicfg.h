@@ -88,6 +88,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setEOL(QString eol);
 
+        void setSplash(bool enabled);
+
         void setSessionRestoration(bool enabled);
 
         void sessionAppendProject(QString path);

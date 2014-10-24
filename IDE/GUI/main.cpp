@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
     
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
+
     bool openFile = false;
     bool release = true;
     if (argc > 1)
@@ -100,6 +101,15 @@ int main(int argc, char *argv[])
         }
     }
     bool firstStart = GuiCfg::getInstance().loadConfig();
+    QPixmap pixmap(":resources/icons/splash.png");
+    QSplashScreen splash(pixmap);
+    if (true == GuiCfg::getInstance().getSplash())
+    {
+        qDebug() << "opening splash" ;
+        splash.setWindowFlags(splash.windowFlags() | Qt::WindowStaysOnTopHint);
+        splash.show();
+        app.processEvents();
+    }
 
     if (true == release)
     {
@@ -245,6 +255,12 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (true == GuiCfg::getInstance().getSplash())
+    {
+        app.processEvents();
+        QTimer::singleShot(2000, &splash, SLOT(close()));
+    }
+        
     return app.exec();
 
 }
