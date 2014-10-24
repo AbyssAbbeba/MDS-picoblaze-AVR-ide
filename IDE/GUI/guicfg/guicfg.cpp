@@ -156,7 +156,7 @@ void GuiCfg::setHighlightOpt(GuiCfg_Items::HighlightLang lang, GuiCfg_Items::Hig
 
 void GuiCfg::setDefaultIDEGeneral()
 {
-    this->splash = false;
+    this->splash = true;
     this->tipsOnStart = false;
     this->sessionRestoration = true;
     this->language = "English";
@@ -403,6 +403,12 @@ void GuiCfg::setEncoding(QString encoding)
 void GuiCfg::setEOL(QString eol)
 {
     this->eol = eol;
+}
+
+
+void GuiCfg::setSplash(bool enabled)
+{
+    this->splash = enabled;
 }
 
 

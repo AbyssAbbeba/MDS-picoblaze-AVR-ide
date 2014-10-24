@@ -59,7 +59,7 @@
   </widget>
   <widget class="QLabel" name="label_3">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -91,7 +91,7 @@
   </widget>
   <widget class="QCheckBox" name="chckSplash">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -103,6 +103,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_4">
