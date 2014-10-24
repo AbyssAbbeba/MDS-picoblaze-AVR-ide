@@ -84,78 +84,6 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
     else if (target == this && event->type() == QEvent::KeyPress)
     {
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-        //breakpoint ctrl+shift+b
-        if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
-          && keyEvent->key() == Qt::Key_B)
-        {
-            QTextCursor cursor(this->textCursor());
-            emit breakpoint(cursor.blockNumber());
-            //qDebug() << "Breakpoint on line:" << cursor.blockNumber()+1;
-            //qDebug() << "WTextEdit: return eventFilter()";
-            return true;
-        }
-        //bookmark ctrl+shift+m
-        if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
-          && keyEvent->key() == Qt::Key_M)
-        {
-            QTextCursor cursor(this->textCursor());
-            emit bookmark(cursor.blockNumber());
-            //qDebug() << "Bookmark on line:" << cursor.blockNumber()+1;
-            //qDebug() << "WTextEdit: return eventFilter()";
-            return true;
-        }
-        //comment ctrl+shift+c
-        if ((keyEvent->modifiers() & Qt::ShiftModifier) && (keyEvent->modifiers() & Qt::ControlModifier)
-          && keyEvent->key() == Qt::Key_C)
-        {
-            QTextCursor cursor(this->textCursor());
-            if (true == cursor.hasSelection())
-            {
-                QString a(cursor.selectedText());
-                if (a.startsWith("/*") && a.endsWith("*/"))
-                {
-                    a.remove(0, 2);
-                    a.remove(a.size() - 2, 2);
-                }
-                else if (a.startsWith("/*"))
-                {
-                    a = a + "*/";
-                }
-                else if (a.endsWith("*/"))
-                {
-                    a = "/*" + a;
-                }
-                else
-                {
-                    a = "/*" + a + "*/";
-                }
-                //emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
-                cursor.removeSelectedText();
-                //emit textChangedSignal(a, cursor.position());
-                cursor.insertText(a);
-            }
-            else
-            {
-                int linePos = cursor.positionInBlock();
-                cursor.setPosition(cursor.position() - linePos);
-                if (cursor.block().text().startsWith(";"))
-                {
-                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-                    cursor.deleteChar();
-                    cursor.setPosition(cursor.position() + linePos - 1);
-                    //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-                    //cursor.deleteChar();
-                }
-                else
-                {
-                    //emit textChangedSignal(";", cursor.position());
-                    cursor.insertText(";");
-                    cursor.setPosition(cursor.position() + linePos);
-                }
-            }
-            //qDebug() << "WTextEdit: return eventFilter()";
-            return true;
-        }
         //new line
         //check for selection
         if (keyEvent->key() == Qt::Key_Enter || keyEvent->key() == Qt::Key_Return)
@@ -1172,56 +1100,193 @@ void WTextEdit::deleteHighlighter()
 
 void WTextEdit::setShortcuts()
 {
+    shctBreakpoint = new QShortcut(this);
+    shctBreakpoint->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_B);
+    connect(shctBreakpoint, SIGNAL(activated()), this, SLOT(shortcutBreakpoint()));
+    shctBookmark = new QShortcut(this);
+    shctBookmark->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_M);
+    connect(shctBookmark, SIGNAL(activated()), this, SLOT(shortcutBookmark()));
+    shctCopy = new QShortcut(this);
+    shctCopy->setKey(Qt::CTRL + Qt::Key_C);
+    connect(shctCopy, SIGNAL(activated()), this, SLOT(shortcutCopy()));
+    shctPaste = new QShortcut(this);
+    shctPaste->setKey(Qt::CTRL + Qt::Key_V);
+    connect(shctPaste, SIGNAL(activated()), this, SLOT(shortcutPaste()));
+    shctCut = new QShortcut(this);
+    shctCut->setKey(Qt::CTRL + Qt::Key_X);
+    connect(shctCut, SIGNAL(activated()), this, SLOT(shortcutCut()));
+    shctSelectAll = new QShortcut(this);
+    shctSelectAll->setKey(Qt::CTRL + Qt::Key_A);
+    connect(shctSelectAll, SIGNAL(activated()), this, SLOT(shortcutSelectAll()));
+    shctDeselect = new QShortcut(this);
+    shctDeselect->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_A);
+    connect(shctDeselect, SIGNAL(activated()), this, SLOT(shortcutDeselect()));
+    shctComment = new QShortcut(this);
+    shctComment->setKey(Qt::CTRL + Qt::Key_D);
+    connect(shctComment, SIGNAL(activated()), this, SLOT(shortcutComment()));
+    shctJmpToBookmarkNext = new QShortcut(this);
+    shctJmpToBookmarkNext->setKey(Qt::ALT + Qt::Key_PageUp);
+    connect(shctJmpToBookmarkNext, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkNext()));
+    shctJmpToBookmarkPrev = new QShortcut(this);
+    shctJmpToBookmarkPrev->setKey(Qt::ALT + Qt::Key_PageDown);
+    connect(shctJmpToBookmarkPrev, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkPrev()));
+    shctJmpToLine = new QShortcut(this);
+    shctJmpToLine->setKey(Qt::CTRL + Qt::Key_G);
+    connect(shctJmpToLine, SIGNAL(activated()), this, SLOT(shortcutJmpToLine()));
+    shctFind = new QShortcut(this);
+    shctFind->setKey(Qt::CTRL + Qt::Key_F);
+    connect(shctFind, SIGNAL(activated()), this, SLOT(shortcutFind()));
+    shctReplace = new QShortcut(this);
+    shctReplace->setKey(Qt::CTRL + Qt::Key_R);
+    connect(shctReplace, SIGNAL(activated()), this, SLOT(shortcutReplace()));
+    shctMoveLineUp = new QShortcut(this);
+    shctMoveLineUp->setKey(Qt::CTRL + Qt::Key_Up);
+    connect(shctMoveLineUp, SIGNAL(activated()), this, SLOT(shortcutMoveLineUp()));
+    shctMoveLineDown = new QShortcut(this);
+    shctMoveLineDown->setKey(Qt::CTRL + Qt::Key_Down);
+    connect(shctMoveLineDown, SIGNAL(activated()), this, SLOT(shortcutMoveLineDown()));
+    shctMoveWordLeft = new QShortcut(this);
+    shctMoveWordLeft->setKey(Qt::CTRL + Qt::Key_Left);
+    connect(shctMoveWordLeft, SIGNAL(activated()), this, SLOT(shortcutMoveWordLeft()));
+    shctMoveWordRight = new QShortcut(this);
+    shctMoveWordRight->setKey(Qt::CTRL + Qt::Key_Right);
+    connect(shctMoveWordRight, SIGNAL(activated()), this, SLOT(shortcutMoveWordRight()));
+    shctToUpper = new QShortcut(this);
+    shctToUpper->setKey(Qt::CTRL + Qt::Key_U);
+    connect(shctToUpper, SIGNAL(activated()), this, SLOT(shortcutToUpper()));
+    shctToLower = new QShortcut(this);
+    shctToLower->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_U);
+    connect(shctToLower, SIGNAL(activated()), this, SLOT(shortcutToLower()));
+    shctFirstToUpper = new QShortcut(this);
+    shctFirstToUpper->setKey(Qt::CTRL + Qt::ALT + Qt::Key_U);
+    connect(shctFirstToUpper, SIGNAL(activated()), this, SLOT(shortcutFirstToUpper()));
+    shctDeleteLine = new QShortcut(this);
+    shctDeleteLine->setKey(Qt::CTRL + Qt::Key_K);
+    connect(shctDeleteLine, SIGNAL(activated()), this, SLOT(shortcutDeleteLine()));
+    shctSwitchChars = new QShortcut(this);
+    shctSwitchChars->setKey(Qt::CTRL + Qt::Key_T);
+    connect(shctSwitchChars, SIGNAL(activated()), this, SLOT(shortcutSwitchChars()));
+    shctSelectWordUnder = new QShortcut(this);
+    shctSelectWordUnder->setKey(Qt::CTRL + Qt::Key_H);
+    connect(shctSelectWordUnder, SIGNAL(activated()), this, SLOT(shortcutSelectWordUnder()));
+    shctSelectWordLeft = new QShortcut(this);
+    shctSelectWordLeft->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Left);
+    connect(shctSelectWordLeft, SIGNAL(activated()), this, SLOT(shortcutSelectWordLeft()));
+    shctSelectWordRight = new QShortcut(this);
+    shctSelectWordRight->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Right);
+    connect(shctSelectWordRight, SIGNAL(activated()), this, SLOT(shortcutSelectWordRight()));
+    shctUndo = new QShortcut(this);
+    shctUndo->setKey(Qt::CTRL + Qt::Key_Z);
+    connect(shctUndo, SIGNAL(activated()), this, SLOT(shortcutUndo()));
+    shctRedo = new QShortcut(this);
+    shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
+    connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
 }
 
 
 void WTextEdit::shortcutBreakpoint()
 {
+    QTextCursor cursor(this->textCursor());
+    emit breakpoint(cursor.blockNumber());
 }
 
 
 void WTextEdit::shortcutBookmark()
 {
+    QTextCursor cursor(this->textCursor());
+    emit bookmark(cursor.blockNumber());
 }
 
 
 void WTextEdit::shortcutCopy()
 {
+    this->copy();
 }
 
 
 void WTextEdit::shortcutPaste()
 {
+    this->paste();
 }
 
 
 void WTextEdit::shortcutCut()
 {
+    this->cut();
 }
 
 
 void WTextEdit::shortcutSelectAll()
 {
+    this->selectAll();
 }
 
 
 void WTextEdit::shortcutDeselect()
 {
+    this->deselect();
 }
 
 
 void WTextEdit::shortcutComment()
 {
+    QTextCursor cursor(this->textCursor());
+    if (true == cursor.hasSelection())
+    {
+        QString a(cursor.selectedText());
+        if (a.startsWith("/*") && a.endsWith("*/"))
+        {
+            a.remove(0, 2);
+            a.remove(a.size() - 2, 2);
+        }
+        else if (a.startsWith("/*"))
+        {
+            a = a + "*/";
+        }
+        else if (a.endsWith("*/"))
+        {
+            a = "/*" + a;
+        }
+        else
+        {
+            a = "/*" + a + "*/";
+        }
+        //emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
+        cursor.removeSelectedText();
+        //emit textChangedSignal(a, cursor.position());
+        cursor.insertText(a);
+    }
+    else
+    {
+        int linePos = cursor.positionInBlock();
+        cursor.setPosition(cursor.position() - linePos);
+        if (cursor.block().text().startsWith(";"))
+        {
+            //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+            cursor.deleteChar();
+            cursor.setPosition(cursor.position() + linePos - 1);
+            //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
+            //cursor.deleteChar();
+        }
+        else
+        {
+            //emit textChangedSignal(";", cursor.position());
+            cursor.insertText(";");
+            cursor.setPosition(cursor.position() + linePos);
+        }
+    }
 }
 
 
 void WTextEdit::shortcutJmpToBookmarkNext()
 {
+    emit requestScrollToBookmark(this->textCursor().blockNumber(), true);
 }
 
 
 void WTextEdit::shortcutJmpToBookmarkPrev()
 {
+    emit requestScrollToBookmark(this->textCursor().blockNumber(), false);
 }
 
 
@@ -1230,7 +1295,6 @@ void WTextEdit::shortcutJmpToLine()
 }
 
 
-//TODO:
 void WTextEdit::shortcutFind()
 {
 }
@@ -1243,11 +1307,13 @@ void WTextEdit::shortcutReplace()
 
 void WTextEdit::shortcutMoveLineUp()
 {
+    this->scrollToLine(this->verticalScrollBar()->value()-1);
 }
 
 
 void WTextEdit::shortcutMoveLineDown()
 {
+    this->scrollToLine(this->verticalScrollBar()->value()+1);
 }
 
 
@@ -1286,16 +1352,28 @@ void WTextEdit::shortcutSwitchChars()
 }
 
 
-void shortcutSelectWordUnder()
+void WTextEdit::shortcutSelectWordUnder()
 {
 }
 
 
-void shortcutSelectWordLeft()
+void WTextEdit::shortcutSelectWordLeft()
 {
 }
 
 
-void shortcutSelectWordRight()
+void WTextEdit::shortcutSelectWordRight()
 {
+}
+
+
+void WTextEdit::shortcutUndo()
+{
+    this->undo();
+}
+
+
+void WTextEdit::shortcutRedo()
+{
+    this->redo();
 }

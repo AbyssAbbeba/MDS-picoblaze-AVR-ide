@@ -22,12 +22,15 @@ InterfaceCfg_IDEGeneral::InterfaceCfg_IDEGeneral(QWidget *parent)
 {
     ui.setupUi(this);
 
+    this->ui.chckSplash->setChecked(GuiCfg::getInstance().getSplash());
     this->ui.chckSession->setChecked(GuiCfg::getInstance().getSessionRestoration());
+    
     
     this->show();
 }
 
 void InterfaceCfg_IDEGeneral::save()
 {
+    GuiCfg::getInstance().setSplash(this->ui.chckSplash->isChecked());
     GuiCfg::getInstance().setSessionRestoration(this->ui.chckSession->isChecked());
 }

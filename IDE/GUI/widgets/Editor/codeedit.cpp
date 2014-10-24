@@ -225,6 +225,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
     this->changeHeight();
+    textEdit->setShortcuts();
     qDebug() << "CodeEdit: return CodeEdit()";
 }
 
@@ -396,6 +397,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
+    textEdit->setShortcuts();
     qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
