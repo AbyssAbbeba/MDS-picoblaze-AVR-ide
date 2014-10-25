@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Sim LED</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../../icons.qrc">
+    <normaloff>:/resources/icons/8seg.png</normaloff>:/resources/icons/8seg.png</iconset>
+  </property>
   <widget class="QComboBox" name="ledBox_7">
    <property name="geometry">
     <rect>
@@ -235,6 +239,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

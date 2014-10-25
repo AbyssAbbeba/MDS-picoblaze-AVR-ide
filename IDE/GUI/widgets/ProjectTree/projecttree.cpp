@@ -30,10 +30,10 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     QAction *closeProjectAct;
     //if (project == true)
     //{
-        newFileAct = new QAction("New File", projectPopup);
-        addFileAct = new QAction("Add File", projectPopup);
-        projectConfigAct = new QAction("Configuration", projectPopup);
-        closeProjectAct = new QAction("Close project", projectPopup);
+        newFileAct = new QAction(QIcon(QPixmap(":resources/icons/projNewAdd.png")), "New file", projectPopup);
+        addFileAct = new QAction(QIcon(QPixmap(":resources/icons/folder.png")), "Open File", projectPopup);
+        projectConfigAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_wrench.png")), "Configuration", projectPopup);
+        closeProjectAct = new QAction(QIcon(QPixmap(":resources/icons/breakpoint_disable.png")), "Close project", projectPopup);
         projectPopup->addAction(newFileAct);
         projectPopup->addAction(addFileAct);
         projectPopup->addAction(projectConfigAct);
@@ -59,7 +59,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     filePopup = new QMenu(this);
     if (project == true)
     {
-        removeFileAct = new QAction("Remove file", filePopup);
+        removeFileAct = new QAction(QIcon(QPixmap(":resources/icons/page_delete.png")), "Remove file", filePopup);
         setMainFileAct = new QAction("Set as main file", filePopup);
         filePopup->addAction(removeFileAct);
         filePopup->addAction(setMainFileAct);
@@ -68,7 +68,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     }
     else
     {
-        removeFileAct = new QAction("Remove file", filePopup);
+        removeFileAct = new QAction(QIcon(QPixmap(":resources/icons/page_delete.png")), "Remove file", filePopup);
         filePopup->addAction(removeFileAct);
         connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeFile()));
     }
@@ -244,7 +244,7 @@ void ProjectTree::newFile()
             file.close();
             emit addFile(path, path.section('/', -1));
         }
-            
+
     }
 }
 

@@ -19,6 +19,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     : QWidget(parent)
 {
     this->setWindowTitle("8 Segment Editor");
+    this->setWindowIcon(QIcon(QPixmap(":resources/icons/8segedit.png")));
     QWidget *leftWidget = new QWidget(this);
     QWidget *rightWidget = new QWidget(this);
     leftWidget->show();
@@ -96,8 +97,8 @@ DisplayTool::DisplayTool(QWidget *parent)
     connect(anodeLE[0], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEHexAn(const QString &)));
     connect(anodeLE[1], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEDecAn(const QString &)));
     connect(anodeLE[2], SIGNAL(textEdited(const QString &)), this, SLOT(updateLEBinAn(const QString &)));
-    
-    
+
+
     //right
     labelsUp[0] = new QLabel("LED", rightWidget);
     labelsUp[1] = new QLabel("VAL", rightWidget);
@@ -106,7 +107,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     labelsUp[0]->move(0,0);
     labelsUp[1]->move(40,0);
     labelsUp[2]->move(80,0);
-    
+
     labelsLED[0] = new QLabel("A", rightWidget);
     labelsLED[1] = new QLabel("B", rightWidget);
     labelsLED[2] = new QLabel("C", rightWidget);
@@ -124,7 +125,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     labelsLED[5]->move(0, 145);
     labelsLED[6]->move(0, 170);
     labelsLED[7]->move(0, 195);
-    
+
     labels[0] = new QLabel("0", rightWidget);
     labels[1] = new QLabel("0", rightWidget);
     labels[2] = new QLabel("0", rightWidget);
@@ -142,7 +143,7 @@ DisplayTool::DisplayTool(QWidget *parent)
     labels[5]->move(40, 145);
     labels[6]->move(40, 170);
     labels[7]->move(40, 195);
-    
+
     for (int i = 0; i < 8; i++)
     {
         comboBoxes[i] = new ComboBox(rightWidget, i);
@@ -499,7 +500,7 @@ void DisplayTool::updateLEBinCat(const QString &text)
         length--;
     }
     anodeLE[2]->setText(number);
-    
+
     display->setSegment(bin);
 }
 

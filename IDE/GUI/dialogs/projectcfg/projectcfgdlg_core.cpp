@@ -29,7 +29,8 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->project = currProject;
     this->reloadFiles = false;
     this->setModal(true);
-    this->setWindowTitle("Project Config");
+    this->setWindowTitle(tr("Project configuration"));
+    this->setWindowIcon(QIcon(QPixmap(":resources/icons/page_white_wrench.png")));
 
     this->cfgInterface = new CfgInterface(this);
     this->generalCfg = new ProjectCfg_General(cfgInterface, this->project);
