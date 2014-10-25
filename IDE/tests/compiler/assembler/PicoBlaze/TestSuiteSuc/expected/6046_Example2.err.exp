@@ -1,0 +1,3 @@
+MT_WARNING: 6046_Example2.asm:27.29-27.32: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6046_Example2.asm:30.31-30.36: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6046_Example2.asm:36.33-36.38: Warning: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.

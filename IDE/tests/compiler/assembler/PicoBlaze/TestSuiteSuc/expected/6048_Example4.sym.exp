@@ -1,0 +1,25 @@
+A  . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6048_Example4.asm:14.1-14.26
+B  . . . . . . . . . . . . . . . . . NUMBER 0x00004 USED     CONSTANT    6048_Example4.asm:15.1-15.26
+IF-0 . . . . . . . . . . . . . . . . LABEL  0x00008 USED     CONSTANT    6048_Example4.asm:59.5-59.22
+IF-0-END . . . . . . . . . . . . . . LABEL  0x0001A USED     CONSTANT    6048_Example4.asm:78.5-78.10
+IF-1 . . . . . . . . . . . . . . . . LABEL  0x00019 USED     CONSTANT    6048_Example4.asm:75.5-75.9
+IF-2 . . . . . . . . . . . . . . . . LABEL  0x0000F USED     CONSTANT    6048_Example4.asm:64.9-64.26
+IF-2-END . . . . . . . . . . . . . . LABEL  0x00018 USED     CONSTANT    6048_Example4.asm:73.9-73.14
+IF-3 . . . . . . . . . . . . . . . . LABEL  0x00013 USED     CONSTANT    6048_Example4.asm:67.9-67.26
+IF-4 . . . . . . . . . . . . . . . . LABEL  0x00017 USED     CONSTANT    6048_Example4.asm:70.9-70.13
+S0 . . . . . . . . . . . . . . . . . REG.   0x00000 USED     CONSTANT    IMPLICIT
+S1 . . . . . . . . . . . . . . . . . REG.   0x00001 USED     CONSTANT    IMPLICIT
+S2 . . . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    IMPLICIT
+S3 . . . . . . . . . . . . . . . . . REG.   0x00003 NOT USED CONSTANT    IMPLICIT
+S4 . . . . . . . . . . . . . . . . . REG.   0x00004 NOT USED CONSTANT    IMPLICIT
+S5 . . . . . . . . . . . . . . . . . REG.   0x00005 NOT USED CONSTANT    IMPLICIT
+S6 . . . . . . . . . . . . . . . . . REG.   0x00006 NOT USED CONSTANT    IMPLICIT
+S7 . . . . . . . . . . . . . . . . . REG.   0x00007 NOT USED CONSTANT    IMPLICIT
+S8 . . . . . . . . . . . . . . . . . REG.   0x00008 NOT USED CONSTANT    IMPLICIT
+S9 . . . . . . . . . . . . . . . . . REG.   0x00009 NOT USED CONSTANT    IMPLICIT
+SA . . . . . . . . . . . . . . . . . REG.   0x0000A NOT USED CONSTANT    IMPLICIT
+SB . . . . . . . . . . . . . . . . . REG.   0x0000B NOT USED CONSTANT    IMPLICIT
+SC . . . . . . . . . . . . . . . . . REG.   0x0000C NOT USED CONSTANT    IMPLICIT
+SD . . . . . . . . . . . . . . . . . REG.   0x0000D NOT USED CONSTANT    IMPLICIT
+SE . . . . . . . . . . . . . . . . . REG.   0x0000E NOT USED CONSTANT    IMPLICIT
+SF . . . . . . . . . . . . . . . . . REG.   0x0000F NOT USED CONSTANT    IMPLICIT
