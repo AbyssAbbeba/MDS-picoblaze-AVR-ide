@@ -257,7 +257,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="2" column="0" colspan="3">
        <widget class="QRadioButton" name="radio_Cycles">
         <property name="text">
          <string>Clock cycles</string>
@@ -279,44 +279,44 @@
       <string>Code</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="2">
-       <widget class="QPushButton" name="push_Copy">
-        <property name="text">
-         <string>Copy to clipboard</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QPushButton" name="push_Generate">
-        <property name="text">
-         <string>Generate code</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0" colspan="3">
        <widget class="QTextEdit" name="Vystup_text"/>
       </item>
-      <item row="3" column="0">
+      <item row="0" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Type:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="0" column="1">
        <widget class="QRadioButton" name="Button_Macro">
         <property name="text">
          <string>Macro</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="2">
+      <item row="0" column="2">
        <widget class="QRadioButton" name="radio_blank">
         <property name="text">
          <string>Blank</string>
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="push_Generate">
+        <property name="text">
+         <string>Generate code</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="push_Copy">
+        <property name="text">
+         <string>Copy to clipboard</string>
         </property>
        </widget>
       </item>

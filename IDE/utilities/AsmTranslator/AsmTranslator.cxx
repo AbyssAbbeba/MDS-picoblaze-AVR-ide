@@ -71,6 +71,11 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
                                        std::ostream & output,
                                        std::istream & input )
 {
+    if ( ( true == output.bad() ) || ( true == input.bad() ) )
+    {
+        return false;
+    }
+
     // Read the entire input.
     std::vector<std::string> buffer;
     while ( false == input.eof() )
@@ -156,6 +161,11 @@ bool AsmTranslator::translate ( Variant variant,
 
     std::ifstream iFile(input);
     std::ofstream oFile(output, std::ios_base::trunc);
+
+    if ( ( false == iFile.is_open() ) || ( false == oFile.is_open() ) )
+    {
+        return false;
+    }
 
     return translate(variant, oFile, iFile);
 }

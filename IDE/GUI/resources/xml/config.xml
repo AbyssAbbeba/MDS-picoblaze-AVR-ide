@@ -11,7 +11,7 @@
   <Option param="4" name="tabwidth"/>
   <Option param="true" name="spaces"/>
   <Option param="4" name="spaceswidth"/>
-  <Option param="" name="encoding"/>
+  <Option param="utf-8" name="encoding"/>
   <Option param="lf" name="eol"/>
  </EditorGeneral>
  <EditorHighlighter>
@@ -62,15 +62,11 @@
  </SimOthers>
  <RecentFiles>
   <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/a.asm"/>
-  <File path="untracked"/>
-  <File path="/home/rift/Plocha/uživatel/lisp.lsp"/>
-  <File path="/home/millenium/mms/IDE/GUI/resources/projects/MDSExample/Example1.mem"/>
+  <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/a.debug"/>
+  <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdd.asm"/>
  </RecentFiles>
  <RecentProjects>
-  <Project path="/home/abyss/NewExamples/s.mds-project"/>
-  <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdad.mds-project"/>
-  <Project path="/home/millenium/mms/IDE/GUI/resources/projects/MDSExample/MDSExample.mds-project"/>
-  <Project path="/home/millenium/vbshare/demo2/saass.mds-project"/>
   <Project path="./resources/projects/MDSExample/MDSExample.mds-project"/>
+  <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdad.mds-project"/>
  </RecentProjects>
 </config>
