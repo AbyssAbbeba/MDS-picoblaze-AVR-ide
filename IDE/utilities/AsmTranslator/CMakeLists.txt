@@ -73,7 +73,7 @@ target_link_libraries ( ${TRANSLATOR_EXEC_TARGET} ${PROJECT_NAME} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-if ( MDS_FEATURE_PICOBLAZE AND ( NOT MDS_GRADE STREQUAL "Basic" ) )
+if ( MDS_FEATURE_TRANSLATOR )
     install ( TARGETS ${PROJECT_NAME}
               RUNTIME DESTINATION ${INSTALL_DIR_BIN}
               LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
