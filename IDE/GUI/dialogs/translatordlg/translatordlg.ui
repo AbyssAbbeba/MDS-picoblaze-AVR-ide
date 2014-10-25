@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>ASM Translator</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../icons.qrc">
+    <normaloff>:/resources/icons/lightning_go.png</normaloff>:/resources/icons/lightning_go.png</iconset>
+  </property>
   <widget class="QDialogButtonBox" name="btnBox">
    <property name="geometry">
     <rect>
@@ -410,7 +414,9 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btnBox</sender>

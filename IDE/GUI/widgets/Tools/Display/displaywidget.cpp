@@ -165,7 +165,7 @@ void DisplayWidget::paintEvent(QPaintEvent */*event*/)
 {
     QPainter paint;
     paint.begin(this);
-    
+
     if (activated == true)
     {
         paint.setBrush(Qt::red);
@@ -175,7 +175,7 @@ void DisplayWidget::paintEvent(QPaintEvent */*event*/)
         paint.setBrush(this->palette().base().color());
         //paint.setBrush(((QWidget*)(this->parent()))->palette().base().color());
     }
-    
+
     if (index < 7)
     {
         paint.drawConvexPolygon(*widgetPolygon);
