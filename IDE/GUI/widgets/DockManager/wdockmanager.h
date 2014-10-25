@@ -86,6 +86,7 @@ class WDockManager : public QObject
         void setTabChanged();
         void setTabSaved();
         int getTabCount();
+        void setCentralByIndex(int index);
         bool isEmpty();
         BookmarkList* getBookmarkList();
         BreakpointList* getBreakpointList();

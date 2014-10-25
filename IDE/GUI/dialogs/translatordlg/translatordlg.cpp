@@ -76,7 +76,7 @@ void TranslatorDlg::create()
     bool finalResult = translator.translate((AsmTranslator::Variant)(this->ui.cmbType->currentIndex()),
                                             outputStream,
                                             input);
-    
+
     if ( true == finalResult )
     {
         std::vector<std::string> outputVector;
