@@ -356,8 +356,8 @@ void MainForm::createMenu()
 {
     //qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
     fileMenu->addAction(newAddAct);
+    fileMenu->addAction(newAct);
     fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
@@ -997,6 +997,7 @@ void MainForm::openFile()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "--------open file error";
             error(ERR_OPENFILE);
         }
         else
@@ -1004,11 +1005,21 @@ void MainForm::openFile()
             //wDockManager->addCentralWidget(path.section('/', -1), path);
             //wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
             file.close();
-            //wDockManager->getCentralWidget()->connectAct();
-            projectMan->addUntrackedFile(path, path.section('/', -1));
-            wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
-            wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
-            wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
+            if (projectMan->getOpenProjects().count() > 0)
+            {
+                projectMan->getActive()->addFile(path, path.section('/', -1));
+                wDockManager->addCentralWidget(path.section('/', -1), path);
+                wDockManager->getCentralWidget()->setParentProject(projectMan->getActive());
+                wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getActive());
+            }
+            else
+            {
+                //wDockManager->getCentralWidget()->connectAct();
+                projectMan->addUntrackedFile(path, path.section('/', -1));
+                wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
+                wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
+                wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
+            }
             GuiCfg::getInstance().fileOpened(path);
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
@@ -1033,6 +1044,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "--------------openfilepath error";
             error(ERR_OPENFILE);
         }
         else
@@ -1165,12 +1177,21 @@ void MainForm::saveFile()
                             QMessageBox dialog(this);
                             dialog.setWindowTitle("Highlight note");
                             dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                            dialog.setIcon(QMessageBox::Information);
+                            dialog.setIcon(QMessageBox::Warning);
                             dialog.setModal(true);
-                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                            if (QMessageBox::Yes == dialog.exec())
+                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                            int result = dialog.exec();
+                            if (QMessageBox::Yes == result)
                             {
                                 done = true;
+                            }
+                            else
+                            {
+                                if (QMessageBox::Cancel == result)
+                                {
+                                    path = "";
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1179,12 +1200,21 @@ void MainForm::saveFile()
                         QMessageBox dialog(this);
                         dialog.setWindowTitle("Highlight note");
                         dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                        dialog.setIcon(QMessageBox::Information);
+                        dialog.setIcon(QMessageBox::Warning);
                         dialog.setModal(true);
-                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                        if (QMessageBox::Yes == dialog.exec())
+                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                        int result = dialog.exec();
+                        if (QMessageBox::Yes == result)
                         {
                             done = true;
+                        }
+                        else
+                        {
+                            if (QMessageBox::Cancel == result)
+                            {
+                                path = "";
+                                break;
+                            }
                         }
                     }
                 }
@@ -1205,6 +1235,7 @@ void MainForm::saveFile()
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
+                qDebug() << "-------- save file error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1253,12 +1284,21 @@ void MainForm::saveFileAs()
                     QMessageBox dialog(this);
                     dialog.setWindowTitle("Highlight note");
                     dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                    dialog.setIcon(QMessageBox::Information);
+                    dialog.setIcon(QMessageBox::Warning);
                     dialog.setModal(true);
-                    dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                    if (QMessageBox::Yes == dialog.exec())
+                    dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                    int result = dialog.exec();
+                    if (QMessageBox::Yes == result)
                     {
                         done = true;
+                    }
+                    else
+                    {
+                        if (QMessageBox::Cancel == result)
+                        {
+                            path = "";
+                            break;
+                        }
                     }
                 }
             }
@@ -1267,12 +1307,20 @@ void MainForm::saveFileAs()
                 QMessageBox dialog(this);
                 dialog.setWindowTitle("Highlight note");
                 dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                dialog.setIcon(QMessageBox::Information);
+                dialog.setIcon(QMessageBox::Warning);
                 dialog.setModal(true);
-                dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                if (QMessageBox::Yes == dialog.exec())
+                dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                int result = dialog.exec();
+                if (QMessageBox::Yes == result)
                 {
                     done = true;
+                }
+                else
+                {
+                    if (QMessageBox::Cancel == result)
+                    {
+                        break;
+                    }
                 }
             }
         }
@@ -1282,6 +1330,7 @@ void MainForm::saveFileAs()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
+            qDebug() << "------------- save file as error";
             error(ERR_OPENFILE);
         }
         else
@@ -1333,12 +1382,21 @@ void MainForm::saveFile(CodeEdit *editor)
                             QMessageBox dialog(this);
                             dialog.setWindowTitle("Highlight note");
                             dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                            dialog.setIcon(QMessageBox::Information);
+                            dialog.setIcon(QMessageBox::Warning);
                             dialog.setModal(true);
-                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                            if (QMessageBox::Yes == dialog.exec())
+                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                            int result = dialog.exec();
+                            if (QMessageBox::Yes == result)
                             {
                                 done = true;
+                            }
+                            else
+                            {
+                                if (QMessageBox::Cancel == result)
+                                {
+                                    path = "";
+                                    break;
+                                }
                             }
                         }
                     }
@@ -1347,12 +1405,21 @@ void MainForm::saveFile(CodeEdit *editor)
                         QMessageBox dialog(this);
                         dialog.setWindowTitle("Highlight note");
                         dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                        dialog.setIcon(QMessageBox::Information);
+                        dialog.setIcon(QMessageBox::Warning);
                         dialog.setModal(true);
-                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
-                        if (QMessageBox::Yes == dialog.exec())
+                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                        int result = dialog.exec();
+                        if (QMessageBox::Yes == result)
                         {
                             done = true;
+                        }
+                        else
+                        {
+                            if (QMessageBox::Cancel == result)
+                            {
+                                path = "";
+                                break;
+                            }
                         }
                     }
                 }
@@ -1372,6 +1439,7 @@ void MainForm::saveFile(CodeEdit *editor)
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
+                qDebug() << "---------save file code edit error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1436,6 +1504,7 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "-----------------open project error";
             error(ERR_OPENFILE);
         }
         else
@@ -1461,6 +1530,7 @@ bool MainForm::openProject(QString path)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "----------- open project path error";
             error(ERR_OPENFILE);
             return false;
         }

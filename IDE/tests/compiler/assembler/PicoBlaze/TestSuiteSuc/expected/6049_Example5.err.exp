@@ -1,0 +1,6 @@
+MT_WARNING: 6049_Example5.asm:104.13-104.30: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6049_Example5.asm:104.13-104.30: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6049_Example5.asm:114.13-114.35: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6049_Example5.asm:114.13-114.35: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6049_Example5.asm:124.13-124.36: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+MT_WARNING: 6049_Example5.asm:124.13-124.36: Warning: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.

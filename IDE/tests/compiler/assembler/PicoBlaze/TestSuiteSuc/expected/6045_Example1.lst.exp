@@ -1,0 +1,88 @@
+                   1     ; ----------------------------------------------------------------------------------------------------------------------
+                   2     ; MDS for PicoBlaze - Demonstration code I: The First Steps
+                   3     ;
+                   4     ; >>> FOR QUICK RESULTS: press F6, then F8, wait a while and then F6 again (to see program simulation).
+                   5     ; ----------------------------------------------------------------------------------------------------------------------
+                   6     ;
+                   7     ; This is a very simple code meant just to show you the first steps. Please pay attention to this demonstration code,
+                   8     ; it will guide you trough the important basic of using this IDE for PicoBlaze soft-core processors. Be aware that this
+                   9     ; example project is read-only; when you are ready to try your own project, please consult the User Manual how to
+                  10     ; proceed with that, or just click on [Main Menu] -> [Project] -> [New Project] and give it a try. :-)
+                  11     ;
+                  12     ; Please proceed with these steps:
+                  13     ;   1) Press F6 to start the simulator (you may also select [Main Menu] -> [Simulation] -> [Start Simulation]).
+                  14     ;   2) Now your program is loaded in simulator, continue with:
+                  15     ;      a) for step by step simulation press F9 (or [Main Menu] -> [Simulation] -> [Step]),
+                  16     ;      b) for animated simulation press F8 (or [Main Menu] -> [Simulation] -> [Animate]), and again to stop animation,
+                  17     ;      c) for fast simulation ("run") press F7 (or [Main Menu] -> [Simulation] -> [Run]), and again to stop,
+                  18     ;      d) for reset press F10 (or [Main Menu] -> [Simulation] -> [Reset]).
+                  19     ;   3) Now you know how to run simulation in various modes, to stop the simulator entirely press F6 (again).
+                  20     ;   4) Lets try breakpoints:
+                  21     ;      a) To set a breakpoint left click on the vertical panel showing line numbers (on the code editor's left side).
+                  22     ;      b) And do it again at the same position to clear the breakpoint.
+                  23     ;      c) Now set some breakpoint on a line with an instruction and run either `animate' (F8) or `run' (F7), the
+                  24     ;         simulation will always stop at your breakpoint but only in modes animate and run.
+                  25     ;      d) Breakpoints can be all switched off and on again without clearing them, see
+                  26     ;         [Main Menu] -> [Simulation] -> [Disable breakpoints] / [Enable breakpoints]
+                  27     ;
+                  28     ; ----------------------------------------------------------------------------------------------------------------------
+                  29     DEVICE      kcpsm6
+                  30                 ; Start at address 0x000
+  00000           31                 org         0x000
+000 22001         32                 jump        start
+                  33
+                  34                 ; Initialize some registers with some values.
+001 0100B         35     start:      load        S0, #11         ; Load register S0 with value 11 decimal.
+002 0110B         36                 load        S1, #0x0B       ; Load register S1 with value B hexadecimal (11 dec.).
+003 0120B         37                 load        S2, #013        ; Load register S2 with value 13 octal (11 dec.).
+004 0130B         38                 load        S3, #0b1011     ; Load register S3 with value 1001 octal (11 dec.).
+005 01461         39                 load        S4, #'a'        ; Load register S4 with ascii value of character `a'.
+                  40
+                  41                 ; Something just to catch you eye... :-) we will talk about this in the next examples.
+                  42                 for         S5, 0 .. 32, 2  ; C: for ( S5 = 0; S5 <= 32; S5 += 2 ) {
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
+006 01500         43 +1      LOAD    0x5, #0x0
+  00007           44 +1  FOR-0:
+007 1D520         45 +1      COMPARE S5, #0x20
+008 3200C         46 +1      JUMP    Z, FOR-0-END
+009 2C450         47                     output  S4, @S5
+                  48                 endf                        ; C: }
+00A 11502         49 +1      ADD     0x5, #0x2
+00B 22007         50 +1      JUMP    FOR-0
+  0000C           51 +1  FOR-0-END:
+                  52
+                  53                 ; An infinite loop.
+00C 2E010         54     loop:       store       S0, @S1         ; Store value of register S0 in SPR at address pointed by register S1.
+00D 2C230         55                 output      S2, @S3         ; Set value of register S2 on output port at address pointed by register S3.
+00E 070FF         56                 xor         S0, #0xff       ; Complement register S0.
+00F 00200         57                 load        S2, S0          ; Load register S2 with value of register S0.
+010 11101         58                 add         S1, #0x01       ; Increment register S1.
+011 19301         59                 sub         S3, #0x01       ; Decrement register S3.
+012 2200C         60                 jump        loop            ; Jump to label `loop'.
+                  61
+                  62                 ; Assembler will stop here, everything after the `END' directive is ignored.
+                  63                 end
+                  64
+                  65     ; ----------------------------------------------------------------------------------------------------------------------
+                  66     ; Notes:
+                  67     ;   1) To access the User Manual: [Main Menu] -> [Help] -> [Help].
+                  68     ;   1) Compilation: when you need to run assembler, press F5 (or [Main Menu] -> [Project] -> [Compile]).
+                  69     ;   2) Your hex file, and other files you need: look in the folder where you have located your source file; and is
+                  70     ;      possible, please consult the User Manual on the specifics, MDS built-in assembler can generate a lot of different
+                  71     ;      file formats.
+                  72     ;
+                  73     ; Closing remarks:
+                  74     ; * Confused? If yes, don't worry, later in this example project you will see the full power of this "strange looking"
+                  75     ;   assembly language dialect; MDS will show you user defined macro instruction, run time conditions, math expressions,
+                  76     ;   data type sensitivity, and many other innovations. The MDS advanced assembler for PicoBlaze can really make your a
+                  77     ;   lot work easier, when you learn how to use it properly, and it's just an assembler so it can't be too hard to learn.
+                  78     ; * Please notice the speed of simulation in run mode, it's about 50..150 times slower than real time (proportional to
+                  79     ;   processor clock). For instance if you are simulation PicoBlaze running at 20MHz on a machine with 2GHz CPU, you
+                  80     ;   should get approximately real-time simulation. Not impressed? ... actually it's a pretty good performance, you can
+                  81     ;   rarely see simulators running with such efficient use of processing power, usually processor simulators run far
+                  82     ;   slower than that, even several thousand times slower ... really!
+                  83     ; ----------------------------------------------------------------------------------------------------------------------
+                  84     ; In the next example you will see how to use user defined constants and expressions, and what is the difference
+                  85     ; between operand prefixed with `#' or `@', and operand without any prefix.
+                  86     ; ----------------------------------------------------------------------------------------------------------------------
