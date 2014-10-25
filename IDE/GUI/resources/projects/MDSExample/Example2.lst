@@ -1,0 +1,111 @@
+                   1     ; ----------------------------------------------------------------------------------------------------------------------
+                   2     ; MDS for PicoBlaze - Demonstration code II: Instructions & operands.
+                   3     ;
+                   4     ; >>> FOR QUICK RESULTS: press F6, then F8, wait a while and then F6 again (to see program simulation).
+                   5     ; ----------------------------------------------------------------------------------------------------------------------
+                   6     ;
+                   7     ; Please pay attention to this example code, without understanding this example you may have problems understanding the
+                   8     ; next example codes.
+                   9     ;
+                  10     ; This example covers these topics:
+                  11     ;   - What does `#' and `@' mean in instruction operands, and what is it good for.
+                  12     ;   - How to define your own constants and expressions and use them.
+                  13     ;   - How to use `$' symbol in the code.
+                  14     ;
+                  15     ; ----------------------------------------------------------------------------------------------------------------------
+                  16
+                  17                 ; Start at address 0x000.
+  00000           18                 org     0x000
+                  19
+                  20     ; ======================================================================================================================
+                  21     ; Operands and types of addressing, what `#' and `@' means.
+                  22     ; ======================================================================================================================
+                  23
+                  24                 ; Lets' see some examples first:
+000 00050         25                 load        S0, S5          ; Copy contents of reg. S5 to reg. S0.
+001 01005         26                 load        S0, #0x5        ; Copy immediate value 0x5 (hexadecimal number) to reg. S0
+002 00050         27                 load        S0, 0x5         ; This is interesting: copy contents of reg. S5 to reg. S0, why? see next lines.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
+                  28
+003 01003         29                 load        S0, # ( 1 + 2 ) ; S0 <- value 3
+004 00030         30                 load        S0, ( 6 - 3 )   ; S0 <- register at address 3 (i.e. S3)
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+                  31                 ; Examplation: the `#' character instructs assembler to use immediate addressing instead of direct
+                  32                 ; addressing, this is very important when you want to use expressions, and macros as instruction operand.
+                  33                 ; Later in this example project you will see the potential of such capability.
+                  34
+005 2E010         35                 store       S0, @S1         ; Store value of register S0 in SPR at address pointed by register S1.
+006 2E010         36                 store       S0, @ ( 3 - 2)  ; The same as above.
+W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+007 2F001         37                 store       S0, 0x01        ; Store value of register S0 in SPR at address 0x01.
+008 2F001         38                 store       S0, ( 3 - 2)    ; Store value of register S0 in SPR at address 0x01.
+                  39                 ; Explanation: the `@' character instructs assembler to use indirect addressing instead of direct.
+                  40
+                  41     ; ======================================================================================================================
+                  42
+                  43
+                  44     ; ======================================================================================================================
+                  45     ; Lets take a look at constants and expressions.
+                  46     ; ======================================================================================================================
+  00055           47     MY_CONST    set         0x55                    ; Set a user defined constant named MY_CONST with value 0x55.
+009 01255         48                 load        S2, #MY_CONST           ; S2 <- value 0x55
+00A 01256         49                 load        S2, # ( MY_CONST + 1 )  ; S2 <- value ( 0x55 + 1 )
+                  50
+  00056           51     MY_CONST2   set         MY_CONST + 1            ; Set a user defined constant named MY_CONST2 with value 0x55 + 1.
+00B 01255         52                 load        S2, #MY_CONST           ; S2 <- value 0x56
+00C 01256         53                 load        S2, # ( MY_CONST + 1 )  ; S2 <- value ( 0x56 + 1 )
+                  54
+                  55     MY_EXPR     define      ( {0} + {1} )
+00D 012AB         56                 load        S2, #MY_EXPR(MY_CONST, MY_CONST2)
+                  57                 ; Explanation: with `define' we created an user defined expression with two parameters 0 and 1, any time
+                  58                 ; later you can use this expression with any two arguments you want, and the assembler will compute the
+                  59                 ; actual value of this particular instance of this expression and use it where you want, in this case as an
+                  60                 ; operand.
+                  61     ; ======================================================================================================================
+                  62
+                  63
+                  64     ; ======================================================================================================================
+                  65     ; More advanced usage of constants and expressions.
+                  66     ; ======================================================================================================================
+                  67     ; Lets make some definitions.
+  00003           68     START       set         0x03                    ; START   := 0x03
+                  69     MY_ORIG     define      START + {0}             ; MY_ORIG := ( START + <argument #0> )
+                  70
+                  71     ; As `set' defines an user constant `reg' defines an user named register, they both operate the same way.
+  00004           72     MY_REG      reg         MY_ORIG(S1)             ; MY_REG  := S1 + START  (i.e. 0x03 + S1 = 4)
+  00009           73     MY_REG2     reg         MY_ORIG(MY_REG + 2)     ; MY_REG2 := MY_REG + 2  (i.e. 0x03 + S1 + 2 = 6)
+                  74
+                  75     ; And lets use them:
+00E 00490         76                 load        MY_REG, MY_REG2         ; If you understand what this does, you understand the concept of
+                  77                                                     ; constants and expressions applied in the MDS built-in assembler.
+                  78                                                     ; An if you don't, please study this example more deeply, or consult the
+                  79                                                     ; user manual, and in the notes bellow is the answer.
+                  80     ; ======================================================================================================================
+                  81
+                  82
+                  83     ; That's all for now, and lets stuck in an infinite loop. :-) ... Please see the next example.
+00F 2200F         84                 jump        $
+                  85
+                  86     ; Assembler will stop here, everything after the `END' directive is ignored.
+                  87                 end
+                  88
+                  89     ; ----------------------------------------------------------------------------------------------------------------------
+                  90     ; Notes:
+                  91     ;   1) Directive `set' creates a redefinable user constant which you can use in place of any number in your code, the
+                  92     ;      same operates also directive `equ', these two directive can be used for most time interchangeably, the only
+                  93     ;      difference it that constants defined with `equ' directive cannot be redefined later in the code.
+                  94     ;   2) Directive `define' can actually use as many parameters as you want, not just two. Parameters are numbered
+                  95     ;      0, 1, 2, 3, ... and inside the expression definition they have to be enclosed with curly brackets like:
+                  96     ;      {0}, {1}, {2}, {3}, ... You can even use expression within another expression, there is no limit in depth.
+                  97     ;   3) "load MY_REG, MY_REG2" does: S4 <- S6. It loads register at address MY_REG (0x4 i.e S4) with value of register at
+                  98     ;      address MY_REG2 (0x6 i.e. S6).
+                  99     ;   4) On any line in the code where an instruction is present, there is also automatically defined a special constant
+                 100     ;      named `$' (dollar), this constant hold the address of the instruction on that line. That's why you can make an
+                 101     ;      infinite loop like this: "jump $" or for instance jump over the next two instructions just by doing this:
+                 102     ;      "jump $+2".
+                 103     ;   5) Mathematical expressions like 1 + 2 may be enclosed in parenthesis but it is not mandatory, in some cases it may
+                 104     ;      improve readability of the code. Operand precedence is the same as in C language, please consult the user manual
+                 105     ;      on details.
+                 106     ; ----------------------------------------------------------------------------------------------------------------------
+                 107     ; In the next example you will see some time saving features of this assembler.
+                 108     ; ----------------------------------------------------------------------------------------------------------------------
