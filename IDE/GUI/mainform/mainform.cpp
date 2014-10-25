@@ -1310,7 +1310,53 @@ void MainForm::saveFile(CodeEdit *editor)
         if (editor->getPath() == NULL || editor->getPath() == "untracked")
         {
             //path = QFileDialog::getSaveFileName(this, tr("Source File");
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            bool done = false;
+            while (false == done)
+            {
+                path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                if (path == NULL)
+                {
+                    break;
+                }
+                else
+                {
+                    int index = path.lastIndexOf(".");
+                    if (index > 0)
+                    {
+                        QString text(path.right(path.size() - index));
+                        if (text == ".asm" || text == ".psm")
+                        {
+                            done = true;
+                        }
+                        else
+                        {
+                            QMessageBox dialog(this);
+                            dialog.setWindowTitle("Highlight note");
+                            dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+                            dialog.setIcon(QMessageBox::Information);
+                            dialog.setModal(true);
+                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+                            if (QMessageBox::Yes == dialog.exec())
+                            {
+                                done = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        QMessageBox dialog(this);
+                        dialog.setWindowTitle("Highlight note");
+                        dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+                        dialog.setIcon(QMessageBox::Information);
+                        dialog.setModal(true);
+                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No);
+                        if (QMessageBox::Yes == dialog.exec())
+                        {
+                            done = true;
+                        }
+                    }
+                }
+            }
             if (path != NULL)
             {
                 editor->setPath(path);
@@ -2650,6 +2696,10 @@ void MainForm::exampleOpen()
     {
         //qDebug() << "MainForm: loading";
         this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
+    }
+    if (wDockManager->getTabCount() > 0)
+    {
+        wDockManager->setCentralByIndex(0);
     }
     //qDebug() << "MainForm: return exampleOpen";
 }
