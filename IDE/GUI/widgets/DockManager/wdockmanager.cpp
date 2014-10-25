@@ -1002,6 +1002,12 @@ CodeEdit* WDockManager::getCentralByPath(QString filePath)
 }
 
 
+void WDockManager::setCentralByIndex(int index)
+{
+    this->wTab->setCurrentIndex(index);
+}
+
+
 void WDockManager::setEditorsReadOnly(bool readonly)
 {
     for (int i = 0; i < codeEditList.count(); i++)
