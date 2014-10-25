@@ -356,8 +356,8 @@ void MainForm::createMenu()
 {
     //qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAct);
     fileMenu->addAction(newAddAct);
+    fileMenu->addAction(newAct);
     fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
@@ -997,6 +997,7 @@ void MainForm::openFile()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "--------open file error";
             error(ERR_OPENFILE);
         }
         else
@@ -1043,6 +1044,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "--------------openfilepath error";
             error(ERR_OPENFILE);
         }
         else
@@ -1233,6 +1235,7 @@ void MainForm::saveFile()
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
+                qDebug() << "-------- save file error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1327,6 +1330,7 @@ void MainForm::saveFileAs()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
+            qDebug() << "------------- save file as error";
             error(ERR_OPENFILE);
         }
         else
@@ -1435,6 +1439,7 @@ void MainForm::saveFile(CodeEdit *editor)
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
+                qDebug() << "---------save file code edit error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1499,6 +1504,7 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "-----------------open project error";
             error(ERR_OPENFILE);
         }
         else
@@ -1524,6 +1530,7 @@ bool MainForm::openProject(QString path)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "----------- open project path error";
             error(ERR_OPENFILE);
             return false;
         }

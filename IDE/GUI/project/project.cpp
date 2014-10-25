@@ -1160,6 +1160,7 @@ void Project::saveProject()
     QFile *file = new QFile(prjPath);
     if(!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
+        qDebug() << "-----------------------save project error";
         error(ERR_OPENFILE);
         return;
     }
