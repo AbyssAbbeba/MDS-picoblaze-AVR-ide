@@ -34,6 +34,9 @@ WelcomeWidget::WelcomeWidget ( QWidget * parent ) : QWidget(parent)
 inline void WelcomeWidget::setupConnections()
 {
     connect(pushButtonDismiss,  SIGNAL(clicked()), SLOT(close()));
+    connect(pushButtonManual,   SIGNAL(clicked()), SLOT(close()));
+    connect(pushButtonTutorial, SIGNAL(clicked()), SLOT(close()));
+
     connect(pushButtonTutorial, SIGNAL(clicked()), SIGNAL(tutorial()));
     connect(pushButtonManual,   SIGNAL(clicked()), SIGNAL(manual()));
 }
