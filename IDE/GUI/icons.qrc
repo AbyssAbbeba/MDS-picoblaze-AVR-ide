@@ -32,12 +32,17 @@
     <file>resources/icons/button-purple.png</file>
     <file>resources/icons/splash.png</file>
     <file>resources/icons/8seg.png</file>
+    <file>resources/icons/8segedit.png</file>
     <file>resources/icons/add.png</file>
     <file>resources/icons/arrow_redo.png</file>
     <file>resources/icons/arrow_undo.png</file>
     <file>resources/icons/cut.png</file>
     <file>resources/icons/disk_multiple.png</file>
     <file>resources/icons/disk.png</file>
+    <file>resources/icons/disk2.png</file>
+    <file>resources/icons/mainIcon.png</file>
+    <file>resources/icons/folder.png</file>
+    <file>resources/icons/cancel.png</file>
     <file>resources/icons/help.png</file>
     <file>resources/icons/ledpanel.png</file>
     <file>resources/icons/page_copy.png</file>
@@ -45,7 +50,8 @@
     <file>resources/icons/page_edit.png</file>
     <file>resources/icons/page.png</file>
     <file>resources/icons/page_white_wrench.png</file>
-    <file>resources/icons/script_gear.png</file>
+    <file>resources/icons/page_white_gear.png</file>
+    <file>resources/icons/page_white_lightning.png</file>
     <file>resources/icons/simplekeypad.png</file>
     <file>resources/xml/mcuspecfile.xml</file>
     <file>resources/fonts/Ubuntu/UbuntuMono-R.ttf</file>
