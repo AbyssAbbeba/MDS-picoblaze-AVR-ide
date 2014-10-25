@@ -1,0 +1,20 @@
+MT_WARNING: 6050_Example6.asm:60.29-60.32: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:64.13-64.17: Warning: ==> instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:124.25-124.35: Warning: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:150.13-150.36: Warning: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:126.9-126.14: Warning: ==> ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:125.5-125.30: Warning: ==> ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:126.9-126.14: Warning: ==> ==> ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:144.25-144.35: Warning: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:151.13-151.34: Warning: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:146.9-146.14: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:144.37-144.47: Warning: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:151.13-151.34: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:146.9-146.14: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:145.5-145.30: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:146.9-146.14: Warning: ==> ==> ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:145.5-145.30: Warning: ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:146.9-146.14: Warning: ==> ==> ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:153.13-153.36: Warning: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:154.13-154.34: Warning: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+MT_WARNING: 6050_Example6.asm:154.13-154.34: Warning: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
