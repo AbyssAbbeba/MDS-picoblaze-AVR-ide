@@ -71,9 +71,16 @@ int main(int argc, char *argv[])
     //{
     //    qDebug() << pattern;
     //}
+
+    /*QList<QByteArray> codecs = QTextCodec::availableCodecs();
+    foreach (QByteArray array, codecs)
+    {
+        qDebug() << array;
+    }*/
     
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
+
     bool openFile = false;
     bool release = true;
     if (argc > 1)
@@ -93,7 +100,15 @@ int main(int argc, char *argv[])
             qDebug() << "Main: recieved something on argv[1]" << QString::fromLocal8Bit(argv[1]);
         }
     }
-    GuiCfg::getInstance().loadConfig();
+    bool firstStart = GuiCfg::getInstance().loadConfig();
+    QPixmap pixmap(":resources/icons/splash.png");
+    QSplashScreen splash(pixmap);
+    if (true == GuiCfg::getInstance().getSplash())
+    {
+        splash.setWindowFlags(splash.windowFlags() | Qt::WindowStaysOnTopHint);
+        splash.show();
+        app.processEvents();
+    }
 
     if (true == release)
     {
@@ -216,6 +231,11 @@ int main(int argc, char *argv[])
     //qDebug() << "Main: height" << MainGUI.height();
     MainGUI.startHeight = MainGUI.height();
 
+    if (true == firstStart)
+    {
+        QTimer::singleShot(500, &MainGUI, SLOT(welcomeDialog()));
+    }
+    
     if (true == openFile)
     {
         QTimer::singleShot(200, &MainGUI, SLOT(openProject(QString::fromLocal8Bit(argv[1]))));
@@ -234,6 +254,12 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (true == GuiCfg::getInstance().getSplash())
+    {
+        app.processEvents();
+        QTimer::singleShot(2000, &splash, SLOT(close()));
+    }
+        
     return app.exec();
 
 }

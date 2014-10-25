@@ -40,6 +40,8 @@ class AsmAdaptableCodeGenerator;
  */
 class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
 {
+    friend class AsmAdaptableTreeDecoder;
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -120,6 +122,9 @@ class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         AdjSimProcDef m_device;
+
+        ///
+        bool m_deviceSet;
 };
 
 #endif // ASMADAPTABLESEMANTICANALYZER_H

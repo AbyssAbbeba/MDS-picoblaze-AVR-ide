@@ -641,6 +641,8 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_DIR_CODE:             out << "ASMPICOBLAZE_DIR_CODE";             break;
         case ASMPICOBLAZE_DIR_REG:              out << "ASMPICOBLAZE_DIR_REG";              break;
         case ASMPICOBLAZE_DIR_PORT:             out << "ASMPICOBLAZE_DIR_PORT";             break;
+        case ASMPICOBLAZE_DIR_PORTIN:           out << "ASMPICOBLAZE_DIR_PORTIN";           break;
+        case ASMPICOBLAZE_DIR_PORTOUT:          out << "ASMPICOBLAZE_DIR_PORTOUT";          break;
         case ASMPICOBLAZE_DIR_REPT:             out << "ASMPICOBLAZE_DIR_REPT";             break;
         case ASMPICOBLAZE_DIR_ENDR:             out << "ASMPICOBLAZE_DIR_ENDR";             break;
         case ASMPICOBLAZE_DIR_WHILE:            out << "ASMPICOBLAZE_DIR_WHILE";            break;

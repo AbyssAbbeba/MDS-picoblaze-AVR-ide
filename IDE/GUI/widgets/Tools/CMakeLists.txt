@@ -37,6 +37,10 @@ if ( MDS_FEATURE_SIM_7_SEGMENT )
     add_subdirectory(Sim7Seg)
 endif()
 
-add_subdirectory(SimSwitch)
-add_subdirectory(SimPortLogger)
+if ( MDS_FEATURE_SIM_SWITCH )
+    add_subdirectory(SimSwitch)
+endif()
+if ( MDS_FEATURE_SIM_PORT_LOGGER )
+    add_subdirectory(SimPortLogger)
+endif()
 

@@ -1,0 +1,108 @@
+; ----------------------------------------------------------------------------------------------------------------------
+; MDS for PicoBlaze - Demonstration code II: Instructions & operands.
+;
+; >>> FOR QUICK RESULTS: press F6, then F8, wait a while and then F6 again (to see program simulation).
+; ----------------------------------------------------------------------------------------------------------------------
+;
+; Please pay attention to this example code, without understanding this example you may have problems understanding the
+; next example codes.
+;
+; This example covers these topics:
+;   - What does `#' and `@' mean in instruction operands, and what is it good for.
+;   - How to define your own constants and expressions and use them.
+;   - How to use `$' symbol in the code.
+;
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; Start at address 0x000.
+            org     0x000
+
+; ======================================================================================================================
+; Operands and types of addressing, what `#' and `@' means.
+; ======================================================================================================================
+
+            ; Lets' see some examples first:
+            load        S0, S5          ; Copy contents of reg. S5 to reg. S0.
+            load        S0, #0x5        ; Copy immediate value 0x5 (hexadecimal number) to reg. S0
+            load        S0, 0x5         ; This is interesting: copy contents of reg. S5 to reg. S0, why? see next lines.
+
+            load        S0, # ( 1 + 2 ) ; S0 <- value 3
+            load        S0, ( 6 - 3 )   ; S0 <- register at address 3 (i.e. S3)
+            ; Examplation: the `#' character instructs assembler to use immediate addressing instead of direct
+            ; addressing, this is very important when you want to use expressions, and macros as instruction operand.
+            ; Later in this example project you will see the potential of such capability.
+
+            store       S0, @S1         ; Store value of register S0 in SPR at address pointed by register S1.
+            store       S0, @ ( 3 - 2)  ; The same as above.
+            store       S0, 0x01        ; Store value of register S0 in SPR at address 0x01.
+            store       S0, ( 3 - 2)    ; Store value of register S0 in SPR at address 0x01.
+            ; Explanation: the `@' character instructs assembler to use indirect addressing instead of direct.
+
+; ======================================================================================================================
+
+
+; ======================================================================================================================
+; Lets take a look at constants and expressions.
+; ======================================================================================================================
+MY_CONST    set         0x55                    ; Set a user defined constant named MY_CONST with value 0x55.
+            load        S2, #MY_CONST           ; S2 <- value 0x55
+            load        S2, # ( MY_CONST + 1 )  ; S2 <- value ( 0x55 + 1 )
+
+MY_CONST2   set         MY_CONST + 1            ; Set a user defined constant named MY_CONST2 with value 0x55 + 1.
+            load        S2, #MY_CONST           ; S2 <- value 0x56
+            load        S2, # ( MY_CONST + 1 )  ; S2 <- value ( 0x56 + 1 )
+
+MY_EXPR     define      ( {0} + {1} )
+            load        S2, #MY_EXPR(MY_CONST, MY_CONST2)
+            ; Explanation: with `define' we created an user defined expression with two parameters 0 and 1, any time
+            ; later you can use this expression with any two arguments you want, and the assembler will compute the
+            ; actual value of this particular instance of this expression and use it where you want, in this case as an
+            ; operand.
+; ======================================================================================================================
+
+
+; ======================================================================================================================
+; More advanced usage of constants and expressions.
+; ======================================================================================================================
+; Lets make some definitions.
+START       set         0x03                    ; START   := 0x03
+MY_ORIG     define      START + {0}             ; MY_ORIG := ( START + <argument #0> )
+
+; As `set' defines an user constant `reg' defines an user named register, they both operate the same way.
+MY_REG      reg         MY_ORIG(S1)             ; MY_REG  := S1 + START  (i.e. 0x03 + S1 = 4)
+MY_REG2     reg         MY_ORIG(MY_REG + 2)     ; MY_REG2 := MY_REG + 2  (i.e. 0x03 + S1 + 2 = 6)
+
+; And lets use them:
+            load        MY_REG, MY_REG2         ; If you understand what this does, you understand the concept of
+                                                ; constants and expressions applied in the MDS built-in assembler.
+                                                ; An if you don't, please study this example more deeply, or consult the
+                                                ; user manual, and in the notes bellow is the answer.
+; ======================================================================================================================
+
+
+; That's all for now, and lets stuck in an infinite loop. :-) ... Please see the next example.
+            jump        $
+
+; Assembler will stop here, everything after the `END' directive is ignored.
+            end
+
+; ----------------------------------------------------------------------------------------------------------------------
+; Notes:
+;   1) Directive `set' creates a redefinable user constant which you can use in place of any number in your code, the
+;      same operates also directive `equ', these two directive can be used for most time interchangeably, the only
+;      difference it that constants defined with `equ' directive cannot be redefined later in the code.
+;   2) Directive `define' can actually use as many parameters as you want, not just two. Parameters are numbered
+;      0, 1, 2, 3, ... and inside the expression definition they have to be enclosed with curly brackets like:
+;      {0}, {1}, {2}, {3}, ... You can even use expression within another expression, there is no limit in depth.
+;   3) "load MY_REG, MY_REG2" does: S4 <- S6. It loads register at address MY_REG (0x4 i.e S4) with value of register at
+;      address MY_REG2 (0x6 i.e. S6).
+;   4) On any line in the code where an instruction is present, there is also automatically defined a special constant
+;      named `$' (dollar), this constant hold the address of the instruction on that line. That's why you can make an
+;      infinite loop like this: "jump $" or for instance jump over the next two instructions just by doing this:
+;      "jump $+2".
+;   5) Mathematical expressions like 1 + 2 may be enclosed in parenthesis but it is not mandatory, in some cases it may
+;      improve readability of the code. Operand precedence is the same as in C language, please consult the user manual
+;      on details.
+; ----------------------------------------------------------------------------------------------------------------------
+; In the next example you will see some time saving features of this assembler.
+; ----------------------------------------------------------------------------------------------------------------------

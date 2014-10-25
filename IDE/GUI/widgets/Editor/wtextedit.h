@@ -18,6 +18,7 @@
 
 #include <QPlainTextEdit>
 #include "../Highlighter/highlighter.h"
+#include <QShortcut>
 
 
 
@@ -43,11 +44,18 @@ class WTextEdit : public QPlainTextEdit
         int getPosition();
         void scrollToLine(int line);
         void selectLine(int line);
+        void setShortcuts();
+        void moveCursorToLine(int line);
 
         //only use in CodeEdit::loadCodeEdit(...)
         //SourceType getSourceType();
         //void setSourceType(SourceType type);
         void deleteHighlighter();
+
+        
+
+
+        
 
         /*WTextEdit & operator<< (QString const &str)
         {
@@ -60,6 +68,33 @@ class WTextEdit : public QPlainTextEdit
         void cursorPositionChangedSlot();
         void setTabToSpaces(bool enabled);
         void setSpacesInTab(int spacesInTab);
+        void shortcutBreakpoint();
+        void shortcutBookmark();
+        void shortcutCopy();
+        void shortcutPaste();
+        void shortcutCut();
+        void shortcutSelectAll();
+        void shortcutDeselect();
+        void shortcutComment();
+        void shortcutJmpToBookmarkNext();
+        void shortcutJmpToBookmarkPrev();
+        void shortcutJmpToLine();
+        void shortcutFind();
+        void shortcutReplace();
+        void shortcutMoveLineUp();
+        void shortcutMoveLineDown();
+        void shortcutMoveWordLeft();
+        void shortcutMoveWordRight();
+        void shortcutToUpper();
+        void shortcutToLower();
+        void shortcutFirstToUpper();
+        void shortcutDeleteLine();
+        void shortcutSwitchChars();
+        void shortcutSelectWordUnder();
+        void shortcutSelectWordLeft();
+        void shortcutSelectWordRight();
+        void shortcutUndo();
+        void shortcutRedo();
         //void editedUndo();
         //void editedRedo();
         //void editedCut();
@@ -77,6 +112,7 @@ class WTextEdit : public QPlainTextEdit
         void breakpointsRemoveLines(int line, int linesRemoved);
         void bookmarksAddLines(int line, int linesAdded);
         void bookmarksRemoveLines(int line, int linesRemoved);
+        void requestScrollToBookmark(int currLine, bool next);
 
     //private slots:
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
@@ -92,9 +128,37 @@ class WTextEdit : public QPlainTextEdit
         QAction *cutAct;
         QAction *copyAct;
         QAction *deselectAct;
-        
+
         bool tabToSpaces;
         int spacesInTab;
+
+        QShortcut *shctBreakpoint;
+        QShortcut *shctBookmark;
+        QShortcut *shctCopy;
+        QShortcut *shctPaste;
+        QShortcut *shctCut;
+        QShortcut *shctSelectAll;
+        QShortcut *shctDeselect;
+        QShortcut *shctComment;
+        QShortcut *shctJmpToBookmarkNext;
+        QShortcut *shctJmpToBookmarkPrev;
+        QShortcut *shctJmpToLine;
+        QShortcut *shctFind;
+        QShortcut *shctReplace;
+        QShortcut *shctMoveLineUp;
+        QShortcut *shctMoveLineDown;
+        QShortcut *shctMoveWordLeft;
+        QShortcut *shctMoveWordRight;
+        QShortcut *shctToUpper;
+        QShortcut *shctToLower;
+        QShortcut *shctFirstToUpper;
+        QShortcut *shctDeleteLine;
+        QShortcut *shctSwitchChars;
+        QShortcut *shctSelectWordUnder;
+        QShortcut *shctSelectWordLeft;
+        QShortcut *shctSelectWordRight;
+        QShortcut *shctUndo;
+        QShortcut *shctRedo;
         
 
 

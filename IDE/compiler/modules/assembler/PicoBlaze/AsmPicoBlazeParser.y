@@ -30,7 +30,7 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar
-%expect 125
+%expect 138
 // Expect exactly <n> reduce/reduce conflicts in this grammar
 %expect-rr 0
 /* Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser) */
@@ -160,7 +160,8 @@
 %token D_END            D_REG           D_CODE          D_ENDW          D_WARNING
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
 %token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE        D_ADDRESS
-%token D_FAILJMP        D_ORGSPR        D_INITSPR       D_MERGESPR
+%token D_FAILJMP        D_ORGSPR        D_INITSPR       D_MERGESPR      D_PORTIN
+%token D_PORTOUT
 
 /* Instructions */
 %token I_JUMP           I_CALL          I_RETURN        I_JUMP_Z        I_CALL_Z
@@ -273,7 +274,7 @@
 %type<stmt>     dir_endm        dir_macro_d     dir_macro_a     dir_endr        dir_endr_a
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
 %type<stmt>     dir_data        dir_limit       dir_device      dir_failjmp     dir_orgspr
-%type<stmt>     dir_initspr     dir_mergespr
+%type<stmt>     dir_initspr     dir_mergespr    ifelse_blocks   dir_portin      dir_portout
 // Statements - instructions
 %type<stmt>     inst_jump       inst_call       inst_return     inst_add        inst_addcy
 %type<stmt>     inst_sub        inst_subcy      inst_compare    inst_returni    inst_enable_int
@@ -291,6 +292,7 @@
 %type<stmt>     dir_rt_cond     rtif_block      rtelseif_block  rtelse_block    dir_rtif
 %type<stmt>     dir_rtelseif    dir_rtelse      dir_rtendif     dir_rtwhile     dir_rtendw
 %type<stmt>     dir_rtfor       dir_rtendf      dir_rtwhile_b   dir_rtfor_b     dir_rt_cond_a
+%type<stmt>     rtelseif_blocks
 
 /*
  * Symbol destructors:
@@ -480,22 +482,23 @@ directive:
     | dir_rt_cond   { $$ = $1; }    | dir_rtwhile_b { $$ = $1; }
     | dir_rtfor_b   { $$ = $1; }    | dir_failjmp   { $$ = $1; }
     | dir_orgspr    { $$ = $1; }    | dir_initspr   { $$ = $1; }
-    | dir_mergespr  { $$ = $1; }
+    | dir_mergespr  { $$ = $1; }    | dir_portin    { $$ = $1; }
+    | dir_portout   { $$ = $1; }
 ;
 dir_cond_asm:
-      if_block ifelse_block
+      if_block ifelse_blocks
       else_block dir_endif          {
                                         $$ = new CompilerStatement ( CompilerSourceLocation(),
                                                                      ASMPICOBLAZE_COND_ASM );
-                                        $$->createBranch ( $if_block -> appendLink($ifelse_block)
+                                        $$->createBranch ( $if_block -> appendLink($ifelse_blocks)
                                                                      -> appendLink($else_block)
                                                                      -> appendLink($dir_endif) );
                                     }
-    | label if_block ifelse_block
+    | label if_block ifelse_blocks
       else_block dir_endif          {
                                         $$ = $label->appendLink(new CompilerStatement(CompilerSourceLocation(),
                                                                                       ASMPICOBLAZE_COND_ASM));
-                                        $$->createBranch ( $if_block -> appendLink($ifelse_block)
+                                        $$->createBranch ( $if_block -> appendLink($ifelse_blocks)
                                                                      -> appendLink($else_block)
                                                                      -> appendLink($dir_endif) );
                                     }
@@ -514,9 +517,13 @@ if_block:
     | dir_ifb                       { $$ = $1;                   }
     | dir_ifnb                      { $$ = $1;                   }
 ;
+ifelse_blocks:
+      /* empty */                   { $$ = nullptr;                       }
+    | ifelse_block                  { $$ = $ifelse_block;                 }
+    | ifelse_blocks ifelse_block    { $$ = $1->appendLink($ifelse_block); }
+;
 ifelse_block:
-      /* empty */                   { $$ = nullptr;                 }
-    | dir_elseif    statements EOL  { $$ = $1->createBranch($2); }
+      dir_elseif    statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifn   statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifdef statements EOL  { $$ = $1->createBranch($2); }
     | dir_elseifndf statements EOL  { $$ = $1->createBranch($2); }
@@ -530,7 +537,7 @@ ifelse_block:
     | dir_elseifnb                  { $$ = $1;                   }
 ;
 else_block:
-      /* empty */                   { $$ = nullptr;                                 }
+      /* empty */                   { $$ = nullptr;                              }
     | dir_else statements EOL       { $$ = $dir_else->createBranch($statements); }
     | dir_else                      { $$ = $dir_else;                            }
 ;
@@ -749,10 +756,10 @@ dir_rt_cond:
     | label dir_rt_cond_a           { $$ = $label->appendLink($dir_rt_cond_a); }
 ;
 dir_rt_cond_a:
-      rtif_block rtelseif_block
+      rtif_block rtelseif_blocks
       rtelse_block dir_rtendif      {
                                         $$ = new CompilerStatement ( CompilerSourceLocation(), ASMPICOBLAZE_RT_COND );
-                                        $$->createBranch ( $rtif_block -> appendLink($rtelseif_block)
+                                        $$->createBranch ( $rtif_block -> appendLink($rtelseif_blocks)
                                                                        -> appendLink($rtelse_block)
                                                                        -> appendLink($dir_rtendif) );
                                     }
@@ -761,9 +768,13 @@ dir_rt_cond_a:
 rtif_block:
       dir_rtif statements EOL       { $$ = $dir_rtif->createBranch($2); }
 ;
+rtelseif_blocks:
+      /* empty */                   { $$ = nullptr;                         }
+    | rtelseif_block                { $$ = $rtelseif_block;                 }
+    | rtelseif_blocks rtelseif_block{ $$ = $1->appendLink($rtelseif_block); }
+;
 rtelseif_block:
-      /* empty */                   { $$ = nullptr; }
-    | dir_rtelseif statements EOL   { $$ = $dir_rtelseif->createBranch($2); }
+      dir_rtelseif statements EOL   { $$ = $dir_rtelseif->createBranch($2); }
 ;
 rtelse_block:
       /* empty */                   { $$ = nullptr; }
@@ -1480,6 +1491,82 @@ dir_port:
                                         $$ = nullptr;
                                         NO_LABEL_EXPECTED(@label,
                                                           "PORT",
+                                                          $label->appendArgsLink ( $id->appendLink($expr) ) );
+                                    }
+;
+dir_portin:
+      id D_PORTIN expr              {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_PORTIN,
+                                                                     $id->appendLink($expr));
+                                    }
+    | id D_PORTIN                     {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        ARG_REQUIRED_D(@D_PORTIN, "PORTIN");
+                                        $id->completeDelete();
+                                    }
+    | D_PORTIN                        {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTIN, "PORTIN");
+                                        ARG_REQUIRED_D(@D_PORTIN, "PORTIN");
+                                    }
+    | D_PORTIN expr                   {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTIN, "PORTIN");
+                                        $expr->completeDelete();
+                                    }
+    | label D_PORTIN expr             {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTIN, "PORTIN");
+                                        NO_LABEL_EXPECTED(@label, "PORTIN", $label->appendArgsLink($expr));
+                                    }
+    | label id D_PORTIN expr          {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "PORTIN;",
+                                                          $label->appendArgsLink ( $id->appendLink($expr) ) );
+                                    }
+;
+dir_portout:
+      id D_PORTOUT expr             {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_PORTOUT,
+                                                                     $id->appendLink($expr));
+                                    }
+    | id D_PORTOUT                  {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        ARG_REQUIRED_D(@D_PORTOUT, "PORTOUT");
+                                        $id->completeDelete();
+                                    }
+    | D_PORTOUT                     {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTOUT, "PORTOUT");
+                                        ARG_REQUIRED_D(@D_PORTOUT, "PORTOUT");
+                                    }
+    | D_PORTOUT expr                {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTOUT, "PORTOUT");
+                                        $expr->completeDelete();
+                                    }
+    | label D_PORTOUT expr          {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        DECL_ID_EXPECTED(@D_PORTOUT, "PORTOUT");
+                                        NO_LABEL_EXPECTED(@label, "PORTOUT", $label->appendArgsLink($expr));
+                                    }
+    | label id D_PORTOUT expr          {
+                                        /* Syntax error */
+                                        $$ = nullptr;
+                                        NO_LABEL_EXPECTED(@label,
+                                                          "PORTOUT",
                                                           $label->appendArgsLink ( $id->appendLink($expr) ) );
                                     }
 ;

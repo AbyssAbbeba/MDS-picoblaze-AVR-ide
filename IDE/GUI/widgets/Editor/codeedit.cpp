@@ -23,6 +23,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 {
     //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
+    this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -44,6 +45,14 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             if (wName == "ASM Translator" || wName == "ASM Translator error")
             {
                 textEdit = new WTextEdit(this, PICOBLAZEASM);
+            }
+            else if (wName == "disasm")
+            {
+                textEdit = new WTextEdit(this, PICOBLAZEASM);
+            }
+            else
+            {
+                textEdit = new WTextEdit(this, PLAIN);
             }
         }
         else
@@ -216,6 +225,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
     this->changeHeight();
+    textEdit->setShortcuts();
     //qDebug() << "CodeEdit: return CodeEdit()";
 }
 
@@ -226,6 +236,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
 {
     //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
+    this->curCodeEdit = NULL;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -386,6 +397,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
+    textEdit->setShortcuts();
     //qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
@@ -413,7 +425,7 @@ void CodeEdit::connectAct()
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    qDebug() << "CodeEdit: setChanged()";
+    //qDebug() << "CodeEdit: setChanged()";
     if (changed == false)
     {
         changed = true;
@@ -429,13 +441,13 @@ void CodeEdit::setChanged()
             emit changedTabStatus(this->name, this->path, true);
         }
     }
-    qDebug() << "CodeEdit: return setChanged()";
+    //qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    qDebug() << "CodeEdit: setSaved()";
+    //qDebug() << "CodeEdit: setSaved()";
     if (changed == true)
     {
         changed = false;
@@ -455,7 +467,7 @@ void CodeEdit::setSaved()
     {
         qDebug() << "codeedit: not changed";
     }*/
-    qDebug() << "CodeEdit: return setSaved()";
+    //qDebug() << "CodeEdit: return setSaved()";
 }
 
 
@@ -652,12 +664,28 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     {
         this->textEdit->setPlainText(" ");
     }*/
+    //qDebug() << "is changed?" << editor->isChanged();
+    if (curCodeEdit != NULL)
+    {
+        if (true == this->changed)
+        {
+            curCodeEdit->setChanged();
+        }
+        else
+        {
+            curCodeEdit->setSaved();
+        }
+        curCodeEdit->setScrollValue(this->textEdit->verticalScrollBar()->value());
+        curCodeEdit->setCursorValue(this->textEdit->textCursor());
+    }
+    
+    bool prevChanged = editor->isChanged();
+    this->setName(editor->getName());
+    this->setPath(editor->getPath());
     this->textEdit->deleteHighlighter();
     this->textEdit->setDocument(editor->getTextEdit()->document());
     //this->show();
     //this->update();
-    this->setName(editor->getName());
-    this->setPath(editor->getPath());
     this->breakpointsLines = editor->getBreakpointsLines();
     this->bookmarksLines = editor->getBookmarksLines();
     if (this->breakpointsLines == NULL)
@@ -706,7 +734,17 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     }*/
     emit CodeEditChanged(editor);
     this->changeHeight();
-    this->changed = editor->isChanged();
+    this->changed = prevChanged;
+    if (false == this->changed)
+    {
+        emit changedTabStatus(this->name, this->path, false);
+    }
+    curCodeEdit = editor;
+    if (false == curCodeEdit->getCursorValue().isNull())
+    {
+        this->textEdit->setTextCursor(curCodeEdit->getCursorValue());
+    }
+    this->textEdit->verticalScrollBar()->setValue(curCodeEdit->getScrollValue());
     /*if (true == editor->isChanged())
     {
         //qDebug() << "CodeEdit: loadcodeedit is changed";
@@ -871,7 +909,7 @@ QList<int>* CodeEdit::getBookmarksLines()
 
 void CodeEdit::breakpointsAddLines(int line, int linesAdded)
 {
-    qDebug() << "CodeEdit: breakpointsAddLines";
+    //qDebug() << "CodeEdit: breakpointsAddLines";
     emit breakpointsAddLines(this->path, line, linesAdded);
 }
 
@@ -952,7 +990,7 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
 
 void CodeEdit::bookmarksAddLines(int line, int linesAdded)
 {
-    qDebug() << "CodeEdit: bookmarksAddLines";
+    //qDebug() << "CodeEdit: bookmarksAddLines";
     emit bookmarksAddLines(this->path, line, linesAdded);
 }
 
@@ -1076,4 +1114,28 @@ void CodeEdit::setBookmarksLines(QList<int> bookmarks)
         }
         this->lineCount->getWidget()->update();
     }
+}
+
+
+int CodeEdit::getScrollValue()
+{
+    return this->curScrollValue;
+}
+
+
+void CodeEdit::setScrollValue(int value)
+{
+    this->curScrollValue = value;
+}
+
+
+QTextCursor CodeEdit::getCursorValue()
+{
+    return this->curCursorPos;
+}
+
+
+void CodeEdit::setCursorValue(QTextCursor value)
+{
+    this->curCursorPos = value;
 }

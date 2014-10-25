@@ -206,6 +206,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"set"                { return D_SET;        }
 \.?"variable"           { return D_VARIABLE;   }
 \.?"port"               { return D_PORT;       }
+\.?"portin"             { return D_PORTIN;     }
+\.?"portout"            { return D_PORTOUT;    }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
 \.?"db"                 { return D_DB;         }
