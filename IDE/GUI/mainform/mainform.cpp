@@ -489,12 +489,20 @@ void MainForm::createMenu()
 void MainForm::createActions()
 {
     //qDebug() << "MainForm: CreateActions()";
-    newAct = new QAction(tr("New Untracked File"), this);
+
+
+    this->pm_projNewAdd = new QPixmap(":resources/icons/projNewAdd.png");
+    this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
+    newAddAct = new QAction(*icon_projNewAdd, tr("New File"), this);
+    connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
+    newAddAct->setDisabled(true);
+
+    newAct = new QAction(QIcon(QPixmap(":resources/icons/page.png")), tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
     newAct->setShortcut(QKeySequence("Ctrl+N"));
 
-    openAct = new QAction(tr("Open File"), this);
+    openAct = new QAction(QIcon(QPixmap(":resources/icons/folder.png")), tr("Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
     openAct->setShortcut(QKeySequence("Ctrl+O"));
 
@@ -507,41 +515,34 @@ void MainForm::createActions()
     addAct->setDisabled(true);*/
 
 
-    this->pm_projNewAdd = new QPixmap(":resources/icons/projNewAdd.png");
-    this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
-    newAddAct = new QAction(*icon_projNewAdd, tr("New Project File"), this);
-    connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
-    newAddAct->setDisabled(true);
-
-
     /*QPixmap *pm_projRemoveFile = new QPixmap("src//resources/icons/projDelete.png");
     QIcon *icon_projRemoveFile = new QIcon(*pm_projRemoveFile);
     removeFileAct = new QAction(*icon_projRemoveFile, tr("&Remove file"), this);
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeProjFile()));*/
 
 
-    saveAct = new QAction(tr("Save File"), this);
+    saveAct = new QAction(QIcon(QPixmap(":resources/icons/disk.png")), tr("Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
     saveAct->setDisabled(true);
     saveAct->setShortcut(QKeySequence("Ctrl+S"));
 
-    saveAsAct = new QAction(tr("Save As"), this);
+    saveAsAct = new QAction(QIcon(QPixmap(":resources/icons/disk2.png")), tr("Save As"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     saveAsAct->setDisabled(true);
 
-    saveAllAct = new QAction(tr("Save All"), this);
+    saveAllAct = new QAction(QIcon(QPixmap(":resources/icons/disk_multiple.png")), tr("Save All"), this);
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
     saveAllAct->setDisabled(true);
 
 
     //EDIT
-    undoAct = new QAction(tr("Undo"), this);
+    undoAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_undo.png")), tr("Undo"), this);
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undoSlot()));
-    redoAct = new QAction(tr("Redo"), this);
+    redoAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_redo.png")), tr("Redo"), this);
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redoSlot()));
-    cutAct = new QAction(tr("Cut"), this);
+    cutAct = new QAction(QIcon(QPixmap(":resources/icons/cut.png")), tr("Cut"), this);
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSlot()));
-    copyAct = new QAction(tr("Copy"), this);
+    copyAct = new QAction(QIcon(QPixmap(":resources/icons/page_copy.png")), tr("Copy"), this);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copySlot()));
     pasteAct = new QAction(tr("Paste"), this);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(pasteSlot()));
@@ -553,7 +554,7 @@ void MainForm::createActions()
 
 
     //INTERFACE
-    interfaceConfigAct = new QAction(tr("Config"), this);
+    interfaceConfigAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_wrench.png")), tr("Configure"), this);
     connect(interfaceConfigAct, SIGNAL(triggered()), this, SLOT(interfaceConfig()));
     //pluginAct = new QAction(tr("Plugins"), this);
     //connect(pluginAct, SIGNAL(triggered()), this, SLOT(showPlugins()));
@@ -571,20 +572,20 @@ void MainForm::createActions()
     openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    this->pm_projSave = new QPixmap(":resources/icons/projSave.png");
+    this->pm_projSave = new QPixmap(":resources/icons/disk.png");
     this->icon_projSave = new QIcon(*pm_projSave);
-    saveProjAct = new QAction(*icon_projSave, tr("Save Project"), this);
+    saveProjAct = new QAction(*icon_projSave, tr("Save project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
 
-    closeProjectAct = new QAction(tr("Close Project"), this);
+    closeProjectAct = new QAction(QIcon(QPixmap(":resources/icons/breakpoint_disable.png")), tr("Close Project"), this);
     connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
     closeProjectAct->setDisabled(true);
 
     saveProjConfigAct = new QAction(tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);
 
-    exitAct = new QAction(tr("Exit"), this);
+    exitAct = new QAction(QIcon(QPixmap(":resources/icons/cancel.png")), tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
     this->pm_projComp = new QPixmap(":resources/icons/compile.png");
@@ -594,7 +595,7 @@ void MainForm::createActions()
     projectCompileAct->setDisabled(true);
     projectCompileAct->setShortcut(Qt::Key_F5);
 
-    projectConfigAct = new QAction(tr("Config"), this);
+    projectConfigAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_wrench.png")), tr("Configure"), this);
     connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(projectConfig()));
     projectConfigAct->setDisabled(true);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
@@ -666,33 +667,33 @@ void MainForm::createActions()
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
-        toolFileConvertAct = new QAction(tr("DataFile Converter"), this);
+        toolFileConvertAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_gear.png")), tr("Data file Converter"), this);
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
-        toolConvertorAct = new QAction(tr("Converter"), this);
+        toolConvertorAct = new QAction(tr("Radix converter"), this);
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
-        toolDisplayAct = new QAction(tr("Segment Display"), this);
+        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("Segment Display"), this);
         connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     #endif
     #ifdef MDS_FEATURE_LOOP_GENERATOR
-        toolLoopGenAct = new QAction(tr("Loop Generator"), this);
+        toolLoopGenAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_lightning.png")), tr("Loop Generator"), this);
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
     #ifdef MDS_FEATURE_SIM_LED_PANEL
-        toolSimLedsAct = new QAction(tr("LED panel"), this);
+        toolSimLedsAct = new QAction(QIcon(QPixmap(":resources/icons/ledpanel.png")), tr("LED panel"), this);
         toolSimLedsAct->setDisabled(true);
         connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
     #endif
     #ifdef MDS_FEATURE_SIM_7_SEGMENT
-        toolSim7SegAct = new QAction(tr("7 Segment"), this);
+        toolSim7SegAct = new QAction(QIcon(QPixmap(":resources/icons/8seg.png")), tr("7 Segment"), this);
         toolSim7SegAct->setDisabled(true);
         connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
     #endif
     #ifdef MDS_FEATURE_SIM_SWITCH
-        toolSimSwitchAct = new QAction(tr("Switch"), this);
+        toolSimSwitchAct = new QAction(QIcon(QPixmap(":resources/icons/simplekeypad.png")), tr("Switch"), this);
         toolSimSwitchAct->setDisabled(true);
         connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
     #endif
@@ -707,13 +708,13 @@ void MainForm::createActions()
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
 
-    aboutAct = new QAction(tr("About"), this);
+    aboutAct = new QAction(QIcon(QPixmap(":resources/icons/mainIcon.png")), tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     welcomeAct = new QAction(tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
-    helpAct = new QAction(tr("Help"), this);
+    helpAct = new QAction(QIcon(QPixmap(":resources/icons/help.png")), tr("Help"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("See Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
