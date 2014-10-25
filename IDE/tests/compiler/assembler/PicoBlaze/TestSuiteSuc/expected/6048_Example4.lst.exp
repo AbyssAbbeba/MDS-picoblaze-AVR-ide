@@ -1,0 +1,118 @@
+                   1     ; ----------------------------------------------------------------------------------------------------------------------
+                   2     ; MDS for PicoBlaze - Demonstration code IV: Conditions.
+                   3     ; ----------------------------------------------------------------------------------------------------------------------
+                   4     ; This example covers these compilation time and run time conditions.
+                   5     ; ----------------------------------------------------------------------------------------------------------------------
+                   6     DEVICE      kcpsm6
+                   7                 ; Start at address 0x000.
+  00000            8                 org         0x000
+                   9
+                  10     ; ======================================================================================================================
+                  11     ; Compilation time conditions.
+                  12     ; ======================================================================================================================
+                  13
+  00004           14     A           equ         4       ; User defined constant named `A' with value 4.
+  00004           15     B           equ         A       ; User defined constant named `B' with value of constant `A' which is 4.
+                  16
+                  17     ; Assemble the following block only if the user defined constant `A' is greater than 5.
+  00000           18     #if ( A > 5 )
+                  19                 ; Print a message to assembler output.
+                  20                 message     "A is greater than 5"
+                  21                 ld          S0, #A
+                  22     ; Assemble the block only if the user defined constants `A' and `B' are equal.
+  00001           23     #elseif ( A == B )
+                  24                 ; Print assembler warning.
+                  25                 warning     "A is equal to B"
+W: A is equal to B.
+000 01004         26                 ld          S0, #B
+                  27     ; Assemble only if `A' and `B' are different.
+                  28     #elseif ( A != B )
+                  29                 ; Print assembler warning.
+                  30                 warning     "A is not equal to B"
+                  31                 ld          S0, # A - B
+                  32     ; Assemble only if none of the preceding conditions was met, obviously this block of code will never get assembled.
+                  33     #else
+                  34         ; Only if constant `C' is defined which isn't.
+                  35         #ifdef C
+                  36                 ; End assembly with an error message.
+                  37                 error       "C is defined, and that's not good."
+                  38         ; Else...
+                  39         #else
+                  40                 message     "C is not defined so continue normally."
+                  41                 ld          S0, #1
+                  42         #endif
+                  43     #endif
+                  44
+                  45
+                  46     ; ======================================================================================================================
+                  47     ; Run time conditions.
+                  48     ; ======================================================================================================================
+                  49
+                  50                 ; Load some registers with some values.
+001 0101C         51                 ld          S0, #0x1c
+002 0111B         52                 ld          S1, #0x1b
+003 01210         53                 ld          S2, #0x10
+                  54
+                  55         ; Execute the following block only if the current content of registers S0 and S1 are equal.
+                  56         if S0 == S1
+004 1C010         57 +1      COMPARE S0, S1
+005 36008         58 +1      JUMP    NZ, IF-0
+006 11201         59                 inc         S2      ; Increment S2.
+                  60         ; Execute the block only if the current content of register S0 is greater than 0x1b (note the immediate addressing).
+                  61         elseif S0 > #0x1b
+007 2201A         62 +1      JUMP    IF-0-END
+  00008           63 +1  IF-0:
+008 1D01B         64 +1      COMPARE S0, #0x1b
+009 3A019         65 +1      JUMP    C, IF-1
+00A 32019         66 +1      JUMP    Z, IF-1
+                  67             ; If S1 contains ASCII value of character small `a'.
+                  68             if S1 == #'a'
+00B 1D161         69 +1      COMPARE S1, #0x61
+00C 3600F         70 +1      JUMP    NZ, IF-2
+00D 01241         71                 ld          S2, #'A'; Load S2 with ASCII value of `A'.
+                  72             ; If S1 contains small `b'.
+                  73             elseif S1 == #'b'
+00E 22018         74 +1      JUMP    IF-2-END
+  0000F           75 +1  IF-2:
+00F 1D162         76 +1      COMPARE S1, #0x62
+010 36013         77 +1      JUMP    NZ, IF-3
+011 01242         78                 ld          S2, #'B'; Load S2 with ASCII value of `B'.
+                  79             ; And small `c'.
+                  80             elseif S1 == #'c'
+012 22018         81 +1      JUMP    IF-2-END
+  00013           82 +1  IF-3:
+013 1D163         83 +1      COMPARE S1, #0x63
+014 36017         84 +1      JUMP    NZ, IF-4
+015 19201         85                 dec         S2      ; Decrement S2.
+                  86             ; And else...
+                  87             else
+016 22018         88 +1      JUMP    IF-2-END
+  00017           89 +1  IF-4:
+017 03200         90                 clrr        S2      ; Clear S2 (put zero in it).
+                  91             ; `endif' is mandatory to close the tree of blocks.
+                  92             endif
+  00018           93 +1  IF-2-END:
+                  94         ; And else...
+                  95         else
+018 2201A         96 +1      JUMP    IF-0-END
+  00019           97 +1  IF-1:
+019 072FF         98                 cpl         S2      ; Complement S2 (XOR it with 0xff).
+                  99         ; And `endif' is still mandatory.
+                 100         endif
+  0001A          101 +1  IF-0-END:
+                 102
+                 103     ; ======================================================================================================================
+                 104
+                 105
+                 106                 ; Infinite loop, and end of assembly.
+01A 2201A        107                 jump        $
+                 108                 end
+                 109
+                 110     ; ----------------------------------------------------------------------------------------------------------------------
+                 111     ; Notes:
+                 112     ;   1) this assembler is CASE INSENSITIVE (i.e. `load s0, s1' is exactly the same as `LOAD S0, S1' or `Load s0, S1'),
+                 113     ;   2) in most cases the assembler doesn't care about white space (e.g. `if(a==(b-4))' is the same as
+                 114     ;      `if ( a == ( b - 4 ) )'.
+                 115     ; ----------------------------------------------------------------------------------------------------------------------
+                 116     ; The next example shows various kinds of loops.
+                 117     ; ----------------------------------------------------------------------------------------------------------------------
