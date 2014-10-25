@@ -1,0 +1,9 @@
+BACKUP (  ) . . . . . . . . . . . . . . . . . . . . . .   1 × USED 6050_Example6.asm:27.1-27.18
+COPY ( TARGET, SOURCE, NUMBER ) . . . . . . . . . . . .   2 × USED 6050_Example6.asm:133.1-133.18
+COPY5 ( TARGET, SOURCE )  . . . . . . . . . . . . . . .   NOT USED 6050_Example6.asm:82.1-82.18
+DLOAD ( REG0, REG1, VAL0, VAL1 )  . . . . . . . . . . .   1 × USED 6050_Example6.asm:71.1-71.18
+FILL ( TARGET, VALUE, LENGTH )  . . . . . . . . . . . .   2 × USED 6050_Example6.asm:112.1-112.18
+NOPS ( NUMBER ) . . . . . . . . . . . . . . . . . . . .   1 × USED 6050_Example6.asm:91.1-91.18
+RESTORE (  )  . . . . . . . . . . . . . . . . . . . . .   1 × USED 6050_Example6.asm:34.1-34.18
+W100 (  ) . . . . . . . . . . . . . . . . . . . . . . .   1 × USED 6050_Example6.asm:57.1-57.18
+WAIT ( REGISTER, CYCLES ) . . . . . . . . . . . . . . .   NOT USED 6050_Example6.asm:101.1-101.18
