@@ -64,12 +64,13 @@
   <File path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/a.asm"/>
   <File path="untracked"/>
   <File path="/home/rift/Plocha/uživatel/lisp.lsp"/>
+  <File path="/home/millenium/mms/IDE/GUI/resources/projects/MDSExample/Example1.mem"/>
  </RecentFiles>
  <RecentProjects>
   <Project path="/home/abyss/NewExamples/s.mds-project"/>
   <Project path="/home/rift/Plocha/gui/localgit/mms/IDE/GUI/demo2/sdad.mds-project"/>
-  <Project path="/home/millenium/vbshare/demo2/saass.mds-project"/>
   <Project path="/home/millenium/mms/IDE/GUI/resources/projects/MDSExample/MDSExample.mds-project"/>
+  <Project path="/home/millenium/vbshare/demo2/saass.mds-project"/>
   <Project path="./resources/projects/MDSExample/MDSExample.mds-project"/>
  </RecentProjects>
 </config>
