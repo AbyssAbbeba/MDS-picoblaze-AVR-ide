@@ -26,7 +26,7 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     qDebug() << "HelpWidget: " << GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc";
     if (!helpEngine->setupData())
     {
-        qDebug() << "HelpWidget: setupData suck ass";
+        qDebug() << "HelpWidget: setupData sucks ass";
     }
     this->textBrowser = new HelpBrowser(this);
 
@@ -39,24 +39,24 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     layoutCnt->addWidget((QWidget*)(helpEngine->contentWidget()));
     wCnt->setLayout(layoutCnt);
 
-    QWidget *wIndex = new QWidget(this);
+    /*QWidget *wIndex = new QWidget(this);
     QVBoxLayout *layoutIndex = new QVBoxLayout(wIndex);
     QLabel *lblIndex = new QLabel("Index", wIndex);
     layoutIndex->addWidget(lblIndex);
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
-    wIndex->setLayout(layoutIndex);
+    wIndex->setLayout(layoutIndex);*/
 
-    QWidget *wSearch = new QWidget(this);
+    /*QWidget *wSearch = new QWidget(this);
     QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
     QLabel *lblSearch = new QLabel("Search", wSearch);
     layoutSearch->addWidget(lblSearch);
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->queryWidget()));
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
-    wSearch->setLayout(layoutSearch);
+    wSearch->setLayout(layoutSearch);*/
 
     tabs->addTab(wCnt, "Content");
-    tabs->addTab(wIndex, "Index");
-    tabs->addTab(wSearch, "Search");
+    //tabs->addTab(wIndex, "Index");
+    //tabs->addTab(wSearch, "Search");
 
 
     QSplitter *helpPanel = new QSplitter(Qt::Horizontal, this);
