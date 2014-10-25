@@ -85,6 +85,7 @@ class WDockManager : public QObject
         void setCentralPath(QString wPath);
         void setTabChanged();
         void setTabSaved();
+        bool getTabStatusChanged(int index);
         int getTabCount();
         void setCentralByIndex(int index);
         bool isEmpty();

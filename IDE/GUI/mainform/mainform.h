@@ -177,6 +177,7 @@ class MainForm : public QMainWindow
         void openRecentFileSlot(QAction *action);
         void openRecentProjectSlot(QAction *action);
         void welcomeDialog();
+        void saveOnClose(QString path);
 
     signals:
         void unhighlightSim();
