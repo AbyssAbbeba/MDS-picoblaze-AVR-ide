@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Leds_sim</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../../icons.qrc">
+    <normaloff>:/resources/icons/simplekeypad.png</normaloff>:/resources/icons/simplekeypad.png</iconset>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
@@ -147,6 +151,8 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../../icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

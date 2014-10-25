@@ -21,7 +21,8 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
     : QDialog(parent)
 {
     this->setModal(true);
-    this->setWindowTitle("Interface Config");
+    this->setWindowTitle(tr("Interface configuration"));
+    this->setWindowIcon(QIcon(QPixmap(":resources/icons/page_white_wrench.png")));
     this->cfgInterface = new CfgInterface(this);
 
     this->ideGeneral = new InterfaceCfg_IDEGeneral(this->cfgInterface);
