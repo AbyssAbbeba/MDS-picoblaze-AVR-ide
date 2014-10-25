@@ -17,7 +17,7 @@ SimPortLogger::SimPortLogger(QWidget *parent, MCUSimControl *controlUnit) :
     QWidget(parent)
 {
     ui.setupUi(this);
-    this->setWindowTitle("LED panel");
+    this->setWindowTitle("Port Logger");
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
     if ( NULL == controlUnit )
     {
