@@ -1,5 +1,3 @@
-ROM_form.vhd
-
 Moravia Microsystems (July 2013)
 
 This is the VHDL template file for the MDS PicoBlaze IDE.
