@@ -105,7 +105,6 @@ int main(int argc, char *argv[])
     QSplashScreen splash(pixmap);
     if (true == GuiCfg::getInstance().getSplash())
     {
-        qDebug() << "opening splash" ;
         splash.setWindowFlags(splash.windowFlags() | Qt::WindowStaysOnTopHint);
         splash.show();
         app.processEvents();
