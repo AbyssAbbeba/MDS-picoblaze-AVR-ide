@@ -202,11 +202,11 @@ void RegistersWidget::deviceChanged()
     {
         qDebug() << "RegistersWidget: m_memory is NULL";
     }
-    else
-    {
-        qDebug() << "RegistersWidget: m_memory not NULL";
-        qDebug() << "RegistersWidget: m_memory address" << (void*)m_memory;
-    }
+    //else
+    //{
+        //qDebug() << "RegistersWidget: m_memory not NULL";
+        //qDebug() << "RegistersWidget: m_memory address" << (void*)m_memory;
+    //}
     /*switch ( m_simControlUnit->getArch() )
     {
         case MCUSim::ARCH_AVR8:
