@@ -36,6 +36,7 @@
 //pozdeji zamenit QtGui za mensi celky
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
+#include "../dialogs/savedlg/savedlg.h"
 #ifdef MDS_FEATURE_DISASSEMBLER
     #include "../dialogs/disasmdlg/disasmdlg.h"
 #endif
@@ -586,7 +587,7 @@ void MainForm::createActions()
     saveProjConfigAct->setDisabled(true);
 
     exitAct = new QAction(QIcon(QPixmap(":resources/icons/cancel.png")), tr("Exit"), this);
-    connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+    connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
     this->pm_projComp = new QPixmap(":resources/icons/compile.png");
     this->icon_projComp = new QIcon(*pm_projComp);
@@ -998,7 +999,6 @@ void MainForm::openFile()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << "--------open file error";
             error(ERR_OPENFILE);
         }
         else
@@ -1045,7 +1045,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << "--------------openfilepath error";
+            qDebug() << path;
             error(ERR_OPENFILE);
         }
         else
@@ -1236,7 +1236,6 @@ void MainForm::saveFile()
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                qDebug() << "-------- save file error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1331,7 +1330,6 @@ void MainForm::saveFileAs()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            qDebug() << "------------- save file as error";
             error(ERR_OPENFILE);
         }
         else
@@ -1440,7 +1438,6 @@ void MainForm::saveFile(CodeEdit *editor)
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                qDebug() << "---------save file code edit error";
                 error(ERR_OPENFILE);
             }
             else
@@ -1505,7 +1502,6 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << "-----------------open project error";
             error(ERR_OPENFILE);
         }
         else
@@ -1531,7 +1527,6 @@ bool MainForm::openProject(QString path)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << "----------- open project path error";
             error(ERR_OPENFILE);
             return false;
         }
@@ -3368,10 +3363,36 @@ void MainForm::pauseSimulation()
 
 
 
-void MainForm::closeEvent(QCloseEvent */*event*/)
+void MainForm::closeEvent(QCloseEvent *event)
 {
-    //TODO: save prompt
-    QApplication::closeAllWindows();
+    QStringList lst;
+    for (int i = 0; i < wDockManager->getTabCount(); i++)
+    {
+        //qDebug() << wDockManager->getTabWidget(i)->isChanged();
+        if (wDockManager->getTabStatusChanged(i) == true && wDockManager->getTabWidget(i)->getPath() != "untracked")
+        {
+            lst.append(wDockManager->getTabWidget(i)->getPath());
+        }
+    }
+    if (lst.count() > 0)
+    {
+        SaveDialog *dlg = new SaveDialog(this, lst);
+        connect(dlg, SIGNAL(save(QString)), this, SLOT(saveOnClose(QString)));
+        if (QDialog::Rejected == dlg->exec())
+        {
+            event->ignore();
+        }
+        else
+        {
+            QApplication::closeAllWindows();
+            event->accept();
+        }
+    }
+    else
+    {
+        QApplication::closeAllWindows();
+        event->accept();
+    }
 }
 
 
@@ -3732,4 +3753,11 @@ void MainForm::welcomeDialog()
     widget->show();
     connect(widget, SIGNAL(tutorial()), this, SLOT(exampleOpen()));
     connect(widget, SIGNAL(manual()), this, SLOT(help()));
+}
+
+
+void MainForm::saveOnClose(QString path)
+{
+    wDockManager->setCentralByPath(path);
+    this->saveFile();
 }

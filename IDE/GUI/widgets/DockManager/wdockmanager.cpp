@@ -1322,6 +1322,12 @@ void WDockManager::deleteCentralWelcome()
 }
 
 
+bool WDockManager::getTabStatusChanged(int index)
+{
+    return wTab->tabStatus(index);
+}
+
+
 
 
 

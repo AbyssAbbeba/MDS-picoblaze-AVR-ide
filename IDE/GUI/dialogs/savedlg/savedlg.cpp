@@ -30,17 +30,39 @@ SaveDialog::SaveDialog(QWidget *parent, QStringList lst)
         QListWidgetItem *item = new QListWidgetItem(lst.at(i).section('/', -1), ui.lstFiles);
         item->setToolTip(lst.at(i));
     }
-    connect(ui.buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked()), this, SLOT(save()));
-    connect(ui.buttonBox->button(QDialogButtonBox::SaveAll), SIGNAL(clicked()), this, SLOT(saveAll()));
-    connect(ui.buttonBox->button(QDialogButtonBox::No), SIGNAL(clicked()), this, SLOT(no()));
-    connect(ui.buttonBox->button(QDialogButtonBox::NoToAll), SIGNAL(clicked()), this, SLOT(noAll()));
-    connect(ui.buttonBox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), this, SLOT(returnBack()));
+    ui.lstFiles->setCurrentRow(0);
+
+    QPushButton *saveButton = new QPushButton(tr("Save"), this);
+    QPushButton *saveAllButton = new QPushButton(tr("Save All"), this);
+    QPushButton *discardButton = new QPushButton(tr("Discard"), this);
+    QPushButton *discardAllButton = new QPushButton(tr("Discard All"), this);
+    QPushButton *cancelButton = new QPushButton(tr("Cancel"), this);
+    
+    ui.buttonBox->addButton(saveButton, QDialogButtonBox::ActionRole);
+    ui.buttonBox->addButton(saveAllButton, QDialogButtonBox::ActionRole);
+    ui.buttonBox->addButton(discardButton, QDialogButtonBox::ActionRole);
+    ui.buttonBox->addButton(discardAllButton, QDialogButtonBox::ActionRole);
+    ui.buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
+    
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(save()));
+    connect(saveAllButton, SIGNAL(clicked()), this, SLOT(saveAll()));
+    connect(discardButton, SIGNAL(clicked()), this, SLOT(no()));
+    connect(discardAllButton, SIGNAL(clicked()), this, SLOT(noAll()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(returnBack()));
 }
 
 
 void SaveDialog::save()
 {
-    QListWidgetItem *item = ui.lstFiles->takeItem(0);
+    QListWidgetItem *item;
+    if (ui.lstFiles->selectedItems().count() > 0)
+    {
+        item = ui.lstFiles->selectedItems().at(0);
+    }
+    else
+    {
+        item = ui.lstFiles->takeItem(0);
+    }
     emit save(item->toolTip());
     delete item;
     if (ui.lstFiles->count() == 0)
@@ -52,9 +74,10 @@ void SaveDialog::save()
 
 void SaveDialog::saveAll()
 {
+    QListWidgetItem *item;
     while (ui.lstFiles->count() > 0)
     {
-        QListWidgetItem *item = ui.lstFiles->takeItem(0);
+        item = ui.lstFiles->takeItem(0);
         emit save(item->toolTip());
         delete item;
     }
@@ -64,7 +87,15 @@ void SaveDialog::saveAll()
 
 void SaveDialog::no()
 {
-    QListWidgetItem *item = ui.lstFiles->takeItem(0);
+    QListWidgetItem *item;
+    if (ui.lstFiles->selectedItems().count() > 0)
+    {
+        item = ui.lstFiles->selectedItems().at(0);
+    }
+    else
+    {
+        item = ui.lstFiles->takeItem(0);
+    }
     delete item;
     if (ui.lstFiles->count() == 0)
     {

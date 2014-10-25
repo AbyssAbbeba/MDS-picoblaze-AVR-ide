@@ -33,6 +33,8 @@ class TabBar : public QTabBar
         void tabAdded();
         void tabRemoved(int index);
         void tabChanged(int index, bool changed);
+        bool tabStatus(int index);
+        
     private slots:
         void tabStatsMoved(int from, int to);
     private:

@@ -92,6 +92,12 @@ void TabBar::tabStatsMoved(int from, int to)
 }
 
 
+bool TabBar::tabStatus(int index)
+{
+    return tabStats.at(index);
+}
+
+
 /*
  * @brief Reimplemented paint event.
  * @details Not completed.
