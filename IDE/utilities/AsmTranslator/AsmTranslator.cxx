@@ -73,6 +73,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
 {
     if ( ( true == output.bad() ) || ( true == input.bad() ) )
     {
+            m_messages.push_back ( { 0, QObject::tr("Error: I/O failure.").toStdString() } );
         return false;
     }
 
@@ -164,6 +165,7 @@ bool AsmTranslator::translate ( Variant variant,
 
     if ( ( false == iFile.is_open() ) || ( false == oFile.is_open() ) )
     {
+        m_messages.push_back ( { 0, QObject::tr("Error: Cannot open file(s).").toStdString() } );
         return false;
     }
 
