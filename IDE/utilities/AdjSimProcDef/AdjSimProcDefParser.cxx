@@ -125,9 +125,10 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
             throw std::runtime_error("Incompatible file version.");
         }
 
-        // Processor Name & Description
+        // Processor Name, Description, and Fail jump
         readString(def, m_data.m_name, pos);
         readString(def, m_data.m_description, pos);
+        readString(def, m_data.m_failjmp, pos);
 
         // Interrupt Vector
         readBool(def, m_data.m_hasInterrupts, pos);

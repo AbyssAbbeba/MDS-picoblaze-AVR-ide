@@ -22,3 +22,9 @@ project ( testsAssembler )
 if ( MDS_FEATURE_PICOBLAZE )
     add_subdirectory ( PicoBlaze )
 endif()
+
+# Tests for Adaptable assembler.
+if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
+    add_subdirectory ( Adaptable )
+endif()
+

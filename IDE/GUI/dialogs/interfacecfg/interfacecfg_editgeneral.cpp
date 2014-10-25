@@ -23,6 +23,12 @@ InterfaceCfg_EditGeneral::InterfaceCfg_EditGeneral(QWidget *parent)
     ui.setupUi(this);
     this->show();
 
+    QList<QByteArray> codecs = QTextCodec::availableCodecs();
+    foreach (QByteArray array, codecs)
+    {
+        this->ui.cmbEncoding->addItem(QString(array));
+    }
+
 
     this->ui.spinTabWidth->setValue(GuiCfg::getInstance().getTabWidth());
     this->ui.chckSpaces->setChecked(GuiCfg::getInstance().getTabToSpaces());

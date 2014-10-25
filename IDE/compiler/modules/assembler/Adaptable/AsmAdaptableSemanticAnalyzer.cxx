@@ -58,10 +58,9 @@ AsmAdaptableSemanticAnalyzer::AsmAdaptableSemanticAnalyzer ( CompilerSemanticInt
     m_codeGenerator  = new AsmAdaptableCodeGenerator();
     m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
     m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
-    m_treeDecoder    = new AsmAdaptableTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,
-                                                     m_machineCode,     m_macros,       m_memoryPtr,
-                                                     m_symbolTable,     m_codeListing,  & m_device );
+    m_treeDecoder    = new AsmAdaptableTreeDecoder ( this );
 
+    m_deviceSet = false;
     m_memoryPtr->clear();
     m_memoryPtr->m_hardLimits.m_reg  = 0;
     m_memoryPtr->m_hardLimits.m_data = 0;
@@ -84,12 +83,23 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
 {
     using namespace boost::filesystem;
 
+
     path filenamePath = path(makeHomeSafe(deviceDefFile)).make_preferred();
     if ( false == filenamePath.is_absolute() )
     {
         path basePath = path(m_compilerCore->getFileName()).parent_path();
         filenamePath = ( basePath / filenamePath );
     }
+
+    if ( true == m_deviceSet )
+    {
+        m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "cannot set device to %1, device definition already set")
+                                                        . arg(filenamePath.string().c_str()).toStdString() );
+        return;
+    }
+    m_deviceSet = true;
 
     std::ifstream file ( filenamePath.string(), (std::ios_base::in | std::ios_base::binary) );
 

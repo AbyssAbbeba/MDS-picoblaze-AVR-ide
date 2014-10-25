@@ -48,8 +48,12 @@ if ( MDS_FEATURE_SIM_7_SEGMENT )
     list ( APPEND MDS_ADDITONAL_LIBS "Sim7Seg" )
 endif()
 
-list ( APPEND MDS_ADDITONAL_LIBS "SimSwitch" )
+if ( MDS_FEATURE_SIM_SWITCH )
+    list ( APPEND MDS_ADDITONAL_LIBS "SimSwitch" )
+endif()
+if ( MDS_FEATURE_SIM_PORT_LOGGER )
 list ( APPEND MDS_ADDITONAL_LIBS "SimPortLogger" )
+endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -66,7 +70,8 @@ add_library ( ${PROJECT_NAME}
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         WDockManager    MCUDataFiles    InterfaceCfg    ErrorDialog     ProjectTree
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
-                        Simulator       compiler        Project         Editor          GuiCfg )
+                        Simulator       compiler        Project         Editor          GuiCfg
+                        WelcomeWidget )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

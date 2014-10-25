@@ -13,6 +13,9 @@
  */
 // =============================================================================
 
+// Feature set configuration.
+#include "../../mds.h"
+
 // AsmTranslator header files.
 #include "AsmTranslator.h"
 
@@ -37,7 +40,7 @@
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
  */
-static const char * VERSION = "1.0";
+static const char * VERSION = MDS_VERSION;
 
 /**
  * @brief Print help message, a short introduction how to use this program.

@@ -107,6 +107,12 @@ target_link_libraries ( ${DISASSEMBLER_EXEC} ${PROJECT_NAME} )
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
 
-install ( TARGETS ${PROJECT_NAME} ${DISASSEMBLER_EXEC}
+install ( TARGETS ${PROJECT_NAME}
           RUNTIME DESTINATION ${INSTALL_DIR_BIN}
           LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+
+if ( MDS_FEATURE_COMPILER_CLI )
+    install ( TARGETS ${DISASSEMBLER_EXEC}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()

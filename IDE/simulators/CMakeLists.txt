@@ -46,6 +46,7 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 
 # List of additional simulator modules which can be enabled or disabled for this particular build.
 set ( MDS_ADDITONAL_SIM_MODS "" )
+set ( MDS_ADDITONAL_DEP_LIBS "" )
 
 if ( MDS_FEATURE_AVR8 )
     list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:AVR8Sim> )
@@ -61,6 +62,7 @@ endif()
 
 if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
     list ( APPEND MDS_ADDITONAL_SIM_MODS $<TARGET_OBJECTS:AdaptableSim> )
+    list ( APPEND MDS_ADDITONAL_DEP_LIBS AdjSimProcDef )
 endif()
 
 # ------------------------------------------------------------------------------
@@ -81,6 +83,7 @@ add_library ( ${PROJECT_NAME} SHARED
 # Link the target to given libraries.
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES}
+                                        ${MDS_ADDITONAL_DEP_LIBS}
                                         DbgFile
                                         MCUDataFiles  )
 

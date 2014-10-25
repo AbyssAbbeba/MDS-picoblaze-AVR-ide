@@ -62,7 +62,7 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     notes.append("256");
     notes.append("2x16");
     notes.append("256");
-    notes.append("31");
+    notes.append("30");
     notes.append("4096");
 
     connect(ui.cmbFamily,
@@ -94,9 +94,11 @@ void ProjectCfg_General::familyChanged(const QString &text)
 
     int index = ui.cmbFamily->findText(text);
     ui.teNotes->clear();
-    ui.teNotes->append("IO port address count:\t" + notes.at(5*index));
-    ui.teNotes->append("Register count:\t" + notes.at(5*index+1));
-    ui.teNotes->append("Callstack size:\t" + notes.at(5*index+3));
+    ui.teNotes->append("Number of registers:\t\t" + notes.at(5*index+1));
+    ui.teNotes->append("Max. program memory size:\t" + notes.at(5*index+4));
+    ui.teNotes->append("Max. scratchpad RAM size:\t" + notes.at(5*index+2));
+    ui.teNotes->append("Call stack size:\t\t" + notes.at(5*index+3));
+    ui.teNotes->append("Number of ports:\t\t" + notes.at(5*index));
 
     if (notes.at(5*index+2) != "-")
     {

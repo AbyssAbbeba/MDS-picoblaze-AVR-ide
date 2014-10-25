@@ -102,6 +102,8 @@ class AdjSimProcDefGui : public QWidget,
          */
         int checkIDs();
 
+    ////    Inline Private Operations    ////
+    public:
         /**
          * @brief
          */

@@ -41,7 +41,7 @@
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
  */
-static const char * VERSION = "1.0";
+static const char * VERSION = MDS_VERSION;
 
 /// @brief Program exit codes.
 enum ExitCode
@@ -496,6 +496,12 @@ int main ( int argc, char ** argv )
     if ( false == silent )
     {
         printIntro();
+    }
+
+    if ( true == opts.m_sourceFiles.empty() )
+    {
+        std::cout << QObject::tr("Error: no source files specified.").toStdString() << std::endl;
+        return EXIT_ERROR_CLI;
     }
 
     if ( true == compiler.compile ( targetLanguage, targetArchitecture, &opts ) )

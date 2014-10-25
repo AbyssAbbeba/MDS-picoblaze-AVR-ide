@@ -13,12 +13,17 @@
  */
 // =============================================================================
 
+// Feature set configuration.
+#include "../mds.h"
+
 // Disassembler header files.
-#include "DAsmPicoBlazeKcpsm6.h"
-#include "DAsmPicoBlazeKcpsm3.h"
-#include "DAsmPicoBlazeKcpsm2.h"
-#include "DAsmPicoBlazeKcpsm1.h"
-#include "DAsmPicoBlazeKcpsm1CPLD.h"
+#ifdef MDS_FEATURE_PICOBLAZE
+#  include "DAsmPicoBlazeKcpsm6.h"
+#  include "DAsmPicoBlazeKcpsm3.h"
+#  include "DAsmPicoBlazeKcpsm2.h"
+#  include "DAsmPicoBlazeKcpsm1.h"
+#  include "DAsmPicoBlazeKcpsm1CPLD.h"
+#endif // MDS_FEATURE_PICOBLAZE
 
 // MCU memory data container libraries.
 #include "HexFile.h"
@@ -51,7 +56,7 @@
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
  */
-static const char * VERSION = "1.0";
+static const char * VERSION = MDS_VERSION;
 
 /// @brief Program exit codes.
 enum ExitCode
@@ -75,11 +80,22 @@ void printHelp ( const char * executable )
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
               << QObject::tr("        Specify processor architecture, supported architectures are:")
                             .toStdString() << std::endl
-//               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
-//               << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
-//               << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+            #ifdef MDS_FEATURE_AVR8
+              << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
+            #endif // MDS_FEATURE_AVR8
+            #ifdef MDS_FEATURE_PIC8
+              << QObject::tr("            - pic8      : 8-bit PIC,").toStdString() << std::endl
+            #endif // MDS_FEATURE_PIC8
+            #ifdef MDS_FEATURE_MCS51
+              << QObject::tr("            - mcs51     : MCS-51,").toStdString() << std::endl
+            #endif // MDS_FEATURE_MCS51
+            #ifdef MDS_FEATURE_PICOBLAZE
               << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
                             .toStdString() << std::endl
+            #endif // MDS_FEATURE_PICOBLAZE
+            #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+              << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
+            #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << std::endl
               << QObject::tr("    -f, --family <family>").toStdString() << std::endl
               << QObject::tr("        Specify processor family, supported families for the given architectures are:")
@@ -430,7 +446,9 @@ int main ( int argc, char ** argv )
     int memFileBPR = -1;
     XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::OPCodeSize(-1);
 
-    if ( "PicoBlaze" == architecture )
+    if ( false ) {}
+    #ifdef MDS_FEATURE_PICOBLAZE
+    else if ( "PicoBlaze" == architecture )
     {
         if ( "kcpsm1cpld" == family )
         {
@@ -470,6 +488,13 @@ int main ( int argc, char ** argv )
             return EXIT_ERROR_CLI;
         }
     }
+    #endif // MDS_FEATURE_PICOBLAZE
+    #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+    else if ( "Adaptable" == architecture )
+    {
+        // TODO: implement this...
+    }
+    #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
     else
     {
         std::cerr << QObject::tr("Error: architecture `%1' is not supported.").arg(architecture.c_str()).toStdString()

@@ -47,7 +47,6 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->cfgInterface->addWidget(this->compilerCfg, "Options", "Compiler Options", true);
     this->cfgInterface->addWidget(this->templatesCfg, "Templates", "Templates Options", true);
     this->cfgInterface->addWidget(this->pathsCfg, "Include Paths", "Compiler Include Paths", true);
-    
 
     this->cfgInterface->show();
     this->show();
@@ -56,7 +55,7 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
     this->setFixedWidth(this->cfgInterface->width());
     this->setFixedHeight(this->cfgInterface->height());
     //this->generalCfg->fixButtonBox();
-    
+
     connect(this->fileMgr, SIGNAL(reloadTree()), this, SLOT(reload()));
     connect(this->cfgInterface->buttonBox, SIGNAL(accepted()), this, SLOT(ok()));
     connect(this->cfgInterface->buttonBox, SIGNAL(rejected()), this, SLOT(cancel()));

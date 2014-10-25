@@ -347,10 +347,20 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
         fixRadix(lineFields, 0);
         lineFields.replaceInst(changeLetterCase("equ", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
-    else if ( ( "ds" == directive ) || ( "dsin" == directive ) || ( "dsout" == directive ) )
+    else if ( "ds" == directive )
     {
         fixRadix(lineFields, 0);
         lineFields.replaceInst(changeLetterCase("port", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+    }
+    else if ( "dsin" == directive )
+    {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("portin", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
+    }
+    else if ( "dsout" == directive )
+    {
+        fixRadix(lineFields, 0);
+        lineFields.replaceInst(changeLetterCase("portout", m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]));
     }
     else if ( "constant" == directive )
     {

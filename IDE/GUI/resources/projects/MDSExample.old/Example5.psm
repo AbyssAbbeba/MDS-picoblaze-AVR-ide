@@ -1,0 +1,161 @@
+; ----------------------------------------------------------------------------------------------------------------------
+; MDS for PicoBlaze - Demonstration code V: Loops.
+; ----------------------------------------------------------------------------------------------------------------------
+; This example covers compilation time and run-time loops.
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; Start at address 0x000.
+            org         0x000
+
+; ======================================================================================================================
+; A task.
+; ======================================================================================================================
+
+            ; Lets make an example, suppose we want for some reason to output the content of S0 register to ports in
+            ; address range [0, 4]. Of course, there is a countless number of ways how to do it but lets see some the
+            ; simple ones.
+
+            ; 1) No loop at all.
+            load        S0, #0x11       ; (value to output)
+            load        S1, #0          ; (starting address)
+
+            output      S0, @S1
+            add         S1, #1
+            output      S0, @S1
+            add         S1, #1
+            output      S0, @S1
+            add         S1, #1
+            output      S0, @S1
+            add         S1, #1
+            output      S0, @S1
+            add         S1, #1
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 2) Still the same approach but with a little less slavish writing.
+            ld          S0, #0x22       ; (value to output)
+            ld          S1, #0          ; (starting address)
+
+            out         S0, @S1         ; (output)
+            inc         S1              ; (increment)
+            out         S0, @S1
+            inc         S1
+            out         S0, @S1
+            inc         S1
+            out         S0, @S1
+            inc         S1
+            out         S0, @S1
+            inc         S1
+
+; ======================================================================================================================
+; Using a compilation time loop (i.e. repeat code automatically for the given fixed number of times).
+; ======================================================================================================================
+
+            ; 3) REPEAT & ENDR : This time let the assembler put the code down repeatedly for you.
+            ld          S0, #0x33       ; (value to output)
+            ld          S1, #0          ; (starting address)
+
+        repeat  5                       ; 5 × repeat (copy) the code between `repeat' and `endr'.
+            out         S0, @S1
+            inc         S1
+        endr
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 4) #WHILE & #ENDW : Similar to point 3 but using a different kind of compilation time loop.
+            ld          S0, #0x44       ; (value to output)
+addr        set         0               ; (starting address)
+
+        #while ( addr < 5 )             ; Repeat while `addr' is lower than 5.
+            out         S0, addr
+addr        set         addr + 1        ; Redefine user constant `addr' like this: "addr := addr + 1".
+        #endw                           ; End the while loop.
+
+; ======================================================================================================================
+; Using loops, both hand written and assembler generated run time loops.
+; ======================================================================================================================
+
+            ; 5) A loop, hand written (one of possible ways to write it, not necessarily the best one).
+            ld          S0, #0x55       ; (value to output)
+            ld          S1, #0          ; (starting address)
+
+loop_0:     out         S0, @S1
+            inc         S1
+            cmp         S1, #5
+            jump        NZ, loop_0
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 6) Another loop, also hand written.
+            ld          S0, #0x66       ; (value to output)
+            ld          S1, #0          ; (starting address)
+            ld          S2, #5          ; (number of repeats)
+
+loop_1:     out         S0, @S1
+            inc         S1
+            djnz        S2, loop_1      ; Decrement (S2) and jump (at loop_1) if not zero.
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 7) The for loop - an assembler generated run time loop.
+            ld          S0, #0x77       ; (value to output)
+
+            ; S1 serves as the iterator, and 5 is the number of iterations.
+            for         S1, 5           ; C: for ( S1 = 0; S1 < 5; S1++ ) {
+                out     S0, @S1
+            endf                        ; C: }
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 8) The for loop again.
+            ld          S0, #0x88       ; (value to output)
+
+            ; S1 again as the iterator, 0 is the starting value, and 4 is the maximum value.
+            for         S1, 0 .. 4      ; C: for ( S1 = 0; S1 <= 4; S1++ ) {
+                out     S0, @S1
+            endf                        ; C: }
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 9) Yet another for loop.
+            ld          S0, #0x99       ; (value to output)
+
+            ; S1 again as the iterator, 0 is the starting value, 4 is the maximum value, and 1 is the increment.
+            for         S1, 0..4, 1     ; C: for ( S1 = 0; S1 <= 4; S1 += 1 ) {
+                out     S0, @S1
+            endf                        ; C: }
+
+; ----------------------------------------------------------------------------------------------------------------------
+
+            ; 10) While loop.
+            ld          S0, #0xAA       ; (value to output)
+            ld          S1, #0          ; (starting address)
+
+            while       S1 < #5         ; C: while ( S1 < 5 ) {
+                out     S0, @S1         ; C:     S0 = *S1;
+                inc     S1              ; C:     S1++;
+            endw                        ; C: }
+
+; ======================================================================================================================
+
+
+            ; Infinite loop, and end of assembly.
+            jump        $
+            end
+
+; ----------------------------------------------------------------------------------------------------------------------
+; Notes:
+;   1) you may also use nested loops, any loop may be present in any other loop with no limit in depth of nesting,
+;      for instance you can write something like this:
+;
+            for         S0, 10..100, 5
+                for     S1, 1..5
+                    for S2, 10
+                        nop
+                    endf; S2, 10
+                endf    ; S1, 1..5
+            endf        ; S0, 10..100, 5
+;
+; ----------------------------------------------------------------------------------------------------------------------
+; The next example shows user defined macro-instructions.
+; ----------------------------------------------------------------------------------------------------------------------

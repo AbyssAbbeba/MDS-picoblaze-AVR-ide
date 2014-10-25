@@ -1,8 +1,8 @@
 # ==============================================================================
 #
-# Library for working with processor definition files used Adaptable Simulator.
+# Library for working with processor definition files used by Adaptable Simulator.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2014 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 
@@ -13,22 +13,6 @@
 
 # Set project name
 project ( AdjSimProcDef )
-
-# ------------------------------------------------------------------------------
-# WINDRES RC FILES.
-# Windows only: generate windres RC file(s) to provide information for Windows.
-# ------------------------------------------------------------------------------
-
-windres_rc ( OUTPUT_VAR         RC_FILE
-             FILETYPE           "DLL"
-             FILE_VERSION       "1.0"
-             FILEOS             "NT_WINDOWS32"
-             FILE_DESCRIPTION   "MDS ASPD"
-             COMPANY_NAME       "Moravia Microsystems, s.r.o."
-             TARGET             ${PROJECT_NAME}
-             PRODUCT_NAME       ${PRODUCT_NAME}
-             PRODUCT_VERSION    ${PRODUCT_VERSION}
-             YEARS              ${COPYRIGHT_YEARS} )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
@@ -44,8 +28,7 @@ qt4_wrap_cpp ( MOC_FILES AdjSimProcDefGui.h )
 include_directories ( ${CMAKE_SOURCE_DIR} )
 
 # Add a library to the project using the specified source files.
-add_library ( ${PROJECT_NAME} ${RC_FILE}
-                              ${UI_FILES}
+add_library ( ${PROJECT_NAME} ${UI_FILES}
                               ${MOC_FILES}
                               AdjSimProcDef.cxx
                               AdjSimProcDefGui.cxx
@@ -56,8 +39,9 @@ add_library ( ${PROJECT_NAME} ${RC_FILE}
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 # Build processor definition utility.
-add_executable ( mds-proc-def-util main.cxx )
-target_link_libraries ( mds-proc-def-util ${PROJECT_NAME} ${QT_LIBRARIES} )
+set ( PROC_DEF_UTIL_EXEC "mds-proc-def-util" )
+add_executable ( ${PROC_DEF_UTIL_EXEC} main.cxx )
+target_link_libraries ( ${PROC_DEF_UTIL_EXEC} ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
@@ -65,6 +49,12 @@ target_link_libraries ( mds-proc-def-util ${PROJECT_NAME} ${QT_LIBRARIES} )
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
+
+if ( MDS_FEATURE_COMPILER_CLI )
+    install ( TARGETS ${PROC_DEF_UTIL_EXEC}
               RUNTIME DESTINATION ${INSTALL_DIR_BIN}
               LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
 endif()

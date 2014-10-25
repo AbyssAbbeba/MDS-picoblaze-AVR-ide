@@ -245,11 +245,15 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
             {
                 acceptableTypes[0] |= AsmSymbolTable::STYPE_REGISTER;
             }
-            acceptableTypes[1] |= AsmSymbolTable::STYPE_PORT;
+            acceptableTypes[1] |= ( AsmSymbolTable::STYPE_PORT
+                                  | AsmSymbolTable::STYPE_PORTIN
+                                  | AsmSymbolTable::STYPE_PORTOUT );
             break;
 
         case ASMPICOBLAZE_INS_OUTPUTK_KK_P:
-            acceptableTypes[1] |= AsmSymbolTable::STYPE_PORT;
+            acceptableTypes[1] |= ( AsmSymbolTable::STYPE_PORT
+                                  | AsmSymbolTable::STYPE_PORTIN
+                                  | AsmSymbolTable::STYPE_PORTOUT );
             break;
 
         default:
@@ -363,7 +367,7 @@ inline std::string AsmPicoBlazeInstructionSet::getSymbolTypes ( int types ) cons
         result += "label";
     }
 
-    if ( types & AsmSymbolTable::STYPE_PORT )
+    if ( types & ( AsmSymbolTable::STYPE_PORT | AsmSymbolTable::STYPE_PORTIN | AsmSymbolTable::STYPE_PORTOUT ) )
     {
         if ( false == result.empty() )
         {

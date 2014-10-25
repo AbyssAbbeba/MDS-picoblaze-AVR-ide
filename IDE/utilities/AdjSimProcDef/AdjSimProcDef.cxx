@@ -53,6 +53,7 @@ std::ostream & operator << ( std::ostream & out,
 {
     out << "Name: \"" << definition.m_name << '"' << std::endl;
     out << "Description: \"" << definition.m_description << '"' << std::endl;
+    out << "Fail jump instruction: \"" << definition.m_failjmp << '"' << std::endl;
     out << "Supports interrupt(s): " << definition.m_hasInterrupts << std::endl;
     if ( true == definition.m_hasInterrupts )
     {

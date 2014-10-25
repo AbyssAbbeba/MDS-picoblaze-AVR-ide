@@ -1,8 +1,8 @@
 In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-MDS has the most advanced macro assembler on the market. Its suports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
+MDS has the most advanced macro assembler on the market. Its supports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
 
-Each list element is being parsed and splitted into an address reference, a command and an argument list. After them all directives are beeing filtered out and all commands and their arguments are beeing checked for validity.
+Each list element is being parsed and split into an address reference, a command and an argument list. After them all directives are being filtered out and all commands and their arguments are being checked for validity.
 
 \paragraph{Important changes}
     You need to tell compiler, that you are using constants by adding \# before second operand.
@@ -40,7 +40,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
     }
 
-    As you can see in code example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expresions priority.
+    As you can see in code example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expressions priority.
 
 \section{Constants}
     MDS supports both prefix and sufix definition.
@@ -120,7 +120,7 @@ Each list element is being parsed and splitted into an address reference, a comm
     A priority of 1 is the highest priority a priority of 9 is the lowest priority. When operators with different priority levels appear in an expression, operations are performed according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within the expression.
 
 \section{Predefined Symbols}
-    There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for Picoblaze, because user do not have to define all these symbols in his or her code.
+    There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for PicoBlaze, because user do not have to define all these symbols in his or her code.
 
     \begin{table}[h!]
         \centering{}
@@ -157,21 +157,21 @@ Each list element is being parsed and splitted into an address reference, a comm
     {
         ~\\
         \usecodefont
-        \verb'<symbol> <directive> <expresion>'
+        \verb'<symbol> <directive> <expression>'
     }
 
     \bigskip
 
-    This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, and DEFINE. MDS also supports some other directives, with diferent syntax format, which is:
+    This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, and DEFINE. MDS also supports some other directives, with different syntax format, which is:
     {
         ~\\
         \usecodefont
-        \verb'<directive> <symbol>, <expresion>'
+        \verb'<directive> <symbol>, <expression>'
     }
 
     \bigskip
 
-    Those directives are CONSTANT, VARIABLE, ADRESS, and NAMEREG. There are some other usefull directives like REPT or WHILE. See description below.
+    Those directives are CONSTANT, VARIABLE, ADRESS, and NAMEREG. There are some other useful directives like REPT or WHILE. See description below.
 
     \clearpage
     \subsection{INCLUDE}
@@ -199,8 +199,8 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax}
         {
             ~\\
-            \usecodefont        
-            \verb'<symbol>      EQU             <expresion> '
+            \usecodefont
+            \verb'<symbol>      EQU             <expression> '
         }
         \subsubsection{Description:}
                 The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
@@ -212,7 +212,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
             \verb'Second_symb   EQU     47                      ;Number in decimal'\\
             \verb'Third_symb    EQU     0x39                    ;Number in hexadecimal'\\
-            \verb'Fourth_symb   EQU     (A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'Fourth_symb   EQU     (A -4)+ 18 / B)         ;Number with expression'\\
             \verb'Fifth_symb    EQU     0x09 << 2               ;'\\
         }
 
@@ -221,7 +221,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         {
             ~\\
             \usecodefont
-            \verb'CONSTANT             <symbol>,<expresion>'
+            \verb'CONSTANT             <symbol>,<expression>'
         }
         \subsubsection{Description:}
                 The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
@@ -233,7 +233,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
             \verb'CONSTANT     Second_symb,47                      ;Number in decimal'\\
             \verb'CONSTANT     Third_symb,0x39                     ;Number in hexadecimal'\\
-            \verb'CONSTANT     Fourth_symb,(A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'CONSTANT     Fourth_symb,(A -4)+ 18 / B)         ;Number with expression'\\
             \verb'CONSTANT     Fifth_symb,0x09 << 2                ;'\\
         }
 
@@ -242,7 +242,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         {
             ~\\
             \usecodefont
-            \verb'<symbol>      SET             <expresion>'
+            \verb'<symbol>      SET             <expression>'
         }
         \subsubsection{Description:}
             The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
@@ -254,19 +254,19 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'First_symb    SET     0b10011100              ;Number in binary'\\
             \verb'Second_symb   SET     47                      ;Number in decimal'\\
             \verb'Third_symb    SET     0x39                    ;Number in hexadecimal'\\
-            \verb'Fourth_symb   SET     (A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'Fourth_symb   SET     (A -4)+ 18 / B)         ;Number with expression'\\
             \verb'Fifth_symb    SET     0x09 << 2               ;'\\
         }
-        
+
     \subsection{VARIABLE}
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
-            \verb'VARIABLE            <symbol>,<expresion>'
+            \usecodefont
+            \verb'VARIABLE            <symbol>,<expression>'
         }
         \subsubsection{Description:}
-            Directive VARIABLE is similar to SET, but with diferent syntax. Symbols defined with VARIABLE can be redefined with another value in your source
+            Directive VARIABLE is similar to SET, but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source
             code, but those defined with EQU cannot.
 
         \subsubsection{Examples:}
@@ -276,7 +276,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'VARIABLE     First_symb,0b10011100               ;Number in binary'\\
             \verb'VARIABLE     Second_symb,47                      ;Number in decimal'\\
             \verb'VARIABLE     Third_symb,0x39                     ;Number in hexadecimal'\\
-            \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ;Number with expresion'\\
+            \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ;Number with expression'\\
             \verb'VARIABLE     Fifth_symb,0x09 << 2                ;'\\
         }
 
@@ -284,10 +284,10 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'<symbol>      REG             <reg name/address>'
         }
-            
+
         \subsubsection{Description:}
         Symbols defined with the REG directive are by compiler considered as work registers.
 
@@ -301,15 +301,15 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'Fourth_symb       REG     0x4'\\
             \verb'Fifth_symb        REG     0x5'\\
             }
-            
+
         \subsection{NAMEREG}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'NAMEREG            <symbol>,<reg name or address> '
-            }            
+            }
         \subsubsection{Description:}
-        Directive NAMEREG is similar to REG, but with diferent syntax. Symbols defined with NAMEREG can be redefined with another value in your source
+        Directive NAMEREG is similar to REG, but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source
         code.
 
         \subsubsection{Examples:}
@@ -328,10 +328,10 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
             {
                 ~\\
-                \usecodefont        
-            \verb'<symbol>      DATA             <expresion>'
-            }            
-            
+                \usecodefont
+            \verb'<symbol>      DATA             <expression>'
+            }
+
         \subsubsection{Description:}
             Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
 
@@ -342,16 +342,16 @@ Each list element is being parsed and splitted into an address reference, a comm
                 \verb'First_symb    DATA                0b10011100              ;Number in binary'\\
                 \verb'Second_symb   DATA                47                      ;Number in decimal'\\
                 \verb'Third_symb    DATA                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expresion'\\
+                \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expression'\\
                 \verb'Fifth_symb    DATA                0x09 << 2               ;'\\
             }
-            
+
     \subsection{CODE}
         \subsubsection{Syntax:}
             {
                 ~\\
                 \usecodefont
-            \verb'<symbol>      CODE             <expresion>'
+            \verb'<symbol>      CODE             <expression>'
             }
         \subsubsection{Description:}
         Symbols defined with the CODE directive are by compiler considered as program memory.
@@ -363,16 +363,16 @@ Each list element is being parsed and splitted into an address reference, a comm
                 \verb'First_symb    CODE                0b10011100              ;Number in binary'\\
                 \verb'Second_symb   CODE                47                      ;Number in decimal'\\
                 \verb'Third_symb    CODE                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expresion'\\
+                \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expression'\\
                 \verb'Fifth_symb    CODE                0x09 << 2               ;'\\
             }
-            
+
     \subsection{PORT}
         \subsubsection{Syntax:}
             {
                 ~\\
-                \usecodefont        
-            \verb'<symbol>      PORT             <expresion>'
+                \usecodefont
+            \verb'<symbol>      PORT             <expression>'
             }
         \subsubsection{Description:}
         Symbol defined with this directive is considered to be PORT\_ID identificator.
@@ -391,54 +391,54 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
             {
                 ~\\
-                \usecodefont        
+                \usecodefont
             \verb'<symbol>      AUTOREG         [<cnt address>]'
-            }            
+            }
         \subsubsection{Description:}
-        This directive saves time. You can use it, when you dont care which work register will be used. It will automatically assign a register
-        at adress 0x00, which is incremented with every other AUTOREG directive. Optionaly, you can change starting address counter by adding a parameter
-        after AUTOREG directive. You can check assigned registers in codelisting (file .lst) and symbol table (file .sym).
+        This directive saves time. You can use it, when you don't care which work register will be used. It will automatically assign a register
+        at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter
+        after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
 
         \subsubsection{Examples:}
             {
                 ~\\
                 \usecodefont
-                \verb'First_symb    AUTOREG             ; Automaticaly assigned, register at adress 0x00'\\
+                \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
                 \verb'Second_symb   AUTOREG'\\
                 \verb'Third_symb    AUTOREG'\\
-                \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting adress to 0x05'\\
+                \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting address to 0x05'\\
                 \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'\\
             }
-            
+
     \subsection{AUTOSPR}
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'<symbol>      AUTOSPR        [<cnt address>]'
         }
-           
+
     \subsubsection{Description:}
     Must be used only with instructions FETCH and STORE. It will automatically assign an
-    adress 0x00, which is incremented with every other AUTOSPR directive. Optionaly, you can change starting address counter by adding a parameter
-    after AUTOSPR directive. You can check assigned memory in codelisting file(.lst) and symbol table file(.sym).
+    address 0x00, which is incremented with every other AUTOSPR directive. Optionally, you can change starting address counter by adding a parameter
+    after AUTOSPR directive. You can check assigned memory in code listing file(.lst) and symbol table file(.sym).
 
     \subsubsection{Examples:}
         {
             ~\\
             \usecodefont
-            \verb'First_symb    AUTOSPR             ; Automaticaly assigned, data at adress 0x00'\\
+            \verb'First_symb    AUTOSPR             ; Automatically assigned, data at address 0x00'\\
             \verb'Second_symb   AUTOSPR'\\
             \verb'Third_symb    AUTOSPR'\\
-            \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting adress to 0x05'\\
+            \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting address to 0x05'\\
             \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'\\
         }
-            
+
     \subsection{INITSPR}
         \subsubsection{Syntax:}
 
         \subsubsection{Description:}
- 
+
         \subsubsection{Examples:}
 
 
@@ -451,11 +451,11 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
-            \verb'<symbol>      DEFINE             <expresion>'
+            \usecodefont
+            \verb'<symbol>      DEFINE             <expression>'
         }
         \subsubsection{Description:}
-        You can define expresion using previously defined symbols. Value of this expresion is calculated every time the symbol is used. You can use symbols in define expresions
+        You can define expression using previously defined symbols. Value of this expression is calculated every time the symbol is used. You can use symbols in define expressions
 
         \subsubsection{Examples:}
         {
@@ -463,7 +463,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \usecodefont
             \verb'A             EQU         10'\\
             \verb'B             SET         5                   ; Second symbol is redefinable'\\
-            \verb'C             DEFINE      ( A + B ) * 2       ; Defined expresion'\\
+            \verb'C             DEFINE      ( A + B ) * 2       ; Defined expression'\\
             \verb'F = C                                         ; F equals 30'\\
             \verb'B             SET         10'\\
             \verb'F = C                                         ; F equals 40'\\
@@ -473,9 +473,9 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
-            \verb'ADDRESS             <expresion>'\\
-            \verb'ORG                 <expresion>'
+            \usecodefont
+            \verb'ADDRESS             <expression>'\\
+            \verb'ORG                 <expression>'
         }
         \subsubsection{Description:}
         When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter. The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data being assembled and is incremented after each line by the number of bytes of data or code in that line.
@@ -497,11 +497,11 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'REPT  <NumberOfRepetions>'\\
             \verb'<repeated code>'\\
             \verb'ENDR'
-        }            
+        }
 
         \subsubsection{Description:}
             Directive REPT is able to repeatedly execute a block of code.
@@ -529,14 +529,14 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'#WHILE  <symbol>'\\
             \verb'<code>'\\
             \verb'#ENDW'
         }
-        
+
         \subsubsection{Description:}
-        The while construct consists of a block of code and an expresion. Following code is recompiled until expresion equals to zero.
+        The while construct consists of a block of code and an expression. Following code is recompiled until expression equals to zero.
 
         \subsubsection{Examples:}
         {
@@ -553,11 +553,11 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'SKIP  <NumberOfInstructions>'
         }
         \subsubsection{Description:}
-            SKIP directive is basicaly address counter + number evaluated in expression. See example for more info.
+            SKIP directive is basically address counter + number evaluated in expression. See example for more info.
 
         \subsubsection{Examples:}
         {
@@ -598,17 +598,17 @@ Each list element is being parsed and splitted into an address reference, a comm
             ~\\
             \usecodefont
             \verb '; Expresion syntax'\\
-            \verb'DB                 <expresion1>  [,<expresion2>,..]'\\
+            \verb'DB                 <expression1>  [,<expression2>,..]'\\
             \verb' ; String syntax'\\
             \verb'DB                <"string">'\\
-            \verb'; Combination of string and expresions'\\
-            \verb'DB                <"string"> [,<expresion1>,..]'\\
-            \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
+            \verb'; Combination of string and expressions'\\
+            \verb'DB                <"string"> [,<expression1>,..]'\\
+            \verb' ; parameter can be unlimited number of string characters, or expressions divided by comma'\\
         }
         \subsubsection{Description:}
-            The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trimes 6 MSB bits making it 18-bit value,
-            so it can fit into program memory. You can insert infinite number of string characters and MDS assembler seperates them into triplets of bytes replaced
-            with their ASCII value. The assembler then trimes upper 6 bits making it 18-bit value.
+            The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trims 6 MSB bits making it 18-bit value,
+            so it can fit into program memory. You can insert infinite number of string characters and MDS assembler separates them into triplets of bytes replaced
+            with their ASCII value. The assembler then trims upper 6 bits making it 18-bit value.
             See the examples for better understanding of DB directive.
 
         \subsubsection{Examples:}
@@ -617,16 +617,16 @@ Each list element is being parsed and splitted into an address reference, a comm
             \usecodefont
             \verb'DB      24828                   ; hexadecimal 0x0060FC'\\
             \verb'DB      "my string"             ; String syntax'\\
-            \verb'DB      "my string",2+1,3...    ; Combination of string and expresions'\\
-            \verb' ; parameter can be unlimited number of string characters, or expresions divided by comma'\\
+            \verb'DB      "my string",2+1,3...    ; Combination of string and expressions'\\
+            \verb' ; parameter can be unlimited number of string characters, or expressions divided by comma'\\
         }
     \subsection{LIMIT}
-    
+
         \subsubsection{Syntax:}
         \verb'LIMIT          D,<number>                  ; Number of registers '\\
         \verb'LIMIT          R,<number>                  ; Size of scratchpad ram '\\
         \verb'LIMIT          C,<number>                  ; Size of program memory '\\
-        
+
         \subsubsection{Description:}
         Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
         In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
@@ -634,12 +634,12 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Examples:}
         {
             ~\\
-            \usecodefont            
+            \usecodefont
             \verb'LIMIT          R,16                   ; Number of registers 16'\\
             \verb'LIMIT          D,7                    ; Size of scratchpad ram   '\\
             \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
         }
-        
+
     \subsection{DEVICE}
         \subsubsection{Syntax:}
         \verb'DEVICE            <device name>'
@@ -651,7 +651,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Examples:}
         {
             ~\\
-            \usecodefont       
+            \usecodefont
             \verb'DEVICE                KCPSM3'\\
             \verb'DEVICE                KCPSM2'\\
             \verb'DEVICE                KCPSM1'\\
@@ -663,7 +663,7 @@ Each list element is being parsed and splitted into an address reference, a comm
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont 
+            \usecodefont
             \verb'LIST'\\
             \verb'NOLIST'
         }
@@ -675,7 +675,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'TITLE            <"title text">'
 
         \subsubsection{Description:}
-        This will put a title into coresponding line in codelisting.  
+        This will put a title into coresponding line in codelisting.
 
         \subsubsection{Examples:}
             {
@@ -689,7 +689,7 @@ Each list element is being parsed and splitted into an address reference, a comm
             \verb'MESSAGE            <"message text">'
 
         \subsubsection{Description:}
-            You can define message, that will show up after compilation.  
+            You can define message, that will show up after compilation.
 
         \subsubsection{Examples:}
             {
@@ -701,10 +701,10 @@ Each list element is being parsed and splitted into an address reference, a comm
     \subsection{ERROR}
         \subsubsection{Syntax:}
             \verb'MESSAGE            <"error text">'
-            
+
         \subsubsection{Description:}
         You can define an error report, which aborts compilation, when is executed.
-        
+
         \subsubsection{Examples:}
             {
                 ~\\
@@ -714,10 +714,10 @@ Each list element is being parsed and splitted into an address reference, a comm
 
     \subsection{WARNING}
             \verb'WARNING            <"warning text">'
-            
+
         \subsubsection{Description:}
             This will put title into coresponding line in codelisting.
-            
+
         \subsubsection{Examples:}
             {
                 ~\\
@@ -745,7 +745,7 @@ Each list element is being parsed and splitted into an address reference, a comm
                 \verb'JUMP          C,wait'\\
                 \verb'ENDM'\\
             }
-            
+
     \subsection{END}
         \subsubsection{Syntax:}
             \verb'END'
@@ -769,7 +769,7 @@ Each list element is being parsed and splitted into an address reference, a comm
                 \verb'<FAILJMP          "label">'\\
                 \verb'<DEFAULT_JMP      "label">'
             }
-            
+
         \subsubsection{Description:}
         Fills program memory with jump to the specified address. Simple protection against errors.
 
@@ -783,7 +783,7 @@ Each list element is being parsed and splitted into an address reference, a comm
 
 
 \section{Pseudo Instructions}
-MDS assembler supports some usefull pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+MDS assembler supports some useful pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
     \subsection{INC}
         \subsubsection{Syntax:}
@@ -932,7 +932,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Equal to:}
          {
             ~\\
-            \usecodefont       
+            \usecodefont
             \verb'OR       sX, #1 << bit'
         }
         \subsubsection{Description:}
@@ -995,7 +995,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
         \subsubsection{Syntax:}
         {
             ~\\
-            \usecodefont        
+            \usecodefont
             \verb'DJNZ       <register>,<label>'
         }
         \subsubsection{Equal to:}
@@ -1076,10 +1076,10 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
         \subsubsection{Description:}
         You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-        evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
-        Number without \# is considered as register adress. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
-        symbol with register adress. So 5 would have been replaced with value stored in register with adress 5.
-        
+        evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix.
+        Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
+        symbol with register address. So 5 would have been replaced with value stored in register with address 5.
+
         \subsubsection{Examples:}
         {
             ~\\
@@ -1092,7 +1092,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'           INPUT   s0,RX_data'\\
             \verb'ENDIF'
         }
-       
+
     \subsection{WHILE}
         \subsubsection{Syntax:}
         {
@@ -1102,10 +1102,10 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'<code>'\\
             \verb'ENDW'
         }\\
-        
+
         \textbf{Description:}\\
         You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-        evaluates result. You can use registers, immediate constants (symbols) or register adress. Immediate constants are specified as number with \# prefix.
+        evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix.
         Number without \# is considered as register adrress. See example for conditions syntax.\\
         \textbf{Examples:}\\
         {
@@ -1139,13 +1139,13 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'      <code>'\\
             \verb'ENDW'
         }\\
-        
+
             \textbf{Description:}\\
             You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-            evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetions. In this case,
-            counting starts at number 0 and incrementing to number of repetions. In second type, you write used register and range of
-            repetions ( for examle 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
-            See examples for better understanding.\\ WARNING: Using FOR directive will overide used register( s0 in example)
+            evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case,
+            counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of
+            repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
+            See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
             \textbf{Examples:}\\
         {
             ~\\
@@ -1209,7 +1209,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \caption{Macro comands}
         \end{table}
         \textbf{Description:}\\
-        Standard macro, consiting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
+        Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
         with no parameters  or unlimited number of parameters.\\
         \textbf{Examples:}\\
         This can be well demonstrated on examples:
@@ -1222,7 +1222,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'      load    s1,s2'\\
             \verb'endm'\\\\
             \verb'abc           ; Expand macro "abc"  here'\\
-            \verb'abc           ; Expand macro "abc"  here'\\\\            
+            \verb'abc           ; Expand macro "abc"  here'\\\\
             \verb'; This is the same as if you wrote this:'\\
             \verb'      load    s2,s0'\\
             \verb'      add     s2,#1'\\
@@ -1231,9 +1231,9 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             \verb'      add     s2,#1'\\
             \verb'      load    s1,s2'\\
         }
-           
+
            Macro without parameters.
-           
+
         {
             ~\\
             \usecodefont\\
@@ -1256,7 +1256,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
 
         {
                 ~\\
-                \usecodefont\\        
+                \usecodefont\\
             \verb'ijk           macro   foo'\\
             \verb'          add     s1,s0'\\
             \verb''\\
@@ -1358,32 +1358,32 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[User defined memory limit for Scratch Pad RAM exceeded]\hfill \\
                     You have exceeded maximum scratch pad RAM defined with directive LIMIT or project configuration.
                     \item[Instruction X requires operand \#Y to be of type(s) Z; while the given operand is of type: W] \hfill \\   %lllll
-                    Wrong type of operand. 
+                    Wrong type of operand.
                     \item[Macro not defined ] \hfill \\
                     The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
-                    \item[Too many arguments given, expecting at most X arguments] \hfill \\             
+                    \item[Too many arguments given, expecting at most X arguments] \hfill \\
                     Too many arguments. Reduce number of given arguments.
-                    \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\  
+                    \item[Attempting to use unavailable space in X memory at address: Y ] \hfill \\
                     Desired memory space is not available.
-                    \item[The last error was critical, compilation aborted] \hfill \\                   
+                    \item[The last error was critical, compilation aborted] \hfill \\
                     Critical error has occured. Compilation cannot continue.
                     \item[Device not supported] \hfill \\
                     The given device is not supported. Please choose different device in project configuration.
-                    \item[Device specification code is already loaded ] \hfill \\                       
+                    \item[Device specification code is already loaded ] \hfill \\
                     You have already specified architecture in project configuration.
                     \item[Limit value X is not valid] \hfill \\
                     Invalid limit value. Viz. LIMIT directive chapter for valid values.
-                    \item[Directive `LOCAL' cannot appear outside of macro definition ] \hfill \\   
+                    \item[Directive `LOCAL' cannot appear outside of macro definition ] \hfill \\
                     Directive LOCAL must be only used inside of macro. Use different directive for symbol definition( EQU,SET etc.), or put it inside of macro.
                     \item[Directive EXITM' cannot apper outside macro definition] \hfill \\
                     The given directive is used to immediately exit macro. It does not make sense to use it differently.
                     \item[Maximum macro expansion level X reached  ] \hfill \\
                     Maximum macro expansion level reached. You can change your compiler settings and set bigger expansion level.
                     By default, macro expansion level is unlimited.
-                    \item[Maximum number of WHILE directive iterations reached ] \hfill \\    
+                    \item[Maximum number of WHILE directive iterations reached ] \hfill \\
                     Maximum WHILE directive iterations reached. You can change your compiler settings and allow more iterations.
                     By default, number of iterations is unlimited.
-                    \item[Maximum number of REPEAT directive iterations reached ] \hfill \\                     
+                    \item[Maximum number of REPEAT directive iterations reached ] \hfill \\
                     Maximum REPEAT directive iterations reached. You can change your compiler settings and allow more iterations.
                     By default, number of iterations is unlimited.
                     \item[Instruction word is only 18 bits wide, value X trimmed to Y ] \hfill \\
@@ -1401,11 +1401,11 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[Undefined symbol: X ] \hfill \\
                     Symbol has not been defined. Define symbol before usage.
                     \item[This value is not valid inside of expression ] \hfill \\         %mmmmm
-                    The given expresion contains forbidden value.
+                    The given expression contains forbidden value.
                     \item[Division by zero ] \hfill \\
                     Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
                     \item[Unable to resolve this expression ] \hfill \\
-                    The given expresion cannot be resolved. Check if expresion is syntactically right.
+                    The given expression cannot be resolved. Check if expression is syntactically right.
                     \item[Syntax not understood ] \hfill \\
                     There is syntax error in your source code.
                     \item[Character constant is too long ] \hfill \\
@@ -1451,7 +1451,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \item[Result is negative number X, this will be represented as X-bit number in two's complement arithmetic] \hfill \\
                     Result is negative number. This will be represented as number in two's complement arithmetic.
                     \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ] \hfill \\
-                    Value out of range. Adjust input value.                                                  
+                    Value out of range. Adjust input value.
                     \item[Maximum number of messages reached, suppressing compiler message generation ] \hfill \\
                     Compiler is suppressing error messages generation to avoid massive code listing file size.
                     \item[File name contains a null character ] \hfill \\
@@ -1485,7 +1485,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
              \item[TYPE] Tells you some additional info.
                 \begin{itemize}
                  \item IMPLICIT: Symbol is defined by default.
-                 \item LOCAL: Local symbol can be only used in macro body. 
+                 \item LOCAL: Local symbol can be only used in macro body.
                  \item REDEFINABLE: Symbol can be redefined everywhere in the source code.
                  \item CONSTANT: Symbol cannot be redefined.
                 \end{itemize}
@@ -1511,7 +1511,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
              It consist of name of the file and line + column number with format: <nameoffile>:<firstlinenumber>.<columns>.<lastlinenumber>.
              Second is IMPLICIT, which means symbol is defined by default, not in your code.
             \end{description}
-            
+
         \section{Mem File}
             Mem file contains program memory in special format. There is seventeen 4byte wide columns, first is starting with \@ and represents starting address.
             Every other position increments address by one. Unused memory is filled with zeroes.\\\\
@@ -1588,7 +1588,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                         \verb'  | type | count | address  |            data           | checksum |'\\
                         \verb'  +-------------------//------------------//-----------------------+'\\
                     }\\
-                    
+
             \begin{description}
                 \item[Type] A char[2] field. These characters describe the type of record (S0,S1, S2, S3, S5, S7, S8, or S9).
 
@@ -1692,7 +1692,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \begin{itemize}
                         \item S0 S-record type S0, indicating it is a header record.
                         \item 06 Hexadecimal 06 (decimal 6), indicating that six character pairs (or ASCII bytes) follow.
-                        \item 00 00 Four character 2-byte address field, zeroes in this example.
+                        \item 00 00 Four character 2-byte address field, zeros in this example.
                         \item 48 44 52 ASCII H, D, and R - "HDR".
                         \item 1B The checksum.
                     \end{itemize}
@@ -1701,13 +1701,13 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                     \begin{itemize}
                         \item S1 S-record type S1, indicating it is a data record to be loaded at a 2-byte address.
                         \item 13 Hexadecimal 13 (decimal 19), indicating that nineteen character pairs, representing a 2 byte address, 16 bytes of binary data, and a 1 byte checksum, follow.
-                        \item 00 00 Four character 2-byte address field; hexidecimal address 0x0000, where the data which follows is to be loaded.
+                        \item 00 00 Four character 2-byte address field; hexadecimal address 0x0000, where the data which follows is to be loaded.
                         \item 28 5F 24 5F 22 12 22 6A 00 04 24 29 00 08 23 7C Sixteen character pairs representing the actual binary data.
                         \item 2A The checksum.
                     \end{itemize}
-                    
+
                 \subsubsection{The second and third S1 records are comprised as follows:}
-                
+
                     The second and third S1 records each contain 0x13 (19) character pairs
                     and are ended with checksums of 13 and 52, respectively. The fourth S1
                     record contains 07 character pairs and has a checksum of 92.
@@ -1741,7 +1741,7 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
             character strings. All templates should include these {} character strings for
             the compiler to work correctly. Basically the MDS replaces instances on
             {INIT\_XX}, {INITP\_XX} and {INIT64\_X}, {INIT128\_X}, {INIT256\_X} by constant strings with the appropriate values, similar to the kcpsmX tools of Xilinx.
-        
+
         \section{List File Format}
                 Code listing serves as an additional information about the assembled code and the progress of the assembly process.
                 It contains information about all symbols defined in the code. Where and how were they were defined, what are their
@@ -2547,4 +2547,4 @@ MDS assembler supports some usefull pseudo instructions, which can improve under
                 ~\\
                 \usecodefont
                 \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
-                }                
+                }

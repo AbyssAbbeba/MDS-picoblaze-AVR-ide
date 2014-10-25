@@ -1,0 +1,388 @@
+                   1     ; ----------------------------------------------------------------------------------------------------------------------
+                   2     ; MDS for PicoBlaze - Demonstration code VI: User defined macro instructions.
+                   3     ; ----------------------------------------------------------------------------------------------------------------------
+                   4     ;
+                   5     ; This example code demonstrates usage of user defined macros. Examples used here serve only as demonstration, they
+                   6     ; are not meant to have any usage in real life application but they certainly should give you some idea on how to use
+                   7     ; macros in this assembly language.
+                   8     ;
+                   9     ; IMPORTANT NOTE:
+                  10     ;   This is a pretty advanced topic, even entire books have been written about using macros and similar techniques
+                  11     ;   applied in the assembly language; this example code only illustrates how that might look like, and demonstrates that
+                  12     ;   macros really work here but if you are unsure how exactly that works, it might be advisable to avoid using it at
+                  13     ;   all, at least before you get to know all the pitfalls and limitations of this. On the other hand when you master
+                  14     ;   this technique, you will probably get much more efficient in writing assembly code, it's a powerful feature, one
+                  15     ;   just needs to know how exactly to use it properly.
+                  16     ;
+                  17     ; ----------------------------------------------------------------------------------------------------------------------
+                  18
+                  19                 ; Start at address 0x000.
+  00000           20                 org         0x000
+                  21
+                  22     ; ======================================================================================================================
+                  23     ; A simple example: macro without parameters.
+                  24     ; ======================================================================================================================
+                  25
+                  26     ; Define macro named `backup' contaning three loads: S10 <- S0, S11 <- S1, and S12 <- S2.
+                  27     backup      macro
+                  28                 ld          S3, S0
+                  29                 ld          S4, S1
+                  30                 ld          S5, S2
+                  31     endm
+                  32
+                  33     ; Define macro named `restore' to do the exact opposite of what the `backup' does.
+                  34     restore     macro
+                  35                 ld          S0, S3
+                  36                 ld          S1, S4
+                  37                 ld          S2, S5
+                  38     endm
+                  39
+                  40                 ; Now lets load S0..S2 with some values.
+000 01001         41                 ld          S0, #1
+001 01102         42                 ld          S1, #2
+002 01203         43                 ld          S2, #3
+                  44                 ; Backup current content of S0..S2.
+                  45                 backup
+003 00300         46 +1              ld          S3, S0
+004 00410         47 +1              ld          S4, S1
+005 00520         48 +1              ld          S5, S2
+                  49
+                  50                 ; And load S0..S2 with another values.
+006 0100A         51                 ld          S0, #10
+007 01114         52                 ld          S1, #20
+008 0121E         53                 ld          S2, #30
+                  54                 ; Restore the previous content of S0..S2.
+                  55                 restore
+009 00030         56 +1              ld          S0, S3
+00A 00140         57 +1              ld          S1, S4
+00B 00250         58 +1              ld          S2, S5
+                  59
+                  60     ; ----------------------------------------------------------------------------------------------------------------------
+                  61
+                  62     ; Wait 100 instruction cycles where you want.
+                  63     w100        macro
+                  64                 nop
+                  65                 ld          S0, #49
+                  66                 djnz        S0, $-1
+W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                  67     endm
+                  68
+                  69                 ; Wait 100 instruction cycles here.
+                  70                 w100
+00C 00000         71 +1              nop
+00D 01031         72 +1              ld          S0, #49
+00E 19001         73 +1              djnz        S0, $-1
+00F 3600E
+W: ==> instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
+                  74 +1              djnz        S0, $-1
+                  75
+                  76     ; ======================================================================================================================
+                  77     ; A little more advanced example: macro with parameters.
+                  78     ; ======================================================================================================================
+                  79
+                  80     ; Double load, loads two different registers with two different values at once.
+                  81     dload       macro       reg0, reg1, val0, val1
+                  82                 ld          reg0, #val0
+                  83                 ld          reg1, #val1
+                  84     endm
+                  85
+                  86                 ; Lets give it a try...
+                  87                 dload       S0, S1, 0x11, 0x22
+010 01011         88 +1              ld          reg0, #val0
+011 01122         89 +1              ld          reg1, #val1
+                  90
+                  91     ; ----------------------------------------------------------------------------------------------------------------------
+                  92
+                  93     ; Copy content of registers at addresses [source, source+4] to registers at addresses [target, target+4].
+                  94     copy5       macro       target, source
+                  95                 ld          target + 0, source + 0
+                  96                 ld          target + 1, source + 1
+                  97                 ld          target + 2, source + 2
+                  98                 ld          target + 3, source + 3
+                  99                 ld          target + 4, source + 4
+                 100     endm
+                 101
+                 102     ; Put the given number of NOPs (No Operation instruction) at the place where this macro is expanded.
+                 103     nops        macro       number
+                 104                 repeat      number
+                 105                     nop
+                 106                 endr
+                 107     endm
+                 108
+                 109                 ; Put 10 NOPs here.
+                 110                 nops        10
+                 111 +1              repeat      number
+                 112 +1                  nop
+                 113 +1              endr
+012 00000        114 +2                  nop
+013 00000        115 +2                  nop
+014 00000        116 +2                  nop
+015 00000        117 +2                  nop
+016 00000        118 +2                  nop
+017 00000        119 +2                  nop
+018 00000        120 +2                  nop
+019 00000        121 +2                  nop
+01A 00000        122 +2                  nop
+01B 00000        123 +2                  nop
+                 124
+                 125     ; Wait for the given number number of instruction cycles, and use the given register as iterator for the delay loop.
+                 126     wait        macro       register, cycles
+                 127                 for         register, ( cycles - 1 ) / 4
+                 128                     nop
+                 129                 endf
+                 130     endm
+                 131
+                 132     ; ======================================================================================================================
+                 133     ; A pretty complex example: macro with local symbol(s), and forced exit combined with conditions and loops.
+                 134     ; ======================================================================================================================
+                 135
+                 136     ; Fill registers at addresses in range [target, target+length] with the given value.
+                 137     fill        macro       target, value, length
+                 138                 local       n
+                 139         n       set         0
+                 140
+                 141             #if ( length == 0 )
+                 142                 warning     "Zero length doesn't make sense here."
+                 143             #elseif ( target == S1 )
+                 144                 warning     "I won't accept S1 as target ... for some reason, I guess."
+                 145                 exitm
+                 146             #endif
+                 147
+                 148             #while n < length
+                 149                 ld          target + n, #value
+                 150         n       set         n + 1
+                 151             #endw
+                 152     endm
+                 153
+                 154     ; Copy contents of registers addresses in range [source, source+number] to registers at [target, target+number].
+                 155     copy        macro       target, source, number
+                 156                 local       n
+                 157         n       set         0
+                 158
+                 159             #while n < number
+                 160                 ld          target + n, source + n
+                 161         n       set         n + 1
+                 162             #endw
+                 163     endm
+                 164
+                 165     ; Lets have some fun here...
+  0001C          166     loop:       fill        S0, 0x55, 8    ; S0..S7 <- #0x55
+                 167 +1              local       n
+  00000          168 +1      n       set         0
+                 169 +1
+  00000          170 +1          #if ( length == 0 )
+                 171 +1              warning     "Zero length doesn't make sense here."
+  00000          172 +1          #elseif ( target == S1 )
+                 173 +1              warning     "I won't accept S1 as target ... for some reason, I guess."
+                 174 +1              exitm
+                 175 +1          #endif
+                 176 +1
+                 177 +1          #while n < length
+                 178 +1              ld          target + n, #value
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+                 179 +1      n       set         n + 1
+                 180 +1          #endw
+01C 01055        181 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00001          182 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+01D 01155        183 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00002          184 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+01E 01255        185 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00003          186 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+01F 01355        187 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00004          188 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+020 01455        189 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00005          190 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+021 01555        191 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00006          192 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+022 01655        193 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00007          194 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+023 01755        195 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00008          196 +2      n       set         n + 1
+                 197                 copy        S8, S0, 8      ; S8..SA <- S0..S7
+                 198 +1              local       n
+  00000          199 +1      n       set         0
+                 200 +1
+                 201 +1          #while n < number
+                 202 +1              ld          target + n, source + n
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+                 203 +1      n       set         n + 1
+                 204 +1          #endw
+024 00800        205 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00001          206 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+025 00910        207 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00002          208 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+026 00A20        209 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00003          210 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+027 00B30        211 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00004          212 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+028 00C40        213 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00005          214 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+029 00D50        215 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00006          216 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+02A 00E60        217 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00007          218 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+02B 00F70        219 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00008          220 +2      n       set         n + 1
+                 221
+                 222                 fill        S0, 0xAA, 8    ; S0..S7 <- #0xAA
+                 223 +1              local       n
+  00000          224 +1      n       set         0
+                 225 +1
+  00000          226 +1          #if ( length == 0 )
+                 227 +1              warning     "Zero length doesn't make sense here."
+  00000          228 +1          #elseif ( target == S1 )
+                 229 +1              warning     "I won't accept S1 as target ... for some reason, I guess."
+                 230 +1              exitm
+                 231 +1          #endif
+                 232 +1
+                 233 +1          #while n < length
+                 234 +1              ld          target + n, #value
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+                 235 +1      n       set         n + 1
+                 236 +1          #endw
+02C 010AA        237 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00001          238 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+02D 011AA        239 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00002          240 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+02E 012AA        241 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00003          242 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+02F 013AA        243 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00004          244 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+030 014AA        245 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00005          246 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+031 015AA        247 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00006          248 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+032 016AA        249 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00007          250 +2      n       set         n + 1
+W: instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+033 017AA        251 +2              ld          target + n, #value
+W: ==> instruction `LOAD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+  00008          252 +2      n       set         n + 1
+                 253                 copy        S8, S0, 8      ; S8..SA <- S0..S7
+                 254 +1              local       n
+  00000          255 +1      n       set         0
+                 256 +1
+                 257 +1          #while n < number
+                 258 +1              ld          target + n, source + n
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+                 259 +1      n       set         n + 1
+                 260 +1          #endw
+034 00800        261 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00001          262 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+035 00910        263 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00002          264 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+036 00A20        265 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00003          266 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+037 00B30        267 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00004          268 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+038 00C40        269 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00005          270 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+039 00D50        271 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00006          272 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+03A 00E60        273 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00007          274 +2      n       set         n + 1
+W: instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+03B 00F70        275 +2              ld          target + n, source + n
+W: ==> instruction `LOAD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: expression.
+W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: expression.
+  00008          276 +2      n       set         n + 1
+                 277
+03C 2201C        278                 jump        loop            ; And again...
+                 279
+                 280
+                 281     ; ======================================================================================================================
+                 282
+                 283                 ; End of assembly.
+                 284                 end
+                 285
+                 286     ; ----------------------------------------------------------------------------------------------------------------------
+                 287     ; Notes:
+                 288     ;   1) Expressions in conditions, for loops, etc. may be enclosed in parenthesis, however, it is not mandatory.
+                 289     ; ----------------------------------------------------------------------------------------------------------------------

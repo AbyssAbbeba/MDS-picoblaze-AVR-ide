@@ -51,7 +51,7 @@ class PicoBlazeInstructionSet1CPLD : public PicoBlazeInstructionSet
         /**
          * @brief
          *
-         * Possible instuctions:
+         * Possible instructions:
          * - SLA sX : 10 1000 xxxx 0000 0000
          * - SLX sX : 10 1000 xxxx 0000 0010
          * - RL sX  : 10 1000 xxxx 0000 0100

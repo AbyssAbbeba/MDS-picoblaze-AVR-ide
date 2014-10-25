@@ -67,16 +67,25 @@
     #include "../widgets/Tools/Convertor/convertortool.h"
 #endif
 #ifdef MDS_FEATURE_SIM_LED_PANEL
+    #define MDS_SIM_FEATURES
     #include "../widgets/Tools/SimLed/simled.h"
 #endif
 #ifdef MDS_FEATURE_SIM_7_SEGMENT
+    #define MDS_SIM_FEATURES
     #include "../widgets/Tools/Sim7Seg/sim7seg.h"
 #endif
-
-#include "../widgets/Tools/SimSwitch/simswitch.h"
-#include "../widgets/Tools/SimPortLogger/simportlogger.h"
+#ifdef MDS_FEATURE_SIM_SWITCH
+    #define MDS_SIM_FEATURES
+    #include "../widgets/Tools/SimSwitch/simswitch.h"
+#endif
+#ifdef MDS_FEATURE_SIM_PORT_LOGGER
+    #define MDS_SIM_FEATURES
+    #include "../widgets/Tools/SimPortLogger/simportlogger.h"
+#endif
 
 #include "../guicfg/guicfg.h"
+
+#include "../widgets/WelcomeWidget/WelcomeWidget.h"
 
 
 
@@ -259,6 +268,7 @@ MainForm::MainForm()
     createMenu();
     //createShortcuts();
     createToolbar();
+    //this->welcomeDialog();
     //CreateDockWidgets();
     //CreateWelcome();
     //qDebug() << "MainForm: return MainForm()";
@@ -441,7 +451,7 @@ void MainForm::createMenu()
         toolsMenu->addAction(toolLoopGenAct);
     #endif
 
-    #if defined(MDS_FEATURE_SIM_LED_PANEL) || defined(MDS_FEATURE_SIM_7_SEGMENT)
+    #if defined(MDS_SIM_FEATURES)
         simToolsMenu = menuBar()->addMenu(tr("Simulation tools"));
         #ifdef MDS_FEATURE_SIM_LED_PANEL
             simToolsMenu->addAction(toolSimLedsAct);
@@ -449,8 +459,12 @@ void MainForm::createMenu()
         #ifdef MDS_FEATURE_SIM_7_SEGMENT
             simToolsMenu->addAction(toolSim7SegAct);
         #endif
-        simToolsMenu->addAction(toolSimSwitchAct);
-        simToolsMenu->addAction(toolSimLoggerAct);
+        #ifdef MDS_FEATURE_SIM_SWITCH
+            simToolsMenu->addAction(toolSimSwitchAct);
+        #endif
+        #ifdef MDS_FEATURE_SIM_PORT_LOGGER
+            simToolsMenu->addAction(toolSimLoggerAct);
+        #endif
     #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -459,7 +473,8 @@ void MainForm::createMenu()
     #endif
     helpMenu->addAction(aboutAct);
     helpMenu->addAction(aboutQTAct);
-    helpMenu->addAction(helpActionAct);
+    helpMenu->addAction(welcomeAct);
+    helpMenu->addAction(helpAct);
     helpMenu->addSeparator();
     helpMenu->addAction(example1Act);
     //qDebug() << "MainForm: return createMenu()";
@@ -676,25 +691,31 @@ void MainForm::createActions()
         toolSim7SegAct->setDisabled(true);
         connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
     #endif
-    toolSimSwitchAct = new QAction(tr("Switch"), this);
-    toolSimSwitchAct->setDisabled(true);
-    connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
-    toolSimLoggerAct = new QAction(tr("Port Logger"), this);
-    toolSimLoggerAct->setDisabled(true);
-    connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
+    #ifdef MDS_FEATURE_SIM_SWITCH
+        toolSimSwitchAct = new QAction(tr("Switch"), this);
+        toolSimSwitchAct->setDisabled(true);
+        connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
+    #endif
+    #ifdef MDS_FEATURE_SIM_PORT_LOGGER
+        toolSimLoggerAct = new QAction(tr("Port Logger"), this);
+        toolSimLoggerAct->setDisabled(true);
+        connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
+    #endif
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
         licenseAct = new QAction(tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
-   
+
     aboutAct = new QAction(tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    helpActionAct = new QAction(tr("Help"), this);
-    connect(helpActionAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("See Example Project"), this);
+    welcomeAct = new QAction(tr("Welcome Dialog"), this);
+    connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
+    helpAct = new QAction(tr("Help"), this);
+    connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
+    example1Act = new QAction(tr("See Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":resources/icons/pause.png");
@@ -1112,11 +1133,11 @@ void MainForm::saveFile()
     //qDebug() << "MainForm: saveFile()";
     if (wDockManager->getCentralWidget()->isChanged() == true || wDockManager->getCentralPath() == "untracked")
     {
-        if (wDockManager->getCentralWidget()->isChanged() == true )
+        /*if (wDockManager->getCentralWidget()->isChanged() == true )
         {
             qDebug() << "MainForm: central is changed";
         }
-        qDebug() << "Mainform: saving file";
+        qDebug() << "Mainform: saving file";*/
         QString path;
         if (wDockManager->getCentralPath() == NULL || wDockManager->getCentralPath() == "untracked")
         {
@@ -1264,7 +1285,7 @@ void MainForm::newProject()
  */
 void MainForm::openProject()
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
     QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
@@ -1285,7 +1306,7 @@ void MainForm::openProject()
             file.close();
         }
     }
-    qDebug() << "MainForm: return openProject()";
+    //qDebug() << "MainForm: return openProject()";
 }
 
 
@@ -1295,7 +1316,7 @@ void MainForm::openProject()
  */
 bool MainForm::openProject(QString path)
 {
-    qDebug() << "MainForm: openProject()";
+    //qDebug() << "MainForm: openProject()";
     if (false == projectMan->isOpened(path))
     {
         QFile file(path);
@@ -1309,38 +1330,42 @@ bool MainForm::openProject(QString path)
             //nacteni obsahu do widgetu
             projectMan->openProject(&file);
             file.close();
-            qDebug() << "MainForm: return openProject()";
+            //qDebug() << "MainForm: return openProject()";
             return true;
         }
     }
-    qDebug() << "MainForm: return openProject() false";
+    //qDebug() << "MainForm: return openProject() false";
     return false;
 }
 
 
 void MainForm::projectOpened()
 {
-    qDebug() << "MainForm: projectOpened";
+    //qDebug() << "MainForm: projectOpened";
     wDockManager->deleteCentralWelcome();
     if (false == projectConfigAct->isEnabled())
     {
         projectConfigAct->setEnabled(true);
+    }
+    if (false == closeProjectAct->isEnabled())
+    {
+        closeProjectAct->setEnabled(true);
     }
     if (false == projectTabConnected)
     {
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
         if (tabList.size() > 1)
         {
-            qDebug() << "MainForm: tab connected";
+            //qDebug() << "MainForm: tab connected";
             projectTabConnected = true;
             connect(tabList.at(tabList.size()-1),
                     SIGNAL(currentChanged(int)),
                     this,
                     SLOT(activeProjectChanged(int))
                    );
-            qDebug() << "projectTabs = ";
+            //qDebug() << "projectTabs = ";
             projectTabs = tabList.at(tabList.size()-1);
-            qDebug() << "projectTabs = done";
+            //qDebug() << "projectTabs = done";
         }
     }
     this->createDockWidgets();
@@ -1371,7 +1396,7 @@ void MainForm::projectOpened()
     {
         GuiCfg::getInstance().projectOpened(projectMan->getActive()->prjPath);
     }
-    qDebug() << "MainForm: projectOpened done";
+    //qDebug() << "MainForm: projectOpened done";
 }
 
 
@@ -1435,7 +1460,8 @@ void MainForm::compileProject()
         this->saveFile();
         this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
 
-        options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+        options->m_sourceFiles.push_back(wDockManager->getCentralPath().toLocal8Bit().constData());
+        //options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
 
         options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -1447,11 +1473,11 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
         }
 
         if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1460,11 +1486,11 @@ void MainForm::compileProject()
                                     + "/"
                                     + this->projectMan->getActive()->family
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
         }
 
 
@@ -1503,73 +1529,73 @@ void MainForm::compileProject()
             //options->m_symbolTable = (mainFile + ".stbl").toStdString();
             options->m_symbolTable = ( mainFile
                                      + ".stbl"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(1))
         {
             options->m_macroTable = ( mainFile
                                     + ".mtbl"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(2))
         {
             options->m_mdsDebugFile = ( mainFile
                                       + ".dbg"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(3))
         {
             options->m_codeTree = ( mainFile
                                   + ".ctr"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(4))
         {
             options->m_lstFile = ( mainFile
                                   + ".lst"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(5))
         {
             options->m_hexFile = ( mainFile
                                  + ".ihex"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(6))
         {
             options->m_binFile = ( mainFile
                                  + ".bin"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(7))
         {
             options->m_srecFile = ( mainFile
                                   + ".srec"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(8))
         {
             options->m_memFile = ( mainFile
                                  + ".mem"
-                                 ).toStdString();
+                                 ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(9))
         {
             options->m_rawHexDumpFile = ( mainFile
                                         + ".rawhex"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(10))
         {
             options->m_verilogFile = ( mainFile
                                      + ".v"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(11))
         {
             options->m_vhdlFile = ( mainFile
                                   + ".vhd"
-                                  ).toStdString();
+                                  ).toLocal8Bit().constData();
         }
         //return;
     }
@@ -1595,10 +1621,10 @@ void MainForm::compileProject()
         {
             //fileDir.setPath(QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i)));
             filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i));
-            qDebug() << prjDir.relativeFilePath(projectMan->getActive()->filePaths.at(i));
-            qDebug() << projectMan->getActive()->filePaths.at(i);
-            qDebug() << "fixed?" << prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i);
-            qDebug() << "MainForm: file dir" << filePath;
+            //qDebug() << prjDir.relativeFilePath(projectMan->getActive()->filePaths.at(i));
+            //qDebug() << projectMan->getActive()->filePaths.at(i);
+            //qDebug() << "fixed?" << prjDir.absolutePath() + "/" + projectMan->getActive()->filePaths.at(i);
+            //qDebug() << "MainForm: file dir" << filePath;
             if (filePath == wDockManager->getCentralPath())
             {
                 found = true;
@@ -1608,7 +1634,7 @@ void MainForm::compileProject()
         if (found == true)
         {
             qDebug() << "MainForm: compiled actual project, actual file";
-            options->m_sourceFiles.push_back(filePath.toStdString());
+            options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
 
 
             CompileInfo *compileInfo = ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()));
@@ -1628,7 +1654,7 @@ void MainForm::compileProject()
 
 
             mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName().section('.',0,-2);
-            qDebug() << mainFile;
+            //qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -1640,11 +1666,11 @@ void MainForm::compileProject()
                                             + "/"
                                             + this->projectMan->getActive()->family
                                             + ".v"
-                                            ).toStdString();
+                                            ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
             }
 
             if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1653,60 +1679,60 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".vhd"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
             if (projectMan->getActive()->compileOpt.at(0))
             {
-                options->m_symbolTable = (mainFile + ".stbl").toStdString();
+                options->m_symbolTable = (mainFile + ".stbl").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(1))
             {
-                options->m_macroTable = (mainFile + ".mtbl").toStdString();
+                options->m_macroTable = (mainFile + ".mtbl").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(2))
             {
-                options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+                options->m_mdsDebugFile = (mainFile + ".dbg").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(3))
             {
-                options->m_codeTree = (mainFile + ".ctr").toStdString();
+                options->m_codeTree = (mainFile + ".ctr").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(4))
             {
-                options->m_lstFile = (mainFile + ".lst").toStdString();
+                options->m_lstFile = (mainFile + ".lst").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(5))
             {
-                options->m_hexFile = (mainFile + ".ihex").toStdString();
+                options->m_hexFile = (mainFile + ".ihex").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(6))
             {
-                options->m_binFile = (mainFile + ".bin").toStdString();
+                options->m_binFile = (mainFile + ".bin").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(7))
             {
-                options->m_srecFile = (mainFile + ".srec").toStdString();
+                options->m_srecFile = (mainFile + ".srec").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(8))
             {
-                options->m_memFile = ( mainFile + ".mem").toStdString();
+                options->m_memFile = ( mainFile + ".mem").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(9))
             {
-                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+                options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(10))
             {
-                options->m_verilogFile = ( mainFile  + ".v").toStdString();
+                options->m_verilogFile = ( mainFile  + ".v").toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(11))
             {
-                options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+                options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
             }
         }
         else
@@ -1756,7 +1782,7 @@ void MainForm::compileProject()
                 this->projectMan->setActive(this->projectMan->getUntracked());
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
-            options->m_sourceFiles.push_back(wDockManager->getCentralPath().toStdString());
+            options->m_sourceFiles.push_back(wDockManager->getCentralPath().toLocal8Bit().constData());
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
 
@@ -1768,11 +1794,11 @@ void MainForm::compileProject()
                                              + "/"
                                              + this->projectMan->getActive()->family
                                              + ".v"
-                                             ).toStdString();
+                                             ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+                options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
             }
 
             if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1781,11 +1807,11 @@ void MainForm::compileProject()
                                           + "/"
                                           + this->projectMan->getActive()->family
                                           + ".vhd"
-                                          ).toStdString();
+                                          ).toLocal8Bit().constData();
             }
             else
             {
-                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+                options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
 
@@ -1825,73 +1851,73 @@ void MainForm::compileProject()
                 //options->m_symbolTable = (mainFile + ".stbl").toStdString();
                 options->m_symbolTable = ( mainFile
                                          + ".stbl"
-                                         ).toStdString();
+                                         ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(1))
             {
                 options->m_macroTable = ( mainFile
                                         + ".mtbl"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(2))
             {
                 options->m_mdsDebugFile = ( mainFile
                                         + ".dbg"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(3))
             {
                 options->m_codeTree = ( mainFile
                                       + ".ctr"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(4))
             {
                 options->m_lstFile = ( mainFile
                                      + ".lst"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(5))
             {
                 options->m_hexFile = ( mainFile
                                      + ".ihex"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(6))
             {
                 options->m_binFile = ( mainFile
                                      + ".bin"
-                                     ).toStdString();
+                                     ).toLocal8Bit().constData();
             }
             if (projectMan->getUntracked()->compileOpt.at(7))
             {
                 options->m_srecFile = ( mainFile
                                       + ".srec"
-                                      ).toStdString();
+                                      ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(8))
             {
                 options->m_memFile = ( mainFile
                                     + ".mem"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(9))
             {
                 options->m_rawHexDumpFile = ( mainFile
                                             + ".rawhex"
-                                            ).toStdString();
+                                            ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(10))
             {
                 options->m_verilogFile = ( mainFile
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
             }
             if (projectMan->getActive()->compileOpt.at(11))
             {
                 options->m_vhdlFile = ( mainFile
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
             }
         }
         //return;
@@ -1925,7 +1951,7 @@ void MainForm::compileProject()
         options->m_sourceFiles.push_back(  (projectMan->getActive()->prjPath.section('/',0, -2)
                                           + "/"
                                           +  this->projectMan->getActive()->mainFilePath
-                                           ).toStdString()
+                                           ).toLocal8Bit().constData()
                                         );
         QDir prjDir(projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
@@ -1950,11 +1976,11 @@ void MainForm::compileProject()
                                         + "/"
                                         + this->projectMan->getActive()->family
                                         + ".v"
-                                        ).toStdString();
+                                        ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toStdString();
+            options->m_verilogTemplate = this->projectMan->getActive()->templateVerilog.toLocal8Bit().constData();
         }
 
         if (true == this->projectMan->getActive()->defaultVHDL)
@@ -1963,61 +1989,61 @@ void MainForm::compileProject()
                                     + "/"
                                     + this->projectMan->getActive()->family
                                     + ".vhd"
-                                    ).toStdString();
+                                    ).toLocal8Bit().constData();
         }
         else
         {
-            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toStdString();
+            options->m_vhdlTemplate = this->projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
         }
 
 
         if (projectMan->getActive()->compileOpt.at(0))
         {
-            options->m_symbolTable = (mainFile + ".stbl").toStdString();
+            options->m_symbolTable = (mainFile + ".stbl").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(1))
         {
-            options->m_macroTable = (mainFile + ".mtbl").toStdString();
+            options->m_macroTable = (mainFile + ".mtbl").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(2))
         {
-            options->m_mdsDebugFile = (mainFile + ".dbg").toStdString();
+            options->m_mdsDebugFile = (mainFile + ".dbg").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(3))
         {
-            options->m_codeTree = (mainFile + ".ctr").toStdString();
+            options->m_codeTree = (mainFile + ".ctr").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(4))
         {
-            options->m_lstFile = (mainFile + ".lst").toStdString();
+            options->m_lstFile = (mainFile + ".lst").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(5))
         {
-            options->m_hexFile = (mainFile + ".ihex").toStdString();
+            options->m_hexFile = (mainFile + ".ihex").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(6))
         {
-            options->m_binFile = (mainFile + ".bin").toStdString();
+            options->m_binFile = (mainFile + ".bin").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(7))
         {
-            options->m_srecFile = (mainFile + ".srec").toStdString();
+            options->m_srecFile = (mainFile + ".srec").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(8))
         {
-            options->m_memFile = ( mainFile + ".mem").toStdString();
+            options->m_memFile = ( mainFile + ".mem").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(9))
         {
-            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toStdString();
+            options->m_rawHexDumpFile = ( mainFile + ".rawhex" ).toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(10))
         {
-            options->m_verilogFile = ( mainFile  + ".v").toStdString();
+            options->m_verilogFile = ( mainFile  + ".v").toLocal8Bit().constData();
         }
         if (projectMan->getActive()->compileOpt.at(11))
         {
-            options->m_vhdlFile = ( mainFile + ".vhd").toStdString();
+            options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
         }
     }
 
@@ -2296,8 +2322,8 @@ void MainForm::simulationFlowHandle()
                                 );*/
                     //qDebug() << "MainForm: central path:" << wDockManager->getCentralPath();
                     //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + projectMan->getActive()->fileNames.at(i));
-                    qDebug() << filePath;
-                    qDebug() << wDockManager->getCentralPath();
+                    //qDebug() << filePath;
+                    //qDebug() << wDockManager->getCentralPath();
                     if (filePath == wDockManager->getCentralPath())
                     {
                         found = true;
@@ -2327,8 +2353,8 @@ void MainForm::simulationFlowHandle()
                 //file = "";
             }
         }
-        qDebug() << "MainForm: sim file" << file;
-        qDebug() << "MainForm: sim dump file" << dumpFiles;
+        //qDebug() << "MainForm: sim file" << file;
+        //qDebug() << "MainForm: sim dump file" << dumpFiles;
         int start = projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
@@ -2350,18 +2376,22 @@ void MainForm::simulationFlowHandle()
                 toolSim7SegAct->setEnabled(true);
             #endif
                 //TODO:ifdef
+            #ifdef MDS_FEATURE_SIM_PORT_LOGGER
                 toolSimLoggerAct->setEnabled(true);
+            #endif
+            #ifdef MDS_FEATURE_SIM_SWITCH
                 toolSimSwitchAct->setEnabled(true);
+            #endif
             projectConfigAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
-                qDebug() << "MainForm: simulationBreakpointsEnabled true";
+                //qDebug() << "MainForm: simulationBreakpointsEnabled true";
                 projectMan->getSimulated()->setBreakpoints(true);
             }
             else
             {
-                qDebug() << "MainForm: simulationBreakpointsEnabled false";
+                //qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 projectMan->getSimulated()->setBreakpoints(false);
             }
         }
@@ -2460,9 +2490,12 @@ void MainForm::simulationFlowHandle()
         #ifdef MDS_FEATURE_SIM_7_SEGMENT
             toolSim7SegAct->setDisabled(true);
         #endif
-            //TODO:ifdef
+        #ifdef MDS_FEATURE_SIM_PORT_LOGGER
             toolSimLoggerAct->setDisabled(true);
+        #endif
+        #ifdef MDS_FEATURE_SIM_SWITCH
             toolSimSwitchAct->setDisabled(true);
+        #endif
         projectConfigAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
@@ -2512,7 +2545,7 @@ ProjectMan* MainForm::getProjectMan()
  */
 void MainForm::exampleOpen()
 {
-    qDebug() << "MainForm: exampleOpen";
+    //qDebug() << "MainForm: exampleOpen";
     if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project"))
     {
         return;
@@ -2525,7 +2558,7 @@ void MainForm::exampleOpen()
         //qDebug() << "MainForm: loading";
         this->openFilePath(QDir(absolutePath + "/" + this->projectMan->getActive()->filePaths.at(i)).canonicalPath());
     }
-    qDebug() << "MainForm: return exampleOpen";
+    //qDebug() << "MainForm: return exampleOpen";
 }
 
 
@@ -2726,6 +2759,7 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
         {
             qText.append(QString::fromStdString(text.at(i)));
         }
+
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
         this->wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
         getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
@@ -2844,14 +2878,12 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    qDebug() << "MainForm: activeProjectChanged";
+    //qDebug() << "MainForm: activeProjectChanged";
     //if (false == this->simulationStatus)
     if (index >= 0)
     {
         projectMan->setActiveByIndex(index);
-    qDebug() << "MainForm: activeProjectChanged2";
         wDockManager->changeSimWidget(index);
-    qDebug() << "MainForm: activeProjectChanged3";
         if (wDockManager->getBreakpointList() != NULL)
         {
             wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());
@@ -2861,7 +2893,7 @@ void MainForm::activeProjectChanged(int index)
             wDockManager->getBookmarkList()->reload(projectMan->getActive()->getBookmarksListRef());
         }
     }
-    qDebug() << "MainForm: return activeProjectChanged";
+    //qDebug() << "MainForm: return activeProjectChanged";
 }
 
 
@@ -2917,11 +2949,11 @@ void MainForm::closeProject()
             path.setPath(project->prjPath.section('/',0,-2));
             wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))));
         }
-        qDebug() << "MainForm: delete active sim widget";
+        //qDebug() << "MainForm: delete active sim widget";
         wDockManager->deleteActiveSimWidget();
-        qDebug() << "MainForm: remove dock widget";
+        //qDebug() << "MainForm: remove dock widget";
         this->removeDockWidget(project->prjDockWidget);
-        qDebug() << "MainForm: close project";
+        //qDebug() << "MainForm: close project";
         projectMan->closeProject(project);
         if (wDockManager->getBreakpointList() != NULL)
         {
@@ -2949,7 +2981,7 @@ void MainForm::closeProject()
 
 void MainForm::manageBreakpointEmit(QString file, int line)
 {
-    qDebug() << "MainForm: breakpoint:" << file << ":" << line + 1;
+    //qDebug() << "MainForm: breakpoint:" << file << ":" << line + 1;
     int result = projectMan->getActive()->handleBreakpoint(file, line + 1);
     //add
     if (0 == result)
@@ -2989,7 +3021,7 @@ void MainForm::breakpointsRemoveLines(QString file, int line, int linesRemoved)
 
 void MainForm::manageBookmarkEmit(QString file, int line)
 {
-    qDebug() << "MainForm: bookmark:" << file << ":" << line + 1;
+    //qDebug() << "MainForm: bookmark:" << file << ":" << line + 1;
     int result = projectMan->getActive()->handleBookmark(file, line + 1);
     //add
     if (0 == result)
@@ -3014,7 +3046,7 @@ void MainForm::manageBookmarkEmit(QString file, int line)
 
 void MainForm::bookmarksAddLines(QString file, int line, int linesAdded)
 {
-    qDebug() << "MainForm: bookmarksAddLines";
+    //qDebug() << "MainForm: bookmarksAddLines";
     projectMan->getActive()->moveBookmarksAdd(file, line + 1, linesAdded);
     wDockManager->getBookmarkList()->bookmarksAddLines(file, line + 1, linesAdded);
     wDockManager->getCentralWidget()->moveBookmarksLines(line + 1, linesAdded, true);
@@ -3048,7 +3080,7 @@ void MainForm::bookmarksRemoveLines(QString file, int line, int linesRemoved)
 
 void MainForm::sessionRestorationSlot()
 {
-    qDebug() << "MainForm: session restoration";
+    //qDebug() << "MainForm: session restoration";
     QApplication::processEvents();
     //qDebug() << "MainForm: height" << this->height();
     //open projects and files
@@ -3384,9 +3416,9 @@ void MainForm::about()
 
 void MainForm::refreshProjectTree()
 {
-        qDebug() << "count: " << projectTabs->count();
+        //qDebug() << "count: " << projectTabs->count();
         projectTabs->setCurrentIndex(projectTabs->count()-1);
-        qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
+        //qDebug() << "MainForm: activeProject" << projectMan->getActive()->prjName;
 }
 
 
@@ -3422,7 +3454,7 @@ void MainForm::simLeds()
         }
     #endif
 }
-    
+
 
 void MainForm::sim7Seg()
 {
@@ -3438,23 +3470,25 @@ void MainForm::sim7Seg()
 
 void MainForm::simSwitch()
 {
-    //TODO: ifdef
-    if (true == this->simulationStatus)
-    {
-        SimSwitch *widget = new SimSwitch(0, this->projectMan->getSimulated()->getSimControl());
-        widget->show();
-    }
+    #ifdef MDS_FEATURE_SIM_SWITCH
+        if (true == this->simulationStatus)
+        {
+            SimSwitch *widget = new SimSwitch(0, this->projectMan->getSimulated()->getSimControl());
+            widget->show();
+        }
+    #endif
 }
 
 
 void MainForm::simPortLogger()
 {
-    //TODO: ifdef
-    if (true == this->simulationStatus)
-    {
-        SimPortLogger *widget = new SimPortLogger(0, this->projectMan->getSimulated()->getSimControl());
-        widget->show();
-    }
+    #ifdef MDS_FEATURE_SIM_PORT_LOGGER
+        if (true == this->simulationStatus)
+        {
+            SimPortLogger *widget = new SimPortLogger(0, this->projectMan->getSimulated()->getSimControl());
+            widget->show();
+        }
+    #endif
 }
 
 
@@ -3462,7 +3496,7 @@ void MainForm::userGuide()
 {
     QDir dir(GuiCfg::getInstance().getUserGuidePath() + "/QuickUserGuideAssembler.pdf");
     QDesktopServices::openUrl(QUrl("file:///" + dir.absolutePath()));
-    qDebug() << "user guide:" << dir.absolutePath();
+    //qDebug() << "user guide:" << dir.absolutePath();
 }
 
 
@@ -3475,4 +3509,13 @@ void MainForm::openRecentFileSlot(QAction *action)
 void MainForm::openRecentProjectSlot(QAction *action)
 {
     this->openProject(action->text());
+}
+
+
+void MainForm::welcomeDialog()
+{
+    WelcomeWidget *widget = new WelcomeWidget();
+    widget->show();
+    connect(widget, SIGNAL(tutorial()), this, SLOT(exampleOpen()));
+    connect(widget, SIGNAL(manual()), this, SLOT(help()));
 }

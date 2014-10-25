@@ -24,7 +24,7 @@
 PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
-    qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
+    //qDebug() << "PicoBlazeGrid: PicoBlazeGrid()";
 
     if ( NULL == controlUnit )
     {
@@ -251,7 +251,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
 
     deviceChanged();
     
-    qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
+    //qDebug() << "PicoBlazeGrid: return PicoBlazeGrid()";
 }
 
 
@@ -590,7 +590,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
 
 void PicoBlazeGrid::deviceChanged()
 {
-    qDebug() << "PicoBlazeGrid: deviceChanged";
+    //qDebug() << "PicoBlazeGrid: deviceChanged";
     /*if (NULL == this->memScratch)
     {
         qDebug() << "PicoBlazeGrid: null scratch";
@@ -676,17 +676,17 @@ void PicoBlazeGrid::deviceChanged()
             this->btnInte->move(1080 - 215, 200);
         }
     }
-    qDebug() << "PicoBlazeGrid: grid changed";
+    //qDebug() << "PicoBlazeGrid: grid changed";
     
     
     deviceReset();
-    qDebug() << "PicoBlazeGrid: return deviceChanged";
+    //qDebug() << "PicoBlazeGrid: return deviceChanged";
 }
 
 
 void PicoBlazeGrid::deviceReset()
 {
-    qDebug() << "PicoBlazeGrid: deviceReset()";
+    //qDebug() << "PicoBlazeGrid: deviceReset()";
     int value = m_cpu->getProgramCounter();
     if (value > 0xFF)
     {
@@ -709,7 +709,7 @@ void PicoBlazeGrid::deviceReset()
     this->setWarningOpt(GuiCfg::getInstance().getWarningsOpt());
     this->unhighlight();
     
-    qDebug() << "PicoBlazeGrid: return deviceReset()";
+    //qDebug() << "PicoBlazeGrid: return deviceReset()";
 }
 
 
@@ -882,7 +882,7 @@ bool PicoBlazeGrid::eventFilter(QObject *target, QEvent *event)
         {
             this->lePC->setStyleSheet("background-color: none");
         }
-        qDebug() << "PicoBlazeGrid: lePC event";
+        //qDebug() << "PicoBlazeGrid: lePC event";
         return true;
     }
     return QWidget::eventFilter(target, event);
