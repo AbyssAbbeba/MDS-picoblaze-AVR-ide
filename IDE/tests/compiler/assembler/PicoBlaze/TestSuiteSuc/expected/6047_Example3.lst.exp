@@ -1,0 +1,87 @@
+                   1     ; ----------------------------------------------------------------------------------------------------------------------
+                   2     ; MDS for PicoBlaze - Demonstration code III: Some time saving features.
+                   3     ; ----------------------------------------------------------------------------------------------------------------------
+                   4     ; This example covers instruction shortcuts and numeral system radix.
+                   5     ; ----------------------------------------------------------------------------------------------------------------------
+                   6                 DEVICE      kcpsm6
+                   7                 ; Start at address 0x000.
+  00000            8                 org         0x000
+                   9
+                  10
+                  11     ; ======================================================================================================================
+                  12     ; Radix, and several ways how to write a number.
+                  13     ; ======================================================================================================================
+                  14
+                  15                 ; Hexadecimal.
+000 010AB         16                 ld          S0, #0xAB       ; prefix notation (`0x...')
+001 010AB         17                 ld          S0, #0ABh       ; suffix notation (`...h')
+                  18                 ; Decimal.
+002 0107B         19                 ld          S0, #123        ; no prefix - default radix - decimal
+003 0107B         20                 ld          S0, #123d       ; suffix notation (`d')
+                  21                 ; Octal.
+004 0103E         22                 ld          S0, #076        ; prefix notation (`0...')
+005 0103E         23                 ld          S0, #76q        ; suffix notation (`...q')
+006 0103E         24                 ld          S0, #76o        ; suffix notation (`...o')
+                  25                 ; Binary.
+007 0100C         26                 ld          S0, #0b1100     ; prefix notation (`0b...')
+008 0100C         27                 ld          S0, #1100b      ; suffix notation (`...b')
+                  28                 ; ASCII.
+009 01041         29                 ld          S0, #'A'        ; character capital A
+00A 01009         30                 ld          S0, #'\t'       ; tab character
+                  31
+                  32
+                  33     ; ======================================================================================================================
+                  34     ; Instruction shortcuts.
+                  35     ; When you don't want to write long instruction mnemonics like "enable interrupt" and use short ones instead like "ena".
+                  36     ; ======================================================================================================================
+                  37
+00B 00100         38                 load        S1, S0          ; S1 <- S0 (copy contents of S0 to S1)
+00C 00100         39                 ld          S1, S0          ; Do the same as above, `ld' is shortcut for 'load'.
+                  40
+                  41     ; The same way you can write `ld' instead of `load', you can also use:
+                  42     ;   * `st'      instead of `store'
+                  43     ;   * `ft'      instead of `fetch'
+                  44     ;   * `rb'      instead of `regbank'
+                  45     ;   * `in'      instead of `input'
+                  46     ;   * `out'     instead of `output'
+                  47     ;   * `outk'    instead of `outpuk'
+                  48     ;   * `cmp'     instead of `compare'
+                  49     ;   * `cmpcy'   instead of `comparecy'
+                  50     ;   * `ena'     instead of `enable interrupt'
+                  51     ;   * `dis'     instead of `disable interrupt'
+                  52     ;   * `ret'     instead of `return'
+                  53     ;   * `ldret'   instead of `load & return'
+                  54     ;   * `retie'   instead of `return enable'
+                  55     ;   * `retid'   instead of `return disable'
+                  56
+                  57
+                  58     ; ======================================================================================================================
+                  59     ; Pseudo-instructions.
+                  60     ; ======================================================================================================================
+                  61
+00D 00000         62                 nop                     ; No operation, the simplest pseudo-instruction.
+00E 071FF         63                 cpl         S1          ; Complement (XOR with 0xFF).
+00F 071FF         64                 cpl2        S1          ; 2nd arithmetic complement (+1 and XOR 0xFF)
+010 11101
+011 11101         65                 inc         S1          ; Increment (add 1).
+012 19101         66                 dec         S1          ; Decrement (subtract 1).
+013 051FF         67                 setr        S1          ; Set register (load with 0xFF).
+014 03100         68                 clrr        S1          ; Clear register (load with 0x00).
+015 05104         69                 setb        S1, 2       ; Set bit number 2 in register S1.
+016 031FB         70                 clrb        S1, 2       ; Clear bit number 2 in register S1.
+017 07104         71                 notb        S1, 2       ; Invert bit number 2 in register S1.
+018 19101         72     label:      djnz        S1, label   ; Decrement and jump if not zero.
+019 36018
+01A 11101         73                 ijnz        S1, label   ; Increment and jump if not zero.
+01B 36018
+                  74
+                  75     ; ======================================================================================================================
+                  76
+                  77
+                  78                 ; Infinite loop, and end of assembly.
+01C 2201C         79                 jump        $
+                  80                 end
+                  81
+                  82     ; ----------------------------------------------------------------------------------------------------------------------
+                  83     ; In the next example you will see conditions.
+                  84     ; ----------------------------------------------------------------------------------------------------------------------
