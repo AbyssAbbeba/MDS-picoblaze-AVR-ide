@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>File Convertor</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../icons.qrc">
+    <normaloff>:/resources/icons/page_white_gear.png</normaloff>:/resources/icons/page_white_gear.png</iconset>
+  </property>
   <widget class="QDialogButtonBox" name="btnBox">
    <property name="geometry">
     <rect>
@@ -494,7 +498,9 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>btnBox</sender>

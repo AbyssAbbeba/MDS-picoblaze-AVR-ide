@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Loop Generator</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../icons.qrc">
+    <normaloff>:/resources/icons/page_white_lightning.png</normaloff>:/resources/icons/page_white_lightning.png</iconset>
+  </property>
   <layout class="QGridLayout" name="gridLayout_5">
    <item row="3" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox_4">
@@ -326,6 +330,8 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../../icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
