@@ -1,7 +1,7 @@
 # set project's name
 project ( MDSExample )
 
-foreach ( extension "mds-project" "bin" "ctr" "dbg" "ihex" "lst" "mem" "mtbl" "psm" "rawhex" "srec" "stbl" "v" "vhd" )
+foreach ( extension "mds-project" "psm" "mem" "ihex" "vhd" "rawhex")
     file ( GLOB files2install MDSExample/*.${extension} )
     install ( FILES ${files2install} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )
 endforeach ( extension )
