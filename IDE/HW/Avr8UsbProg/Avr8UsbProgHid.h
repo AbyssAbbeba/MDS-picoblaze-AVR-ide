@@ -210,7 +210,7 @@ class Avr8UsbProgHid
         hid_device * m_deviceHandle;
 
         /// @brief
-        unsigned char m_buffer[BUFFER_SIZE];
+        unsigned char m_buffer [ BUFFER_SIZE ];
 
         /// @brief
         unsigned int m_position;

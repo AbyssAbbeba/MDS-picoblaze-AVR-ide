@@ -751,3 +751,8 @@ void CompilerCore::setSemanticAnalyzer ( CompilerSemanticAnalyzer * semanticAnal
 {
     m_semanticAnalyzer = semanticAnalyzer;
 }
+
+const boost::filesystem::path & CompilerCore::getBasePath() const
+{
+    return m_basePath;
+}

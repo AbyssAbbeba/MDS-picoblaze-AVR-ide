@@ -18,6 +18,7 @@
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
+#include <memory>
 #include "../../../mds.h"
 
 
@@ -48,13 +49,13 @@ void LicenseWidget::tryLoad()
     #ifndef MDS_VARIANT_TRIAL
         this->licensePath = GuiCfg::getInstance().getLicensePath();
         static const long long int MAX_SIZE = 10240;
-        char data [ MAX_SIZE ];
-        size_t len;
+        std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+        ssize_t len;
         QFile file(GuiCfg::getInstance().getLicensePath());
-        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1LL !=  (len = file.read(data, MAX_SIZE))))
+        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1LL !=  (len = file.read(data.get(), MAX_SIZE))))
         {
             //load info
-            LicenseCertificate crt(std::string(data,len));
+            LicenseCertificate crt(std::string(data.get(),len));
             if ( true == crt.m_isValid )
             {
                 this->license = true;

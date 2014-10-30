@@ -20,6 +20,7 @@
 
 #include <cctype>
 #include <cstdio>
+#include <memory>
 #include <fstream>
 #include <cstring>
 #include <cstdlib>
@@ -51,7 +52,8 @@ MCUSimTestScript::ExecStatus MCUSimTestScript::runScript ( const std::string & i
     std::ifstream inFile  ( inFileName,  std::ios_base::in );
     std::ofstream outFile ( outFileName, std::ios_base::out | std::ios_base::trunc );
 
-    char line[MAX_LINE_LENGTH];
+    std::unique_ptr<char[]> buf ( new char [ MAX_LINE_LENGTH ] );
+    char * line = buf.get();
 
     while ( false == inFile.eof() )
     {

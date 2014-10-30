@@ -103,7 +103,8 @@ MainForm::MainForm()
     //qDebug() << "MainForm: MainForm()";
     this->setMinimumWidth(800);
     this->setMinimumHeight(600);
-    this->setWindowTitle("MDS");
+    this->setWindowTitle("Multitarget Development System");
+    this->setWindowIcon(QIcon(QPixmap(":resources/icons/mainIcon_64x64.png")));
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         this->setWindowTitle("MDS NON-COMMERCIAL");
     #endif
@@ -340,11 +341,11 @@ MainForm::~MainForm()
         }
         GuiCfg::getInstance().saveSession();
     }
+
     while (projectMan->getOpenProjects().count() > 0)
     {
         projectMan->closeProject(projectMan->getActive());
     }
-
     GuiCfg::getInstance().saveConfig();
 }
 
@@ -501,12 +502,13 @@ void MainForm::createActions()
     newAct = new QAction(QIcon(QPixmap(":resources/icons/page.png")), tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
+    newAct->setDisabled(true);
     newAct->setShortcut(QKeySequence("Ctrl+N"));
 
     openAct = new QAction(QIcon(QPixmap(":resources/icons/folder.png")), tr("Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
+    openAct->setDisabled(true);
     openAct->setShortcut(QKeySequence("Ctrl+O"));
-
 
 
     /*QPixmap *pm_projAdd = new QPixmap(":resources/icons/projAdd.png");
@@ -968,7 +970,7 @@ void MainForm::newAddFile()
     //qDebug() << "MainForm: newAddFile()";
     //jen se vytvori novy tab na code editoru
     //a soubor se prida k projektu
-    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
     if (path != NULL)
     {
         wDockManager->addCentralWidget(path.section('/', -1), path);
@@ -992,8 +994,8 @@ void MainForm::newAddFile()
  */
 void MainForm::openFile()
 {
-    //qDebug() << "MainForm: openFile()";
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+//     qDebug() << "MainForm: openFile()";
+    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     if (path != NULL)
     {
         QFile file(path);
@@ -1117,7 +1119,7 @@ void MainForm::addFile()
         QString path;
         if (wDockManager->getCentralPath() == NULL)
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"));
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
         }
@@ -1158,7 +1160,7 @@ void MainForm::saveFile()
             bool done = false;
             while (false == done)
             {
-                path = QFileDialog::getSaveFileName (this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName (this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 if (path == NULL)
                 {
                     break;
@@ -1264,7 +1266,7 @@ void MainForm::saveFileAs()
     bool done = false;
     while (false == done)
     {
-        path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         if (path == NULL)
         {
             break;
@@ -1361,7 +1363,7 @@ void MainForm::saveFile(CodeEdit *editor)
             bool done = false;
             while (false == done)
             {
-                path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 if (path == NULL)
                 {
                     break;
@@ -1484,7 +1486,6 @@ void MainForm::newProject()
     //qDebug() << "MainForm: return newProject()";
 }
 
-
 /**
  * @brief Slot. Opens project selected by user in dialog.
  */
@@ -1493,7 +1494,7 @@ void MainForm::openProject()
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), "", tr("Project (*.mds-project)"));
+    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), QDir::homePath(), tr("Project (*.mds-project)"));
 
     if (path.isEmpty() == false && projectMan->isOpened(path) == false)
     {
@@ -1546,6 +1547,10 @@ bool MainForm::openProject(QString path)
 
 void MainForm::projectOpened()
 {
+    newAddAct->setEnabled(true);
+    newAct->setEnabled(true);
+    openAct->setEnabled(true);
+
     //qDebug() << "MainForm: projectOpened";
     wDockManager->deleteCentralWelcome();
     if (false == projectConfigAct->isEnabled())
@@ -2923,7 +2928,6 @@ void MainForm::addUntrackedFile(QString name, QString path)
     //qDebug() << "MainForm: return addUntrackedFile";
 }
 
-
 /**
  * @brief
  * @param
@@ -3184,6 +3188,14 @@ void MainForm::closeProject()
         {
             wDockManager->setCentralWelcome();
         }
+
+        saveAct->setEnabled(false);
+        saveAsAct->setEnabled(false);
+        saveAllAct->setEnabled(false);
+        saveProjAct->setEnabled(false);
+        newAct->setEnabled(false);
+        openAct->setEnabled(false);
+        newAddAct->setEnabled(false);
     }
 }
 
@@ -3543,12 +3555,13 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         }
     }
 
+    const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     foreach (const QString &value, files)
     {
         if (false == this->getWDockManager()->setCentralByPath(value))
         {
-            this->openFilePath(value);
-            this->getWDockManager()->setCentralByPath(value);
+            this->openFilePath(prjDir + '/' + value);
+            this->getWDockManager()->setCentralByPath(prjDir + '/' + value);
         }
         this->getWDockManager()->getCentralTextEdit()->clearHighlight();
 

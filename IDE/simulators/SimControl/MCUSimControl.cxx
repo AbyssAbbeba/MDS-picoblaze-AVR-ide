@@ -936,6 +936,11 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     }
 
     const std::vector<std::string> & files = m_dbgFile->getFileNames();
+
+    /*
+    // K čemu tohle kurva je, fakt nevim, vole... Na co bych tady kurva převáděl cesty k souborům do kanonickýho tvaru?
+    // Tohle má simulovat mikroporcesory, ne šoustat negry do prdele.
+
     std::vector<std::string> filesBr;
 
     for ( size_t j = 0; j < fileLinePairs.size(); j++ )
@@ -946,9 +951,10 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
         }
         catch ( const boost::filesystem::filesystem_error & e )
         {
-            qDebug() << "!!! ERROR: MCUSimControl::setBreakPoints(...): \"fileLinePairs[j].first\" is not valid path.";
+            qDebug() << "!!! ERROR: MCUSimControl::setBreakPoints(...): \"" << fileLinePairs[j].first.c_str() << "\" is not valid path.";
         }
     }
+    */
 
     m_breakpoints.clear();
     m_breakpoints.resize(files.size());
@@ -957,7 +963,7 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
     {
         for ( size_t j = 0; j < fileLinePairs.size(); j++ )
         {
-            if ( files[i] == filesBr[j] )
+            if ( files[i] == /*filesBr[j]*/ fileLinePairs[j].first )
             {
                 if ( false == fileLinePairs[j].second.empty() )
                 {
@@ -1113,7 +1119,7 @@ bool MCUSimControl::getListOfSFR ( std::vector<SFRRegDesc> & sfr )
         #ifdef MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
         {
-            // There are no SFR (Special Function Registers) on KCPSM3 (PicoBlaze)
+            // There are no SFR (Special Function Registers) on KCPSM (PicoBlaze)
             break;
         }
         #endif // MDS_FEATURE_PICOBLAZE

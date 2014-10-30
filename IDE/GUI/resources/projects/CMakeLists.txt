@@ -1,7 +1,22 @@
-# set project's name
-project ( MDSExample )
+# ==============================================================================
+#
+# MDS resources / MDS projects
+#
+# (C) copyright 2014 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
 
-foreach ( extension "mds-project" "bin" "ctr" "dbg" "ihex" "lst" "mem" "mtbl" "psm" "rawhex" "srec" "stbl" "v" "vhd" )
-    file ( GLOB files2install MDSExample/*.${extension} )
-    install ( FILES ${files2install} DESTINATION ${INSTALL_DIR_DEMOPROJECT} )
-endforeach ( extension )
+
+# ------------------------------------------------------------------------------
+# GENERAL OPTIONS
+# ------------------------------------------------------------------------------
+
+# set project's name
+project ( MDSResourcesProjects )
+
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+# The tutorial project.
+add_subdirectory ( MDSExample )

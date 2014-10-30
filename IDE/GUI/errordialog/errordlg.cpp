@@ -45,7 +45,7 @@ void error(int errCode)
             break;
         }
 
-        
+
         //simulation errors
         //stack
         case ERR_STACK_OVERFLOW:
@@ -141,7 +141,7 @@ void error(int errCode)
             break;
         }
 
-        
+
         case ERR_UNTRACKED_PROJECT:
         {
             msgBox.setText("Error: Action not available for untracked project");

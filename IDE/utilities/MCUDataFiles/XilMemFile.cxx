@@ -17,6 +17,7 @@
 
 #include <cstring>
 #include <fstream>
+#include <memory>
 
 void XilMemFile::clearAndLoad ( const char * filename )
 {
@@ -36,11 +37,11 @@ void XilMemFile::clearAndLoad ( const std::string & filename )
 
     size_t lineLen;
     unsigned int addr = 0;
-    char buffer[MAX_LINE_LENGTH];
+    std::unique_ptr<char[]> buffer ( new char [ MAX_LINE_LENGTH ] );
 
     while ( false == file.eof() )
     {
-        char * line = buffer;
+        char * line = buffer.get();
         file.getline(line, MAX_LINE_LENGTH);
 
         if ( true == file.bad() )

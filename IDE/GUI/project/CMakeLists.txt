@@ -48,7 +48,7 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Simulator ProjectTree GuiCfg)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog Simulator ProjectTree GuiCfg os)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

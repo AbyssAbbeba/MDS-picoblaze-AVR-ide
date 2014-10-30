@@ -1,48 +1,29 @@
-##
+# ==============================================================================
+#
+# GUI Configuration
+#
+# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
-# Set project name
 project(GuiCfg)
-
-# Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.8)
-
-# Create verbose makefiles if on
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-# with SET() command you can change variables or define new ones
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files
-# note that we don't need \ at the end of line
-SET( SAMPLE_SRCS
-        ./guicfg.cpp
-)
-
-# another list, this time it includes all header files that should be treated with moc
-SET( SAMPLE_MOC_HDRS
-        ./guicfg.h
-)
-
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# and finally this will run moc:
-QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
+QT4_WRAP_CPP( MOC_SRCS guicfg.h )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+add_library ( ${PROJECT_NAME}
+              ${MOC_SRCS}
+              guicfg.cpp )
 
-# This is required due to header file: ui_welcomescr.h
-add_dependencies(${PROJECT_NAME} WelcomeScr)
-
-#QtNetwork !!
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ErrorDialog)
+target_link_libraries ( ${PROJECT_NAME}
+                        ${QT_LIBRARIES} ErrorDialog )
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
