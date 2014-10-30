@@ -39,6 +39,10 @@ class DataFile;
 // Used for i18n only.
 #include <QObject>
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include "boost/filesystem.hpp"
+
 /**
  * @brief
  * @ingroup Compiler
@@ -72,6 +76,12 @@ class CompilerSemanticInterface
 
     ////    Public Operations    ////
     public:
+        /**
+         * @brief
+         * @return
+         */
+        virtual const boost::filesystem::path & getBasePath() const = 0;
+
         /**
          * @brief
          * @return

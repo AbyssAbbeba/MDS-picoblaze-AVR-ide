@@ -30,6 +30,13 @@ ProjectCfg_General::ProjectCfg_General(QWidget *parentWidget, Project *currProje
     this->project = currProject;
     ui.setupUi(this);
 
+    this->setLayout(ui.gridLayout);
+    #ifdef Q_OS_LINUX
+        ui.teNotes->setFont(QFont("Monospace", 10));
+    #elif defined(Q_OS_WIN32)
+        ui.teNotes->setFont(QFont("Courier", 10));
+    #endif
+
     if (this->project->prjPath == "untracked" && this->project->prjName == "untracked")
     {
         ui.leName->setReadOnly(true);
@@ -94,11 +101,11 @@ void ProjectCfg_General::familyChanged(const QString &text)
 
     int index = ui.cmbFamily->findText(text);
     ui.teNotes->clear();
-    ui.teNotes->append("Number of registers:\t\t" + notes.at(5*index+1));
-    ui.teNotes->append("Max. program memory size:\t" + notes.at(5*index+4));
-    ui.teNotes->append("Max. scratchpad RAM size:\t" + notes.at(5*index+2));
-    ui.teNotes->append("Call stack size:\t\t" + notes.at(5*index+3));
-    ui.teNotes->append("Number of ports:\t\t" + notes.at(5*index));
+    ui.teNotes->append("Number of registers:      " + notes.at(5*index+1));
+    ui.teNotes->append("Max. program memory size: " + notes.at(5*index+4));
+    ui.teNotes->append("Max. scratchpad RAM size: " + notes.at(5*index+2));
+    ui.teNotes->append("Call stack size:          " + notes.at(5*index+3));
+    ui.teNotes->append("Number of ports:          " + notes.at(5*index));
 
     if (notes.at(5*index+2) != "-")
     {

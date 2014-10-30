@@ -17,6 +17,7 @@
 #include "../../../utilities/LicenseCertificate/LicenseCertificate.h"
 #include "../../guicfg/guicfg.h"
 #include <iostream>
+#include <memory>
 #include "../../../mds.h"
 
 
@@ -26,6 +27,12 @@ LicenseInitWidget::LicenseInitWidget(QWidget *parent)
     this->setModal(true);
     ui.setupUi(this);
     this->setLayout(ui.gridLayout);
+    #ifdef Q_OS_LINUX
+        ui.tbInfo->setFont(QFont("Monospace", 10));
+    #elif defined(Q_OS_WIN32)
+        ui.tbInfo->setFont(QFont("Courier", 10));
+    #endif
+
     ui.tbInfo->setReadOnly(true);
     #ifndef MDS_VARIANT_TRIAL
         connect(ui.btnLoad, SIGNAL(clicked()), this, SLOT(load()));
@@ -52,7 +59,7 @@ void LicenseInitWidget::tryLoad()
         this->licensePath = GuiCfg::getInstance().getLicensePath();
         static const long long int MAX_SIZE = 10240;
         char data [ MAX_SIZE ];
-        size_t len;
+        ssize_t len;
         QFile file(GuiCfg::getInstance().getLicensePath());
         if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data, MAX_SIZE))))
         {
@@ -65,17 +72,17 @@ void LicenseInitWidget::tryLoad()
                 cur.setPosition(0);
                 ui.tbInfo->setTextCursor(cur);
                 ui.tbInfo->clear();
-                ui.tbInfo->append("Licensee name:\t");
+                ui.tbInfo->append("Licensee name:     ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
-                ui.tbInfo->append("Product name:\t");
+                ui.tbInfo->append("Product name:       ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_designation.c_str()));
-                ui.tbInfo->append("Product variant:\t");
+                ui.tbInfo->append("Product variant:    ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_variant.c_str()));
-                ui.tbInfo->append("Product grade:\t");
+                ui.tbInfo->append("Product grade:      ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
-                ui.tbInfo->append("Product target:\t");
+                ui.tbInfo->append("Product target:     ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
-                ui.tbInfo->append("Number of licenses:\t");
+                ui.tbInfo->append("Number of licenses: ");
                 ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
                 this->setResult(QDialog::Accepted);
             }
@@ -104,13 +111,13 @@ void LicenseInitWidget::load()
         {
             ui.lePath->setText(this->licensePath);
             static const long long int MAX_SIZE = 10240;
-            char data [ MAX_SIZE ];
-            size_t len;
+            std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+            ssize_t len;
             QFile file(this->licensePath);
-            if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data, MAX_SIZE))))
+            if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data.get(), MAX_SIZE))))
             {
                 //load info
-                LicenseCertificate crt(std::string(data,len));
+                LicenseCertificate crt(std::string(data.get(),len));
                 if ( true == crt.m_isValid )
                 {
                     #ifdef MDS_VARIANT_COMMERCIAL
@@ -129,7 +136,9 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #elif defined(MDS_GRADE_BASIC)
+                    #endif
+
+                    #if defined(MDS_GRADE_BASIC)
                         if (crt.m_product.m_grade != "Basic")
                         {
                             qDebug() << "LicenseInitWidget: not basic";
@@ -161,7 +170,9 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #elif defined(MDS_TARGET_PICOBLAZE)
+                    #endif
+
+                    #if defined(MDS_TARGET_PICOBLAZE)
                         if (crt.m_product.m_target != "PicoBlaze")
                         {
                             qDebug() << "LicenseInitWidget: not PicoBlaze";
@@ -169,9 +180,6 @@ void LicenseInitWidget::load()
                             printError();
                             return;
                         }
-                    #else
-                            printError();
-                            return;
                     #endif
                     this->license = true;
                     this->setResult(QDialog::Accepted);
@@ -179,17 +187,17 @@ void LicenseInitWidget::load()
                     cur.setPosition(0);
                     ui.tbInfo->setTextCursor(cur);
                     ui.tbInfo->clear();
-                    ui.tbInfo->append("Licensee name:\t");
+                    ui.tbInfo->append("Licensee name:     ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_licensee.m_name.c_str()));
-                    ui.tbInfo->append("Product name:\t");
+                    ui.tbInfo->append("Product name:       ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_designation.c_str()));
-                    ui.tbInfo->append("Product variant:\t");
+                    ui.tbInfo->append("Product variant:    ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_variant.c_str()));
-                    ui.tbInfo->append("Product grade:\t");
+                    ui.tbInfo->append("Product grade:      ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_grade.c_str()));
-                    ui.tbInfo->append("Product target:\t");
+                    ui.tbInfo->append("Product target:     ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_target.c_str()));
-                    ui.tbInfo->append("Number of licenses:\t");
+                    ui.tbInfo->append("Number of licenses: ");
                     ui.tbInfo->insertPlainText(QString::fromUtf8(crt.m_product.m_licences.c_str()));
                 }
                 else

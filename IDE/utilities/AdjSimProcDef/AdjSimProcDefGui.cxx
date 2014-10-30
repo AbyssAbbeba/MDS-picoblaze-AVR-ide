@@ -63,7 +63,7 @@ const QString & AdjSimProcDefGui::getFileName() const
 void AdjSimProcDefGui::openFile ( const QString & fileName )
 {
     static const long long int MAX_SIZE = 102400;
-    char data [ MAX_SIZE ];
+    char * data = new char [ MAX_SIZE ];
 
     QFile file(fileName, this);
     if ( ( false == file.open(QIODevice::ReadOnly) ) || ( -1LL == file.read(data, MAX_SIZE) ) )
@@ -73,10 +73,12 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
                                 tr("Unable to read the specified file."),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
+        delete [] data;
         return;
     }
 
     AdjSimProcDefParser parser(data);
+    delete [] data;
 
     if ( false == parser.isValid() )
     {

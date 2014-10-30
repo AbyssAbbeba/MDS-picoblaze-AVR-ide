@@ -259,6 +259,12 @@ class CompilerCore : public CompilerBase,
              * @brief
              * @return
              */
+            virtual const boost::filesystem::path & getBasePath() const override;
+
+            /**
+             * @brief
+             * @return
+             */
             virtual const std::vector<std::pair<std::string,FILE*>> & listSourceFiles() const override;
 
             /**

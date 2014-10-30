@@ -18,7 +18,7 @@
 #include "MCUSimControl.h"
 #include "../widgets/ProjectTree/projecttree.h"
 #include "../guicfg/guicfg.h"
-
+#include "../../utilities/os/os.h"
 
 
 
@@ -54,7 +54,7 @@ void ProjectMan::openProject(QFile *file)
     //    openProjects.removeAt(0);
     //    projectCount--;
     //}
-    //else 
+    //else
     openProjects.append(newProject);
     activeProject = newProject;
     if (projectCount > 0)
@@ -154,7 +154,7 @@ void ProjectMan::addProject(QString name, QString path, QString architecture, La
     emit addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->addDockWidget(Qt::LeftDockWidgetArea, newProject->prjDockWidget);
     //mainWindow->getWDockManager()->showDockWidgetArea(0);
-    
+
     //if (projectCount == 1 && openProjects.at(0)->prjName == NULL) {
     //    delete openProjects.at(0);
     //    openProjects.removeAt(0);
@@ -375,7 +375,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     {
         compileOpt.append(false);
     }
-    
+
     fileCount = 0;
     parentManager = parent;
     this->m_simControlUnit = NULL;
@@ -714,7 +714,7 @@ Project::Project(QFile *file, ProjectMan *parent)
 
             this->treeProjSource = new QTreeWidgetItem(treeProjName);
             treeProjSource->setText(0, "Source");
-            
+
             this->treeProjInclude = new QTreeWidgetItem(treeProjName);
             treeProjInclude->setText(0, "Include");
 
@@ -771,7 +771,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                     SIGNAL(visibilityChanged(bool)),
                     this,
                     SLOT(setActive())
-                   );  
+                   );
             connect(prjTreeWidget,
                     SIGNAL(itemDoubleClicked (QTreeWidgetItem *,int)),
                     this,
@@ -837,7 +837,7 @@ Project::Project(ProjectMan *parent)
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
-    
+
     this->langType = LANG_ASM;
     this->family = GuiCfg::getInstance().getProjectFamily();
     this->intVector = GuiCfg::getInstance().getProjectIntVector();
@@ -880,7 +880,7 @@ Project::Project(ProjectMan *parent)
 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
-    
+
     connect(prjDockWidget,
             SIGNAL(visibilityChanged(bool)),
             this,
@@ -995,7 +995,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
     this->family = arch;
     this->langType = lang;
-    
+
     //a zapsani do souboru
     QDomDocument domDoc("MDSProject");
     QDomElement xmlRoot = domDoc.createElement("MDSProject");
@@ -1044,7 +1044,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlRoot.appendChild(xmlSimulator);
 
     QDomElement xmlCompiler = domDoc.createElement("Compiler");
-    
+
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
     xmlSymbolTbl.setAttribute("enable", "false");
@@ -1083,7 +1083,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlVHDLFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
-    
+
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
     QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
     xmlVHDLTemplate.setAttribute("default", "true");
@@ -1094,7 +1094,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     xmlVerilogTemplate.setAttribute("path", "");
     xmlCompilerTemplates.appendChild(xmlVerilogTemplate);
     xmlCompiler.appendChild(xmlCompilerTemplates);
-    
+
     QDomElement xmlCompilerInclude = domDoc.createElement("IncludePaths");
     xmlCompiler.appendChild(xmlCompilerInclude);
     xmlRoot.appendChild(xmlCompiler);
@@ -1163,7 +1163,7 @@ void Project::saveProject()
         error(ERR_OPENFILE);
         return;
     }
-    
+
     QDomDocument domDoc("MDSProject");
     QDomElement xmlRoot = domDoc.createElement("MDSProject");
     domDoc.appendChild(xmlRoot);
@@ -1215,8 +1215,8 @@ void Project::saveProject()
         xmlMainFile.setAttribute("enabled", "false");
     }
     xmlRoot.appendChild(xmlMainFile);
-    
-    QString relativePath; 
+
+    QString relativePath;
     QDomElement xmlBreakpoints = domDoc.createElement("Breakpoints");
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
@@ -1234,7 +1234,7 @@ void Project::saveProject()
         xmlBreakpoints.appendChild(xmlBreakpointFile);
     }
     xmlRoot.appendChild(xmlBreakpoints);
-    
+
     QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
     for (int i = 0; i < this->bookmarks.count(); i++)
     {
@@ -1708,7 +1708,7 @@ void Project::setMainFile(QString path, QString name)
 /**
  * @brief Sets usage of main file
  * @param enabled indicator
- */ 
+ */
 void Project::setUseMainFile(bool enabled)
 {
     //qDebug() << "Project: setUseMainFile()";
@@ -2480,8 +2480,8 @@ int Project::start(QString file, QString dumpFiles)
 
         PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
         set->m_config.m_interruptVector = (unsigned int)this->intVector;
-        set->m_config.m_hwbuild = (uint8_t)this->hwBuild; 
-        
+        set->m_config.m_hwbuild = (uint8_t)this->hwBuild;
+
         if ( false == m_simControlUnit->startSimulation(stdPath,
                                                         m_simControlUnit->COMPILER_NATIVE,
                                                         m_simControlUnit->DBGFILEID_HEX)
@@ -2591,6 +2591,7 @@ int Project::start(QString file, QString dumpFiles)
 
 void Project::setBreakpoints(bool set)
 {
+    using namespace boost::filesystem;
     if (true == set)
     {
         //qDebug() << "Project: setBreakpoints(true)";
@@ -2609,11 +2610,11 @@ void Project::setBreakpoints(bool set)
                 {
                     breakpointsSet.insert(value);
                 }
-                std::pair<std::string, std::set<unsigned int>> breakpointsPair;
                 //qDebug() << "Path" << this->breakPoints.at(i).first;
-                breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
-                breakpointsPair.second = breakpointsSet;
-                breakpointsVector.push_back(breakpointsPair);
+                const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
+                const std::string basepath = path(prjPath.toLocal8Bit().constData()).parent_path().string();
+// qDebug() << "basepath='"<<basepath.c_str()<<"', file='"<<file.c_str()<<"', result='"<<make_relative(basepath, file).string().c_str()<<"'";
+                breakpointsVector.push_back ( std::make_pair ( make_relative(basepath, file).string(), breakpointsSet ) );
             }
             /*for (unsigned int i = 0; i < breakpointsVector.size(); i++)
             {
@@ -2853,7 +2854,7 @@ void Project::setCompileOpt(QList<bool> opt)
     {
         this->compileOpt[i] = opt.at(i);
     }
-    
+
     /*QFile prjFile(prjPath);
     prjFile.open(QIODevice::ReadOnly);
     QDomDocument domDoc("MDSProject");

@@ -43,6 +43,7 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include <memory>
 #include <cstdint>
 #include <fstream>
 #include <cstring>
@@ -113,8 +114,8 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
     }
 
     static const long long int MAX_SIZE = 102400;
-    char data [ MAX_SIZE ];
-    size_t len = (size_t) file.readsome (data, MAX_SIZE);
+    std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+    size_t len = (size_t) file.readsome (data.get(), MAX_SIZE);
 
     if ( true == file.bad() )
     {
@@ -125,7 +126,7 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
         return;
     }
 
-    AdjSimProcDefParser parser(std::string(data, len));
+    AdjSimProcDefParser parser(std::string(data.get(), len));
 
     if ( false == parser.isValid() )
     {

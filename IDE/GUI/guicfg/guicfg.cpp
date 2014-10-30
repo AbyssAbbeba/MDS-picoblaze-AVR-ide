@@ -193,7 +193,7 @@ void GuiCfg::setDefaultEditGeneral()
 void GuiCfg::setDefaultEditSyntax()
 {
     this->highlightEnabled = true;
-    
+
     this->highComment.color.setNamedColor("#FFFFFF");
     this->highComment.italic = false;
     this->highComment.underline = false;
@@ -323,7 +323,7 @@ void GuiCfg::setDefaultPaths(bool release)
         //if (false == homeDir.exists())
         //{
         //    homeDir.mkpath(".");
-        //}   
+        //}
         this->configPath = homeDir.absolutePath() + "/config.xml";
         this->sessionPath = homeDir.absolutePath() + "/session.xml";
         this->licensePath = homeDir.absolutePath() + "/certificate.cert";
@@ -386,20 +386,20 @@ void GuiCfg::setTabToSpaces(bool enabled)
     emit tabToSpacesChanged(enabled);
 }
 
-        
+
 void GuiCfg::setSpacesInTab(int count)
 {
     this->spacesInTab = count;
     emit spacesInTabChanged(count);
 }
 
-        
+
 void GuiCfg::setEncoding(QString encoding)
 {
     this->encoding = encoding;
 }
 
-        
+
 void GuiCfg::setEOL(QString eol)
 {
     this->eol = eol;
@@ -1788,7 +1788,7 @@ void GuiCfg::saveConfig()
     xmlUpdate.setAttribute("color", this->simColorWidgetChanged.name());
     xmlSimOthers.appendChild(xmlUpdate);
     xmlRoot.appendChild(xmlSimOthers);
-    
+
     QDomElement xmlRecentFiles = domDoc.createElement("RecentFiles");
     for (int i = 0; i < this->recentFiles.count(); i++)
     {
@@ -1806,7 +1806,7 @@ void GuiCfg::saveConfig()
         xmlRecentProjects.appendChild(xmlProject);
     }
     xmlRoot.appendChild(xmlRecentProjects);
-    
+
     QFile cfgFile(this->configPath);
     cfgFile.open(QIODevice::WriteOnly);
     QTextStream xmlStream(&cfgFile);
@@ -1817,6 +1817,7 @@ void GuiCfg::saveConfig()
 
 void GuiCfg::saveSession()
 {
+#ifdef Q_OS_WIN32 // CRASHES ON WINDOWS, every time.
     if (false == this->sessionRestoration)
     {
         return;
@@ -1858,6 +1859,7 @@ void GuiCfg::saveSession()
         sessionFile.open(QIODevice::WriteOnly);
         sessionFile.close();
     }
+#endif
 }
 
 

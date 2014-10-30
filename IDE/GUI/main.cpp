@@ -24,6 +24,7 @@
     #include "../utilities/LicenseCertificate/LicenseCertificate.h"
 #endif // MDS_FEATURE_TRIAL
 #include <iostream>
+#include <memory>
 #ifdef MDS_FEATURE_TRIAL
     #include "dialogs/TrialExpired/trialexpired.h"
 #endif // MDS_FEATURE_TRIAL
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
     {
         qDebug() << array;
     }*/
-    
+
     GuiCfg::getInstance().setDefaultAll();
     GuiCfg::getInstance().setDefaultPaths(true);
 
@@ -85,11 +86,14 @@ int main(int argc, char *argv[])
     bool release = true;
     if (argc > 1)
     {
-        if (QString::fromLocal8Bit(argv[1]) == "--debug")
+        if ( false ) {}
+        #ifndef NDEBUG
+        else if (QString::fromLocal8Bit(argv[1]) == "--debug")
         {
             release = false;
             GuiCfg::getInstance().setDefaultPaths(false);
         }
+        #endif // NDEBUG
         else if (QString::fromLocal8Bit(argv[1]).section('.',-1) == "mds-project")
         {
             qDebug() << "Main: received file as argv[1] " << QString::fromLocal8Bit(argv[1]);
@@ -120,19 +124,21 @@ int main(int argc, char *argv[])
     }
 
     #ifndef MDS_VARIANT_TRIAL
+    {
         //std::ifstream file(GuiCfg::getInstance().getLicensePath().replace('/','\\').toStdString(), std::ios_base::binary);
         //qDebug() << GuiCfg::getInstance().getLicensePath();
         static const long long int MAX_SIZE = 10240;
-        char data [ MAX_SIZE ];
-        size_t len;
+        std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+        ssize_t len;
         QFile file(GuiCfg::getInstance().getLicensePath());
         //qDebug() << "Main: 3";
-        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data, MAX_SIZE))))
+        if ((false != file.open(QIODevice::ReadOnly) ) && ( -1 !=  (len = file.read(data.get(), MAX_SIZE))))
         {
             file.close();
-            LicenseCertificate crt(std::string(data,len));
+            LicenseCertificate crt(std::string(data.get(),len));
             if ( false == crt.m_isValid )
             {
+                splash.close();
                 LicenseInitWidget *widget = new LicenseInitWidget(0);
                 if (QDialog::Rejected == widget->exec())
                 {
@@ -144,6 +150,7 @@ int main(int argc, char *argv[])
                 #ifdef MDS_VARIANT_COMMERCIAL
                     if (crt.m_product.m_variant != "Commercial")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -153,6 +160,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_VARIANT_NONCOMMERCIAL)
                     if (crt.m_product.m_variant != "Noncommercial")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -162,6 +170,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_GRADE_BASIC)
                     if (crt.m_product.m_grade != "Basic")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -171,6 +180,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_GRADE_PREMIUM)
                     if (crt.m_product.m_grade != "Premium")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -180,6 +190,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_GRADE_PROFESSIONAL)
                     if (crt.m_product.m_grade != "Professional")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -189,6 +200,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_GRADE_ULTIMATE)
                     if (crt.m_product.m_grade != "Ultimate")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -198,6 +210,7 @@ int main(int argc, char *argv[])
                 #elif defined(MDS_TARGET_PICOBLAZE)
                     if (crt.m_product.m_target != "PicoBlaze")
                     {
+                        splash.close();
                         LicenseInitWidget *widget = new LicenseInitWidget(0);
                         if (QDialog::Rejected == widget->exec())
                         {
@@ -206,6 +219,7 @@ int main(int argc, char *argv[])
                     }
                 #else
                     qDebug() << "Main: Error";
+                    splash.close();
                     LicenseInitWidget *widget = new LicenseInitWidget(0);
                     if (QDialog::Rejected == widget->exec())
                     {
@@ -217,12 +231,14 @@ int main(int argc, char *argv[])
         else
         {
             qDebug() << "Main: else";
+            splash.close();
             LicenseInitWidget *widget = new LicenseInitWidget(0);
             if (QDialog::Rejected == widget->exec())
             {
                 return 1;
             }
         }
+    }
     #endif
 
     //QResource::registerResource("icons.rcc");
@@ -235,7 +251,7 @@ int main(int argc, char *argv[])
     {
         QTimer::singleShot(500, &MainGUI, SLOT(welcomeDialog()));
     }
-    
+
     if (true == openFile)
     {
         QTimer::singleShot(200, &MainGUI, SLOT(openProject(QString::fromLocal8Bit(argv[1]))));
@@ -259,7 +275,7 @@ int main(int argc, char *argv[])
         app.processEvents();
         QTimer::singleShot(2000, &splash, SLOT(close()));
     }
-        
+
     return app.exec();
 
 }

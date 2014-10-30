@@ -24,6 +24,7 @@ set ( MDS_FEATURES
 # Set internal configuration variables.
 # ----------------------------------------------------------------------------------------------------------------------
 
+# Disable "all" fetures.
 foreach ( var ${MDS_FEATURES} )
     set ( ${var} FALSE )
 endforeach()

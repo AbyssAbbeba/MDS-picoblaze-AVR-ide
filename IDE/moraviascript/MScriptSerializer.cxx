@@ -38,7 +38,7 @@ MScriptSerializer::MScriptSerializer ( std::istream & input,
                                        m_output ( nullptr ),
                                        m_role   ( DESERIALIZER )
 {
-    size_t headerLength = ( 1 + strlen(COMMON_FILE_HEADER) );
+    static const size_t headerLength = ( 1 + strlen(COMMON_FILE_HEADER) );
     char header [ headerLength ];
     read_c_str ( header, headerLength );
 

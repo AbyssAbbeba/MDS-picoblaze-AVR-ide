@@ -57,9 +57,12 @@ set ( COMPANY_NAME       "Moravia Microsystems, s.r.o." )
 set ( PRODUCT_NAME       "Multitarget Development System" )
 set ( COMPANY_ADDRESS    "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )
 
-# Others ...
+# MDS user manual PDF file.
 set ( MDS_MANUAL_PDF "MDS_manual.pdf" CACHE STRING "Name of MDS manual as PDF file without full path." )
 mark_as_advanced ( MDS_MANUAL_PDF )
+
+# Target name for the compilers's CLI executable binary.
+set ( COMPILER_EXEC_TARGET "mds-compiler" )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # USER OPTIONS

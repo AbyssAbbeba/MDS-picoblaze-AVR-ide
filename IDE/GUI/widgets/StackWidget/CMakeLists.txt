@@ -1,52 +1,33 @@
-##
+# ==============================================================================
+#
+# Simulator widget showing contents of PicoBlaze stack.
+#
+# (C) copyright 2014 Moravia Microsystems, s.r.o.
+#
+# ==============================================================================
 
 # ------------------------------------------------------------------------------
 # GENERAL OPTIONS
 # ------------------------------------------------------------------------------
 
-# Set project name
-project(StackWidget)
-
-# Set the minimum required version of CMake
-cmake_minimum_required(VERSION 2.8)
-
-# Create verbose makefiles if on
-set(CMAKE_VERBOSE_MAKEFILE OFF)
-
-
-
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files
-SET( SAMPLE_SRCS
-	./stackwidget.cpp
-)
-
-# another list, this time it includes all header files that should be treated with moc
-SET( SAMPLE_MOC_HDRS
-	./stackwidget.h
-)
-
+project ( StackWidget )
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
-# and finally this will run moc:
-QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
+QT4_WRAP_CPP( MOC_FILES stackwidget.h )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude dynamic C++ library.
-add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+add_library ( ${PROJECT_NAME}
+              ${MOC_FILES}
+              stackwidget.cpp )
 
-
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator ErrorDialog)
-
+target_link_libraries ( ${PROJECT_NAME}
+                        ${QT_LIBRARIES} Simulator ErrorDialog GuiCfg )
 
 # ------------------------------------------------------------------------------
-# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# INSTALLATION
 # ------------------------------------------------------------------------------
-
-
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

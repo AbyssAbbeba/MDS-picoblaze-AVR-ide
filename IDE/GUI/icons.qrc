@@ -41,6 +41,7 @@
     <file>resources/icons/disk.png</file>
     <file>resources/icons/disk2.png</file>
     <file>resources/icons/mainIcon.png</file>
+    <file>resources/icons/mainIcon_64x64.png</file>
     <file>resources/icons/lightning_go.png</file>
     <file>resources/icons/folder.png</file>
     <file>resources/icons/cancel.png</file>

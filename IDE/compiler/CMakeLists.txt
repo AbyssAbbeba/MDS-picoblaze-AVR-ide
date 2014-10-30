@@ -14,9 +14,6 @@
 # Set project name
 project ( compiler )
 
-# Target name for the compilers's CLI executable binary.
-set ( COMPILER_EXEC_TARGET "mds-${PROJECT_NAME}" )
-
 # ------------------------------------------------------------------------------
 # WINDRES RC FILES.
 # Windows only: generate windres RC file(s) to provide information for Windows.

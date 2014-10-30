@@ -23,10 +23,10 @@
 #include "CompilerSemanticInterface.h"
 
 // Header files of libMCUDataFiles.
-#include "BinFile.h"
-#include "HexFile.h"
-#include "DataFile.h"
-#include "SrecFile.h"
+#include "MCUDataFiles/BinFile.h"
+#include "MCUDataFiles/HexFile.h"
+#include "MCUDataFiles/DataFile.h"
+#include "MCUDataFiles/SrecFile.h"
 
 AsmMachineCodeGen::AsmMachineCodeGen ()
 {

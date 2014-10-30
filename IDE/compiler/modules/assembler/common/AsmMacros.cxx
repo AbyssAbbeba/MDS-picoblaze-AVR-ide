@@ -13,7 +13,7 @@
  */
 // =============================================================================
 
-//  assembler semantic analyzer header files.
+// Assembler semantic analyzer header files.
 #include "AsmMacros.h"
 #include "AsmCommons.h"
 #include "AsmSymbolTable.h"

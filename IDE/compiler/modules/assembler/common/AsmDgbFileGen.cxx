@@ -16,7 +16,9 @@
 #include "AsmDgbFileGen.h"
 
 // Support for debug files.
-#include "DbgFileNative.h"
+#include "DbgFile/DbgFileNative.h"
+
+#include "os/os.h"
 
 // Common compiler header files.
 #include "CompilerLocationTracker.h"
@@ -77,7 +79,7 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     const std::vector<std::pair<std::string,FILE*>> & sourceFiles = compilerCore->listSourceFiles();
     for ( const auto & srcFile : sourceFiles )
     {
-        file << srcFile.first << '\n';
+        file << boost::filesystem::make_relative(compilerCore->getBasePath(), srcFile.first).string() << '\n';
     }
     file << '\n';
 

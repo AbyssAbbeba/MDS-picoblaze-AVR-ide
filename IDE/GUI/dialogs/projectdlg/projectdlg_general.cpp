@@ -27,9 +27,15 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
 {
     //layout = new QGridLayout(this);
     ui.setupUi(this);
-    QPixmap pm_btnChange(":/resources//icons//drive_magnify.png");
+    QPixmap pm_btnChange(":/resources//icons/projOpen.png");
     QIcon icon_btnChange(pm_btnChange);
     ui.btnChange->setIcon(icon_btnChange);
+
+    #ifdef Q_OS_LINUX
+        ui.teNotes->setFont(QFont("Monospace", 10));
+    #elif defined(Q_OS_WIN32)
+        ui.teNotes->setFont(QFont("Courier", 10));
+    #endif
 
     notes.append("256");
     notes.append("8");
@@ -69,8 +75,6 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
     //ui.teNotes->append("Callstack:\t\t" + notes.at(3));
     //ui.teNotes->append("Program memory:\t" + notes.at(4));
 
-
-
     connect(ui.btnChange,
             SIGNAL(pressed()),
             this,
@@ -93,7 +97,7 @@ Projectdlg_General::Projectdlg_General(QWidget *parent)
  */
 void Projectdlg_General::setPath()
 {
-    QString path = QFileDialog::getExistingDirectory (this, tr("Project Directory"), "");
+    QString path = QFileDialog::getExistingDirectory (this, tr("Project Directory"), QDir::homePath());
     ui.lePath->setText(path);
 }
 
@@ -134,11 +138,11 @@ void Projectdlg_General::familyChanged(const QString &text)
 
     int index = ui.cmbFamily->findText(text);
     ui.teNotes->clear();
-    ui.teNotes->append("Number of registers:\t\t" + notes.at(5*index+1));
-    ui.teNotes->append("Max. program memory size:\t" + notes.at(5*index+4));
-    ui.teNotes->append("Max. scratchpad RAM size:\t" + notes.at(5*index+2));
-    ui.teNotes->append("Call stack size:\t\t" + notes.at(5*index+3));
-    ui.teNotes->append("Number of ports:\t\t" + notes.at(5*index));
+    ui.teNotes->append("Number of registers:      " + notes.at(5*index+1));
+    ui.teNotes->append("Max. program memory size: " + notes.at(5*index+4));
+    ui.teNotes->append("Max. scratchpad RAM size: " + notes.at(5*index+2));
+    ui.teNotes->append("Call stack size:          " + notes.at(5*index+3));
+    ui.teNotes->append("Number of ports:          " + notes.at(5*index));
 
     if (notes.at(5*index+2) != "-")
     {
