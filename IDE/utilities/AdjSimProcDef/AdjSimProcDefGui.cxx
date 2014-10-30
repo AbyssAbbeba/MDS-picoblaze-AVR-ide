@@ -1151,8 +1151,8 @@ inline void AdjSimProcDefGui::setupConnections()
 
 inline void AdjSimProcDefGui::setupValidators()
 {
-    QRegExpValidator * procName = new QRegExpValidator(QRegExp("[A-Za-z0-9][A-Za-z0-9 ]*"), this);
-    QRegExpValidator * mnemonic = new QRegExpValidator(QRegExp("[A-Za-z][A-Za-z0-9]*"), this);
+    QRegExpValidator * procName = new QRegExpValidator(QRegExp("[_A-Za-z0-9][_A-Za-z0-9 ]*"), this);
+    QRegExpValidator * mnemonic = new QRegExpValidator(QRegExp("[_A-Za-z][_A-Za-z0-9]*"), this);
     QIntValidator * number = new QIntValidator(-1, 0xffff, this);
 
     lineEditProcessorName->setValidator(procName);
