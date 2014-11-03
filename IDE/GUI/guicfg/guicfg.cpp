@@ -1817,7 +1817,7 @@ void GuiCfg::saveConfig()
 
 void GuiCfg::saveSession()
 {
-#ifdef Q_OS_WIN32 // CRASHES ON WINDOWS, every time.
+//#ifdef Q_OS_WIN32 // CRASHES ON WINDOWS, every time.
     if (false == this->sessionRestoration)
     {
         return;
@@ -1859,7 +1859,7 @@ void GuiCfg::saveSession()
         sessionFile.open(QIODevice::WriteOnly);
         sessionFile.close();
     }
-#endif
+//#endif
 }
 
 

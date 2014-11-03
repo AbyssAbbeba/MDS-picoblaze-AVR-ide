@@ -1328,6 +1328,12 @@ bool WDockManager::getTabStatusChanged(int index)
 }
 
 
+void WDockManager::showProjectEditors(Project *activeProject)
+{
+    
+}
+
+
 
 
 
