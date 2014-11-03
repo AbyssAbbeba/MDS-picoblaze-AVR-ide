@@ -115,7 +115,7 @@ class CodeEdit : public QWidget
         QString path;
         bool changed;
         bool tabs;
-        Project* parentProject;
+        Project *parentProject;
         QWidget *parentWidget;
         QStatusBar *statusBar;
         WTextEdit *textEdit;
