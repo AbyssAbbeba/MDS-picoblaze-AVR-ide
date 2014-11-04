@@ -217,6 +217,9 @@
             <property name="maximum">
              <number>65536</number>
             </property>
+            <property name="value">
+             <number>16</number>
+            </property>
            </widget>
           </item>
          </layout>
@@ -462,7 +465,7 @@
             <x>0</x>
             <y>0</y>
             <width>225</width>
-            <height>365</height>
+            <height>394</height>
            </rect>
           </property>
           <attribute name="label">
@@ -485,6 +488,56 @@
                   <string>0</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QLabel" name="label_24">
+                      <property name="text">
+                       <string>Addressing</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="comboBoxInstOpr0Addressing">
+                      <item>
+                       <property name="text">
+                        <string>Immediate</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Program</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Port</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                   <item>
                    <widget class="QTabWidget" name="tabWidgetInstOpr0">
                     <property name="currentIndex">
@@ -910,6 +963,56 @@
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_14">
                   <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_5">
+                    <item>
+                     <widget class="QLabel" name="label_25">
+                      <property name="text">
+                       <string>Addressing</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="comboBoxInstOpr1Addressing">
+                      <item>
+                       <property name="text">
+                        <string>Immediate</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Program</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Port</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
                    <widget class="QTabWidget" name="tabWidgetInstOpr1">
                     <property name="currentIndex">
                      <number>0</number>
@@ -1333,6 +1436,56 @@
                   <string>2</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_15">
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                    <item>
+                     <widget class="QLabel" name="label_26">
+                      <property name="text">
+                       <string>Addressing</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="comboBoxInstOpr2Addressing">
+                      <item>
+                       <property name="text">
+                        <string>Immediate</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Register</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Indirect Data</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Program</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Direct Port</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
                   <item>
                    <widget class="QTabWidget" name="tabWidgetInstOpr2">
                     <property name="currentIndex">
@@ -3307,6 +3460,9 @@
             <property name="maximum">
              <number>16</number>
             </property>
+            <property name="value">
+             <number>8</number>
+            </property>
            </widget>
           </item>
           <item row="2" column="0">
@@ -3323,6 +3479,9 @@
             </property>
             <property name="maximum">
              <number>16</number>
+            </property>
+            <property name="value">
+             <number>8</number>
             </property>
            </widget>
           </item>
@@ -3487,7 +3646,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_18">
          <property name="title">
-          <string>GroupBox</string>
+          <string>Other</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_25">
           <item row="0" column="0">

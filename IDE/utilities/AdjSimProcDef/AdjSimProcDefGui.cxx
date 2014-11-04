@@ -21,6 +21,7 @@
 
 // Standard header files.
 #include <set>
+#include<iostream>//DEBUG
 
 // Qt header files.
 #include <QDir>
@@ -77,6 +78,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
         return;
     }
 
+    file.close();
     AdjSimProcDefParser parser(data);
     delete [] data;
 
@@ -157,6 +159,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
     // Instruction set
     for ( const AdjSimProcDef::Instruction & inst : procDef.m_instructionSet )
     {
+std::cout << inst.m_mnemonic << '\n';
         AdjSimProcDef::Instruction * newInst = new AdjSimProcDef::Instruction(inst);
 
         for ( unsigned int i = newInst->m_opCode.size(); i < 24; i++ )
@@ -288,50 +291,51 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
     {
         procDef.m_stack.m_size = 0;
         procDef.m_stack.m_useDesignatedStack = false;
-
-        switch ( comboBoxStackOperation->currentIndex() )
-        {
-            case 0:
-                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREINC;
-                break;
-            case 1:
-                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTINC;
-                break;
-            case 2:
-                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREDEC;
-                break;
-            case 3:
-                procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTDEC;
-                break;
-        }
-
-        procDef.m_stack.m_simpleStack.m_content.m_offset = (unsigned int) spinBoxStackContentOffset->value();
-
-        switch ( comboBoxStackContentSpace->currentIndex() )
-        {
-            case 0:
-                procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
-                break;
-            case 1:
-                procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
-                break;
-        }
-
-        switch ( comboBoxStackPointerSpace->currentIndex() )
-        {
-            case 0:
-                procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
-                break;
-            case 1:
-                procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
-                break;
-        }
-
-        procDef.m_stack.m_simpleStack.m_pointer.m_address = (unsigned int) spinBoxStackPointerAddress->value();
-        procDef.m_stack.m_simpleStack.m_pointer.m_maxSize = (unsigned int) spinBoxStackPointerMax->value();
-
-        procDef.m_stack.m_simpleStack.m_pointer.m_indirect = ( Qt::Checked == checkBoxStackIndirectPtr->checkState() );
     }
+
+    switch ( comboBoxStackOperation->currentIndex() )
+    {
+        case 0:
+            procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREINC;
+            break;
+        case 1:
+            procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTINC;
+            break;
+        case 2:
+            procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_PREDEC;
+            break;
+        case 3:
+            procDef.m_stack.m_simpleStack.m_operation = AdjSimProcDef::Stack::SimpleStack::OP_POSTDEC;
+            break;
+    }
+
+    procDef.m_stack.m_simpleStack.m_content.m_offset = (unsigned int) spinBoxStackContentOffset->value();
+
+    switch ( comboBoxStackContentSpace->currentIndex() )
+    {
+        case 0:
+            procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
+            break;
+        case 1:
+            procDef.m_stack.m_simpleStack.m_content.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
+            break;
+    }
+
+    switch ( comboBoxStackPointerSpace->currentIndex() )
+    {
+        case 0:
+            procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_REG;
+            break;
+        case 1:
+            procDef.m_stack.m_simpleStack.m_pointer.m_space = AdjSimProcDef::Stack::SimpleStack::SP_DATA;
+            break;
+    }
+
+    procDef.m_stack.m_simpleStack.m_pointer.m_address = (unsigned int) spinBoxStackPointerAddress->value();
+    procDef.m_stack.m_simpleStack.m_pointer.m_maxSize = (unsigned int) spinBoxStackPointerMax->value();
+
+    procDef.m_stack.m_simpleStack.m_pointer.m_indirect = ( Qt::Checked == checkBoxStackIndirectPtr->checkState() );
+
 
     // Instruction set
     std::map<int, int> idMap;
@@ -716,6 +720,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
         lineEditInstOpr0FixedValue->setText(QString("%1").arg(inst->m_operands[0].m_fixedValue));
     }
     comboBoxInstOpr0Order->setCurrentIndex((int)(inst->m_operands[0].m_number));
+    comboBoxInstOpr0Addressing->setCurrentIndex((int)(inst->m_operands[0].m_type));
     spinBoxInstOpr0Bit0->setValue(inst->m_operands[0].m_OPCodePermutation[0]);
     spinBoxInstOpr0Bit1->setValue(inst->m_operands[0].m_OPCodePermutation[1]);
     spinBoxInstOpr0Bit2->setValue(inst->m_operands[0].m_OPCodePermutation[2]);
@@ -744,6 +749,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
         lineEditInstOpr1FixedValue->setText(QString("%1").arg(inst->m_operands[1].m_fixedValue));
     }
     comboBoxInstOpr1Order->setCurrentIndex((int)(inst->m_operands[1].m_number));
+    comboBoxInstOpr1Addressing->setCurrentIndex((int)(inst->m_operands[1].m_type));
     spinBoxInstOpr1Bit0->setValue(inst->m_operands[1].m_OPCodePermutation[0]);
     spinBoxInstOpr1Bit1->setValue(inst->m_operands[1].m_OPCodePermutation[1]);
     spinBoxInstOpr1Bit2->setValue(inst->m_operands[1].m_OPCodePermutation[2]);
@@ -772,6 +778,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
         lineEditInstOpr2FixedValue->setText(QString("%1").arg(inst->m_operands[2].m_fixedValue));
     }
     comboBoxInstOpr2Order->setCurrentIndex((int)(inst->m_operands[2].m_number));
+    comboBoxInstOpr2Addressing->setCurrentIndex((int)(inst->m_operands[2].m_type));
     spinBoxInstOpr2Bit0->setValue(inst->m_operands[2].m_OPCodePermutation[0]);
     spinBoxInstOpr2Bit1->setValue(inst->m_operands[2].m_OPCodePermutation[1]);
     spinBoxInstOpr2Bit2->setValue(inst->m_operands[2].m_OPCodePermutation[2]);
@@ -854,6 +861,8 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[0].m_size = 16;
         inst->m_operands[0].m_number = (AdjSimProcDef::Instruction::Operand::Number)
                                        (comboBoxInstOpr0Order->currentIndex());
+        inst->m_operands[0].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr0Addressing->currentIndex());
         inst->m_operands[0].m_OPCodePermutation[0] = spinBoxInstOpr0Bit0->value();
         inst->m_operands[0].m_OPCodePermutation[1] = spinBoxInstOpr0Bit1->value();
         inst->m_operands[0].m_OPCodePermutation[2] = spinBoxInstOpr0Bit2->value();
@@ -882,6 +891,8 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[1].m_size = 16;
         inst->m_operands[1].m_number = (AdjSimProcDef::Instruction::Operand::Number)
                                        (comboBoxInstOpr1Order->currentIndex());
+        inst->m_operands[1].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr1Addressing->currentIndex());
         inst->m_operands[1].m_OPCodePermutation[0] = spinBoxInstOpr1Bit0->value();
         inst->m_operands[1].m_OPCodePermutation[1] = spinBoxInstOpr1Bit1->value();
         inst->m_operands[1].m_OPCodePermutation[2] = spinBoxInstOpr1Bit2->value();
@@ -910,6 +921,8 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[2].m_size = 16;
         inst->m_operands[2].m_number = (AdjSimProcDef::Instruction::Operand::Number)
                                        (comboBoxInstOpr2Order->currentIndex());
+        inst->m_operands[2].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr2Addressing->currentIndex());
         inst->m_operands[2].m_OPCodePermutation[0] = spinBoxInstOpr2Bit0->value();
         inst->m_operands[2].m_OPCodePermutation[1] = spinBoxInstOpr2Bit1->value();
         inst->m_operands[2].m_OPCodePermutation[2] = spinBoxInstOpr2Bit2->value();
@@ -1072,6 +1085,7 @@ inline void AdjSimProcDefGui::setupConnections()
     // -
     connect ( tabWidgetInstOpr0,            SIGNAL(currentChanged(int)),         SLOT(instModified()) );
     connect ( comboBoxInstOpr0Order,        SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
+    connect ( comboBoxInstOpr0Addressing,   SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( spinBoxInstOpr0Bit0,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr0Bit1,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr0Bit2,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
@@ -1092,6 +1106,7 @@ inline void AdjSimProcDefGui::setupConnections()
     // -
     connect ( tabWidgetInstOpr1,            SIGNAL(currentChanged(int)),         SLOT(instModified()) );
     connect ( comboBoxInstOpr1Order,        SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
+    connect ( comboBoxInstOpr1Addressing,   SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( spinBoxInstOpr1Bit0,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr1Bit1,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr1Bit2,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
@@ -1112,6 +1127,7 @@ inline void AdjSimProcDefGui::setupConnections()
     // -
     connect ( tabWidgetInstOpr2,            SIGNAL(currentChanged(int)),         SLOT(instModified()) );
     connect ( comboBoxInstOpr2Order,        SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
+    connect ( comboBoxInstOpr2Addressing,   SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( spinBoxInstOpr2Bit0,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr2Bit1,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );
     connect ( spinBoxInstOpr2Bit2,          SIGNAL(valueChanged(int)),           SLOT(instModified()) );

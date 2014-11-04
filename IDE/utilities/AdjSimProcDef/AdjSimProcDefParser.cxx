@@ -15,7 +15,7 @@
 
 #include "AdjSimProcDefParser.h"
 #include "AdjSimProcDefGenerator.h"
-
+#include<iostream>//DEBUG
 #include <cstdlib>
 #include <stdexcept>
 
@@ -172,6 +172,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
         while ( true )
         {
             readBool(def, mark, pos);
+std::cout<<"mark="<<mark<<'\n';
             if ( false == mark )
             {
                 break;
@@ -207,10 +208,11 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
 
             // Mnemonic
             readString(def, instruction.m_mnemonic, pos);
-
+std::cout<<"m_mnemonic="<<instruction.m_mnemonic<<'\n';
             // OP Code Bits
             readUInt(def, size, pos );
             instruction.m_opCode.clear();
+std::cout<<"m_opCode.size()="<<size<<'\n';
             for ( unsigned int i = 0; i < size; i++ )
             {
                 readInt(def, value, pos );
@@ -219,17 +221,20 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
 
             // Operands
             readUInt(def, size, pos );
+std::cout<<"m_operands.size()="<<size<<'\n';
             instruction.m_operands.clear();
             for ( unsigned int i = 0; i < size; i++ )
             {
+                unsigned int size2;
+
                 AdjSimProcDef::Instruction::Operand operand;
 
                 readInt(def, (int&) operand.m_type, pos );
                 readInt(def, operand.m_size, pos );
                 readInt(def, operand.m_fixedValue, pos );
 
-                readUInt(def, size, pos );
-                for ( unsigned int i = 0; i < size; i++ )
+                readUInt(def, size2, pos );
+                for ( unsigned int i = 0; i < size2; i++ )
                 {
                     readInt(def, value, pos );
                     operand.m_OPCodePermutation.push_back(value);
