@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "convertortool.h"
+#include "lineeditconvert.h"
 
 ConvertorTool::ConvertorTool(QWidget *parent)
     : QWidget(parent)
