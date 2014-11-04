@@ -17,10 +17,12 @@
 
 
 #include <QTreeWidget>
-#include <QMenu>
-//#include <QString>
+#include <QString>
 
 class Project;
+class QMenu;
+class QTreeWidgetItem;
+class QContextMenuEvent;
 //class ProjectConfigDialog_Core;
 
 /**

@@ -15,6 +15,13 @@
 #include <QtGui>
 #include "interfacecfgdlg_core.h"
 #include "../../guicfg/guicfg.h"
+#include "../cfginterface/cfginterface.h"
+#include "interfacecfg_editfonts.h"
+#include "interfacecfg_editgeneral.h"
+#include "interfacecfg_editsyntax.h"
+#include "interfacecfg_idegeneral.h"
+#include "interfacecfg_simothers.h"
+#include "interfacecfg_simwarnings.h"
 
 
 InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)

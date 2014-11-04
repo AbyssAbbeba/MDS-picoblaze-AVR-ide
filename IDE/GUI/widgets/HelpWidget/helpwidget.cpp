@@ -15,6 +15,9 @@
 #include <QtGui>
 #include "helpwidget.h"
 #include "../../guicfg/guicfg.h"
+#include <QHelpEngine>
+#include <QHelpSearchEngine>
+#include "helpbrowser.h"
 
 
 

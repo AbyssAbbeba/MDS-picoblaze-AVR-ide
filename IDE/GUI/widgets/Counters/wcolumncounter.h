@@ -15,11 +15,11 @@
 #ifndef WCOLUMNCOUNTER_H
 #define WCOLUMNCOUNTER_H
 
-#include <QPlainTextEdit>
 #include <QScrollArea>
 #include <QFont>
 
 class WColumnCounterWidget;
+class QPlainTextEdit;
 
 
 /**

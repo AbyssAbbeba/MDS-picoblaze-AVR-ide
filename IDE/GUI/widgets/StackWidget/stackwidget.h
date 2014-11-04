@@ -16,18 +16,17 @@
 #define STACKWIDGET_H
 
 
-#include <QListWidget>
 #include <QWidget>
-#include <QPushButton>
-#include <QLineEdit>
 //#include <QIcon>
-#include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
-#include "../../../simulators/SimControl/MCUSimControl.h"
-#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
-#include "../../errordialog/errordlg.h"
 #include "../../guicfg/guicfg.h"
+
+class PicoBlazeStack;
+class MCUSimControl;
+class QPushButton;
+class QLineEdit;
+class QListWidget;
 
 
 class StackWidget : public QWidget, public MCUSimObserver

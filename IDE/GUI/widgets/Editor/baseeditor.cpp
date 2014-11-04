@@ -14,6 +14,9 @@
 
 #include <QtGui>
 #include "baseeditor.h"
+#include "wtextedit.h"
+#include "codeedit.h"
+#include "../DockManager/wdockmanager.h"
 
 
 BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit, bool delCodeEdit)

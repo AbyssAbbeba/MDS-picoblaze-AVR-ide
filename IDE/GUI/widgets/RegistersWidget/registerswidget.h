@@ -17,10 +17,11 @@
 
 
 #include <QTableWidget>
-#include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
-#include "../../../simulators/SimControl/MCUSimControl.h"
+
+class MCUSimControl;
+class MCUSimMemory;
 
 class RegistersWidget : public QTableWidget, public MCUSimObserver
 {

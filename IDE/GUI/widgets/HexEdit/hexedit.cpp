@@ -14,6 +14,8 @@
 
 #include <QtGui>
 #include "hexedit.h"
+#include "../Counters/wlinecounter.h"
+#include "../Counters/wcolumncounter.h"
 
 
 

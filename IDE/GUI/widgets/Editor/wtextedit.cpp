@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "wtextedit.h"
+#include "../Highlighter/highlighter.h"
 
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)

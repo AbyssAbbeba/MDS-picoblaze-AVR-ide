@@ -16,32 +16,29 @@
 #define PICOBLAZEGRID_H
 
 
-#include <QHBoxLayout>
-#include <QScrollArea>
-#include <QMenu>
-#include <QLabel>
 #include <QWidget>
 #include <QString>
-#include <QListWidget>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QComboBox>
-#include "../../../simulators/MCUSim/MCUSim.h"
-#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
-#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
-#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
-#include "../../../simulators/SimControl/MCUSimControl.h"
-#include "../../../simulators/SimControl/MCUSimObserver.h"
-#include "../StackWidget/stackwidget.h"
-#include "../RegistersWidget/registerswidget.h"
-#include "../PortHexEdit/porthexedit.h"
-#include "../sim/McuMemoryView.h"
-#include "../TimeWidget/timewidget.h"
-#include "../../errordialog/errordlg.h"
 #include "../../guicfg/guicfg.h"
-
+#include "../../../simulators/SimControl/MCUSimObserver.h"
 
 class MCUSimControl;
+class QLabel;
+class QMenu;
+class QListWidget;
+class QPushButton;
+class QComboBox;
+class QLineEdit;
+class QScrollArea;
+class QHBoxLayout;
+class RegistersWidget;
+class McuMemoryView;
+class PortHexEdit;
+class StackWidget;
+class TimeWidget;
+class MCUSimCPU;
+class PicoBlazeStatusFlags;
+class PicoBlazeInterruptController;
+class PicoBlazeStack;
 
 /**
  * @brief
