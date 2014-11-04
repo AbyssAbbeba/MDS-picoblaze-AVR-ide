@@ -319,19 +319,19 @@ MainForm::~MainForm()
         if (projectMan->getOpenProjects().count() > 0)
         {
             QList<Project*> projects = projectMan->getOpenProjects();
-            //qDebug() << "Mainform: prepare to project session restoration";
+            qDebug() << "Mainform: prepare to project session restoration";
             for (int i = 0; i < projects.count(); i++)
             {
-                //qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+                qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
                 GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
                 if (wDockManager->getTabCount() > 0)
                 {
-                    //qDebug() << "Mainform: prepare to files session restoration";
+                    qDebug() << "Mainform: prepare to files session restoration";
                     for (int j = 0; j < wDockManager->getTabCount(); j++)
                     {
                         if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
                         {
-                            //qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
                             GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
                             GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
                         }
@@ -3097,6 +3097,7 @@ void MainForm::activeProjectChanged(int index)
     {
         projectMan->setActiveByIndex(index);
         wDockManager->changeSimWidget(index);
+        wDockManager->showProjectEditors(projectMan->getActive());
         if (wDockManager->getBreakpointList() != NULL)
         {
             wDockManager->getBreakpointList()->reload(projectMan->getActive()->getBreakpointsListRef());

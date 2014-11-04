@@ -45,6 +45,7 @@
 //#include "../ShowHideWidget/showhidewidget.h"
 #include "../WelcomeScr/welcomescr.h"
 #include "../../enums/enums.h"
+#include "../../project/project.h"
 
 class WDock;
 class CodeEdit;
@@ -52,6 +53,7 @@ class BaseEditor;
 class BookmarkList;
 class BreakpointList;
 class WTextEdit;
+class Project;
 
 
 /**
@@ -102,6 +104,7 @@ class WDockManager : public QObject
         void closeFile(QString path);
         void setCentralWelcome(); //welcome screen
         void deleteCentralWelcome();
+        void showProjectEditors(Project *activeProject);
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
