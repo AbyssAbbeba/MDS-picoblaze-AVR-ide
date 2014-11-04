@@ -16,7 +16,8 @@
 #define DISPLAYSEGMENT_H
 
 #include <QWidget>
-#include "displaywidget.h"
+
+class DisplayWidget;
 
 class DisplaySegment : public QWidget
 {
