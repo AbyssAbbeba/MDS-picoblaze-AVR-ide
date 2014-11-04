@@ -17,7 +17,8 @@
 
 
 #include <QTextBrowser>
-#include <QHelpEngine>
+
+class QHelpEngine;
 
 class HelpBrowser : public QTextBrowser
 {

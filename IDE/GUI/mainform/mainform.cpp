@@ -37,6 +37,23 @@
 #include "mainform.h"
 #include "../dialogs/projectdlg/projectdlg.h"
 #include "../dialogs/savedlg/savedlg.h"
+#include "../project/project.h"
+#include "../errordialog/errordlg.h"
+//#include "pluginman_gui.h"
+#include "../dialogs/projectcfg/projectcfgdlg_core.h"
+#include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
+//#include "../widgets/CompileWidget/compilewidget.h"
+#include "../widgets/HelpWidget/helpwidget.h"
+#include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
+#include "../widgets/BookmarkList/bookmarklist.h"
+#include "../widgets/BreakpointList/breakpointlist.h"
+#include "../widgets/CompileInfo/compileinfo.h"
+#include "../widgets/DockManager/wdockmanager.h"
+#include "../widgets/Editor/codeedit.h"
+#include "../widgets/PicoBlazeGrid/picoblazegrid.h"
+#include "../widgets/Editor/wtextedit.h"
+
+
 #ifdef MDS_FEATURE_DISASSEMBLER
     #include "../dialogs/disasmdlg/disasmdlg.h"
 #endif
@@ -46,13 +63,6 @@
 #ifdef MDS_FEATURE_FILECONVERTER
     #include "../dialogs/fileconvertdlg/fileconvertdlg.h"
 #endif
-#include "../errordialog/errordlg.h"
-//#include "pluginman_gui.h"
-#include "../dialogs/projectcfg/projectcfgdlg_core.h"
-#include "../dialogs/interfacecfg/interfacecfgdlg_core.h"
-//#include "../widgets/CompileWidget/compilewidget.h"
-#include "../widgets/HelpWidget/helpwidget.h"
-#include "../widgets/AsmMacroAnalyser/asmmacroanalyser.h"
 
 #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
     #include "../widgets/LicenseWidget/licensewidget.h"
@@ -1047,7 +1057,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << path;
+            qDebug() << "Mainform: openFilePath error" << path;
             error(ERR_OPENFILE);
         }
         else
@@ -3318,6 +3328,7 @@ void MainForm::sessionRestorationSlot()
     QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
     for (int i = 0; i < projectPaths.count(); i++)
     {
+        qDebug() << "MainForm: session open project";
         if (projectPaths.at(i) == "untracked")
         {
             this->projectMan->addUntrackedProject();
@@ -3329,13 +3340,14 @@ void MainForm::sessionRestorationSlot()
     }
     for (int i = 0; i < filePaths.count(); i++)
     {
+        qDebug() << "MainForm: session open file";
         this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
     }
     GuiCfg::getInstance().sessionClear();
     //hack for fixing the linecount height (bigger at start)
     QTimer::singleShot(50, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
     //qDebug() << "MainForm: height" << this->height();
-    //qDebug() << "MainForm: session loaded";
+    qDebug() << "MainForm: session loaded";
 }
 
 
@@ -3556,13 +3568,16 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         }
     }
 
-    const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+    //const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+    QString simulatedFilePath;
     foreach (const QString &value, files)
     {
-        if (false == this->getWDockManager()->setCentralByPath(value))
+        simulatedFilePath = QDir::cleanPath(QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/' + value);
+        if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
-            this->openFilePath(prjDir + '/' + value);
-            this->getWDockManager()->setCentralByPath(prjDir + '/' + value);
+            qDebug() << "MainForm: simHighlightLines value" << value;
+            this->openFilePath(simulatedFilePath);
+            this->getWDockManager()->setCentralByPath(simulatedFilePath);
         }
         this->getWDockManager()->getCentralTextEdit()->clearHighlight();
 

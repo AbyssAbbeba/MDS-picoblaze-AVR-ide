@@ -17,11 +17,13 @@
 
 
 #include <QWidget>
-#include <QTreeWidget>
-#include <QLabel>
 #include <QStringList>
-#include <QStackedWidget>
-#include <QDialogButtonBox>
+
+class QDialogButtonBox;
+class QStackedWidget;
+class QTreeWidgetItem;
+class QTreeWidget;
+class QLabel;
 
 
 class CfgInterface : public QWidget

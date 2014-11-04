@@ -15,6 +15,7 @@
 #include <QtGui>
 #include "helpbrowser.h"
 #include "../../guicfg/guicfg.h"
+#include <QHelpEngine>
 
 
 HelpBrowser::HelpBrowser(QWidget *parent)

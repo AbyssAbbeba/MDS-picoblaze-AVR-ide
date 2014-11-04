@@ -27,25 +27,16 @@
 #define wAsmMacroAnalyser 1009
 
 
-#include <QDockWidget>
 //#include <QMainWindow>
 #include <QList>
-#include <QSplitter>
-#include <QTabBar>
-#include "../Editor/codeedit.h"
-#include "../Editor/baseeditor.h"
-#include "../Editor/wtextedit.h"
+#include <QObject>
+//#include "../Editor/wtextedit.h"
 //#include "../../mainform/mainform.h"
 //#include "../SimulationInfo/wsimulationinfo.h"
-#include "../PicoBlazeGrid/picoblazegrid.h"
-#include "../BreakpointList/breakpointlist.h"
-#include "../BookmarkList/bookmarklist.h"
-#include "../TabBar/tabbar.h"
-#include "../AsmMacroAnalyser/asmmacroanalyser.h"
 //#include "../ShowHideWidget/showhidewidget.h"
-#include "../WelcomeScr/welcomescr.h"
+//#include "../WelcomeScr/welcomescr.h"
 #include "../../enums/enums.h"
-#include "../../project/project.h"
+//#include "../../project/project.h"
 
 class WDock;
 class CodeEdit;
@@ -54,6 +45,14 @@ class BookmarkList;
 class BreakpointList;
 class WTextEdit;
 class Project;
+class WelcomeScr;
+class PicoBlazeGrid;
+class TabBar;
+class QTabBar;
+class MCUSimControl;
+class QSplitter;
+class QListWidgetItem;
+class QDockWidget;
 
 
 /**

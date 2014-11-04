@@ -13,6 +13,7 @@
 
 
 #include "errordlg.h"
+#include <QMessageBox>
 
 /**
  * @brief Shows error according to given code
@@ -50,94 +51,94 @@ void error(int errCode)
         //stack
         case ERR_STACK_OVERFLOW:
         {
-            msgBox.setText("Error: Stack overflow, simulation canceled");
+            msgBox.setText("Error: Stack overflow, simulation aborted");
             break;
         }
         case ERR_STACK_UNDERFLOW:
         {
-            msgBox.setText("Error: Stack underflow, simulation canceled");
+            msgBox.setText("Error: Stack underflow, simulation aborted");
             break;
         }
         //mem
         case ERR_MEM_WR_NONEXISTENT:
         {
-            msgBox.setText("Error: Write to nonexistent memory cell, simulation canceled");
+            msgBox.setText("Error: Write to nonexistent memory cell, simulation aborted");
             break;
         }
         case ERR_MEM_RD_NONEXISTENT:
         {
-            msgBox.setText("Error: Read from nonexistent memory cell, simulation canceled");
+            msgBox.setText("Error: Read from nonexistent memory cell, simulation aborted");
             break;
         }
         case ERR_MEM_WR_NOT_IMPLEMENTED:
         {
-            msgBox.setText("Error: Write to unimplemented memory cell, simulation canceled");
+            msgBox.setText("Error: Write to unimplemented memory cell, simulation aborted");
             break;
         }
         case ERR_MEM_RD_NOT_IMPLEMENTED:
         {
-            msgBox.setText("Error: Read from unimplemented memory cell, simulation canceled");
+            msgBox.setText("Error: Read from unimplemented memory cell, simulation aborted");
             break;
         }
         //cpu
         case ERR_CPU_PC_OVERFLOW:
         {
-            msgBox.setText("Error: Program counter overflow, simulation canceled");
+            msgBox.setText("Error: Program counter overflow, simulation aborted");
             break;
         }
         case ERR_CPU_PC_UNDERFLOW:
         {
-            msgBox.setText("Error: Program counter underflow, simulation canceled");
+            msgBox.setText("Error: Program counter underflow, simulation aborted");
             break;
         }
         case ERR_CPU_SYS_FATAL:
         {
-            msgBox.setText("Error: System fatal error, simulation canceled");
+            msgBox.setText("Error: System fatal error, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_OPCODE:
         {
-            msgBox.setText("Error: Invalid opcode, simulation canceled");
+            msgBox.setText("Error: Invalid opcode, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_JUMP:
         {
-            msgBox.setText("Error: Invalid jump, simulation canceled");
+            msgBox.setText("Error: Invalid jump, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_CALL:
         {
-            msgBox.setText("Error: Invalid call, simulation canceled");
+            msgBox.setText("Error: Invalid call, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_IRQ:
         {
-            msgBox.setText("Error: Invalid IRQ, simulation canceled");
+            msgBox.setText("Error: Invalid IRQ, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_RET:
         {
-            msgBox.setText("Error: Invalid return, simulation canceled");
+            msgBox.setText("Error: Invalid return, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_RETI:
         {
-            msgBox.setText("Error: Invalid interrupt return, simulation canceled");
+            msgBox.setText("Error: Invalid interrupt return, simulation aborted");
             break;
         }
         case ERR_CPU_INVALID_OPSET:
         {
-            msgBox.setText("Error: Invalid opset, simulation canceled");
+            msgBox.setText("Error: Invalid opset, simulation aborted");
             break;
         }
         case ERR_CPU_UNSUPPORTED_INST:
         {
-            msgBox.setText("Error: Unsupported instruction, simulation canceled");
+            msgBox.setText("Error: Unsupported instruction, simulation aborted");
             break;
         }
         case ERR_CPU_INST_IGNORED:
         {
-            msgBox.setText("Error: Instruction ignored, simulation canceled");
+            msgBox.setText("Error: Instruction ignored, simulation aborted");
             break;
         }
 

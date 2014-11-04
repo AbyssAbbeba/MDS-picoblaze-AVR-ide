@@ -18,8 +18,6 @@
 
 #include <QSplitter>
 //#include <QMenu>
-#include "codeedit.h"
-#include "../DockManager/wdockmanager.h"
 
 class CodeEdit;
 class WDockManager;

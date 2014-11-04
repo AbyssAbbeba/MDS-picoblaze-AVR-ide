@@ -15,6 +15,9 @@
 #include "stackwidget.h"
 #include <QtGui>
 #include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
+#include "../../errordialog/errordlg.h"
 
 StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)
     : QWidget(parent)

@@ -19,6 +19,9 @@
 
 #include "../HexEdit/hexedit.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../HexEdit/hexedit.h"
+#include "../../../simulators/MCUSim/MCUSimPureLogicIO.h"
+#include <cstdint>
 //#include "McuDeviceSpecAVR8.h"
 
 PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)

@@ -16,9 +16,10 @@
 #define ABOUTWIDGET_H
 
 
-#include <QWidget>
 #include <QDialog>
 //#include "ui_aboutwidget.h"
+
+class QWidget;
 
 
 

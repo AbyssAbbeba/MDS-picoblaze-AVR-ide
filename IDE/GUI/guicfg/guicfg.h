@@ -20,7 +20,6 @@
 #include <QObject>
 #include "guicfg_items.h"
 #include "../enums/enums.h"
-#include "../errordialog/errordlg.h"
 
 
 class GuiCfg : public QObject, public GuiCfg_Items

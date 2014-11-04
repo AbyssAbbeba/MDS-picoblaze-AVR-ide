@@ -16,11 +16,15 @@
 #define ASMMACROANALYSER_H
 
 #include <QTreeWidget>
-#include <QWidget>
 #include <QList>
-#include "../Editor/codeedit.h"
+#include <QRegExp>
+#include <QString>
 
 class CodeEdit;
+class QWidget;
+class QMenu;
+class QTreeWidgetItem;
+class QContextMenuEvent;
 
 
 class AsmMacroAnalyser: public QTreeWidget

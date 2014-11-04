@@ -14,6 +14,8 @@
 
 #include <QtGui>
 #include "registerswidget.h"
+#include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/SimControl/MCUSimControl.h"
 
 RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)
     : QTableWidget(parent)
