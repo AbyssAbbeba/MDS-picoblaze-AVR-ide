@@ -2699,7 +2699,7 @@ void Project::handleUpdateRequest(int mask)
         m_simControlUnit->getLineNumber(this->currSim);
         if (this->currSim.empty() == true)
         {
-            qDebug() << "Project: currline empty, should never happen";
+            //qDebug() << "Project: currline empty, should never happen";
             //return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
@@ -2736,7 +2736,7 @@ void Project::handleUpdateRequest(int mask)
         m_simControlUnit->getLineNumber(this->currSim);
         if (this->currSim.empty() == true)
         {
-            qDebug() << "Project: currline empty, should never happen";
+            //qDebug() << "Project: currline empty, should never happen";
             //return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
