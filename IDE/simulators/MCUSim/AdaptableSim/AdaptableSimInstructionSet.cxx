@@ -71,7 +71,7 @@ inline void AdaptableSimInstructionSet::newConfig()
         }
     }
 
-    m_instructionCounter.assign(numberOfInstr, 0);
+    m_instructionCounter.assign(numberOfInstr + 1, 0);
 }
 
 inline void AdaptableSimInstructionSet::mcuReset()
