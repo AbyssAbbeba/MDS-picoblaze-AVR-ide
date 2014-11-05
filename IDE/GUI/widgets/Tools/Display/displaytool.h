@@ -24,6 +24,7 @@ class QGridLayout;
 class QVBoxLayout;
 class DisplaySegment;
 class ComboBox;
+class QLineEdit;
 
 /**
  * @brief
