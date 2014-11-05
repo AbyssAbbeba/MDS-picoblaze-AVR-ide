@@ -303,8 +303,8 @@ macro_stmt:
 macro:
       id                            { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id);                    }
     | id "(" ")"                    { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id);                    }
-    | id args                       { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id->appendLink($args)); }
-    | id "(" args ")"               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_MACRO, $id->appendLink($args)); }
+    | id mac_args                   { $$ =new CompilerStatement(LOC(@$),ASMPICOBLAZE_MACRO,$id->appendLink($mac_args));}
+    | id "(" mac_args ")"           { $$ =new CompilerStatement(LOC(@$),ASMPICOBLAZE_MACRO,$id->appendLink($mac_args));}
 ;
 
 /*
@@ -354,7 +354,7 @@ expr:
     | expr ">=" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,   $3,    LOC(@$));  }
     | expr ">>" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,  $3,    LOC(@$));  }
     | expr "<<" expr                { $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,  $3,    LOC(@$));  }
-    | id "(" mac_args ")"           { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $mac_args, LOC(@$));  }
+    | id "(" args ")"               { $$ = new CompilerExpr($id,CompilerExpr::OPER_CALL, $args, LOC(@$));  }
     | id "(" ")"                    {
                                         /* Syntax Error */
                                         $$ = $id;
@@ -1177,13 +1177,6 @@ dir_device:
                                         $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_DIR_DEVICE,
                                                                      new CompilerExpr ( procType, LOC(@string) ) );
-                                        compiler->parserMessage ( compiler->toSourceLocation(@string),
-                                                                  CompilerBase::MT_WARNING,
-                                                                  QObject::tr ( "processor type (`%1') should be "
-                                                                                "specified without double quotes "
-                                                                                "(`\"')" )
-                                                                              . arg ( procType.c_str() )
-                                                                              . toStdString() );
                                         $string->completeDelete();
                                     }
     | label D_DEVICE id             {

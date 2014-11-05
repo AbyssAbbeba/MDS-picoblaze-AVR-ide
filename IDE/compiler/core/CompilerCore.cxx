@@ -76,9 +76,6 @@ void CompilerCore::setup ( LangId lang,
     m_simulatorData.m_genSimData = genSimData;
     m_msgInterface->m_messageLimit = opts->m_messageLimit;
 
-    m_opts->normalizeFilePaths();
-    m_opts->clearOutputFiles();
-
     m_basePath = boost::filesystem::path(opts->m_sourceFiles[0]).parent_path();
 }
 

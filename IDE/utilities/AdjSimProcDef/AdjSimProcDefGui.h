@@ -185,6 +185,12 @@ class AdjSimProcDefGui : public QWidget,
 
         /**
          * @brief
+         * @param[in] size
+         */
+        void showHideOPCodeBits ( int size );
+
+        /**
+         * @brief
          * @return
          */
         bool on_pushButtonSaveAs_clicked();

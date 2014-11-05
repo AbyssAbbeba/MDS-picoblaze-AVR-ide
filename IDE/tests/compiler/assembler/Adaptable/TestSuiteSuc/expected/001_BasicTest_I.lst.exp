@@ -1,0 +1,10 @@
+                   1             device  "SimpleArch_I.procdef"
+                   2
+  00000            3             org     0x0
+                   4
+000 20050          5     lbl:    load    0, #5
+001 20061          6             load    1, #6
+002 20072          7             load    2, #7
+003 38000          8             jump    lbl
+                   9
+                  10             end

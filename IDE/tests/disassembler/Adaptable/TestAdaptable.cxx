@@ -18,6 +18,7 @@
 // Standard header files.
 #include <vector>
 #include <string>
+#include <memory>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -122,16 +123,33 @@ void TestAdaptable::testFunction()
     {
         delete m_disassembler;
     }
+
     std::string devSpecFile = system_complete(path("testcases") / ( testName + ".procdef" )).string();
-    AdjSimProcDefParser * parser = new AdjSimProcDefParser(devSpecFile);
-    if ( false == parser->isValid() )
+
     {
-        CU_FAIL("Unable to parse processor definition file.");
-        delete parser;
-        return;
+        std::ifstream file ( devSpecFile, (std::ios_base::in | std::ios_base::binary) );
+        if ( false == file.is_open() )
+        {
+            CU_FAIL("Unable to open processor definition file.");
+            return;
+        }
+        static const long long int MAX_SIZE = 102400;
+        std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+        size_t len = (size_t) file.readsome (data.get(), MAX_SIZE);
+        if ( true == file.bad() )
+        {
+            CU_FAIL("Unable to read processor definition file.");
+            return;
+        }
+
+        std::unique_ptr<AdjSimProcDefParser> parser (new AdjSimProcDefParser(std::string(data.get(), len)));
+        if ( false == parser.get()->isValid() )
+        {
+            CU_FAIL("Unable to parse processor definition file.");
+            return;
+        }
+        m_disassembler = new DAsmAdaptable(parser.get()->data());
     }
-    m_disassembler = new DAsmAdaptable(parser->data());
-    delete parser;
 
     /*
      * Compile the original source code, and generate <testcase>.hex file from it.
@@ -148,7 +166,7 @@ void TestAdaptable::testFunction()
 
     const std::string errFile = ( resultsPath + ".err" );
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
-    bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
+    bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_ADAPTABLE, m_options);
 
     if ( false == result )
     {

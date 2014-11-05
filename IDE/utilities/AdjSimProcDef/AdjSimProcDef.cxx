@@ -100,6 +100,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "Data Memory Size: " << definition.m_data.m_size << std::endl;
 
     out << "Program Size: " << definition.m_program.m_size << std::endl;
+    out << "Program Word Size: " << definition.m_program.m_wordSize << std::endl;
     out << "Program Word Width: ";
     switch ( definition.m_program.m_word  )
     {

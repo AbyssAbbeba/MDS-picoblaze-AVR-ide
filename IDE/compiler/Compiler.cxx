@@ -67,6 +67,9 @@ bool Compiler::compile ( CompilerBase::LangId lang,
             return false;
         }
 
+        opts->normalizeFilePaths();
+        opts->clearOutputFiles();
+
         std::string errStr;
         ModEmplStatCode statusCode = employModule ( lang, arch, m_compilerCore, &errStr );
 
@@ -139,6 +142,12 @@ inline bool Compiler::checkOptions ( CompilerBase::LangId lang,
             {
                 m_compilerCore->coreMessage ( CompilerBase::MT_ERROR,
                                               QObject::tr("empty string used as source code file name").toStdString() );
+                return false;
+            }
+            else if ( false == boost::filesystem::exists(file) )
+            {
+                m_compilerCore->coreMessage ( CompilerBase::MT_ERROR,
+                                              QObject::tr("file not found: ").toStdString() + file );
                 return false;
             }
         }
