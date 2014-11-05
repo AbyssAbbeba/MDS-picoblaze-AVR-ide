@@ -17,13 +17,16 @@
 
 
 #include <QDialog>
-#include "../cfginterface/cfginterface.h"
-#include "interfacecfg_editfonts.h"
-#include "interfacecfg_editgeneral.h"
-#include "interfacecfg_editsyntax.h"
-#include "interfacecfg_idegeneral.h"
-#include "interfacecfg_simothers.h"
-#include "interfacecfg_simwarnings.h"
+
+
+
+class CfgInterface;
+class InterfaceCfg_EditFonts;
+class InterfaceCfg_EditGeneral;
+class InterfaceCfg_EditSyntax;
+class InterfaceCfg_IDEGeneral;
+class InterfaceCfg_SimOthers;
+class InterfaceCfg_SimWarnings;
 
 
 class InterfaceCfgDlg_Core : public QDialog

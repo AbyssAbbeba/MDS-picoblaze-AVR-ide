@@ -14,6 +14,8 @@
 
 #include "asmmacroanalyser.h"
 #include <QtGui>
+#include "../Editor/codeedit.h"
+#include "../Editor/wtextedit.h"
 
 AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
     : QTreeWidget(parent)

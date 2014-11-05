@@ -14,6 +14,14 @@
 
 #include "projectcfgdlg_core.h"
 #include "../project/project.h"
+#include <QtGui>
+#include "projectcfg_general.h"
+#include "projectcfg_memory.h"
+#include "projectcfg_filemgr.h"
+#include "projectcfg_compiler.h"
+#include "projectcfg_templates.h"
+#include "projectcfg_comppaths.h"
+#include "../cfginterface/cfginterface.h"
 
 
 

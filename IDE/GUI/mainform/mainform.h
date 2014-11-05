@@ -19,24 +19,27 @@
 #include "../../mds.h"
 
 #include <QMainWindow>
-#include <QToolBar>
-#include <QDockWidget>
-#include <QListWidget>
-#include <QTreeWidget>
-#include <QIcon>
-#include <QPixmap>
-#include "../widgets/Editor/codeedit.h"
-#include "../widgets/DockManager/wdockmanager.h"
-#include "../widgets/CompileInfo/compileinfo.h"
-#include "../project/project.h"
-#include "../../compiler/CompilerThread.h"
 #include "../../compiler/core/CompilerOptions.h"
+#include "../../compiler/CompilerThread.h"
+//#include <QToolBar>
+//#include <QDockWidget>
+//#include <QListWidget>
+//#include <QTreeWidget>
+//#include <QIcon>
+//#include <QPixmap>
 
 
 class ProjectMan;
 class WDockManager;
 class CodeEdit;
 class Project;
+class QToolBar;
+class QAction;
+class QDockWidget;
+class QListWidget;
+class QTreeWidget;
+class QIcon;
+class QPixmap;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER

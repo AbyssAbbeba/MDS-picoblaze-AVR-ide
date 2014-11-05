@@ -16,16 +16,18 @@
 #define CODEEDIT_H
 
 
-#include <QTabWidget>
-#include <QStatusBar>
-#include <QGridLayout>
+//#include <QTabWidget>
+#include <QWidget>
 #include <QList>
-#include "../../project/project.h"
-#include "../Counters/wlinecounter.h"
-#include "wtextedit.h"
+#include <QTextCursor>
+//#include "../../project/project.h"
 
 
 class Project;
+class WLineCounter;
+class WTextEdit;
+class QStatusBar;
+class QGridLayout;
 
 /**
  * @brief Code Editor, include splitter, wtextedit and line counter
@@ -72,6 +74,7 @@ class CodeEdit : public QWidget
         void setScrollValue(int value);
         QTextCursor getCursorValue();
         void setCursorValue(QTextCursor value);
+        void setHidden(bool hide);
 
     public slots:
         void setChanged();
@@ -131,6 +134,7 @@ class CodeEdit : public QWidget
         CodeEdit *curCodeEdit;
         int curScrollValue;
         QTextCursor curCursorPos;
+        bool hidden;
 };
 
 

@@ -16,11 +16,15 @@
 #define DISPLAYTOOL_H
 
 
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include "combobox.h"
-#include "displaysegment.h"
+#include <QWidget>
+#include <QString>
+
+class QLabel;
+class QGridLayout;
+class QVBoxLayout;
+class DisplaySegment;
+class ComboBox;
+class QLineEdit;
 
 /**
  * @brief

@@ -15,6 +15,7 @@
 #include <QtGui>
 #include <QtXml>
 #include "guicfg.h"
+#include "../errordialog/errordlg.h"
 
 
 

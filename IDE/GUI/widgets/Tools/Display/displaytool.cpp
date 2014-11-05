@@ -14,6 +14,8 @@
 
 #include <QtGui>
 #include "displaytool.h"
+#include "combobox.h"
+#include "displaysegment.h"
 
 DisplayTool::DisplayTool(QWidget *parent)
     : QWidget(parent)

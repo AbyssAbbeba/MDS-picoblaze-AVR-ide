@@ -14,6 +14,7 @@
 
 #include <QtGui>
 #include "displaysegment.h"
+#include "displaywidget.h"
 
 /*set canvas_objects(0) [$canvas_widget create polygon  \
             36 15   46 5    97 5    107 15  97 25   46 25   \

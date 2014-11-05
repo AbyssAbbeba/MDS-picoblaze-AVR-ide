@@ -14,6 +14,16 @@
 
 #include <QtGui>
 #include "wdockmanager.h"
+#include "../Editor/wtextedit.h"
+#include "../WelcomeScr/welcomescr.h"
+#include "../AsmMacroAnalyser/asmmacroanalyser.h"
+#include "../BreakpointList/breakpointlist.h"
+#include "../BookmarkList/bookmarklist.h"
+#include "../Editor/codeedit.h"
+#include "../Editor/baseeditor.h"
+#include "../PicoBlazeGrid/picoblazegrid.h"
+#include "../TabBar/tabbar.h"
+#include "../widgets/CompileInfo/compileinfo.h"
 
 
 

@@ -17,12 +17,12 @@
 
 
 #include <QPlainTextEdit>
-#include "../Highlighter/highlighter.h"
-#include <QShortcut>
+#include "../../enums/enums.h"
 
 
 
 class Highlighter;
+class QShortcut;
 
 /**
  * @brief QTextEdit with reimplemented eventFilter
