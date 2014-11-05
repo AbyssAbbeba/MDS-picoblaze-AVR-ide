@@ -222,7 +222,7 @@ void CompilerExpr::completeDelete ( CompilerExpr * expr )
 }
 
 void CompilerExpr::completeDelete()
-{/*
+{
     if ( nullptr == this )
     {
         return;
@@ -244,7 +244,7 @@ void CompilerExpr::completeDelete()
         m_prev->completeDelete();
         m_prev = nullptr;
     }
-*/
+
     delete this;
 }
 

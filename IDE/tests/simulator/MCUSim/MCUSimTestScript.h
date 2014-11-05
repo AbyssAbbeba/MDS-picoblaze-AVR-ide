@@ -39,7 +39,7 @@ REG[0] == 0b10          # bin.
 STEP
 PC == 2
 
-STEP
+STEP 156
 PC == 158
 
 */

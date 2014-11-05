@@ -19,16 +19,16 @@ std::ostream & operator << ( std::ostream & out,
                              const AdaptableSimInstruction & instruction )
 {
     out << std::dec;
-    out << "ID:   " << instruction.m_id << std::endl;
+    out << "ID:   "            << instruction.m_id    << std::endl;
     out << "Time [positive]: " << instruction.m_timeP << std::endl;
     out << "Time [negative]: " << instruction.m_timeN << std::endl;
 
     out << std::hex;
-    out << "Code: 0x"    << instruction.m_code << std::endl;
-    out << "Mask: 0x"    << instruction.m_mask << std::endl;
-    out << "Operation: " << instruction.m_operation << std::endl;
-    out << "Next [positive]: " << instruction.m_nextP << std::endl;
-    out << "Next [negative]: " << instruction.m_nextN << std::endl;
+    out << "Code: 0x"          << instruction.m_code      << std::endl;
+    out << "Mask: 0x"          << instruction.m_mask      << std::endl;
+    out << "Operation: "       << instruction.m_operation << std::endl;
+    out << "Next [positive]: " << instruction.m_nextP     << std::endl;
+    out << "Next [negative]: " << instruction.m_nextN     << std::endl;
 
     out << "Operands:" << std::endl;
     for ( unsigned int i = 0; i < AdaptableSimInstruction::OPERANDS_MAX; i++ )
@@ -42,14 +42,14 @@ std::ostream & operator << ( std::ostream & out,
         }
 
         bool first = true;
-        for ( unsigned char perm : instruction.m_permutation[i] )
+        for ( int j = ( instruction.m_permutation[i].size() - 1 ); j >= 0; j-- )
         {
             if ( false == first )
             {
                 out << ", ";
             }
             first = false;
-            out << (int) perm;
+            out << (int) instruction.m_permutation[i][j];
         }
         out << " ( lsb -> msb )" << std::endl;
     }
@@ -162,7 +162,7 @@ std::ostream & operator << ( std::ostream & out,
 
     for ( unsigned int i = 0; i < AdaptableSimInstruction::OPERANDS_MAX; i++ )
     {
-        out << "        Operand #" << std::endl;
+        out << "        Operand #" << i << std::endl;
         out << "            use   = "   << fixedOperands.use(i)   << std::endl;
         out << "            value = 0x" << fixedOperands.value(i) << std::endl;
     }

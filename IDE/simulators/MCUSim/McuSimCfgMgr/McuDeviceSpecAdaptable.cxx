@@ -24,7 +24,6 @@ McuDeviceSpecAdaptable::McuDeviceSpecAdaptable ( const AdjSimProcDef & procDef )
 
 bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) const
 {
-
     mcuConfig.m_family = MCUSimBase::FAMILY_ADAPTABLE_0;
     mcuConfig.m_name = m_procDef.m_name;
 
@@ -136,6 +135,8 @@ bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) c
                 instruction.m_fixedOperands.m_data |= ( oper.m_fixedValue << ( 16 * operNumber ) );
                 instruction.m_fixedOperands.m_data |= ( 1 << ( 24 + operNumber ) );
             }
+
+            operNumber++;
         }
 
         for ( int i = 0; i < AdjSimProcDef::Instruction::FLAG__MAX__; i++ )

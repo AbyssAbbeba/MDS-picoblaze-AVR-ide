@@ -185,7 +185,8 @@ bool AdaptableSimOperations::operationSwitch ( AdaptableSimOperationID::ID opera
 }
 
 unsigned int AdaptableSimOperations::getValue ( unsigned int addrVal,
-                                                AdaptableSimInstruction::OperParam::AddressingMode addrMode )
+                                                AdaptableSimInstruction::OperParam::AddressingMode addrMode,
+                                                bool jump )
 {
     switch ( addrMode )
     {
@@ -200,7 +201,7 @@ unsigned int AdaptableSimOperations::getValue ( unsigned int addrVal,
         case AdaptableSimInstruction::OperParam::A_DATA_INDR:
             return m_dataMemory->read(m_dataMemory->read(addrVal));
         case AdaptableSimInstruction::OperParam::A_PROGRAM:
-            return m_programMemory->read(addrVal);
+            return ( ( true == jump ) ? addrVal :m_programMemory->read(addrVal) );
         case AdaptableSimInstruction::OperParam::A_PORT:
             return m_io->read(addrVal);
     }
@@ -329,7 +330,7 @@ inline int AdaptableSimOperations::toSigned ( unsigned int value,
 inline void AdaptableSimOperations::instAbsoluteJump ( AdaptableSimInstruction::OperParam parameters,
                                                        unsigned int address )
 {
-    setProgramCounter ( getValue(address, parameters.addressingMode(0)) );
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true) );
 }
 
 inline void AdaptableSimOperations::instAbsoluteCall ( AdaptableSimInstruction::OperParam parameters,
@@ -337,7 +338,7 @@ inline void AdaptableSimOperations::instAbsoluteCall ( AdaptableSimInstruction::
 {
     logEvent ( EVENT_CPU_CALL, m_pc );
     m_stack->pushOnStack ( m_pc );
-    setProgramCounter ( getValue(address, parameters.addressingMode(0)) );
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true) );
     m_actSubprogCounter++;
 }
 
@@ -345,7 +346,7 @@ inline void AdaptableSimOperations::instRelativeJump ( AdaptableSimInstruction::
                                                        unsigned int address,
                                                        const std::vector<unsigned char> & permutation )
 {
-    incrPc(toSigned(getValue(address, parameters.addressingMode(0)), getSize(permutation)));
+    incrPc(toSigned(getValue(address, parameters.addressingMode(0), true), getSize(permutation)));
 }
 
 inline void AdaptableSimOperations::instRelativeCall ( AdaptableSimInstruction::OperParam parameters,
@@ -354,7 +355,7 @@ inline void AdaptableSimOperations::instRelativeCall ( AdaptableSimInstruction::
 {
     logEvent ( EVENT_CPU_CALL, m_pc );
     m_stack->pushOnStack ( m_pc );
-    incrPc(toSigned(getValue(address, parameters.addressingMode(0)), getSize(permutation)));
+    incrPc(toSigned(getValue(address, parameters.addressingMode(0), true), getSize(permutation)));
     m_actSubprogCounter++;
 }
 
@@ -362,7 +363,8 @@ inline void AdaptableSimOperations::instOffsetJump ( AdaptableSimInstruction::Op
                                                      unsigned int address,
                                                      unsigned int offset )
 {
-    setProgramCounter(getValue(address, parameters.addressingMode(0)) + getValue(offset, parameters.addressingMode(1)));
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true) +
+                        getValue(offset,  parameters.addressingMode(1), true) );
 }
 
 inline void AdaptableSimOperations::instOffsetCall ( AdaptableSimInstruction::OperParam parameters,
@@ -371,7 +373,8 @@ inline void AdaptableSimOperations::instOffsetCall ( AdaptableSimInstruction::Op
 {
     logEvent ( EVENT_CPU_CALL, m_pc );
     m_stack->pushOnStack ( m_pc );
-    setProgramCounter(getValue(address, parameters.addressingMode(0)) + getValue(offset, parameters.addressingMode(1)));
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true) +
+                        getValue(offset,  parameters.addressingMode(1), true) );
     m_actSubprogCounter++;
 }
 
@@ -380,9 +383,9 @@ inline void AdaptableSimOperations::instIndexJump ( AdaptableSimInstruction::Ope
                                                     unsigned int index,
                                                     unsigned int idxShift )
 {
-    setProgramCounter ( getValue(address, parameters.addressingMode(0))
-                        + ( getValue(index, parameters.addressingMode(1))
-                            << getValue(idxShift, parameters.addressingMode(2) ) ) );
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true)
+                        + ( getValue(index, parameters.addressingMode(1), true)
+                            << getValue(idxShift, parameters.addressingMode(2), true ) ) );
 }
 
 inline void AdaptableSimOperations::instIndexCall ( AdaptableSimInstruction::OperParam parameters,
@@ -392,9 +395,9 @@ inline void AdaptableSimOperations::instIndexCall ( AdaptableSimInstruction::Ope
 {
     logEvent ( EVENT_CPU_CALL, m_pc );
     m_stack->pushOnStack ( m_pc );
-    setProgramCounter ( getValue(address, parameters.addressingMode(0))
-                        + ( getValue(index, parameters.addressingMode(1))
-                        << getValue(idxShift, parameters.addressingMode(2) ) ) );
+    setProgramCounter ( getValue(address, parameters.addressingMode(0), true)
+                        + ( getValue(index, parameters.addressingMode(1), true)
+                        << getValue(idxShift, parameters.addressingMode(2), true ) ) );
     m_actSubprogCounter++;
 }
 

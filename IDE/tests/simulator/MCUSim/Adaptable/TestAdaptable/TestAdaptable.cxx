@@ -39,6 +39,7 @@
 #include "boost/filesystem.hpp"
 
 // Standard header files.
+#include <memory>
 #include <iostream>
 
 int TestAdaptable::init()
@@ -143,14 +144,29 @@ void TestAdaptable::testFunction()
         std::string devSpecFile = system_complete ( path("TestAdaptable") / "testcases" / ( testName + ".procdef" ) )
                                                   . string();
 
-        AdjSimProcDefParser procDefParser(devSpecFile);
-        if ( false == procDefParser.isValid() )
+        std::ifstream file ( devSpecFile, (std::ios_base::in | std::ios_base::binary) );
+        if ( false == file.is_open() )
+        {
+            CU_FAIL("Unable to open processor definition file.");
+            return;
+        }
+        static const long long int MAX_SIZE = 102400;
+        std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+        size_t len = (size_t) file.readsome (data.get(), MAX_SIZE);
+        if ( true == file.bad() )
+        {
+            CU_FAIL("Unable to read processor definition file.");
+            return;
+        }
+
+        std::unique_ptr<AdjSimProcDefParser> parser (new AdjSimProcDefParser(std::string(data.get(), len)));
+        if ( false == parser.get()->isValid() )
         {
             CU_FAIL("Unable to parse processor definition file.");
             return;
         }
 
-        McuDeviceSpecAdaptable simConfigManager(procDefParser.data());
+        McuDeviceSpecAdaptable simConfigManager(parser.get()->data());
         simConfigManager.setupSimulator(dynamic_cast<AdaptableSimConfig&>(m_adaptableSim->getConfig()));
     }
 

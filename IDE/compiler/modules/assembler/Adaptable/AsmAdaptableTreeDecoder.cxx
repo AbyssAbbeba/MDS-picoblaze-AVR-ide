@@ -476,7 +476,7 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
                             continue;
                     }
 
-                    CompilerExpr * value = node->args()->at(operandNumber + 1)->copyChainLink();
+                    CompilerExpr * value = node->args()->at(operandNumber + 1);
 
                     for ( int fromBit = 0; fromBit < (int) (inst.m_operands[i].m_OPCodePermutation.size()); fromBit++ )
                     {
@@ -485,12 +485,12 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
                         // ( ( value & ( 1 << fromBit ) ) >> fromBit ) << toBit
                         CompilerExpr * operand = new CompilerExpr (
                                                      new CompilerExpr (
-                                                         new CompilerExpr ( value,
+                                                         new CompilerExpr ( value->copyChainLink(),
                                                                             CompilerExpr::OPER_BAND,
                                                                             new CompilerExpr ( 1,
                                                                                                CompilerExpr::OPER_SHL,
                                                                                                fromBit,
-                                                                                               value->location()) ),
+                                                                                               value->location() ) ),
                                                          CompilerExpr::OPER_SHR,
                                                          fromBit,
                                                          value->location() ),

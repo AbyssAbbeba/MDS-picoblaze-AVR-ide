@@ -132,6 +132,7 @@ int AdaptableSimInstructionSet::execInstruction()
     m_microCycles = 0;
     for ( const AdaptableSimInstruction & inst : m_config.m_instructions )
     {
+
         if ( inst.m_code == ( inst.m_mask & opCode ) )
         {
             performOP(inst, time, opCode);

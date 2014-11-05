@@ -63,7 +63,9 @@ windres_rc ( OUTPUT_VAR         EXEC_RC_FILE
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
-                      "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/" )
+                      "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/"
+                      "${CMAKE_CURRENT_SOURCE_DIR}/Adaptable/" )
 
 #
 ## Disassembler as shared library.

@@ -85,7 +85,6 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
 {
     using namespace boost::filesystem;
 
-
     path filenamePath = path(makeHomeSafe(deviceDefFile)).make_preferred();
     if ( false == filenamePath.is_absolute() )
     {

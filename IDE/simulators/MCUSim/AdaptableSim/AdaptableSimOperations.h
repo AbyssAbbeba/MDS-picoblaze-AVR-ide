@@ -70,10 +70,12 @@ class AdaptableSimOperations : public AdaptableSimInstructionSet
          * @brief
          * @param[in] addrVal
          * @param[in] addrMode
+         * @param[in] jump
          * @return
          */
         unsigned int getValue ( unsigned int addrVal,
-                                AdaptableSimInstruction::OperParam::AddressingMode addrMode );
+                                AdaptableSimInstruction::OperParam::AddressingMode addrMode,
+                                bool jump = false );
 
         /**
          * @brief

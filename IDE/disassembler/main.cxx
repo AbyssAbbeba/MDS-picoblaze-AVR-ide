@@ -24,6 +24,10 @@
 #  include "DAsmPicoBlazeKcpsm1.h"
 #  include "DAsmPicoBlazeKcpsm1CPLD.h"
 #endif // MDS_FEATURE_PICOBLAZE
+#ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+#  include "DAsmAdaptable.h"
+#  include "AdjSimProcDefParser.h"
+#endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // MCU memory data container libraries.
 #include "HexFile.h"
@@ -32,6 +36,7 @@
 #include "XilMemFile.h"
 #include "XilVHDLFile.h"
 #include "XilVerilogFile.h"
+#include "RawHexDumpFile.h"
 
 // Standard headers.
 #include <cctype>
@@ -112,12 +117,13 @@ void printHelp ( const char * executable )
                             .toStdString() << std::endl
               << QObject::tr("        format from input file extension, supported types are:")
                             .toStdString() << std::endl
-              << QObject::tr("            - hex  : Intel 8 HEX, or Intel 16 HEX,").toStdString() << std::endl
-              << QObject::tr("            - srec : Motorola S-Record,").toStdString() << std::endl
-              << QObject::tr("            - bin  : raw binary file,").toStdString() << std::endl
-              << QObject::tr("            - mem  : Xilinx MEM file (for PicoBlaze only),").toStdString() << std::endl
-              << QObject::tr("            - vhd  : VHDL file (for PicoBlaze only),").toStdString() << std::endl
-              << QObject::tr("            - v    : Verilog file (for PicoBlaze only).").toStdString() << std::endl
+              << QObject::tr("            - hex    : Intel 8 HEX, or Intel 16 HEX,").toStdString() << std::endl
+              << QObject::tr("            - rawhex : Raw HEX dump,").toStdString() << std::endl
+              << QObject::tr("            - srec   : Motorola S-Record,").toStdString() << std::endl
+              << QObject::tr("            - bin    : raw binary file,").toStdString() << std::endl
+              << QObject::tr("            - mem    : Xilinx MEM file (for PicoBlaze only),").toStdString() << std::endl
+              << QObject::tr("            - vhd    : VHDL file (for PicoBlaze only),").toStdString() << std::endl
+              << QObject::tr("            - v      : Verilog file (for PicoBlaze only).").toStdString() << std::endl
               << std::endl
               << QObject::tr("    --cfg-ind <indentation>").toStdString() << std::endl
               << QObject::tr("        Indent with:").toStdString() << std::endl
@@ -493,6 +499,7 @@ int main ( int argc, char ** argv )
     else if ( "Adaptable" == architecture )
     {
         // TODO: implement this...
+//         disasm = new DAsmAdaptable(procDef);
     }
     #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
     else
@@ -529,9 +536,13 @@ int main ( int argc, char ** argv )
 
     try
     {
-        if ( "hex" == type )
+        if ( ( "hex" == type ) || ( "ihex" == type ) )
         {
             dataFile = new HexFile(infile);
+        }
+        else if ( "rawhex" == type )
+        {
+            dataFile = new RawHexDumpFile(RawHexDumpFile::OPCodeSize(opCodeSize), infile);
         }
         else if ( "bin" == type )
         {
