@@ -26,7 +26,7 @@ inline void writeInt ( std::string & target,
 {
     sprintf ( buffer, "%x", value );
     target += buffer;
-    target += '\n';
+    target += '\b';
 }
 
 inline void writeInt ( std::string & target,
@@ -35,14 +35,14 @@ inline void writeInt ( std::string & target,
 {
     sprintf ( buffer, "%x", value );
     target += buffer;
-    target += '\n';
+    target += '\b';
 }
 
 inline void writeBool ( std::string & target,
                         bool value )
 {
     target += ( value ? '1' : '0' );
-    target += '\n';
+    target += '\b';
 }
 
 AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
@@ -51,17 +51,17 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
 
     // Header and Version
     m_data += FILE_HEADER;
-    m_data += '\n';
+    m_data += '\b';
     m_data += FILE_VERSION;
-    m_data += '\n';
+    m_data += '\b';
 
     // Processor Name, Description, and Fail jump
     m_data += def.m_name;
-    m_data += '\n';
+    m_data += '\b';
     m_data += def.m_description;
-    m_data += '\n';
+    m_data += '\b';
     m_data += def.m_failjmp;
-    m_data += '\n';
+    m_data += '\b';
 
     // Interrupt Vector
     writeBool ( m_data, def.m_hasInterrupts );
@@ -76,6 +76,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
     writeInt ( m_data, buffer, def.m_memory.m_register.m_banks );
     writeInt ( m_data, buffer, def.m_memory.m_data.m_size );
     writeInt ( m_data, buffer, def.m_memory.m_program.m_size );
+    writeInt ( m_data, buffer, def.m_memory.m_program.m_wordSize );
     writeInt ( m_data, buffer, def.m_memory.m_program.m_word );
     writeInt ( m_data, buffer, def.m_memory.m_program.m_endian );
 
@@ -135,7 +136,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
 
         // Mnemonic
         m_data += instruction.m_mnemonic;
-        m_data += '\n';
+        m_data += '\b';
 
         // OP Code Bits
         writeInt ( m_data, buffer, (unsigned int) instruction.m_opCode.size() );
@@ -149,6 +150,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
         for ( const AdjSimProcDef::Instruction::Operand & operand : instruction.m_operands )
         {
             writeInt ( m_data, buffer, operand.m_type );
+            writeInt ( m_data, buffer, operand.m_number );
             writeInt ( m_data, buffer, operand.m_size );
             writeInt ( m_data, buffer, operand.m_fixedValue );
 
@@ -159,6 +161,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
             }
         }
     }
+
     // <MARK: end>
     writeBool ( m_data, false );
 }

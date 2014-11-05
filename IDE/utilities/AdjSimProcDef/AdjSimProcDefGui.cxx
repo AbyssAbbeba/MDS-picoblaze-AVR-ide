@@ -21,7 +21,7 @@
 
 // Standard header files.
 #include <set>
-#include<iostream>//DEBUG
+#include <memory>
 
 // Qt header files.
 #include <QDir>
@@ -35,6 +35,20 @@
 #include <QTreeWidgetItem>
 #include <QRegExpValidator>
 
+// Macros
+#define SHOW_HIDE_OP_CODE_BIT(BIT, SIZE)        \
+    if ( SIZE < BIT )                           \
+    {                                           \
+        comboBoxInstOpCode ## BIT -> hide();    \
+        labelInstOpCode ## BIT -> hide();       \
+    }                                           \
+    else                                        \
+    {                                           \
+        comboBoxInstOpCode ## BIT -> show();    \
+        labelInstOpCode ## BIT -> show();       \
+    }
+
+// Initialize static constant attributes.
 const AdjSimProcDef::Instruction AdjSimProcDefGui::m_emptyInstruction;
 
 AdjSimProcDefGui::AdjSimProcDefGui ( QWidget * parent )
@@ -64,25 +78,27 @@ const QString & AdjSimProcDefGui::getFileName() const
 void AdjSimProcDefGui::openFile ( const QString & fileName )
 {
     static const long long int MAX_SIZE = 102400;
-    char * data = new char [ MAX_SIZE ];
+    std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+    ssize_t len;
 
     QFile file(fileName, this);
-    if ( ( false == file.open(QIODevice::ReadOnly) ) || ( -1LL == file.read(data, MAX_SIZE) ) )
+    if (
+           ( false == file.open ( QIODevice::ReadOnly ) )
+               ||
+           ( -1LL == ( len = (ssize_t) ( file.read(data.get(), MAX_SIZE) ) ) )
+       )
     {
         QMessageBox::critical ( this,
                                 tr("Read error"),
                                 tr("Unable to read the specified file."),
                                 QMessageBox::Ok,
                                 QMessageBox::Ok );
-        delete [] data;
         return;
     }
 
-    file.close();
-    AdjSimProcDefParser parser(data);
-    delete [] data;
+    std::unique_ptr<AdjSimProcDefParser> parser ( new AdjSimProcDefParser ( std::string(data.get(), len) ) );
 
-    if ( false == parser.isValid() )
+    if ( false == parser.get()->isValid() )
     {
         QMessageBox::critical ( this,
                                 tr("Data error"),
@@ -101,7 +117,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
     m_instructions.clear();
     treeWidgetInstructions->clear();
 
-    const AdjSimProcDef & procDef = parser.data();
+    const AdjSimProcDef & procDef = parser.get()->data();
 
     // Processor Name, Description, and Fail jump
     lineEditProcessorName->setText(QString::fromStdString(procDef.m_name));
@@ -109,15 +125,8 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
     lineEditFailJump->setText(QString::fromStdString(procDef.m_failjmp));
 
     // Program memory
-    int wordSize = 0;
     spinBoxProgramSize->setValue(procDef.m_memory.m_program.m_size);
-    switch ( procDef.m_memory.m_program.m_word )
-    {
-        case AdjSimProcDef::Memory::Program::WORD_1B: wordSize =  8; break;
-        case AdjSimProcDef::Memory::Program::WORD_2B: wordSize = 16; break;
-        case AdjSimProcDef::Memory::Program::WORD_3B: wordSize = 24; break;
-    }
-    spinBoxProgramWordSize->setValue(wordSize);
+    spinBoxProgramWordSize->setValue(procDef.m_memory.m_program.m_wordSize);
     comboBoxProgramEndian->setCurrentIndex ( int(procDef.m_memory.m_program.m_endian) );
 
     // Data memory
@@ -159,16 +168,19 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
     // Instruction set
     for ( const AdjSimProcDef::Instruction & inst : procDef.m_instructionSet )
     {
-std::cout << inst.m_mnemonic << '\n';
         AdjSimProcDef::Instruction * newInst = new AdjSimProcDef::Instruction(inst);
 
         for ( unsigned int i = newInst->m_opCode.size(); i < 24; i++ )
         {
             newInst->m_opCode.push_back(AdjSimProcDef::Instruction::OCB_DONT_CARE);
         }
+        newInst->m_operands.resize(3);
         for ( unsigned int i = 0; i < newInst->m_operands.size(); i++ )
         {
-            for ( unsigned int j = newInst->m_operands[i].m_OPCodePermutation.size(); j < 16; j++ )
+            newInst->m_operands[i].m_size = 16;
+            for ( unsigned int j = newInst->m_operands[i].m_OPCodePermutation.size();
+                  j < (unsigned int) (newInst->m_operands[i].m_size);
+                  j++ )
             {
                 newInst->m_operands[i].m_OPCodePermutation.push_back(-1);
             }
@@ -233,6 +245,7 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
     // Program memory
     procDef.m_memory.m_program.m_size = (unsigned int) spinBoxProgramSize->value();
     int wordSize = spinBoxProgramWordSize->value();
+    procDef.m_memory.m_program.m_wordSize = wordSize;
     if ( wordSize <= 8 )
     {
         procDef.m_memory.m_program.m_word = AdjSimProcDef::Memory::Program::WORD_1B;
@@ -356,10 +369,11 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
         }
         procDef.m_instructionSet.back().m_opCode.resize(opCodeSize);
 
-        for ( unsigned int oprNumber = 0; oprNumber < node.second->m_operands.size(); oprNumber++ )
+        std::vector<AdjSimProcDef::Instruction::Operand> & operands = procDef.m_instructionSet.back().m_operands;
+        for ( unsigned int oprNumber = 0; oprNumber < operands.size(); oprNumber++ )
         {
             unsigned int operandSize = 0;
-            const std::vector<int> & operand = node.second->m_operands[oprNumber].m_OPCodePermutation;
+            const std::vector<int> & operand = operands[oprNumber].m_OPCodePermutation;
             for ( unsigned int bitNumber = 0; bitNumber < operand.size(); bitNumber++ )
             {
                 if ( -1 != operand[bitNumber] )
@@ -367,7 +381,15 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
                     operandSize = bitNumber + 1;
                 }
             }
-            procDef.m_instructionSet.back().m_operands[oprNumber].m_OPCodePermutation.resize(operandSize);
+            operands[oprNumber].m_size = operandSize;
+            operands[oprNumber].m_OPCodePermutation.resize(operandSize);
+        }
+        for ( int i = ( int(operands.size()) - 1 ); i >= 0; i-- )
+        {
+            if ( ( 0 == operands[i].m_size ) && ( -1 == operands[i].m_fixedValue ) )
+            {
+                operands.erase(operands.begin() + i);
+            }
         }
     }
     for ( auto inst : procDef.m_instructionSet )
@@ -497,18 +519,8 @@ void AdjSimProcDefGui::disenaDataMem ( int checkState )
 
 void AdjSimProcDefGui::disenaStack ( bool )
 {
-    bool enableDesignated = radioButtonStackMode1->isChecked();
-    bool enableSimple = radioButtonStackMode2->isChecked();
-
-    spinBoxStackDSize->setEnabled(enableDesignated);
-
-    comboBoxStackOperation     -> setEnabled(enableSimple);
-    spinBoxStackContentOffset  -> setEnabled(enableSimple);
-    comboBoxStackContentSpace  -> setEnabled(enableSimple);
-    comboBoxStackPointerSpace  -> setEnabled(enableSimple);
-    spinBoxStackPointerAddress -> setEnabled(enableSimple);
-    spinBoxStackPointerMax     -> setEnabled(enableSimple);
-    checkBoxStackIndirectPtr   -> setEnabled(enableSimple);
+    groupBoxStackD->setEnabled(radioButtonStackMode1->isChecked());
+    groupBoxStackS->setEnabled(radioButtonStackMode2->isChecked());
 }
 
 void AdjSimProcDefGui::disenaPorts ( int checkState )
@@ -523,6 +535,36 @@ void AdjSimProcDefGui::disenaInterrupts ( int checkState )
     checkBoxInterruptBackupFlags -> setEnabled ( Qt::Checked == checkState );
     checkBoxInterruptAutoDisable -> setEnabled ( Qt::Checked == checkState );
     checkBoxInterruptAutoEnable  -> setEnabled ( Qt::Checked == checkState );
+}
+
+void AdjSimProcDefGui::showHideOPCodeBits ( int size )
+{
+    --size;
+
+    SHOW_HIDE_OP_CODE_BIT(23, size)
+    SHOW_HIDE_OP_CODE_BIT(22, size)
+    SHOW_HIDE_OP_CODE_BIT(21, size)
+    SHOW_HIDE_OP_CODE_BIT(20, size)
+    SHOW_HIDE_OP_CODE_BIT(19, size)
+    SHOW_HIDE_OP_CODE_BIT(18, size)
+    SHOW_HIDE_OP_CODE_BIT(17, size)
+    SHOW_HIDE_OP_CODE_BIT(16, size)
+    SHOW_HIDE_OP_CODE_BIT(15, size)
+    SHOW_HIDE_OP_CODE_BIT(14, size)
+    SHOW_HIDE_OP_CODE_BIT(13, size)
+    SHOW_HIDE_OP_CODE_BIT(12, size)
+    SHOW_HIDE_OP_CODE_BIT(11, size)
+    SHOW_HIDE_OP_CODE_BIT(10, size)
+    SHOW_HIDE_OP_CODE_BIT( 9, size)
+    SHOW_HIDE_OP_CODE_BIT( 8, size)
+    SHOW_HIDE_OP_CODE_BIT( 7, size)
+    SHOW_HIDE_OP_CODE_BIT( 6, size)
+    SHOW_HIDE_OP_CODE_BIT( 5, size)
+    SHOW_HIDE_OP_CODE_BIT( 4, size)
+    SHOW_HIDE_OP_CODE_BIT( 3, size)
+    SHOW_HIDE_OP_CODE_BIT( 2, size)
+    SHOW_HIDE_OP_CODE_BIT( 1, size)
+    SHOW_HIDE_OP_CODE_BIT( 0, size)
 }
 
 bool AdjSimProcDefGui::maybeSave()
@@ -667,10 +709,12 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
     if ( true == instructionSelected )
     {
         inst = m_instructions[treeWidgetInstructions->selectedItems().front()];
+        showHideOPCodeBits(spinBoxProgramWordSize->value());
     }
     else
     {
         inst = & m_emptyInstruction;
+        showHideOPCodeBits(24);
     }
 
     if ( true == inst->m_mnemonic.empty() )
@@ -863,6 +907,7 @@ void AdjSimProcDefGui::instModified()
                                        (comboBoxInstOpr0Order->currentIndex());
         inst->m_operands[0].m_type = (AdjSimProcDef::Instruction::Operand::Type)
                                      (comboBoxInstOpr0Addressing->currentIndex());
+        inst->m_operands[0].m_fixedValue = -1;
         inst->m_operands[0].m_OPCodePermutation[0] = spinBoxInstOpr0Bit0->value();
         inst->m_operands[0].m_OPCodePermutation[1] = spinBoxInstOpr0Bit1->value();
         inst->m_operands[0].m_OPCodePermutation[2] = spinBoxInstOpr0Bit2->value();
@@ -883,6 +928,10 @@ void AdjSimProcDefGui::instModified()
     else
     {
         inst->m_operands[0].m_size = 0;
+        inst->m_operands[0].m_OPCodePermutation.clear();
+        inst->m_operands[0].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
+        inst->m_operands[0].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr0Addressing->currentIndex());
         inst->m_operands[0].m_fixedValue = lineEditInstOpr0FixedValue->text().toInt();
     }
 
@@ -893,6 +942,7 @@ void AdjSimProcDefGui::instModified()
                                        (comboBoxInstOpr1Order->currentIndex());
         inst->m_operands[1].m_type = (AdjSimProcDef::Instruction::Operand::Type)
                                      (comboBoxInstOpr1Addressing->currentIndex());
+        inst->m_operands[1].m_fixedValue = -1;
         inst->m_operands[1].m_OPCodePermutation[0] = spinBoxInstOpr1Bit0->value();
         inst->m_operands[1].m_OPCodePermutation[1] = spinBoxInstOpr1Bit1->value();
         inst->m_operands[1].m_OPCodePermutation[2] = spinBoxInstOpr1Bit2->value();
@@ -913,6 +963,10 @@ void AdjSimProcDefGui::instModified()
     else
     {
         inst->m_operands[1].m_size = 0;
+        inst->m_operands[1].m_OPCodePermutation.clear();
+        inst->m_operands[1].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
+        inst->m_operands[1].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr0Addressing->currentIndex());
         inst->m_operands[1].m_fixedValue = lineEditInstOpr1FixedValue->text().toInt();
     }
 
@@ -923,6 +977,7 @@ void AdjSimProcDefGui::instModified()
                                        (comboBoxInstOpr2Order->currentIndex());
         inst->m_operands[2].m_type = (AdjSimProcDef::Instruction::Operand::Type)
                                      (comboBoxInstOpr2Addressing->currentIndex());
+        inst->m_operands[2].m_fixedValue = -1;
         inst->m_operands[2].m_OPCodePermutation[0] = spinBoxInstOpr2Bit0->value();
         inst->m_operands[2].m_OPCodePermutation[1] = spinBoxInstOpr2Bit1->value();
         inst->m_operands[2].m_OPCodePermutation[2] = spinBoxInstOpr2Bit2->value();
@@ -943,6 +998,10 @@ void AdjSimProcDefGui::instModified()
     else
     {
         inst->m_operands[2].m_size = 0;
+        inst->m_operands[2].m_OPCodePermutation.clear();
+        inst->m_operands[2].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
+        inst->m_operands[2].m_type = (AdjSimProcDef::Instruction::Operand::Type)
+                                     (comboBoxInstOpr0Addressing->currentIndex());
         inst->m_operands[2].m_fixedValue = lineEditInstOpr2FixedValue->text().toInt();
     }
 
@@ -1015,6 +1074,7 @@ inline void AdjSimProcDefGui::setupConnections()
     // Program Memory
     connect ( spinBoxProgramSize,           SIGNAL(valueChanged(int)),           SLOT(setModified()) );
     connect ( spinBoxProgramWordSize,       SIGNAL(valueChanged(int)),           SLOT(setModified()) );
+    connect ( spinBoxProgramWordSize,       SIGNAL(valueChanged(int)),           SLOT(showHideOPCodeBits(int)) );
     connect ( comboBoxProgramEndian,        SIGNAL(currentIndexChanged(int)),    SLOT(setModified()) );
     // Data Memory
     connect ( checkBoxDataMemory,           SIGNAL(stateChanged(int)),           SLOT(disenaDataMem(int)) );

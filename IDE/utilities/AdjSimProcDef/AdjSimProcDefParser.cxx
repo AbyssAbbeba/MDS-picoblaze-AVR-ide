@@ -15,8 +15,9 @@
 
 #include "AdjSimProcDefParser.h"
 #include "AdjSimProcDefGenerator.h"
-#include<iostream>//DEBUG
+
 #include <cstdlib>
+#include <iostream>
 #include <stdexcept>
 
 inline void readString ( const std::string & def,
@@ -24,7 +25,7 @@ inline void readString ( const std::string & def,
                          size_t & pos )
 {
     size_t posOrig = pos;
-    pos = def.find('\n', posOrig);
+    pos = def.find('\b', posOrig);
 
     if ( std::string::npos == pos )
     {
@@ -42,7 +43,7 @@ inline void readUInt ( const std::string & def,
                        size_t & pos )
 {
     size_t posOrig = pos;
-    pos = def.find('\n', posOrig);
+    pos = def.find('\b', posOrig);
 
     if ( std::string::npos == pos )
     {
@@ -61,7 +62,7 @@ inline void readInt ( const std::string & def,
                       size_t & pos )
 {
     size_t posOrig = pos;
-    pos = def.find('\n', posOrig);
+    pos = def.find('\b', posOrig);
 
     if ( std::string::npos == pos )
     {
@@ -80,7 +81,7 @@ inline void readBool ( const std::string & def,
                        size_t & pos )
 {
     size_t posOrig = pos;
-    pos = def.find('\n', posOrig);
+    pos = def.find('\b', posOrig);
 
     if ( std::string::npos == pos )
     {
@@ -143,6 +144,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
         readUInt(def, m_data.m_memory.m_register.m_banks, pos);
         readUInt(def, m_data.m_memory.m_data.m_size, pos);
         readUInt(def, m_data.m_memory.m_program.m_size, pos);
+        readUInt(def, m_data.m_memory.m_program.m_wordSize, pos);
         readInt(def, (int&) m_data.m_memory.m_program.m_word, pos);
         readInt(def, (int&) m_data.m_memory.m_program.m_endian, pos);
 
@@ -172,7 +174,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
         while ( true )
         {
             readBool(def, mark, pos);
-std::cout<<"mark="<<mark<<'\n';
+
             if ( false == mark )
             {
                 break;
@@ -208,11 +210,10 @@ std::cout<<"mark="<<mark<<'\n';
 
             // Mnemonic
             readString(def, instruction.m_mnemonic, pos);
-std::cout<<"m_mnemonic="<<instruction.m_mnemonic<<'\n';
+
             // OP Code Bits
             readUInt(def, size, pos );
             instruction.m_opCode.clear();
-std::cout<<"m_opCode.size()="<<size<<'\n';
             for ( unsigned int i = 0; i < size; i++ )
             {
                 readInt(def, value, pos );
@@ -221,20 +222,20 @@ std::cout<<"m_opCode.size()="<<size<<'\n';
 
             // Operands
             readUInt(def, size, pos );
-std::cout<<"m_operands.size()="<<size<<'\n';
             instruction.m_operands.clear();
             for ( unsigned int i = 0; i < size; i++ )
             {
-                unsigned int size2;
-
                 AdjSimProcDef::Instruction::Operand operand;
 
                 readInt(def, (int&) operand.m_type, pos );
+                readInt(def, (int&) operand.m_number, pos );
                 readInt(def, operand.m_size, pos );
                 readInt(def, operand.m_fixedValue, pos );
 
+                unsigned int size2;
                 readUInt(def, size2, pos );
-                for ( unsigned int i = 0; i < size2; i++ )
+                operand.m_OPCodePermutation.clear();
+                for ( unsigned int j = 0; j < size2; j++ )
                 {
                     readInt(def, value, pos );
                     operand.m_OPCodePermutation.push_back(value);
@@ -249,5 +250,6 @@ std::cout<<"m_operands.size()="<<size<<'\n';
     catch ( const std::runtime_error & e )
     {
         m_valid = false;
+        std::cerr << "ProcDefParser exception caught: " << e.what() << std::endl;
     }
 }

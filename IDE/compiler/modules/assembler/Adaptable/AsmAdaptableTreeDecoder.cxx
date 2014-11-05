@@ -98,12 +98,12 @@ bool AsmAdaptableTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_MACRO:       HANDLE_ACTION ( macro       ( node ) ); break;
             case ASMPICOBLAZE_DIR_REPT:    HANDLE_ACTION ( dir_REPT    ( node ) ); break;
             case ASMPICOBLAZE_DIR_WHILE:   HANDLE_ACTION ( dir_WHILE   ( node ) ); break;
-            case ASMPICOBLAZE_DIR_DEVICE:  HANDLE_ACTION ( dir_DEVICE  ( node ) ); break;
             case ASMPICOBLAZE_DIR_EXITM:   HANDLE_ACTION ( dir_EXITM   ( node ) ); break;
             case ASMPICOBLAZE_DIR_DB:      HANDLE_ACTION ( dir_DB      ( node ) ); break;
 
             case ASMPICOBLAZE_DIR_ORG:      dir_ORG      ( node ); continue;
             case ASMPICOBLAZE_DIR_SKIP:     dir_SKIP     ( node ); continue;
+            case ASMPICOBLAZE_DIR_DEVICE:   dir_DEVICE   ( node ); break;
             case ASMPICOBLAZE_COND_ASM:     dir_IF       ( node ); break;
             case ASMPICOBLAZE_DIR_LIST:     dir_LIST     ( node ); break;
             case ASMPICOBLAZE_DIR_NOLIST:   dir_NOLIST   ( node ); break;
@@ -476,7 +476,8 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
                             continue;
                     }
 
-                    CompilerExpr * value = node->args()->next()->at(operandNumber);
+                    CompilerExpr * value = node->args()->at(operandNumber + 1)->copyChainLink();
+
                     for ( int fromBit = 0; fromBit < (int) (inst.m_operands[i].m_OPCodePermutation.size()); fromBit++ )
                     {
                         int toBit = inst.m_operands[i].m_OPCodePermutation[fromBit];
@@ -814,7 +815,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
         }
     }
 
-    return CA_NO_ACTION;
+    return CA_CONTINUE;
 }
 
 inline void AsmAdaptableTreeDecoder::dir_DB_phase2 ( CompilerStatement * node )
@@ -1411,11 +1412,9 @@ inline void AsmAdaptableTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
     }
 }
 
-inline AsmAdaptableTreeDecoder::CourseOfAction
-       AsmAdaptableTreeDecoder::dir_DEVICE ( CompilerStatement * node )
+inline void AsmAdaptableTreeDecoder::dir_DEVICE ( CompilerStatement * node )
 {
     m_semanticAnalyzer->setDevice(node->args()->lVal().m_data.m_symbol);
-    return CA_NO_ACTION;
 }
 
 bool AsmAdaptableTreeDecoder::isBlank ( const CompilerExpr * expr ) const

@@ -281,6 +281,13 @@ class AsmAdaptableTreeDecoder
 
         /**
          * @brief
+         * @param[in,out] node
+         * @return
+         */
+        inline void dir_DEVICE ( CompilerStatement * node );
+
+        /**
+         * @brief
          * @param[in] mnemonic
          * @param[in,out] node
          * @return
@@ -322,13 +329,6 @@ class AsmAdaptableTreeDecoder
          * @return
          */
         inline CourseOfAction macro ( CompilerStatement * node );
-
-        /**
-         * @brief
-         * @param[in,out] node
-         * @return
-         */
-        inline CourseOfAction dir_DEVICE ( CompilerStatement * node );
 
         /**
          * @brief

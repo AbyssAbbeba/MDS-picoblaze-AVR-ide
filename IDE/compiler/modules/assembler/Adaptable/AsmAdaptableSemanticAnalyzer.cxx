@@ -51,6 +51,7 @@
 
 AsmAdaptableSemanticAnalyzer::AsmAdaptableSemanticAnalyzer ( CompilerSemanticInterface * compilerCore,
                                                              CompilerOptions * opts )
+                                                           : CompilerSemanticAnalyzer ( compilerCore, opts )
 {
     m_dgbFile        = new AsmDgbFileGen();
     m_machineCode    = new AsmMachineCodeGen();
@@ -126,9 +127,9 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
         return;
     }
 
-    AdjSimProcDefParser parser(std::string(data.get(), len));
+    std::unique_ptr<AdjSimProcDefParser> parser (new AdjSimProcDefParser(std::string(data.get(), len)));
 
-    if ( false == parser.isValid() )
+    if ( false == parser.get()->isValid() )
     {
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
@@ -137,7 +138,7 @@ void AsmAdaptableSemanticAnalyzer::setDevice ( const std::string & deviceDefFile
         return;
     }
 
-    m_device = parser.data();
+    m_device = parser.get()->data();
 
     m_memoryPtr->m_hardLimits.m_reg  = m_device.m_memory.m_register.m_size;
     m_memoryPtr->m_hardLimits.m_data = m_device.m_memory.m_data.m_size;

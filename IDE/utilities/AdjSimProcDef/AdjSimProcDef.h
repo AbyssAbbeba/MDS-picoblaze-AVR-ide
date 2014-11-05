@@ -208,6 +208,7 @@ class AdjSimProcDef
             struct Program
             {
                 unsigned int m_size;
+                unsigned int m_wordSize;
 
                 enum WordSize
                 {
