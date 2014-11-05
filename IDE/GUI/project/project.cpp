@@ -13,12 +13,17 @@
 
 
 #include <QtGui>
+#include <QtXml>
 #include "project.h"
-#include "McuSimCfgMgr.h"
+//#include "McuSimCfgMgr.h"
 #include "MCUSimControl.h"
+#include "MCUSim.h"
 #include "../widgets/ProjectTree/projecttree.h"
 #include "../guicfg/guicfg.h"
 #include "../../utilities/os/os.h"
+#include "../../simulators/MCUSim/PicoBlaze/PicoBlazeInstructionSet.h"
+#include "../errordialog/errordlg.h"
+
 
 
 
@@ -2493,6 +2498,7 @@ int Project::start(QString file, QString dumpFiles)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
+            qDebug() << "Project: start return 1";
             return 1;
         }
         //else
@@ -2519,15 +2525,16 @@ int Project::start(QString file, QString dumpFiles)
         //    qDebug() << "Project: m_simControlUnit->start() returned true";
         //}
     }
-    /*if (file != "")
+    if (file != "")
     {
         this->simulatedFile = file;
+        //qDebug() << "Project: start simulatedFile =" << simulatedFile;
     }
     else
     {
         QDir dir(prjPath.section('/',0, -2));
         this->simulatedFile = dir.absoluteFilePath(mainFilePath);
-    }*/
+    }
     /*if (this->breakPoints.count() > 0)
     {
         std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
@@ -2561,7 +2568,8 @@ int Project::start(QString file, QString dumpFiles)
     //qDebug() << "Project: getLineNumber check";
     if (this->currSim.empty() == true)
     {
-        return 2;
+        //qDebug() << "Project: start return 2";
+        //return 2;
     }
     this->prevSim.clear();
     this->prevSim2.clear();
@@ -2647,10 +2655,11 @@ void Project::stop()
     m_simControlUnit->getLineNumber(this->currSim);
     if (currSim.empty() == true)
     {
-        return;
+        //return;
     }
     //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     m_simControlUnit->stopSimulation();
+    this->simulatedFile = "";
     /*emit simHighlightLines()
     emit highlightLine(this->prevFile3, this->prevLine3, NULL);
     emit highlightLine(this->prevFile2, this->prevLine2, NULL);
@@ -2690,8 +2699,8 @@ void Project::handleUpdateRequest(int mask)
         m_simControlUnit->getLineNumber(this->currSim);
         if (this->currSim.empty() == true)
         {
-            qDebug() << "Project: currline empty, should never happen";
-            return;
+            //qDebug() << "Project: currline empty, should never happen";
+            //return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
@@ -2727,7 +2736,8 @@ void Project::handleUpdateRequest(int mask)
         m_simControlUnit->getLineNumber(this->currSim);
         if (this->currSim.empty() == true)
         {
-            return;
+            //qDebug() << "Project: currline empty, should never happen";
+            //return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;

@@ -15,7 +15,6 @@
 #ifndef WLINECOUNTER_H
 #define WLINECOUNTER_H
 
-#include <QPlainTextEdit>
 #include <QScrollArea>
 #include <QFont>
 #include <QTextBlock>
@@ -23,6 +22,7 @@
 #include <QString>
 
 class WLineCounterWidget;
+class QPlainTextEdit;
 
 
 /**

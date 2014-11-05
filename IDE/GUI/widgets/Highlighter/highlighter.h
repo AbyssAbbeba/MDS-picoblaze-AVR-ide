@@ -15,9 +15,13 @@
 #ifndef HIGHLIGHTER_H  
 #define HIGHLIGHTER_H
 
-#include <QTextDocument>
 #include <QSyntaxHighlighter>
+#include <QTextCharFormat>
+#include <QRegExp>
+#include <QString>
 #include "../../enums/enums.h"
+
+class QTextDocument;
 
 
 

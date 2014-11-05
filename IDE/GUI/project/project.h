@@ -22,13 +22,9 @@
 #include <set>
 #include <QString>
 #include <QList>
-#include <QTreeWidget>
-#include <QMenu>
-#include <QAction>
-#include <QtXml>
 #include <QStringList>
-#include "mainform.h"
-#include "../errordialog/errordlg.h"
+#include <QPair>
+//#include "mainform.h"
 #include "../enums/enums.h"
 
 
@@ -37,12 +33,16 @@ class CodeEdit;
 class ProjectTree;
 
 //simulation handle
-class McuMemoryView;
-class RegDisplayList;
+//class McuMemoryView;
+//class RegDisplayList;
 class MCUSimControl;
-class McuSimCfgMgr;
+//class McuSimCfgMgr;
 
 class Project;
+class QDockWidget;
+class QFile;
+class QTreeWidgetItem;
+class QColor;
 
 
 /*typedef enum LangType {
@@ -173,10 +173,10 @@ class Project : public QObject
         QString templateVHDL;
 
         //simulation handle
-        McuMemoryView *m_mcuMemoryView;
-        RegDisplayList *m_regList;
+        //McuMemoryView *m_mcuMemoryView;
+        //RegDisplayList *m_regList;
         MCUSimControl *m_simControlUnit;
-        //QString simulatedFile;
+        QString simulatedFile;
         //simulation others
         double clock;
         int clockMult;

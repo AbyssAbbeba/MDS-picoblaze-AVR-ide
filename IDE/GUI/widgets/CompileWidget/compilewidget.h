@@ -16,8 +16,8 @@
 #define COMPILEWIDGET_H
 
 
-#include <QWidget>
-#include <QPlainTextEdit>
+#include <QObject>
+#include <QString>
 #include "../../enums/enums.h"
 
 class CompileWidget : public QObject

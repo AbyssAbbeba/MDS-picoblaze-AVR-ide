@@ -16,16 +16,15 @@
 #define HEXEDIT_H
 
 
-#include <QTextEdit>
-//#include <QStatusBar>
-#include <QGridLayout>
-#include <QByteArray>
-#include <QLabel>
-#include <QScrollBar>
-#include "../Counters/wlinecounter.h"
-#include "../Counters/wcolumncounter.h"
+#include <QWidget>
 
 
+class WLineCounter;
+class WColumnCounter;
+class QGridLayout;
+class QPlainTextEdit;
+class QScrollBar;
+class QLabel;
 class WLineCounter;
 class WColumnCounter;
 

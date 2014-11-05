@@ -15,21 +15,22 @@
 #ifndef PORTHEXEDIT_H
 #define PORTHEXEDIT_H
 
-// Forward declarations
-class HexEdit;
-class MCUSimControl;
-class QHBoxLayout;
 
 
-#include <cstdint>
 #include <QWidget>
 //#include <QHBoxLayout>
 
-#include "../HexEdit/hexedit.h"
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
-#include "../../../simulators/MCUSim/MCUSimPureLogicIO.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
+
+// Forward declarations
+class MCUSimControl;
+class HexEdit;
+class MCUSimPureLogicIO;
+class HexEdit;
+class MCUSimControl;
+class QHBoxLayout;
 
 class PortHexEdit : public QWidget, public MCUSimObserver
 {

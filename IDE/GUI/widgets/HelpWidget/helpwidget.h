@@ -17,9 +17,8 @@
 
 
 #include <QWidget>
-#include <QHelpEngine>
-#include <QHelpSearchEngine>
-#include "helpbrowser.h"
+
+class HelpBrowser;
 
 
 

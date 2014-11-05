@@ -15,7 +15,10 @@
 #include <QtGui>
 #include "codeedit.h"
 #include "../DockManager/wdockmanager.h"
+#include "baseeditor.h"
 #include "../../guicfg/guicfg.h"
+#include "../Counters/wlinecounter.h"
+#include "wtextedit.h"
 
 
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
@@ -24,6 +27,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     //qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
+    this->hidden = false;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -237,6 +241,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     //qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
+    this->hidden = false;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
@@ -1138,4 +1143,10 @@ QTextCursor CodeEdit::getCursorValue()
 void CodeEdit::setCursorValue(QTextCursor value)
 {
     this->curCursorPos = value;
+}
+
+
+void CodeEdit::setHidden(bool hide)
+{
+    this->hidden = hide;
 }

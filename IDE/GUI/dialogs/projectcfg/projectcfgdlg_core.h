@@ -17,17 +17,17 @@
 
 
 #include <QDialog>
-#include "projectcfg_general.h"
-#include "projectcfg_memory.h"
-#include "projectcfg_filemgr.h"
-#include "projectcfg_compiler.h"
-#include "projectcfg_templates.h"
-#include "projectcfg_comppaths.h"
-#include "../cfginterface/cfginterface.h"
 
 
 
 class Project;
+class CfgInterface;
+class ProjectCfg_General;
+class ProjectCfg_Memory;
+class ProjectCfg_FileMgr;
+class ProjectCfg_Compiler;
+class ProjectCfg_Templates;
+class ProjectCfg_CompPaths;
 //class FileMgr;
 
 /**

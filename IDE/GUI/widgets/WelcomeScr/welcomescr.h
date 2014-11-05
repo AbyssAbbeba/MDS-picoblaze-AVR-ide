@@ -2,7 +2,6 @@
 #define WELCOMESCR_H
 
 #include <QWidget>
-#include <QListWidget>
 #include "ui_welcomescr.h"
 
 

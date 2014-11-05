@@ -21,7 +21,7 @@
 //#define ERR_XML_ASSIGN 2002
 //#define ERR_NO_PROJECT 2003
 
-#include <QMessageBox>
+
 #include "../enums/enums.h"
 
 void error(int errCode);

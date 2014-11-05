@@ -14,6 +14,17 @@
 
 #include <QtGui>
 #include "picoblazegrid.h"
+#include "../../../simulators/SimControl/MCUSimControl.h"
+#include "../../../simulators/MCUSim/MCUSim.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
+#include "../StackWidget/stackwidget.h"
+#include "../RegistersWidget/registerswidget.h"
+#include "../PortHexEdit/porthexedit.h"
+#include "../sim/McuMemoryView.h"
+#include "../TimeWidget/timewidget.h"
+#include "../../errordialog/errordlg.h"
 
 
 /**
