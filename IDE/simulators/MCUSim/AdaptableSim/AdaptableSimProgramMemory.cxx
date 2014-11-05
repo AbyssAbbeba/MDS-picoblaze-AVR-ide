@@ -74,7 +74,7 @@ void AdaptableSimProgramMemory::loadDataFile ( const DataFile * file )
                 undefined = true;
                 byte = 0;
             }
-            word |= ( byte << ( ( ( END_BIG == m_config.m_endian ) ? 0 : init ) - shift ) );
+            word |= ( byte << ( ( END_BIG == m_config.m_endian ) ? shift : ( init - shift ) ) );
             fileAddr++;
         }
 

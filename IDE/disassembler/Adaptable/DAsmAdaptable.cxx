@@ -58,7 +58,7 @@ bool DAsmAdaptable::disassemble ( const DataFile & source )
             }
 
             code |= ( byte << ( ( ( AdjSimProcDef::Memory::Program::END_BIG == m_procDef.m_memory.m_program.m_endian )
-                                  ? 0 : initShift ) - shift ) );
+                                  ? shift : ( initShift - shift ) ) ) );
         }
 
         if ( 0 == ( 0x20000000 & code ) )
@@ -97,8 +97,9 @@ bool DAsmAdaptable::disassemble ( const DataFile & source )
                 code |= 0x20000000;
                 continue;
             }
+
             code |= ( byte << ( ( ( AdjSimProcDef::Memory::Program::END_BIG == m_procDef.m_memory.m_program.m_endian )
-                                  ? 0 : initShift ) - shift ) );
+                                  ? shift : ( initShift - shift ) ) ) );
         }
 
         if ( 0 == ( 0x20000000 & code ) )
@@ -223,7 +224,7 @@ void DAsmAdaptable::phase2 ( unsigned int code,
             case AdjSimProcDef::Instruction::Operand::N_HIDDEN: index = -1; break;
         }
 
-        if ( -1 == index )
+        if ( -1 != index )
         {
             valueTypePairs[index].first = operands[i];
             valueTypePairs[index].second = instruction.m_operands[i].m_type;
@@ -246,6 +247,7 @@ void DAsmAdaptable::phase2 ( unsigned int code,
         switch ( valueTypePairs[i].second )
         {
             case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE:
+                appendStr(line, "#");
                 imm(line, valueTypePairs[i].first);
                 break;
             case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
@@ -310,7 +312,7 @@ bool DAsmAdaptable::recognizeInstruction ( unsigned int code,
         {
             if ( AdjSimProcDef::Instruction::OCB_ZERO == bit )
             {
-                if ( 0 != ( code & ( 1 << bitNo ) ) )
+                if ( code & ( 1 << bitNo ) )
                 {
                     found = false;
                     break;
@@ -324,6 +326,7 @@ bool DAsmAdaptable::recognizeInstruction ( unsigned int code,
                     break;
                 }
             }
+
             bitNo++;
         }
 

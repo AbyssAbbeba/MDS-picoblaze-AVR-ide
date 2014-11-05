@@ -726,7 +726,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
         lineEditInstMnemonic -> setText ( QString::fromStdString(inst->m_mnemonic) );
     }
 
-    comboBoxInstOperation -> setCurrentIndex ( (int) (inst -> m_operation) );
+    comboBoxInstOperation-> setCurrentIndex ( (int) (inst -> m_operation) );
 
     comboBoxInstOpCode0  -> setCurrentIndex ( (int) (inst -> m_opCode[0]) );
     comboBoxInstOpCode1  -> setCurrentIndex ( (int) (inst -> m_opCode[1]) );
@@ -867,6 +867,8 @@ void AdjSimProcDefGui::instModified()
     {
         return;
     }
+
+    setModified();
 
     QTreeWidgetItem * item = treeWidgetInstructions->selectedItems().front();
     auto iter = m_instructions.find(item);

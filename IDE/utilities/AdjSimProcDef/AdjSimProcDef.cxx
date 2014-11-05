@@ -241,9 +241,9 @@ std::ostream & operator << ( std::ostream & out,
     {
         switch ( definition.m_opCode[i] )
         {
-            case AdjSimProcDef::Instruction::OCB_ZERO:      out << '0';
-            case AdjSimProcDef::Instruction::OCB_ONE:       out << '1';
-            case AdjSimProcDef::Instruction::OCB_DONT_CARE: out << '-';
+            case AdjSimProcDef::Instruction::OCB_ZERO:      out << '0'; break;
+            case AdjSimProcDef::Instruction::OCB_ONE:       out << '1'; break;
+            case AdjSimProcDef::Instruction::OCB_DONT_CARE: out << '-'; break;
         }
     }
     out << std::endl;
@@ -290,7 +290,7 @@ std::ostream & operator << ( std::ostream & out,
             for ( int j = ( definition.m_operands[i].m_OPCodePermutation.size() - 1 ); j >= 0; j-- )
             {
                 out << definition.m_operands[i].m_OPCodePermutation[j];
-                if ( 0 != i )
+                if ( 0 != j )
                 {
                     out << ", ";
                 }

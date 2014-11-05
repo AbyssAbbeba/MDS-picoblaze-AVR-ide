@@ -466,7 +466,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-76</y>
             <width>265</width>
             <height>394</height>
            </rect>
@@ -2149,7 +2149,7 @@
                 <widget class="QWidget" name="scrollAreaOPCodeWidgetContents">
                  <property name="geometry">
                   <rect>
-                   <x>-913</x>
+                   <x>0</x>
                    <y>0</y>
                    <width>1156</width>
                    <height>55</height>
@@ -2871,8 +2871,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>167</width>
+            <y>-57</y>
+            <width>265</width>
             <height>375</height>
            </rect>
           </property>
@@ -3171,6 +3171,9 @@
               </item>
               <item row="0" column="1">
                <widget class="QComboBox" name="comboBoxInstParity">
+                <property name="currentIndex">
+                 <number>1</number>
+                </property>
                 <item>
                  <property name="text">
                   <string>Even</string>
@@ -3220,8 +3223,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>202</width>
-            <height>247</height>
+            <width>282</width>
+            <height>318</height>
            </rect>
           </property>
           <attribute name="label">
@@ -3321,10 +3324,18 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="spinBoxInstTimePositive"/>
+               <widget class="QSpinBox" name="spinBoxInstTimePositive">
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QSpinBox" name="spinBoxInstTimeNegative"/>
+               <widget class="QSpinBox" name="spinBoxInstTimeNegative">
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
