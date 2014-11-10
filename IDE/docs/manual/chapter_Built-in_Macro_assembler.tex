@@ -292,7 +292,7 @@ Each list element is being parsed and split into an address reference, a command
         Symbols defined with the REG directive are by compiler considered as work registers.
 
         \subsubsection{Examples:}
-            {
+        {
             ~\\
             \usecodefont
             \verb'First_symb        REG     s1'\\
@@ -300,14 +300,14 @@ Each list element is being parsed and split into an address reference, a command
             \verb'Third_symb        REG     s3'\\
             \verb'Fourth_symb       REG     0x4'\\
             \verb'Fifth_symb        REG     0x5'\\
-            }
+        }
 
         \subsection{NAMEREG}
         {
             ~\\
             \usecodefont
             \verb'NAMEREG            <symbol>,<reg name or address> '
-            }
+        }
         \subsubsection{Description:}
         Directive NAMEREG is similar to REG but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source
         code.
@@ -329,11 +329,11 @@ Each list element is being parsed and split into an address reference, a command
             {
                 ~\\
                 \usecodefont
-            \verb'<symbol>      DATA             <expression>'
+                \verb'<symbol>      DATA             <expression>'
             }
 
         \subsubsection{Description:}
-            Symbols defined with the DATA directive are by compiler considered as memory data . It must be used only with instructions FETCH and STORE.
+            Symbols defined with the DATA directive are by compiler considered as memory data. It is supposed to be used only with instructions FETCH and STORE.
 
         \subsubsection{Examples:}
             {
@@ -351,7 +351,7 @@ Each list element is being parsed and split into an address reference, a command
             {
                 ~\\
                 \usecodefont
-            \verb'<symbol>      CODE             <expression>'
+                \verb'<symbol>      CODE             <expression>'
             }
         \subsubsection{Description:}
         Symbols defined with the CODE directive are by compiler considered as program memory.
@@ -372,10 +372,10 @@ Each list element is being parsed and split into an address reference, a command
             {
                 ~\\
                 \usecodefont
-            \verb'<symbol>      PORT             <expression>'
+                \verb'<symbol>      PORT             <expression>'
             }
         \subsubsection{Description:}
-        Symbol defined with this directive is considered to be PORT\_ID identificator.
+        Symbol defined with this directive is considered to be PORT\_ID identifier.
 
         \subsubsection{Examples:}
             {
@@ -419,9 +419,7 @@ Each list element is being parsed and split into an address reference, a command
         }
 
     \subsubsection{Description:}
-    Must be used only with instructions FETCH and STORE. It will automatically assign an
-    address 0x00, which is incremented with every other AUTOSPR directive. Optionally, you can change starting address counter by adding a parameter
-    after AUTOSPR directive. You can check assigned memory in code listing file(.lst) and symbol table file(.sym).
+        Must be used only with instructions FETCH and STORE. It will automatically assign an address 0x00, which is incremented with every other AUTOSPR directive. Optionally, you can change starting address counter by adding a parameter after AUTOSPR directive. You can check assigned memory in code listing file(.lst) and symbol table file(.sym).
 
     \subsubsection{Examples:}
         {
@@ -435,6 +433,13 @@ Each list element is being parsed and split into an address reference, a command
         }
 
     \subsection{INITSPR}
+        \subsubsection{Syntax:}
+
+        \subsubsection{Description:}
+
+        \subsubsection{Examples:}
+
+    \subsection{STRING}
         \subsubsection{Syntax:}
 
         \subsubsection{Description:}
@@ -455,7 +460,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'<symbol>      DEFINE             <expression>'
         }
         \subsubsection{Description:}
-        You can define expression using previously defined symbols. Value of this expression is calculated every time the symbol is used. You can use symbols in define expressions
+            You can define expression using previously defined symbols. Value of this expression is calculated every time the symbol is used. You can use symbols in define expressions
 
         \subsubsection{Examples:}
         {
@@ -536,7 +541,7 @@ Each list element is being parsed and split into an address reference, a command
         }
 
         \subsubsection{Description:}
-        The while construct consists of a block of code and an expression. Following code is recompiled until expression equals to zero.
+            The while construct consists of a block of code and an expression. Following code is recompiled until expression equals to zero.
 
         \subsubsection{Examples:}
         {
@@ -576,11 +581,12 @@ Each list element is being parsed and split into an address reference, a command
         {
             ~\\
             \usecodefont
-        \verb'UNDEFINE          <symbol>'\\
-        \verb'UNDEF             <symbol>'
+            \verb'UNDEFINE          <symbol>'\\
+            \verb'UNDEF             <symbol>'
         }
+
         \subsubsection{Description:}
-        All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
+            All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
 
         \subsubsection{Examples:}
         {
@@ -588,7 +594,7 @@ Each list element is being parsed and split into an address reference, a command
             \usecodefont
             \verb'My_symbol             SET             15'\\
             \verb'LOAD                  s0, #My_symbol'\\
-            \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be use'\\
+            \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be used'\\
             \verb'LOAD                  s0, #My_symbol          ; this will cause an error'\\
         }
 
@@ -628,7 +634,7 @@ Each list element is being parsed and split into an address reference, a command
         \verb'LIMIT          C,<number>                  ; Size of program memory '\\
 
         \subsubsection{Description:}
-        Usefull when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
+        Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler.\\
         In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
 
         \subsubsection{Examples:}
@@ -636,7 +642,7 @@ Each list element is being parsed and split into an address reference, a command
             ~\\
             \usecodefont
             \verb'LIMIT          R,16                   ; Number of registers 16'\\
-            \verb'LIMIT          D,7                    ; Size of scratchpad ram   '\\
+            \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
             \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
         }
 
@@ -645,8 +651,7 @@ Each list element is being parsed and split into an address reference, a command
         \verb'DEVICE            <device name>'
 
         \subsubsection{Description:}
-        Normaly, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE.
-        This will affect predefined symbols.
+            Normally, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
 
         \subsubsection{Examples:}
         {
@@ -667,21 +672,22 @@ Each list element is being parsed and split into an address reference, a command
             \verb'LIST'\\
             \verb'NOLIST'
         }
+
         \subsubsection{Description:}
-        You can turn on/off printing to code listing in some parts of your code.
+            You can turn on/off printing to code listing in some parts of your code.
 
     \subsection{TITLE}
         \subsubsection{Syntax:}
             \verb'TITLE            <"title text">'
 
         \subsubsection{Description:}
-        This will put a title into coresponding line in codelisting.
+        This will put a title into corresponding line in code listing.
 
         \subsubsection{Examples:}
             {
                 ~\\
                 \usecodefont
-                \verb'TITLE         "Text, that will show up in the codelisting"'
+                \verb'TITLE         "Text, that will show up in the code listing"'
             }
 
     \subsection{MESSAGE}
@@ -695,7 +701,7 @@ Each list element is being parsed and split into an address reference, a command
             {
                 ~\\
                 \usecodefont
-                \verb'MESSAGE         "Text, that will show up in the codelisting"'
+                \verb'MESSAGE         "Text, that will show up in the code listing"'
             }
 
     \subsection{ERROR}
@@ -709,20 +715,20 @@ Each list element is being parsed and split into an address reference, a command
             {
                 ~\\
                 \usecodefont
-                \verb'ERROR         "Text, that will show up in the codelisting"'
+                \verb'ERROR         "Text, that will show up in the code listing"'
             }
 
     \subsection{WARNING}
             \verb'WARNING            <"warning text">'
 
         \subsubsection{Description:}
-            This will put title into coresponding line in codelisting.
+            This will put title into corresponding line in code listing.
 
         \subsubsection{Examples:}
             {
                 ~\\
                 \usecodefont
-                \verb'WARNING         "Text, that will show up in the codelisting"'
+                \verb'WARNING         "Text, that will show up in the code listing"'
             }
 
     \subsection{LOCAL}
@@ -751,8 +757,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'END'
 
         \subsubsection{Description:}
-        The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesnt have to be
-        syntactically right.
+            The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesn't have to be syntactically correct.
 
         \subsubsection{Examples:}
             {
@@ -771,7 +776,7 @@ Each list element is being parsed and split into an address reference, a command
             }
 
         \subsubsection{Description:}
-        Fills program memory with jump to the specified address. Simple protection against errors.
+            Fills program memory with jump to the specified address. Simple protection against errors.
 
         \subsubsection{Examples:}
             {
@@ -783,7 +788,7 @@ Each list element is being parsed and split into an address reference, a command
 
 
 \section{Pseudo Instructions}
-MDS assembler supports some useful pseudo instructions, which can improve understandabillity of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+    MDS assembler supports some useful pseudo instructions, which can improve understandability of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
     \subsection{INC}
         \subsubsection{Syntax:}
@@ -792,14 +797,17 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'INC       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'ADD       sX, #1'
         }
+
         \subsubsection{Description:}
-    This instruction increments given register value by one.
+            This instruction increments given register value by one.
+
         \subsubsection{Examples:}
         {
             ~\\
@@ -814,14 +822,17 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'DEC       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'SUB       sX, #1'
         }
+
         \subsubsection{Description:}
-    This instruction decrements given register value by one.
+            This instruction decrements given register value by one.
+
         \subsubsection{Examples:}
         {
             ~\\
@@ -836,12 +847,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'SET       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'OR       sX, #0xFF'
         }
+
         \subsubsection{Description:}
             This instruction sets given register.
 
@@ -859,12 +872,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'CLRR       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'AND       sX, #0x00'
         }
+
         \subsubsection{Description:}
             This instruction clears given register.
 
@@ -882,12 +897,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'CPL       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'XOR       sX, #0xFF'
         }
+
         \subsubsection{Description:}
             This instruction execute 1\'s complement with given register.
 
@@ -905,6 +922,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'CPL2       <register>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
@@ -929,12 +947,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'SETB       <register>,<bit>           ; bit <0:7>'
         }
+
         \subsubsection{Equal to:}
          {
             ~\\
             \usecodefont
             \verb'OR       sX, #1 << bit'
         }
+
         \subsubsection{Description:}
             Sets bit in given register.
 
@@ -952,12 +972,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'CLRB       <register>,<bit>           ; bit <0:7>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'AND       sX,#(0xFF ^ (1 << bit))'
         }
+
         \subsubsection{Description:}
             Clears bit in given register.
 
@@ -975,12 +997,14 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'NOTB       <register>,<bit>           ; bit <0:7>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
             \usecodefont
             \verb'XOR       sX,#(~(1 << bit))'
         }
+
         \subsubsection{Description:}
             Negates bit in given register.
 
@@ -998,6 +1022,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \usecodefont
             \verb'DJNZ       <register>,<label>'
         }
+
         \subsubsection{Equal to:}
         {
             ~\\
@@ -1005,6 +1030,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \verb'SUB               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
         }
+
         \subsubsection{Description:}
             Given register is decremented until it is zero.
 
@@ -1027,6 +1053,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \verb'ADD               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
         }
+
         \subsubsection{Description:}
             Given register is incremented until overflow.
 
@@ -1039,25 +1066,23 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
         }
 
     \section{Run time directives}
-    MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program.
-    Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used.
-    Table of allowed instructions is displayed below.
+        MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program. Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used. Table of allowed instructions is displayed below.
         \begin{table}[h!]
-                \mysmallfont{}
-                \centering{}
-                \begin{tabular}{|l|l}
-                \hline
-                Condition operator       &          Example  \\
-                ==                       &          A ==  B  \\
-                !=                       &          A !=  B  \\
-                >                        &          A >   B  \\
-                <                        &          A <   B  \\
-                >=                       &          A >=  B  \\
-                <=                       &          A <=  B  \\
-                \&                       &          A \&  B  \\
-                !\&                      &          A !\& B
-                \end{tabular}
-                \caption{Allowed conditions with IF, WHILE}
+            \mysmallfont{}
+            \centering{}
+            \begin{tabular}{|l|l}
+            \hline
+            Condition operator       &          Example  \\
+            ==                       &          A ==  B  \\
+            !=                       &          A !=  B  \\
+            >                        &          A >   B  \\
+            <                        &          A <   B  \\
+            >=                       &          A >=  B  \\
+            <=                       &          A <=  B  \\
+            \&                       &          A \&  B  \\
+            !\&                      &          A !\& B
+            \end{tabular}
+            \caption{Allowed conditions with IF, WHILE}
         \end{table}
 
         \subsection{IF}
@@ -1075,10 +1100,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             }
 
         \subsubsection{Description:}
-        You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-        evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix.
-        Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares
-        symbol with register address. So 5 would have been replaced with value stored in register with address 5.
+            You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares symbol with register address. So 5 would have been replaced with value stored in register with address 5.
 
         \subsubsection{Examples:}
         {
@@ -1103,101 +1125,79 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
             \verb'ENDW'
         }\\
 
-        \textbf{Description:}\\
-        You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-        evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix.
-        Number without \# is considered as register adrress. See example for conditions syntax.\\
-        \textbf{Examples:}\\
+        \subsubsection{Description:}
+        You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax.
+
+        \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'WHILE       s0 == #10'\\
             \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
-        }\\
-        {
+            ~\\
             ~\\
             \usecodefont
             \verb'WHILE       s0 > #10'\\
             \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
-        }\\
-        {
+            ~\\
             ~\\
             \usecodefont
             \verb'WHILE       s0  != #10'\\
             \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
-        }\\
+        }
 
-        \subsection{FOR}
-            \textbf{Syntax:}\\
+    \subsection{FOR}
+        \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
-            \verb'FOR       <condition>'\\
+            \verb'FOR   <condition>'\\
             \verb'      <code>'\\
             \verb'ENDW'
-        }\\
+        }
 
-            \textbf{Description:}\\
-            You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and
-            evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case,
-            counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of
-            repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger.
-            See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
-            \textbf{Examples:}\\
+        \subsubsection{Description:}
+            You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case, counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger. See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
+
+        \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'FOR       s0,10'\\
             \verb'      NOP'\\
             \verb'ENDF'
-        }\\
-        In this case, incrementing is from 0 to 10. Incrementing step is 1.\\
-        {
             ~\\
-            \usecodefont
+            \verb';In this case, incrementing is from 0 to 10. Incrementing step is 1.'
             \verb'FOR       s0,10..20'\\
             \verb'      NOP'\\
             \verb'ENDF'
-        }\\
-
-        In this case, incrementing is in the range 10 to 20. Incrementing step is 1.\\
-        {
             ~\\
-            \usecodefont
+            \verb';In this case, incrementing is in the range 10 to 20. Incrementing step is 1.'
             \verb'FOR       s0,10..50,10'\\
             \verb'      NOP'\\
             \verb'ENDF'
-        }\\
+        }
+
         In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).\\
 
     \section{Macro Processing}
-        Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of
-        repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do
-        not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported
-        by this assembler are.
+        Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported by this assembler are.
 
-        \subsection{MACROS}
-        \textbf{Syntax:}\\
+        \subsection{Syntax:}
         {
             ~\\
             \usecodefont
             \verb'MACRO      [<parameter1>]  [,<parameter2>..]'\\
             \verb'    <macro source code>'\\
             \verb'ENDM  ; end of macro declaration '
-        }\\
-
-        {
             ~\\
             \usecodefont
             \verb'EXPAND        ; Expanding of macros allowed'\\
             \verb'NOEXPAND      ; Expanding of macros forbidden '\\
-        }\\
+        }
 
-        \begin{table}[h!]
-            \begin{tabular}{|ll|}
+            \begin{table}[h!]
+                \begin{tabular}{|ll|}
                     \hline
                     MACRO      & Define a new macro \\
                     EXITM      & Exit macro  \\
@@ -1205,32 +1205,33 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
                     EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
                     NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
                     \hline
-            \end{tabular}
-            \caption{Macro comands}
-        \end{table}
-        \textbf{Description:}\\
-        Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro
-        with no parameters  or unlimited number of parameters.\\
-        \textbf{Examples:}\\
-        This can be well demonstrated on examples:
-        {
-            ~\\
-            \usecodefont\\
-            \verb'abc           macro           ; Define named macro '\\
-            \verb'      load    s2,s0'\\
-            \verb'      add     s2,#1'\\
-            \verb'      load    s1,s2'\\
-            \verb'endm'\\\\
-            \verb'abc           ; Expand macro "abc"  here'\\
-            \verb'abc           ; Expand macro "abc"  here'\\\\
-            \verb'; This is the same as if you wrote this:'\\
-            \verb'      load    s2,s0'\\
-            \verb'      add     s2,#1'\\
-            \verb'      load    s1,s2'\\
-            \verb'      load    s2,s0'\\
-            \verb'      add     s2,#1'\\
-            \verb'      load    s1,s2'\\
-        }
+                \end{tabular}
+                \caption{Macro commands}
+            \end{table}
+
+        \subsection{Description:}
+            Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro with no parameters  or unlimited number of parameters.
+
+        \subsection{Examples:}
+            This can be well demonstrated on examples:
+            {
+                ~\\
+                \usecodefont\\
+                \verb'abc           macro           ; Define named macro '\\
+                \verb'      load    s2,s0'\\
+                \verb'      add     s2,#1'\\
+                \verb'      load    s1,s2'\\
+                \verb'endm'\\\\
+                \verb'abc           ; Expand macro "abc"  here'\\
+                \verb'abc           ; Expand macro "abc"  here'\\\\
+                \verb'; This is the same as if you wrote this:'\\
+                \verb'      load    s2,s0'\\
+                \verb'      add     s2,#1'\\
+                \verb'      load    s1,s2'\\
+                \verb'      load    s2,s0'\\
+                \verb'      add     s2,#1'\\
+                \verb'      load    s1,s2'\\
+            }
 
            Macro without parameters.
 
