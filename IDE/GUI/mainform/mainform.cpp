@@ -329,19 +329,20 @@ MainForm::~MainForm()
         if (projectMan->getOpenProjects().count() > 0)
         {
             QList<Project*> projects = projectMan->getOpenProjects();
-            qDebug() << "Mainform: prepare to project session restoration";
+            //qDebug() << "Mainform: prepare to project session restoration";
             for (int i = 0; i < projects.count(); i++)
             {
-                qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+                //qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
                 GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
                 if (wDockManager->getTabCount() > 0)
                 {
-                    qDebug() << "Mainform: prepare to files session restoration";
+                    //qDebug() << "Mainform: prepare to files session restoration";
                     for (int j = 0; j < wDockManager->getTabCount(); j++)
                     {
                         if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
                         {
-                            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            //qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            //qDebug() << "MainForm: with parent" << projects.at(i)->prjPath;
                             GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
                             GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
                         }
@@ -1047,7 +1048,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -1114,7 +1115,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
-    //qDebug() << "MainForm: return openFilePath()";
+    qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -3328,7 +3329,7 @@ void MainForm::sessionRestorationSlot()
     QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
     for (int i = 0; i < projectPaths.count(); i++)
     {
-        qDebug() << "MainForm: session open project";
+        //qDebug() << "MainForm: session open project";
         if (projectPaths.at(i) == "untracked")
         {
             this->projectMan->addUntrackedProject();
@@ -3340,7 +3341,8 @@ void MainForm::sessionRestorationSlot()
     }
     for (int i = 0; i < filePaths.count(); i++)
     {
-        qDebug() << "MainForm: session open file";
+        //qDebug() << "MainForm: session open file" << filePaths.at(i);
+        //qDebug() << "MainForm: session file parent" << fileParentProjects.at(i);
         this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
     }
     GuiCfg::getInstance().sessionClear();
