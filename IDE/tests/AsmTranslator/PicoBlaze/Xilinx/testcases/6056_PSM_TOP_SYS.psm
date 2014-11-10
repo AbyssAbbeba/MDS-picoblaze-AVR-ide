@@ -1,0 +1,144 @@
+;==============================================================================;
+;
+; Tesla Agregator MPU_SYS
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;   Done:
+;       basic UART/USB user interface
+;       SFP management
+;       PHY management
+;
+;   Under Contruction:
+;       SFP+PHY speed detect & MAC control
+;
+;   ToDo:
+;       I2C control interface
+;       Agregator control (mode select)
+;
+;==============================================================================;
+;
+; Register usage
+;s0                 delay subroutines
+;s1                 delay subroutines
+;s2                 delay subroutines
+;s3                 serial interface; device address
+;s4                 serial interface; register address
+;s5                 serial interface; data LSB
+;s6                 serial interface; data
+;s7                 serial interface; data
+;s8                 serial interface; data MSB
+;s9                 character register
+;sA                 string address (lower)
+;sB                 string address (upper)
+;sC                 -- no special purpose --
+;sD                 -- no special purpose --
+;sE                 -- no special purpose --
+;sF                 SFP interfaces status register
+;                      sF(0) = SFP present
+;                      sF(1) = SFP compatible
+;                      sF(2-7) -- unused --
+;
+;==============================================================================;
+;
+; List of general purpose procedures (CALLs)
+;
+;     SMI_RD              device address = s3
+;                       register address = s4; (7:5) are cleared
+;                                   data = (s6+s5)
+;
+;     SMI_WR              device address = s3
+;                       register address = s4; (7:5) are cleared
+;                                   data = (s6+s5)
+;                                   temp = s7
+;
+;     SFP_ROM_RD          device address = s3
+;                       register address = s4
+;                                   data = s5
+;
+;     SFP_PHY_RD          device address = s3
+;                       register address = s4
+;                                   data = (s6+s5)
+;
+;     SFP_PHY_WR          device address = s3
+;                       register address = s4
+;                                   data = (s6+s5)
+;                                   temp = s7
+;
+;     send_SMI_reg        <TAB>    AA RR DDDD       s3, s4, s5, s6 (s0, s1, s9)
+;     send_SFP_reg        <TAB>    AA RR DD         s3, s4, s5,    (s0, s1, s9)
+;
+;     SFP_ASCII_info
+;
+;     send_CHAR     s9 (s0)
+;     send_BYTE     s9 (s0, s1)
+;     send_CRLF     (s9, s0)
+;     Send_string   sB, sA (s9, s0)
+;
+;     wait_1ms      (s0, s1, s2)
+;     wait_5ms      (s0, s1, s2)
+;     wait_10ms     (s0, s1, s2)
+;     wait_100ms    (s0, s1, s2)
+;     wait_1s       (s0, s1, s2)
+;
+;==============================================================================;
+;
+;   I  N     N  I  TTTTTTTTT  I    AAA    L        I  ZZZZZZZ    AAA    TTTTTTTTT  I   OOOOOO   N     N
+;   I  NN    N  I      T      I   A   A   L        I       Z    A   A       T      I  O      O  NN    N
+;   I  N N   N  I      T      I  A     A  L        I      Z    A     A      T      I  O      O  N N   N
+;   I  N  N  N  I      T      I  AAAAAAA  L        I    ZZZ    AAAAAAA      T      I  O      O  N  N  N
+;   I  N   N N  I      T      I  A     A  L        I    Z      A     A      T      I  O      O  N   N N
+;   I  N    NN  I      T      I  A     A  L        I   Z       A     A      T      I  O      O  N    NN
+;   I  N     N  I      T      I  A     A  LLLLLLL  I  ZZZZZZZ  A     A      T      I   0OOOO0   N     N
+;
+;==============================================================================;
+
+
+;==============================================================================;
+
+Start:              CALL        SYS_init
+                    ENABLE INTERRUPT            ; By default interrupt is disabled after startup !!!
+
+;==============================================================================;
+;
+;  MM     MM    AAA    I  N     N        L        OOOOOO    OOOOOO   PPPPPP
+;  M M   M M   A   A   I  NN    N        L       O      O  O      O  P     P
+;  M  M M  M  A     A  I  N N   N        L       O      O  O      O  P     P
+;  M   M   M  AAAAAAA  I  N  N  N        L       O      O  O      O  PPPPPP
+;  M       M  A     A  I  N   N N        L       O      O  O      O  P
+;  M       M  A     A  I  N    NN        L       O      O  O      O  P
+;  M       M  A     A  I  N     N        LLLLLLL  0OOOO0    0OOOO0   P
+;
+;==============================================================================;
+
+main_loop:          CALL        I2C_LED_service         ; read from 0x00
+                    CALL        I2C_Status_service      ; read from 0x00
+                    CALL        I2C_CMD_service         ; write to 0x9F
+                   ;CALL        I2C_CMD_service_S       ; write to 0x9F; simplified control of switch_limit values
+                   ;CALL        I2C_JUMPER_service      ; write to 0xA0
+
+                    CALL        port_refresh_all
+
+                    JUMP        main_loop
+
+;==============================================================================;
+
+INCLUDE "PSM_SYS_init.psm"
+INCLUDE "PSM_delay.psm"
+INCLUDE "PSM_addr_const.psm"
+INCLUDE "PSM_UART_text.psm"
+INCLUDE "PSM_serial.psm"
+INCLUDE "PSM_PHY.psm"
+INCLUDE "PSM_SFP.psm"
+INCLUDE "PSM_ISR_main.psm"
+INCLUDE "PSM_ISR_UART.psm"
+INCLUDE "PSM_ISR_PHY.psm"
+INCLUDE "PSM_ISR_FIFO_over.psm"
+INCLUDE "PSM_I2C_service.psm"
+INCLUDE "PSM_HOST_service.psm"
+INCLUDE "PSM_I2C_radio_emul.psm"
+
+;==============================================================================;
+; Interrupt jump instruction
+                    ADDRESS   7FF                 ; interrupt
+                    JUMP      IntService          ; jump to interrupt subroutine address
+;==============================================================================;

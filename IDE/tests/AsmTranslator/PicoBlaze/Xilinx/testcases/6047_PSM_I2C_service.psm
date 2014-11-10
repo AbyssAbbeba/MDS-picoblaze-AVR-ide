@@ -1,0 +1,351 @@
+;==============================================================================;
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;==============================================================================;
+;
+;
+;
+;
+;
+;
+;==============================================================================;
+;==============================================================================;
+; I2C services
+;==============================================================================;
+;==============================================================================;
+; Update LED status according to register 0x00
+
+I2C_LED_service:    LOAD        s4, 00                  ; set accessed address
+                    CALL        EEPROM_RD               ; read data to s5
+                    OUTPUT      s5, ID_GPIO_LED         ; update LED status
+                    RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+; Update registers 0xA0 according to status of JUMPERs (DIPs)
+
+I2C_JUMPER_service: LOAD        s4, A0                  ; set accessed address
+                    INPUT       s5, ID_GPIO_DIP         ; read status of JUMPERs (DIPs)
+                    CALL        EEPROM_WR               ; write data to EEPROM
+                    RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+; Update Ethernet port link status register according to current port status
+;   (address 0x9F)
+;
+; bit(5) = link PRI up
+; bit(6) = link LAG up
+; bit(7) = link RAD up
+;
+; ID_MAC_1_link_status    ; PRI
+; ID_MAC_2_link_status    ; LAG
+; ID_MAC_3_link_status    ; RAD
+;
+I2C_Status_service: LOAD        s6, 00                      ; clear status reg
+LINK_update_1:      INPUT       s7, ID_MAC_1_link_status    ; PRI
+                    COMPARE     s7, 00000010'b              ; 1000Base-Tx or 100Base-Tx?
+                    JUMP        NZ, LINK_update_2           ; no
+                    OR          s6, 00100000'b              ; set status bit = PRI online
+
+LINK_update_2:      INPUT       s7, ID_MAC_2_link_status    ; LAG
+                    COMPARE     s7, 00000010'b              ; 1000Base-Tx or 100Base-Tx?
+                    JUMP        NZ, LINK_update_3           ; no
+                    OR          s6, 01000000'b              ; set status bit = LAG online
+
+LINK_update_3:      INPUT       s7, ID_MAC_3_link_status    ; RAD
+                    COMPARE     s7, 00000010'b              ; 1000Base-Tx or 100Base-Tx?
+                    JUMP        NZ, LAG_status_update       ; no
+                    OR          s6, 10000000'b              ; set status bit = RAD online
+
+; read status of LAG device
+LAG_status_update:  INPUT       s5, ID_AGR_REG_Status_LAG_L ; else load content of remote command register (0x00)
+                    AND         s5, 00011111'b              ; clear upper three bits
+
+LINK_update_write:  OR          s5, s6                      ; update link status
+                    LOAD        s4, 9F                      ; set accessed address
+                    CALL        EEPROM_WR                   ; write data to s5
+                    OUTPUT      s5, ID_AGR_REG_Status_Local_H   ; update 0x9F register for VLAN frames
+
+                    RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+; Update link status register according to current port status
+;
+
+
+; service for "ETH_AGR_MODE" value
+I2C_CMD_service:    LOAD        s4, 00                          ; set accessed address
+                    CALL        EEPROM_RD                       ; read data from EEPROM (AGR mode requested by MCU via I2C)
+                    LOAD        s6, s5                          ; store requested mode to s6
+                    AND         s6, 11100000'b                  ; select upper three bits (AGR_MODE_REQUEST)
+
+                    INPUT       s5, ID_AGR_REG_Status_Local_L   ; load previous value of AGR_MODE_REQUEST
+                    AND         s5, 11100000'b                  ; select upper three bits (AGR_MODE_REQUEST)
+
+                    COMPARE     s5, s6                          ; compare new value with previous value
+
+                    JUMP        Z, I2C_CMD_CON_A                ; no mode change => check radio status and speed
+                    CALL        AGR_Autodetect                  ; mode change => set new mode
+
+
+; service for "RF_CONNECT_A" and "RADIO_STAT_A" value
+I2C_CMD_CON_A:      LOAD        s4, 00
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    TEST        s5, 00000001'b                  ; Radio link up? ('0' = link is up)
+                    JUMP        NZ, I2C_CMD_RAD_0k0             ; when link is down, set limit to 0
+
+I2C_CMD_speed_RAD:  SR0         s5                              ; select RADIO_STAT_A
+                    AND         s5, 00001111'b                  ; mask-out upper nibble
+
+                    ; check speed and update switch limit values for RAD channel
+                    COMPARE     s5, C_Radio_Speed_4k0
+                    JUMP        Z, I2C_CMD_RAD_4k0
+
+I2C_CMD_RAD_4k0:    LOAD        s0, C_SwLim_4k0_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_3k5:    LOAD        s0, C_SwLim_3k5_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_3k0:    LOAD        s0, C_SwLim_3k0_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_2k5:    LOAD        s0, C_SwLim_2k5_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_2k0:    LOAD        s0, C_SwLim_2k0_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_1k5:    LOAD        s0, C_SwLim_1k5_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_1k0:    LOAD        s0, C_SwLim_1k0_H
+                    JUMP        I2C_CMD_RAD_set
+
+I2C_CMD_RAD_0k0:    LOAD        s0, C_SwLim_0k0_H
+
+I2C_CMD_RAD_set:    OUTPUT      s0, ID_AGR_Switch_Limit_RAD_H
+
+
+; service for "RF_CONNECT_B" and "RADIO_STAT_B" value
+
+I2C_CMD_CON_B:      LOAD        s4, 9F
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    TEST        s5, 00000001'b                  ; LAG link up? ('0' = link is up)
+                    JUMP        NZ, I2C_CMD_LAG_0k0             ; when link is down, set limit to 0
+
+I2C_CMD_speed_LAG:  SR0         s5                              ; select RADIO_STAT_A
+                    AND         s5, 00001111'b                  ; mask-out upper nibble
+
+                    ; check speed and update switch limit values for RAD channel
+                    COMPARE     s5, C_Radio_Speed_4k0
+                    JUMP        Z, I2C_CMD_LAG_4k0
+
+I2C_CMD_LAG_4k0:    LOAD        s0, C_SwLim_4k0_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_3k5:    LOAD        s0, C_SwLim_3k5_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_3k0:    LOAD        s0, C_SwLim_3k0_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_2k5:    LOAD        s0, C_SwLim_2k5_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_2k0:    LOAD        s0, C_SwLim_2k0_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_1k5:    LOAD        s0, C_SwLim_1k5_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_1k0:    LOAD        s0, C_SwLim_1k0_H
+                    JUMP        I2C_CMD_LAG_set
+
+I2C_CMD_LAG_0k0:    LOAD        s0, C_SwLim_0k0_H
+
+I2C_CMD_LAG_set:    OUTPUT      s0, ID_AGR_Switch_Limit_LAG_H
+
+; update register value (for VLAN)
+I2C_CMD_update:     LOAD        s4, 00                          ; set accessed address
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    OUTPUT      s5, ID_AGR_REG_Status_Local_L   ; update AGR mode request
+                    RETURN
+
+
+
+;==============================================================================;
+;==============================================================================;
+; Simplified control of switch limit values:
+;   When there is difference larger than +/-1, stop agregation and send data
+;   only through the link with the higher throughput
+
+
+; service for "ETH_AGR_MODE" value
+I2C_CMD_service_S:  LOAD        s4, 00                          ; set accessed address
+                    CALL        EEPROM_RD                       ; read data from EEPROM (AGR mode requested by MCU via I2C)
+                    LOAD        s6, s5                          ; store requested mode to s6
+                    AND         s6, 11100000'b                  ; select upper three bits (AGR_MODE_REQUEST)
+
+                    INPUT       s5, ID_AGR_REG_Status_Local_L   ; load previous value of AGR_MODE_REQUEST
+                    AND         s5, 11100000'b                  ; select upper three bits (AGR_MODE_REQUEST)
+
+                    COMPARE     s5, s6                          ; compare new value with previous value
+
+                    JUMP        Z, I2C_CMD_CON_A_S              ; no mode change => check radio status and speed
+                    CALL        AGR_Autodetect                  ; mode change => set new mode
+
+
+; service for "RF_CONNECT_A" and "RADIO_STAT_A" value (RAD interface)
+I2C_CMD_CON_A_S:    LOAD        s4, 00
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    LOAD        s6, s5                          ; s6 = speed info of RAD
+                    TEST        s5, 00000001'b                  ; Radio link up? ('0' = link is up)
+                    JUMP        Z, I2C_CMD_CON_B_S              ; when link is up, check the second link
+                    LOAD        s0, C_SwLim_0k0_H               ; when link is down, set limit to 0
+                    OUTPUT      s0, ID_AGR_Switch_Limit_RAD_H
+
+
+; service for "RF_CONNECT_B" and "RADIO_STAT_B" value (LAG interface)
+I2C_CMD_CON_B_S:    LOAD        s4, 9F
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    TEST        s5, 00000001'b                  ; LAG link up? ('0' = link is up)
+                    JUMP        Z, I2C_CMD_spd_chck_S           ; when link is down, set limit to 0
+                    LOAD        s0, C_SwLim_0k0_H               ; when link is down, set limit to 0
+                    OUTPUT      s0, ID_AGR_Switch_Limit_LAG_H
+
+
+; s6 = speed info of RAD
+; s5 = speed info of LAG
+I2C_CMD_spd_chck_S: SR0         s5                              ; select RADIO_STAT_B
+                    AND         s5, 00001111'b                  ; mask-out upper nibble
+                    SR0         s6                              ; select RADIO_STAT_A
+                    AND         s6, 00001111'b                  ; mask-out upper nibble
+                    COMPARE     s5, s6                          ; s5 - s6 = LAG - RAD
+                    JUMP        C, RAD_larger                   ; jump if RAD > LAG
+
+                    SUB         s5, s6                          ; LAG - RAD
+                    COMPARE     s5, C_max_difference            ; speed difference > 1 ??
+                    JUMP        C, set_only_LAG
+                    JUMP        set_both
+
+RAD_larger:         SUB         s6, s5                          ; RAD - LAG
+                    COMPARE     s6, C_max_difference            ; speed difference > 1 ??
+                    JUMP        C, set_only_RAD
+                    JUMP        set_both
+
+
+set_only_LAG:       LOAD        s0, C_SwLim_4k0_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_LAG_H
+                    LOAD        s0, C_SwLim_0k0_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_RAD_H
+                    JUMP        I2C_CMD_update_S
+
+set_only_RAD:       LOAD        s0, C_SwLim_4k0_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_RAD_H
+                    LOAD        s0, C_SwLim_0k0_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_LAG_H
+                    JUMP        I2C_CMD_update_S
+
+set_both:           LOAD        s0, C_SwLim_4k0_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_RAD_H
+                    OUTPUT      s0, ID_AGR_Switch_Limit_LAG_H
+                    JUMP        I2C_CMD_update_S
+
+
+; update register value (for VLAN)
+I2C_CMD_update_S:   LOAD        s4, 00                          ; set accessed address
+                    CALL        EEPROM_RD                       ; read data from EEPROM
+                    OUTPUT      s5, ID_AGR_REG_Status_Local_L   ; update AGR mode request
+                    RETURN
+    
+
+;==============================================================================;
+;==============================================================================;
+; Simple EEPROM read and write procedures
+;   s4 = register (memory) address
+;   s5 = data
+
+EEPROM_RD:          OUTPUT      s4, ID_RAM_addr_REG     ; set accessed address
+                    TEST        s0, 00                  ; dummy (wait); probably not needed
+                    INPUT       s5, ID_RAM_data_out_REG ; read data (from memory output)
+                    RETURN
+
+;==============================================================================;
+
+EEPROM_WR:          OUTPUT      s4, ID_RAM_addr_REG     ; set accessed address
+                    TEST        s0, 00                  ; dummy (wait); probably not needed
+                    OUTPUT      s5, ID_RAM_data_in_REG  ; write data (to memory input)
+                    RETURN
+
+;==============================================================================;
+; I2C register dump (via UART)
+;==============================================================================;
+; Read all 256 registers
+
+I2C_reg_dump:       CALL        send_CRLF
+                    CALL        mess_I2C
+                    CALL        send_SPACE
+                    CALL        mess_Status
+                    CALL        send_CRLF
+
+                    LOAD        s4, 00                  ; initial address
+I2C_reg_dump_i:     CALL        send_TAB
+                    LOAD        s9, s4                  ; send address
+                    CALL        send_BYTE
+                    CALL        send_TAB
+                    CALL        EEPROM_RD               ; read data
+                    LOAD        s9, s5                  ; send data
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+                    ADD         s4, 01                  ; increment address counter
+                    JUMP        NZ, I2C_reg_dump_i      ; all data read?
+                    CALL        send_CRLF
+                    RETURN
+
+;==============================================================================;
+; I2C reduced register dump (via UART)
+;==============================================================================;
+; Read only selected registers
+
+I2C_reg_dump_short: CALL        send_CRLF
+                    CALL        mess_I2C
+                    CALL        send_SPACE
+                    CALL        mess_Status
+                    CALL        send_CRLF
+
+; read register 0x00
+                    LOAD        s4, 00
+                    CALL        send_TAB
+                    LOAD        s9, s4
+                    CALL        send_BYTE
+                    CALL        send_TAB
+                    CALL        EEPROM_RD
+                    LOAD        s9, s5
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+
+; read register 0x9F
+                    LOAD        s4, 9F
+                    CALL        send_TAB
+                    LOAD        s9, s4
+                    CALL        send_BYTE
+                    CALL        send_TAB
+                    CALL        EEPROM_RD
+                    LOAD        s9, s5
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+
+                    RETURN
+
+;==============================================================================;
+;==============================================================================;
