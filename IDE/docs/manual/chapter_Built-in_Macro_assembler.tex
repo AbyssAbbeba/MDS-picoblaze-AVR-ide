@@ -1,4 +1,4 @@
-In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
+In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
 MDS has the most advanced macro assembler on the market. Its supports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
 
@@ -99,8 +99,8 @@ Each list element is being parsed and split into an address reference, a command
             3        & \%       & unsigned remainder      & 13 \% 11        \\\hline
             4        & +        & unsigned addition       & 3 + 5           \\\hline
             4        & -        & unsigned substraction   & 20 - 4          \\\hline
-            5        & <{}<     & binary shift left       & 21 << 4         \\\hline
-            5        & >{}>     & binary shift right      & 32 >> 2         \\\hline
+            5        & <{}<     & binary shift left       & 21 <{}< 4       \\\hline
+            5        & >{}>     & binary shift right      & 32 >{}> 2       \\\hline
             6        & <        & less than               & 11 < 12         \\\hline
             6        & <=       & less or equal than      & 11 <= 11        \\\hline
             6        &  >       & greater than            & 12 > 11         \\\hline
@@ -182,7 +182,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'INCLUDE "file_name.asm"'
         }
         \subsubsection{Description}
-            Compiler basicaly copies content of included file to line, where the directive is used. Include files can include other files.
+            Compiler copies content of the specified file to line where this directive is used. Included files can include other files.
 
         \subsubsection{Examples}
         {
@@ -192,7 +192,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'INCLUDE "sub_dir/another_file.asm"'\\
             \verb'INCLUDE "C:/my_dir/my_file.asm"'\\
             \verb'INCLUDE "C:\\my_dir\\my_file.asm"'\\
-            \verb'INCLUDE "/home/AlanTuring/my_project/cool_file.asm"'\\
+            \verb'INCLUDE "/home/AlanTuring/my_project/file.asm"'\\
         }
 
     \subsection{EQU}
@@ -203,7 +203,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'<symbol>      EQU             <expression> '
         }
         \subsubsection{Description:}
-                The directive EQU stands for "equals". It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
+                The directive EQU stands for EQUals. It allows you to give a numerical value to a symbol. Such symbol is considered constant and therefore cannot be redefined.
 
         \subsubsection{Examples:}
         {
@@ -212,7 +212,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
             \verb'Second_symb   EQU     47                      ;Number in decimal'\\
             \verb'Third_symb    EQU     0x39                    ;Number in hexadecimal'\\
-            \verb'Fourth_symb   EQU     (A -4)+ 18 / B)         ;Number with expression'\\
+            \verb'Fourth_symb   EQU     (A - 4) + 18 / B)       ;Number with expression'\\
             \verb'Fifth_symb    EQU     0x09 << 2               ;'\\
         }
 
@@ -245,7 +245,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'<symbol>      SET             <expression>'
         }
         \subsubsection{Description:}
-            The directive SET allows you to give a numerical value to a symbol like EQU, but with this symbol can be redefined.
+            The directive SET allows you to give a numerical value to a symbol like EQU but with this symbol can be redefined.
 
         \subsubsection{Examples:}
         {
@@ -254,7 +254,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'First_symb    SET     0b10011100              ;Number in binary'\\
             \verb'Second_symb   SET     47                      ;Number in decimal'\\
             \verb'Third_symb    SET     0x39                    ;Number in hexadecimal'\\
-            \verb'Fourth_symb   SET     (A -4)+ 18 / B)         ;Number with expression'\\
+            \verb'Fourth_symb   SET     (A - 4) + 18 / B)       ;Number with expression'\\
             \verb'Fifth_symb    SET     0x09 << 2               ;'\\
         }
 
@@ -266,8 +266,8 @@ Each list element is being parsed and split into an address reference, a command
             \verb'VARIABLE            <symbol>,<expression>'
         }
         \subsubsection{Description:}
-            Directive VARIABLE is similar to SET, but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source
-            code, but those defined with EQU cannot.
+            Directive VARIABLE is similar to SET but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source
+            code but those defined with EQU cannot.
 
         \subsubsection{Examples:}
         {
@@ -309,7 +309,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'NAMEREG            <symbol>,<reg name or address> '
             }
         \subsubsection{Description:}
-        Directive NAMEREG is similar to REG, but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source
+        Directive NAMEREG is similar to REG but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source
         code.
 
         \subsubsection{Examples:}
@@ -606,7 +606,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb' ; parameter can be unlimited number of string characters, or expressions divided by comma'\\
         }
         \subsubsection{Description:}
-            The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit, but trims 6 MSB bits making it 18-bit value,
+            The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit but trims 6 MSB bits making it 18-bit value,
             so it can fit into program memory. You can insert infinite number of string characters and MDS assembler separates them into triplets of bytes replaced
             with their ASCII value. The assembler then trims upper 6 bits making it 18-bit value.
             See the examples for better understanding of DB directive.
@@ -1441,7 +1441,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
                     \item[Limit value -1 means unlimited] \hfill \\
                     You can define limit values with LIMIT directive. Using -1 as directive argument, means unlimited.
                     \item[Symbol X declared as local but never used, declaration ignored] \hfill \\
-                    The given local symbol has been declared, but never used. Declaration will be ignored.
+                    The given local symbol has been declared but never used. Declaration will be ignored.
                     \item[Comparing two immediate constants, result is always positive] \hfill \\
                     Comparing two immediate constants, result will be always same.
                     \item[Comparing two immediate constants, result is always negative] \hfill \\
@@ -1701,7 +1701,7 @@ MDS assembler supports some useful pseudo instructions, which can improve unders
                     \begin{itemize}
                         \item S1 S-record type S1, indicating it is a data record to be loaded at a 2-byte address.
                         \item 13 Hexadecimal 13 (decimal 19), indicating that nineteen character pairs, representing a 2 byte address, 16 bytes of binary data, and a 1 byte checksum, follow.
-                        \item 00 00 Four character 2-byte address field; hexadecimal address 0x0000, where the data which follows is to be loaded.
+                        \item 00 00 Four character 2-byte address field; hexadecimal address 0x0000 where the data which follows is to be loaded.
                         \item 28 5F 24 5F 22 12 22 6A 00 04 24 29 00 08 23 7C Sixteen character pairs representing the actual binary data.
                         \item 2A The checksum.
                     \end{itemize}
