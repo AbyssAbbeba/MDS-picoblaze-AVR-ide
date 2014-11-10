@@ -20,7 +20,7 @@
 #include <cctype>
 #include <utility>
 #include <iterator>
-
+#include<iostream>//DEBUG
 constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 const boost::regex AsmTranslatorKcpsmXil::m_reAtMark      = boost::regex ( "^@", flags );
 const boost::regex AsmTranslatorKcpsmXil::m_reComment     = boost::regex ( "^;.*$", flags );
