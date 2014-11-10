@@ -3340,7 +3340,7 @@ void MainForm::sessionRestorationSlot()
     }
     for (int i = 0; i < filePaths.count(); i++)
     {
-        qDebug() << "MainForm: session open file";
+        qDebug() << "MainForm: session open file" << filePaths.at(i);
         this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
     }
     GuiCfg::getInstance().sessionClear();
