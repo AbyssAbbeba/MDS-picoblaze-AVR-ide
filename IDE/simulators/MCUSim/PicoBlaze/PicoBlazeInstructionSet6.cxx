@@ -51,7 +51,7 @@ void ( PicoBlazeInstructionSet6 :: * const PicoBlazeInstructionSet6::m_opCodeDis
     & PicoBlazeInstructionSet6::inst_0x14,              // opCode = 0x14---
     & PicoBlazeInstructionSet6::inst__,                 // opCode = 0x15---
     & PicoBlazeInstructionSet6::inst_STAR_sX_sY,        // opCode = 0x16---
-    & PicoBlazeInstructionSet6::inst__,                 // opCode = 0x17---
+    & PicoBlazeInstructionSet6::inst_STAR_sX_kk,        // opCode = 0x17---
     & PicoBlazeInstructionSet6::inst_SUB_sX_sY,         // opCode = 0x18---
     & PicoBlazeInstructionSet6::inst_SUB_sX_kk,         // opCode = 0x19---
     & PicoBlazeInstructionSet6::inst_SUBCY_sX_sY,       // opCode = 0x1A---
@@ -246,7 +246,7 @@ void PicoBlazeInstructionSet6::inst_LOAD_sX_kk ( const unsigned int opCode )
 
 void PicoBlazeInstructionSet6::inst_STAR_sX_sY ( const unsigned int opCode )
 {
-    instructionEnter ( PicoBlazeInsNames::INS_LOAD );
+    instructionEnter ( PicoBlazeInsNames::INS_STAR );
 
     // Extract operands from OP code.
     const unsigned int sX = ( opCode & 0xf00 ) >> 8;
@@ -254,6 +254,18 @@ void PicoBlazeInstructionSet6::inst_STAR_sX_sY ( const unsigned int opCode )
 
     // STAR sX, sY
     m_registers -> write ( sX, m_registers -> read ( sY ), ( ( 0 == m_registers -> getBank() ) ? 1 : 0 ) );
+}
+
+void PicoBlazeInstructionSet6::inst_STAR_sX_kk ( const unsigned int opCode )
+{
+    instructionEnter ( PicoBlazeInsNames::INS_STAR );
+
+    // Extract operands from OP code.
+    const unsigned int sX = ( opCode & 0xf00 ) >> 8;
+    const unsigned int kk = ( opCode & 0x0ff );
+
+    // STAR sX, sY
+    m_registers -> write ( sX, kk, ( ( 0 == m_registers -> getBank() ) ? 1 : 0 ) );
 }
 
 void PicoBlazeInstructionSet6::inst_AND_sX_sY ( const unsigned int opCode )

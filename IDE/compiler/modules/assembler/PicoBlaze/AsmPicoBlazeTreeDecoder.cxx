@@ -26,6 +26,7 @@
 // PicoBlaze assembler semantic analyzer header files.
 #include "AsmMacros.h"
 #include "AsmMemoryPtr.h"
+#include "AsmStringTable.h"
 #include "AsmSymbolTable.h"
 #include "AsmCodeListing.h"
 #include "AsmPicoBlazeSpecialMacros.h"
@@ -58,6 +59,7 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    AsmCodeListing                       * codeListing,
                                                    AsmPicoBlazeSpecialMacros            * specialMacros,
                                                    AsmPicoBlazeInstructionSet           * instructionSet,
+                                                   AsmStringTable                       * stringTable,
                                                    AsmPicoBlazeSemanticAnalyzer::Device & device )
                                                  :
                                                    m_compilerCore   ( compilerCore   ),
@@ -70,6 +72,7 @@ AsmPicoBlazeTreeDecoder::AsmPicoBlazeTreeDecoder ( CompilerSemanticInterface    
                                                    m_codeListing    ( codeListing    ),
                                                    m_specialMacros  ( specialMacros  ),
                                                    m_instructionSet ( instructionSet ),
+                                                   m_stringTable    ( stringTable    ),
                                                    m_device         ( device         )
 {
     m_mergeAddr = -1;
@@ -116,6 +119,10 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
                 dir_EQU_etc(node);
                 break;
 
+            case ASMPICOBLAZE_DIR_STRING:
+                dir_STRING(node);
+                break;
+
             case ASMPICOBLAZE_DIR_AUTOREG:
             case ASMPICOBLAZE_DIR_AUTOSPR:
                 dir_AUTOxxx(node);
@@ -127,6 +134,9 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
 
             case ASMPICOBLAZE_DIR_END:
                 break;
+
+            case ASMPICOBLAZE_DIR_OUTPUTK_STR_P: dir_OUTPUTK_STR_P(node); break;
+            case ASMPICOBLAZE_DIR_LD_RET_SX_STR: dir_LD_RET_SX_STR(node); break;
 
             case ASMPICOBLAZE_MACRO:       HANDLE_ACTION( macro       ( node ) ); break;
             case ASMPICOBLAZE_DIR_RTFOR:   HANDLE_ACTION( dir_RTFOR   ( node ) ); break;
@@ -1156,6 +1166,99 @@ inline void AsmPicoBlazeTreeDecoder::dir_LIMIT ( CompilerStatement * node )
     }
 }
 
+inline void AsmPicoBlazeTreeDecoder::dir_OUTPUTK_STR_P ( CompilerStatement * node )
+{
+    using namespace CompilerStatementTypes;
+
+    const CompilerValue * val;
+    for ( val = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == val->m_type;
+          val = &( val->m_data.m_expr->lVal() ) );
+
+    const CompilerValue::Type type = val->m_type;
+    std::string stringValue;
+
+    if ( CompilerValue::TYPE_SYMBOL == type )
+    {
+        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
+        {
+            return;
+        }
+    }
+    else if ( CompilerValue::TYPE_ARRAY == type )
+    {
+        stringValue = std::string ( (const char*) val->m_data.m_array.m_data,
+                                    (size_t) val->m_data.m_array.m_size );
+    }
+
+    CompilerStatement * instructions = new CompilerStatement();
+    for ( const char c : stringValue )
+    {
+        CompilerExpr * pp = new CompilerExpr(node->args()->next()->copyChainLink(), node->args()->next()->location());
+        CompilerExpr * kk = new CompilerExpr(int(c), node->args()->location());
+        instructions->appendLink ( new CompilerStatement ( node->location(),
+                                                           ASMPICOBLAZE_INS_OUTPUTK_KK_P,
+                                                           kk->appendLink(pp)));
+    }
+
+    node->insertLink(instructions);
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_LD_RET_SX_STR ( CompilerStatement * node )
+{
+    using namespace CompilerStatementTypes;
+
+    const CompilerValue * val;
+    for ( val = &( node->args()->next()->lVal() );
+          CompilerValue::TYPE_EXPR == val->m_type;
+          val = &( val->m_data.m_expr->lVal() ) );
+
+    const CompilerValue::Type type = val->m_type;
+    std::string stringValue;
+
+    if ( CompilerValue::TYPE_SYMBOL == type )
+    {
+        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
+        {
+            return;
+        }
+    }
+    else if ( CompilerValue::TYPE_ARRAY == type )
+    {
+        stringValue = std::string ( (const char *) val->m_data.m_array.m_data,
+                                    (size_t) val->m_data.m_array.m_size );
+    }
+
+    CompilerStatement * instructions = new CompilerStatement();
+    for ( const char c : stringValue )
+    {
+        CompilerExpr * sx = new CompilerExpr(node->args()->copyChainLink(), node->args()->location());
+        CompilerExpr * kk = new CompilerExpr(int(c), node->args()->next()->location());
+        instructions->appendLink ( new CompilerStatement ( node->location(),
+                                                           ASMPICOBLAZE_INS_LD_RET_SX_KK,
+                                                           sx->appendLink(kk)));
+    }
+
+    node->insertLink(instructions);
+}
+
+inline void AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
+{
+    const CompilerValue * val;
+
+    for ( val = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == val->m_type;
+          val = &( val->m_data.m_expr->lVal() ) );
+    std::string name ( val->m_data.m_symbol );
+
+    for ( val = &( node->args()->next()->lVal() );
+          CompilerValue::TYPE_EXPR == val->m_type;
+          val = &( val->m_data.m_expr->lVal() ) );
+    std::string value ( (const char *) val->m_data.m_array.m_data, val->m_data.m_array.m_size );
+
+    m_stringTable->add(name, value, &(node->location()));
+}
+
 inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
@@ -1198,7 +1301,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
     std::string name = nameVal->m_data.m_symbol;
 
     int value = m_symbolTable -> addSymbol ( name,
-                                             node->args()->m_next,
+                                             node->args()->next(),
                                              &( node->location() ),
                                              symbolType,
                                              true );

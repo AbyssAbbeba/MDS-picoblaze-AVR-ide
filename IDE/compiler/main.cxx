@@ -126,6 +126,9 @@ void printHelp ( const char * executable )
               << QObject::tr("    -s, --stable <table of symbols>").toStdString() << std::endl
               << QObject::tr("        Specify file in which the compiler will put table of symbols defined in your "
                              "code.").toStdString() << std::endl
+              << QObject::tr("    --strtable <table of strings>").toStdString() << std::endl
+              << QObject::tr("        Specify file in which the compiler will put table of strings defined in your "
+                             "code.").toStdString() << std::endl
               << QObject::tr("    -h, --help").toStdString() << std::endl
               << QObject::tr("        (Print this message.)").toStdString() << std::endl
               << QObject::tr("    -V, --version").toStdString() << std::endl
@@ -354,6 +357,7 @@ int main ( int argc, char ** argv )
         { "cunit",       required_argument, 0, 0x105 },
         { "raw-hex-dump",required_argument, 0, 0x106 },
         { "base-inc-dir",required_argument, 0, 0x107 },
+        { "strtable",    required_argument, 0, 0x108 },
 
         { 0,             0,                 0, 0     }
     };
@@ -462,6 +466,9 @@ int main ( int argc, char ** argv )
                 break;
             case 0x107: // --base-inc-dir
                 compiler.setBaseIncludeDir(optarg);
+                break;
+            case 0x108: // --strtable
+                opts.m_stringTable = optarg;
                 break;
 
             case 0x200: // --no-backup

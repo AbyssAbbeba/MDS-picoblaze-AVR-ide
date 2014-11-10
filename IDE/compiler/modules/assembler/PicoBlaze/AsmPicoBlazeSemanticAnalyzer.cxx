@@ -19,6 +19,7 @@
 #include "AsmMacros.h"
 #include "AsmMemoryPtr.h"
 #include "AsmDgbFileGen.h"
+#include "AsmStringTable.h"
 #include "AsmSymbolTable.h"
 #include "AsmCodeListing.h"
 #include "CompilerStatementTypes.h"
@@ -57,6 +58,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_machineCode    = new AsmMachineCodeGen();
     m_memoryPtr      = new AsmMemoryPtr ( compilerCore );
     m_symbolTable    = new AsmSymbolTable ( compilerCore, opts );
+    m_stringTable    = new AsmStringTable ( compilerCore, opts );
     m_codeGenerator  = new AsmPicoBlazeCodeGenerator();
     m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
     m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
@@ -65,7 +67,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_treeDecoder    = new AsmPicoBlazeTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,
                                                      m_machineCode,     m_macros,       m_memoryPtr,
                                                      m_symbolTable,     m_codeListing,  m_specialMacros,
-                                                     m_instructionSet,  m_device );
+                                                     m_instructionSet,  m_stringTable,  m_device );
 
     m_device = DEV_UNSPEC;
 
@@ -190,6 +192,7 @@ void AsmPicoBlazeSemanticAnalyzer::process ( CompilerStatement * codeTree )
     m_codeListing->output();
     m_macros->output();
     m_symbolTable->output();
+    m_stringTable->output();
 
     if ( true == m_compilerCore->successful() )
     {

@@ -296,6 +296,15 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::pair<uns
                                     + changeLetterCase ( lineFields.getOperand(0, true),
                                                          m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ) );
     }
+    else if ( "string" == directive )
+    {
+        std::string id = newIdentifier(lineFields.getOperand(1, true));
+        m_registers.insert(id);
+        lineFields.replaceInstOpr (   changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
+                                    + changeLetterCase ( " string ",
+                                                         m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] )
+                                    + lineFields.getOperand(0, true) );
+    }
     else if ( "address" == directive )
     {
         fixRadix(lineFields, 0);
@@ -555,32 +564,34 @@ void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
     }
 
     std::string opr = lineFields.getOperand(i);
+    size_t size = opr.size();
 
     if ( true == ishex(opr) )
     {
         lineFields.replaceOpr ( "0x" + opr, i );
     }
-    else if ( ( '"' == opr.back() ) && ( '"' == opr.front() ) )
+    else if ( ( 3 == size ) && ( '"' == opr.back() ) && ( '"' == opr.front() ) )
     {
-        lineFields.replaceOpr ( '\'' + opr.substr ( 1, opr.size() - 2 ) + '\'', i );
+        lineFields.replaceOpr ( '\'' + opr.substr ( 1, size - 2 ) + '\'', i );
     }
-    else if ( ( opr.size() >= 3 ) && ( "'" == opr.substr(opr.size() - 2, 1) ) )
+    else if ( ( size >= 3 ) && ( '\'' == opr[size - 2] ) )
     {
         switch ( std::tolower(opr.back()) )
         {
+            // Binary.
             case 'b':
-                // Binary.
-                lineFields.replaceOpr ( "0b" + opr.substr(0, opr.size() - 2), i );
+                lineFields.replaceOpr ( "0b" + opr.substr(0, size - 2), i );
                 break;
 
+            // Octal.
             case 'q':
             case 'o':
-                // Octal.
-                lineFields.replaceOpr ( '0' + opr.substr(0, opr.size() - 2), i );
+                lineFields.replaceOpr ( '0' + opr.substr(0, size - 2), i );
                 break;
 
-            case 'd': // Decimal.
-                opr = opr.substr(0, opr.size() - 2);
+            // Decimal.
+            case 'd':
+                opr = opr.substr(0, size - 2);
 
                 while ( '0' == opr.front() )
                 {
@@ -594,10 +605,43 @@ void AsmTranslatorKcpsmXil::fixRadix ( LineFields & lineFields,
                 lineFields.replaceOpr ( opr, i );
                 break;
 
-            case 'h': // Hexadecimal.
-                lineFields.replaceOpr ( "0x" + opr.substr(0, opr.size() - 2), i );
+            // Hexadecimal.
+            case 'h':
+                lineFields.replaceOpr ( "0x" + opr.substr(0, size - 2), i );
                 break;
         }
+    }
+    else if ( size > 6 )
+    {
+        std::string suffix = opr.substr(size - 6, 6);
+        if ( ( "'lower" == suffix ) || ( "'upper" == suffix ) )
+        {
+            std::string prefix = opr.substr(0, size - 6);
+
+            lineFields.replaceOpr(prefix, i);
+            fixRadix(lineFields, i);
+            opr = lineFields.getOperand(i);
+
+            std::string func;
+            if ( "'lower" == suffix )
+            {
+                func = "low";
+            }
+            else
+            {
+                func = "high";
+            }
+
+            lineFields.replaceOpr(func + '(' + opr + ')', i);
+        }
+    }
+}
+
+inline void AsmTranslatorKcpsmXil::removeTrailingDollar ( std::string & id )
+{
+    if ( '$' == id.back() )
+    {
+        id.pop_back();
     }
 }
 
@@ -609,6 +653,8 @@ std::string AsmTranslatorKcpsmXil::newIdentifier ( const std::string & id )
     if ( ( 0 == isdigit(idLowerCase[0]) ) && ( m_usedIDs.cend() == m_usedIDs.find(idLowerCase) ) )
     {
         m_usedIDs.insert(idLowerCase);
+
+        removeTrailingDollar(idLowerCase);
         return idLowerCase;
     }
     else
@@ -622,6 +668,7 @@ std::string AsmTranslatorKcpsmXil::newIdentifier ( const std::string & id )
         m_usedIDs.insert(newId);
         m_idTranslationMap.insert({id, newId});
 
+        removeTrailingDollar(newId);
         return newId;
     }
 }
@@ -629,6 +676,7 @@ std::string AsmTranslatorKcpsmXil::newIdentifier ( const std::string & id )
 inline void AsmTranslatorKcpsmXil::translateIdentifiers ( AsmTranslatorBase::LineFields & lineFields )
 {
     std::string id;
+    std::string idFinal;
     std::map<std::string,std::string>::const_iterator it;
     std::map<std::string,std::string>::const_iterator end = m_idTranslationMap.cend();
 
@@ -637,7 +685,9 @@ inline void AsmTranslatorKcpsmXil::translateIdentifiers ( AsmTranslatorBase::Lin
     it = m_idTranslationMap.find(id);
     if ( end != it )
     {
-        lineFields.replaceLabel ( it->second + ":" );
+        idFinal = it->second;
+        removeTrailingDollar(idFinal);
+        lineFields.replaceLabel ( idFinal + ":" );
     }
 
     for ( int  i = 0; true == lineFields.hasOperand(i); i++ )
@@ -657,7 +707,9 @@ inline void AsmTranslatorKcpsmXil::translateIdentifiers ( AsmTranslatorBase::Lin
             }
         }
 
-        lineFields.replaceOpr ( changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ), i );
+        idFinal = id;
+        removeTrailingDollar(idFinal);
+        lineFields.replaceOpr ( changeLetterCase ( idFinal, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] ), i );
     }
 }
 

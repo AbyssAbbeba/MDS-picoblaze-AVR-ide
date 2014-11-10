@@ -20,6 +20,7 @@
 class AsmMacros;
 class AsmMemoryPtr;
 class AsmDgbFileGen;
+class AsmStringTable;
 class AsmSymbolTable;
 class AsmCodeListing;
 class AsmPicoBlazeTreeDecoder;
@@ -136,6 +137,9 @@ class AsmPicoBlazeSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         AsmPicoBlazeInstructionSet * m_instructionSet;
+
+        ///
+        AsmStringTable * m_stringTable;
 
         ///
         Device m_device;

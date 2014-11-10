@@ -24,6 +24,7 @@ class CompilerSemanticInterface;
 // Forward declarations (PicoBlaze Assembler common).
 class AsmMacros;
 class AsmMemoryPtr;
+class AsmStringTable;
 class AsmDgbFileGen;
 class AsmSymbolTable;
 class AsmCodeListing;
@@ -97,6 +98,7 @@ class AsmPicoBlazeTreeDecoder
          * @param[in,out] codeListing
          * @param[in,out] specialMacros
          * @param[in,out] instructionSet
+         * @param[in,out] stringTable
          * @param[in,out] device
          * @return
          */
@@ -110,6 +112,7 @@ class AsmPicoBlazeTreeDecoder
                                   AsmCodeListing                       * codeListing,
                                   AsmPicoBlazeSpecialMacros            * specialMacros,
                                   AsmPicoBlazeInstructionSet           * instructionSet,
+                                  AsmStringTable                       * stringTable,
                                   AsmPicoBlazeSemanticAnalyzer::Device & device );
 
         /**
@@ -320,6 +323,24 @@ class AsmPicoBlazeTreeDecoder
         /**
          * @brief
          * @param[in,out] node
+         */
+        inline void dir_STRING ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_LD_RET_SX_STR ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_OUTPUTK_STR_P ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
          * @return
          */
         inline CourseOfAction dir_EXITM ( CompilerStatement * node );
@@ -410,6 +431,9 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         AsmPicoBlazeInstructionSet * const m_instructionSet;
+
+        ///
+        AsmStringTable * const m_stringTable;
 
         ///
         AsmPicoBlazeSemanticAnalyzer::Device & m_device;

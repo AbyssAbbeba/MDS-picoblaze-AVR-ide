@@ -26,22 +26,24 @@
 #endif // MDS_FEATURE_PICOBLAZE
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
 #  include "DAsmAdaptable.h"
-#  include "AdjSimProcDefParser.h"
+#  include "AdjSimProcDef/AdjSimProcDef.h"
+#  include "AdjSimProcDef/AdjSimProcDefParser.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // MCU memory data container libraries.
-#include "HexFile.h"
-#include "BinFile.h"
-#include "SrecFile.h"
-#include "XilMemFile.h"
-#include "XilVHDLFile.h"
-#include "XilVerilogFile.h"
-#include "RawHexDumpFile.h"
+#include "MCUDataFiles/HexFile.h"
+#include "MCUDataFiles/BinFile.h"
+#include "MCUDataFiles/SrecFile.h"
+#include "MCUDataFiles/XilMemFile.h"
+#include "MCUDataFiles/XilVHDLFile.h"
+#include "MCUDataFiles/XilVerilogFile.h"
+#include "MCUDataFiles/RawHexDumpFile.h"
 
 // Standard headers.
 #include <cctype>
 #include <string>
 #include <vector>
+#include <memory>
 #include <cstring>
 #include <cstdlib>
 #include <fstream>
@@ -56,6 +58,9 @@
 // Boost Filesystem library.
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include "boost/filesystem.hpp"
+
+// OS compatibility.
+#include "os/os.h"
 
 /**
  * @brief Program version string.
@@ -100,6 +105,9 @@ void printHelp ( const char * executable )
             #endif // MDS_FEATURE_PICOBLAZE
             #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
               << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
+              << QObject::tr("    -d, --def <architecture>").toStdString() << std::endl
+              << QObject::tr("        Specify the exact processor architecture by processor definition file.")
+                            .toStdString() << std::endl
             #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << std::endl
               << QObject::tr("    -f, --family <family>").toStdString() << std::endl
@@ -212,6 +220,8 @@ inline void invalidCfgOption ( const char * opt )
  */
 int main ( int argc, char ** argv )
 {
+    using namespace boost::filesystem;
+
     DAsm * disasm = nullptr;
     DataFile * dataFile = nullptr;
     DAsm::Config config;
@@ -221,6 +231,7 @@ int main ( int argc, char ** argv )
     std::string architecture;
     std::string family;
     std::string type;
+    std::string procDef;
 
     bool inTypeGuessed = false;
 
@@ -240,7 +251,7 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVo:a:f:t:";
+    const char * shortopts = ":hVo:a:f:t:d:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0, 'h'   },
@@ -250,6 +261,10 @@ int main ( int argc, char ** argv )
         { "arch",        required_argument, 0, 'a'   },
         { "family",      required_argument, 0, 'f'   },
         { "type",        required_argument, 0, 't'   },
+
+      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+        { "def",         required_argument, 0, 'd'   },
+      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
         { "cfg-ind",     required_argument, 0, 0x100 },
         { "cfg-tabsz",   required_argument, 0, 0x101 },
@@ -279,6 +294,7 @@ int main ( int argc, char ** argv )
             case 'a':  architecture = optarg; break;
             case 'f':  family       = optarg; break;
             case 't':  type         = optarg; break;
+            case 'd':  procDef      = optarg; break;
 
             case 0x100: // --cfg-ind
                 if ( 0 == strcmp(optarg, "tabs") )
@@ -442,10 +458,9 @@ int main ( int argc, char ** argv )
         infile = argv[i];
     }
 
-    if ( ( true == architecture.empty() ) || ( true == family.empty() ) )
+    if ( true == architecture.empty() )
     {
-        std::cerr << QObject::tr("Error: architecture and processor family have to be specified.").toStdString()
-                  << std::endl;
+        std::cerr << QObject::tr("Error: processor architecture have to be specified.").toStdString() << std::endl;
         return EXIT_ERROR_CLI;
     }
 
@@ -456,7 +471,12 @@ int main ( int argc, char ** argv )
     #ifdef MDS_FEATURE_PICOBLAZE
     else if ( "PicoBlaze" == architecture )
     {
-        if ( "kcpsm1cpld" == family )
+        if ( true == family.empty() )
+        {
+            std::cerr << QObject::tr("Error: processor family have to be specified.").toStdString() << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+        else if ( "kcpsm1cpld" == family )
         {
             disasm = new DAsmPicoBlazeKcpsm1CPLD();
             memFileBPR = 2;
@@ -498,8 +518,41 @@ int main ( int argc, char ** argv )
     #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
     else if ( "Adaptable" == architecture )
     {
-        // TODO: implement this...
-//         disasm = new DAsmAdaptable(procDef);
+        if ( true == procDef.empty() )
+        {
+            std::cerr << QObject::tr("Error: no processor definition file specified.").toStdString() << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+
+        procDef = path(makeHomeSafe(procDef)).make_preferred().string();
+
+        std::ifstream file ( procDef, (std::ios_base::in | std::ios_base::binary) );
+
+        if ( false == file.is_open() )
+        {
+            std::cerr << QObject::tr("Error: unable to open file: ").toStdString() + procDef << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+
+        static const long long int MAX_SIZE = 102400;
+        std::unique_ptr<char[]> data ( new char [ MAX_SIZE ] );
+        size_t len = (size_t) file.readsome (data.get(), MAX_SIZE);
+
+        if ( true == file.bad() )
+        {
+            std::cerr << QObject::tr("Error: unable to read file: ").toStdString() + procDef << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+
+        std::unique_ptr<AdjSimProcDefParser> parser (new AdjSimProcDefParser(std::string(data.get(), len)));
+
+        if ( false == parser.get()->isValid() )
+        {
+            std::cerr << QObject::tr("Error: invalid data in file: ").toStdString() + procDef << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+
+        disasm = new DAsmAdaptable(parser.get()->data());
     }
     #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
     else
@@ -536,6 +589,8 @@ int main ( int argc, char ** argv )
 
     try
     {
+        infile = path(makeHomeSafe(infile)).make_preferred().string();
+
         if ( ( "hex" == type ) || ( "ihex" == type ) )
         {
             dataFile = new HexFile(infile);
@@ -614,6 +669,7 @@ int main ( int argc, char ** argv )
 
     if ( false == outfile.empty() )
     {
+        outfile = path(makeHomeSafe(outfile)).make_preferred().string();
         std::ofstream file ( outfile, ( std::fstream::out | std::fstream::trunc ) );
         file << *disasm;
 

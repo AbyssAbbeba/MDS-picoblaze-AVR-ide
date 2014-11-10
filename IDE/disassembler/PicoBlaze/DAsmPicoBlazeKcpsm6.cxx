@@ -48,6 +48,7 @@ bool DAsmPicoBlazeKcpsm6::phase1 ( unsigned int code,
         case KCPSM6_COMPARE_SX_KK:
         case KCPSM6_COMPARECY_SX_KK:
         case KCPSM6_LD_RET_SX_KK:
+        case KCPSM6_STAR_SX_KK:
             m_addresses[CONST].insert ( code & 0xff );
         case KCPSM6_SHIFT_ROTATE:
             m_addresses[REG].insert ( ( code & 0xf00 ) >> 8 );
@@ -158,6 +159,7 @@ void DAsmPicoBlazeKcpsm6::phase2 ( unsigned int code,
         case KCPSM6_COMPARE_SX_KK:      sx_kk(line, code, "COMPARE");   break;
         case KCPSM6_COMPARECY_SX_KK:    sx_kk(line, code, "COMPARECY"); break;
         case KCPSM6_LD_RET_SX_KK:       sx_kk(line, code, "LD & RET");  break;
+        case KCPSM6_STAR_SX_KK:         sx_kk(line, code, "STAR");      break;
 
         case KCPSM6_SHIFT_ROTATE:       shift_rotate(line, code);       break;
 

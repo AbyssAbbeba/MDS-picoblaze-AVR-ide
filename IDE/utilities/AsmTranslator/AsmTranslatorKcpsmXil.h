@@ -117,6 +117,12 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
          */
         inline unsigned int indSz() const;
 
+        /**
+         * @brief
+         * @param[in,out] id
+         */
+        inline void removeTrailingDollar ( std::string & id );
+
     ////    Public Attributes    ////
     public:
         /// @brief

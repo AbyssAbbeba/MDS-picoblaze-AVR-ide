@@ -127,6 +127,7 @@ void TestSuiteSuc::testFunction()
     m_options->m_vhdlFile       = resultsCommonPath + ".vhd";
     m_options->m_memFile        = resultsCommonPath + ".mem";
     m_options->m_rawHexDumpFile = resultsCommonPath + ".rawhex";
+    m_options->m_stringTable    = resultsCommonPath + ".str";
 
     const std::string errFile = (path("TestSuiteSuc") / "results" / ( testName + ".err" )).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);

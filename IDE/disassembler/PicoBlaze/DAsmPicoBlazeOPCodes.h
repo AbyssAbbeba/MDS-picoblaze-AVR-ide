@@ -147,6 +147,7 @@ namespace DAsmPicoBlazeOPCodes
         KCPSM6_LOAD_SX_SY       = 0x00,
         KCPSM6_LOAD_SX_KK       = 0x01,
         KCPSM6_STAR_SX_SY       = 0x16,
+        KCPSM6_STAR_SX_KK       = 0x17,
         KCPSM6_AND_SX_SY        = 0x02,
         KCPSM6_AND_SX_KK        = 0x03,
         KCPSM6_OR_SX_SY         = 0x04,

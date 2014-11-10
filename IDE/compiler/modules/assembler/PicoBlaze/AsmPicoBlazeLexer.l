@@ -195,6 +195,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"device"             { return D_DEVICE;     }
 \.?"limit"              { return D_LIMIT;      }
 \.?"reg"                { return D_REG;        }
+\.?"string"             { return D_STRING;     }
 \.?"namereg"            { return D_NAMEREG;    }
 \.?"address"            { return D_ADDRESS;    }
 \.?"org"                { return D_ORG;        }
@@ -210,6 +211,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"portout"            { return D_PORTOUT;    }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
+\.?"string"             { return D_STRING;     }
 \.?"db"                 { return D_DB;         }
 \.?"error"              { return D_ERROR;      }
 \.?"warning"            { return D_WARNING;    }

@@ -165,6 +165,9 @@ class CompilerOptions
 
             /// Second output (target architecture specific).
             std::string m_second;
+
+            /// Table of strings.
+            std::string m_stringTable;
         //@}
 
         /**
