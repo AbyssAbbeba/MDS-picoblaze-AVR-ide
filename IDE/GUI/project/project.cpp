@@ -955,6 +955,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->useMainFile = false;
     this->mainFileName = "";
     this->mainFilePath = "";
+    this->clock = 10.0;
+    this->clockMult = 1000000;
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
