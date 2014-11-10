@@ -8,7 +8,6 @@ Each list element is being parsed and split into an address reference, a command
     You need to tell compiler, that you are using constants by adding \# before second operand.
 
     {
-        ~\\
         \usecodefont
         \verb'; Example of instructions operating with constants'\\
         \verb'LOAD    s0, #0b00000111   ; compiler now know, that this number is a constant'\\
@@ -19,7 +18,6 @@ Each list element is being parsed and split into an address reference, a command
     Source code files for this assembler must be text files where lines are formed like these:
 
     {
-        ~\\
         \usecodefont
         \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
         \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
@@ -31,7 +29,6 @@ Each list element is being parsed and split into an address reference, a command
 \section{Symbols}
     Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
     {
-        ~\\
         \usecodefont
         \verb'First_symb      EQU     0b100111 ; Number in binary'\\
         \verb'Second_symb     SET     47q      ; Octal'\\
@@ -155,7 +152,6 @@ Each list element is being parsed and split into an address reference, a command
 
     The specified format for most of the directives is:
     {
-        ~\\
         \usecodefont
         \verb'<symbol> <directive> <expression>'
     }
@@ -164,7 +160,6 @@ Each list element is being parsed and split into an address reference, a command
 
     This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, and DEFINE. MDS also supports some other directives, with different syntax format, which is:
     {
-        ~\\
         \usecodefont
         \verb'<directive> <symbol>, <expression>'
     }
@@ -177,16 +172,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{INCLUDE}
         \subsubsection{Syntax}
         {
-            ~\\
             \usecodefont
             \verb'INCLUDE "file_name.asm"'
         }
+
         \subsubsection{Description}
             Compiler copies content of the specified file to line where this directive is used. Included files can include other files.
 
         \subsubsection{Examples}
         {
-            ~\\
             \usecodefont
             \verb'INCLUDE "some_file.asm"'\\
             \verb'INCLUDE "sub_dir/another_file.asm"'\\
@@ -198,16 +192,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{EQU}
         \subsubsection{Syntax}
         {
-            ~\\
             \usecodefont
             \verb'<symbol>      EQU             <expression> '
         }
+
         \subsubsection{Description:}
-                The directive EQU stands for EQUals. It allows you to give a numerical value to a symbol. Such symbol is considered constant and therefore cannot be redefined.
+            The directive EQU stands for EQUals. It allows you to give a numerical value to a symbol. Such symbol is considered constant and therefore cannot be redefined.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
             \verb'Second_symb   EQU     47                      ;Number in decimal'\\
@@ -219,16 +212,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{CONSTANT}
         \subsubsection{Syntax}
         {
-            ~\\
             \usecodefont
             \verb'CONSTANT             <symbol>,<expression>'
         }
+
         \subsubsection{Description:}
-                The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
+            The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
             \verb'CONSTANT     Second_symb,47                      ;Number in decimal'\\
@@ -240,16 +232,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{SET}
         \subsubsection{Syntax}
         {
-            ~\\
             \usecodefont
             \verb'<symbol>      SET             <expression>'
         }
+
         \subsubsection{Description:}
             The directive SET allows you to give a numerical value to a symbol like EQU but with this symbol can be redefined.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'First_symb    SET     0b10011100              ;Number in binary'\\
             \verb'Second_symb   SET     47                      ;Number in decimal'\\
@@ -261,17 +252,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{VARIABLE}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'VARIABLE            <symbol>,<expression>'
         }
+
         \subsubsection{Description:}
-            Directive VARIABLE is similar to SET but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source
-            code but those defined with EQU cannot.
+            Directive VARIABLE is similar to SET but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source code but those defined with EQU cannot.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'VARIABLE     First_symb,0b10011100               ;Number in binary'\\
             \verb'VARIABLE     Second_symb,47                      ;Number in decimal'\\
@@ -283,17 +272,15 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{REG}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'<symbol>      REG             <reg name/address>'
         }
 
         \subsubsection{Description:}
-        Symbols defined with the REG directive are by compiler considered as work registers.
+            Symbols defined with the REG directive are by compiler considered as work registers.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'First_symb        REG     s1'\\
             \verb'Second_symb       REG     s2'\\
@@ -304,17 +291,15 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsection{NAMEREG}
         {
-            ~\\
             \usecodefont
             \verb'NAMEREG            <symbol>,<reg name or address> '
         }
+
         \subsubsection{Description:}
-        Directive NAMEREG is similar to REG but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source
-        code.
+            Directive NAMEREG is similar to REG but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source code.
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'NAMEREG     s1'\\
             \verb'NAMEREG     s2'\\
@@ -326,94 +311,87 @@ Each list element is being parsed and split into an address reference, a command
 
     \subsection{DATA}
         \subsubsection{Syntax:}
-            {
-                ~\\
-                \usecodefont
-                \verb'<symbol>      DATA             <expression>'
-            }
+        {
+            \usecodefont
+            \verb'<symbol>      DATA             <expression>'
+        }
 
         \subsubsection{Description:}
             Symbols defined with the DATA directive are by compiler considered as memory data. It is supposed to be used only with instructions FETCH and STORE.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'First_symb    DATA                0b10011100              ;Number in binary'\\
-                \verb'Second_symb   DATA                47                      ;Number in decimal'\\
-                \verb'Third_symb    DATA                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'Fifth_symb    DATA                0x09 << 2               ;'\\
-            }
+        {
+            \usecodefont
+            \verb'First_symb    DATA                0b10011100              ;Number in binary'\\
+            \verb'Second_symb   DATA                47                      ;Number in decimal'\\
+            \verb'Third_symb    DATA                0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expression'\\
+            \verb'Fifth_symb    DATA                0x09 << 2               ;'\\
+        }
 
     \subsection{CODE}
         \subsubsection{Syntax:}
-            {
-                ~\\
-                \usecodefont
-                \verb'<symbol>      CODE             <expression>'
-            }
+        {
+            \usecodefont
+            \verb'<symbol>      CODE             <expression>'
+        }
+
         \subsubsection{Description:}
-        Symbols defined with the CODE directive are by compiler considered as program memory.
+            Symbols defined with the CODE directive are by compiler considered as program memory.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'First_symb    CODE                0b10011100              ;Number in binary'\\
-                \verb'Second_symb   CODE                47                      ;Number in decimal'\\
-                \verb'Third_symb    CODE                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'Fifth_symb    CODE                0x09 << 2               ;'\\
-            }
+        {
+            \usecodefont
+            \verb'First_symb    CODE                0b10011100              ;Number in binary'\\
+            \verb'Second_symb   CODE                47                      ;Number in decimal'\\
+            \verb'Third_symb    CODE                0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expression'\\
+            \verb'Fifth_symb    CODE                0x09 << 2               ;'\\
+        }
 
     \subsection{PORT}
         \subsubsection{Syntax:}
-            {
-                ~\\
-                \usecodefont
-                \verb'<symbol>      PORT             <expression>'
-            }
+        {
+            \usecodefont
+            \verb'<symbol>      PORT             <expression>'
+        }
+
         \subsubsection{Description:}
-        Symbol defined with this directive is considered to be PORT\_ID identifier.
+            Symbol defined with this directive is considered to be PORT\_ID identifier.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'First_symb    PORT                0x10    '\\
-                \verb'Second_symb   PORT                10      '\\
-                \verb'Third_symb    PORT                0x2     '\\
-                \verb'Fourth_symb   PORT                0x5     '\\
-                \verb'Fifth_symb    PORT                0x09 + 2'\\
-            }
+        {
+            \usecodefont
+            \verb'First_symb    PORT                0x10    '\\
+            \verb'Second_symb   PORT                10      '\\
+            \verb'Third_symb    PORT                0x2     '\\
+            \verb'Fourth_symb   PORT                0x5     '\\
+            \verb'Fifth_symb    PORT                0x09 + 2'\\
+        }
+
     \subsection{AUTOREG}
         \subsubsection{Syntax:}
-            {
-                ~\\
-                \usecodefont
+        {
+            \usecodefont
             \verb'<symbol>      AUTOREG         [<cnt address>]'
-            }
+        }
+
         \subsubsection{Description:}
-        This directive saves time. You can use it, when you don't care which work register will be used. It will automatically assign a register
-        at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter
-        after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
+            This directive saves time. You can use it, when you don't care which work register will be used. It will automatically assign a register at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
-                \verb'Second_symb   AUTOREG'\\
-                \verb'Third_symb    AUTOREG'\\
-                \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting address to 0x05'\\
-                \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'\\
-            }
+        {
+            \usecodefont
+            \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
+            \verb'Second_symb   AUTOREG'\\
+            \verb'Third_symb    AUTOREG'\\
+            \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting address to 0x05'\\
+            \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'\\
+        }
 
     \subsection{AUTOSPR}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'<symbol>      AUTOSPR        [<cnt address>]'
         }
@@ -423,7 +401,6 @@ Each list element is being parsed and split into an address reference, a command
 
     \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'First_symb    AUTOSPR             ; Automatically assigned, data at address 0x00'\\
             \verb'Second_symb   AUTOSPR'\\
@@ -455,7 +432,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{DEFINE}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'<symbol>      DEFINE             <expression>'
         }
@@ -464,7 +440,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'A             EQU         10'\\
             \verb'B             SET         5                   ; Second symbol is redefinable'\\
@@ -477,7 +452,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{ADDRESS,ORG}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'ADDRESS             <expression>'\\
             \verb'ORG                 <expression>'
@@ -487,7 +461,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'ORG           0x3ff'\\
             \verb'ORG           START'\\
@@ -501,7 +474,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{REPT}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'REPT  <NumberOfRepetions>'\\
             \verb'<repeated code>'\\
@@ -513,27 +485,25 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
-                \verb'; With REPT'\\
-                \verb'REPT              8'\\
-                \verb'SR0               sF'\\
-                \verb'ENDR'\\
-                \verb'; Without REPT'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
+            \verb'; With REPT'\\
+            \verb'REPT              8'\\
+            \verb'SR0               sF'\\
+            \verb'ENDR'\\
+            \verb'; Without REPT'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
         }
 
     \subsection{\#WHILE}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'#WHILE  <symbol>'\\
             \verb'<code>'\\
@@ -545,19 +515,17 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-                ~\\
-                \usecodefont
-                \verb'B             SET             8'\\
-                \verb'#WHILE        B                       ; while B != 0'\\
-                \verb'SR0           sF'\\
-                \verb'B             SET             B - 1'\\
-                \verb'#ENDW'
+            \usecodefont
+            \verb'B             SET             8'\\
+            \verb'#WHILE        B                       ; while B != 0'\\
+            \verb'SR0           sF'\\
+            \verb'B             SET             B - 1'\\
+            \verb'#ENDW'
         }
 
     \subsection{SKIP}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'SKIP  <NumberOfInstructions>'
         }
@@ -566,7 +534,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'SKIP          3        ; this will skip first three SR0, performing only one SR0'\\
             \verb'SR0           sF'\\
@@ -579,7 +546,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'UNDEFINE          <symbol>'\\
             \verb'UNDEF             <symbol>'
@@ -590,7 +556,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'My_symbol             SET             15'\\
             \verb'LOAD                  s0, #My_symbol'\\
@@ -601,7 +566,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{DB}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb '; Expresion syntax'\\
             \verb'DB                 <expression1>  [,<expression2>,..]'\\
@@ -619,7 +583,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'DB      24828                   ; hexadecimal 0x0060FC'\\
             \verb'DB      "my string"             ; String syntax'\\
@@ -639,7 +602,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'LIMIT          R,16                   ; Number of registers 16'\\
             \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
@@ -655,7 +617,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'DEVICE                KCPSM3'\\
             \verb'DEVICE                KCPSM2'\\
@@ -667,7 +628,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{LIST, NOLIST}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'LIST'\\
             \verb'NOLIST'
@@ -684,11 +644,10 @@ Each list element is being parsed and split into an address reference, a command
         This will put a title into corresponding line in code listing.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'TITLE         "Text, that will show up in the code listing"'
-            }
+        {
+            \usecodefont
+            \verb'TITLE         "Text, that will show up in the code listing"'
+        }
 
     \subsection{MESSAGE}
         \subsubsection{Syntax:}
@@ -698,11 +657,10 @@ Each list element is being parsed and split into an address reference, a command
             You can define message, that will show up after compilation.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'MESSAGE         "Text, that will show up in the code listing"'
-            }
+        {
+            \usecodefont
+            \verb'MESSAGE         "Text, that will show up in the code listing"'
+        }
 
     \subsection{ERROR}
         \subsubsection{Syntax:}
@@ -712,11 +670,10 @@ Each list element is being parsed and split into an address reference, a command
         You can define an error report, which aborts compilation, when is executed.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'ERROR         "Text, that will show up in the code listing"'
-            }
+        {
+            \usecodefont
+            \verb'ERROR         "Text, that will show up in the code listing"'
+        }
 
     \subsection{WARNING}
             \verb'WARNING            <"warning text">'
@@ -725,11 +682,10 @@ Each list element is being parsed and split into an address reference, a command
             This will put title into corresponding line in code listing.
 
         \subsubsection{Examples:}
-            {
-                ~\\
-                \usecodefont
-                \verb'WARNING         "Text, that will show up in the code listing"'
-            }
+        {
+            \usecodefont
+            \verb'WARNING         "Text, that will show up in the code listing"'
+        }
 
     \subsection{LOCAL}
         \subsubsection{Syntax:}
@@ -739,18 +695,17 @@ Each list element is being parsed and split into an address reference, a command
             This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels or symbols.
 
         \subsubsection{Examples:}
-            {
-            ~\\
+        {
             \usecodefont
-                \verb'MACRO         name_of_macro'\\
-                \verb'LOCAL         wait'\\
-                \verb'wait:'\\
-                \verb'SUBCY         s0,#10h'\\
-                \verb'SUB           s0,#1h' \\
-                \verb'LOAD          s0,#F0h'\\
-                \verb'JUMP          C,wait'\\
-                \verb'ENDM'\\
-            }
+            \verb'MACRO         name_of_macro'\\
+            \verb'LOCAL         wait'\\
+            \verb'wait:'\\
+            \verb'SUBCY         s0,#10h'\\
+            \verb'SUB           s0,#1h' \\
+            \verb'LOAD          s0,#F0h'\\
+            \verb'JUMP          C,wait'\\
+            \verb'ENDM'\\
+        }
 
     \subsection{END}
         \subsubsection{Syntax:}
@@ -761,7 +716,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
             {
-                ~\\
                 \usecodefont
                 \verb'END'
             }
@@ -769,7 +723,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{FAILJMP,DEFAULT\_JUMP}
         \subsubsection{Syntax:}
             {
-                ~\\
                 \usecodefont
                 \verb'<FAILJMP          "label">'\\
                 \verb'<DEFAULT_JMP      "label">'
@@ -780,7 +733,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
             {
-                ~\\
                 \usecodefont
                 \verb'FAILJMP                   Start'\\
                 \verb'DEFAULT\_JUMP             0x000'\\
@@ -793,14 +745,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{INC}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'INC       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'ADD       sX, #1'
         }
@@ -810,7 +760,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'INC              s0'\\
         }
@@ -818,14 +767,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{DEC}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'DEC       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'SUB       sX, #1'
         }
@@ -835,7 +782,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'DEC              s0'\\
         }
@@ -843,14 +789,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{SETR}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'SET       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'OR       sX, #0xFF'
         }
@@ -860,7 +804,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'SETR              s0'\\
         }
@@ -868,14 +811,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{CLRR}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'CLRR       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'AND       sX, #0x00'
         }
@@ -885,7 +826,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'CLRR              s0'\\
         }
@@ -893,14 +833,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{CPL}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'CPL       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'XOR       sX, #0xFF'
         }
@@ -910,7 +848,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'CPL              s0'\\
         }
@@ -918,14 +855,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{CPL2}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'CPL2       <register>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'XOR              s0,#0xFF'\\
             \verb'ADD              s0,#1'\\
@@ -935,7 +870,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'CPL2              s0'\\
         }
@@ -943,14 +877,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{SETB}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'SETB       <register>,<bit>           ; bit <0:7>'
         }
 
         \subsubsection{Equal to:}
          {
-            ~\\
             \usecodefont
             \verb'OR       sX, #1 << bit'
         }
@@ -960,7 +892,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'SETB              s0,3'\\
         }
@@ -968,14 +899,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{CLRB}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'CLRB       <register>,<bit>           ; bit <0:7>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'AND       sX,#(0xFF ^ (1 << bit))'
         }
@@ -985,7 +914,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'CLRB              s0,7'\\
         }
@@ -993,14 +921,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{NOTB}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'NOTB       <register>,<bit>           ; bit <0:7>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'XOR       sX,#(~(1 << bit))'
         }
@@ -1010,7 +936,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'NOTB              s0,7'\\
         }
@@ -1018,14 +943,12 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{DJNZ}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'DJNZ       <register>,<label>'
         }
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'SUB               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
@@ -1036,7 +959,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'loop:             '\\
             \verb'DJNZ              s0, loop'\\
@@ -1048,7 +970,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Equal to:}
         {
-            ~\\
             \usecodefont
             \verb'ADD               s0,#1'\\
             \verb'JUMP              NZ,loop'\\
@@ -1059,7 +980,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'loop:             '\\
             \verb'IJNZ              s0, loop'\\
@@ -1088,7 +1008,6 @@ Each list element is being parsed and split into an address reference, a command
         \subsection{IF}
             \subsubsection{Syntax:}
             {
-                ~\\
                 \usecodefont
                 \verb'IF                <condition>'\\
                 \verb'<code>'\\
@@ -1104,7 +1023,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsubsection{Examples:}
         {
-            ~\\
             \usecodefont
             \verb'IF         s0 == #10'\\
             \verb'           LOAD  s0, #10h'\\
@@ -1118,7 +1036,6 @@ Each list element is being parsed and split into an address reference, a command
     \subsection{WHILE}
         \subsubsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'WHILE       <condition>'\\
             \verb'<code>'\\
@@ -1135,12 +1052,10 @@ Each list element is being parsed and split into an address reference, a command
             \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
             ~\\
-            ~\\
             \usecodefont
             \verb'WHILE       s0 > #10'\\
             \verb'      ADDCY    S1,#1'\\
             \verb'ENDW'
-            ~\\
             ~\\
             \usecodefont
             \verb'WHILE       s0  != #10'\\
@@ -1185,7 +1100,6 @@ Each list element is being parsed and split into an address reference, a command
 
         \subsection{Syntax:}
         {
-            ~\\
             \usecodefont
             \verb'MACRO      [<parameter1>]  [,<parameter2>..]'\\
             \verb'    <macro source code>'\\
@@ -1215,7 +1129,6 @@ Each list element is being parsed and split into an address reference, a command
         \subsection{Examples:}
             This can be well demonstrated on examples:
             {
-                ~\\
                 \usecodefont\\
                 \verb'abc           macro           ; Define named macro '\\
                 \verb'      load    s2,s0'\\
@@ -1236,8 +1149,7 @@ Each list element is being parsed and split into an address reference, a command
            Macro without parameters.
 
         {
-            ~\\
-            \usecodefont\\
+            \usecodefont
             \verb'; Define macro named as "xyz" with two mandatory parameters'\\
             \verb'xyz       macro   foo, bar'\\
             \verb'          load    foo, #10h'\\
@@ -1256,8 +1168,7 @@ Each list element is being parsed and split into an address reference, a command
         An example of named macro with two parameters.
 
         {
-                ~\\
-                \usecodefont\\
+            \usecodefont
             \verb'ijk           macro   foo'\\
             \verb'          add     s1,s0'\\
             \verb''\\
@@ -1463,8 +1374,7 @@ Each list element is being parsed and split into an address reference, a command
         \section{Symbol table}
             Symbol table contains list of macros in your source code with additional informations.
             {
-                ~\\
-                \usecodefont\\
+                \usecodefont
                 \verb'  +-------------------//------------------//-----------------------+'\\
                 \verb'  |  name  |  group  |  value   |  usage  |  type  |  declaration  |'\\
                 \verb'  +-------------------//------------------//-----------------------+'\\
@@ -1498,8 +1408,7 @@ Each list element is being parsed and split into an address reference, a command
         \section{Macro table}
             Macro table contains list of macros in your source code with additional informations.
             {
-                ~\\
-                \usecodefont\\
+                \usecodefont
                 \verb'  +-------------------//----------------------+'\\
                 \verb'  |  name  |  usage  |  type  |  declaration  |'\\
                 \verb'  +-------------------//----------------------+'\\
@@ -1518,8 +1427,7 @@ Each list element is being parsed and split into an address reference, a command
             Every other position increments address by one. Unused memory is filled with zeroes.\\\\
             Example:
             {
-                ~\\
-                \usecodefont\\
+                \usecodefont
                 \verb'; Starting address 0x0000, sixteen OPcodes'\\
                 \verb'@0000 000011F7 00001299 0000132E ... ... ... ... ... ... 00004577 00007789 000015A4'\\
                 \verb'; Starting address 0x0040'\\
@@ -1535,12 +1443,10 @@ Each list element is being parsed and split into an address reference, a command
                 \verb'; end of program memory'\\
             }
         \section{RawHex file}
-             RawHex is very simple. File starts with OPcode of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2
-             and so on. If there is no instruction on a certain address, it is filled with zeroes.\\\\
+            RawHex is very simple. File starts with OP Code of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2, and so on. If there is no instruction on a certain address, it is filled with zeros.\\\\
              Example:
             {
-                ~\\
-                \usecodefont\\
+                \usecodefont
                 \verb'; Starting at address 0x0'\\
                 \verb'011F7'\\
                 \verb'01299'\\
@@ -1557,13 +1463,12 @@ Each list element is being parsed and split into an address reference, a command
                 \verb'...00'\\
                 \verb'; end of program memory'\\
             }
+
         \section{Bin file}
-        Bin file gives you raw data from program memory. It contains OPcodes of instructions in 3bytes(18bit instructions) or 2bytes(16bit instructions)
-        sorted in a line. It does not contain unused memory.\\\\
+            Bin file gives you raw data from program memory. It contains OP Codes of instructions in 3 bytes (18 bit instructions) or 2 bytes (16 bit instructions) sorted in a line. It does not contain unused memory.\\\\
             Example:
             {
-                ~\\
-                \usecodefont\\
+                \usecodefont
                 \verb'; Starting at address 0x0'\\
                 \verb'; Displayed OPcodes 22045, 3EF45, 08FF0 (18bit instr.) would be:'\\
                 \verb'  02204503EF45008FF0 '\\\\
@@ -1571,24 +1476,16 @@ Each list element is being parsed and split into an address reference, a command
                 \verb'  20453EF408F0 '\\
             }
 
-        \section{Motorola SRec format}
-                Motorola S-records are a form of simple ASCII encoding for binary data.
-            This format is commonly used for firmware uploads to GPSes, industrial
-            robots, and other kinds of microcontroller-driven hardware. It has
-            several convenient properties, including inspectability, easy editing
-            with any text editor, and checksumming for verification of transmission
-            across noisy serial lines. An S-record file consists of a sequence of specially formatted ASCII
-            character strings. An S-record will be less than or equal to 78 bytes
-            in length. The order of S-records within a file is of no significance and no
-            particular order may be assumed.\\
+        \section{Motorola S-Rec format}
+            Motorola S-records are a form of simple ASCII encoding for binary data. This format is commonly used for firmware uploads to GPSes, industrial robots, and other kinds of microcontroller-driven hardware. It has
+            several convenient properties, including inspectability, easy editing with any text editor, and checksumming for verification of transmission across noisy serial lines. An S-record file consists of a sequence of specially formatted ASCII character strings. An S-record will be less than or equal to 78 bytes in length. The order of S-records within a file is of no significance and no particular order may be assumed.\\
             The general format of an S-record follows:
-                    {
-                        ~\\
-                        \usecodefont\\
-                        \verb'  +-------------------//------------------//-----------------------+'\\
-                        \verb'  | type | count | address  |            data           | checksum |'\\
-                        \verb'  +-------------------//------------------//-----------------------+'\\
-                    }\\
+            {
+                \usecodefont
+                \verb'  +-------------------//------------------//-----------------------+'\\
+                \verb'  | type | count | address  |            data           | checksum |'\\
+                \verb'  +-------------------//------------------//-----------------------+'\\
+            }
 
             \begin{description}
                 \item[Type] A char[2] field. These characters describe the type of record (S0,S1, S2, S3, S5, S7, S8, or S9).
@@ -1674,8 +1571,7 @@ Each list element is being parsed and split into an address reference, a command
                 \textbf{EXAMPLE}\\
                 Shown below is a typical S-record format file.
                     {
-                        ~\\
-                        \usecodefont\\
+                        \usecodefont
                         \verb''\\
                         \verb'S00600004844521B'\\
                         \verb'S1130000285F245F2212226A000424290008237C2A'\\
@@ -2054,206 +1950,150 @@ Each list element is being parsed and split into an address reference, a command
 
         USAGE:
         {
-            ~\\
             \usecodefont
             \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'\\
         }
         \subsubsection{Options}
             {
-            ~\\
-            \usecodefont
-
-            \verb'--arch, -a <architecture>'\\
+                \usecodefont
+                \verb'--arch, -a <architecture>'\\
             }
+
             Specify target architecture, supported architectures are: \textbf{PicoBlaze}
             {
-            ~\\
-            \usecodefont
-
-            \verb'--plang, -p <programming language>'\\
+                \usecodefont
+                \verb'--plang, -p <programming language>'\\
             }
             Specify programming language, supported languages are: \textbf{ASM:} assembly language
             {
-            ~\\
-            \usecodefont
-
-            \verb'--hex, -x <intel HEX-file>'\\
+                \usecodefont
+                \verb'--hex, -x <intel HEX-file>'\\
             }
             Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--dbg, -d <MDS-native-debug-file>'\\
+                \usecodefont
+                \verb'--dbg, -d <MDS-native-debug-file>'\\
             }
             Specify output file with code for MCU simulator and other debugging tools.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--srec <Motorola-S-REC-file>'\\
+                \usecodefont
+                \verb'--srec <Motorola-S-REC-file>'\\
             }
             Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--srec --binary <binary-file>'\\
+                \usecodefont
+                \verb'--srec --binary <binary-file>'\\
             }
             Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--lst, -l <code-listing>'\\
+                \usecodefont
+                \verb'--lst, -l <code-listing>'\\
             }
             Specify output file where code listing generated during compilation will be stored.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--mtable, -m <table-of-macros>'\\
+                \usecodefont
+                \verb'--mtable, -m <table-of-macros>'\\
             }
             Specify file in which the compiler will put table of macros defined in your code.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--stable, -s <table-of-symbols>'\\
+                \usecodefont
+                \verb'--stable, -s <table-of-symbols>'\\
             }
             Specify file in which the compiler will put table of symbols defined in your code.
             {
-            ~\\
-            \usecodefont
-
-            \verb'--help, -h'\\
+                \usecodefont
+                \verb'--help, -h'\\
             }
             Print help message.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--version, -V'\\
+            {
+                \usecodefont
+                \verb'--version, -V'\\
             }
             Print compiler version and exit.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--check, -c'\\
+            {
+                \usecodefont
+                \verb'--check, -c'\\
             }
             Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--no-backup'\\
+            {
+                \usecodefont
+                \verb'--no-backup'\\
             }
             Don't generate backup files.\\
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--brief-msg'\\
+            {
+                \usecodefont
+                \verb'--brief-msg'\\
             }
             Print only unique messages.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--no-strict'\\
+            {
+                \usecodefont
+                \verb'--no-strict'\\
             }
             Disable certain error and warning messages.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--no-warnings'\\
+            {
+                \usecodefont
+                \verb'--no-warnings'\\
             }
             Do not print any warnings.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--no-errors'\\
+            {
+                \usecodefont
+                \verb'--no-errors'\\
             }
             Do not print any errors.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--no-remarks'\\
+            {
+                \usecodefont
+                \verb'--no-remarks'\\
             }
             Do not print any remarks.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--silent'\\
+            {
+                \usecodefont
+                \verb'--silent'\\
             }
             Do not print any warnings, errors, or any other messages, stay completely silent.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--include, -I <directory>'\\
+            {
+                \usecodefont
+                \verb'--include, -I <directory>'\\
             }
             Add directory where the compiler will search for include files.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--dev, -D <device>'\\
+            {
+                \usecodefont
+                \verb'--dev, -D <device>'\\
             }
             Specify exact target device, options are:
             For PicoBlaze : \textbf{kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3 and kcpsm6}
             {
-            ~\\
-            \usecodefont
-
-            \verb'--precompile, -P <.prc-file>'\\
+                \usecodefont
+                \verb'--precompile, -P <.prc-file>'\\
             }
             Specify target file for generation of precompiled code.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--vhdl <.vhd-file>'\\
+            {
+                \usecodefont
+                \verb'--vhdl <.vhd-file>'\\
             }
             Specify target file for generation of VHDL code.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--vhdl-tmpl <.vhd-file>'\\
+            {
+                \usecodefont
+                \verb'--vhdl-tmpl <.vhd-file>'\\
             }
-             Specify VHDL template file.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--verilog <.v-file>'\\
+            Specify VHDL template file.
+            {
+                \usecodefont
+                \verb'--verilog <.v-file>'\\
             }
            Specify target file for generation of verilog code.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--verilog-tmpl <.v-file>'\\
+            {
+                \usecodefont
+                \verb'--verilog-tmpl <.v-file>'\\
             }
             Specify verilog template file.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--mem <.mem-file>'\\
+            {
+                \usecodefont
+                \verb'--mem <.mem-file>'\\
             }
             Specify target file for generation of MEM file.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'--raw-hex-dump <.hex-file>'\\
+            {
+                \usecodefont
+                \verb'--raw-hex-dump <.hex-file>'\\
             }
             Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).\\
 
@@ -2261,29 +2101,26 @@ Each list element is being parsed and split into an address reference, a command
             `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.\\
 
             When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
+
         \subsubsection{EXAMPLES}
             {
-            ~\\
-            \usecodefont
-
-            \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
+                \usecodefont
+                \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
             }
+
             Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
+            {
+                \usecodefont
+                \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
             }
+
             Do the same at the above, only in this case we have used another variant of usage of switches with argument.
-             {
-            ~\\
-            \usecodefont
-
-            \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
+            {
+                \usecodefont
+                \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
             }
-            Do the same at the above, only in this case we have used short version of the switches.\\
 
+            Do the same at the above, only in this case we have used short version of the switches.\\
 
     \subsection{Disassembler}
         \subsubsection{Description}
@@ -2292,38 +2129,30 @@ Each list element is being parsed and split into an address reference, a command
 
             USAGE:
             {
-                ~\\
                 \usecodefont
                 \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'\\
             }
+
             \subsubsection{Options}
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--arch, -a <architecture>'\\
-                }
-                Specify target architecture, supported architectures are: \textbf{PicoBlaze}
-                {
-                ~\\
+            }
+            Specify target architecture, supported architectures are: \textbf{PicoBlaze}
+            {
                 \usecodefont
-
                 \verb'--family, -f <family>'\\
-                }
+            }
                 Specify processor family, supported families for the given architectures are:  For \textbf{PicoBlaze:} kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--out, -o <output-file>'\\
-                }
+            }
                 Specify output file where the resulting assembly language code will be stored.
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--type, -t <input-file-format>'\\
-                }
+            }
                  Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
                  \begin{description}
                   \item [hex:]I ntel 8 HEX, or Intel 16 HEX.
@@ -2333,30 +2162,24 @@ Each list element is being parsed and split into an address reference, a command
                   \item [vhd:] VHDL file (for PicoBlaze only).
                   \item [v:] Verilog file (for PicoBlaze only).
                  \end{description}
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--cfg-ind <indentation>'\\
-                }
+            }
                 Indent with:
                 \begin{description}
                   \item [Spaces:] Indent with spaces (default).
                   \item [Tabs:] Indent with tabs.
                 \end{description}
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--cfg-tabsz <n>'\\
-                }
+            }
                 Consider tab to be displayed at most n spaces wide, here it is by default 8.
-                {
-                ~\\
+            {
                 \usecodefont
-
                 \verb'--cfg-eof <end-of-line-character>'\\
-                }
+            }
                 Specify line separator, available options are:
                 \begin{description}
                   \item [clrf:] [WINDOWS] use sequence of carriage return and line feed characters
@@ -2364,7 +2187,6 @@ Each list element is being parsed and split into an address reference, a command
                   \item [cr:] [APPLE] use single carriage return (0x0d = '').
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-sym <symbols>'\\
@@ -2379,7 +2201,6 @@ Each list element is being parsed and split into an address reference, a command
                 \end{description}
                  This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-lc <character>'\\
@@ -2390,7 +2211,6 @@ Each list element is being parsed and split into an address reference, a command
                     \item [u:] Uppercase.
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-radix <radix>'\\
@@ -2402,15 +2222,12 @@ Each list element is being parsed and split into an address reference, a command
                     \item [b:] Binary.
                     \item [o:] Octal.
                 \end{description}
-                                {
-                ~\\
+                {
                 \usecodefont
-
                 \verb'--help, -h'\\
                 }
                 Print help message.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--version, -V'\\
@@ -2425,13 +2242,11 @@ Each list element is being parsed and split into an address reference, a command
 
             USAGE:
             {
-                ~\\
                 \usecodefont
                 \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'\\
             }
             \subsubsection{Options}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--type, -t <asm-variant>'\\
@@ -2443,14 +2258,12 @@ Each list element is being parsed and split into an address reference, a command
                   \item [3:] openPICIDE KCPSMx
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--output, -o <file.asm>'\\
                 }
                 Specify output file.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-ind <indentation>'\\
@@ -2462,14 +2275,12 @@ Each list element is being parsed and split into an address reference, a command
                  \item [Tabs:] Indent with tabs.
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-tabsz <n>'\\
                 }
                 Consider tab to be displayed at most n spaces wide, here it is by default 8.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-eof <end-of-line-character>'\\
@@ -2481,14 +2292,12 @@ Each list element is being parsed and split into an address reference, a command
                   \item [cr:] [APPLE] use single carriage return (0x0d = '').
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--short-inst <true|false>'\\
                 }
                 Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-lc-sym <character>'\\
@@ -2499,7 +2308,6 @@ Each list element is being parsed and split into an address reference, a command
                     \item [u:] Uppercase.
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-lc-dir <character>'\\
@@ -2510,7 +2318,6 @@ Each list element is being parsed and split into an address reference, a command
                     \item [u:] Uppercase.
                 \end{description}
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--cfg-lc-inst <character>'\\
@@ -2521,21 +2328,18 @@ Each list element is being parsed and split into an address reference, a command
                     \item [u:] Uppercase.
                 \end{description}
                                 {
-                ~\\
                 \usecodefont
 
                 \verb'--backup, -b'\\
                 }
                 Enable generation of backup files.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--version, -V'\\
                 }
                 Print version and exit.
                 {
-                ~\\
                 \usecodefont
 
                 \verb'--help, -h'\\
@@ -2545,7 +2349,6 @@ Each list element is being parsed and split into an address reference, a command
                 `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
             \subsubsection{EXAMPLES}
                 {
-                ~\\
                 \usecodefont
                 \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
                 }
