@@ -55,7 +55,7 @@ function build() {
           -DCMAKE_COLOR_MAKEFILE=${color:-on}   \
           -DMDS_VARIANT=${variant:=Commercial}  \
           -DMDS_GRADE=${grade:-Ultimate}        \
-          -DMDS_TARGET=${target:-PicoBlaze}     \
+          -DMDS_TARGET=${target:-All}           \
           . || exit 1
 
     if ! ${makeProgram} -j ${PP} --keep-going; then
@@ -99,6 +99,9 @@ function tests() {
           -DTEST_MEMCHECK=${val:-on}            \
           -DCMAKE_BUILD_TYPE=${bt:-Debug}       \
           -DCMAKE_COLOR_MAKEFILE=${color:-off}  \
+          -DMDS_VARIANT=${variant:=Commercial}  \
+          -DMDS_GRADE=${grade:-Ultimate}        \
+          -DMDS_TARGET=${target:-All}           \
           . 2>&1                                \
         | tee "${BUILD_LOG}"
 

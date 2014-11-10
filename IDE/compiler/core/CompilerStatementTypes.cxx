@@ -640,6 +640,7 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_DIR_UNDEFINE:         out << "ASMPICOBLAZE_DIR_UNDEFINE";         break;
         case ASMPICOBLAZE_DIR_CODE:             out << "ASMPICOBLAZE_DIR_CODE";             break;
         case ASMPICOBLAZE_DIR_REG:              out << "ASMPICOBLAZE_DIR_REG";              break;
+        case ASMPICOBLAZE_DIR_STRING:           out << "ASMPICOBLAZE_DIR_STRING";           break;
         case ASMPICOBLAZE_DIR_PORT:             out << "ASMPICOBLAZE_DIR_PORT";             break;
         case ASMPICOBLAZE_DIR_PORTIN:           out << "ASMPICOBLAZE_DIR_PORTIN";           break;
         case ASMPICOBLAZE_DIR_PORTOUT:          out << "ASMPICOBLAZE_DIR_PORTOUT";          break;
@@ -691,6 +692,9 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_DIR_RTENDW:           out << "ASMPICOBLAZE_DIR_RTENDW";           break;
         case ASMPICOBLAZE_DIR_RTFOR:            out << "ASMPICOBLAZE_DIR_RTFOR";            break;
         case ASMPICOBLAZE_DIR_RTENDF:           out << "ASMPICOBLAZE_DIR_RTENDF";           break;
+
+        case ASMPICOBLAZE_DIR_OUTPUTK_STR_P:    out << "ASMPICOBLAZE_DIR_OUTPUTK_STR_P";    break;
+        case ASMPICOBLAZE_DIR_LD_RET_SX_STR:    out << "ASMPICOBLAZE_DIR_LD_RET_SX_STR";    break;
 
         case ASMPICOBLAZE_INS_JUMP_AAA:         out << "ASMPICOBLAZE_INS_JUMP_AAA";         break;
         case ASMPICOBLAZE_INS_JUMP_Z_AAA:       out << "ASMPICOBLAZE_INS_JUMP_Z_AAA";       break;
@@ -754,6 +758,7 @@ std::ostream & operator << ( std::ostream & out,
         case ASMPICOBLAZE_INS_LD_RET_SX_KK:     out << "ASMPICOBLAZE_INS_LD_RET_SX_KK";     break;
         case ASMPICOBLAZE_INS_HWBUILD_SX:       out << "ASMPICOBLAZE_INS_HWBUILD_SX";       break;
         case ASMPICOBLAZE_INS_STAR_SX_SY:       out << "ASMPICOBLAZE_INS_STAR_SX_SY";       break;
+        case ASMPICOBLAZE_INS_STAR_SX_KK:       out << "ASMPICOBLAZE_INS_STAR_SX_KK";       break;
         case ASMPICOBLAZE_INS_TESTCY_SX_SY:     out << "ASMPICOBLAZE_INS_TESTCY_SX_SY";     break;
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:     out << "ASMPICOBLAZE_INS_TESTCY_SX_KK";     break;
         case ASMPICOBLAZE_INS_COMPARECY_SX_SY:  out << "ASMPICOBLAZE_INS_COMPARECY_SX_SY";  break;

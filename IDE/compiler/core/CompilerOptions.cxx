@@ -61,6 +61,7 @@ void CompilerOptions::clearOutputFiles()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_memFile,
         &m_cunit,       &m_second,      &m_rawHexDumpFile,
+        &m_stringTable,
         nullptr
     };
 
@@ -73,7 +74,7 @@ void CompilerOptions::clearOutputFiles()
 
         if ( true == m_makeBackupFiles )
         {
-            rename(files[i]->c_str(), (*files[i] + "~").c_str());
+            rename(files[i]->c_str(), (*files[i] + '~').c_str());
         }
 
         std::ofstream file(*(files[i]), std::fstream::trunc );
@@ -91,7 +92,7 @@ void CompilerOptions::normalizeFilePaths()
         &m_binFile,     &m_srecFile,    &m_verilogFile,
         &m_vhdlFile,    &m_prcTarget,   &m_verilogTemplate,
         &m_memFile,     &m_hexFile,     &m_rawHexDumpFile,
-        &m_second,      &m_cunit,
+        &m_second,      &m_cunit,       &m_stringTable,
         nullptr
     };
 
@@ -154,6 +155,7 @@ std::ostream & operator << ( std::ostream & out,
     out << "  === File names ==="       << std::endl;
     out << "    m_symbolTable = \""     << opts.m_symbolTable     << '"' << std::endl;
     out << "    m_macroTable = \""      << opts.m_macroTable      << '"' << std::endl;
+    out << "    m_stringTable = \""     << opts.m_stringTable     << '"' << std::endl;
     out << "    m_mdsDebugFile = \""    << opts.m_mdsDebugFile    << '"' << std::endl;
     out << "    m_codeTree = \""        << opts.m_codeTree        << '"' << std::endl;
     out << "    m_lstFile = \""         << opts.m_lstFile         << '"' << std::endl;

@@ -27,6 +27,7 @@ include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
 add_library ( ${PROJECT_NAME} AsmMacros.cxx
                               AsmMemoryPtr.cxx
                               AsmDgbFileGen.cxx
+                              AsmStringTable.cxx
                               AsmCodeListing.cxx
                               AsmSymbolTable.cxx
                               AsmMachineCodeGen.cxx )

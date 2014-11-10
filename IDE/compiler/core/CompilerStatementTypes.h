@@ -710,6 +710,7 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_UNDEFINE,          ///<
             ASMPICOBLAZE_DIR_CODE,              ///<
             ASMPICOBLAZE_DIR_REG,               ///<
+            ASMPICOBLAZE_DIR_STRING,            ///<
             ASMPICOBLAZE_DIR_PORT,              ///<
             ASMPICOBLAZE_DIR_PORTIN,            ///<
             ASMPICOBLAZE_DIR_PORTOUT,           ///<
@@ -761,6 +762,9 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_RTENDW,            ///<
             ASMPICOBLAZE_DIR_RTFOR,             ///<
             ASMPICOBLAZE_DIR_RTENDF,            ///<
+
+            ASMPICOBLAZE_DIR_OUTPUTK_STR_P,     ///<
+            ASMPICOBLAZE_DIR_LD_RET_SX_STR,     ///<
 
             ASMPICOBLAZE_INS_JUMP_AAA,          ///<
             ASMPICOBLAZE_INS_JUMP_Z_AAA,        ///<
@@ -824,6 +828,7 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_INS_LD_RET_SX_KK,      ///<
             ASMPICOBLAZE_INS_HWBUILD_SX,        ///<
             ASMPICOBLAZE_INS_STAR_SX_SY,        ///<
+            ASMPICOBLAZE_INS_STAR_SX_KK,        ///<
             ASMPICOBLAZE_INS_TESTCY_SX_SY,      ///<
             ASMPICOBLAZE_INS_TESTCY_SX_KK,      ///<
             ASMPICOBLAZE_INS_COMPARECY_SX_SY,   ///<

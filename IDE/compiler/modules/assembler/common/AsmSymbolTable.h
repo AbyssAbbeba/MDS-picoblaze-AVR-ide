@@ -259,14 +259,6 @@ class AsmSymbolTable
 
         /**
          * @brief
-         * @param[in,out] out
-         * @param[in] location
-         */
-        void printSymLocation ( std::ostream & out,
-                                const CompilerSourceLocation & location ) const;
-
-        /**
-         * @brief
          * @param[in] symbolType
          * @param[in] constLength
          * @return
@@ -317,6 +309,14 @@ class AsmSymbolTable
          */
         inline CompilerExpr * substituteArgs ( const CompilerExpr * expr,
                                                const CompilerExpr * argList );
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] location
+         */
+        inline void printSymLocation ( std::ostream & out,
+                                       const CompilerSourceLocation & location ) const;
 
     ////    Private Attributes    ////
     private:

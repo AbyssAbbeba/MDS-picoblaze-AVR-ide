@@ -47,5 +47,6 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
  # Compile .asm files for all testcases in the `testcases' directory
 add_custom_target ( "${PROJECT_NAME}_compile" ALL
                     COMMAND bash ${CMAKE_CURRENT_SOURCE_DIR}/testcases/compileAll.sh
+                    DEPENDS ${COMPILER_EXEC_TARGET}
                     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/testcases"
                     COMMENT "Compiling .asm files for all testcases in `${CMAKE_CURRENT_SOURCE_DIR}/testcases'." )

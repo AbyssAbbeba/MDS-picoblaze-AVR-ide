@@ -4,6 +4,12 @@ declare BASE_INC_DIR=''
 declare COMPILER_EXEC="${PWD}"
 declare -r OS="$(uname -o)"
 
+if [ ! -z "${DEV}" ]; then
+    declare -r DEVICE_OPTION="--dev=${DEV}"
+else
+    declare -r DEVICE_OPTION=""
+fi
+
 if [[ "${OS}" == 'Cygwin' || "${OS}" == 'Msys' ]]; then
     while [[ "${COMPILER_EXEC}" != "/" ]]; do
         if [[ -f "${COMPILER_EXEC}/mds-compiler.exe" ]]; then
@@ -49,7 +55,7 @@ function runBuild()
         fi
 
         if ! output="$( LC_ALL="C" ${COMPILER_EXEC}                 \
-                                   --dev="${DEV}"                   \
+                                   ${DEVICE_OPTION}                 \
                                    --arch="${ARCH}"                 \
                                    --plang="${LANG}"                \
                                    --hex="${1}/${i%%.asm}.hex"      \

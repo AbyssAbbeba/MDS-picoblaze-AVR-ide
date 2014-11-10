@@ -757,8 +757,8 @@ void AsmSymbolTable::clear()
     m_deletedSymbols.clear();
 }
 
-void AsmSymbolTable::printSymLocation ( std::ostream & out,
-                                        const CompilerSourceLocation & location ) const
+inline void AsmSymbolTable::printSymLocation ( std::ostream & out,
+                                               const CompilerSourceLocation & location ) const
 {
     if ( false == location.isSet() )
     {
@@ -816,20 +816,20 @@ std::ostream & operator << ( std::ostream & out,
         for ( const auto & symbol : *table )
         {
             out << symbol.first;
-            out << " ";
+            out << ' ';
             for ( unsigned int i = symbol.first.size(); i < 35; i++ )
             {
                 if ( i % 2 )
                 {
-                    out << " ";
+                    out << ' ';
                 }
                 else
                 {
-                    out << ".";
+                    out << '.';
                 }
             }
 
-            out << " " << AsmSymbolTable::symType2Str(symbol.second.m_type, true);
+            out << ' ' << AsmSymbolTable::symType2Str(symbol.second.m_type, true);
 
             if ( -1 == symbol.second.m_finalValue )
             {

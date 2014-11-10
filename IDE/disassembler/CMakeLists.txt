@@ -62,8 +62,7 @@ windres_rc ( OUTPUT_VAR         EXEC_RC_FILE
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}/utilities/MCUDataFiles/"
-                      "${CMAKE_SOURCE_DIR}/utilities/AdjSimProcDef/"
+include_directories ( "${CMAKE_SOURCE_DIR}/utilities/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/PicoBlaze/"
                       "${CMAKE_CURRENT_SOURCE_DIR}/Adaptable/" )
 
@@ -92,7 +91,8 @@ add_library ( ${PROJECT_NAME} SHARED
 target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         ${Boost_LIBRARIES}
                                         ${MDS_ADDITONAL_LIBS}
-                                        MCUDataFiles )
+                                        MCUDataFiles
+                                        os )
 
 #
 ## Disassembler as executable file.

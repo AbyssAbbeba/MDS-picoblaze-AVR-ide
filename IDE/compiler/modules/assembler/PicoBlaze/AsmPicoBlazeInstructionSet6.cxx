@@ -73,6 +73,7 @@ int AsmPicoBlazeInstructionSet6::resolveOPcode ( const CompilerStatement * stmt 
 
         /* Instruction: STAR */
         case ASMPICOBLAZE_INS_STAR_SX_SY:       return ( 0x16000 | ( getSXY(stmt,0) << 8 ) | ( getSXY(stmt,1) << 4 ) );
+        case ASMPICOBLAZE_INS_STAR_SX_KK:       return ( 0x17000 | ( getSXY(stmt,0) << 8 ) |   getKK(stmt,1) );
 
         /* Instruction: AND */
         case ASMPICOBLAZE_INS_AND_SX_SY:        return ( 0x02000 | ( getSXY(stmt,0) << 8 ) | ( getSXY(stmt,1) << 4 ) );

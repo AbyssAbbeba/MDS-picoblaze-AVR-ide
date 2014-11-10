@@ -160,6 +160,7 @@ inline void AsmPicoBlazeInstructionSet::detAccSymTypes ( const CompilerStatement
         case ASMPICOBLAZE_INS_LD_RET_SX_KK:
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:
         case ASMPICOBLAZE_INS_COMPARECY_SX_KK:
+        case ASMPICOBLAZE_INS_STAR_SX_KK:
             if ( true == m_opts->m_strict )
             {
                 acceptableTypes[0] = AsmSymbolTable::STYPE_REGISTER;
@@ -329,6 +330,7 @@ std::string AsmPicoBlazeInstructionSet::getInstructionName ( const CompilerState
         case ASMPICOBLAZE_INS_LD_RET_SX_KK:     return "LOAD & RETURN sX, kk";
         case ASMPICOBLAZE_INS_HWBUILD_SX:       return "HWBUILD sX";
         case ASMPICOBLAZE_INS_STAR_SX_SY:       return "STAR sX. sY";
+        case ASMPICOBLAZE_INS_STAR_SX_KK:       return "STAR sX. kk";
         case ASMPICOBLAZE_INS_TESTCY_SX_SY:     return "TESTCY sX, sY";
         case ASMPICOBLAZE_INS_TESTCY_SX_KK:     return "TESTCY sX, kk";
         case ASMPICOBLAZE_INS_COMPARECY_SX_SY:  return "COMPARECY sX, sY";
@@ -486,6 +488,7 @@ bool AsmPicoBlazeInstructionSet::isInstruction ( const CompilerStatement * const
         case ASMPICOBLAZE_INS_HWBUILD_SX:  case ASMPICOBLAZE_INS_STAR_SX_SY:  case ASMPICOBLAZE_INS_TESTCY_SX_SY:
         case ASMPICOBLAZE_INS_RR_SX:       case ASMPICOBLAZE_INS_SR1_SX:      case ASMPICOBLAZE_INS_TESTCY_SX_KK:
         case ASMPICOBLAZE_INS_REGBANK_A:   case ASMPICOBLAZE_INS_REGBANK_B:   case ASMPICOBLAZE_INS_OUTPUTK_KK_P:
+        case ASMPICOBLAZE_INS_STAR_SX_KK:
             return true;
         default:
             return false;

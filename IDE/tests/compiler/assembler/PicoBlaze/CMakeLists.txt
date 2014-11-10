@@ -42,6 +42,13 @@ target_link_libraries ( ${PROJECT_NAME} ${Boost_LIBRARIES}
                                         TAP_TestSuiteErr
                                         AutoTest )
 
+add_dependencies ( ${PROJECT_NAME}
+                   PicoBlazeAsmIncludeFiles_prc_file_kcpsm1
+                   PicoBlazeAsmIncludeFiles_prc_file_kcpsm1cpld
+                   PicoBlazeAsmIncludeFiles_prc_file_kcpsm2
+                   PicoBlazeAsmIncludeFiles_prc_file_kcpsm3
+                   PicoBlazeAsmIncludeFiles_prc_file_kcpsm6 )
+
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------

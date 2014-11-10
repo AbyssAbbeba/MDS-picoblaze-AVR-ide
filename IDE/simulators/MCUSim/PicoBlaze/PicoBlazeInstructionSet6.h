@@ -109,6 +109,7 @@ class PicoBlazeInstructionSet6 : public PicoBlazeInstructionSet
                 void inst_LOAD_sX_sY ( const unsigned int opCode );
                 void inst_LOAD_sX_kk ( const unsigned int opCode );
                 void inst_STAR_sX_sY ( const unsigned int opCode );
+                void inst_STAR_sX_kk ( const unsigned int opCode );
             //@}
 
             /// @name Logical

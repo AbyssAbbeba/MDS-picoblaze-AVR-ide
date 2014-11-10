@@ -21,6 +21,13 @@
 // Standard header files.
 #include <cstring>
 
+// Boost Filesystem library.
+#define BOOST_FILESYSTEM_NO_DEPRECATED
+#include "boost/filesystem.hpp"
+
+// OS compatibility.
+#include "../../utilities/os/os.h"
+
 /**
  * @brief
  * @param[in] a
@@ -112,6 +119,10 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
                                          m_output ( &output ),
                                          m_role   ( SERIALIZER )
 {
+    using namespace boost::filesystem;
+
+    const path basePath = path(files.front().first).parent_path();
+
     write ( COMMON_FILE_HEADER );
     write ( (uint16_t) INTERFACE_VERSION );
     write ( (uint16_t) lang );
@@ -120,7 +131,7 @@ CompilerSerializer::CompilerSerializer ( std::ostream & output,
     write ( (uint32_t) files.size() );
     for ( const auto & file : files )
     {
-        write ( file.first );
+        write ( make_relative(basePath, file.first).string() );
     }
 
     locationTracker->serialize(*this);
