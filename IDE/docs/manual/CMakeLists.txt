@@ -20,12 +20,27 @@ project ( manual )
 # ------------------------------------------------------------------------------
 
 # Path to MDS manual as PDF file, and as Qt Help Collection Files.
-set ( MANUAL_TEX "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.tex" CACHE STRING "Path to MDS manual as TeX file." )
 set ( MANUAL_QHC "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.qhc" CACHE STRING "Path to MDS manual as QHC file." )
 set ( MANUAL_QCH "${CMAKE_CURRENT_SOURCE_DIR}/MDS_manual.qch" CACHE STRING "Path to MDS manual as QCH file." )
 set ( MANUAL_PDF "${CMAKE_CURRENT_SOURCE_DIR}/${MDS_MANUAL_PDF}" CACHE STRING "Path to MDS manual as PDF file." )
 
-mark_as_advanced ( MANUAL_TEX MANUAL_PDF MANUAL_QHC MANUAL_QCH )
+mark_as_advanced ( MANUAL_PDF MANUAL_QHC MANUAL_QCH )
+
+macro ( IS_UPDATE_REQUIRED returnValue )
+    set ( ${returnValue} FALSE )
+    file ( GLOB texFiles "${CMAKE_CURRENT_SOURCE_DIR}/*.tex" )
+    foreach ( inFile ${texFiles} )
+        foreach ( outFile ${MANUAL_PDF} ${MANUAL_QHC} ${MANUAL_QCH} )
+            if ( "${inFile}" IS_NEWER_THAN "${outFile}" )
+                set ( ${returnValue} TRUE )
+                break()
+            endif()
+        endforeach()
+        if ( ${${returnValue}} )
+            break()
+        endif()
+    endforeach()
+endmacro()
 
 if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # Set some configuration variables.
@@ -42,10 +57,11 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                                ADDITIONAL_MAKE_CLEAN_FILES "${MAN_CLEAN_FILES}" )
 
     # Use LaTeX tools to generate end user documentation, and Qt Help Framework tools to generate Qt Help.
-    if ( ( "${MANUAL_TEX}" IS_NEWER_THAN "${MANUAL_PDF}" ) OR
-         ( "${MANUAL_TEX}" IS_NEWER_THAN "${MANUAL_QHC}" ) OR
-         ( "${MANUAL_TEX}" IS_NEWER_THAN "${MANUAL_QCH}" ) )
-
+    is_update_required(UPDATE_PDF)
+    if ( NOT ${UPDATE_PDF} )
+        add_custom_target ( manual ALL
+                            COMMENT "MDS documentation is already built ... skipping." )
+    else()
         add_custom_target ( manual-pdflatex ALL
                             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                             COMMENT "Generating MDS documentation as PDF with PDF LaTeX."
@@ -85,9 +101,6 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${Q_COLLECTION_GENERATOR}
                                     MDS_manual.qhcp -o MDS_manual.qhc
                             VERBATIM )
-    else()
-        add_custom_target ( manual ALL
-                            COMMENT "MDS documentation is already built ... skipping." )
     endif()
 endif()
 

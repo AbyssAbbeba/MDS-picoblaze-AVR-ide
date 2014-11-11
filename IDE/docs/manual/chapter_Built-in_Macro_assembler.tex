@@ -5,24 +5,22 @@ MDS has the most advanced macro assembler on the market. Its supports a lot of v
 Each list element is being parsed and split into an address reference, a command and an argument list. After them all directives are being filtered out and all commands and their arguments are being checked for validity.
 
 \paragraph{Important changes}
-    You need to tell compiler, that you are using constants by adding \# before second operand.
-
+    You need to tell compiler, that you are using constants by adding \# before second operand.\\
     {
         \usecodefont
         \verb'; Example of instructions operating with constants'\\
         \verb'LOAD    s0, #0b00000111   ; compiler now know, that this number is a constant'\\
-        \verb'LOAD    s0,  0b00000111   ; and this compiler takes as an adrress'\\
+        \verb'LOAD    s0,  0b00000111   ; and this compiler takes as an adrress'
     }
 
 \section{Statements}
-    Source code files for this assembler must be text files where lines are formed like these:
-
+    Source code files for this assembler must be text files where lines are formed like these:\\
     {
         \usecodefont
         \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
         \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
         \verb'            symbol         directive argument                       [ ;comment ]'\\
-        \verb'            directive      symbol, argument                         [ ;comment ]'\\\\
+        \verb'            directive      symbol, argument                         [ ;comment ]'
     }
 
     Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive, so after that directive the code do not have to be syntactically valid. Empty lines are allowed as well as line containing only comment or label. Statements can be separated by spaces, NBSP characters and tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
@@ -30,6 +28,7 @@ Each list element is being parsed and split into an address reference, a command
 \section{Symbols}
     Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
 
+    ~\\
     {
         \usecodefont
         \verb'First_symb      EQU     0b100111 ; Number in binary'\\
@@ -1134,8 +1133,7 @@ Each list element is being parsed and split into an address reference, a command
         Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro with no parameters  or unlimited number of parameters.
 
     \subsection{Examples}
-        This can be well demonstrated on examples:
-
+        This can be well demonstrated on examples:\\
         {
             \usecodefont
             \verb'abc           macro           ; Define named macro '\\
@@ -1154,8 +1152,7 @@ Each list element is being parsed and split into an address reference, a command
             \verb'      load    s1,s2'\\
         }
 
-        Macro without parameters.
-
+        Macro without parameters.\\
         {
             \usecodefont
             \verb'; Define macro named as "xyz" with two mandatory parameters'\\
@@ -1163,19 +1160,18 @@ Each list element is being parsed and split into an address reference, a command
             \verb'          load    foo, #10h'\\
             \verb'          add     bar, #1'\\
             \verb'endm'\\\\
-            \verb'xyz       s2,s3           ; Expand macro "xyz"  here'\\
-            \verb'xyz       s5,s5           ; Expand macro "xyz"  here'\\\\
+            \verb'          xyz     s2,s3           ; Expand macro "xyz"  here'\\
+            \verb'          xyz     s5,s5           ; Expand macro "xyz"  here'\\\\
             \verb'; This is the same as if you wrote this:'\\
             \verb'; xyz     s2,s3'\\
-            \verb'      load    s2, #10h'\\
-            \verb'      add     s3, #1'\\
+            \verb'          load    s2, #10h'\\
+            \verb'          add     s3, #1'\\
             \verb'; xyz     s5,s5'\\
-            \verb'      load    s5, #10h'\\
-            \verb'      add     s5, #1'\\
+            \verb'          load    s5, #10h'\\
+            \verb'          add     s5, #1'\\
         }
 
-        An example of named macro with two parameters.
-
+        An example of named macro with two parameters.\\
         {
             \usecodefont
             \verb'ijk           macro   foo'\\
@@ -1371,7 +1367,7 @@ Each list element is being parsed and split into an address reference, a command
         \end{description}
 
 \section{Symbol table}
-    Symbol table contains list of macros in your source code with additional informations.
+    Symbol table contains list of macros in your source code with additional informations.\\
     {
         \usecodefont
         \verb'  +-------------------//------------------//-----------------------+'\\
@@ -1414,8 +1410,7 @@ Each list element is being parsed and split into an address reference, a command
     \end{description}
 
 \section{Macro table}
-    Macro table contains list of macros in your source code with additional informations.
-
+    Macro table contains list of macros in your source code with additional informations.\\
     {
         \usecodefont
         \verb'  +-------------------//----------------------+'\\
@@ -1437,7 +1432,7 @@ Each list element is being parsed and split into an address reference, a command
 \section{Mem File}
     Mem file contains program memory in special format. There is seventeen 4byte wide columns, first is starting with \@ and represents starting address. Every other position increments address by one. Unused memory is filled with zeroes.
 
-    Example:
+    Example:\\
     {
         \usecodefont
         \verb'; Starting address 0x0000, sixteen OPcodes'\\
@@ -1458,7 +1453,7 @@ Each list element is being parsed and split into an address reference, a command
 \section{Raw Hex Dump file}
     Raw Hex Dump is very simple. File starts with OP Code of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2, and so on. If there is no instruction on a certain address, it is filled with zeros.
 
-    Example:
+    Example:\\
     {
         \usecodefont
         \verb'; Starting at address 0x0'\\
@@ -1481,7 +1476,7 @@ Each list element is being parsed and split into an address reference, a command
 \section{Bin file}
     Bin file gives you raw data from program memory. It contains OP Codes of instructions in 3 bytes (18 bit instructions) or 2 bytes (16 bit instructions) sorted in a line. It does not contain unused memory.
 
-    Example:
+    Example:\\
     {
         \usecodefont
         \verb'; Starting at address 0x0'\\
@@ -1494,8 +1489,7 @@ Each list element is being parsed and split into an address reference, a command
 \section{Motorola S-Rec format}
     Motorola S-records are a form of simple ASCII encoding for binary data. This format is commonly used for firmware uploads to GPSes, industrial robots, and other kinds of microcontroller-driven hardware. It has several convenient properties, including inspectability, easy editing with any text editor, and checksumming for verification of transmission across noisy serial lines. An S-record file consists of a sequence of specially formatted ASCII character strings. An S-record will be less than or equal to 78 bytes in length. The order of S-records within a file is of no significance and no particular order may be assumed.
 
-    The general format of an S-record follows:
-
+    The general format of an S-record follows:\\
     {
         \usecodefont
         \verb'  +-------------------//------------------//-----------------------+'\\
@@ -1637,7 +1631,6 @@ Each list element is being parsed and split into an address reference, a command
         \verb'0007 80F7               12             jmp     main'\\
         \verb'                        13'\\
         \verb'                        14             end'\\
-        \verb'ASSEMBLY COMPLETE, NO ERRORS FOUND, NO WARNINGS'\\
         \caption{A simple code listing}
     \end{code}
 
@@ -1646,22 +1639,24 @@ Each list element is being parsed and split into an address reference, a command
     Each line of code listing which contains original source code line may contain beside line number also some additional information regarding the compilation of the given line of code. Such a additional information might look like this and is composed of these parts:
 
     \begin{code}[h]
-        \mysmallfont{}
-        \verb'  '\texttt{\colorbox{Lavender}{0055}}\verb'                   '\texttt{\colorbox{Goldenrod}{18}}\verb'      '\texttt{\colorbox{Gray}{X      data     55h}} \\
-        \texttt{\colorbox{Apricot}{0014}}\verb' '\texttt{\colorbox{GreenYellow}{1122}}\verb'       '\texttt{\colorbox{LimeGreen}{=1}}\verb'     '\texttt{\colorbox{Goldenrod}{33}}\verb'      '\texttt{\colorbox{Gray}{l:     inc      s0}} \\
-        \verb'                           '\texttt{\colorbox{Goldenrod}{35}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'   '\texttt{\colorbox{Gray}{abc     ; Expand macro ``abc'' here}} \\
-        \texttt{\colorbox{Apricot}{001E}}\verb' '\texttt{\colorbox{GreenYellow}{E580}}\verb'               '\texttt{\colorbox{Goldenrod}{36}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     s1, s0}} \\
-        \texttt{\colorbox{Apricot}{0020}}\verb' '\texttt{\colorbox{GreenYellow}{F410}}\verb'               '\texttt{\colorbox{Goldenrod}{37}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                SR0     s1}} \\
-        \texttt{\colorbox{Apricot}{0021}}\verb' '\texttt{\colorbox{GreenYellow}{F590}}\verb'               '\texttt{\colorbox{Goldenrod}{38}}\verb' '\texttt{\colorbox{ProcessBlue}{+1}}\verb'  '\texttt{\colorbox{Gray}{                LOAD     s2, s1}} \\\\
-        \colorbox{Goldenrod}{\color{Goldenrod}X} Line number \\
-        \colorbox{LimeGreen}{\color{LimeGreen}X} Level of file inclusion \\
-        \colorbox{ProcessBlue}{\color{ProcessBlue}X} Level of macro expansion \\
-        \colorbox{Apricot}{\color{Apricot}X} Address in code memory \\
-        \colorbox{GreenYellow}{\color{GreenYellow}X} Machine code or another value to be stored in the code memory \\
-        \colorbox{Lavender}{\color{Lavender}X} Value of a symbol \\
-        \colorbox{Gray}{\color{Gray}X} Original line \\
+        {
+            \usecodefont
+            \verb'  '{\color{Lavender}{0055}}\verb'                  '{\color{Goldenrod}{18}}\verb'      '{\color{Gray}{X      data     55h}}\\
+            {\color{Apricot}{0014}}\verb' '{\color{GreenYellow}{1122}}\verb'       '{\color{LimeGreen}{=1}}\verb'      '{\color{Goldenrod}{33}}\verb'      '{\color{Gray}{l:     inc      s0}}\\
+            \verb'                        '{\color{Goldenrod}{35}}\verb' '{\color{ProcessBlue}{+1}}\verb'   '{\color{Gray}{abc     ; Expand macro ``abc'' here}}\\
+            {\color{Apricot}{001E}}\verb' '{\color{GreenYellow}{E580}}\verb'               '{\color{Goldenrod}{36}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                LOAD     s1, s0}}\\
+            {\color{Apricot}{0020}}\verb' '{\color{GreenYellow}{F410}}\verb'               '{\color{Goldenrod}{37}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                SR0     s1}}\\
+            {\color{Apricot}{0021}}\verb' '{\color{GreenYellow}{F590}}\verb'               '{\color{Goldenrod}{38}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                LOAD     s2, s1}}\\
 
-        \caption{Explanation code listing format}
+            \colorbox{Goldenrod}{\color{Goldenrod}X} Line number\\
+            \colorbox{LimeGreen}{\color{LimeGreen}X} Level of file inclusion\\
+            \colorbox{ProcessBlue}{\color{ProcessBlue}X} Level of macro expansion\\
+            \colorbox{Apricot}{\color{Apricot}X} Address in code memory\\
+            \colorbox{GreenYellow}{\color{GreenYellow}X} Machine code or another value to be stored in the code memory\\
+            \colorbox{Lavender}{\color{Lavender}X} Value of a symbol\\
+            \colorbox{Gray}{\color{Gray}X} Original line\\
+        }
+        \caption{Format of code listing}
     \end{code}
 
     \begin{code}[h]
@@ -1674,20 +1669,22 @@ Each list element is being parsed and split into an address reference, a command
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      5'}\verb'     '{\color{highlight_comment}\verb'; This is the beginning of file my_macros.asm'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      6'}\verb'     '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_directive}\verb'macro'}\verb'   '{\color{highlight_constant}\verb'foo'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      7'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's3'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_constant}\verb'foo'}\\
-        {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's3'}\\
+        {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      8'}\verb'             '{\color{highlight_instruction}\verb'add'}\verb'      '{\color{highlight_sfr}\verb's3'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      9'}\verb'             '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_constant}\verb'foo'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's3'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'     10'}\verb'     '{\color{highlight_directive}\verb'endm'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'     11'}\verb'     '{\color{highlight_comment}\verb'; This is the end of file my_macros.asm'}\\
         {\color{highlight_lst_line}\verb'                    12'}\\
         {\color{highlight_lst_line}\verb'                    13'}{\color{highlight_lst_macro}\verb' +1'}\verb'  '{\color{highlight_label}\verb'main:'}\verb'   '{\color{highlight_macro}\verb'my_cpl'}\verb'  '{\color{highlight_sfr}\verb's0'}\verb'          '{\color{highlight_comment}\verb'; Expand macro my_cpl here'}\\
         {\color{highlight_lst_address}\verb'0000'}{\color{highlight_lst_code}\verb' E580'}{\color{highlight_lst_line}\verb'           14'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's1'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's0'}\\
-        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'             15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'add'}\verb'     '{\color{highlight_sfr}\verb's1'}\\
+        {\color{highlight_lst_address}\verb'0002'}{\color{highlight_lst_code}\verb' F4'}{\color{highlight_lst_line}\verb'             15'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'add'}\verb'      '{\color{highlight_sfr}\verb's1'}\\
         {\color{highlight_lst_address}\verb'0003'}{\color{highlight_lst_code}\verb' F580'}{\color{highlight_lst_line}\verb'           16'}{\color{highlight_lst_macro}\verb' +1'}\verb'                  '{\color{highlight_instruction}\verb'load'}\verb'     '{\color{highlight_sfr}\verb's0'}{\color{highlight_oper_sep}\verb','}\verb' '{\color{highlight_sfr}\verb's1'}\\
         {\color{highlight_lst_address}\verb'0005'}{\color{highlight_lst_code}\verb' 80F9'}{\color{highlight_lst_line}\verb'           17'}\verb'             '{\color{highlight_instruction}\verb'jmp'}\verb'    '{\color{highlight_constant}\verb'main'}\verb'        '{\color{highlight_comment}\verb'; Jump back to label main'}\\
         {\color{highlight_lst_line}\verb'                    18'}\verb'             '{\color{highlight_directive}\verb'end'}\verb'                 '{\color{highlight_comment}\verb'; End of assembly'}\\
         {\color{highlight_lst_msg}\verb'ASSEMBLY COMPLETE,'}\verb' NO ERRORS FOUND, NO WARNINGS'\\
         \caption{A more complicated example of code listing}
     \end{code}
+
+    \clearpage
 
 \section{Specification of Intel(R) 8 HEX Format}
     Intel(R) 8 HEX is a popular object file format capable of containing up to 64kB of data. Hex files have usually extension .hex or .ihx. These files are text files consisting of a sequence of records, each line line can contain at most one record. Records starts with ``:'' (colon) character at the beginning of the line and ends by end of the line. Everything else besides records should be ignored. Records consist of a sequence of 8-bit hexadecimal numbers (e.g. ``a2'' or ``8c''). These numbers are divided into ``fields'' with different meaning, see the example below.
@@ -1712,15 +1709,14 @@ Each list element is being parsed and split into an address reference, a command
     \end{code}
 
 \section{Suported instructions}
-    MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains list of all supported instructions. For more informations about those instructions, see official PicoBlaze manual.\\
+    MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains list of all supported instructions. For more informations about those instructions, see official PicoBlaze manual.\\\\
+    "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
+    "\#kk" represents a constant value in the range 00 to FF.\\
+    "aaa" represents an address in the range 000 to 3FF.\\
+    "pp" represents a port address in the range 00 to FF.\\
+    "ss" represents an internal storage address in the range 00 to 3F.\\
 
     \subsection{Program Control Group}
-        "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-        "\#kk" represents a constant value in the range 00 to FF.\\
-        "aaa" represents an address in the range 000 to 3FF.\\
-        "pp" represents a port address in the range 00 to FF.\\
-        "ss" represents an internal storage address in the range 00 to 3F.\\
-
         \subsubsection{JUMP}
             Instruction JUMP will load PC with "aaa" address. The JUMP instruction has no effect on the status of the flags.\\
             \textbf{JUMP} aaa\\
@@ -1753,12 +1749,6 @@ Each list element is being parsed and split into an address reference, a command
             \textbf{RETURNI DISABLE}\\
 
     \subsection{Arithmetic Group}
-        "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-        "\#kk" represents a constant value in the range 00 to FF.\\
-        "aaa" represents an address in the range 000 to 3FF.\\
-        "pp" represents a port address in the range 00 to FF.\\
-        "ss" represents an internal storage address in the range 00 to 3F.\\
-
         \subsubsection{ADD, ADDCY}
             The ADD instruction performs an 8-bit addition of two operands. Can use constants or registers.\\
             \textbf{ADD} sX,\#kk\\
@@ -1767,8 +1757,7 @@ Each list element is being parsed and split into an address reference, a command
             \textbf{ADDCY} sX,sY\\
 
         \subsubsection{COMPARE, CMP}
-            The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is
-            discarded and only the flags are affected. This instruction updates flags\\
+            The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is discarded and only the flags are affected. This instruction updates flags\\
             \textbf{COMPARE} sX,\#kk\\
             \textbf{COMPARE} sX,sY\\
             \textbf{CMP}     sX,\#kk\\
@@ -1801,75 +1790,54 @@ Each list element is being parsed and split into an address reference, a command
             \textbf{ENA}\\
             \textbf{DIS}\\
 
-        \subsection{Logical Group}
-            "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-            "\#kk" represents a constant value in the range 00 to FF.\\
-            "aaa" represents an address in the range 000 to 3FF.\\
-            "pp" represents a port address in the range 00 to FF.\\
-            "ss" represents an internal storage address in the range 00 to 3F.\\
-
+    \subsection{Logical Group}
         \subsubsection{LOAD, LD}
-            The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the
-            contents of any other register. The LOAD instruction has no effect on the status of the flags.\\
+            The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the contents of any other register. The LOAD instruction has no effect on the status of the flags.\\
             \textbf{LOAD} sX,\#kk\\
             \textbf{LOAD} sX,sY\\
             \textbf{LD} sX,\#kk\\
             \textbf{LD} sX,sY\\
 
         \subsubsection{STAR}
-            Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the
-            REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.\\
+            Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.\\
             \textbf{STAR} sX,sY\\
 
         \subsubsection{OR}
-            The "OR" instructions perform the bit-wise logical OR operation.
-            The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
-            The carry flag (C) will be cleared (C=0) in all cases.\\
-                \textbf{OR} sX,sY\\
-                \textbf{OR} sX,\#kk\\
+            The "OR" instructions perform the bit-wise logical OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
+            \textbf{OR} sX,sY\\
+            \textbf{OR} sX,\#kk\\
 
         \subsubsection{XOR}
-            The "XOR" instructions perform the bit\-wise logical exclusive-OR operation.
-                The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero.
-            The carry flag (C) will be cleared (C=0) in all cases.\\
-                \textbf{XOR} sX,\#kk\\
-                \textbf{XOR} sX,sY\\
+            The "XOR" instructions perform the bit\-wise logical exclusive-OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
+            \textbf{XOR} sX,\#kk\\
+            \textbf{XOR} sX,sY\\
 
         \subsubsection{AND}
-            The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned.
-            The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk\ or a register sY.
-            The zero flag (Z) will be set if all 8-bits of the result returned to sX are zero.
-            The carry flag (C) will be cleared (C=0) in all cases.\\
-                \textbf{AND} sX,\#kk\\
-                \textbf{AND} sX,sY\\
+            The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned. The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk or a register sY. The zero flag (Z) will be set if all 8-bits of the result returned to sX are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
+            \textbf{AND} sX,\#kk\\
+            \textbf{AND} sX,sY\\
 
         \subsubsection{TEST}
-            The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and
-            only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero.
-            The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).\\
-                \textbf{TEST} sX,sY\\
-                \textbf{TEST} sX,\#kk\\
+            The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero. The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).\\
+            \textbf{TEST} sX,sY\\
+            \textbf{TEST} sX,\#kk\\
 
         \subsubsection{TESTCY}
-            The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of
-            values more than 8-bits.\\
+            The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of values more than 8-bits.\\
             \textbf{TESTCY} sX,sY\\
             \textbf{TESTCY} sX,\#kk\\
 
         \subsection{Shift and Rotate Group}
-            "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-            "\#kk" represents a constant value in the range 00 to FF.\\
-            "aaa" represents an address in the range 000 to 3FF.\\
-            "pp" represents a port address in the range 00 to FF.\\
-            "ss" represents an internal storage address in the range 00 to 3F.\\
             \subsubsection{SR}
                 \textbf{SR0} sX\\
                 \textbf{SR1} sX\\
                 \textbf{SRX} sX\\
                 \textbf{SRA} sX\\
+
             \subsubsection{RR, RL}
                 \textbf{RR}  sX\\
                 \textbf{RL}  sX\\
+
             \subsubsection{SL}
                 \textbf{SL0} sX\\
                 \textbf{SL1} sX\\
@@ -1877,465 +1845,333 @@ Each list element is being parsed and split into an address reference, a command
                 \textbf{SLA} sX\\
 
         \subsection{Storage group}
-            "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-            "\#kk" represents a constant value in the range 00 to FF.\\
-            "aaa" represents an address in the range 000 to 3FF.\\
-            "pp" represents a port address in the range 00 to FF.\\
-            "ss" represents an internal storage address in the range 00 to 3F.\\
+            \subsubsection{STORE}
+                The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).\\
+                \textbf{STORE} sX, ss\\
+                \textbf{STORE} sX, @sY\\
 
-        \subsubsection{STORE}
-            The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).\\
-                \textbf{STORE} sX,ss\\
-                \textbf{STORE} sX,@sY\\
-
-        \subsubsection{FETCH}
-            The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"\\
-                \textbf{FETCH} sX,ss\\
-                \textbf{FETCH} sX,@sY\\
+            \subsubsection{FETCH}
+                The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX"\\
+                \textbf{FETCH} sX, ss\\
+                \textbf{FETCH} sX, @sY\\
 
         \subsection{Input output group}
-            "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-            "\#kk" represents a constant value in the range 00 to FF.\\
-            "aaa" represents an address in the range 000 to 3FF.\\
-            "pp" represents a port address in the range 00 to FF.\\
-            "ss" represents an internal storage address in the range 00 to 3F.\\
+            \subsubsection{INPUT, IN}
+                An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port.\\
+                \textbf{INPUT}      sX, pp\\
+                \textbf{INPUT}      sX, @sY\\
+                \textbf{IN}         sX, pp\\
+                \textbf{IN}         sX, @sY\\
 
-        \subsubsection{INPUT, IN}
-            An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port.\\
-                \textbf{INPUT}      sX,pp\\
-                \textbf{INPUT}      sX,@sY\\
-                \textbf{IN}         sX,pp\\
-                \textbf{IN}         sX,@sY\\
+            \subsubsection{OUTPUT, OUT}
+                An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
+                contents of another register "@sY".\\
+                \textbf{OUTPUT}     sX, pp\\
+                \textbf{OUTPUT}     sX, @sY\\
+                \textbf{OUT}        sX, pp\\
+                \textbf{OUT}        sX, @sY\\
 
-        \subsubsection{OUTPUT, OUT}
-            An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
-            contents of another register "@sY".\\
-                \textbf{OUTPUT}     sX,pp\\
-                \textbf{OUTPUT}     sX,@sY\\
-                \textbf{OUT}        sX,pp\\
-                \textbf{OUT}        sX,@sY\\
-
-        \subsubsection{OUTPUTK, OUTK}
-            The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].\\
-                \textbf{OUTPUTK}     \#kk,p\\
-                \textbf{OUTPUTK}     \#kk,@sY\\
-                \textbf{OUTK}        \#kk,p\\
-                \textbf{OUTK}        \#kk,@sY\\
+            \subsubsection{OUTPUTK, OUTK}
+                The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].\\
+                \textbf{OUTPUTK}     \#kk, p\\
+                \textbf{OUTPUTK}     \#kk, @sY\\
+                \textbf{OUTK}        \#kk, p\\
+                \textbf{OUTK}        \#kk, @sY\\
 
 \section{Command line tools}
-    Assembler, Disassembler, and Assembler Translator may also be invoked from command line and therefore used in your scripts.
-    On Linux versions there is also man page for each one of them.
+    Assembler, Disassembler, and Assembler Translator may also be invoked from command line and therefore used in your scripts. On Linux versions there is also man page for each one of them.
 
     \subsection{Assembler}
         \subsubsection{Description}
-        MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors
-        simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging
-        output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special
-        macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze
-        soft-core processors.\\
+            MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.\\
 
-        USAGE:
-        {
-            \usecodefont
-            \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'\\
-        }
+        \subsubsection{Usage}
+            \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'
 
         \subsubsection{Options}
-            {
-                \usecodefont
-                \verb'--arch, -a <architecture>'\\
-            }
+            \begin{description}
+                \item[--arch, -a <architecture>]~\\
+                    Specify target architecture, supported architectures are:
+                    \begin{description}
+                        \item[PicoBlaze] KCPSM soft-core processor
+                    \end{description}
 
-            Specify target architecture, supported architectures are: \textbf{PicoBlaze}
-            {
-                \usecodefont
-                \verb'--plang, -p <programming language>'\\
-            }
-            Specify programming language, supported languages are: \textbf{ASM:} assembly language
-            {
-                \usecodefont
-                \verb'--hex, -x <intel HEX-file>'\\
-            }
-            Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
-            {
-                \usecodefont
-                \verb'--dbg, -d <MDS-native-debug-file>'\\
-            }
-            Specify output file with code for MCU simulator and other debugging tools.
-            {
-                \usecodefont
-                \verb'--srec <Motorola-S-REC-file>'\\
-            }
-            Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
-            {
-                \usecodefont
-                \verb'--srec --binary <binary-file>'\\
-            }
-            Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
-            {
-                \usecodefont
-                \verb'--lst, -l <code-listing>'\\
-            }
-            Specify output file where code listing generated during compilation will be stored.
-            {
-                \usecodefont
-                \verb'--mtable, -m <table-of-macros>'\\
-            }
-            Specify file in which the compiler will put table of macros defined in your code.
-            {
-                \usecodefont
-                \verb'--stable, -s <table-of-symbols>'\\
-            }
-            Specify file in which the compiler will put table of symbols defined in your code.
-            {
-                \usecodefont
-                \verb'--help, -h'\\
-            }
-            Print help message.
-            {
-                \usecodefont
-                \verb'--version, -V'\\
-            }
-            Print compiler version and exit.
-            {
-                \usecodefont
-                \verb'--check, -c'\\
-            }
-            Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
-            {
-                \usecodefont
-                \verb'--no-backup'\\
-            }
-            Don't generate backup files.\\
-            {
-                \usecodefont
-                \verb'--brief-msg'\\
-            }
-            Print only unique messages.
-            {
-                \usecodefont
-                \verb'--no-strict'\\
-            }
-            Disable certain error and warning messages.
-            {
-                \usecodefont
-                \verb'--no-warnings'\\
-            }
-            Do not print any warnings.
-            {
-                \usecodefont
-                \verb'--no-errors'\\
-            }
-            Do not print any errors.
-            {
-                \usecodefont
-                \verb'--no-remarks'\\
-            }
-            Do not print any remarks.
-            {
-                \usecodefont
-                \verb'--silent'\\
-            }
-            Do not print any warnings, errors, or any other messages, stay completely silent.
-            {
-                \usecodefont
-                \verb'--include, -I <directory>'\\
-            }
-            Add directory where the compiler will search for include files.
-            {
-                \usecodefont
-                \verb'--dev, -D <device>'\\
-            }
-            Specify exact target device, options are:
-            For PicoBlaze : \textbf{kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3 and kcpsm6}
-            {
-                \usecodefont
-                \verb'--precompile, -P <.prc-file>'\\
-            }
-            Specify target file for generation of precompiled code.
-            {
-                \usecodefont
-                \verb'--vhdl <.vhd-file>'\\
-            }
-            Specify target file for generation of VHDL code.
-            {
-                \usecodefont
-                \verb'--vhdl-tmpl <.vhd-file>'\\
-            }
-            Specify VHDL template file.
-            {
-                \usecodefont
-                \verb'--verilog <.v-file>'\\
-            }
-           Specify target file for generation of verilog code.
-            {
-                \usecodefont
-                \verb'--verilog-tmpl <.v-file>'\\
-            }
-            Specify verilog template file.
-            {
-                \usecodefont
-                \verb'--mem <.mem-file>'\\
-            }
-            Specify target file for generation of MEM file.
-            {
-                \usecodefont
-                \verb'--raw-hex-dump <.hex-file>'\\
-            }
-            Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).\\
+                \item[--plang, -p <programming language>]~\\
+                    Specify programming language, supported languages are:
+                    \begin{description}
+                        \item[asm] Assembly language
+                    \end{description}
 
-        \subsubsection{NOTES}
-            `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.\\
+                \item[--hex, -x <intel HEX-file>]~\\
+                    Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
 
-            When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
+                \item[--dbg, -d <MDS-native-debug-file>]~\\
+                    Specify output file with code for MCU simulator and other debugging tools.
 
-        \subsubsection{EXAMPLES}
-            {
-                \usecodefont
-                \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
-            }
+                \item[--srec <Motorola-S-REC-file>]~\\
+                    Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
 
-            Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
-            {
-                \usecodefont
-                \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
-            }
+                \item[--srec --binary <binary-file>]~\\
+                    Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
 
-            Do the same at the above, only in this case we have used another variant of usage of switches with argument.
-            {
-                \usecodefont
-                \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
-            }
+                \item[--lst, -l <code-listing>]~\\
+                    Specify output file where code listing generated during compilation will be stored.
 
-            Do the same at the above, only in this case we have used short version of the switches.\\
+                \item[--mtable, -m <table-of-macros>]~\\
+                    Specify file in which the compiler will put table of macros defined in your code.
+
+                \item[--stable, -s <table-of-symbols>]~\\
+                    Specify file in which the compiler will put table of symbols defined in your code.
+
+                \item[--help, -h]~\\
+                    Print help message.
+
+                \item[--version, -V]~\\
+                    Print compiler version and exit.
+
+                \item[--check, -c]~\\
+                    Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
+
+                \item[--no-backup]~\\
+                    Don't generate backup files.
+
+                \item[--brief-msg]~\\
+                    Print only unique messages.
+
+                \item[--no-strict]~\\
+                    Disable certain error and warning messages.
+
+                \item[--no-warnings]~\\
+                    Do not print any warnings.
+
+                \item[--no-errors]~\\
+                    Do not print any errors.
+
+                \item[--no-remarks]~\\
+                    Do not print any remarks.
+
+                \item[--silent]~\\
+                    Do not print any warnings, errors, or any other messages, stay completely silent.
+
+                \item[--include, -I <directory>]~\\
+                    Add directory where the compiler will search for include files.
+
+                \item[--dev, -D <device>]~\\
+                    Specify exact target device, options are:
+                    \begin{description}
+                        \item[For PicoBlaze]
+                            kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                    \end{description}
+
+                \item[--precompile, -P <.prc-file>]~\\
+                    Specify target file for generation of precompiled code.
+
+                \item[--vhdl <.vhd-file>]~\\
+                    Specify target file for generation of VHDL code.
+
+                \item[--vhdl-tmpl <.vhd-file>]~\\
+                    Specify VHDL template file.
+
+                \item[--verilog <.v-file>]~\\
+                    Specify target file for generation of verilog code.
+
+                \item[--verilog-tmpl <.v-file>]~\\
+                    Specify verilog template file.
+
+                \item[--mem <.mem-file>]~\\
+                    Specify target file for generation of MEM file.
+
+                \item[--raw-hex-dump <.hex-file>]~\\
+                    Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
+            \end{description}
+
+        \subsubsection{Notes}
+            \begin{itemize}
+                \item `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.
+                \item When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
+            \end{itemize}
+
+        \subsubsection{Examples}
+            \begin{itemize}
+                \item \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
+                    Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
+
+                \item \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
+                    Do the same at the above, only in this case we have used another variant of usage of switches with argument.
+
+                \item \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
+                    Do the same at the above, only in this case we have used short version of the switches.
+            \end{itemize}
 
     \subsection{Disassembler}
         \subsubsection{Description}
-            Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain level of
-            capability of reversing the assembly process and regaining the original source code from any object code.\\
+            Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain level of capability of reversing the assembly process and regaining the original source code from any object code.
 
-            USAGE:
-            {
-                \usecodefont
-                \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'\\
-            }
+        \subsubsection{Usage}
+            \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'
 
-            \subsubsection{Options}
-            {
-                \usecodefont
-                \verb'--arch, -a <architecture>'\\
-            }
-            Specify target architecture, supported architectures are: \textbf{PicoBlaze}
-            {
-                \usecodefont
-                \verb'--family, -f <family>'\\
-            }
-                Specify processor family, supported families for the given architectures are:  For \textbf{PicoBlaze:} kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
-            {
-                \usecodefont
-                \verb'--out, -o <output-file>'\\
-            }
-                Specify output file where the resulting assembly language code will be stored.
-            {
-                \usecodefont
-                \verb'--type, -t <input-file-format>'\\
-            }
-                 Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
-                 \begin{description}
-                  \item [hex:]I ntel 8 HEX, or Intel 16 HEX.
-                  \item [srec:] Motorola S-Record.
-                  \item [bin:] Raw binary file.
-                  \item [mem:] Xilinx MEM file (for PicoBlaze only).
-                  \item [vhd:] VHDL file (for PicoBlaze only).
-                  \item [v:] Verilog file (for PicoBlaze only).
-                 \end{description}
-            {
-                \usecodefont
-                \verb'--cfg-ind <indentation>'\\
-            }
-                Indent with:
-                \begin{description}
-                  \item [Spaces:] Indent with spaces (default).
-                  \item [Tabs:] Indent with tabs.
-                \end{description}
-            {
-                \usecodefont
-                \verb'--cfg-tabsz <n>'\\
-            }
-                Consider tab to be displayed at most n spaces wide, here it is by default 8.
-            {
-                \usecodefont
-                \verb'--cfg-eof <end-of-line-character>'\\
-            }
-                Specify line separator, available options are:
-                \begin{description}
-                  \item [clrf:] [WINDOWS] use sequence of carriage return and line feed characters
-                  \item [If:] [UNIX] use a single line feed character (0x0a = ') (default),
-                  \item [cr:] [APPLE] use single carriage return (0x0d = '').
-                \end{description}
-                {
-                \usecodefont
+        \subsubsection{Options}
+            \begin{description}
+                \item[--arch, -a <architecture>]~\\
+                    Specify target architecture, supported architectures are: \textbf{PicoBlaze}
 
-                \verb'--cfg-sym <symbols>'\\
-                }
-                Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers, available options are:
-                \begin{description}
-                    \item [c:] Program memory.
-                    \item [d:] Data memory.
-                    \item [r:] Register file.
-                    \item [p:] Port address.
-                    \item [k:] Immediate constants.
-                \end{description}
-                 This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
-                {
-                \usecodefont
+                \item[--family, -f <family>]~\\
+                    Specify processor family, supported families for the given architectures are:
+                    \begin{description}
+                        \item[For PicoBlaze]
+                            kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                    \end{description}
 
-                \verb'--cfg-lc <character>'\\
-                }
-                Use uppercase, or lowercase characters:
-                \begin{description}
-                    \item [l:] Lowercase.
-                    \item [u:] Uppercase.
-                \end{description}
-                {
-                \usecodefont
+                \item[--out, -o <output-file>]~\\
+                    Specify output file where the resulting assembly language code will be stored.
 
-                \verb'--cfg-radix <radix>'\\
-                }
-                Radix, available options are:
-                \begin{description}
-                    \item [h:] Hexadecimal.
-                    \item [d:] Decimal.
-                    \item [b:] Binary.
-                    \item [o:] Octal.
-                \end{description}
-                {
-                \usecodefont
-                \verb'--help, -h'\\
-                }
-                Print help message.
-                {
-                \usecodefont
+                \item[--type, -t <input-file-format>]~\\
+                    Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
+                    \begin{description}
+                        \item [hex]I ntel 8 HEX, or Intel 16 HEX.
+                        \item [srec] Motorola S-Record.
+                        \item [bin] Raw binary file.
+                        \item [mem] Xilinx MEM file (for PicoBlaze only).
+                        \item [vhd] VHDL file (for PicoBlaze only).
+                        \item [v] Verilog file (for PicoBlaze only).
+                    \end{description}
 
-                \verb'--version, -V'\\
-                }
-                Print disassembler version and exit.\\\\
-                NOTES:\\
-                `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+                \item[--cfg-ind <indentation>]~\\
+                    Indent with:
+                    \begin{description}
+                        \item [spaces] Indent with spaces (default).
+                        \item [tabs] Indent with tabs.
+                    \end{description}
+
+                \item[--cfg-tabsz <n>]~\\
+                    Consider tab to be displayed at most n spaces wide, here it is by default 8.
+
+                \item[--cfg-eof <end-of-line-character>]~\\
+                    Specify line separator, available options are:
+                    \begin{description}
+                        \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
+                        \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
+                        \item [cr] (APPLE) use single carriage return (0x0d = '').
+                    \end{description}
+
+                \item[--cfg-sym <symbols>]~\\
+                    Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers, available options are:
+                    \begin{description}
+                        \item [c] Program memory.
+                        \item [d] Data memory.
+                        \item [r] Register file.
+                        \item [p] Port address.
+                        \item [k] Immediate constants.
+                    \end{description}
+                    This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
+
+                \item[--cfg-lc <character>]~\\
+                    Use uppercase, or lowercase characters:
+                    \begin{description}
+                        \item [l] Lowercase.
+                        \item [u] Uppercase.
+                    \end{description}
+
+                \item[--cfg-radix <radix>]~\\
+                    Radix, available options are:
+                    \begin{description}
+                        \item [h] Hexadecimal.
+                        \item [d] Decimal.
+                        \item [b] Binary.
+                        \item [o] Octal.
+                    \end{description}
+
+                \item[--help, -h]~\\
+                    Print help message.
+
+                \item[--version, -V]~\\
+                    Print disassembler version and exit.
+            \end{description}
+
+        \subsubsection{Notes}
+            \begin{itemize}
+                \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+            \end{itemize}
+
     \subsection{Assembler translator}
         \subsubsection{Description}
-            mds-translator is tool for translating assembly language source code from one dialect to another; in this case it translates
-            into assembly language used by MDS (Multitarget Development System) from dialect used by other companies or projects.\\
+            mds-translator is tool for translating assembly language source code from one dialect to another; in this case it translates into assembly language used by MDS (Multitarget Development System) from dialect used by other companies or projects.
 
-            USAGE:
-            {
-                \usecodefont
-                \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'\\
-            }
-            \subsubsection{Options}
-                {
-                \usecodefont
+        \subsubsection{Usage}
+            \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'
 
-                \verb'--type, -t <asm-variant>'\\
-                }
-                Specify variant of assembly language used in the input file, possible options are:
-                \begin{description}
-                  \item [1:] Xilinx KCPSMx
-                  \item [2:] Mediatronix KCPSMx
-                  \item [3:] openPICIDE KCPSMx
-                \end{description}
-                {
-                \usecodefont
+        \subsubsection{Options}
+            \begin{description}
+                \item[--type, -t <asm-variant>]~\\
+                    Specify variant of assembly language used in the input file, possible options are:
+                    \begin{description}
+                        \item [1] Xilinx KCPSMx
+                        \item [2] Mediatronix KCPSMx
+                        \item [3] openPICIDE KCPSMx
+                    \end{description}
 
-                \verb'--output, -o <file.asm>'\\
-                }
-                Specify output file.
-                {
-                \usecodefont
+                \item[--output, -o <file.asm>]~\\
+                    Specify output file.
 
-                \verb'--cfg-ind <indentation>'\\
-                }
-                Indent with:
-                \begin{description}
-                 \item [keep:] Do not alter original indentation.
-                 \item [Spaces:] Indent with spaces.
-                 \item [Tabs:] Indent with tabs.
-                \end{description}
-                {
-                \usecodefont
+                \item[--cfg-ind <indentation>]~\\
+                    Indent with:
+                    \begin{description}
+                        \item [keep] Do not alter original indentation.
+                        \item [spaces] Indent with spaces.
+                        \item [tabs] Indent with tabs.
+                    \end{description}
 
-                \verb'--cfg-tabsz <n>'\\
-                }
-                Consider tab to be displayed at most n spaces wide, here it is by default 8.
-                {
-                \usecodefont
+                \item[--cfg-tabsz <n>]~\\
+                    Consider tab to be displayed at most n spaces wide, here it is by default 8.
 
-                \verb'--cfg-eof <end-of-line-character>'\\
-                }
-                Specify line separator, available options are:
-                \begin{description}
-                  \item [clrf:] [WINDOWS] use sequence of carriage return and line feed characters
-                  \item [If:] [UNIX] use a single line feed character (0x0a = ') (default),
-                  \item [cr:] [APPLE] use single carriage return (0x0d = '').
-                \end{description}
-                {
-                \usecodefont
+                \item[--cfg-eof <end-of-line-character>]~\\
+                    Specify line separator, available options are:
+                    \begin{description}
+                        \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
+                        \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
+                        \item [cr] (APPLE) use single carriage return (0x0d = '').
+                    \end{description}
 
-                \verb'--short-inst <true|false>'\\
-                }
-                Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
-                {
-                \usecodefont
+                \item[--short-inst <true|false>]~\\
+                    Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
 
-                \verb'--cfg-lc-sym <character>'\\
-                }
-                Use uppercase, or lowercase characters for symbols:
-                \begin{description}
-                    \item [l:] Lowercase.
-                    \item [u:] Uppercase.
-                \end{description}
-                {
-                \usecodefont
+                \item[--cfg-lc-sym <character>]~\\
+                    Use uppercase, or lowercase characters for symbols:
+                    \begin{description}
+                        \item [l] Lowercase.
+                        \item [u] Uppercase.
+                    \end{description}
 
-                \verb'--cfg-lc-dir <character>'\\
-                }
-                Use uppercase, or lowercase characters for directives:
-                \begin{description}
-                    \item [l:] Lowercase.
-                    \item [u:] Uppercase.
-                \end{description}
-                {
-                \usecodefont
+                \item[--cfg-lc-dir <character>]~\\
+                    Use uppercase, or lowercase characters for directives:
+                    \begin{description}
+                        \item [l] Lowercase.
+                        \item [u] Uppercase.
+                    \end{description}
 
-                \verb'--cfg-lc-inst <character>'\\
-                }
-                Use uppercase, or lowercase characters for instructions:
-                \begin{description}
-                    \item [l:] Lowercase.
-                    \item [u:] Uppercase.
-                \end{description}
-                                {
-                \usecodefont
+                \item[--cfg-lc-inst <character>]~\\
+                    Use uppercase, or lowercase characters for instructions:
+                    \begin{description}
+                        \item [l] Lowercase.
+                        \item [u] Uppercase.
+                    \end{description}
 
-                \verb'--backup, -b'\\
-                }
-                Enable generation of backup files.
-                {
-                \usecodefont
+                \item[--backup, -b]~\\
+                    Enable generation of backup files.
 
-                \verb'--version, -V'\\
-                }
-                Print version and exit.
-                {
-                \usecodefont
+                \item[--version, -V]~\\
+                    Print version and exit.
 
-                \verb'--help, -h'\\
-                }
-                Print help message.\\\\
-                NOTES:\\
-                `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
-            \subsubsection{EXAMPLES}
-                {
-                \usecodefont
-                \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
-                }
+                \item[--help, -h]~\\
+                    Print help message.
+            \end{description}
+
+        \subsubsection{Notes}
+            \begin{itemize}
+                \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+            \end{itemize}
+
+        \subsubsection{Examples}
+            \begin{itemize}
+                \item \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
+            \end{itemize}
