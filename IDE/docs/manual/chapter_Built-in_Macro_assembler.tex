@@ -151,19 +151,15 @@ Each list element is being parsed and split into an address reference, a command
 \section{Assembler directives}
     Assembly directives are instructions that are executed by an assembler at assembly time, not by a CPU at run time. They can make the assembly of the program dependent on parameters input by a programmer, so that one program can be assembled different way, perhaps for different applications. They also can be used to manipulate presentation of a program to make it easier to read and maintain.
 
+    \bigskip
+
     The specified format for most of the directives is:\\
-    {
-        \usecodefont
-        \verb'<symbol> <directive> <expression>'
-    }
+    \verb'<symbol> <directive> <expression>'
 
     \bigskip
 
     This syntax is valid for directives EQU, SET, REG, DATA, CODE, PORT, and DEFINE. MDS also supports some other directives, with different syntax format, which is:\\
-    {
-        \usecodefont
-        \verb'<directive> <symbol>, <expression>'
-    }
+    \verb'<directive> <symbol>, <expression>'
 
     \bigskip
 
@@ -172,823 +168,580 @@ Each list element is being parsed and split into an address reference, a command
     \clearpage
     \subsection{INCLUDE}
         \subsubsection{Syntax}
-            {
-                \usecodefont
-                \verb'INCLUDE "file_name.asm"'
-            }
+            \verb'INCLUDE "<file_name>"'
 
         \subsubsection{Description}
             Compiler copies content of the specified file to line where this directive is used. Included files can include other files.
 
         \subsubsection{Examples}
-            {
-                \usecodefont
-                \verb'INCLUDE "some_file.asm"'\\
-                \verb'INCLUDE "sub_dir/another_file.asm"'\\
-                \verb'INCLUDE "C:/my_dir/my_file.asm"'\\
-                \verb'INCLUDE "C:\\my_dir\\my_file.asm"'\\
-                \verb'INCLUDE "/home/AlanTuring/my_project/file.asm"'\\
-            }
+            \verb'INCLUDE "some_file.asm"'\\
+            \verb'INCLUDE "sub_dir/another_file.asm"'\\
+            \verb'INCLUDE "C:/my_dir/my_file.asm"'\\
+            \verb'INCLUDE "C:\\my_dir\\my_file.asm"'\\
+            \verb'INCLUDE "/home/AlanTuring/my_project/file.asm"'
 
     \subsection{EQU}
         \subsubsection{Syntax}
-            {
-                \usecodefont
-                \verb'<symbol>      EQU             <expression> '
-            }
+            \verb'<symbol> EQU <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             The directive EQU stands for EQUals. It allows you to give a numerical value to a symbol. Such symbol is considered constant and therefore cannot be redefined.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
-                \verb'Second_symb   EQU     47                      ;Number in decimal'\\
-                \verb'Third_symb    EQU     0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   EQU     (A - 4) + 18 / B)       ;Number with expression'\\
-                \verb'Fifth_symb    EQU     0x09 << 2               ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    EQU     0b10011100              ;Number in binary'\\
+            \verb'Second_symb   EQU     47                      ;Number in decimal'\\
+            \verb'Third_symb    EQU     0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   EQU     (A - 4) + 18 / B)       ;Number with expression'\\
+            \verb'Fifth_symb    EQU     0x09 << 2               ;'
 
     \subsection{CONSTANT}
         \subsubsection{Syntax}
-            {
-                \usecodefont
-                \verb'CONSTANT             <symbol>,<expression>'
-            }
+            \verb'CONSTANT <symbol>, <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             The directive CONSTANT. It allows you to give a numerical value to a symbol. This symbol cannot be redefined.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
-                \verb'CONSTANT     Second_symb,47                      ;Number in decimal'\\
-                \verb'CONSTANT     Third_symb,0x39                     ;Number in hexadecimal'\\
-                \verb'CONSTANT     Fourth_symb,(A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'CONSTANT     Fifth_symb,0x09 << 2                ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'CONSTANT     First_symb,0b10011100               ;Number in binary'\\
+            \verb'CONSTANT     Second_symb,47                      ;Number in decimal'\\
+            \verb'CONSTANT     Third_symb,0x39                     ;Number in hexadecimal'\\
+            \verb'CONSTANT     Fourth_symb,(A -4)+ 18 / B)         ;Number with expression'\\
+            \verb'CONSTANT     Fifth_symb,0x09 << 2                ;'
 
     \subsection{SET}
         \subsubsection{Syntax}
-            {
-                \usecodefont
-                \verb'<symbol>      SET             <expression>'
-            }
+            \verb'<symbol> SET <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             The directive SET allows you to give a numerical value to a symbol like EQU but with this symbol can be redefined.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    SET     0b10011100              ;Number in binary'\\
-                \verb'Second_symb   SET     47                      ;Number in decimal'\\
-                \verb'Third_symb    SET     0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   SET     (A - 4) + 18 / B)       ;Number with expression'\\
-                \verb'Fifth_symb    SET     0x09 << 2               ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    SET     0b10011100              ;Number in binary'\\
+            \verb'Second_symb   SET     47                      ;Number in decimal'\\
+            \verb'Third_symb    SET     0x39                    ;Number in hexadecimal'\\
+            \verb'Fourth_symb   SET     (A - 4) + 18 / B)       ;Number with expression'\\
+            \verb'Fifth_symb    SET     0x09 << 2               ;'
 
     \subsection{VARIABLE}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'VARIABLE            <symbol>,<expression>'
-            }
+        \subsubsection{Syntax}
+            \verb'VARIABLE <symbol>, <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Directive VARIABLE is similar to SET but with different syntax. Symbols defined with VARIABLE can be redefined with another value in your source code but those defined with EQU cannot.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'VARIABLE     First_symb,0b10011100               ;Number in binary'\\
-                \verb'VARIABLE     Second_symb,47                      ;Number in decimal'\\
-                \verb'VARIABLE     Third_symb,0x39                     ;Number in hexadecimal'\\
-                \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'VARIABLE     Fifth_symb,0x09 << 2                ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'VARIABLE     First_symb,0b10011100               ; Number in binary'\\
+            \verb'VARIABLE     Second_symb,47                      ; Number in decimal'\\
+            \verb'VARIABLE     Third_symb,0x39                     ; Number in hexadecimal'\\
+            \verb'VARIABLE     Fourth_symb,(A -4)+ 18 / B)         ; Number with expression'\\
+            \verb'VARIABLE     Fifth_symb,0x09 << 2                ;'
 
     \subsection{REG}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      REG             <reg name/address>'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> REG <address>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Symbols defined with the REG directive are by compiler considered as work registers.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb        REG     s1'\\
-                \verb'Second_symb       REG     s2'\\
-                \verb'Third_symb        REG     s3'\\
-                \verb'Fourth_symb       REG     0x4'\\
-                \verb'Fifth_symb        REG     0x5'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb        REG     s1'\\
+            \verb'Second_symb       REG     s2'\\
+            \verb'Third_symb        REG     s3'\\
+            \verb'Fourth_symb       REG     0x4'\\
+            \verb'Fifth_symb        REG     0x5'
 
         \subsection{NAMEREG}
-            {
-                \usecodefont
-                \verb'NAMEREG            <symbol>,<reg name or address> '
-            }
+            \verb'NAMEREG <symbol>, <address> '
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Directive NAMEREG is similar to REG but with different syntax. Symbols defined with NAMEREG can be redefined with another value in your source code.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'NAMEREG     s1'\\
-                \verb'NAMEREG     s2'\\
-                \verb'NAMEREG     s3'\\
-                \verb'NAMEREG     4         ; Address'\\
-                \verb'NAMEREG     0xA       ; Address'\\
-            }
+        \subsubsection{Examples}
+            \verb'NAMEREG     s1'\\
+            \verb'NAMEREG     s2'\\
+            \verb'NAMEREG     s3'\\
+            \verb'NAMEREG     4         ; Address'\\
+            \verb'NAMEREG     0xA       ; Address'
 
     \subsection{DATA}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      DATA             <expression>'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> DATA <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Symbols defined with the DATA directive are by compiler considered as memory data. It is supposed to be used only with instructions FETCH and STORE.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    DATA                0b10011100              ;Number in binary'\\
-                \verb'Second_symb   DATA                47                      ;Number in decimal'\\
-                \verb'Third_symb    DATA                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'Fifth_symb    DATA                0x09 << 2               ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    DATA                0b10011100              ; Number in binary'\\
+            \verb'Second_symb   DATA                47                      ; Number in decimal'\\
+            \verb'Third_symb    DATA                0x39                    ; Number in hexadecimal'\\
+            \verb'Fourth_symb   DATA                (A -4)+ 18 / B)         ; Number with expression'\\
+            \verb'Fifth_symb    DATA                0x09 << 2               ; Expression'
 
     \subsection{CODE}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      CODE             <expression>'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> CODE <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Symbols defined with the CODE directive are by compiler considered as program memory.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    CODE                0b10011100              ;Number in binary'\\
-                \verb'Second_symb   CODE                47                      ;Number in decimal'\\
-                \verb'Third_symb    CODE                0x39                    ;Number in hexadecimal'\\
-                \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ;Number with expression'\\
-                \verb'Fifth_symb    CODE                0x09 << 2               ;'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    CODE                0b10011100              ; Number in binary'\\
+            \verb'Second_symb   CODE                47                      ; Number in decimal'\\
+            \verb'Third_symb    CODE                0x39                    ; Number in hexadecimal'\\
+            \verb'Fourth_symb   CODE                (A -4)+ 18 / B)         ; Expression'\\
+            \verb'Fifth_symb    CODE                0x09 << 2               ; Expression'
 
     \subsection{PORT}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      PORT             <expression>'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> PORT <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Symbol defined with this directive is considered to be PORT\_ID identifier.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    PORT                0x10    '\\
-                \verb'Second_symb   PORT                10      '\\
-                \verb'Third_symb    PORT                0x2     '\\
-                \verb'Fourth_symb   PORT                0x5     '\\
-                \verb'Fifth_symb    PORT                0x09 + 2'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    PORT                0x10    '\\
+            \verb'Second_symb   PORT                10      '\\
+            \verb'Third_symb    PORT                0x2     '\\
+            \verb'Fourth_symb   PORT                0x5     '\\
+            \verb'Fifth_symb    PORT                0x09 + 2'
 
     \subsection{AUTOREG}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      AUTOREG         [<cnt address>]'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> AUTOREG [<address>]'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This directive saves time. You can use it, when you don't care which work register will be used. It will automatically assign a register at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
-                \verb'Second_symb   AUTOREG'\\
-                \verb'Third_symb    AUTOREG'\\
-                \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting address to 0x05'\\
-                \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'\\
-            }
+        \subsubsection{Examples}
+            \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
+            \verb'Second_symb   AUTOREG'\\
+            \verb'Third_symb    AUTOREG'\\
+            \verb'Fourth_symb   AUTOREG     0x5     ; Now with optional parameter changing counting address to 0x05'\\
+            \verb'Fifth_symb    AUTOREG             ; Fifth_symb is on address 0x06'
 
     \subsection{AUTOSPR}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      AUTOSPR        [<cnt address>]'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> AUTOSPR [<address>]'
 
-    \subsubsection{Description:}
+    \subsubsection{Description}
         Must be used only with instructions FETCH and STORE. It will automatically assign an address 0x00, which is incremented with every other AUTOSPR directive. Optionally, you can change starting address counter by adding a parameter after AUTOSPR directive. You can check assigned memory in code listing file(.lst) and symbol table file(.sym).
 
-    \subsubsection{Examples:}
-        {
-            \usecodefont
-            \verb'First_symb    AUTOSPR             ; Automatically assigned, data at address 0x00'\\
-            \verb'Second_symb   AUTOSPR'\\
-            \verb'Third_symb    AUTOSPR'\\
-            \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting address to 0x05'\\
-            \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'\\
-        }
+    \subsubsection{Examples}
+        \verb'First_symb    AUTOSPR             ; Automatically assigned, data at address 0x00'\\
+        \verb'Second_symb   AUTOSPR'\\
+        \verb'Third_symb    AUTOSPR'\\
+        \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting address to 0x05'\\
+        \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'
 
     \subsection{INITSPR}
-        \subsubsection{Syntax:}
+        \subsubsection{Syntax}
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
 
-        \subsubsection{Examples:}
+        \subsubsection{Examples}
 
     \subsection{STRING}
-        \subsubsection{Syntax:}
+        \subsubsection{Syntax}
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
 
-        \subsubsection{Examples:}
+        \subsubsection{Examples}
 
 
     \subsection{ORGSPR, MERGESPR}
-        \subsubsection{Syntax:}
+        \subsubsection{Syntax}
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
 
     \subsection{DEFINE}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<symbol>      DEFINE             <expression>'
-            }
+        \subsubsection{Syntax}
+            \verb'<symbol> DEFINE <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can define expression using previously defined symbols. Value of this expression is calculated every time the symbol is used. You can use symbols in define expressions
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'A             EQU         10'\\
-                \verb'B             SET         5                   ; Second symbol is redefinable'\\
-                \verb'C             DEFINE      ( A + B ) * 2       ; Defined expression'\\
-                \verb'F = C                                         ; F equals 30'\\
-                \verb'B             SET         10'\\
-                \verb'F = C                                         ; F equals 40'\\
-            }
+        \subsubsection{Examples}
+            \verb'A             EQU         10'\\
+            \verb'B             SET         5                   ; Second symbol is redefinable'\\
+            \verb'C             DEFINE      ( A + B ) * 2       ; Defined expression'\\
+            \verb'F = C                                         ; F equals 30'\\
+            \verb'B             SET         10'\\
+            \verb'F = C                                         ; F equals 40'
 
-    \subsection{ADDRESS,ORG}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'ADDRESS             <expression>'\\
-                \verb'ORG                 <expression>'
-            }
+    \subsection{ADDRESS, and ORG}
+        \subsubsection{Syntax}
+            \verb'ADDRESS <expression>'\\
+            \verb'ORG     <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             When the ORG or ADDRESS statement is encountered, the assembler calculates the value of the expression and changes the address counter. The MDS assembler maintains a location counter for each segment. The location counter contains the offset of the instruction or data being assembled and is incremented after each line by the number of bytes of data or code in that line.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'ORG           0x3ff'\\
-                \verb'ORG           START'\\
-                \verb'ORG           INTERRUPT'\\
-                \verb'ORG           (\$ + 15) \& 0xFFEE'\\
-                \verb'ADDRESS       0x3ff'\\
-                \verb'ADDRESS       START'\\
-                \verb'ADDRESS       INTERRUPT'\\
-                \verb'ADDRESS       (\$ + 15)'\\
-            }
+        \subsubsection{Examples}
+            \verb'ORG           0x3ff'\\
+            \verb'ORG           START'\\
+            \verb'ORG           INTERRUPT'\\
+            \verb'ORG           (\$ + 15) \& 0xFFEE'\\
+            \verb'ADDRESS       0x3ff'\\
+            \verb'ADDRESS       START'\\
+            \verb'ADDRESS       INTERRUPT'\\
+            \verb'ADDRESS       (\$ + 15)'
 
     \subsection{REPT}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'REPT  <NumberOfRepetions>'\\
-                \verb'<repeated code>'\\
-                \verb'ENDR'
-            }
+        \subsubsection{Syntax}
+            \verb'REPT <expression>'\\
+            \verb'     <code>'\\
+            \verb'ENDR'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Directive REPT is able to repeatedly execute a block of code.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'; With REPT'\\
-                \verb'REPT              8'\\
-                \verb'SR0               sF'\\
-                \verb'ENDR'\\
-                \verb'; Without REPT'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-            }
+        \subsubsection{Examples}
+            \verb'; With REPT'\\
+            \verb'REPT              8'\\
+            \verb'SR0               sF'\\
+            \verb'ENDR'\\
+            \verb'; Without REPT'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'
 
     \subsection{\#WHILE}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'#WHILE  <symbol>'\\
-                \verb'<code>'\\
-                \verb'#ENDW'
-            }
+        \subsubsection{Syntax}
+            \verb'#WHILE <expression>'\\
+            \verb'       <code>'\\
+            \verb'#ENDW'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             The while construct consists of a block of code and an expression. Following code is recompiled until expression equals to zero.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'B             SET             8'\\
-                \verb'#WHILE        B                       ; while B != 0'\\
-                \verb'SR0           sF'\\
-                \verb'B             SET             B - 1'\\
-                \verb'#ENDW'
-            }
+        \subsubsection{Examples}
+            \verb'B             SET             8'\\
+            \verb'#WHILE        B                       ; while B != 0'\\
+            \verb'SR0           sF'\\
+            \verb'B             SET             B - 1'\\
+            \verb'#ENDW'
 
     \subsection{SKIP}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'SKIP  <NumberOfInstructions>'
-            }
+        \subsubsection{Syntax}
+            \verb'SKIP <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             SKIP directive is basically address counter + number evaluated in expression. See example for more info.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'SKIP          3        ; this will skip first three SR0, performing only one SR0'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-                \verb'SR0           sF'\\
-            }
+        \subsubsection{Examples}
+            \verb'SKIP          3        ; this will skip first three SR0, performing only one SR0'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'\\
+            \verb'SR0           sF'
 
     \subsection{UNDEFINE, UNDEF}
+        \subsubsection{Syntax}
+            \verb'UNDEFINE <symbol>'\\
+            \verb'UNDEF    <symbol>'
 
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'UNDEFINE          <symbol>'\\
-                \verb'UNDEF             <symbol>'
-            }
-
-        \subsubsection{Description:}
+        \subsubsection{Description}
             All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'My_symbol             SET             15'\\
-                \verb'LOAD                  s0, #My_symbol'\\
-                \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be used'\\
-                \verb'LOAD                  s0, #My_symbol          ; this will cause an error'\\
-            }
+        \subsubsection{Examples}
+            \verb'My_symbol             SET             15'\\
+            \verb'LOAD                  s0, #My_symbol'\\
+            \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be used'\\
+            \verb'LOAD                  s0, #My_symbol          ; this will cause an error'
 
     \subsection{DB}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb '; Expresion syntax'\\
-                \verb'DB                 <expression1>  [,<expression2>,..]'\\
-                \verb' ; String syntax'\\
-                \verb'DB                <"string">'\\
-                \verb'; Combination of string and expressions'\\
-                \verb'DB                <"string"> [,<expression1>,..]'\\
-                \verb' ; parameter can be unlimited number of string characters, or expressions divided by comma'\\
-            }
+        \subsubsection{Syntax}
+            \verb'; Expresion syntax'\\
+            \verb'DB  <expression1>  [, <expression2>, ...]'\\
+            \verb''\\
+            \verb'; String syntax'\\
+            \verb'DB <"string">'\\
+            \verb''\\
+            \verb'; Combination of string(s) and expression(s)'\\
+            \verb'DB <"string"> [, <expression1>, ...]'
 
-        \subsubsection{Description:}
+            Parameter can be unlimited number of string characters, or expressions divided by comma.
+
+        \subsubsection{Description}
             The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit but trims 6 MSB bits making it 18-bit value,
             so it can fit into program memory. You can insert infinite number of string characters and MDS assembler separates them into triplets of bytes replaced
             with their ASCII value. The assembler then trims upper 6 bits making it 18-bit value.
             See the examples for better understanding of DB directive.
 
-        \subsubsection{Examples:}
-        {
-            \usecodefont
+        \subsubsection{Examples}
             \verb'DB      24828                   ; hexadecimal 0x0060FC'\\
             \verb'DB      "my string"             ; String syntax'\\
             \verb'DB      "my string",2+1,3...    ; Combination of string and expressions'\\
-            \verb' ; parameter can be unlimited number of string characters, or expressions divided by comma'\\
-        }
+
     \subsection{LIMIT}
+        \subsubsection{Syntax}
+            \verb'LIMIT D, <number> ; Number of registers'\\
+            \verb'LIMIT R, <number> ; Size of scratch-pad RAM'\\
+            \verb'LIMIT C, <number> ; Size of program memory'\\
 
-        \subsubsection{Syntax:}
-            \verb'LIMIT          D,<number>                  ; Number of registers '\\
-            \verb'LIMIT          R,<number>                  ; Size of scratchpad ram '\\
-            \verb'LIMIT          C,<number>                  ; Size of program memory '\\
-
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler. In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'LIMIT          R,16                   ; Number of registers 16'\\
-                \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
-                \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
-            }
+        \subsubsection{Examples}
+            \verb'LIMIT          R,16                   ; Number of registers 16'\\
+            \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
+            \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
 
     \subsection{DEVICE}
-        \subsubsection{Syntax:}
-            \verb'DEVICE            <device name>'
+        \subsubsection{Syntax}
+            \verb'DEVICE <device_name>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Normally, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'DEVICE                KCPSM3'\\
-                \verb'DEVICE                KCPSM2'\\
-                \verb'DEVICE                KCPSM1'\\
-                \verb'DEVICE                KCPSM1cpld'\\
-                \verb'DEVICE                KCPSM6'\\
-            }
+        \subsubsection{Examples}
+            \verb'DEVICE kcpsm3'\\
+            \verb'DEVICE kcpsm2'\\
+            \verb'DEVICE kcpsm1'\\
+            \verb'DEVICE kcpsm1cpld'\\
+            \verb'DEVICE kcpsm6'\\
 
     \subsection{LIST, NOLIST}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'LIST'\\
-                \verb'NOLIST'
-            }
+        \subsubsection{Syntax}
+            \verb'LIST'\\
+            \verb'NOLIST'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can turn on/off printing to code listing in some parts of your code.
 
     \subsection{TITLE}
-        \subsubsection{Syntax:}
-            \verb'TITLE            <"title text">'
+        \subsubsection{Syntax}
+            \verb'TITLE "<title text>"'
 
-        \subsubsection{Description:}
-        This will put a title into corresponding line in code listing.
+        \subsubsection{Description}
+            This will put a title into corresponding line in code listing.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'TITLE         "Text, that will show up in the code listing"'
-            }
+        \subsubsection{Examples}
+            \verb'TITLE         "Text, that will show up in the code listing"'
 
     \subsection{MESSAGE}
-        \subsubsection{Syntax:}
-            \verb'MESSAGE            <"message text">'
+        \subsubsection{Syntax}
+            \verb'MESSAGE "<message text>"'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can define message, that will show up after compilation.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'MESSAGE         "Text, that will show up in the code listing"'
-            }
+        \subsubsection{Examples}
+            \verb'MESSAGE         "Text, that will show up in the code listing"'
 
     \subsection{ERROR}
-        \subsubsection{Syntax:}
-            \verb'MESSAGE            <"error text">'
+        \subsubsection{Syntax}
+            \verb'ERROR "<error message>"'
 
-        \subsubsection{Description:}
-        You can define an error report, which aborts compilation, when is executed.
+        \subsubsection{Description}
+            You can define an error report, which aborts compilation, when is executed.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'ERROR         "Text, that will show up in the code listing"'
-            }
+        \subsubsection{Examples}
+            \verb'ERROR         "Text, that will show up in the code listing"'
 
     \subsection{WARNING}
-            \verb'WARNING            <"warning text">'
+            \verb'WARNING "<warning message>"'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This will put title into corresponding line in code listing.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'WARNING         "Text, that will show up in the code listing"'
-            }
+        \subsubsection{Examples}
+            \verb'WARNING         "Text, that will show up in the code listing"'
 
     \subsection{LOCAL}
-        \subsubsection{Syntax:}
-            \verb'LOCAL            <name>'
+        \subsubsection{Syntax}
+            \verb'LOCAL <name>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels or symbols.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'MACRO         name_of_macro'\\
-                \verb'LOCAL         wait'\\
-                \verb'wait:'\\
-                \verb'SUBCY         s0,#10h'\\
-                \verb'SUB           s0,#1h' \\
-                \verb'LOAD          s0,#F0h'\\
-                \verb'JUMP          C,wait'\\
-                \verb'ENDM'\\
-            }
+        \subsubsection{Examples}
+            \verb'MACRO         name_of_macro'\\
+            \verb'LOCAL         wait'\\
+            \verb'wait:'\\
+            \verb'SUBCY         s0,#10h'\\
+            \verb'SUB           s0,#1h' \\
+            \verb'LOAD          s0,#F0h'\\
+            \verb'JUMP          C,wait'\\
+            \verb'ENDM'
 
     \subsection{END}
-        \subsubsection{Syntax:}
+        \subsubsection{Syntax}
             \verb'END'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesn't have to be syntactically correct.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
+        \subsubsection{Examples}
                 \verb'END'
-            }
 
     \subsection{FAILJMP,DEFAULT\_JUMP}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'<FAILJMP          "label">'\\
-                \verb'<DEFAULT_JMP      "label">'
-            }
+        \subsubsection{Syntax}
+            \verb'FAILJMP     <expression>'\\
+            \verb'DEFAULT_JMP <expression>'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Fills program memory with jump to the specified address. Simple protection against errors.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'FAILJMP                   Start'\\
-                \verb'DEFAULT\_JUMP             0x000'\\
-            }
-
+        \subsubsection{Examples}
+            \verb'FAILJMP                   Start'\\
+            \verb'DEFAULT\_JUMP             0x000'
 
 \section{Pseudo Instructions}
     MDS assembler supports some useful pseudo instructions, which can improve understandability of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
 
     \subsection{INC}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'INC       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'INC <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'ADD       sX, #1'
-            }
+            \verb'ADD       sX, #1'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction increments given register value by one.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'INC              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'INC              s0'
 
     \subsection{DEC}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'DEC       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'DEC <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'SUB       sX, #1'
-            }
+            \verb'SUB       sX, #1'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction decrements given register value by one.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'DEC              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'DEC s0'
 
     \subsection{SETR}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'SET       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'SETR <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'OR       sX, #0xFF'
-            }
+            \verb'OR       sX, #0xFF'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction sets given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'SETR              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'SETR              s0'
 
     \subsection{CLRR}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'CLRR       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'CLRR <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'AND       sX, #0x00'
-            }
+            \verb'AND       sX, #0x00'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction clears given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'CLRR              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'CLRR              s0'
 
     \subsection{CPL}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'CPL       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'CPL <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'XOR       sX, #0xFF'
-            }
+            \verb'XOR       sX, #0xFF'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction execute 1\'s complement with given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'CPL              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'CPL              s0'
 
     \subsection{CPL2}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'CPL2       <register>'
-            }
+        \subsubsection{Syntax}
+            \verb'CPL2 <expression>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'XOR              s0,#0xFF'\\
-                \verb'ADD              s0,#1'\\
-            }
+            \verb'XOR              s0,#0xFF'\\
+            \verb'ADD              s0,#1'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             This instruction executes 1\'s complement with given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'CPL2              s0'\\
-            }
+        \subsubsection{Examples}
+            \verb'CPL2              s0'
 
     \subsection{SETB}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'SETB       <register>,<bit>           ; bit <0:7>'
-            }
+        \subsubsection{Syntax}
+            \verb'SETB <register>, <bit> ; bit belongs to interval [0,7]'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'OR       sX, #1 << bit'
-            }
+            \verb'OR       sX, #1 << bit'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Sets bit in given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'SETB              s0,3'\\
-            }
+        \subsubsection{Examples}
+            \verb'SETB              s0,3'
 
     \subsection{CLRB}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'CLRB       <register>,<bit>           ; bit <0:7>'
-            }
+        \subsubsection{Syntax}
+            \verb'CLRB <register>, <bit> ; bit belongs to interval [0,7]'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'AND       sX,#(0xFF ^ (1 << bit))'
-            }
+            \verb'AND       sX,#(0xFF ^ (1 << bit))'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Clears bit in given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'CLRB              s0,7'\\
-            }
+        \subsubsection{Examples}
+            \verb'CLRB              s0,7'
 
     \subsection{NOTB}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'NOTB       <register>,<bit>           ; bit <0:7>'
-            }
+        \subsubsection{Syntax}
+            \verb'NOTB <register>, <bit> ; bit belongs to interval [0,7]'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'XOR       sX,#(~(1 << bit))'
-            }
+            \verb'XOR       sX,#(~(1 << bit))'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Negates bit in given register.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'NOTB              s0,7'\\
-            }
+        \subsubsection{Examples}
+            \verb'NOTB              s0,7'
 
     \subsection{DJNZ}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'DJNZ       <register>,<label>'
-            }
+        \subsubsection{Syntax}
+            \verb'DJNZ <register>, <label>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'SUB               s0,#1'\\
-                \verb'JUMP              NZ,loop'\\
-            }
+            \verb'SUB               s0,#1'\\
+            \verb'JUMP              NZ,loop'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Given register is decremented until it is zero.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'loop:             '\\
-                \verb'DJNZ              s0, loop'\\
-            }
+        \subsubsection{Examples}
+            \verb'loop:             '\\
+            \verb'DJNZ              s0, loop'
 
     \subsection{IJNZ}
-        \subsubsection{Syntax:}
-            \verb'IJNZ       <register>,<label>'
+        \subsubsection{Syntax}
+            \verb'IJNZ <register>, <label>'
 
         \subsubsection{Equal to:}
-            {
-                \usecodefont
-                \verb'ADD               s0,#1'\\
-                \verb'JUMP              NZ,loop'\\
-            }
+            \verb'ADD               s0,#1'\\
+            \verb'JUMP              NZ,loop'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             Given register is incremented until overflow.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'loop:             '\\
-                \verb'IJNZ              s0, loop'\\
-            }
+        \subsubsection{Examples}
+            \verb'loop:             '\\
+            \verb'IJNZ              s0, loop'
 
 \section{Run time directives}
     MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program. Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used. Table of allowed instructions is displayed below.
@@ -1012,109 +765,85 @@ Each list element is being parsed and split into an address reference, a command
     \end{table}
 
     \subsection{IF}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'IF                <condition>'\\
-                \verb'<code>'\\
-                \verb'ELSEIF            <condition>'\\
-                \verb'<code>'\\
-                \verb'ELSE'\\
-                \verb'<code>'\\
-                \verb'ENDIF'\\
-            }
+        \subsubsection{Syntax}
+            \verb'IF      <condition>'\\
+            \verb'        <code>'\\
+            \verb'ELSEIF  <condition>'\\
+            \verb'        <code>'\\
+            \verb'ELSE'\\
+            \verb'        <code>'\\
+            \verb'ENDIF'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares symbol with register address. So 5 would have been replaced with value stored in register with address 5.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'IF         s0 == #10'\\
-                \verb'           LOAD  s0, #10h'\\
-                \verb'ELSEIF     B >= #100'\\
-                \verb'           SR0   s0'\\
-                \verb'ELSE       A >= 5'\\
-                \verb'           INPUT   s0,RX_data'\\
-                \verb'ENDIF'
-            }
+        \subsubsection{Examples}
+            \verb'IF      s0 == #10'\\
+            \verb'        LOAD  s0, #10h'\\
+            \verb'ELSEIF  B >= #100'\\
+            \verb'        SR0   s0'\\
+            \verb'ELSE    A >= 5'\\
+            \verb'        INPUT   s0,RX_data'\\
+            \verb'ENDIF'
 
     \subsection{WHILE}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'WHILE       <condition>'\\
-                \verb'<code>'\\
-                \verb'ENDW'
-            }
+        \subsubsection{Syntax}
+            \verb'WHILE <condition>'\\
+            \verb'      <code>'\\
+            \verb'ENDW'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax.
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'WHILE       s0 == #10'\\
-                \verb'      ADDCY    S1,#1'\\
-                \verb'ENDW'
-                ~\\
-                \usecodefont
-                \verb'WHILE       s0 > #10'\\
-                \verb'      ADDCY    S1,#1'\\
-                \verb'ENDW'
-                ~\\
-                \usecodefont
-                \verb'WHILE       s0  != #10'\\
-                \verb'      ADDCY    S1,#1'\\
-                \verb'ENDW'
-            }
+        \subsubsection{Examples}
+            \verb'WHILE s0 == #10'\\
+            \verb'      ADDCY S1,#1'\\
+            \verb'ENDW'
+            \verb''\\
+            \verb'WHILE s0 > #10'\\
+            \verb'      ADDCY S1,#1'\\
+            \verb'ENDW'
+            \verb''\\
+            \verb'WHILE s0  != #10'\\
+            \verb'      ADDCY S1,#1'\\
+            \verb'ENDW'
 
     \subsection{FOR}
-        \subsubsection{Syntax:}
-            {
-                \usecodefont
-                \verb'FOR   <condition>'\\
-                \verb'      <code>'\\
-                \verb'ENDW'
-            }
+        \subsubsection{Syntax}
+            \verb'FOR   <condition>'\\
+            \verb'      <code>'\\
+            \verb'ENDW'
 
-        \subsubsection{Description:}
+        \subsubsection{Description}
             You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case, counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger. See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
 
-        \subsubsection{Examples:}
-            {
-                \usecodefont
-                \verb'FOR       s0,10'\\
-                \verb'      NOP'\\
-                \verb'ENDF'
-                ~\\
-                \verb';In this case, incrementing is from 0 to 10. Incrementing step is 1.'
-                \verb'FOR       s0,10..20'\\
-                \verb'      NOP'\\
-                \verb'ENDF'
-                ~\\
-                \verb';In this case, incrementing is in the range 10 to 20. Incrementing step is 1.'
-                \verb'FOR       s0,10..50,10'\\
-                \verb'      NOP'\\
-                \verb'ENDF'
-            }
-
-            In this case, incrementing is from 10 to 50. Last number defines incrementing step. (In this case 10).\\
+        \subsubsection{Examples}
+            \verb'; In this case, incrementing is from 0 to 10. Incrementing step is 1.'
+            \verb'FOR   s0, 10'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
+            \verb''\\
+            \verb'; In this case, incrementing is in the range 10 to 20. Incrementing step is 1.'
+            \verb'FOR   s0, 10..20'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
+            \verb''\\
+            \verb'; In this case, incrementing is from 10 to 50. Last number defines'\\
+            \verb'; incrementing step. (In this case 10).'\\
+            \verb'FOR   s0, 10..50, 10'\\
+            \verb'      NOP'\\
+            \verb'ENDF'
 
 \section{Macro Processing}
     Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported by this assembler are.
 
     \subsection{Syntax}
-        {
-            \usecodefont
-            \verb'MACRO      [<parameter1>]  [,<parameter2>..]'\\
-            \verb'    <macro source code>'\\
-            \verb'ENDM  ; end of macro declaration '
-            ~\\
-            \usecodefont
-            \verb'EXPAND        ; Expanding of macros allowed'\\
-            \verb'NOEXPAND      ; Expanding of macros forbidden '\\
-        }
+        \verb'MACRO     [<parameter1>]  [,<parameter2>..]'\\
+        \verb'          <macro source code>'\\
+        \verb'ENDM      ; end of macro definition'
+        \verb''~\\
+        \verb'EXPAND    ; Expanding of macros enabled'\\
+        \verb'NOEXPAND  ; Expanding of macros disabled'
 
         \begin{table}[h!]
             \begin{tabular}{|ll|}
@@ -1205,17 +934,16 @@ Each list element is being parsed and split into an address reference, a command
     The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions to work with conditional assembly:
 
     \begin{itemize}
-            \setlength{\itemsep}{-3pt}
-            \item IF <condition>
-            \item IFN <condition>
-            \item IFDEF <symbol>
-            \item IFNDEF <symbol>
-            \item ELSE
-            \item ELSEIF <condition>
-            \item ELSEIFN <condition>
-            \item ELSEIFDEF <symbol>
-            \item ELSEIFNDEF <symbol>
-            \item ENDIF
+        \item IF <condition>
+        \item IFN <condition>
+        \item IFDEF <symbol>
+        \item IFNDEF <symbol>
+        \item ELSE
+        \item ELSEIF <condition>
+        \item ELSEIFN <condition>
+        \item ELSEIFDEF <symbol>
+        \item ELSEIFNDEF <symbol>
+        \item ENDIF
     \end{itemize}
 
     This can be best demonstrated on an example:
@@ -1223,7 +951,7 @@ Each list element is being parsed and split into an address reference, a command
         \mysmallfont{}
         \verb'abc     equ     14              ; Assign number 14 to symbol abc'\\
         \verb'xyz     equ     10              ; Assign number 10 to symbol abc'\\
-        ~\\
+        \verb''\\
         \verb'ifdef abc                       ;<--+ Assemble only if symbol abc has been defined'\\
         \verb'  if ( abc = 13 )               ;   | <--+ Assemble if 13 has been assigned to symbol abc'\\
         \verb'        load     a, #01010101b  ;   |    |'\\
@@ -1241,7 +969,7 @@ Each list element is being parsed and split into an address reference, a command
         \verb'        load     a, #128d       ;   |    |'\\
         \verb'  endif                         ;   | <--+'\\
         \verb'endif                           ;<--+'\\
-        ~\\
+        \verb''\\
         \verb'jmp    $                       ; Infinite loop'\\
         \verb'end                            ; End of assembly'\\
         \caption{An example of conditional assembly usage}
