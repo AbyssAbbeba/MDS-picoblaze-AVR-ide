@@ -538,6 +538,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
             {
+                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_IE_CHANGED" << detail;
                 if (detail == 0)
                 {
                     this->btnInte->setStyleSheet("color: none");
@@ -552,11 +553,11 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             {
                 if (detail == 0)
                 {
-                    this->btnIntr->setStyleSheet("color: none");
+                    //this->btnIntr->setStyleSheet("color: none");
                 }
                 else
                 {
-                    this->btnIntr->setStyleSheet("color: #00ff00");
+                    //this->btnIntr->setStyleSheet("color: #00ff00");
                 }
                 break;
             }
@@ -786,7 +787,17 @@ void PicoBlazeGrid::setIntE()
 
 void PicoBlazeGrid::interrupt()
 {
-    m_interrupt->irq();   
+    m_interrupt->irq();
+    /*if (m_flags->getInte() == true)
+    {
+        this->btnInte->setStyleSheet("color: none");
+        m_flags->setInte(false);
+    }
+    else
+    {
+        this->btnInte->setStyleSheet("color: #00ff00");
+        m_flags->setInte(true);
+    }*/
 }
 
 
