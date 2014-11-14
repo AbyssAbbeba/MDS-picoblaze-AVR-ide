@@ -7,7 +7,10 @@ my_str  string  "Omnubus Formosior Semper In Te Glorior."
 
         ldret   S0, my_str
         ldret   S1, "Hac In Hora, Sine Mora."
-        outputk my_str, my_port
-        outputk "O Fortuna, Venut Luna", my_port
+        outk    my_str, my_port
+        outk    "O Fortuna, Venut Luna", my_port
+
+        jmp     $
+        db      my_str
 
         end
