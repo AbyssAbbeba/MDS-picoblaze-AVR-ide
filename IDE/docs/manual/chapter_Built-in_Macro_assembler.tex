@@ -1,152 +1,146 @@
 In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-MDS has the most advanced macro assembler on the market. Its supports a lot of various types of macros and advanced directives, like for example REPT and WHILE, which can create for and while loops or  macros with unlimited number of input parameters.
+MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "if ( S0 == S1 )" to easy write conditions instead of compares and conditional jumps, "for ( S0, 0 .. 9 )" for loops, "#if my_constant > 20" for conditional compilation, "abc macro x, y, z" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
 
-Each list element is being parsed and split into an address reference, a command and an argument list. After them all directives are being filtered out and all commands and their arguments are being checked for validity.
+\section{Differences from Xilinx assembler}
+    \begin{enumeration}
+        \item Code is case insensitive.
+        \item Default radix is decimal.
+        \item Immediate addressing requires ``#'' prefix, and indirect addressing requires ``@'' prefix.
+    \end{enumeration}
 
-\paragraph{Important changes}
-    You need to tell compiler, that you are using constants by adding \# before second operand.\\
-    {
-        \usecodefont
-        \verb'; Example of instructions operating with constants'\\
-        \verb'LOAD    s0, #0b00000111   ; compiler now know, that this number is a constant'\\
-        \verb'LOAD    s0,  0b00000111   ; and this compiler takes as an adrress'
-    }
+\section{Basics}
+    \subsection{Statements}
+        Source code files for this assembler must be text files where lines are formed like these:\\
+        {
+            \usecodefont
+            \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
+            \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
+            \verb'            symbol         directive argument                       [ ;comment ]'\\
+            \verb'            directive      symbol, argument                         [ ;comment ]'
+        }
 
-\section{Statements}
-    Source code files for this assembler must be text files where lines are formed like these:\\
-    {
-        \usecodefont
-        \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
-        \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
-        \verb'            symbol         directive argument                       [ ;comment ]'\\
-        \verb'            directive      symbol, argument                         [ ;comment ]'
-    }
+        Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive so after that directive the code does not have to be syntactically valid. Empty lines are allowed as well as lines containing only comment or label. Statements are be separated by white spaces or tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
-    Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive, so after that directive the code do not have to be syntactically valid. Empty lines are allowed as well as line containing only comment or label. Statements can be separated by spaces, NBSP characters and tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
+    \subsection{Symbols}
+        Symbolic names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they cannot be the same as language keywords. Be aware of that there cannot coexists two or more symbols only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
 
-\section{Symbols}
-    Symbol names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letter, digits and underscore character (``\_''), their length is not limited, they are case insensitive and they can be the same as language keywords. Be aware of that there cannot coexists two or more symbols in the same memory segment which differs only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
+        ~\\
+        {
+            \usecodefont
+            \verb'First_symb      EQU     0b100111 ; Number in binary'\\
+            \verb'Second_symb     SET     47q      ; Octal'\\
+            \verb'Third_symb      REG     39d      ; Decimal'\\
+            \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
+            \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
+        }
 
-    ~\\
-    {
-        \usecodefont
-        \verb'First_symb      EQU     0b100111 ; Number in binary'\\
-        \verb'Second_symb     SET     47q      ; Octal'\\
-        \verb'Third_symb      REG     39d      ; Decimal'\\
-        \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
-        \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
-    }
+    \subsection{Constants}
+        MDS supports both prefix and suffix notation for defining compile-time constants.
 
-    As you can see in code example, some unknown directives are used for symbol definition. Next chapter describes all directives, as well as constants syntax and expressions priority.
+        \begin{code}[h!]
+        {
+            \usecodefont
 
-\section{Constants}
-    MDS supports both prefix and suffix definition.
+            \verb'x       equ     10         ; Decimal'\\
+            \verb'x       equ     10D        ; Decimal'\\
+            \verb'x       equ     0xFE       ; Hexadecimal'\\
+            \verb'x       equ     FEh        ; Hexadecimal'\\
+            \verb'x       equ     O52        ; Octal'\\
+            \verb'x       equ     52q        ; Octal'\\
+            \verb'x       equ     01011110b  ; Binary'\\
+            \verb'x       equ     0b00100001 ; Binary'\\
+            \verb'x       equ     0b01       ; Binary, considers left side of byte zeroes'\\
+            \verb'x       equ     01b        ; Binary, considers right side of byte zeroes'
 
-    \begin{code}[h!]
-    {
-        \usecodefont
+            \caption{Syntax of various constant bases.}
+            \label{code:svcb}
+        }
+        \end{code}
 
-        \verb'x       equ     10         ; Decimal'\\
-        \verb'x       equ     10D        ; Decimal'\\
-        \verb'x       equ     0xFE       ; Hexadecimal'\\
-        \verb'x       equ     FEh        ; Hexadecimal'\\
-        \verb'x       equ     O52        ; Octal'\\
-        \verb'x       equ     52q        ; Octal'\\
-        \verb'x       equ     01011110b  ; Binary'\\
-        \verb'x       equ     0b00100001 ; Binary'\\
-        \verb'x       equ     0b01       ; Binary, considers left side of byte zeroes'\\
-        \verb'x       equ     01b        ; Binary, considers right side of byte zeroes'
+        When you want to say to compiler, that you are using constant, you must add "\#" before.
 
-        \caption{Syntax of various constant bases.}
-        \label{code:svcb}
-    }
-    \end{code}
+    \clearpage
+    \subsection{Expressions}
+        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expressions comprise of arithmetical operators, constants, and symbols. Example of such expressions:
 
-    When you want to say to compiler, that you are using constant, you must add "\#" before.
+        \begin{itemize}
+            \item \texttt{2+1}
+            \item \texttt{(2 + 4) - ABC}
+            \item \texttt{A \&\& B}
+            \item \texttt{X XOR 0FF00h}
+            \item \texttt{X * Y + X \% Y}
+        \end{itemize}
 
-\clearpage
-\section{Expressions}
-    Arithmetical expressions are evaluated at compilation time and replaced by assembler with constant corresponding the their resulting value. Expressions comprises of arithmetical operators, constants, symbols and another expressions. An example of such expression might be:
+        When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression. All logical operators have priorities lower than arithmetic and relational operators.
 
-    \begin{itemize}
-        \item \texttt{2+1}
-        \item \texttt{(2 + 4) - ABC}
-        \item \texttt{A \&\& B}
-        \item \texttt{X XOR 0FF00h}
-        \item \texttt{X * Y + X \% Y}
-    \end{itemize}
+        The following table shows priority of expression operators.
+        \begin{table}[h!]
+            \centering{}
+            \mysmallfont{}
 
-    When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression. All logical operators have priorities lower than arithmetic and relational operators. Therefore, if an expression involving arithmetic, relational and logical operators, the arithmetic operators are evaluated first, followed by the relational operators, followed by the logical operators.
+            \begin{tabular}{|l|l|l|l|}
+                \hline
+                Priority & Operator & Description             & Example         \\\hline
+                1        & +        & unary plus sign         & +12             \\\hline
+                1        & -        & unary minus sign        & -5              \\\hline
+                2        & \~{}     & bitwise NOT             & \~{}0a55ah      \\\hline
+                2        & !        & logical NOT             & !0a55ah         \\\hline
+                3        & *        & unsigned multiplication & 11 * 12         \\\hline
+                3        & /        & unsigned divisiono      & 11 / 12         \\\hline
+                3        & \%       & unsigned remainder      & 13 \% 11        \\\hline
+                4        & +        & unsigned addition       & 3 + 5           \\\hline
+                4        & -        & unsigned substraction   & 20 - 4          \\\hline
+                5        & <{}<     & binary shift left       & 21 <{}< 4       \\\hline
+                5        & >{}>     & binary shift right      & 32 >{}> 2       \\\hline
+                6        & <        & less than               & 11 < 12         \\\hline
+                6        & <=       & less or equal than      & 11 <= 11        \\\hline
+                6        &  >       & greater than            & 12 > 11         \\\hline
+                6        & >=       & greater or equal than   & 12 >= 11        \\\hline
+                7        & ==       & equal to                & 11 == 11        \\\hline
+                7        & !=       & not equal to            &  A != B         \\\hline
+                8        & \&       & bitwise and             & 48 \& 16        \\\hline
+                8        & |        & bitwise or              & 370q | 7        \\\hline
+                9        & \&\&     & logical and             & 48 \&\& 16      \\\hline
+                9        & ||       & logical or              & 370q || 7       \\\hline
+                9        & \^{}     & exclusive or            & 00fh \^{} 005h  \\\hline
+            \end{tabular}
 
-    The following table shows the priority of all the operators used in expressions.
+            \caption{Expression operators priority}
+        \end{table}
 
-    \begin{table}[h!]
-        \centering{}
-        \mysmallfont{}
+        Priority 1 is the highest priority, and priority 9 is the lowest priority. When operators with different priority levels appear in an expression, operations are evaluated according to priorities. When operators of the same priority appear in an expression, operations are evaluated from left to right.
 
-        \begin{tabular}{|l|l|l|l|}
-            \hline
-            Priority & Operator & Description             & Example         \\\hline
-            1        & +        & unary plus sign         & +12             \\\hline
-            1        & -        & unary minus sign        & -5              \\\hline
-            2        & \~{}     & bitwise NOT             & \~{}0a55ah      \\\hline
-            2        & !        & logical NOT             & !0a55ah         \\\hline
-            3        & *        & unsigned multiplication & 11 * 12         \\\hline
-            3        & /        & unsigned divisiono      & 11 / 12         \\\hline
-            3        & \%       & unsigned remainder      & 13 \% 11        \\\hline
-            4        & +        & unsigned addition       & 3 + 5           \\\hline
-            4        & -        & unsigned substraction   & 20 - 4          \\\hline
-            5        & <{}<     & binary shift left       & 21 <{}< 4       \\\hline
-            5        & >{}>     & binary shift right      & 32 >{}> 2       \\\hline
-            6        & <        & less than               & 11 < 12         \\\hline
-            6        & <=       & less or equal than      & 11 <= 11        \\\hline
-            6        &  >       & greater than            & 12 > 11         \\\hline
-            6        & >=       & greater or equal than   & 12 >= 11        \\\hline
-            7        & ==       & equal to                & 11 == 11        \\\hline
-            7        & !=       & not equal to            &  A != B         \\\hline
-            8        & \&       & bitwise and             & 48 \& 16        \\\hline
-            8        & |        & bitwise or              & 370q | 7        \\\hline
-            9        & \&\&     & logical and             & 48 \&\& 16      \\\hline
-            9        & ||       & logical or              & 370q || 7       \\\hline
-            9        & \^{}     & exclusive or            & 00fh \^{} 005h  \\\hline
-        \end{tabular}
+    \subsection{Predefined Symbols}
+        There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for PicoBlaze, because user do not have to define all these symbols in his or her code.
 
-        \caption{Expression operators priority}
-    \end{table}
+        \begin{table}[h!]
+            \centering{}
+            \mysmallfont{}
 
-    A priority of 1 is the highest priority a priority of 9 is the lowest priority. When operators with different priority levels appear in an expression, operations are performed according to priorities. When operators of the same priority appear in an expression, operations are performed from left to right within the expression.
+            \begin{tabular}{|cc|}
+                \hline
+                Symbol & Value \\\hline
+                s0     & 000h  \\\hline
+                s1     & 001h  \\\hline
+                s2     & 002h  \\\hline
+                s3     & 003h  \\\hline
+                s4     & 004h  \\\hline
+                s5     & 005h  \\\hline
+                s6     & 006h  \\\hline
+                s7     & 007h  \\\hline
+                s8     & 008h  \\\hline
+                s9     & 009h  \\\hline
+                sA     & 00Ah  \\\hline
+                sB     & 00Bh  \\\hline
+                sC     & 00Ch  \\\hline
+                sD     & 00Dh  \\\hline
+                sE     & 00Eh  \\\hline
+                sF     & 00Fh  \\\hline
+            \end{tabular}
 
-\section{Predefined Symbols}
-    There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for PicoBlaze, because user do not have to define all these symbols in his or her code.
-
-    \begin{table}[h!]
-        \centering{}
-        \mysmallfont{}
-
-        \begin{tabular}{|cc|}
-            \hline
-            Symbol & Value \\\hline
-            s0     & 000h  \\\hline
-            s1     & 001h  \\\hline
-            s2     & 002h  \\\hline
-            s3     & 003h  \\\hline
-            s4     & 004h  \\\hline
-            s5     & 005h  \\\hline
-            s6     & 006h  \\\hline
-            s7     & 007h  \\\hline
-            s8     & 008h  \\\hline
-            s9     & 009h  \\\hline
-            sA     & 00Ah  \\\hline
-            sB     & 00Bh  \\\hline
-            sC     & 00Ch  \\\hline
-            sD     & 00Dh  \\\hline
-            sE     & 00Eh  \\\hline
-            sF     & 00Fh  \\\hline
-        \end{tabular}
-
-        \caption{Code addresses}
-    \end{table}
+            \caption{Code addresses}
+        \end{table}
 
 \section{Assembler directives}
     Assembly directives are instructions that are executed by an assembler at assembly time, not by a CPU at run time. They can make the assembly of the program dependent on parameters input by a programmer, so that one program can be assembled different way, perhaps for different applications. They also can be used to manipulate presentation of a program to make it easier to read and maintain.
@@ -332,26 +326,32 @@ Each list element is being parsed and split into an address reference, a command
         \verb'Third_symb    AUTOSPR'\\
         \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting address to 0x05'\\
         \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'
-
-    \subsection{INITSPR}
-        \subsubsection{Syntax}
-
-        \subsubsection{Description}
-
-        \subsubsection{Examples}
+% TODO:
+%     \subsection{INITSPR}
+%         \subsubsection{Syntax}
+%
+%         \subsubsection{Description}
+%
+%         \subsubsection{Examples}
+%
+%     \subsection{ORGSPR, MERGESPR}
+%         \subsubsection{Syntax}
+%
+%         \subsubsection{Description}
 
     \subsection{STRING}
         \subsubsection{Syntax}
+            \verb'<symbol> STRING "<string>"'
 
         \subsubsection{Description}
+            Defines a named character string (sequence of characters) which can later be used with ``LOAD & RETURN'' and ``OUTPUTK'' instructions, and with ``DB'' directive.
 
         \subsubsection{Examples}
-
-
-    \subsection{ORGSPR, MERGESPR}
-        \subsubsection{Syntax}
-
-        \subsubsection{Description}
+            \verb'my_string     STRING          "Hello PicoBlaze!"'\\
+            \verb''\\
+            \verb'              LOAD & RETURN   S0, my_string'\\
+            \verb'              OUTPUTK         my_string, 2'\\
+            \verb'              DB              my_string'
 
     \subsection{DEFINE}
         \subsubsection{Syntax}
