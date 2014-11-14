@@ -1,13 +1,13 @@
 In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "if ( S0 == S1 )" to easy write conditions instead of compares and conditional jumps, "for ( S0, 0 .. 9 )" for loops, "#if my_constant > 20" for conditional compilation, "abc macro x, y, z" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
+MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "if ( S0 == S1 )" to easy write conditions instead of compares and conditional jumps, "for ( S0, 0 .. 9 )" for loops, "\#if my\_constant > 20" for conditional compilation, "abc macro x, y, z" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
 
 \section{Differences from Xilinx assembler}
-    \begin{enumeration}
+    \begin{itemize}
         \item Code is case insensitive.
         \item Default radix is decimal.
-        \item Immediate addressing requires ``#'' prefix, and indirect addressing requires ``@'' prefix.
-    \end{enumeration}
+        \item Immediate addressing requires ``\#'' prefix, and indirect addressing requires ``@'' prefix.
+    \end{itemize}
 
 \section{Basics}
     \subsection{Statements}
@@ -344,7 +344,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'<symbol> STRING "<string>"'
 
         \subsubsection{Description}
-            Defines a named character string (sequence of characters) which can later be used with ``LOAD & RETURN'' and ``OUTPUTK'' instructions, and with ``DB'' directive.
+            Defines a named character string (sequence of characters) which can later be used with ``LOAD \& RETURN'' and ``OUTPUTK'' instructions, and with ``DB'' directive.
 
         \subsubsection{Examples}
             \verb'my_string     STRING          "Hello PicoBlaze!"'\\
