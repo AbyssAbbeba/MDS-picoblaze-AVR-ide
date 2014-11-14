@@ -1344,6 +1344,40 @@ void WDockManager::showProjectEditors(Project *activeProject)
 }
 
 
+void WDockManager::setBottomAreaToCompilerInfo()
+{
+    if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+    }
+    for (int i = 0; i < bottomAreaTabs->count(); i++)
+    {
+        if ("Compiler Info" == bottomAreaTabs->tabText(i))
+        {
+            bottomAreaTabs->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+
+void WDockManager::setBottomAreaToSimulationInfo()
+{
+    if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+    }
+    for (int i = 0; i < bottomAreaTabs->count(); i++)
+    {
+        if ("Simulation Info" == bottomAreaTabs->tabText(i))
+        {
+            bottomAreaTabs->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+
 
 
 

@@ -1651,6 +1651,11 @@ void MainForm::compileProject()
         error(ERR_NO_PROJECT);
         return;
     }
+    if (true == simulationStatus)
+    {
+        error(ERR_COMPILE_DURING_SIMULATION);
+        return;
+    }
 
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
     CompilerOptions *options = new CompilerOptions();
@@ -2345,6 +2350,7 @@ void MainForm::compileProject()
  */
 void MainForm::compilationFinished(bool success)
 {
+    wDockManager->setBottomAreaToCompilerInfo();
     if ( true == success )
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
@@ -2506,7 +2512,6 @@ void MainForm::simulationReset()
  */
 void MainForm::simulationFlowHandle()
 {
-
     if (false == simulationStatus)
     {
         QString file = "";
@@ -2604,6 +2609,7 @@ void MainForm::simulationFlowHandle()
                 toolSimSwitchAct->setEnabled(true);
             #endif
             projectConfigAct->setDisabled(true);
+            projectCompileAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
@@ -2615,6 +2621,7 @@ void MainForm::simulationFlowHandle()
                 //qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 projectMan->getSimulated()->setBreakpoints(false);
             }
+            wDockManager->setBottomAreaToSimulationInfo();
         }
         else
         {
@@ -2718,6 +2725,7 @@ void MainForm::simulationFlowHandle()
             toolSimSwitchAct->setDisabled(true);
         #endif
         projectConfigAct->setEnabled(true);
+        projectCompileAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         this->unhighlight();
         this->wDockManager->getCentralTextEdit()->clearHighlight();

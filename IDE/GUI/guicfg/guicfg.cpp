@@ -161,6 +161,7 @@ void GuiCfg::setDefaultIDEGeneral()
     this->tipsOnStart = false;
     this->sessionRestoration = true;
     this->language = "English";
+    this->version = 100;
 }
 
 
@@ -768,7 +769,17 @@ bool GuiCfg::loadConfig()
                 xmlElement = xmlNode.toElement();
                 if (!xmlElement.isNull())
                 {
-                    if (xmlElement.tagName() == "IDEGeneral")
+                    if (xmlElement.tagName() == "Version")
+                    {
+                        if (xmlElement.attribute("version", "") != QString::number(this->version))
+                        {
+                            qDebug() << "GuiCfg: wrong app version";
+                            this->setDefaultAll();
+                            this->saveConfig();
+                            return true;
+                        }
+                    }
+                    else if (xmlElement.tagName() == "IDEGeneral")
                     {
                         QDomNode xmlIDEGeneralNode = xmlElement.firstChild();
                         QDomElement xmlIDEGeneralElement;
@@ -1141,6 +1152,9 @@ void GuiCfg::saveConfig()
     domDoc.appendChild(xmlRoot);
 
     //IDEGeneral
+    QDomElement xmlVersion = domDoc.createElement("Version");
+    xmlVersion.setAttribute("version", QString::number(this->version));
+    xmlRoot.appendChild(xmlVersion);
     QDomElement xmlIDEGeneral = domDoc.createElement("IDEGeneral");
     QDomElement xmlSplash = domDoc.createElement("Option");
     xmlSplash.setAttribute("name", "splash");

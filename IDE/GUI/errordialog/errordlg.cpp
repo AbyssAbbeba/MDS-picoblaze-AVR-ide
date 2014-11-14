@@ -207,6 +207,12 @@ void error(int errCode)
             msgBox.setText("License file not loaded.");
             break;
         }
+        case ERR_COMPILE_DURING_SIMULATION:
+        {
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText("Can not compile during active simulation.");
+            break;
+        }
         default:
         {
             msgBox.setIcon(QMessageBox::Critical);

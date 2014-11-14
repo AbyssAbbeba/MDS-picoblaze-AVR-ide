@@ -188,6 +188,9 @@ class GuiCfg_Items
         QList<QString> sessionProjectPaths;
         QList<QString> sessionFilePaths;
         QList<QString> sessionFileParentProjects;
+
+        //version - 1.0.0 is 100
+        int version;
         
 };
 
