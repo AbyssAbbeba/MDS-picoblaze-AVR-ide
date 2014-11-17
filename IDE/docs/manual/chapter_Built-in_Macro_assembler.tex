@@ -2,14 +2,14 @@ In this chapter, we will be concerned with build-in macro assembler. With syntax
 
 MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "if ( S0 == S1 )" to easy write conditions instead of compares and conditional jumps, "for ( S0, 0 .. 9 )" for loops, "\#if my\_constant > 20" for conditional compilation, "abc macro x, y, z" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
 
-\section{Differences from Xilinx assembler}
-    \begin{itemize}
-        \item Code is case insensitive.
-        \item Default radix is decimal.
-        \item Immediate addressing requires ``\#'' prefix, and indirect addressing requires ``@'' prefix.
-    \end{itemize}
-
 \section{Basics}
+    \subsection{Differences from Xilinx assembler}
+        \begin{itemize}
+            \item Code is case insensitive.
+            \item Default radix is decimal.
+            \item Immediate addressing requires ``\#'' prefix, and indirect addressing requires ``@'' prefix.
+        \end{itemize}
+
     \subsection{Statements}
         Source code files for this assembler must be text files where lines are formed like these:\\
         {
@@ -326,18 +326,54 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \verb'Third_symb    AUTOSPR'\\
         \verb'Fourth_symb   AUTOSPR     0x5     ; Now with optional parameter changing counting address to 0x05'\\
         \verb'Fifth_symb    AUTOSPR             ; Fifth_symb is on address 0x06'
-% TODO:
-%     \subsection{INITSPR}
-%         \subsubsection{Syntax}
-%
-%         \subsubsection{Description}
-%
-%         \subsubsection{Examples}
-%
-%     \subsection{ORGSPR, MERGESPR}
-%         \subsubsection{Syntax}
-%
-%         \subsubsection{Description}
+
+    \subsection{INITSPR}
+        \subsubsection{Syntax}
+            \verb'<symbol> INITSPR <value>'
+
+        \subsubsection{Description}
+            Initializes scratch-pad RAM (SPR) with the given value(s), content of such initilized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
+
+        \subsubsection{Examples}
+            \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+            \verb'my_data2      INITSPR         0x2b'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'\\
+            \verb'              FETCH           S3, my_data + 3'\\
+            \verb''\\
+            \verb'              FETCH           S8, my_data2'
+
+    \subsection{ORGSPR}
+        \subsubsection{Syntax}
+            \verb'ORGSPR <address>'
+
+        \subsubsection{Description}
+            Specify address of origin for scratch-pad RAM initialization (directive INITSPR).
+
+        \subsubsection{Examples}
+            \verb'              ORGSPR          0x10'\\
+            \verb'my_data       INITSPR         "Hello PicoBlaze!" ; <-- address assigned to my_data is 0x10'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'
+
+    \subsection{MERGESPR}
+        \subsubsection{Syntax}
+            \verb'MERGESPR <address>'
+
+        \subsubsection{Description}
+            Merge scratch-pad RAM initialization with program memory initialization at the specified address.
+
+        \subsubsection{Examples}
+            \verb'              MERGESPR        0x280'\\
+            \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'
 
     \subsection{STRING}
         \subsubsection{Syntax}
@@ -743,7 +779,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'loop:             '\\
             \verb'IJNZ              s0, loop'
 
-\section{Run time directives}
+\section{Code generation directives}
     MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program. Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used. Table of allowed instructions is displayed below.
 
     \begin{table}[h!]
@@ -834,7 +870,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'      NOP'\\
             \verb'ENDF'
 
-\section{Macro Processing}
+\section{Macro instructions}
     Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead and repeating usage of macros may significantly increase size of the resulting machine code. Macros supported by this assembler are.
 
     \subsection{Syntax}
@@ -977,7 +1013,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
 
     \clearpage
 
-\section{ERROR and WARNING messages}
+\section{Error and warning messages}
     This chapter lists the error messages generated by MDS. The following sections include a brief description of the possible error messages along with a description of the error and any corrective actions you can take to avoid or eliminate the error. Errors terminate the assembly and generate a message that is displayed on the console. Warnings generate a message in the assembly listing file but do not terminate the assembly.
 
     \subsection{Errors}
@@ -1436,8 +1472,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \colorbox{Lavender}{\color{Lavender}X} Checksum (two's complement of 8-bit sum of entire record, except for the start code and the checksum itself)
     \end{code}
 
-\section{Suported instructions}
-    MDS macro assembler supports multiple instruction syntax. You can use, for example, LOAD as well as LD. This section contains list of all supported instructions. For more informations about those instructions, see official PicoBlaze manual.\\\\
+\section{Instructions}
     "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
     "\#kk" represents a constant value in the range 00 to FF.\\
     "aaa" represents an address in the range 000 to 3FF.\\
@@ -1446,20 +1481,44 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
 
     \subsection{Program Control Group}
         \subsubsection{JUMP}
-            Instruction JUMP will load PC with "aaa" address. The JUMP instruction has no effect on the status of the flags.\\
-            \textbf{JUMP} aaa\\
-            \textbf{JUMP} Z,aaa\\
-            \textbf{JUMP} NZ,aaa\\
-            \textbf{JUMP} C,aaa\\
-            \textbf{JUMP} NC,aaa\\
+            Instruction JUMP loads program counter with the address specified by aaa operand. This instruction has no effect on the status flags.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'JUMP aaa          '; Unconditional jump.\\
+                \verb'JUMP Z, aaa       '; Jump only if the Zero flag is set.\\
+                \verb'JUMP NZ, aaa      '; Jump only if the Zero flag is NOT set.\\
+                \verb'JUMP C, aaa       '; Jump only if the Carry flag is set.\\
+                \verb'JUMP NC, aaa      '; Jump only if the Carry flag is NOT set.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'my_label:'\\
+                \verb'          ; ... code ...'\\
+                \verb'          JUMP    my_label        ; Jump at my_label.'\\
+                \verb''\\
+                \verb'          JUMP    0x300 + 0xff    ; Jump at address 3FF hexadecimal.'
 
         \subsubsection{CALL}
-            T"aaa" - call address. Instruction can be conditional.\\
-            \textbf{CALL} aaa\\
-            \textbf{CALL} Z,aaa\\
-            \textbf{CALL} NZ,aaa\\
-            \textbf{CALL} C,aaa\\
-            \textbf{CALL} NC,aaa\\
+            Call subprogram at the address specified by aaa operand.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'CALL aaa          '; Unconditional call.\\
+                \verb'CALL Z, aaa       '; Call only if the Zero flag is set.\\
+                \verb'CALL NZ, aaa      '; Call only if the Zero flag is NOT set.\\
+                \verb'CALL C, aaa       '; Call only if the Carry flag is set.\\
+                \verb'CALL NC, aaa      '; Call only if the Carry flag is NOT set.\\
+
+            \paragraph{Examples}
+                ~\\
+                \verb'subprog:  ADD     S0, S1          ; S0 := S0 + S1'\\
+                \verb'          SUB     S1, # 5 * 2     ; S1 := S1 + 7'\\
+                \verb'          RETURN'\\
+                \verb''\\
+                \verb'          CALL    my_subprog'\\
+                \verb''\\
+                \verb'          CALL    40            ; Call subprogram at address 40 decimal.'
 
         \subsubsection{RETURN, RET}
             Return from subroutine. Can be conditional.\\
@@ -1479,34 +1538,28 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
     \subsection{Arithmetic Group}
         \subsubsection{ADD, ADDCY}
             The ADD instruction performs an 8-bit addition of two operands. Can use constants or registers.\\
-            \textbf{ADD} sX,\#kk\\
-            \textbf{ADDCY} sX,\#kk\\
-            \textbf{ADD} sX,sY\\
-            \textbf{ADDCY} sX,sY\\
+            \textbf{ADD} sX, \#kk\\
+            \textbf{ADDCY} sX, \#kk\\
+            \textbf{ADD} sX, sY\\
+            \textbf{ADDCY} sX, sY\\
 
         \subsubsection{COMPARE, CMP}
             The COMPARE instruction performs an 8-bit subtraction of two operands Unlike the "SUB" instruction, the result of the operation is discarded and only the flags are affected. This instruction updates flags\\
-            \textbf{COMPARE} sX,\#kk\\
-            \textbf{COMPARE} sX,sY\\
-            \textbf{CMP}     sX,\#kk\\
-            \textbf{CMP}     sX,sY\\
+            \textbf{COMPARE} sX, \#kk\\
+            \textbf{COMPARE} sX, sY\\
+            \textbf{CMP}     sX, \#kk\\
+            \textbf{CMP}     sX, sY\\
 
         \subsubsection{SUB}
             The SUB instruction performs an 8-bit subtraction of two operands. This instruction updates flags\\
-            \textbf{SUB} sX,\#kk\\
-            \textbf{SUB} sX,sY\\
+            \textbf{SUB} sX, \#kk\\
+            \textbf{SUB} sX, sY\\
 
         \subsubsection{SUBCY}
-            \textbf{SUBCY} sX,\#kk\\
-            \textbf{SUBCY} sX,sY\\
+            \textbf{SUBCY} sX, \#kk\\
+            \textbf{SUBCY} sX, sY\\
 
-        \subsection{Interrupt group}
-            "X" and "Y" refer to the definition of the storage registers "s" in the range 0 to F.\\
-            "\#kk" represents a constant value in the range 00 to FF.\\
-            "aaa" represents an address in the range 000 to 3FF.\\
-            "pp" represents a port address in the range 00 to FF.\\
-            "ss" represents an internal storage address in the range 00 to 3F.\\
-
+    \subsection{Interrupt group}
         \subsubsection{RETURNI, RETIE, RETID}
             \textbf{RETURNI ENABLE}\\
             \textbf{RETIE}\\
@@ -1522,38 +1575,39 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \subsubsection{LOAD, LD}
             The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the contents of any other register. The LOAD instruction has no effect on the status of the flags.\\
             \textbf{LOAD} sX,\#kk\\
-            \textbf{LOAD} sX,sY\\
-            \textbf{LD} sX,\#kk\\
-            \textbf{LD} sX,sY\\
+            \textbf{LOAD} sX, sY\\
+            \textbf{LD}   sX, \#kk\\
+            \textbf{LD}   sX, sY\\
 
         \subsubsection{STAR}
             Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.\\
-            \textbf{STAR} sX,sY\\
+            \textbf{STAR} sX, sY\\
+            \textbf{STAR} sX, #kk\\
 
         \subsubsection{OR}
             The "OR" instructions perform the bit-wise logical OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
-            \textbf{OR} sX,sY\\
-            \textbf{OR} sX,\#kk\\
+            \textbf{OR} sX, sY\\
+            \textbf{OR} sX, \#kk\\
 
         \subsubsection{XOR}
             The "XOR" instructions perform the bit\-wise logical exclusive-OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
-            \textbf{XOR} sX,\#kk\\
-            \textbf{XOR} sX,sY\\
+            \textbf{XOR} sX, \#kk\\
+            \textbf{XOR} sX, sY\\
 
         \subsubsection{AND}
             The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned. The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk or a register sY. The zero flag (Z) will be set if all 8-bits of the result returned to sX are zero. The carry flag (C) will be cleared (C=0) in all cases.\\
-            \textbf{AND} sX,\#kk\\
-            \textbf{AND} sX,sY\\
+            \textbf{AND} sX, \#kk\\
+            \textbf{AND} sX, sY\\
 
         \subsubsection{TEST}
             The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero. The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).\\
-            \textbf{TEST} sX,sY\\
-            \textbf{TEST} sX,\#kk\\
+            \textbf{TEST} sX, sY\\
+            \textbf{TEST} sX, \#kk\\
 
         \subsubsection{TESTCY}
             The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of values more than 8-bits.\\
-            \textbf{TESTCY} sX,sY\\
-            \textbf{TESTCY} sX,\#kk\\
+            \textbf{TESTCY} sX, sY\\
+            \textbf{TESTCY} sX, \#kk\\
 
         \subsection{Shift and Rotate Group}
             \subsubsection{SR}
@@ -1563,8 +1617,8 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                 \textbf{SRA} sX\\
 
             \subsubsection{RR, RL}
-                \textbf{RR}  sX\\
-                \textbf{RL}  sX\\
+                \textbf{RR} sX\\
+                \textbf{RL} sX\\
 
             \subsubsection{SL}
                 \textbf{SL0} sX\\
@@ -1586,320 +1640,22 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \subsection{Input output group}
             \subsubsection{INPUT, IN}
                 An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port.\\
-                \textbf{INPUT}      sX, pp\\
-                \textbf{INPUT}      sX, @sY\\
-                \textbf{IN}         sX, pp\\
-                \textbf{IN}         sX, @sY\\
+                \textbf{INPUT} sX, pp\\
+                \textbf{INPUT} sX, @sY\\
+                \textbf{IN}    sX, pp\\
+                \textbf{IN}    sX, @sY\\
 
             \subsubsection{OUTPUT, OUT}
                 An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
                 contents of another register "@sY".\\
-                \textbf{OUTPUT}     sX, pp\\
-                \textbf{OUTPUT}     sX, @sY\\
-                \textbf{OUT}        sX, pp\\
-                \textbf{OUT}        sX, @sY\\
+                \textbf{OUTPUT} sX, pp\\
+                \textbf{OUTPUT} sX, @sY\\
+                \textbf{OUT}    sX, pp\\
+                \textbf{OUT}    sX, @sY\\
 
             \subsubsection{OUTPUTK, OUTK}
                 The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].\\
-                \textbf{OUTPUTK}     \#kk, p\\
-                \textbf{OUTPUTK}     \#kk, @sY\\
-                \textbf{OUTK}        \#kk, p\\
-                \textbf{OUTK}        \#kk, @sY\\
-
-\section{Command line tools}
-    Assembler, Disassembler, and Assembler Translator may also be invoked from command line and therefore used in your scripts. On Linux versions there is also man page for each one of them.
-
-    \subsection{Assembler}
-        \subsubsection{Description}
-            MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.\\
-
-        \subsubsection{Usage}
-            \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'
-
-        \subsubsection{Options}
-            \begin{description}
-                \item[--arch, -a <architecture>]~\\
-                    Specify target architecture, supported architectures are:
-                    \begin{description}
-                        \item[PicoBlaze] KCPSM soft-core processor
-                    \end{description}
-
-                \item[--plang, -p <programming language>]~\\
-                    Specify programming language, supported languages are:
-                    \begin{description}
-                        \item[asm] Assembly language
-                    \end{description}
-
-                \item[--hex, -x <intel HEX-file>]~\\
-                    Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
-
-                \item[--dbg, -d <MDS-native-debug-file>]~\\
-                    Specify output file with code for MCU simulator and other debugging tools.
-
-                \item[--srec <Motorola-S-REC-file>]~\\
-                    Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
-
-                \item[--srec --binary <binary-file>]~\\
-                    Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
-
-                \item[--lst, -l <code-listing>]~\\
-                    Specify output file where code listing generated during compilation will be stored.
-
-                \item[--mtable, -m <table-of-macros>]~\\
-                    Specify file in which the compiler will put table of macros defined in your code.
-
-                \item[--stable, -s <table-of-symbols>]~\\
-                    Specify file in which the compiler will put table of symbols defined in your code.
-
-                \item[--help, -h]~\\
-                    Print help message.
-
-                \item[--version, -V]~\\
-                    Print compiler version and exit.
-
-                \item[--check, -c]~\\
-                    Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
-
-                \item[--no-backup]~\\
-                    Don't generate backup files.
-
-                \item[--brief-msg]~\\
-                    Print only unique messages.
-
-                \item[--no-strict]~\\
-                    Disable certain error and warning messages.
-
-                \item[--no-warnings]~\\
-                    Do not print any warnings.
-
-                \item[--no-errors]~\\
-                    Do not print any errors.
-
-                \item[--no-remarks]~\\
-                    Do not print any remarks.
-
-                \item[--silent]~\\
-                    Do not print any warnings, errors, or any other messages, stay completely silent.
-
-                \item[--include, -I <directory>]~\\
-                    Add directory where the compiler will search for include files.
-
-                \item[--dev, -D <device>]~\\
-                    Specify exact target device, options are:
-                    \begin{description}
-                        \item[For PicoBlaze]
-                            kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
-                    \end{description}
-
-                \item[--precompile, -P <.prc-file>]~\\
-                    Specify target file for generation of precompiled code.
-
-                \item[--vhdl <.vhd-file>]~\\
-                    Specify target file for generation of VHDL code.
-
-                \item[--vhdl-tmpl <.vhd-file>]~\\
-                    Specify VHDL template file.
-
-                \item[--verilog <.v-file>]~\\
-                    Specify target file for generation of verilog code.
-
-                \item[--verilog-tmpl <.v-file>]~\\
-                    Specify verilog template file.
-
-                \item[--mem <.mem-file>]~\\
-                    Specify target file for generation of MEM file.
-
-                \item[--raw-hex-dump <.hex-file>]~\\
-                    Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
-            \end{description}
-
-        \subsubsection{Notes}
-            \begin{itemize}
-                \item `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.
-                \item When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
-            \end{itemize}
-
-        \subsubsection{Examples}
-            \begin{itemize}
-                \item \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
-                    Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
-
-                \item \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
-                    Do the same at the above, only in this case we have used another variant of usage of switches with argument.
-
-                \item \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
-                    Do the same at the above, only in this case we have used short version of the switches.
-            \end{itemize}
-
-    \subsection{Disassembler}
-        \subsubsection{Description}
-            Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain level of capability of reversing the assembly process and regaining the original source code from any object code.
-
-        \subsubsection{Usage}
-            \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'
-
-        \subsubsection{Options}
-            \begin{description}
-                \item[--arch, -a <architecture>]~\\
-                    Specify target architecture, supported architectures are: \textbf{PicoBlaze}
-
-                \item[--family, -f <family>]~\\
-                    Specify processor family, supported families for the given architectures are:
-                    \begin{description}
-                        \item[For PicoBlaze]
-                            kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
-                    \end{description}
-
-                \item[--out, -o <output-file>]~\\
-                    Specify output file where the resulting assembly language code will be stored.
-
-                \item[--type, -t <input-file-format>]~\\
-                    Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
-                    \begin{description}
-                        \item [hex]I ntel 8 HEX, or Intel 16 HEX.
-                        \item [srec] Motorola S-Record.
-                        \item [bin] Raw binary file.
-                        \item [mem] Xilinx MEM file (for PicoBlaze only).
-                        \item [vhd] VHDL file (for PicoBlaze only).
-                        \item [v] Verilog file (for PicoBlaze only).
-                    \end{description}
-
-                \item[--cfg-ind <indentation>]~\\
-                    Indent with:
-                    \begin{description}
-                        \item [spaces] Indent with spaces (default).
-                        \item [tabs] Indent with tabs.
-                    \end{description}
-
-                \item[--cfg-tabsz <n>]~\\
-                    Consider tab to be displayed at most n spaces wide, here it is by default 8.
-
-                \item[--cfg-eof <end-of-line-character>]~\\
-                    Specify line separator, available options are:
-                    \begin{description}
-                        \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
-                        \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
-                        \item [cr] (APPLE) use single carriage return (0x0d = '').
-                    \end{description}
-
-                \item[--cfg-sym <symbols>]~\\
-                    Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers, available options are:
-                    \begin{description}
-                        \item [c] Program memory.
-                        \item [d] Data memory.
-                        \item [r] Register file.
-                        \item [p] Port address.
-                        \item [k] Immediate constants.
-                    \end{description}
-                    This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
-
-                \item[--cfg-lc <character>]~\\
-                    Use uppercase, or lowercase characters:
-                    \begin{description}
-                        \item [l] Lowercase.
-                        \item [u] Uppercase.
-                    \end{description}
-
-                \item[--cfg-radix <radix>]~\\
-                    Radix, available options are:
-                    \begin{description}
-                        \item [h] Hexadecimal.
-                        \item [d] Decimal.
-                        \item [b] Binary.
-                        \item [o] Octal.
-                    \end{description}
-
-                \item[--help, -h]~\\
-                    Print help message.
-
-                \item[--version, -V]~\\
-                    Print disassembler version and exit.
-            \end{description}
-
-        \subsubsection{Notes}
-            \begin{itemize}
-                \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
-            \end{itemize}
-
-    \subsection{Assembler translator}
-        \subsubsection{Description}
-            mds-translator is tool for translating assembly language source code from one dialect to another; in this case it translates into assembly language used by MDS (Multitarget Development System) from dialect used by other companies or projects.
-
-        \subsubsection{Usage}
-            \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'
-
-        \subsubsection{Options}
-            \begin{description}
-                \item[--type, -t <asm-variant>]~\\
-                    Specify variant of assembly language used in the input file, possible options are:
-                    \begin{description}
-                        \item [1] Xilinx KCPSMx
-                        \item [2] Mediatronix KCPSMx
-                        \item [3] openPICIDE KCPSMx
-                    \end{description}
-
-                \item[--output, -o <file.asm>]~\\
-                    Specify output file.
-
-                \item[--cfg-ind <indentation>]~\\
-                    Indent with:
-                    \begin{description}
-                        \item [keep] Do not alter original indentation.
-                        \item [spaces] Indent with spaces.
-                        \item [tabs] Indent with tabs.
-                    \end{description}
-
-                \item[--cfg-tabsz <n>]~\\
-                    Consider tab to be displayed at most n spaces wide, here it is by default 8.
-
-                \item[--cfg-eof <end-of-line-character>]~\\
-                    Specify line separator, available options are:
-                    \begin{description}
-                        \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
-                        \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
-                        \item [cr] (APPLE) use single carriage return (0x0d = '').
-                    \end{description}
-
-                \item[--short-inst <true|false>]~\\
-                    Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
-
-                \item[--cfg-lc-sym <character>]~\\
-                    Use uppercase, or lowercase characters for symbols:
-                    \begin{description}
-                        \item [l] Lowercase.
-                        \item [u] Uppercase.
-                    \end{description}
-
-                \item[--cfg-lc-dir <character>]~\\
-                    Use uppercase, or lowercase characters for directives:
-                    \begin{description}
-                        \item [l] Lowercase.
-                        \item [u] Uppercase.
-                    \end{description}
-
-                \item[--cfg-lc-inst <character>]~\\
-                    Use uppercase, or lowercase characters for instructions:
-                    \begin{description}
-                        \item [l] Lowercase.
-                        \item [u] Uppercase.
-                    \end{description}
-
-                \item[--backup, -b]~\\
-                    Enable generation of backup files.
-
-                \item[--version, -V]~\\
-                    Print version and exit.
-
-                \item[--help, -h]~\\
-                    Print help message.
-            \end{description}
-
-        \subsubsection{Notes}
-            \begin{itemize}
-                \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
-            \end{itemize}
-
-        \subsubsection{Examples}
-            \begin{itemize}
-                \item \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
-            \end{itemize}
+                \textbf{OUTPUTK} \#kk, p\\
+                \textbf{OUTPUTK} \#kk, @sY\\
+                \textbf{OUTK}    \#kk, p\\
+                \textbf{OUTK}    \#kk, @sY\\
