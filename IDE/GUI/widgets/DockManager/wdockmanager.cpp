@@ -865,7 +865,7 @@ void WDockManager::showDockWidgetArea(int area)
                 {
                     (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
                     (*i)->getQDockWidget()->setMaximumHeight(999);
-                    (*i)->getQDockWidget()->setMinimumHeight(1);
+                    (*i)->getQDockWidget()->setMinimumHeight(280);
                     //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
                     wDockBotPrevHeight = 0;
                     break;
