@@ -230,6 +230,21 @@ void ProjectCfg_FileMgr::setMainFileByName(QString mainFile)
         {
             ui.lstFiles->item(i)->setForeground(Qt::blue);
             this->mainFile = mainFile;
+            if (project != NULL)
+            {
+                project->setMainFile(ui.lstFiles->item(i)->toolTip(), ui.lstFiles->item(i)->text());
+            }
         }
     }
+}
+
+
+void ProjectCfg_FileMgr::requestFiles()
+{
+    QList<QString> files;
+    for (int i = 0; i < ui.lstFiles->count(); i++)
+    {
+        files.append(ui.lstFiles->item(i)->text());
+    }
+    emit setFiles(files, this->mainFile);
 }
