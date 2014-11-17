@@ -37,6 +37,7 @@ class ProjectCfg_FileMgr : public QWidget
 
     public slots:
         void setMainFileByName(QString mainFile);
+        void requestFiles();
 
     private slots:
         void deleteFile();
