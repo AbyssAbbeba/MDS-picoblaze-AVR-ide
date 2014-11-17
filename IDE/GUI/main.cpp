@@ -34,17 +34,6 @@ int main(int argc, char *argv[])
     QApplication::setDesktopSettingsAware(false);
     QApplication::setStyle("Plastique");
     QApplication app(argc, argv);
-    #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
-        if (  MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) <= 0
-           || MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) > MDS_TRIAL_PERIOD
-           )
-        {
-            TrialExpired trial(0);
-            trial.exec();
-            return 0;
-        }
-    #endif
     //qDebug() << QStyleFactory::keys();
     Q_INIT_RESOURCE(icons);
     QDir::setCurrent(QCoreApplication::applicationDirPath());
@@ -105,6 +94,17 @@ int main(int argc, char *argv[])
         }
     }
     bool firstStart = GuiCfg::getInstance().loadConfig();
+    #ifdef MDS_VARIANT_TRIAL
+        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
+        if (  MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) <= 0
+           || MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime()) > MDS_TRIAL_PERIOD
+           )
+        {
+            TrialExpired trial(0);
+            trial.exec();
+            return 0;
+        }
+    #endif
     QPixmap pixmap(":resources/icons/splash.png");
     QSplashScreen splash(pixmap);
     if (true == GuiCfg::getInstance().getSplash())

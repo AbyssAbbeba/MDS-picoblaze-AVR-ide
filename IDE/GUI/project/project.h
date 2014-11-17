@@ -196,6 +196,7 @@ class Project : public QObject
         void handleUpdateRequest(int mask);
         void closeProjectSlot();
         void breakpointReachedSlot();
+        void requestProjectPath();
 
     signals:
         //void highlightLine(QString file, int line, QColor *color);
