@@ -20,6 +20,7 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
     : QTreeWidget(parent)
 {
     this->parent = parent;
+    this->request = 0;
     mainFileName = "";
     mainFilePath = "";
     setHeaderHidden(true);
@@ -38,8 +39,8 @@ ProjectTree::ProjectTree(QWidget *parent, bool project)
         projectPopup->addAction(addFileAct);
         projectPopup->addAction(projectConfigAct);
         projectPopup->addAction(closeProjectAct);
-        connect(newFileAct, SIGNAL(triggered()), this, SLOT(newFile()));
-        connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFile()));
+        connect(newFileAct, SIGNAL(triggered()), this, SLOT(newFilePt1()));
+        connect(addFileAct, SIGNAL(triggered()), this, SLOT(addFilePt1()));
         connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(config()));
         connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProjectSlot()));
     /*}
@@ -213,9 +214,24 @@ void ProjectTree::config()
 }*/
 
 
-void ProjectTree::addFile()
+void ProjectTree::addFilePt1()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    this->request = 1;
+    emit requestProjectPath();
+}
+
+
+void ProjectTree::addFilePt2(QString projectPath)
+{
+    QString path;
+    if (projectPath != "untracked")
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), projectPath, QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
     if (path != NULL)
     {
         emit addFile(path, path.section('/', -1));
@@ -227,9 +243,85 @@ void ProjectTree::addFile()
 }
 
 
-void ProjectTree::newFile()
+void ProjectTree::newFilePt1()
 {
-    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    this->request = 2;
+    emit requestProjectPath();
+}
+
+
+void ProjectTree::newFilePt2(QString projectPath)
+{
+    QString path;
+    bool done = false;
+    while (false == done)
+    {
+        if (projectPath != "untracked")
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), projectPath, QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        if (path == NULL)
+        {
+            break;
+        }
+        int index = path.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(path.right(path.size() - index));
+            if (text == ".asm" || text == ".psm")
+            {
+                done = true;
+            }
+            else
+            {
+                QMessageBox dialog(this);
+                dialog.setWindowTitle("Highlight note");
+                dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+                dialog.setIcon(QMessageBox::Warning);
+                dialog.setModal(true);
+                dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                int result = dialog.exec();
+                if (QMessageBox::Yes == result)
+                {
+                    done = true;
+                }
+                else
+                {
+                    if (QMessageBox::Cancel == result)
+                    {
+                        path = "";
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            QMessageBox dialog(this);
+            dialog.setWindowTitle("Highlight note");
+            dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+            dialog.setIcon(QMessageBox::Warning);
+            dialog.setModal(true);
+            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+            int result = dialog.exec();
+            if (QMessageBox::Yes == result)
+            {
+                done = true;
+            }
+            else
+            {
+                if (QMessageBox::Cancel == result)
+                {
+                    path = "";
+                    break;
+                }
+            }
+        }
+    }
     if (path != NULL)
     {
         QFile file(path);
@@ -248,6 +340,19 @@ void ProjectTree::newFile()
     }
 }
 
+
+void ProjectTree::requestProjectPathAnswer(QString path)
+{
+    if (this->request == 1)
+    {
+        this->addFilePt2(path);
+    }
+    else if (this->request == 2)
+    {
+        this->newFilePt2(path);
+    }
+    this->request = 0;
+}
 
 void ProjectTree::dropEvent(QDropEvent *e)
 {

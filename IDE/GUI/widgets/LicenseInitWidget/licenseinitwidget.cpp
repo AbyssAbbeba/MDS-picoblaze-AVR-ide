@@ -90,7 +90,7 @@ void LicenseInitWidget::tryLoad()
     #endif
     #ifdef MDS_VARIANT_TRIAL
         //qDebug() << "MDS_VARIANT_TRIAL";
-        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
         QTextCursor cur = ui.tbInfo->textCursor();
         cur.setPosition(0);
         ui.tbInfo->setTextCursor(cur);
@@ -210,7 +210,7 @@ void LicenseInitWidget::load()
         }
     #endif
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
         ui.tbInfo->clear();
         ui.tbInfo->append("Trial period:\t");
         ui.tbInfo->insertPlainText(QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left"));
