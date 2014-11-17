@@ -14,8 +14,8 @@
 
 #include "projectcfg_filemgr.h"
 #include "../project/project.h"
-#include <QFileDialog>
 #include "../errordialog/errordlg.h"
+#include <QtGui>
 
 
 /**
@@ -93,7 +93,76 @@ void ProjectCfg_FileMgr::deleteFile()
 void ProjectCfg_FileMgr::newFile()
 {
     //modal dialog window
-    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    QString path;
+    bool done = false;
+    while (false == done)
+    {
+        if (this->project->prjPath != "untracked")
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        if (path == NULL)
+        {
+            break;
+        }
+        int index = path.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(path.right(path.size() - index));
+            if (text == ".asm" || text == ".psm")
+            {
+                done = true;
+            }
+            else
+            {
+                QMessageBox dialog(this);
+                dialog.setWindowTitle("Highlight note");
+                dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+                dialog.setIcon(QMessageBox::Warning);
+                dialog.setModal(true);
+                dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                int result = dialog.exec();
+                if (QMessageBox::Yes == result)
+                {
+                    done = true;
+                }
+                else
+                {
+                    if (QMessageBox::Cancel == result)
+                    {
+                        path = "";
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            QMessageBox dialog(this);
+            dialog.setWindowTitle("Highlight note");
+            dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+            dialog.setIcon(QMessageBox::Warning);
+            dialog.setModal(true);
+            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+            int result = dialog.exec();
+            if (QMessageBox::Yes == result)
+            {
+                done = true;
+            }
+            else
+            {
+                if (QMessageBox::Cancel == result)
+                {
+                    path = "";
+                    break;
+                }
+            }
+        }
+    }
     if (path != NULL)
     {
         QFile file(path);
@@ -133,7 +202,7 @@ void ProjectCfg_FileMgr::newFile()
 void ProjectCfg_FileMgr::addFile()
 {
     //dialog window (file search)
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), "");
+    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
     if (path != NULL)
     {
         if (this->project != NULL)

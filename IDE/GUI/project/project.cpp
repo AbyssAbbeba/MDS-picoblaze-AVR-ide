@@ -812,6 +812,11 @@ Project::Project(QFile *file, ProjectMan *parent)
                     this,
                     SLOT(closeProjectSlot())
                    );
+            connect(prjTreeWidget,
+                    SIGNAL(requestProjectPath()),
+                    this,
+                    SLOT(requestProjectPath())
+                   );
             connect(this,
                     SIGNAL(fileCountSignal(int)),
                     prjTreeWidget,
@@ -921,6 +926,11 @@ Project::Project(ProjectMan *parent)
             SIGNAL(closeProject()),
             this,
             SLOT(closeProjectSlot())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(requestProjectPath()),
+            this,
+            SLOT(requestProjectPath())
            );
     connect(this,
             SIGNAL(fileCountSignal(int)),
@@ -1148,6 +1158,11 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
             SIGNAL(closeProject()),
             this,
             SLOT(closeProjectSlot())
+           );
+    connect(prjTreeWidget,
+            SIGNAL(requestProjectPath()),
+            this,
+            SLOT(requestProjectPath())
            );
     connect(this,
             SIGNAL(fileCountSignal(int)),
@@ -3824,4 +3839,10 @@ QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 void Project::reloadProjectTree()
 {
     qDebug() << "Project: reloadProjectTree()";
+}
+
+
+void Project::requestProjectPath()
+{
+    prjTreeWidget->requestProjectPathAnswer(QDir(this->prjPath.section('/',0, -2)).absolutePath());
 }
