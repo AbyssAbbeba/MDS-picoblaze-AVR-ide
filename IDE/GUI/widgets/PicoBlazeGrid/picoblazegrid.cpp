@@ -336,6 +336,11 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             case MCUSimCPU::EVENT_CPU_PC_CHANGED:
             {
+                if (true == this->interruptSet)
+                {
+                    this->btnIntr->setStyleSheet("color: none");
+                    this->interruptSet = false;
+                }
                 int value = m_cpu->getProgramCounter();
                 if (value > 0xFF)
                 {
@@ -714,6 +719,7 @@ void PicoBlazeGrid::deviceReset()
     }
     this->leSP->setText("0x00");
     this->wTime->setTime(0);
+    this->interruptSet = false;
     //this->leClock->setText("10.0");
     //this->clock = 10.0;
     //this->clockMult = 1000000;
@@ -757,7 +763,14 @@ void PicoBlazeGrid::unhighlight()
     {
         this->btnInte->setStyleSheet("color: none");
     }
-    this->btnIntr->setStyleSheet("color: none");
+    if (true == this->interruptSet)
+    {
+        this->btnIntr->setStyleSheet("color: #00ff00");
+    }
+    else
+    {
+        this->btnIntr->setStyleSheet("color: none");
+    }
     this->lblRD->setStyleSheet("color: none");
     this->lblWR->setStyleSheet("color: none");
     this->memRegs->unhighlight();
@@ -788,6 +801,8 @@ void PicoBlazeGrid::setIntE()
 void PicoBlazeGrid::interrupt()
 {
     m_interrupt->irq();
+    this->btnIntr->setStyleSheet("color: #00ff00");
+    this->interruptSet = true;
     /*if (m_flags->getInte() == true)
     {
         this->btnInte->setStyleSheet("color: none");
