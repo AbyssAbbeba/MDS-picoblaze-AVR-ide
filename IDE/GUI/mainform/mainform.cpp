@@ -1762,7 +1762,7 @@ void MainForm::compileProject()
     }
 
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
-    CompilerOptions *options = new CompilerOptions();
+    this->options = new CompilerOptions();
     QString mainFile;
 
     if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
@@ -1963,7 +1963,7 @@ void MainForm::compileProject()
         }
         if (found == true)
         {
-            qDebug() << "MainForm: compiled actual project, actual file";
+            qDebug() << "MainForm: compiled actual project, actual file" << filePath;
             options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
 
 
@@ -2473,6 +2473,7 @@ void MainForm::compilationFinished(bool success)
             this->simulationRequest = false;
         }
     }
+    delete this->options;
 }
 
 
@@ -3214,7 +3215,7 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    //qDebug() << "MainForm: activeProjectChanged";
+    //qDebug() << "MainForm: activeProjectChanged" << index;
     //if (false == this->simulationStatus)
     if (index >= 0)
     {

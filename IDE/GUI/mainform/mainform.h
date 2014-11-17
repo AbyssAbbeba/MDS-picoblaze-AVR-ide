@@ -328,6 +328,8 @@ class MainForm : public QMainWindow
 
         QTabBar *projectTabs;
 
+        CompilerOptions *options;
+
     protected:
         void closeEvent(QCloseEvent *event);
 };
