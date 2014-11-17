@@ -16,6 +16,7 @@
 #include <QtXml>
 #include "guicfg.h"
 #include "../errordialog/errordlg.h"
+#include "../../mds.h"
 
 
 
@@ -161,7 +162,7 @@ void GuiCfg::setDefaultIDEGeneral()
     this->tipsOnStart = false;
     this->sessionRestoration = true;
     this->language = "English";
-    this->version = 100;
+    this->version = QString::fromStdString(MDS_VERSION);
 }
 
 
@@ -642,6 +643,12 @@ QList<bool> GuiCfg::getProjectCompOpt()
 }
 
 
+QString GuiCfg::getConfigPath()
+{
+    return this->configPath;
+}
+
+
 QString GuiCfg::getCompilerPath()
 {
     return this->compilerPath;
@@ -740,6 +747,7 @@ QList<QString> GuiCfg::getSessionFileParentProjects()
 bool GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
+    bool version = false;
     //QFile cfgFile("./resources/xml/config.xml");
     QFile cfgFile(this->configPath);
     if (!cfgFile.open(QIODevice::ReadOnly))
@@ -771,13 +779,15 @@ bool GuiCfg::loadConfig()
                 {
                     if (xmlElement.tagName() == "Version")
                     {
-                        if (xmlElement.attribute("version", "") != QString::number(this->version))
+                        if (xmlElement.attribute("version", "") != QString::fromStdString(MDS_VERSION))
                         {
                             qDebug() << "GuiCfg: wrong app version";
                             this->setDefaultAll();
                             this->saveConfig();
+                            cfgFile.close();
                             return true;
                         }
+                        version = true;
                     }
                     else if (xmlElement.tagName() == "IDEGeneral")
                     {
@@ -1140,6 +1150,13 @@ bool GuiCfg::loadConfig()
         }
     }
     cfgFile.close();
+    if (false == version)
+    {
+        qDebug() << "GuiCfg: no app version";
+        this->setDefaultAll();
+        this->saveConfig();
+        return true;
+    }
     this->setDefaultProject();
     return false;
 }
@@ -1153,7 +1170,7 @@ void GuiCfg::saveConfig()
 
     //IDEGeneral
     QDomElement xmlVersion = domDoc.createElement("Version");
-    xmlVersion.setAttribute("version", QString::number(this->version));
+    xmlVersion.setAttribute("version", this->version);
     xmlRoot.appendChild(xmlVersion);
     QDomElement xmlIDEGeneral = domDoc.createElement("IDEGeneral");
     QDomElement xmlSplash = domDoc.createElement("Option");

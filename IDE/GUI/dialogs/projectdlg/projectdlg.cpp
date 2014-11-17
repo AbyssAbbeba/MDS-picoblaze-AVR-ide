@@ -69,6 +69,16 @@ ProjectDialog::ProjectDialog(QWidget *parent, ProjectMan *dialogProjectMan)
             this->prjdlg_memory,
             SLOT(setProgMemMaximum(int))
            );
+    connect(this->prjdlg_filemgr,
+            SIGNAL(setFiles(QList<QString>, QString)),
+            this->prjdlg_compiler,
+            SLOT(setFiles(QList<QString>, QString))
+           );
+    connect(this->prjdlg_compiler,
+            SIGNAL(setMainFile(QString)),
+            this->prjdlg_filemgr,
+            SLOT(setMainFileByName(QString))
+           );
     this->prjdlg_memory->setHWBuildEnabled(true);
     this->prjdlg_memory->setScratchpadMaximum(log2(256));
     this->prjdlg_memory->setProgMemMaximum(log2(4096));

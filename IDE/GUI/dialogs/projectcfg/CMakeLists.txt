@@ -32,6 +32,7 @@ SET( SAMPLE_MOC_HDRS
         ./projectcfgdlg_core.h
         ./projectcfg_general.h
         ./projectcfg_filemgr.h
+        ./projectcfg_compiler.h
         ./projectcfg_comppaths.h
         ./projectcfg_memory.h
         ./projectcfg_templates.h
