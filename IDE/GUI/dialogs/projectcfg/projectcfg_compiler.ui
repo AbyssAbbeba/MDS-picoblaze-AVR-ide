@@ -139,19 +139,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QLineEdit" name="leMain">
-     <property name="autoFillBackground">
-      <bool>false</bool>
-     </property>
-     <property name="frame">
-      <bool>true</bool>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QCheckBox" name="chckMain">
      <property name="text">
@@ -171,6 +158,9 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QComboBox" name="cmbMainFile"/>
    </item>
   </layout>
  </widget>

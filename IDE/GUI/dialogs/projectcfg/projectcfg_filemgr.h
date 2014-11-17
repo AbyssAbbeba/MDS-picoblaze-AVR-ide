@@ -35,6 +35,8 @@ class ProjectCfg_FileMgr : public QWidget
         ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProject);
         QStringList getPaths();
 
+    public slots:
+        void setMainFileByName(QString mainFile);
 
     private slots:
         void deleteFile();
@@ -44,12 +46,14 @@ class ProjectCfg_FileMgr : public QWidget
 
     signals:
         void reloadTree();
+        void setFiles(QList<QString> files, QString mainFile);
 
     private:
         Project *project;
         Ui_ProjectCfg_FileMgr ui;
 
         bool reloadFiles;
+        QString mainFile;
 };
 
 
