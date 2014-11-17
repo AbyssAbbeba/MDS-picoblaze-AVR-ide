@@ -635,16 +635,35 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
 {
     std::vector<unsigned char> dbData;
 
-    for ( CompilerExpr * arg = node->args();
-          nullptr != arg;
-          arg = arg->next() )
+    for ( const CompilerExpr * argument = node->args();
+          nullptr != argument;
+          argument = argument->next() )
     {
-        if ( CompilerValue::TYPE_ARRAY == arg->lVal().m_type )
+        const CompilerExpr * arg;
+        for ( arg = argument;
+              ( CompilerExpr::OPER_NONE == arg->oper() ) && ( CompilerValue::TYPE_EXPR == arg->lVal().m_type );
+              arg = arg->lVal().m_data.m_expr );
+
+        const CompilerValue::Type type = arg->lVal().m_type;
+
+        if ( CompilerValue::TYPE_ARRAY == type )
         {
             const CompilerValue::Data::CharArray & charArray = arg->lVal().m_data.m_array;
             for ( int i = 0; i < charArray.m_size; i++ )
             {
                 dbData.push_back ( charArray.m_data[i] );
+            }
+        }
+        else if ( CompilerValue::TYPE_SYMBOL == type )
+        {
+            std::string stringValue;
+            if ( false == m_stringTable->get ( arg->lVal().m_data.m_symbol, stringValue ) )
+            {
+                return;
+            }
+            for ( const char c : stringValue )
+            {
+                dbData.push_back ( (unsigned char) c );
             }
         }
         else

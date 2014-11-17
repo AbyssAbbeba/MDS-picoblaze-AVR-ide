@@ -1,7 +1,7 @@
         device  kcpsm6
 
 my_port portout 3
-my_str  string  "Omnubus Formosior Semper In Te Glorior."
+my_str  string  "Omnibus Formosior Semper In Te Glorior."
 
         org     0
 
@@ -10,7 +10,7 @@ my_str  string  "Omnubus Formosior Semper In Te Glorior."
         outk    my_str, my_port
         outk    "O Fortuna, Venut Luna", my_port
 
-        jmp     $
+        jump    $
         db      my_str
 
         end

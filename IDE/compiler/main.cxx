@@ -173,6 +173,10 @@ void printHelp ( const char * executable )
               << QObject::tr("    --raw-hex-dump <.hex file>").toStdString() << std::endl
               << QObject::tr("        Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal "
                              "numbers separated by CRLF sequence).").toStdString() << std::endl
+            #ifdef MDS_FEATURE_PICOBLAZE
+              << QObject::tr("    --secondary <.hex file>").toStdString() << std::endl
+              << QObject::tr("        Specify target file for SPR initialization, output format is Intel HEX.").toStdString() << std::endl
+            #endif // MDS_FEATURE_PICOBLAZE
             #ifdef MDS_FEATURE_C_COMPILER
               << QObject::tr("    --cunit <preprocessor_output>").toStdString() << std::endl
               << QObject::tr("        Specify target file for preprocessor output, this file is not needed or even "
@@ -358,6 +362,7 @@ int main ( int argc, char ** argv )
         { "raw-hex-dump",required_argument, 0, 0x106 },
         { "base-inc-dir",required_argument, 0, 0x107 },
         { "strtable",    required_argument, 0, 0x108 },
+        { "secondary",   required_argument, 0, 0x109 },
 
         { 0,             0,                 0, 0     }
     };
@@ -469,6 +474,9 @@ int main ( int argc, char ** argv )
                 break;
             case 0x108: // --strtable
                 opts.m_stringTable = optarg;
+                break;
+            case 0x109: // --secondray
+                opts.m_second = optarg;
                 break;
 
             case 0x200: // --no-backup
