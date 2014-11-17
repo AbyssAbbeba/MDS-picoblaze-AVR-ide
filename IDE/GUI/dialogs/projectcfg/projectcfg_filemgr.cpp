@@ -30,6 +30,7 @@ ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProje
     //this->parent = parentWidget;
     this->project = currProject;
     this->reloadFiles = false;
+    this->mainFile = "";
     ui.setupUi(this);
     //load files
     if (this->project != NULL)
@@ -66,12 +67,22 @@ void ProjectCfg_FileMgr::deleteFile()
         {
             project->removeFile(ui.lstFiles->currentItem()->toolTip(), ui.lstFiles->currentItem()->text());
         }
+        if (ui.lstFiles->currentItem()->text() == this->mainFile)
+        {
+            this->mainFile = "";
+        }
         delete ui.lstFiles->currentItem();
         if (reloadFiles == false && this->project != NULL)
         {
             emit reloadTree();
             reloadFiles = true;
         }
+        QList<QString> files;
+        for (int i = 0; i < ui.lstFiles->count(); i++)
+        {
+            files.append(ui.lstFiles->item(i)->text());
+        }
+        emit setFiles(files, this->mainFile);
     }
 }
 
@@ -105,6 +116,12 @@ void ProjectCfg_FileMgr::newFile()
                 emit reloadTree();
                 reloadFiles = true;
             }
+            QList<QString> files;
+            for (int i = 0; i < ui.lstFiles->count(); i++)
+            {
+                files.append(ui.lstFiles->item(i)->text());
+            }
+            emit setFiles(files, this->mainFile);
         }
     }
 }
@@ -131,6 +148,12 @@ void ProjectCfg_FileMgr::addFile()
             emit reloadTree();
             reloadFiles = true;
         }
+        QList<QString> files;
+        for (int i = 0; i < ui.lstFiles->count(); i++)
+        {
+            files.append(ui.lstFiles->item(i)->text());
+        }
+        emit setFiles(files, this->mainFile);
         /*if (reloadFiles == false)
         {
             emit reloadTree();
@@ -156,6 +179,21 @@ void ProjectCfg_FileMgr::setMainFile()
             emit reloadTree();
             reloadFiles = true;
         }
+        for (int i = 0; i < ui.lstFiles->count(); i++)
+        {
+            if (this->mainFile == ui.lstFiles->item(i)->text())
+            {
+                ui.lstFiles->item(i)->setForeground(Qt::black);
+            }
+        }
+        this->ui.lstFiles->currentItem()->setForeground(Qt::blue);
+        this->mainFile = ui.lstFiles->currentItem()->text();
+        QList<QString> files;
+        for (int i = 0; i < ui.lstFiles->count(); i++)
+        {
+            files.append(ui.lstFiles->item(i)->text());
+        }
+        emit setFiles(files, this->mainFile);
         /*if (reloadFiles == false)
         {
             emit reloadTree();
@@ -173,4 +211,25 @@ QStringList ProjectCfg_FileMgr::getPaths()
         paths.append(ui.lstFiles->item(i)->toolTip());
     }
     return paths;
+}
+
+
+
+void ProjectCfg_FileMgr::setMainFileByName(QString mainFile)
+{
+    for (int i = 0; i < ui.lstFiles->count(); i++)
+    {
+        if (this->mainFile == ui.lstFiles->item(i)->text())
+        {
+            ui.lstFiles->item(i)->setForeground(Qt::black);
+        }
+    }
+    for (int i = 0; i < ui.lstFiles->count(); i++)
+    {
+        if (mainFile == ui.lstFiles->item(i)->text())
+        {
+            ui.lstFiles->item(i)->setForeground(Qt::blue);
+            this->mainFile = mainFile;
+        }
+    }
 }

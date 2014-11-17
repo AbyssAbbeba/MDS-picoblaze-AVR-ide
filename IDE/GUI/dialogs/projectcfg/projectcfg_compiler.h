@@ -36,10 +36,17 @@ class Project;
  */
 class ProjectCfg_Compiler : public QWidget
 {
+    Q_OBJECT
     public:
         ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject);
         void save();
         QList<bool> getOpt();
+
+    signals:
+        void setMainFile(QString mainFile);
+
+    public slots:
+        void setFiles(QList<QString> files, QString mainFile);
 
     private:
         void load();
