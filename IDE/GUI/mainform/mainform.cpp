@@ -308,7 +308,9 @@ MainForm::~MainForm()
     delete this->pm_simStep;
     delete this->pm_simReset;
     delete this->pm_simUnhighlight;
-    delete this->pm_toolDis;
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        delete this->pm_toolDis;
+    #endif
     delete this->pm_cross;
 
     delete this->icon_projNewAdd;
@@ -322,7 +324,9 @@ MainForm::~MainForm()
     delete this->icon_simStep;
     delete this->icon_simReset;
     delete this->icon_simUnhighlight;
-    delete this->icon_toolDis;
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        delete this->icon_toolDis;
+    #endif
 
     if (true == GuiCfg::getInstance().getSessionRestoration())
     {
