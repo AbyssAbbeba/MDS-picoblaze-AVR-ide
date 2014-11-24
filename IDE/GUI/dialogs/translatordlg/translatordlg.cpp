@@ -16,6 +16,7 @@
 #include "translatordlg.h"
 #include "../../../utilities/AsmTranslator/AsmTranslator.h"
 #include "../../../utilities/AsmTranslator/AsmTranslatorConfig.h"
+#include "../../errordialog/errordlg.h"
 #include <string>
 #include <cstdio>
 #include <fstream>
@@ -62,6 +63,12 @@ void TranslatorDlg::setPath()
  */
 void TranslatorDlg::create()
 {
+    QFile file(this->ui.lePath->text());
+    if (false == file.exists())
+    {
+        error(ERR_OPENFILE);
+        return;
+    }
     AsmTranslator translator;
 
     std::ifstream input(this->ui.lePath->text().toStdString());

@@ -26,6 +26,7 @@
 #include "../../../disassembler/PicoBlaze/DAsmPicoBlazeKcpsm1.h"
 #include "../../../disassembler/PicoBlaze/DAsmPicoBlazeKcpsm1CPLD.h"
 #include "../../widgets/Editor/codeedit.h"
+#include "../../errordialog/errordlg.h"
 
 
 /**
@@ -63,7 +64,12 @@ void DisAsmDialog::setPath()
  */
 void DisAsmDialog::create()
 {
-
+    QFile file(this->ui.lePath->text());
+    if (false == file.exists())
+    {
+        error(ERR_OPENFILE);
+        return;
+    }
     DAsm * disasm = NULL;
     DataFile * dataFile = NULL;
     DAsm::Config config;
