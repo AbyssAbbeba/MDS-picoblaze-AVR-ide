@@ -55,7 +55,7 @@
             ld          S0, #0x33       ; (value to output)
             ld          S1, #0          ; (starting address)
 
-        repeat  5                       ; 5 Ã repeat (copy) the code between `repeat' and `endr'.
+        repeat  5                       ; 5 times repeat (copy) the code between `repeat' and `endr'.
             out         S0, @S1
             inc         S1
         endr

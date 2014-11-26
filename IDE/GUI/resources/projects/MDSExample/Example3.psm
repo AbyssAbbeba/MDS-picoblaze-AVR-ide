@@ -1,7 +1,7 @@
 ; ----------------------------------------------------------------------------------------------------------------------
 ; MDS for PicoBlaze - Demonstration code III: Some time saving features.
 ; ----------------------------------------------------------------------------------------------------------------------
-; This example covers instruction shortcuts and numeral system radix.
+; This example covers instruction shorthands and numeral system radix.
 ; ----------------------------------------------------------------------------------------------------------------------
 
             ; Start at address 0x000.
@@ -31,7 +31,7 @@
 
 
 ; ======================================================================================================================
-; Instruction shortcuts.
+; Instruction shorthands.
 ; When you don't want to write long instruction mnemonics like "enable interrupt" and use short ones instead like "ena".
 ; ======================================================================================================================
 

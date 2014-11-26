@@ -23,7 +23,7 @@
 ; A simple example: macro without parameters.
 ; ======================================================================================================================
 
-; Define macro named `backup' contaning three loads: S10 <- S0, S11 <- S1, and S12 <- S2.
+; Define macro named `backup' containing three loads: S10 <- S0, S11 <- S1, and S12 <- S2.
 backup      macro
             ld          S3, S0
             ld          S4, S1
@@ -135,7 +135,7 @@ copy        macro       target, source, number
             local       n
     n       set         0
 
-    ; Local label with same name a global label delared before.
+    ; Local label with same name a global label declared before.
             local       label
             jump        label
     label:

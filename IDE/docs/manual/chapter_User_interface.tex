@@ -8,75 +8,75 @@
         \caption{Window layout concept}
     \end{figure}
 
-\subsection{Central panel}
-    Central panel contains the main text editor with syntax highlight for writing a source code. In the editor you can
-    also easily add breakpoints and bookmarks just by clicking on desired line number by left or right mouse button,
-    each invokes different action.
+    \subsection{Central panel}
+        Central panel contains the main text editor with syntax highlight for writing a source code. In the editor you can
+        also easily add breakpoints and bookmarks just by clicking on desired line number by left or right mouse button,
+        each invokes different action.
 
-\subsection{Top panel}
-   \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.75\textwidth]{img/top_panel.png}
-        \caption{Toolbar icons}
-    \end{figure}
-
-\subsubsection{Top panel icons}
-    \begin{itemize}
-        \item New project: Creates a new project.
-        \item Open project: Opens an existing project file.
-        \item Save project: Saves current project file.
-        \item Compile: Compiles your code.
-        \item Start Simulation: Enters simulation mode.
-        \item Run: High speed simulation.
-        \item Animate: Simulation with GUI (such as register view, etc.) updated after each executed instruction.
-        \item Step: Step by step simulation.
-        \item Reset: Resets simulator to its initial state.
-        \item Unhighlight: Clear highlight from register view and other graphical components of the simulator panel.
-        \item Undo: will undo all edit actions on the open document in reverse order
-        \item Redo: will redo all undo actions
-        \item Cut: cuts all selected parts of the open document and puts it in the clipboard.
-        \item Copy: copies all selected parts of the open document to the clipboard
-        \item Paste: pastes the text contents of the clipboard in the open document
-        \item Select: All selects all text in the open document
-        \item Find: find a to be given string through the open document
-        \item Replace: replace a given string in the open document by a new string
-    \end{itemize}
-
-\subsection{Bottom panel}
-    Bottom panel consists of simulator main panel, and compiler messages.
-
-    In simulator main panel you can see status of internal registers, scratch-pad ram, input and output ports, call
-    stack, program counter, elapsed time and machine cycles, processor clock, and internal flags carry and zero. All
-    these values can be edited during processor simulation.
-
-    In compiler messages panel you can see textual output from the assembler, like warnings and other messages.
-
+    \subsection{Top panel}
     \begin{figure}[h!]
-        \centering
-        \includegraphics[width=\textwidth]{img/bottom_panel.png}
-        \caption{Bottom panel}
-    \end{figure}
+            \centering
+            \includegraphics[width=0.75\textwidth]{img/top_panel.png}
+            \caption{Toolbar icons}
+        \end{figure}
 
-\subsection{Left panel}
-    Here you can see main project tree. You can close or configure project by right clicking on the project name, add a
-    file to the project or create a new one. You can also see included files or opened compiled files like .lst, etc.
+    \subsubsection{Top panel icons}
+        \begin{itemize}
+            \item New project: Creates a new project.
+            \item Open project: Opens an existing project file.
+            \item Save project: Saves current project file.
+            \item Compile: Compiles your code.
+            \item Start Simulation: Enters simulation mode.
+            \item Run: High speed simulation.
+            \item Animate: Simulation with GUI (such as register view, etc.) updated after each executed instruction.
+            \item Step: Step by step simulation.
+            \item Reset: Resets simulator to its initial state.
+            \item Unhighlight: Clear highlight from register view and other graphical components of the simulator panel.
+            \item Undo: will undo all edit actions on the open document in reverse order
+            \item Redo: will redo all undo actions
+            \item Cut: cuts all selected parts of the open document and puts it in the clipboard.
+            \item Copy: copies all selected parts of the open document to the clipboard
+            \item Paste: pastes the text contents of the clipboard in the open document
+            \item Select: All selects all text in the open document
+            \item Find: find a to be given string through the open document
+            \item Replace: replace a given string in the open document by a new string
+        \end{itemize}
 
-\subsection{Right panel}
-    Right panel contains lists of breakpoints, bookmarks, symbols, and macros in your source code.
+    \subsection{Bottom panel}
+        Bottom panel consists of simulator main panel, and compiler messages.
 
-    \begin{table}[h!]
-        \begin{tabular}{cc}
-            \includegraphics[width=.33\textwidth]{img/left_panel.png}
-                &
-            \includegraphics[width=.33\textwidth]{img/right_panel.png}
-                \\
-            Left panel & Right panel
-        \end{tabular}
-    \end{table}
+        In simulator main panel you can see status of internal registers, scratch-pad ram, input and output ports, call
+        stack, program counter, elapsed time and machine cycles, processor clock, and internal flags carry and zero. All
+        these values can be edited during processor simulation.
+
+        In compiler messages panel you can see textual output from the assembler, like warnings and other messages.
+
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=\textwidth]{img/bottom_panel.png}
+            \caption{Bottom panel}
+        \end{figure}
+
+    \subsection{Left panel}
+        Here you can see main project tree. You can close or configure project by right clicking on the project name, add a
+        file to the project or create a new one. You can also see included files or opened compiled files like .lst, etc.
+
+    \subsection{Right panel}
+        Right panel contains lists of breakpoints, bookmarks, symbols, and macros in your source code.
+
+        \begin{table}[h!]
+            \begin{tabular}{cc}
+                \includegraphics[width=.33\textwidth]{img/left_panel.png}
+                    &
+                \includegraphics[width=.33\textwidth]{img/right_panel.png}
+                    \\
+                Left panel & Right panel
+            \end{tabular}
+        \end{table}
 
 \clearpage
 
-\subsection{Project configuration}
+\section{Project configuration}
     In project configuration window, you can edit project and compiler settings. You can open project configuration
     window by right clicking on project name in the left panel and choosing Configuration, see the pictures below.
     This will open main configuration window with multiple tabs on the left side.
@@ -147,7 +147,7 @@
             \end{tabular}
             \end{table}
 
-\subsection{Interface configuration}
+\section{Interface configuration}
     In interface configuration dialog, you can edit IDE behavior and appearance, for instance editor font, tab width,
     etc., or simulator warnings. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] ->
     [Config].
@@ -189,10 +189,7 @@
             \end{tabular}
         \end{table}
 
-
-\subsection{Other tools}
-
-\subsection{DATA file converter}
+\section{Data file converter}
     This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
     .srec, .mem, .rawhex, .v, and .vhd.
     \begin{description}
@@ -210,11 +207,11 @@
 
     \begin{figure}[h]
         \centering{}
-        \includegraphics[width=.5\textwidth]{img/DATA_convertor.png}
+        \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
         \caption{DATA file converter}
     \end{figure}
 
-\subsection{ASM translator}
+\section{Assembler translator}
     With this tool, you can translate your previously written assembler code in different syntax.
     You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
     errors.
@@ -222,11 +219,11 @@
         \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
         \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of
              three choices - Xilinx, Mediatronix and OpenPicIde.
-        \item[Symbol] Case of symbols - UPPERCASE or LOWERCASE
+        \item[Symbol] Case of symbols - uppercase or lowercase
         \item[End of line] Indentation - Choose between Tabs or Spaces
-        \item[Directive] Case of Directives - UPPERCASE or LOWERCASE
+        \item[Directive] Case of Directives - uppercase or lowercase
         \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
-        \item[Instruction] Case of instructions - UPPERCASE or LOWERCASE
+        \item[Instruction] Case of instructions - uppercase or lowercase
         \item[Tab size]  Define number of inserted spaces when you press Tab.
         \item[Short instructions] Here you can allow short instructions like LD, RETI or others
     \end{description}
@@ -237,8 +234,8 @@
         \caption{ASM translator}
     \end{figure}
 
-\subsection{Disassembler}
-    A disassembler is a tool that translates machine language into assembly language. The inverse
+\section{Disassembler}
+    Disassembler is a tool that translates machine language into assembly language. The inverse
     operation to that of an assembler.
 
     \begin{description}
@@ -259,7 +256,7 @@
         \caption{Disassembler}
     \end{figure}
 
-\subsection{Delay loop generator}
+\section{Delay loop generator}
     In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
     development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
     enter desired time of delay or number of cycles and clock frequency.
@@ -283,7 +280,7 @@
         \caption{Delay loop generator dialog}
     \end{figure}
 
-\subsection{8-segment editor}
+\section{8-segment editor}
     \begin{wrapfigure}{r}{0pt}
         \centering{}
         \includegraphics[width=110pt]{img/8segment.png}
@@ -296,7 +293,7 @@
     box to clipboard. In the right part of the window you can set what port pin is connected to what LED segment, this
     sets permutation of the resulting value(s).
 
-\subsection{LED panel simulator}
+\section{LED panel simulator}
     \begin{wrapfigure}{r}{0pt}
         \centering{}
         \includegraphics[width=150pt]{img/Led_panel.png}
@@ -311,7 +308,7 @@
         \item[BCD] Output port value will be presented as BCD. Remember that bigger number than 99 cannot be displayed.
     \end{description}
 
-\subsection{7-segment simulator}
+\section{7-segment simulator}
     \begin{wrapfigure}{r}{0pt}
         \centering{}
         \includegraphics[width=110pt]{img/7seg_sim.png}
@@ -326,11 +323,11 @@
         \item[BCDhighNibb] High-order nibble is decoded and displayed.
     \end{description}
 
-\subsection{Number base converter}
+\section{Number base converter}
     \begin{wrapfigure}{r}{0pt}
             \centering
-            \includegraphics[width=90pt]{img/convertor.png}
+            \includegraphics[width=90pt]{img/converter.png}
             \caption{Converter}
     \end{wrapfigure}
 
-    This tool is very useful, when you want to quickly convert some number to another radix.
+    This tool is very useful when you want to quickly convert some number to another radix.
