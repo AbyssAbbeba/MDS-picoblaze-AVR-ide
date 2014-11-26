@@ -111,34 +111,29 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         Priority 1 is the highest priority, and priority 9 is the lowest priority. When operators with different priority levels appear in an expression, operations are evaluated according to priorities. When operators of the same priority appear in an expression, operations are evaluated from left to right.
 
     \subsection{Predefined Symbols}
-        There are symbols which are defined by default by assembler. The aim is to make it a little easier to write code in assembly language for PicoBlaze, because user do not have to define all these symbols in his or her code.
+        These symbols are defined by default when you specify the target device (directive ``device''). Symbols S10..S1F are defined for KCPSM2 only, and S8..S1F are not defined for KCPSM1-CPLD.
 
         \begin{table}[h!]
-            \centering{}
-            \mysmallfont{}
-
-            \begin{tabular}{|cc|}
+            \begin{tabular}{|cc|cc|}
                 \hline
-                Symbol & Value \\\hline
-                s0     & 000h  \\\hline
-                s1     & 001h  \\\hline
-                s2     & 002h  \\\hline
-                s3     & 003h  \\\hline
-                s4     & 004h  \\\hline
-                s5     & 005h  \\\hline
-                s6     & 006h  \\\hline
-                s7     & 007h  \\\hline
-                s8     & 008h  \\\hline
-                s9     & 009h  \\\hline
-                sA     & 00Ah  \\\hline
-                sB     & 00Bh  \\\hline
-                sC     & 00Ch  \\\hline
-                sD     & 00Dh  \\\hline
-                sE     & 00Eh  \\\hline
-                sF     & 00Fh  \\\hline
+                Symbol & Value & Symbol & Value \\\hline
+                S0     & 0x00  & S10    & 0x10  \\\hline
+                S1     & 0x01  & S11    & 0x11  \\\hline
+                S2     & 0x02  & S12    & 0x12  \\\hline
+                S3     & 0x03  & S13    & 0x13  \\\hline
+                S4     & 0x04  & S14    & 0x14  \\\hline
+                S5     & 0x05  & S15    & 0x15  \\\hline
+                S6     & 0x06  & S16    & 0x16  \\\hline
+                S7     & 0x07  & S17    & 0x17  \\\hline
+                S8     & 0x08  & S18    & 0x18  \\\hline
+                S9     & 0x09  & S19    & 0x19  \\\hline
+                SA     & 0x0A  & S1A    & 0x1A  \\\hline
+                SB     & 0x0B  & S1B    & 0x1B  \\\hline
+                SC     & 0x0C  & S1C    & 0x1C  \\\hline
+                SD     & 0x0D  & S1D    & 0x1D  \\\hline
+                SE     & 0x0E  & S1E    & 0x1E  \\\hline
+                SF     & 0x0F  & S1F    & 0x1F  \\\hline
             \end{tabular}
-
-            \caption{Code addresses}
         \end{table}
 
 \section{Assembler directives}
@@ -303,7 +298,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'<symbol> AUTOREG [<address>]'
 
         \subsubsection{Description}
-            This directive saves time. You can use it, when you don't care which work register will be used. It will automatically assign a register at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
+            This directive saves time. You can use it when you don't care which work register will be used. It will automatically assign a register at address 0x00, which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym).
 
         \subsubsection{Examples}
             \verb'First_symb    AUTOREG             ; Automatically assigned, register at address 0x00'\\
@@ -520,7 +515,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'LIMIT  C, <number> ; Size of program memory (C stands for code).'\\
 
         \subsubsection{Description}
-            Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler. In this example, when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
+            Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler. In this example when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
 
         \subsubsection{Examples}
             \verb'LIMIT          R,16                   ; Number of registers 16'\\
@@ -532,7 +527,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'DEVICE <device_name>'
 
         \subsubsection{Description}
-            Normally, you choose the target architecture, when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
+            Normally, you choose the target architecture when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
 
         \subsubsection{Examples}
             \verb'DEVICE kcpsm6'\\
@@ -574,7 +569,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'ERROR "<error message>"'
 
         \subsubsection{Description}
-            You can define an error report, which aborts compilation, when is executed.
+            You can define an error report, which aborts compilation when is executed.
 
         \subsubsection{Examples}
             \verb'ERROR         "Text, that will show up in the code listing"'
@@ -1102,7 +1097,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \item[Redefinition of macro ]
                 The given macro has already been defined.
             \item[Macro X will not be expanded because macro expansion has been disabled]
-                The given macro cannot be expanded, because macro expansion has been disabled by NOEXPAND directive. You can use EXPAND directive to allow expansion again.
+                The given macro cannot be expanded because macro expansion has been disabled by NOEXPAND directive. You can use EXPAND directive to allow expansion again.
             \item[Parameter X substituted for blank value ]
                 Macro expected input parameter. Compiler replaced it with blank parameter.
             \item[Symbol X already declared as local ]
@@ -1291,7 +1286,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                     \item description is char[0-36] and is a text comment.
                 \end{itemize}
 
-                Each of the subfields is composed of ASCII bytes whose associated characters, when paired, represent one byte hexadecimal values in the case of the version and revision numbers, or represent the hexadecimal values of the ASCII characters comprising the module name and description.
+                Each of the subfields is composed of ASCII bytes whose associated characters when paired, represent one byte hexadecimal values in the case of the version and revision numbers, or represent the hexadecimal values of the ASCII characters comprising the module name and description.
 
             \item[S1]
                 The type of record field is S1 (0x5331). The address field is interpreted as a 2-byte address. The data field is composed of memory loadable data.
@@ -1563,30 +1558,15 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                 \verb'          ADDCY   S0, S1          ; S0 := S0 + S1 + Carry'\\
                 \verb'          ADDCY   S0, #5          ; S0 := S0 + 5 + Carry'
 
-        \subsubsection{COMPARE, CMP}
-            The COMPARE instruction performs an 8-bit subtraction of two values. Unlike the SUB instruction, result of this operation is discarded, and only status flags are affected. CMP is only shorthand for COMPARE.
-
-            \paragraph{Syntax}
-                ~\\
-                \verb'COMPARE sX, #kk'\\
-                \verb'COMPARE sX, sY'\\
-                \verb'CMP     sX, #kk'\\
-                \verb'CMP     sX, sY'
-
-            \paragraph{Examples}
-                ~\\
-                \verb'          COMPARE    S0, #1          ; Set Z flag, if S0 == 1.'\\
-                \verb'          JUMP       Z, somewhere    ; Jump to label "somewhere", if Z flag is set.'\\
-
-        \subsubsection{SUB}
+        \subsubsection{SUB, SUBCY}
             The SUB instruction performs an 8-bit subtraction of two values.
 
             \paragraph{Syntax}
                 ~\\
-                \verb'SUB sX, #kk'\\
-                \verb'SUB sX, sY'\\
-                \verb'SUBCY sX, #kk'\\
-                \verb'SUBCY sX, sY'
+                \verb'SUB sX, #kk       '; Subtract immediate value \#kk from sX register (without carry).\\
+                \verb'SUB sX, sY        '; Subtract content of sY register from sX register (without carry).\\
+                \verb'SUBCY sX, #kk     '; Subtract immediate value \#kk from sX register (with carry).\\
+                \verb'SUBCY sX, sY      '; Subtract content of sY register from sX register (with carry).
 
             \paragraph{Examples}
                 ~\\
@@ -1598,33 +1578,64 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                 \verb'          SUBCY   S0, S1          ; S0 := S0 - S1 - Carry'\\
                 \verb'          SUBCY   S0, #5          ; S0 := S0 - 5 - Carry'
 
+        \subsubsection{COMPARE, CMP}
+            The COMPARE instruction performs an 8-bit subtraction of two values. Unlike the SUB instruction, result of this operation is discarded, and only status flags are affected. CMP is only shorthand for COMPARE.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'COMPARE sX, #kk   '; Compare immediate value \#kk to content of register sX.\\
+                \verb'COMPARE sX, sY    '; Compare content of register sY to content of register sX.\\\
+                \verb'CMP     sX, #kk   '; Same as ``COMPARE sX, \#kk''.\\
+                \verb'CMP     sX, sY    '; Same as ``COMPARE sX, sY''.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          COMPARE    S0, #1          ; Set Z flag, if S0 == 1.'\\
+                \verb'          JUMP       Z, somewhere    ; Jump to label "somewhere", if Z flag is set.'
+
     \subsection{Interrupt group}
         \subsubsection{RETURNI, RETIE, RETID}
-            \paragraph{Syntax}
-                ~\\
-                \verb'RETURNI ENABLE'\\
-                \verb'RETURNI DISABLE'\\
-                \verb'RETIE'\\
-                \verb'RETID'
+            Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. RETIE stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
 
-        \subsubsection{ENABLE INTERRUPT, ENA, DIS}
             \paragraph{Syntax}
                 ~\\
-                \verb'ENABLE INTERRUPT'\\
-                \verb'DISABLE INTERRUPT'\\
-                \verb'ENA'\\
-                \verb'DIS'
+                \verb'RETURNI ENABLE    '; Return from ISR and enable interrupts.\\
+                \verb'RETURNI DISABLE   '; Return from ISR and disable interrupts.\\
+                \verb'RETIE             '; Same as ``RETURNI ENABLE''\\
+                \verb'RETID             '; Same as ``RETURNI DISABLE''
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          ORG        0x3ff          ; Interrupt vector.'\\
+                \verb'          LOAD       S0, #0x55      ; Load register S0 with immediate value 0x55.'\\
+                \verb'          RETURNI    DISABLE        ; Return from ISR and disable further interrupts.'
+
+        \subsubsection{ENABLE INTERRUPT, DISABLE INTERRUPT, ENA, DIS}
+            Enable or disable interrupts.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'ENABLE INTERRUPT  '; Enable interrupts.\\
+                \verb'DISABLE INTERRUPT '; Disable interrupts.\\
+                \verb'ENA               '; Same as ``ENABLE INTERRUPT''.\\
+                \verb'DIS               '; Same as ``DISABLE INTERRUPT''.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          DIS                       ; Timing critical code begins here, disable interrupts.'\\
+                \verb'          LOAD       S0, #0x55      ; Do something...'\\
+                \verb'          ENA                       ; Timing critical code ends here, re-enable interrupts.'
 
     \subsection{Logical Group}
         \subsubsection{LOAD, LD}
-            The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the contents of any other register. The LOAD instruction has no effect on the status of the flags.
+            The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the contents of any other register. The LOAD instruction has no effect on the status flags.
 
             \paragraph{Syntax}
                 ~\\
-                \verb'LOAD sX,#kk'\\
-                \verb'LOAD sX, sY'\\
-                \verb'LD   sX, #kk'\\
-                \verb'LD   sX, sY'
+                \verb'LOAD sX, #kk ';\\
+                \verb'LOAD sX, sY  ';\\
+                \verb'LD   sX, #kk ';\\
+                \verb'LD   sX, sY  ';
 
         \subsubsection{STAR}
             Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.

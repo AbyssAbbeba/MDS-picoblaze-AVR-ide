@@ -693,7 +693,7 @@ void MainForm::createActions()
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
-        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("Segment Display"), this);
+        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("8 Segment Editor"), this);
         connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     #endif
     #ifdef MDS_FEATURE_LOOP_GENERATOR
