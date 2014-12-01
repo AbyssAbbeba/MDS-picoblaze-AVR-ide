@@ -1112,7 +1112,7 @@ void PicoBlazeInstructionSet6::inst_OUTPUTK_kk_p ( const unsigned int opCode )
     const unsigned int p  = ( opCode & 0x00f );
 
     // OUTPUTK kk, p
-    m_io -> output ( p, kk );
+    m_io -> outputk ( p, kk );
 }
 
 void PicoBlazeInstructionSet6::inst_STORE_sX_sY ( const unsigned int opCode )

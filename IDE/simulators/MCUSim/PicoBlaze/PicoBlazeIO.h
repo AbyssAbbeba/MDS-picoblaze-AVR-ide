@@ -47,8 +47,9 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          */
         enum Event
         {
-            EVENT_PICOBLAZEIO_WRITE = EVENT_PLIO__MAX__, ///<
-            EVENT_PICOBLAZEIO__MAX__                     ///<
+            EVENT_PICOBLAZEIO_WRITE   = EVENT_PLIO__MAX__, ///<
+            EVENT_PICOBLAZEIO_OUTPUTK,
+            EVENT_PICOBLAZEIO__MAX__                       ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -79,6 +80,14 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          */
         inline void output ( unsigned int portID,
                              unsigned int value );
+
+        /**
+         * @brief
+         * @param[in] portID
+         * @param[in] value
+         */
+        inline void outputk ( unsigned int portID,
+                              unsigned int value );
 
     ////    Public Operations    ////
     public:
@@ -185,6 +194,14 @@ inline void PicoBlazeIO::output ( unsigned int portID,
                                   unsigned int value )
 {
     logEvent ( EVENT_PLIO_WRITE, portID, value );
+    m_writeStrobe = true;
+    m_outputBitArray [ portID ] = ( char ) value;
+}
+
+inline void PicoBlazeIO::outputk ( unsigned int portID,
+                                   unsigned int value )
+{
+    logEvent ( EVENT_PICOBLAZEIO_OUTPUTK, portID, value );
     m_writeStrobe = true;
     m_outputBitArray [ portID ] = ( char ) value;
 }

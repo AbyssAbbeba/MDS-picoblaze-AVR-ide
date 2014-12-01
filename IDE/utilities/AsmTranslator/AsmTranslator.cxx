@@ -36,6 +36,8 @@ bool AsmTranslator::translate ( Variant variant,
                                 std::ostream & output,
                                 std::istream & input )
 {
+    m_lineNoCorrection = 0;
+
     AsmTranslatorBase * translator = nullptr;
 
     switch ( variant )
@@ -147,6 +149,8 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         }
     }
 
+    m_lineNoCorrection = (unsigned int) translator->m_prologue.size();
+
     return true;
 }
 
@@ -175,6 +179,11 @@ bool AsmTranslator::translate ( Variant variant,
 const std::vector<std::pair<unsigned int, std::string> > & AsmTranslator::getMessages() const
 {
     return m_messages;
+}
+
+unsigned int AsmTranslator::getLineNoCorrection() const
+{
+    return m_lineNoCorrection;
 }
 
 void AsmTranslator::clear()

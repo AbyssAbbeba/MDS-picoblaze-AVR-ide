@@ -1,0 +1,291 @@
+
+    \paragraph{Legend}
+        ~\\
+        "sX" and "sY" are direct addresses in register file, e.g. S0, S1, S2, ...\\
+        "@sX" and "@sY" are indirect addresses, e.g. @S0, @S1, @S2, ...\\
+        "\#kk" is immediate value (constant), e.g. \#0x21 (hex.), \#26 (dec.), \#'A' (ascii).\\
+        "aaa" is address in program memory.\\
+        "pp" is port address in the range from 0x00 to 0xFF.\\
+        "p" is port address in the range from 0x0 to 0xF.\\
+        "ss" is address in scratch-pad RAM.
+
+    \subsection{Program Control Group}
+        \subsubsection{JUMP}
+            Instruction JUMP loads program counter with the address specified by aaa operand. This instruction has no effect on the status flags.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'JUMP aaa          '; Unconditional jump.\\
+                \verb'JUMP Z, aaa       '; Jump only if the Zero flag is set.\\
+                \verb'JUMP NZ, aaa      '; Jump only if the Zero flag is NOT set.\\
+                \verb'JUMP C, aaa       '; Jump only if the Carry flag is set.\\
+                \verb'JUMP NC, aaa      '; Jump only if the Carry flag is NOT set.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'my_label:'\\
+                \verb'          ; ... code ...'\\
+                \verb'          JUMP    my_label        ; Jump to label "my_label".'\\
+                \verb''\\
+                \verb'          JUMP    0x300 + 0xff    ; Jump to address 3FF hexadecimal.'
+
+        \subsubsection{CALL}
+            Call subroutine at the address specified by aaa operand.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'CALL aaa          '; Unconditional call.\\
+                \verb'CALL Z, aaa       '; Call only if the Zero flag is set.\\
+                \verb'CALL NZ, aaa      '; Call only if the Zero flag is NOT set.\\
+                \verb'CALL C, aaa       '; Call only if the Carry flag is set.\\
+                \verb'CALL NC, aaa      '; Call only if the Carry flag is NOT set.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'subprog:  ADD     S0, S1          ; S0 := S0 + S1'\\
+                \verb'          SUB     S1, # 5 * 2     ; S1 := S1 + 7'\\
+                \verb'          RETURN'\\
+                \verb''\\
+                \verb'          CALL    my_subprog'\\
+                \verb''\\
+                \verb'          CALL    40            ; Call subroutine at address 40 decimal.'
+
+        \subsubsection{RETURN, RET}
+            Return from subroutine. RET and RETURN are completely interchangeable, they are the same instruction, RET is only shorthand for RETURN.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'RETURN    '; Unconditional return.\\
+                \verb'RETURN Z  '; Return only if the Zero flag is set.\\
+                \verb'RETURN NZ '; Return only if the Zero flag is NOT set.\\
+                \verb'RETURN C  '; Return only if the Carry flag is set.\\
+                \verb'RETURN NC '; Return only if the Carry flag is NOT set.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'subr:     ADD     S0, S1          ; S0 := S0 + S1'\\
+                \verb'          RETURN  Z               ; Return if S0 contains zero value.'\\
+                \verb'          LOAD    S0, #1          ; Load S1 with value 1.'\\
+                \verb'          RET                     ; Return unconditionally.'\\
+                \verb''\\
+                \verb'          CALL    subr'\\
+
+    \subsection{Arithmetic Group}
+        \subsubsection{ADD, ADDCY}
+            The ADD instruction performs an 8-bit addition of two values.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'ADD sX, #kk    '; Add immediate value \#kk to sX register (without carry).\\
+                \verb'ADD sX, sY     '; Add content of sY register to sX register (without carry).\\
+                \verb'ADDCY sX, #kk  '; Add immediate value \#kk to sX register (with carry).\\
+                \verb'ADDCY sX, sY   '; Add content of sY register to sX register (with carry).
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          LOAD    S0, #1          ; S0 := 1'\\
+                \verb'          LOAD    S1, #2          ; S0 := 2'\\
+                \verb''\\
+                \verb'          ADD     S0, S1          ; S0 := S0 + S1'\\
+                \verb'          ADD     S0, #5          ; S0 := S0 + 5'\\
+                \verb'          ADDCY   S0, S1          ; S0 := S0 + S1 + Carry'\\
+                \verb'          ADDCY   S0, #5          ; S0 := S0 + 5 + Carry'
+
+        \subsubsection{SUB, SUBCY}
+            The SUB instruction performs an 8-bit subtraction of two values.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'SUB sX, #kk       '; Subtract immediate value \#kk from sX register (without carry).\\
+                \verb'SUB sX, sY        '; Subtract content of sY register from sX register (without carry).\\
+                \verb'SUBCY sX, #kk     '; Subtract immediate value \#kk from sX register (with carry).\\
+                \verb'SUBCY sX, sY      '; Subtract content of sY register from sX register (with carry).
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          LOAD    S0, #10         ; S0 := 1'\\
+                \verb'          LOAD    S1, #2          ; S0 := 2'\\
+                \verb''\\
+                \verb'          SUB     S0, S1          ; S0 := S0 - S1'\\
+                \verb'          SUB     S0, #5          ; S0 := S0 - 5'\\
+                \verb'          SUBCY   S0, S1          ; S0 := S0 - S1 - Carry'\\
+                \verb'          SUBCY   S0, #5          ; S0 := S0 - 5 - Carry'
+
+        \subsubsection{COMPARE, CMP}
+            The COMPARE instruction performs an 8-bit subtraction of two values. Unlike the SUB instruction, result of this operation is discarded, and only status flags are affected. CMP is only shorthand for COMPARE.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'COMPARE sX, #kk   '; Compare immediate value \#kk to content of register sX.\\
+                \verb'COMPARE sX, sY    '; Compare content of register sY to content of register sX.\\\
+                \verb'CMP     sX, #kk   '; Same as ``COMPARE sX, \#kk''.\\
+                \verb'CMP     sX, sY    '; Same as ``COMPARE sX, sY''.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          COMPARE    S0, #1          ; Set Z flag, if S0 == 1.'\\
+                \verb'          JUMP       Z, somewhere    ; Jump to label "somewhere", if Z flag is set.'
+
+    \subsection{Interrupt group}
+        \subsubsection{RETURNI, RETIE, RETID}
+            Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. RETIE stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'RETURNI ENABLE    '; Return from ISR and enable interrupts.\\
+                \verb'RETURNI DISABLE   '; Return from ISR and disable interrupts.\\
+                \verb'RETIE             '; Same as ``RETURNI ENABLE''\\
+                \verb'RETID             '; Same as ``RETURNI DISABLE''
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          ORG        0x3ff          ; Interrupt vector.'\\
+                \verb'          LOAD       S0, #0x55      ; (Load register S0 with immediate value 0x55.)'\\
+                \verb'          RETURNI    DISABLE        ; Return from ISR and disable further interrupts.'
+
+        \subsubsection{ENABLE INTERRUPT, DISABLE INTERRUPT, ENA, DIS}
+            Enable or disable interrupts.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'ENABLE INTERRUPT  '; Enable interrupts.\\
+                \verb'DISABLE INTERRUPT '; Disable interrupts.\\
+                \verb'ENA               '; Same as ``ENABLE INTERRUPT''.\\
+                \verb'DIS               '; Same as ``DISABLE INTERRUPT''.
+
+            \paragraph{Examples}
+                ~\\
+                \verb'          DIS                       ; Timing critical code begins here, disable interrupts.'\\
+                \verb'          LOAD       S0, #0x55      ; (Load register S0 with immediate value 0x55.)'\\
+                \verb'          ENA                       ; Timing critical code ends here, re-enable interrupts.'
+
+    \subsection{Logical Group}
+        \subsubsection{LOAD, LD}
+            The LOAD instruction provides a method for specifying the contents of any register. The new value can be a constant, or the contents of any other register. The LOAD instruction has no effect on the status flags.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'LOAD sX, #kk ';\\
+                \verb'LOAD sX, sY  ';\\
+                \verb'LD   sX, #kk ';\\
+                \verb'LD   sX, sY  ';
+
+        \subsubsection{STAR}
+            Apart from bank "A" being the default on power up or following a reset you are completely free to select back "A" or bank "B" as an when you wish using the REGBANK instruction. All instructions only operate on the registers in the actively selected bank which preserves the values in the inactive bank.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'STAR sX, sY'\\
+                \verb'STAR sX, #kk'
+
+        \subsubsection{OR}
+            The "OR" instructions perform the bit-wise logical OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'OR sX, sY'\\
+                \verb'OR sX, #kk'
+
+        \subsubsection{XOR}
+            The "XOR" instructions perform the bit\-wise logical exclusive-OR operation. The zero flag (Z) will be set if all 8-bits of the result returned to "sX" are zero. The carry flag (C) will be cleared (C=0) in all cases.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'XOR sX, #kk'\\
+                \verb'XOR sX, sY'
+
+        \subsubsection{AND}
+            The first operand must specify a register "sX" whose value provides one input to the AND operation and in to which the result is returned. The second operand defines the second input to the AND operation and can either be an 8-bit constant \#kk or a register sY. The zero flag (Z) will be set if all 8-bits of the result returned to sX are zero. The carry flag (C) will be cleared (C=0) in all cases.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'AND sX, #kk'\\
+                \verb'AND sX, sY'
+
+        \subsubsection{TEST}
+            The "TEST" instructions are similar to the "AND" instructions in that a bit-wise logical AND operation is performed. However, the actual result is discarded and only the flags are updates to reflect the temporary 8-bit. The zero flag (Z) will be set if all 8-bits of the temporary result are zero. The carry flag (C) will be set if the temporary result contains an odd number of bits set to "1" (the exclusive-OR of the 8-bit temporary result).
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'TEST sX, sY'\\
+                \verb'TEST sX, #kk'
+
+        \subsubsection{TESTCY}
+            The "TESTCY" instructions are primarily intended as an extension to the basic "TEST" instructions in order to support testing and odd parity calculation of values more than 8-bits.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'TESTCY} sX, sY'
+                \verb'TESTCY} sX, #kk'
+
+    \subsection{Shift and Rotate Group}
+        \subsubsection{SR}
+            \paragraph{Syntax}
+                ~\\
+                \verb'SR0 sX'\\
+                \verb'SR1 sX'\\
+                \verb'SRX sX'\\
+                \verb'SRA sX'
+
+        \subsubsection{RR, RL}
+            \paragraph{Syntax}
+                ~\\
+                \verb'RR sX'\\
+                \verb'RL sX'
+
+        \subsubsection{SL}
+            \paragraph{Syntax}
+                ~\\
+                \verb'SL0 sX'\\
+                \verb'SL1 sX'\\
+                \verb'SLX sX'\\
+                \verb'SLA sX'
+
+    \subsection{Storage group}
+        \subsubsection{STORE}
+            The store instructions write the contents of a register "sX" into the scratch pad memory (SPM).
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'STORE sX, ss'\\
+                \verb'STORE sX, @sY'
+
+        \subsubsection{FETCH}
+            The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX".
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'FETCH sX, ss'\\
+                \verb'FETCH sX, @sY'
+
+    \subsection{Input output group}
+        \subsubsection{INPUT, IN}
+            An "INPUT" instruction enables to read information from the from your hardware design into a register "sX" using a general purpose input port.
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'INPUT sX, pp'\\
+                \verb'INPUT sX, @sY'\\
+                \verb'IN    sX, pp'\\
+                \verb'IN    sX, @sY'
+
+        \subsubsection{OUTPUT, OUT}
+            An "OUTPUT" instruction is used to transfer information from a register "sX" to a general purpose output port specified by an 8-bit constant value "pp" or the
+            contents of another register "@sY".
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'OUTPUT sX, pp'\\
+                \verb'OUTPUT sX, @sY'\\
+                \verb'OUT    sX, pp'\\
+                \verb'OUT    sX, @sY'
+
+        \subsubsection{OUTPUTK, OUTK}
+            The first operand is the 8-bit constant value "\#kk". "p" is port\_id[0:3].
+
+            \paragraph{Syntax}
+                ~\\
+                \verb'OUTPUTK #kk, p'\\
+                \verb'OUTPUTK #kk, @sY'\\
+                \verb'OUTK    #kk, p'\\
+                \verb'OUTK    #kk, @sY'

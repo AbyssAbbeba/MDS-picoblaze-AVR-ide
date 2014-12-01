@@ -28,10 +28,11 @@
    <Breakpoint line="37"/>
    <Breakpoint line="50"/>
   </BreakpointFile>
+  <BreakpointFile path="Example6.psm"/>
  </Breakpoints>
  <Bookmarks/>
  <Simulator>
-  <Clock clockMult="1000000" clock="20"/>
+  <Clock clockMult="1000000" clock="90"/>
  </Simulator>
  <Compiler>
   <Options>
