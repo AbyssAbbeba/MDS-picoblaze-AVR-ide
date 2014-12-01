@@ -88,6 +88,12 @@ class AsmTranslator
 
         /**
          * @brief
+         * @return
+         */
+        unsigned int getLineNoCorrection() const;
+
+        /**
+         * @brief
          */
         void clear();
 
@@ -113,6 +119,9 @@ class AsmTranslator
     private:
         /// @brief
         std::vector<std::pair<unsigned int, std::string> > m_messages;
+
+        /// @brief
+        unsigned int m_lineNoCorrection;
 };
 
 #endif // ASMTRANSLATOR_H

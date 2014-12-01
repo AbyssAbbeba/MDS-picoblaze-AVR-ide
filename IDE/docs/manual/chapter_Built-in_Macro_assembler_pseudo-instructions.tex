@@ -1,0 +1,150 @@
+
+    MDS assembler supports some useful pseudo instructions, which can improve understandability of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+
+    \subsection{INC}
+        \subsubsection{Syntax}
+            \verb'INC <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'ADD       sX, #1'
+
+        \subsubsection{Description}
+            This instruction increments given register value by one.
+
+        \subsubsection{Examples}
+            \verb'INC              s0'
+
+    \subsection{DEC}
+        \subsubsection{Syntax}
+            \verb'DEC <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'SUB       sX, #1'
+
+        \subsubsection{Description}
+            This instruction decrements given register value by one.
+
+        \subsubsection{Examples}
+            \verb'DEC s0'
+
+    \subsection{SETR}
+        \subsubsection{Syntax}
+            \verb'SETR <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'OR       sX, #0xFF'
+
+        \subsubsection{Description}
+            This instruction sets given register.
+
+        \subsubsection{Examples}
+            \verb'SETR              s0'
+
+    \subsection{CLRR}
+        \subsubsection{Syntax}
+            \verb'CLRR <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'AND       sX, #0x00'
+
+        \subsubsection{Description}
+            This instruction clears given register.
+
+        \subsubsection{Examples}
+            \verb'CLRR              s0'
+
+    \subsection{CPL}
+        \subsubsection{Syntax}
+            \verb'CPL <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'XOR       sX, #0xFF'
+
+        \subsubsection{Description}
+            This instruction execute 1\'s complement with given register.
+
+        \subsubsection{Examples}
+            \verb'CPL              s0'
+
+    \subsection{CPL2}
+        \subsubsection{Syntax}
+            \verb'CPL2 <expression>'
+
+        \subsubsection{Equal to:}
+            \verb'XOR              s0,#0xFF'\\
+            \verb'ADD              s0,#1'
+
+        \subsubsection{Description}
+            This instruction executes 1\'s complement with given register.
+
+        \subsubsection{Examples}
+            \verb'CPL2              s0'
+
+    \subsection{SETB}
+        \subsubsection{Syntax}
+            \verb'SETB <register>, <bit> ; bit belongs to interval [0,7]'
+
+        \subsubsection{Equal to:}
+            \verb'OR       sX, #1 << bit'
+
+        \subsubsection{Description}
+            Sets bit in given register.
+
+        \subsubsection{Examples}
+            \verb'SETB              s0,3'
+
+    \subsection{CLRB}
+        \subsubsection{Syntax}
+            \verb'CLRB <register>, <bit> ; bit belongs to interval [0,7]'
+
+        \subsubsection{Equal to:}
+            \verb'AND       sX,#(0xFF ^ (1 << bit))'
+
+        \subsubsection{Description}
+            Clears bit in given register.
+
+        \subsubsection{Examples}
+            \verb'CLRB              s0,7'
+
+    \subsection{NOTB}
+        \subsubsection{Syntax}
+            \verb'NOTB <register>, <bit> ; bit belongs to interval [0,7]'
+
+        \subsubsection{Equal to:}
+            \verb'XOR       sX,#(~(1 << bit))'
+
+        \subsubsection{Description}
+            Negates bit in given register.
+
+        \subsubsection{Examples}
+            \verb'NOTB              s0,7'
+
+    \subsection{DJNZ}
+        \subsubsection{Syntax}
+            \verb'DJNZ <register>, <label>'
+
+        \subsubsection{Equal to:}
+            \verb'SUB               s0,#1'\\
+            \verb'JUMP              NZ,loop'
+
+        \subsubsection{Description}
+            Given register is decremented until it is zero.
+
+        \subsubsection{Examples}
+            \verb'loop:             '\\
+            \verb'DJNZ              s0, loop'
+
+    \subsection{IJNZ}
+        \subsubsection{Syntax}
+            \verb'IJNZ <register>, <label>'
+
+        \subsubsection{Equal to:}
+            \verb'ADD               s0,#1'\\
+            \verb'JUMP              NZ,loop'
+
+        \subsubsection{Description}
+            Given register is incremented until overflow.
+
+        \subsubsection{Examples}
+            \verb'loop:             '\\
+            \verb'IJNZ              s0, loop'

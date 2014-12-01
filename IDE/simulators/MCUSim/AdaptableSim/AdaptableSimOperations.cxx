@@ -697,6 +697,10 @@ inline void AdaptableSimOperations::instLogOper ( const AdaptableSimInstruction 
         case LOG_XOR:
             result = ( val0 ^ val1 );
             break;
+        default:
+            // Error.
+            result = 0;
+            break;
     }
 
     if ( true == inst.m_parameters.separateResult() )
