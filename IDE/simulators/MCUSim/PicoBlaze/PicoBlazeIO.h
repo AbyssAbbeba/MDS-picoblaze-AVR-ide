@@ -201,6 +201,11 @@ inline void PicoBlazeIO::output ( unsigned int portID,
 inline void PicoBlazeIO::outputk ( unsigned int portID,
                                    unsigned int value )
 {
+    if ( ( false == m_writeStrobe ) && ( false == m_writeStrobePrev ) )
+    {
+        logEvent ( EVENT_PLIO_WRITE, portID, value );
+    }
+
     logEvent ( EVENT_PICOBLAZEIO_OUTPUTK, portID, value );
     m_writeStrobe = true;
     m_outputBitArray [ portID ] = ( char ) value;
@@ -217,7 +222,12 @@ inline void PicoBlazeIO::clockCycle()
     if ( true == m_writeStrobe )
     {
         m_writeStrobe = false;
+        m_writeStrobePrev = true;
         logEvent ( EVENT_PLIO_WRITE_END );
+    }
+    else if ( true == m_writeStrobePrev )
+    {
+        m_writeStrobePrev = false;
     }
 }
 
