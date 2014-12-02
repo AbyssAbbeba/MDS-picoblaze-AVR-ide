@@ -1,0 +1,6 @@
+  █─ EMPTY_STATEMENT {:.-.} <0>
+  ├─ ASMPICOBLAZE_DIR_DEVICE {0:2.1-2.14} <0> [ ('KCPSM6') {0:2.8-2.14} ]
+  ├─ ASMPICOBLAZE_DIR_ORG {0:4.1-4.18} <0> [ (0x0) {0:4.17-4.18} ]
+  ├─ ASMPICOBLAZE_LABEL {0:6.1-6.7} <0> [ ('START') {0:6.1-6.6} ]
+  ├─ ASMPICOBLAZE_INS_STAR_SX_SY {0:7.9-7.21} <0> [ ('S0') {0:7.16-7.18} | ('S1') {0:7.19-7.21} ]
+  └─ ASMPICOBLAZE_INS_STAR_SX_KK {0:8.9-8.22} <0> [ ('S2') {0:8.16-8.18} | (0x32) {0:8.20-8.22} ]

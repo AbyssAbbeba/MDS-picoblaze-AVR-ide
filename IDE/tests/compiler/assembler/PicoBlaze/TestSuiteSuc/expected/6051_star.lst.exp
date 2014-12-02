@@ -1,0 +1,8 @@
+                   1
+                   2     device kcpsm6
+                   3
+  00000            4     org             0
+                   5
+  00000            6     start:
+000 16010          7             star   s0,s1
+001 17232          8             star   s2,#50

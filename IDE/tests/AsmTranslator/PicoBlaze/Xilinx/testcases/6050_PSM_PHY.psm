@@ -16,12 +16,45 @@
 ;
 ;==============================================================================;
 ;
-;       PHY_hard_reset
-;       PHY_soft_reset
-;       PHY_init
-;       report_PHY_link
-;       report_all
-;       AGR_Autodetect
+ CONSTANT      ID_PHY_hard_reset,00
+ CONSTANT      ID_PHY_soft_reset,00
+ CONSTANT       ID_PHY_init,00
+ CONSTANT       ID_report_PHY_link,00
+  CONSTANT      ID_report_all,00
+  CONSTANT      ID_AGR_Autodetect,00
+    CONSTANT      ID_AGR_mode_req,00
+  CONSTANT      ID_PHY_reset,00
+    CONSTANT      ID_MAC_0_link_status,00
+	    CONSTANT      ID_MAC_1_link_status,00
+			    CONSTANT      ID_MAC_2_link_status,00
+				CONSTANT      ID_MAC_3_link_status,00
+  wait_10ms:
+    wait_100ms:
+	SMI_WR:
+		SMI_RD:
+	send_CRLF:
+send_SPACE:
+send_BYTE:
+send_TAB:
+mess_Port:
+mess_Status:
+mess_TriSpace:
+mess_Offline:
+mess_Online:
+mess_10M:
+mess_100M:
+mess_1000M:
+mess_FDX:
+mess_HDX:
+mess_MDIX:
+mess_Error:
+EEPROM_RD:
+mess_AGR:
+mess_Master:
+mess_Slave:
+mess_Direct:
+mess_Isolate:
+mess_Loopback:
 ;
 ;
 ; pocatecni nastaveni
@@ -474,12 +507,12 @@ AGR_Autodetect:     LOAD        s4, 00                  ; register address
                     SR0         s5
                     SR0         s5
 
-; CONSTANT Mode_Isolate           , 00000000'b
-; CONSTANT Mode_Loopback          , 00000001'b
-; CONSTANT Mode_Direct            , 00000010'b
-; CONSTANT Mode_AGR_Slave         , 00000011'b
-; CONSTANT Mode_AGR_Master        , 00000100'b
-; CONSTANT Mode_Autodetect        , 00000111'b
+ CONSTANT Mode_Isolate           , 00000000'b
+ CONSTANT Mode_Loopback          , 00000001'b
+ CONSTANT Mode_Direct            , 00000010'b
+ CONSTANT Mode_AGR_Slave         , 00000011'b
+ CONSTANT Mode_AGR_Master        , 00000100'b
+ CONSTANT Mode_Autodetect        , 00000111'b
 
                     COMPARE     s5, Mode_Autodetect
                     JUMP        Z, AGR_Autodetect_1
