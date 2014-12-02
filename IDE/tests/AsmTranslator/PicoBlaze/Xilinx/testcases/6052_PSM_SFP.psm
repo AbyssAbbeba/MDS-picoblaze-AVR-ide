@@ -22,14 +22,14 @@
 ;    - set Tri-Speed, SGMII-to-Copper, enable ANEG
 ;==============================================================================;
 ; detect SFP (PHY) presence and report its type
-Setup_SFP:          LOAD        s3, ID_SFP_EEPROM_ADDR  ; load EEPROM address of SFP on TWI
+Setup_SFP:          LOAD        s3, 00  ; load EEPROM address of SFP on TWI
                     TEST        sF, 01                  ; is bit 0 set? (SFP presence bit)
                     JUMP        Z, Detect_SFP_insert    ; SFP was not present, check whether it is now
                                                         ; otherwise SFP should be present, check for its unpliging
 ;------------------------------------------------------------------------------;
 ; SFP was present, check whether it still is present
 Detect_SFP_unplug:  LOAD      s4, 00                ; register address
-                    CALL      SFP_ROM_RD              ; read data from EEPROM
+                    CALL      000             ; read data from EEPROM
                     COMPARE   s5, 03                ; SFP transceiver?
                     JUMP      Z, Setup_SFP_done     ; SFP still present, leave procedure
                     ; SFP was unplugged
@@ -43,7 +43,7 @@ Detect_SFP_unplug:  LOAD      s4, 00                ; register address
 ;       - setup PHY in SFP
 
 Detect_SFP_insert:  LOAD        s4, 00                ; register address
-                    CALL        SFP_ROM_RD              ; read data from EEPROM
+                    CALL        000              ; read data from EEPROM
                     COMPARE     s5, 03                ; SFP transceiver?
                     JUMP        NZ, Setup_SFP_done    ; if not, no SFP was plugged in, finish setup
                     ; new SFP detected
@@ -52,11 +52,11 @@ Detect_SFP_insert:  LOAD        s4, 00                ; register address
 
 ;------------------------------------------------------------------------------;
 ; check SFP compatibility (currently only 88E1111 based SFPs are acceptable)
-check_SFP_comp:     LOAD        s3, ID_SFP_PHY_ADDR     ; load PHY address of SFP on TWI
+check_SFP_comp:     LOAD        s3, s1     ; load PHY address of SFP on TWI
 
                     ; register 2 = 0x0141
                     LOAD        s4, 2'd                ; register address
-                    CALL        SFP_PHY_RD              ; read register
+                    CALL        000              ; read register
                     COMPARE     s6, 01              ; check upper byte
                     JUMP        NZ, SFP_not_supported   ; report incompatible SFP
                     COMPARE     s5, 41              ; check lower byte
@@ -64,7 +64,7 @@ check_SFP_comp:     LOAD        s3, ID_SFP_PHY_ADDR     ; load PHY address of SF
 
                     ; register 3 = 0b000011001100xxxx = 0x0CCx
                     LOAD        s4, 3'd                ; register address
-                    CALL        SFP_PHY_RD              ; read register
+                    CALL        000              ; read register
                     COMPARE     s6, 0C              ; check upper byte
                     JUMP        NZ, SFP_not_supported   ; report incompatible SFP
                     AND         s5, F0              ; mask lower nibble (chip revision)
@@ -78,7 +78,7 @@ check_SFP_comp:     LOAD        s3, ID_SFP_PHY_ADDR     ; load PHY address of SF
 ; set Tri-speed, SGMII-to-Copper mode, ANEG enable + soft reset
 ; first read the register, then modify bitst and finaly perform write
 
-setup_SFP_88E1111:  LOAD        s3, ID_SFP_PHY_ADDR     ; device address on TWI
+setup_SFP_88E1111:  LOAD        s3, s1     ; device address on TWI
 
                     ; set mode to SGMII to Copper, disable "ANEG bypass" on serial interface
                     LOAD        s4, 27'd          ; register address
@@ -87,64 +87,53 @@ setup_SFP_88E1111:  LOAD        s3, ID_SFP_PHY_ADDR     ; device address on TWI
                    ;OR          s6, 80           ; 1x00_0000; set bits
                     LOAD        s6, 80           ; 1x00_0000; set bits
                     LOAD        s5, 84           ; 0000_0100
-                    CALL        SFP_PHY_WR
+                    CALL        000
 
                     ; Advertise also 100M and 10M modes
                     LOAD        s4, 4'd             ; register address
-                   ;CALL        SFP_PHY_RD           ; read register
+                   ;CALL        000           ; read register
                    ;AND         s6, 10           ; 100x_0001; clear bits
                    ;OR          s6, 81           ; 100x_0001; set bits
                     LOAD        s6, 0D           ; 
                     LOAD        s5, E1           ; 1110_0001
-                    CALL        SFP_PHY_WR
+                    CALL        000
 
                     ; enable ANEG
                     LOAD        s4, 0'd             ; register address
-;                   CALL        SFP_PHY_RD           ; read register
+;                   CALL        000          ; read register
                     LOAD        s6, 11           ; 0001_0001
                     LOAD        s5, 40           ; 01xx_xxxx
 ;                   AND         s5, 3F           ; 01xx_xxxx; clear bits
 ;                   OR          s5, 40           ; 01xx_xxxx; set bits
-                    CALL        SFP_PHY_WR
+                    CALL        000
 
                     ; soft reset
                     LOAD        s4, 0'd             ; register address
 ;                   OR          s6, 80
                     LOAD        s6, 91
                     LOAD        s5, 40
-                    CALL        SFP_PHY_WR
+                    CALL        000
 
-wait_RST_SFP_PHY:   CALL        SFP_PHY_RD           ; read PHY reset status
+wait_RST_SFP_PHY:   CALL        000           ; read PHY reset status
                     TEST        s6, 80           ; reset done?
                     JUMP        NZ, wait_RST_SFP_PHY ; when not done, wait
 
 ;------------------------------------------------------------------------------;
 ; check that the 88E1111 was configured correctly
-;check_SFP_comp:     LOAD      s3, SFP_PHY_ADDR     ; load PHY address of SFP on TWI
+;check_SFP_comp:     LOAD      s3, s1     ; load PHY address of SFP on TWI
 ;                    LOAD      s4, 00               ; register address
-;                    CALL      SFP_PHY_RD              ; read register
+;                    CALL      000             ; read register
 
 ;                    JUMP      xZ, SFP_not_supported   ; report incompatible SFP
                     JUMP        Setup_SFP_done
 
 ;------------------------------------------------------------------------------;
-SFP_not_supported:  CALL        mess_Error
-                    CALL        send_SPACE
-                    CALL        send_CHAR
-                    CALL        mess_UnsSFP
-                    CALL        send_CRLF
-                    CALL        send_CRLF
-                    JUMP        Setup_SFP_done
+SFP_not_supported:  
 ;------------------------------------------------------------------------------;
-no_SFP_present:     CALL        mess_Error
-                    CALL        send_SPACE
-                    CALL        mess_noSFP
-                    CALL        send_CRLF
-                    CALL        send_CRLF
-                    JUMP        Setup_SFP_done
+no_SFP_present:     
 
 ;------------------------------------------------------------------------------;
-Setup_SFP_done:     CALL        wait_100ms
+Setup_SFP_done:     CALL        FFF
                     RETURN
 
 
@@ -156,12 +145,12 @@ Setup_SFP_done:     CALL        wait_100ms
 ;
 ;==============================================================================;
 
-SFP_ASCII_info:     CALL        mess_SFP                ; "SFP "
+SFP_ASCII_info:     CALL        000               ; "SFP "
 ;------------------------------------------------------------------------------;
                     ; vendor
                     CALL        send_TAB
                     LOAD        s4, 20'd                ; register address
-rd_SFP_gen_1:       CALL        SFP_ROM_RD                ; read data from EEPROM
+rd_SFP_gen_1:       CALL        000               ; read data from EEPROM
                     LOAD        s9, s5                  ; prepare data for sending
                     CALL        send_CHAR               ; send data
                     ADD         s4, 01                  ; select next character
@@ -172,7 +161,7 @@ rd_SFP_gen_1:       CALL        SFP_ROM_RD                ; read data from EEPRO
                      ; vendo PN + vendor rev
                     CALL        send_TAB
                     LOAD        s4, 40'd                ; register address
-rd_SFP_gen_2:       CALL        SFP_ROM_RD                ; read data from EEPROM
+rd_SFP_gen_2:       CALL        000                ; read data from EEPROM
                     LOAD        s9, s5                  ; prepare data for sending
                     CALL        send_CHAR               ; send data
                     ADD         s4, 01                  ; select next character
@@ -184,7 +173,7 @@ rd_SFP_gen_2:       CALL        SFP_ROM_RD                ; read data from EEPRO
                     CALL        send_TAB
                    ;CALL        mess_SN
                     LOAD        s4, 68'd                ; register address
-rd_SFP_gen_3:       CALL        SFP_ROM_RD                ; read data from EEPROM
+rd_SFP_gen_3:       CALL        000               ; read data from EEPROM
                     LOAD        s9, s5                  ; prepare data for sending
                     CALL        send_CHAR                ; send data
                     ADD         s4, 01                  ; select next character
@@ -193,5 +182,9 @@ rd_SFP_gen_3:       CALL        SFP_ROM_RD                ; read data from EEPRO
                     CALL        send_CRLF
                     CALL        send_CRLF
                     RETURN
-
+send_CRLF:
+send_SPACE:
+send_BYTE:
+send_TAB:
+send_CHAR:
 ;==============================================================================;

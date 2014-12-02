@@ -29,4 +29,7 @@ start:
         ;; step
         ;; reg[16] == 5
         ;; reg[17] == 2
-
+        star   s2,#50
+        regbank         a
+        ;; step 2
+        ;; reg[2] == 50

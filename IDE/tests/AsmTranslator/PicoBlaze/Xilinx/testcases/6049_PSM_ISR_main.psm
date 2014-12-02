@@ -26,6 +26,15 @@
 ;
 ;==============================================================================;
 ; received character detection
+CONSTANT ID_INT_STATUS,00
+ISR_PHY_0:
+ISR_PHY_1:
+ISR_PHY_2:
+ISR_PHY_3:
+ISR_UART:
+FIFO_over_ISR:
+ISR_SFP:
+
 IntService:         STORE       s0, 00
                     STORE       s1, 01
                     STORE       s2, 02
