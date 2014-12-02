@@ -296,7 +296,7 @@ void ProjectMan::createActiveMakefile()
         //for (int i = 0; i < activeProject->fileCount; i++)
         //{
             //relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->filePaths.at(i));
-        relativePath = makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->mainFilePath);
+        relativePath = QDir::cleanPath(makefileDir.relativeFilePath(projectDir.path() + "/" + activeProject->mainFilePath));
             makeOut << " " << relativePath;
         //}
         makeOut << endl << endl;
@@ -499,7 +499,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 set << xmlBreakpointElement.attribute("line").toInt();
                                 xmlBreakpointNode = xmlBreakpointNode.nextSibling();
                             }
-                            absolutePath = project.absoluteFilePath(xmlBreakpointFileElement.attribute("path"));
+                            absolutePath = QDir::cleanPath(project.absoluteFilePath(xmlBreakpointFileElement.attribute("path")));
                             //qDebug() << "Project: breakpoint path" << absolutePath;
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->breakPoints.append(pair);
@@ -525,7 +525,7 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 xmlBookmarkNode = xmlBookmarkNode.nextSibling();
                             }
                             //TODO:
-                            absolutePath = project.absoluteFilePath(xmlBookmarkFileElement.attribute("path"));
+                            absolutePath = QDir::cleanPath(project.absoluteFilePath(xmlBookmarkFileElement.attribute("path")));
                             QPair<QString, QSet<unsigned int>> pair(absolutePath, set);
                             this->bookmarks.append(pair);
                             xmlBookmarkFileNode = xmlBookmarkFileNode.nextSibling();
@@ -812,6 +812,11 @@ Project::Project(QFile *file, ProjectMan *parent)
                     this,
                     SLOT(closeProjectSlot())
                    );
+            connect(prjTreeWidget,
+                    SIGNAL(requestProjectPath()),
+                    this,
+                    SLOT(requestProjectPath())
+                   );
             connect(this,
                     SIGNAL(fileCountSignal(int)),
                     prjTreeWidget,
@@ -922,6 +927,11 @@ Project::Project(ProjectMan *parent)
             this,
             SLOT(closeProjectSlot())
            );
+    connect(prjTreeWidget,
+            SIGNAL(requestProjectPath()),
+            this,
+            SLOT(requestProjectPath())
+           );
     connect(this,
             SIGNAL(fileCountSignal(int)),
             prjTreeWidget,
@@ -955,6 +965,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->useMainFile = false;
     this->mainFileName = "";
     this->mainFilePath = "";
+    this->clock = 10.0;
+    this->clockMult = 1000000;
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
@@ -1147,6 +1159,11 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
             this,
             SLOT(closeProjectSlot())
            );
+    connect(prjTreeWidget,
+            SIGNAL(requestProjectPath()),
+            this,
+            SLOT(requestProjectPath())
+           );
     connect(this,
             SIGNAL(fileCountSignal(int)),
             prjTreeWidget,
@@ -1226,7 +1243,7 @@ void Project::saveProject()
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
 
-        relativePath = project.relativeFilePath(this->breakPoints.at(i).first);
+        relativePath = QDir::cleanPath(project.relativeFilePath(this->breakPoints.at(i).first));
         //qDebug() << "Project: breakpoint relative path" << relativePath;
         QDomElement xmlBreakpointFile = domDoc.createElement("BreakpointFile");
         xmlBreakpointFile.setAttribute("path", relativePath);
@@ -1243,7 +1260,7 @@ void Project::saveProject()
     QDomElement xmlBookmarks = domDoc.createElement("Bookmarks");
     for (int i = 0; i < this->bookmarks.count(); i++)
     {
-        relativePath = project.relativeFilePath(this->bookmarks.at(i).first);
+        relativePath = QDir::cleanPath(project.relativeFilePath(this->bookmarks.at(i).first));
         QDomElement xmlBookmarkFile = domDoc.createElement("BookmarkFile");
         xmlBookmarkFile.setAttribute("path", relativePath);
         foreach (unsigned int value, this->bookmarks.at(i).second)
@@ -1501,7 +1518,7 @@ QString Project::addFile(QString path, QString name)
                 QTextStream xmlStream(file);
                 xmlStream << domDoc.toString();*/
                 QDir project(QFileInfo(this->prjPath).dir());
-                QString relativePath = project.relativeFilePath(path);
+                QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
                 for (int i = 0; i < filePaths.count(); i++)
                 {
                     if (relativePath == filePaths.at(i))
@@ -1659,7 +1676,7 @@ void Project::setMainFile(QString path, QString name)
 {
     //qDebug() << "Project: setMainFile()";
     QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = project.relativeFilePath(path);
+    QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
 
     mainFileName = name;
     mainFilePath = relativePath;
@@ -2460,8 +2477,8 @@ int Project::start(QString file, QString dumpFiles)
         else
         {
             QDir dir(prjPath.section('/',0, -2));
-            hexPath = dir.absoluteFilePath(mainFilePath.section('.',0,-2));
-            asmPath = dir.absoluteFilePath(mainFilePath);
+            hexPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath.section('.',0,-2)));
+            asmPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         QFileInfo infoAsm(asmPath);
@@ -2471,16 +2488,16 @@ int Project::start(QString file, QString dumpFiles)
         //qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
-            qDebug() << "Project: files do not exist";
+            //qDebug() << "Project: files do not exist";
             return 3;
         }
         if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
         {
-            qDebug() << "Project: files modified";
+            //qDebug() << "Project: files modified";
             return 4;
         }
-        qDebug() << "Orig ASM:" << asmPath;
-        qDebug() << "HEX:" << hexPath;
+        //qDebug() << "Orig ASM:" << asmPath;
+        //qDebug() << "HEX:" << hexPath;
         std::string stdPath = hexPath.toLocal8Bit().constData();
 
         PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
@@ -2492,13 +2509,13 @@ int Project::start(QString file, QString dumpFiles)
                                                         m_simControlUnit->DBGFILEID_HEX)
            )
         {
-            qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
+            //qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
             for (unsigned int i = 0; i < messages.size(); i++)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
-            qDebug() << "Project: start return 1";
+            //qDebug() << "Project: start return 1";
             return 1;
         }
         //else
@@ -2533,7 +2550,7 @@ int Project::start(QString file, QString dumpFiles)
     else
     {
         QDir dir(prjPath.section('/',0, -2));
-        this->simulatedFile = dir.absoluteFilePath(mainFilePath);
+        this->simulatedFile = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
     }
     /*if (this->breakPoints.count() > 0)
     {
@@ -2610,6 +2627,8 @@ void Project::setBreakpoints(bool set)
                 m_simControlUnit->enableBreakPoints(true);
             }
             std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
+            QString relativePath;
+            QDir prjDir(simulatedFile.section('/', 0, -2));
             for (int i = 0; i < this->breakPoints.count(); i++)
             {
                 //qDebug() << "Project: breakpoint list at" << i;
@@ -2620,18 +2639,20 @@ void Project::setBreakpoints(bool set)
                 }
                 //qDebug() << "Path" << this->breakPoints.at(i).first;
                 const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
-                const std::string basepath = path(prjPath.toLocal8Bit().constData()).parent_path().string();
+                //const std::string basepath = path(prjPath.toLocal8Bit().constData()).parent_path().string();
 // qDebug() << "basepath='"<<basepath.c_str()<<"', file='"<<file.c_str()<<"', result='"<<make_relative(basepath, file).string().c_str()<<"'";
-                breakpointsVector.push_back ( std::make_pair ( make_relative(basepath, file).string(), breakpointsSet ) );
+                relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file)));
+                //qDebug() << "Project: absoluteFilePath" << relativePath;
+                breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
             }
-            /*for (unsigned int i = 0; i < breakpointsVector.size(); i++)
+            for (unsigned int i = 0; i < breakpointsVector.size(); i++)
             {
-                qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
-                foreach (const unsigned int &value, breakpointsVector.at(i).second)
-                {
-                    qDebug() << "Project: breakpoint line" << value;
-                }
-            }*/
+                //qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                //foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                //{
+                    //qDebug() << "Project: breakpoint line" << value;
+                //}
+            }
             m_simControlUnit->setBreakPoints(breakpointsVector);
         }
     }
@@ -2651,12 +2672,12 @@ void Project::setBreakpoints(bool set)
 void Project::stop()
 {
     //qDebug() << "Project: stop()";
-    std::string fileName; //= new std::string;
-    m_simControlUnit->getLineNumber(this->currSim);
+    //std::string fileName; //= new std::string;
+    /*m_simControlUnit->getLineNumber(this->currSim);
     if (currSim.empty() == true)
     {
         //return;
-    }
+    }*/
     //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     m_simControlUnit->stopSimulation();
     this->simulatedFile = "";
@@ -2693,6 +2714,11 @@ void Project::reset()
 
 void Project::handleUpdateRequest(int mask)
 {
+    //run
+    if ("" == this->simulatedFile)
+    {
+        return;
+    }
     if (4 & mask)
     {
         //std::string fileName; //= new std::string();
@@ -2700,7 +2726,7 @@ void Project::handleUpdateRequest(int mask)
         if (this->currSim.empty() == true)
         {
             //qDebug() << "Project: currline empty, should never happen";
-            //return;
+            return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
@@ -3139,7 +3165,7 @@ int Project::handleBreakpoint(QString file, int line)
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     //for (int i = 0; i < this->filePaths.count(); i++)
     //{
@@ -3173,6 +3199,10 @@ int Project::handleBreakpoint(QString file, int line)
                 {
                     this->xmlBreakpointAdd(file, line);
                 }*/
+                if (simulatedFile != "" && true == m_simControlUnit->breakPointsEnabled())
+                {
+                    this->setBreakpoints(true);
+                }
                 return 0;
             }
             else
@@ -3186,6 +3216,10 @@ int Project::handleBreakpoint(QString file, int line)
                 {
                     this->xmlBreakpointRemove(file, line);
                 }*/
+                if (simulatedFile != "" && true == m_simControlUnit->breakPointsEnabled())
+                {
+                    this->setBreakpoints(true);
+                }
                 return 1;
                 //emit breakpointRemove(file, line);
             }
@@ -3202,6 +3236,10 @@ int Project::handleBreakpoint(QString file, int line)
             {
                 this->xmlBreakpointAdd(file, line);
             }*/
+            if (simulatedFile != "" && true == m_simControlUnit->breakPointsEnabled())
+            {
+                this->setBreakpoints(true);
+            }
             return 0;
             //emit breakpointAppend(file, line);
         }
@@ -3234,7 +3272,7 @@ void Project::moveBreakpointsAdd(QString file, int line, unsigned int linesAdded
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     if (true == this->filePaths.contains(fileRelative))
     {
@@ -3285,7 +3323,7 @@ void Project::moveBreakpointsRemove(QString file, int line, unsigned int linesRe
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     if (true == this->filePaths.contains(fileRelative))
     {
@@ -3348,7 +3386,7 @@ int Project::handleBookmark(QString file, int line)
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     //for (int i = 0; i < this->filePaths.count(); i++)
     //{
@@ -3431,7 +3469,7 @@ void Project::moveBookmarksAdd(QString file, int line, unsigned int linesAdded)
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     if (true == this->filePaths.contains(fileRelative))
     {
@@ -3482,7 +3520,7 @@ void Project::moveBookmarksRemove(QString file, int line, unsigned int linesRemo
     else
     {
         QDir prjDir(this->prjPath.section('/', 0, -2));
-        fileRelative = prjDir.relativeFilePath(file);
+        fileRelative = QDir::cleanPath(prjDir.relativeFilePath(file));
     }
     if (true == this->filePaths.contains(fileRelative))
     {
@@ -3806,4 +3844,10 @@ QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 void Project::reloadProjectTree()
 {
     qDebug() << "Project: reloadProjectTree()";
+}
+
+
+void Project::requestProjectPath()
+{
+    prjTreeWidget->requestProjectPathAnswer(QDir(this->prjPath.section('/',0, -2)).absolutePath());
 }

@@ -25,11 +25,15 @@ PicoBlazeInterruptController::~PicoBlazeInterruptController()
 
 PicoBlazeInterruptController * PicoBlazeInterruptController::link ( MCUSimEventLogger        * eventLogger,
                                                                     PicoBlazeInstructionSet  * instructionSet,
-                                                                    PicoBlazeStatusFlags     * statusFlags )
+                                                                    PicoBlazeStatusFlags     * statusFlags,
+                                                                    PicoBlazeRegisters       * registers )
 {
     MCUSimSubsys::link(eventLogger, ID_INTERRUPTS);
+
     m_instructionSet = instructionSet;
     m_statusFlags = statusFlags;
+    m_registers = registers;
+
     return this;
 }
 
@@ -58,5 +62,7 @@ void PicoBlazeInterruptController::irq()
 
 void PicoBlazeInterruptController::returni()
 {
+    m_statusFlags->returni();
+    m_registers->setBank(m_regBank);
     logEvent ( EVENT_INT_LEAVING_INTERRUPT );
 }

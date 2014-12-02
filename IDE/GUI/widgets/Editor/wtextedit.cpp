@@ -1293,6 +1293,23 @@ void WTextEdit::shortcutJmpToBookmarkPrev()
 
 void WTextEdit::shortcutJmpToLine()
 {
+    //int lineToJmp;
+    //QTextCursor cursor(this->textCursor());
+    //if (lineToJmp < cursor.block().blockNumber())
+    //{
+    //  while (cursor.block().blockNumber() < lineToJmp)
+    //  {
+    //      cursor->movePosition(QTextCursor::NextBlock);
+    //  }
+    //}
+    //else
+    //{
+    //  while (cursor.block().blockNumber() > lineToJmp)
+    //  {
+    //      cursor->movePosition(QTextCursor::PreviousBlock);
+    //  }
+    //}
+    //this->setTextCursor(cursor);
 }
 
 
@@ -1320,51 +1337,110 @@ void WTextEdit::shortcutMoveLineDown()
 
 void WTextEdit::shortcutMoveWordLeft()
 {
+    QTextCursor cursor(this->textCursor());
+    cursor.movePosition(QTextCursor::WordLeft);
+    this->setTextCursor(cursor);
 }
 
 
 void WTextEdit::shortcutMoveWordRight()
 {
+    QTextCursor cursor(this->textCursor());
+    cursor.movePosition(QTextCursor::WordRight);
+    this->setTextCursor(cursor);
 }
 
 
 void WTextEdit::shortcutToUpper()
 {
+    QTextCursor cursor(this->textCursor());
+    if (true == cursor.hasSelection())
+    {
+        QString text = cursor.selectedText();
+        cursor.removeSelectedText();
+        text = text.toUpper();
+        cursor.insertText(text);
+        this->setTextCursor(cursor);
+    }
 }
 
 
 void WTextEdit::shortcutToLower()
 {
+    QTextCursor cursor(this->textCursor());
+    if (true == cursor.hasSelection())
+    {
+        QString text = cursor.selectedText();
+        cursor.removeSelectedText();
+        text = text.toLower();
+        cursor.insertText(text);
+        this->setTextCursor(cursor);
+    }
 }
 
 
 void WTextEdit::shortcutFirstToUpper()
 {
+    QTextCursor cursor(this->textCursor());
+    if (false == cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::WordUnderCursor);
+        QString text = cursor.selectedText();
+        cursor.removeSelectedText();
+        text = QString(text.at(0)).toUpper() + text.remove(0,1);
+        cursor.insertText(text);
+        this->setTextCursor(cursor);
+    }
 }
 
 
 void WTextEdit::shortcutDeleteLine()
 {
+    QTextCursor cursor(this->textCursor());
+    if (false == cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::LineUnderCursor);
+        cursor.removeSelectedText();
+        this->setTextCursor(cursor);
+    }
 }
 
 
 void WTextEdit::shortcutSwitchChars()
 {
+    QTextCursor cursor(this->textCursor());
+    if (false == cursor.hasSelection())
+    {
+        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        cursor.removeSelectedText();
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        cursor.removeSelectedText();
+        this->setTextCursor(cursor);
+    }
 }
 
 
 void WTextEdit::shortcutSelectWordUnder()
 {
+    QTextCursor cursor(this->textCursor());
+    cursor.select(QTextCursor::WordUnderCursor);
+    this->setTextCursor(cursor);
 }
 
 
 void WTextEdit::shortcutSelectWordLeft()
 {
+    QTextCursor cursor(this->textCursor());
+    cursor.movePosition(QTextCursor::WordLeft, QTextCursor::KeepAnchor);
+    this->setTextCursor(cursor);
 }
 
 
 void WTextEdit::shortcutSelectWordRight()
 {
+    QTextCursor cursor(this->textCursor());
+    cursor.movePosition(QTextCursor::WordRight, QTextCursor::KeepAnchor);
+    this->setTextCursor(cursor);
 }
 
 

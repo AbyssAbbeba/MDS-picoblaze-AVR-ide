@@ -28,7 +28,7 @@
 
             load        S0, # ( 1 + 2 ) ; S0 <- value 3
             load        S0, ( 6 - 3 )   ; S0 <- register at address 3 (i.e. S3)
-            ; Examplation: the `#' character instructs assembler to use immediate addressing instead of direct
+            ; Explanation: the `#' character instructs assembler to use immediate addressing instead of direct
             ; addressing, this is very important when you want to use expressions, and macros as instruction operand.
             ; Later in this example project you will see the potential of such capability.
 

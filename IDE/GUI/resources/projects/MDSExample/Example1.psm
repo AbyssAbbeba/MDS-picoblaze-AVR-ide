@@ -35,10 +35,10 @@
 start:      load        S0, #11         ; Load register S0 with value 11 decimal.
             load        S1, #0x0B       ; Load register S1 with value B hexadecimal (11 dec.).
             load        S2, #013        ; Load register S2 with value 13 octal (11 dec.).
-            load        S3, #0b1011     ; Load register S3 with value 1001 octal (11 dec.).
+            load        S3, #0b1011     ; Load register S3 with value 1001 binary (11 dec.).
             load        S4, #'a'        ; Load register S4 with ascii value of character `a'.
 
-            ; Something just to catch you eye... :-) we will talk about this in the next examples.
+            ; Something just to catch your eye... :-) we will talk about this in the next examples.
             for         S5, 0 .. 32, 2  ; C: for ( S5 = 0; S5 <= 32; S5 += 2 ) {
                 output  S4, @S5
             endf                        ; C: }

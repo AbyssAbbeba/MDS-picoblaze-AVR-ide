@@ -20,7 +20,7 @@
 #include <cctype>
 #include <utility>
 #include <iterator>
-#include<iostream>//DEBUG
+
 constexpr boost::regex::flag_type flags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
 const boost::regex AsmTranslatorKcpsmXil::m_reAtMark      = boost::regex ( "^@", flags );
 const boost::regex AsmTranslatorKcpsmXil::m_reComment     = boost::regex ( "^;.*$", flags );
@@ -32,9 +32,10 @@ const boost::regex AsmTranslatorKcpsmXil::m_reLabel       = boost::regex ( "^[_[
 const boost::regex AsmTranslatorKcpsmXil::m_reOperandSep  = boost::regex ( "^[[:space:]]*,[[:space:]]*", flags );
 const boost::regex AsmTranslatorKcpsmXil::m_reLdAndRet    = boost::regex ( "load[[:space:]]*&[[:space:]]*return",
                                                                             flags );
-const boost::regex AsmTranslatorKcpsmXil::m_reOperand     = boost::regex ( "^([_[:alnum:]]+)"
-                                                                           "|(\\([[:space:]]*[_[:alnum:]]+"
-                                                                           "[[:space:]]*\\))", flags );
+const boost::regex AsmTranslatorKcpsmXil::m_reOperand     = boost::regex ( "^(([_[:alnum:]]+((\\$)|('[[:alpha:]]+))?)|"
+                                                                           "(\"[^\"]*\"))|(\\([[:space:]]*[_[:alnum:]]+"
+                                                                           "((\\$)|('[[:alpha:]]+))?[[:space:]]*\\))",
+                                                                           flags );
 
 AsmTranslatorKcpsmXil::AsmTranslatorKcpsmXil()
 {
@@ -298,12 +299,12 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( std::vector<std::pair<uns
     }
     else if ( "string" == directive )
     {
-        std::string id = newIdentifier(lineFields.getOperand(1, true));
+        std::string id = newIdentifier(lineFields.getOperand(0, true));
         m_registers.insert(id);
         lineFields.replaceInstOpr (   changeLetterCase ( id, m_config->m_letterCase[AsmTranslatorConfig::F_SYMBOL] )
                                     + changeLetterCase ( " string ",
                                                          m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] )
-                                    + lineFields.getOperand(0, true) );
+                                    + lineFields.getOperand(1, true) );
     }
     else if ( "address" == directive )
     {
@@ -456,7 +457,14 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
     {
         fixRadix(lineFields, 0);
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr('#' + lineFields.getOperand(0, true), 0);
+
+        std::string operand = lineFields.getOperand(0, true);
+        if ( m_strings.cend() == m_strings.find(operand) )
+        {
+            operand = '#' + operand;
+        }
+        lineFields.replaceOpr(operand, 0);
+
         if ( true == m_config->m_shortInstructions )
         {
             lineFields.replaceInst("outk");
@@ -528,7 +536,13 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
             lineFields.replaceInst("ldret");
         }
         fixRadix(lineFields, 1);
-        lineFields.replaceOpr('#' + lineFields.getOperand(1, true), 1);
+
+        std::string operand = lineFields.getOperand(1, true);
+        if ( m_strings.cend() == m_strings.find(operand) )
+        {
+            operand = '#' + operand;
+        }
+        lineFields.replaceOpr(operand, 1);
     }
     else
     {
@@ -642,6 +656,7 @@ inline void AsmTranslatorKcpsmXil::removeTrailingDollar ( std::string & id )
     if ( '$' == id.back() )
     {
         id.pop_back();
+        m_strings.insert(id);
     }
 }
 

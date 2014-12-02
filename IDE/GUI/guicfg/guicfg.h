@@ -155,6 +155,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         
         QList<bool> getProjectCompOpt();
 
+        QString getConfigPath();
+
         QString getCompilerPath();
 
         QString getExamplePath();

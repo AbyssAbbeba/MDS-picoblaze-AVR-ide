@@ -105,7 +105,7 @@
     Q_DECLARE_METATYPE (std::string);
     Q_DECLARE_METATYPE (CompilerBase::MessageType);
 /**
- * @brief Constructor, inits project and dock widget manager and create menus/toolbars
+ * @brief Constructor, inits project and dock widget manager and creates menus/toolbars
  */
 MainForm::MainForm()
 {
@@ -119,7 +119,7 @@ MainForm::MainForm()
         this->setWindowTitle("MDS NON-COMMERCIAL");
     #endif
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
         QString trial = QString("MDS TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
         this->setWindowTitle(trial);
     #endif
@@ -308,7 +308,9 @@ MainForm::~MainForm()
     delete this->pm_simStep;
     delete this->pm_simReset;
     delete this->pm_simUnhighlight;
-    delete this->pm_toolDis;
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        delete this->pm_toolDis;
+    #endif
     delete this->pm_cross;
 
     delete this->icon_projNewAdd;
@@ -322,26 +324,29 @@ MainForm::~MainForm()
     delete this->icon_simStep;
     delete this->icon_simReset;
     delete this->icon_simUnhighlight;
-    delete this->icon_toolDis;
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        delete this->icon_toolDis;
+    #endif
 
     if (true == GuiCfg::getInstance().getSessionRestoration())
     {
         if (projectMan->getOpenProjects().count() > 0)
         {
             QList<Project*> projects = projectMan->getOpenProjects();
-            qDebug() << "Mainform: prepare to project session restoration";
+            //qDebug() << "Mainform: prepare to project session restoration";
             for (int i = 0; i < projects.count(); i++)
             {
-                qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
+                //qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
                 GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
                 if (wDockManager->getTabCount() > 0)
                 {
-                    qDebug() << "Mainform: prepare to files session restoration";
+                    //qDebug() << "Mainform: prepare to files session restoration";
                     for (int j = 0; j < wDockManager->getTabCount(); j++)
                     {
                         if (true == wDockManager->getTabWidget(j)->isChild(projects.at(i)))
                         {
-                            qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            //qDebug() << "Mainform: saving file" << wDockManager->getTabWidget(j)->getName();
+                            //qDebug() << "MainForm: with parent" << projects.at(i)->prjPath;
                             GuiCfg::getInstance().sessionAppendFile(wDockManager->getTabWidget(j)->getPath());
                             GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
                         }
@@ -688,7 +693,7 @@ void MainForm::createActions()
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
-        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("Segment Display"), this);
+        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("8 Segment Editor"), this);
         connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     #endif
     #ifdef MDS_FEATURE_LOOP_GENERATOR
@@ -814,7 +819,7 @@ void MainForm::createToolbar()
         connect(toolBar, SIGNAL(actionTriggered(QAction*)), this, SLOT(showWebSite(QAction*)));
     #endif
     #ifdef MDS_VARIANT_TRIAL
-        QFileInfo mdsInfo(QCoreApplication::applicationFilePath());
+        QFileInfo mdsInfo(GuiCfg::getInstance().getConfigPath());
         QString trial = QString("TRIAL, ") +  QString::number(MDS_TRIAL_PERIOD - mdsInfo.lastModified().daysTo(QDateTime::currentDateTime())) + QString(" days left");
         QToolBar *toolBar = addToolBar(trial);
         toolBar->setFloatable(false);
@@ -977,10 +982,78 @@ void MainForm::newFile()
  */
 void MainForm::newAddFile()
 {
-    //qDebug() << "MainForm: newAddFile()";
     //jen se vytvori novy tab na code editoru
     //a soubor se prida k projektu
-    QString path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    QString path ;
+    bool done = false;
+    while (false == done)
+    {
+        if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        if (path == NULL)
+        {
+            break;
+        }
+        int index = path.lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(path.right(path.size() - index));
+            if (text == ".asm" || text == ".psm")
+            {
+                done = true;
+            }
+            else
+            {
+                QMessageBox dialog(this);
+                dialog.setWindowTitle("Highlight note");
+                dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+                dialog.setIcon(QMessageBox::Warning);
+                dialog.setModal(true);
+                dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+                int result = dialog.exec();
+                if (QMessageBox::Yes == result)
+                {
+                    done = true;
+                }
+                else
+                {
+                    if (QMessageBox::Cancel == result)
+                    {
+                        path = "";
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            QMessageBox dialog(this);
+            dialog.setWindowTitle("Highlight note");
+            dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+            dialog.setIcon(QMessageBox::Warning);
+            dialog.setModal(true);
+            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+            int result = dialog.exec();
+            if (QMessageBox::Yes == result)
+            {
+                done = true;
+            }
+            else
+            {
+                if (QMessageBox::Cancel == result)
+                {
+                    path = "";
+                    break;
+                }
+            }
+        }
+    }
     if (path != NULL)
     {
         wDockManager->addCentralWidget(path.section('/', -1), path);
@@ -1005,7 +1078,15 @@ void MainForm::newAddFile()
 void MainForm::openFile()
 {
 //     qDebug() << "MainForm: openFile()";
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+    QString path;
+    if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
     if (path != NULL)
     {
         QFile file(path);
@@ -1047,7 +1128,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -1114,7 +1195,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
-    //qDebug() << "MainForm: return openFilePath()";
+    qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -1129,7 +1210,14 @@ void MainForm::addFile()
         QString path;
         if (wDockManager->getCentralPath() == NULL)
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+            if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+            {
+                path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            }
+            else
+            {
+                path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            }
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
         }
@@ -1170,7 +1258,14 @@ void MainForm::saveFile()
             bool done = false;
             while (false == done)
             {
-                path = QFileDialog::getSaveFileName (this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+                {
+                    path = QFileDialog::getSaveFileName (this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                }
+                else
+                {
+                    path = QFileDialog::getSaveFileName (this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                }
                 if (path == NULL)
                 {
                     break;
@@ -1276,7 +1371,14 @@ void MainForm::saveFileAs()
     bool done = false;
     while (false == done)
     {
-        path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
         if (path == NULL)
         {
             break;
@@ -1373,7 +1475,14 @@ void MainForm::saveFile(CodeEdit *editor)
             bool done = false;
             while (false == done)
             {
-                path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
+                {
+                    path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                }
+                else
+                {
+                    path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                }
                 if (path == NULL)
                 {
                     break;
@@ -1504,7 +1613,7 @@ void MainForm::openProject()
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), QDir::homePath(), tr("Project (*.mds-project)"));
+    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), QDir::homePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
 
     if (path.isEmpty() == false && projectMan->isOpened(path) == false)
     {
@@ -1650,9 +1759,14 @@ void MainForm::compileProject()
         error(ERR_NO_PROJECT);
         return;
     }
+    if (true == simulationStatus)
+    {
+        error(ERR_COMPILE_DURING_SIMULATION);
+        return;
+    }
 
     ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
-    CompilerOptions *options = new CompilerOptions();
+    this->options = new CompilerOptions();
     QString mainFile;
 
     if (projectMan->getActive()->prjPath == "untracked" && projectMan->getActive()->prjName == "untracked")
@@ -1853,7 +1967,7 @@ void MainForm::compileProject()
         }
         if (found == true)
         {
-            qDebug() << "MainForm: compiled actual project, actual file";
+            qDebug() << "MainForm: compiled actual project, actual file" << filePath;
             options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
 
 
@@ -2344,6 +2458,7 @@ void MainForm::compileProject()
  */
 void MainForm::compilationFinished(bool success)
 {
+    wDockManager->setBottomAreaToCompilerInfo();
     if ( true == success )
     {
         ((CompileInfo*)(wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
@@ -2362,6 +2477,7 @@ void MainForm::compilationFinished(bool success)
             this->simulationRequest = false;
         }
     }
+    delete this->options;
 }
 
 
@@ -2505,7 +2621,6 @@ void MainForm::simulationReset()
  */
 void MainForm::simulationFlowHandle()
 {
-
     if (false == simulationStatus)
     {
         QString file = "";
@@ -2603,6 +2718,7 @@ void MainForm::simulationFlowHandle()
                 toolSimSwitchAct->setEnabled(true);
             #endif
             projectConfigAct->setDisabled(true);
+            projectCompileAct->setDisabled(true);
             projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
@@ -2614,6 +2730,7 @@ void MainForm::simulationFlowHandle()
                 //qDebug() << "MainForm: simulationBreakpointsEnabled false";
                 projectMan->getSimulated()->setBreakpoints(false);
             }
+            wDockManager->setBottomAreaToSimulationInfo();
         }
         else
         {
@@ -2717,8 +2834,9 @@ void MainForm::simulationFlowHandle()
             toolSimSwitchAct->setDisabled(true);
         #endif
         projectConfigAct->setEnabled(true);
+        projectCompileAct->setEnabled(true);
         projectMan->getSimulated()->stop();
-        this->unhighlight();
+        //this->unhighlight();
         this->wDockManager->getCentralTextEdit()->clearHighlight();
     }
 }
@@ -3101,7 +3219,7 @@ void MainForm::stopSimSlot()
 
 void MainForm::activeProjectChanged(int index)
 {
-    //qDebug() << "MainForm: activeProjectChanged";
+    //qDebug() << "MainForm: activeProjectChanged" << index;
     //if (false == this->simulationStatus)
     if (index >= 0)
     {
@@ -3328,7 +3446,7 @@ void MainForm::sessionRestorationSlot()
     QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
     for (int i = 0; i < projectPaths.count(); i++)
     {
-        qDebug() << "MainForm: session open project";
+        //qDebug() << "MainForm: session open project";
         if (projectPaths.at(i) == "untracked")
         {
             this->projectMan->addUntrackedProject();
@@ -3340,7 +3458,8 @@ void MainForm::sessionRestorationSlot()
     }
     for (int i = 0; i < filePaths.count(); i++)
     {
-        qDebug() << "MainForm: session open file";
+        //qDebug() << "MainForm: session open file" << filePaths.at(i);
+        //qDebug() << "MainForm: session file parent" << fileParentProjects.at(i);
         this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
     }
     GuiCfg::getInstance().sessionClear();
@@ -3575,7 +3694,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         simulatedFilePath = QDir::cleanPath(QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/' + value);
         if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
-            qDebug() << "MainForm: simHighlightLines value" << value;
+            //qDebug() << "MainForm: simHighlightLines value" << value;
             this->openFilePath(simulatedFilePath);
             this->getWDockManager()->setCentralByPath(simulatedFilePath);
         }

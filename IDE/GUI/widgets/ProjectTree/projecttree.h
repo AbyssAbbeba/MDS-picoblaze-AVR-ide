@@ -37,6 +37,7 @@ class ProjectTree: public QTreeWidget
         ProjectTree(QWidget *parent, bool project);
         ~ProjectTree();
         void setMainFileManual(QString name, QString path);
+        void requestProjectPathAnswer(QString path);
 
     private:
         Project *parentProject;
@@ -49,10 +50,13 @@ class ProjectTree: public QTreeWidget
         QString mainFilePath;
         QTreeWidgetItem *lastItem;
         QContextMenuEvent *lastEvent;
+        int request;
 
     private slots:
-        void newFile();
-        void addFile();
+        void newFilePt1();
+        void newFilePt2(QString projectPath);
+        void addFilePt1();
+        void addFilePt2(QString projectPath);
         void setMainFile();
         void removeFile();
         void config();
@@ -62,6 +66,7 @@ class ProjectTree: public QTreeWidget
 
     signals:
         void requestFileCount();
+        void requestProjectPath();
         void startProjectCfgDlgCore();
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);

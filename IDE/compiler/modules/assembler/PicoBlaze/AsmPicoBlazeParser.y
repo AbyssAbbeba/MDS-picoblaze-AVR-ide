@@ -395,8 +395,8 @@ expr:
     | mark                          { $$ = $mark;                                                          }
     | number                        { $$ = $number;                                                        }
     | "(" expr ")"                  { $$ = $2;                                                             }
-    | F_LOW  "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_LOW, $3, LOC(@$));          }
-    | F_HIGH "(" expr ")"           { $$ = new CompilerExpr(CompilerExpr::OPER_HIGH, $3, LOC(@$));         }
+    | F_LOW  "(" expr ")"           { $$ = new CompilerExpr($3, CompilerExpr::OPER_LOW, LOC(@$));          }
+    | F_HIGH "(" expr ")"           { $$ = new CompilerExpr($3, CompilerExpr::OPER_HIGH, LOC(@$));         }
     | "-" expr %prec UMINUS         { $$ = new CompilerExpr($2, CompilerExpr::OPER_ADD_INV, LOC(@$));      }
     | "+" expr %prec UPLUS          { $$ = new CompilerExpr($2, CompilerExpr::OPER_INT_PROM, LOC(@$));     }
     | "~" expr                      { $$ = new CompilerExpr($2, '~', LOC(@$));                             }

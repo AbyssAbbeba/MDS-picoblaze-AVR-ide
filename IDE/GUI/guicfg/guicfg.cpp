@@ -16,6 +16,7 @@
 #include <QtXml>
 #include "guicfg.h"
 #include "../errordialog/errordlg.h"
+#include "../../mds.h"
 
 
 
@@ -161,6 +162,7 @@ void GuiCfg::setDefaultIDEGeneral()
     this->tipsOnStart = false;
     this->sessionRestoration = true;
     this->language = "English";
+    this->version = QString::fromStdString(MDS_VERSION);
 }
 
 
@@ -433,7 +435,12 @@ void GuiCfg::sessionAppendFile(QString path)
 
 void GuiCfg::sessionAppendFileParentProject(QString path)
 {
+    //qDebug() << "GuiCfg: session append parent" << path;
     this->sessionFileParentProjects.append(path);
+    //for (int i = 0; i < this->sessionFileParentProjects.count(); i++)
+    //{
+    //    qDebug() << "GuiCfg: session append parent at list" << this->sessionFileParentProjects.at(i);
+    //}
 }
 
 
@@ -441,6 +448,7 @@ void GuiCfg::sessionClear()
 {
     this->sessionProjectPaths.clear();
     this->sessionFilePaths.clear();
+    this->sessionFileParentProjects.clear();
 }
 
 
@@ -635,6 +643,12 @@ QList<bool> GuiCfg::getProjectCompOpt()
 }
 
 
+QString GuiCfg::getConfigPath()
+{
+    return this->configPath;
+}
+
+
 QString GuiCfg::getCompilerPath()
 {
     return this->compilerPath;
@@ -727,16 +741,13 @@ QList<QString> GuiCfg::getSessionFileParentProjects()
 
 
 
-
-
-
-
 //xml parsers
 
 
 bool GuiCfg::loadConfig()
 {
     QDomDocument domDoc("config");
+    bool version = false;
     //QFile cfgFile("./resources/xml/config.xml");
     QFile cfgFile(this->configPath);
     if (!cfgFile.open(QIODevice::ReadOnly))
@@ -766,7 +777,19 @@ bool GuiCfg::loadConfig()
                 xmlElement = xmlNode.toElement();
                 if (!xmlElement.isNull())
                 {
-                    if (xmlElement.tagName() == "IDEGeneral")
+                    if (xmlElement.tagName() == "Version")
+                    {
+                        if (xmlElement.attribute("version", "") != QString::fromStdString(MDS_VERSION))
+                        {
+                            qDebug() << "GuiCfg: wrong app version";
+                            this->setDefaultAll();
+                            this->saveConfig();
+                            cfgFile.close();
+                            return true;
+                        }
+                        version = true;
+                    }
+                    else if (xmlElement.tagName() == "IDEGeneral")
                     {
                         QDomNode xmlIDEGeneralNode = xmlElement.firstChild();
                         QDomElement xmlIDEGeneralElement;
@@ -1127,6 +1150,13 @@ bool GuiCfg::loadConfig()
         }
     }
     cfgFile.close();
+    if (false == version)
+    {
+        qDebug() << "GuiCfg: no app version";
+        this->setDefaultAll();
+        this->saveConfig();
+        return true;
+    }
     this->setDefaultProject();
     return false;
 }
@@ -1139,6 +1169,9 @@ void GuiCfg::saveConfig()
     domDoc.appendChild(xmlRoot);
 
     //IDEGeneral
+    QDomElement xmlVersion = domDoc.createElement("Version");
+    xmlVersion.setAttribute("version", this->version);
+    xmlRoot.appendChild(xmlVersion);
     QDomElement xmlIDEGeneral = domDoc.createElement("IDEGeneral");
     QDomElement xmlSplash = domDoc.createElement("Option");
     xmlSplash.setAttribute("name", "splash");
@@ -1843,6 +1876,7 @@ void GuiCfg::saveSession()
             QDomElement xmlFile = domDoc.createElement("File");
             xmlFile.setAttribute("path", this->sessionFilePaths.at(i));
             xmlFile.setAttribute("parent", this->sessionFileParentProjects.at(i));
+            //qDebug() << "GuiCfg: savesession file parent" << this->sessionFileParentProjects.at(i);
             xmlFiles.appendChild(xmlFile);
         }
         xmlRoot.appendChild(xmlFiles);

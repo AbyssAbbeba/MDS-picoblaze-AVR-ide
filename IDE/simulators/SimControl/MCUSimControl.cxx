@@ -94,229 +94,56 @@ bool MCUSimControl::startSimulation ( const std::string & filename,
                                       CompilerID compilerId,
                                       DataFileType dataFileType )
 {
-    m_breakPointsSet = false;
-    if ( nullptr != m_dbgFile )
-    {
-        delete m_dbgFile;
-        m_dbgFile = nullptr;
-    }
-
-    DataFile * dataFile = nullptr;
     std::string dbgFileExt;
     std::string dataFileExt;
 
     switch ( compilerId )
     {
         case COMPILER_NATIVE:
-        {
             dbgFileExt = ".dbg";
-            m_dbgFile = new DbgFileNative();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
-                    dataFile = new HexFile();
                     dataFileExt = ".ihex";
                     break;
-                }
                 default:
-                {
-                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
-                    return false;
-                }
+                    break;
             }
             break;
-        }
 
         case COMPILER_SDCC:
-        {
             dbgFileExt = ".cdb";
-            m_dbgFile = new DbgFileCDB();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
                     dataFileExt = ".ihx";
-                    dataFile = new HexFile();
                     break;
-                }
                 default:
-                {
-                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
-                    return false;
-                }
+                    break;
             }
             break;
-        }
 
         case COMPILER_GCC: // TODO: Not implemeted yet!
-        {
-            m_messages.push_back(QObject::tr("Compiler not implemeted yet!").toStdString());
             return false;
-            break;
-        }
 
         case COMPILER_AVRA: // TODO: Not implemeted yet!
-        {
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
                     dataFileExt = ".hex";
                     dbgFileExt = ".lst";
-                    dataFile = new HexFile();
-                    m_dbgFile = new DbgFileAvraLst();
                     break;
-                }
                 case DBGFILEID_COFF:
-                {
                     dataFileExt = ".cof";
                     dbgFileExt = ".cof";
-                    ObjectDataFile * objectDataFile = new ObjectDataFile();
-                    DbgFileAvrCoff * dbgFileAvrCoff = new DbgFileAvrCoff();
-                    dbgFileAvrCoff->assignCodeMemDataContainer(objectDataFile);
-                    dataFile = objectDataFile;
-                    m_dbgFile = dbgFileAvrCoff;
                     break;
-                }
                 default:
-                {
-                    m_messages.push_back(QObject::tr("File format not supported.").toStdString());
-                    return false;
-                }
+                    break;
             }
             break;
-        }
-
-        default:
-        {
-            m_messages.push_back(QObject::tr("Compiler not supported.").toStdString());
-            return false;
-        }
     }
 
-    if ( ( nullptr == dataFile ) || ( nullptr == m_dbgFile) )
-    {
-        // TODO: implement a proper error handling here
-        m_messages.push_back(QObject::tr("error: ( nullptr == dataFile ) || ( nullptr == m_dbgFile)").toStdString());
-        return false;
-    }
-
-    try
-    {
-        m_dbgFile->openFile(filename + dbgFileExt);
-    }
-    catch ( const DbgFile::Exception & e )
-    {
-        m_messages.push_back(QObject::tr("Failed to load the debug file: %1").arg(e.toString().c_str()).toStdString());
-        return false;
-    }
-
-    // Load data file for the program memory
-    try
-    {
-        dataFile->clearAndLoad(filename + dataFileExt);
-    }
-    catch ( const DataFileException & e )
-    {
-        // TODO: implement a proper error handling here
-        m_messages.push_back(QObject::tr("Failed to load program memory from the given file.").toStdString());
-        delete dataFile;
-        return false;
-    }
-
-    // Reset the simulator
-    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    resetProgram();
-
-    // Start simulator
-    switch ( m_architecture )
-    {
-      #ifdef MDS_FEATURE_AVR8
-        case MCUSim::ARCH_AVR8:
-            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #endif // MDS_FEATURE_AVR8
-
-      #ifdef MDS_FEATURE_PIC8
-        case MCUSim::ARCH_PIC8:
-            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #endif // MDS_FEATURE_PIC8
-
-      #ifdef MDS_FEATURE_PICOBLAZE
-        case MCUSim::ARCH_PICOBLAZE:
-            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #endif // MDS_FEATURE_PICOBLAZE
-
-      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
-        case MCUSim::ARCH_ADAPTABLE:
-            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
-
-        default:
-            // TODO: implement a proper error handling here
-            m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
-            return false;
-    }
-
-    //
-    m_simulatorLog->clear();
-    allObservers_setReadOnly(false);
-
-    delete dataFile;
-    return true;
-}
-
-bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
-                                      DataFile * dataFile )
-{
-    m_breakPointsSet = false;
-    m_dbgFile = dbgFile;
-
-    // Reset the simulator
-    m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
-    resetProgram();
-
-    // Start simulator
-    switch ( m_architecture )
-    {
-      #ifdef MDS_FEATURE_AVR8
-        case MCUSim::ARCH_AVR8:
-            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #endif // MDS_FEATURE_AVR8
-
-      #ifdef MDS_FEATURE_PIC8
-        case MCUSim::ARCH_PIC8:
-            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #ifdef MDS_FEATURE_PIC8
-
-      #endif // MDS_FEATURE_PICOBLAZE
-        case MCUSim::ARCH_PICOBLAZE:
-            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-            break;
-      #endif // MDS_FEATURE_PICOBLAZE
-
-      #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
-        case MCUSim::ARCH_ADAPTABLE:
-            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
-      #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
-
-        default:
-            // TODO: implement a proper error handling here
-            m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
-            return false;
-    }
-
-    //
-    m_simulatorLog->clear();
-    allObservers_setReadOnly(false);
-
-    delete dataFile;
-    return true;
+    return startSimulation ( ( filename + dbgFileExt ), ( filename + dataFileExt ), compilerId, dataFileType );
 }
 
 bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
@@ -324,106 +151,78 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
                                       MCUSimControl::CompilerID compilerId,
                                       MCUSimControl::DataFileType dataFileType )
 {
-    m_breakPointsSet = false;
-    if ( nullptr != m_dbgFile )
-    {
-        delete m_dbgFile;
-        m_dbgFile = nullptr;
-    }
-
+    DbgFile * dbgFile =  nullptr;
     DataFile * dataFile = nullptr;
 
     switch ( compilerId )
     {
         case COMPILER_NATIVE:
-        {
-            m_dbgFile = new DbgFileNative();
+            dbgFile = new DbgFileNative();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
                     dataFile = new HexFile();
                     break;
-                }
                 default:
-                {
                     m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
-                }
             }
             break;
-        }
 
         case COMPILER_SDCC:
-        {
-            m_dbgFile = new DbgFileCDB();
+            dbgFile = new DbgFileCDB();
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
                     dataFile = new HexFile();
                     break;
-                }
                 default:
-                {
                     m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
-                }
             }
             break;
-        }
 
         case COMPILER_GCC: // TODO: Not implemeted yet!
-        {
             m_messages.push_back(QObject::tr("Compiler not implemeted yet!").toStdString());
             return false;
-        }
 
         case COMPILER_AVRA: // TODO: Not implemeted yet!
-        {
             switch ( dataFileType )
             {
                 case DBGFILEID_HEX:
-                {
                     dataFile = new HexFile();
-                    m_dbgFile = new DbgFileAvraLst();
+                    dbgFile = new DbgFileAvraLst();
                     break;
-                }
                 case DBGFILEID_COFF:
                 {
                     ObjectDataFile * objectDataFile = new ObjectDataFile();
                     DbgFileAvrCoff * dbgFileAvrCoff = new DbgFileAvrCoff();
                     dbgFileAvrCoff->assignCodeMemDataContainer(objectDataFile);
                     dataFile = objectDataFile;
-                    m_dbgFile = dbgFileAvrCoff;
+                    dbgFile = dbgFileAvrCoff;
                     break;
                 }
                 default:
-                {
                     m_messages.push_back(QObject::tr("File format not supported.").toStdString());
                     return false;
-                }
             }
             break;
-        }
 
         default:
-        {
             m_messages.push_back(QObject::tr("Compiler not supported.").toStdString());
             return false;
-        }
     }
 
-    if ( ( nullptr == dataFile ) || ( nullptr == m_dbgFile) )
+    if ( ( nullptr == dataFile ) || ( nullptr == dbgFile) )
     {
         // TODO: implement a proper error handling here
-        m_messages.push_back(QObject::tr("error: ( nullptr == dataFile ) || ( nullptr == m_dbgFile).").toStdString());
+        m_messages.push_back(QObject::tr("error: ( nullptr == dataFile ) || ( nullptr == dbgFile).").toStdString());
         return false;
     }
 
     try
     {
-        m_dbgFile->openFile(dbgFileName);
+        dbgFile->openFile(dbgFileName);
     }
     catch ( const DbgFile::Exception & e )
     {
@@ -444,6 +243,20 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
         return false;
     }
 
+    return startSimulation ( dbgFile, dataFile );
+}
+
+bool MCUSimControl::startSimulation ( DbgFile * dbgFile,
+                                      DataFile * dataFile )
+{
+    if ( nullptr != m_dbgFile )
+    {
+        delete m_dbgFile;
+    }
+
+    m_breakPointsSet = false;
+    m_dbgFile = dbgFile;
+
     // Reset the simulator
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
     resetProgram();
@@ -453,31 +266,34 @@ bool MCUSimControl::startSimulation ( const std::string & dbgFileName,
     {
       #ifdef MDS_FEATURE_AVR8
         case MCUSim::ARCH_AVR8:
-            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<AVR8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))
+                ->loadDataFile(dataFile);
             break;
       #endif // MDS_FEATURE_AVR8
 
       #ifdef MDS_FEATURE_PIC8
         case MCUSim::ARCH_PIC8:
-            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PIC8ProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))
+                ->loadDataFile(dataFile);
             break;
       #ifdef MDS_FEATURE_PIC8
 
       #endif // MDS_FEATURE_PICOBLAZE
         case MCUSim::ARCH_PICOBLAZE:
-            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<PicoBlazeProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))
+                ->loadDataFile(dataFile);
             break;
       #endif // MDS_FEATURE_PICOBLAZE
 
       #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
         case MCUSim::ARCH_ADAPTABLE:
-            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))->loadDataFile(dataFile);
+            dynamic_cast<AdaptableSimProgramMemory*>(m_simulator->getSubsys(MCUSimSubsys::ID_MEM_CODE))
+                ->loadDataFile(dataFile);
       #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
         default:
             // TODO: implement a proper error handling here
             m_messages.push_back(QObject::tr("Unknown device architecture.").toStdString());
-            delete dataFile;
             return false;
     }
 
@@ -500,13 +316,7 @@ void MCUSimControl::getLineNumber ( std::vector<std::pair<const std::string *, u
 
     std::vector<unsigned int> recordNumbers;
 
-    MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
-    if ( nullptr == cpu )
-    {
-        return;
-    }
-
-    m_dbgFile->getLineByAddr ( cpu->getProgramCounter(), recordNumbers);
+    m_dbgFile->getLineByAddr ( m_simCPU->getProgramCounter(), recordNumbers);
     if ( true == recordNumbers.empty() )
     {
         return;
@@ -596,8 +406,7 @@ void MCUSimControl::animateProgram()
 
 void MCUSimControl::runProgram()
 {
-    constexpr unsigned int MAX_REFRESH_FREQ_HZ = 25;
-    constexpr unsigned int MIN_REFRESH_FREQ_I  = 250000;
+    constexpr unsigned int MAX_REFRESH_FREQ_HZ = 20;
 
     if ( nullptr == m_simulator )
     {
@@ -616,7 +425,8 @@ void MCUSimControl::runProgram()
     m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_HI_PRIO);
 
     clock_t t = clock();
-    unsigned int auxCounter = 0;
+    unsigned int cycleCounter = 0;
+    unsigned int refreshAfterNCycles = 0x10000;
 
     while ( true )
     {
@@ -635,16 +445,31 @@ void MCUSimControl::runProgram()
             dispatchEvents();
         }
 
-        if ( ++auxCounter > MIN_REFRESH_FREQ_I )
+        if ( ++cycleCounter > refreshAfterNCycles )
         {
             const clock_t t2 = clock();
-            if ( ( t2 - t ) * MAX_REFRESH_FREQ_HZ / CLOCKS_PER_SEC )
+            float ratio = ( 1.0 * ( t2 - t ) * MAX_REFRESH_FREQ_HZ / CLOCKS_PER_SEC );
+
+            if ( ratio > 1 )
             {
+                if ( ratio > 2 )
+                {
+                    refreshAfterNCycles /= ratio;
+                    if ( 0 == refreshAfterNCycles )
+                    {
+                        refreshAfterNCycles = 1;
+                    }
+                }
+
                 t = t2;
-                auxCounter = 0;
+                cycleCounter = 0;
 
                 emit(updateRequest(0x1));
                 QCoreApplication::instance()->processEvents();
+            }
+            else
+            {
+                refreshAfterNCycles *= ( 1 / ratio );
             }
         }
 
@@ -743,6 +568,8 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
     McuSimCfgMgr::getInstance()->setupSimulator(deviceName, m_simulator->getConfig(), procDef);
     m_simulator->reset(MCUSim::RSTMD_NEW_CONFIG);
     m_simulator->reset(MCUSim::RSTMD_INITIAL_VALUES);
+
+    m_simCPU = dynamic_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU));
 
     allObservers_deviceChanged();
     return true;
@@ -926,8 +753,7 @@ void MCUSimControl::allObservers_setReadOnly ( bool readOnly )
 
 void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, std::set<unsigned int>>> & fileLinePairs )
 {
-    using namespace boost::filesystem;
-
+    m_breakpoints.clear();
     m_breakPointsSet = false;
 
     if ( false == initialized() )
@@ -935,42 +761,38 @@ void MCUSimControl::setBreakPoints ( const std::vector<std::pair<std::string, st
         return;
     }
 
-    const std::vector<std::string> & files = m_dbgFile->getFileNames();
+    std::vector<std::set<unsigned int>> breakpoints;
 
-    /*
-    // K čemu tohle kurva je, fakt nevim, vole... Na co bych tady kurva převáděl cesty k souborům do kanonickýho tvaru?
-    // Tohle má simulovat mikroporcesory, ne šoustat negry do prdele.
-
-    std::vector<std::string> filesBr;
-
-    for ( size_t j = 0; j < fileLinePairs.size(); j++ )
     {
-        try
+        const std::vector<std::string> & files = m_dbgFile->getFileNames();
+
+        breakpoints.resize(files.size());
+        for ( size_t i = 0; i < breakpoints.size(); i++ )
         {
-            filesBr.push_back(canonical(path(fileLinePairs[j].first)).make_preferred().string());
-        }
-        catch ( const boost::filesystem::filesystem_error & e )
-        {
-            qDebug() << "!!! ERROR: MCUSimControl::setBreakPoints(...): \"" << fileLinePairs[j].first.c_str() << "\" is not valid path.";
+            for ( size_t j = 0; j < fileLinePairs.size(); j++ )
+            {
+                if ( files[i] == fileLinePairs[j].first )
+                {
+                    if ( false == fileLinePairs[j].second.empty() )
+                    {
+                        m_breakPointsSet = true;
+                    }
+                    breakpoints[i] = fileLinePairs[j].second;
+                    break;
+                }
+            }
         }
     }
-    */
 
-    m_breakpoints.clear();
-    m_breakpoints.resize(files.size());
-
-    for ( size_t i = 0; i < m_breakpoints.size(); i++ )
     {
-        for ( size_t j = 0; j < fileLinePairs.size(); j++ )
+        const std::vector<DbgFile::LineRecord> & lineRecords = m_dbgFile->getLineRecords();
+        for ( const DbgFile::LineRecord & record : lineRecords )
         {
-            if ( files[i] == /*filesBr[j]*/ fileLinePairs[j].first )
+            const std::set<unsigned int> & breakPointSet = breakpoints[record.m_fileNumber];
+            if ( breakPointSet.cend() != breakPointSet.find(record.m_lineNumber) )
             {
-                if ( false == fileLinePairs[j].second.empty() )
-                {
-                    m_breakPointsSet = true;
-                }
-                m_breakpoints[i] = fileLinePairs[j].second;
-                break;
+                m_breakpoints.insert ( { (unsigned int) record.m_address,
+                                         { record.m_fileNumber, record.m_lineNumber } } );
             }
         }
     }
@@ -983,31 +805,14 @@ inline bool MCUSimControl::checkBreakpoint()
         return false;
     }
 
-    bool stop = false;
-    std::vector<unsigned int> recordNumbers;
-
     m_lastBrkPntStop.open();
-    m_dbgFile->getLineByAddr(static_cast<MCUSimCPU*>(m_simulator->getSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter(),
-                             recordNumbers);
 
-    if ( true == recordNumbers.empty() )
+    bool stop = false;
+    const auto it = m_breakpoints.find(m_simCPU->getProgramCounter());
+
+    if ( m_breakpoints.cend() != it )
     {
-        m_lastBrkPntStop.close();
-        return false;
-    }
-
-    for ( unsigned int idx : recordNumbers )
-    {
-        const DbgFile::LineRecord & lineRecord = m_dbgFile->getLineRecords()[idx];
-        const std::set<unsigned int> & brkPntSet = m_breakpoints[lineRecord.m_fileNumber];
-
-        if ( brkPntSet.cend() != brkPntSet.find(lineRecord.m_lineNumber) )
-        {
-            if ( false == m_lastBrkPntStop.check(lineRecord.m_fileNumber, lineRecord.m_lineNumber) )
-            {
-                stop = true;
-            }
-        }
+        stop = ! m_lastBrkPntStop.check(it->second.first, it->second.second);
     }
 
     if ( true == stop )

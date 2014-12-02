@@ -501,6 +501,11 @@ void HexEdit::changeText(int position)
                     << (hexTextEdit->document()->characterAt(position*3+1))
                     << (hexTextEdit->document()->characterAt(position*3+2));
         }*/
+        if (hexTextEdit->textCursor().blockNumber() != this->prevBlock)
+        {
+            this->prevBlock = hexTextEdit->textCursor().blockNumber();
+            this->hexLineCount->getWidget()->update();
+        }
         changable = true;
     }
 }

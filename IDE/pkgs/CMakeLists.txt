@@ -107,8 +107,8 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
             execute_process ( COMMAND bash -c "ldd ${lib} | gawk '/=>/ {print($3)}'"
                               OUTPUT_VARIABLE ldd
                               ERROR_VARIABLE lddErrors )
-            string ( REPLACE "\n" ";" ldd ${ldd} )
-            list ( APPEND dep ${ldd} )
+            string ( REPLACE "\n" ";" ldd "${ldd}" )
+            list ( APPEND dep "${ldd}" )
         endforeach()
 
         set ( LIB_FILES_TO_INSTALL "" )

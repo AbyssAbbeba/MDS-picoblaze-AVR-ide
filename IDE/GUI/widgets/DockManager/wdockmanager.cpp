@@ -865,7 +865,7 @@ void WDockManager::showDockWidgetArea(int area)
                 {
                     (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
                     (*i)->getQDockWidget()->setMaximumHeight(999);
-                    (*i)->getQDockWidget()->setMinimumHeight(1);
+                    (*i)->getQDockWidget()->setMinimumHeight(280);
                     //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
                     wDockBotPrevHeight = 0;
                     break;
@@ -1341,6 +1341,40 @@ bool WDockManager::getTabStatusChanged(int index)
 void WDockManager::showProjectEditors(Project *activeProject)
 {
     
+}
+
+
+void WDockManager::setBottomAreaToCompilerInfo()
+{
+    if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+    }
+    for (int i = 0; i < bottomAreaTabs->count(); i++)
+    {
+        if ("Compiler Info" == bottomAreaTabs->tabText(i))
+        {
+            bottomAreaTabs->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+
+void WDockManager::setBottomAreaToSimulationInfo()
+{
+    if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+    }
+    for (int i = 0; i < bottomAreaTabs->count(); i++)
+    {
+        if ("Simulation Info" == bottomAreaTabs->tabText(i))
+        {
+            bottomAreaTabs->setCurrentIndex(i);
+            break;
+        }
+    }
 }
 
 

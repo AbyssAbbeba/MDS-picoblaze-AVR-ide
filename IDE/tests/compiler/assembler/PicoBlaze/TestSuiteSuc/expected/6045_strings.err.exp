@@ -1,0 +1,13 @@
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x4f6d6e trimmed to 0x36d6e.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x696275 trimmed to 0x16275.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x732046 trimmed to 0x32046.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x6f726d trimmed to 0x3726d.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x6f7369 trimmed to 0x37369.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x6f7220 trimmed to 0x37220.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x53656d trimmed to 0x3656d.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x706572 trimmed to 0x06572.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x20496e trimmed to 0x0496e.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x205465 trimmed to 0x05465.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x20476c trimmed to 0x0476c.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x6f7269 trimmed to 0x37269.
+MT_WARNING: 6045_strings.asm:14.9-14.23: Warning: instruction word is only 18 bits wide, value 0x6f722e trimmed to 0x3722e.

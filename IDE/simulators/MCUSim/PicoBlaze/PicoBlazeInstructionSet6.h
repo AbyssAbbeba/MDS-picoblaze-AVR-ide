@@ -231,6 +231,11 @@ class PicoBlazeInstructionSet6 : public PicoBlazeInstructionSet
          * @param[in] instName
          */
         inline void instructionEnter ( PicoBlazeInsNames::Instructions instName );
+
+        /**
+         * @brief
+         */
+        inline void returni();
 };
 
 #endif // PICOBLAZEINSTRUCTIONSET6_H

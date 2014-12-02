@@ -104,6 +104,8 @@ class WDockManager : public QObject
         void setCentralWelcome(); //welcome screen
         void deleteCentralWelcome();
         void showProjectEditors(Project *activeProject);
+        void setBottomAreaToCompilerInfo();
+        void setBottomAreaToSimulationInfo();
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;

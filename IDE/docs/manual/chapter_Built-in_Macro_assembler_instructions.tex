@@ -1,0 +1,864 @@
+\newcommand{\no}{\color{red}{\textbf{no}}}
+\newcommand{\yes}{\color{black}{\textbf{yes}}}
+
+\definecolor{instruction_bg}{rgb}{0.7, 0.7, 1.0}
+\newcommand{\instruction}[1]{~\\[7pt]\addcontentsline{toc}{subsubsection}{#1}\colorbox{instruction_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
+
+\paragraph{Legend}
+    \begin{description}
+        \item[sX, sY]
+            direct addresses in register file, e.g. S0, S1, S2, ...
+        \item[@sX, @sY]
+            are indirect addresses, e.g. @S0, @S1, @S2, ...
+        \item[\#kk]
+            is immediate value (literal), e.g. \#0x21 (hex.), \#26 (dec.), \#'A' (ascii).
+        \item[aaa]
+            is address in program memory.
+        \item[pp]
+            is port address in the range from 0x00 to 0xFF.
+        \item[p]
+            is port address in the range from 0x0 to 0xF.
+        \item[ss]
+            is address in scratch-pad RAM.
+    \end{description}
+
+\paragraph{Addressing modes}
+    \begin{description}
+        \item[Immediate]
+            Instead of reading operand value from memory, the operand value is taken from the instruction opcode itself.
+        \item[Direct]
+            Effective address of the operand is address as given in the instruction opcode.
+        \item[Indirect]
+            Effective address of the operand is taken from contents of register which address is given in the instruction opcode
+    \end{description}
+
+\subsection{Register Loading}
+    \instruction{LOAD, LD}
+        The \texttt{LOAD} instruction provides a method for specifying the contents of any register. The new value can be a taken from an immediate constant, or contents of any other register. \texttt{LD} is only shorthand for \texttt{LOAD}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    LOAD sX, #kk '; Load register sX with immediate value kk.\\
+            \verb'    LD   sX, #kk '; The same a above.\\
+            \verb''\\
+            \verb'    LOAD sX, sY  '; Load register sX with content of register sY.\\
+            \verb'    LD   sX, sY  '; The same a above.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LD      S0, #0x55   ; Load register S0 with 0x55.'\\
+            \verb'    LD      S1, S0      ; Copy content of S0 to S1.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{STAR}
+        Instruction \texttt{STAR} performs the same operation as the \texttt{LOAD} instruction except for that the target register is in inactive register bank while source is in active bank.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    STAR sX, sY   '; Load sX in inactive bank with content of sY in active bank.\\
+            \verb'    STAR sX, #kk  '; Load sX in inactive bank with immediate value kk.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    STAR    S0, #0x55   ; Load register S0 in inactive bank with 0x55.'\\
+            \verb'    STAR    S1, S0      ; Copy S0 in active bank to S1 in inactive bank.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Logical}
+    \instruction{OR}
+        The \texttt{OR} instruction performs bit-wise logical inclusive-OR operation.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    OR sX, sY     '; Perform OR on sX and sY registers, and store the result in sX.\\
+            \verb'    OR sX, #kk    '; Perform OR on sX register and immediate value kk, put result in sX.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    OR      S0, #0x55   ; S0 = S0 | 0x55.'\\
+            \verb'    OR      S1, S0      ; S1 = S1 | S0.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 0
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{XOR}
+        The \texttt{XOR} instruction performs bit\-wise logical exclusive-OR operation.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    XOR sX, #kk   '; Perform XOR on sX and sY registers, and store the result in sX.\\
+            \verb'    XOR sX, sY    '; Perform XOR on sX register and immediate value kk, put result in sX.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    XOR     S0, #0x55   ; S0 = S0 ^ 0x55.'\\
+            \verb'    XOR     S1, S0      ; S1 = S1 ^ S0.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 0
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{AND}
+        The \texttt{AND} instruction performs bit\-wise logical AND operation.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    AND sX, #kk   '; Perform AND on sX and sY registers, and store the result in sX.\\
+            \verb'    AND sX, sY    '; Perform AND on sX register and immediate value kk, put result in sX.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    AND     S0, #0x55   ; S0 = S0 & 0x55.'\\
+            \verb'    AND     S1, S0      ; S1 = S1 & S0.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 0
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+\subsection{Arithmetic}
+    \instruction{ADD, ADDCY}
+        The \texttt{ADD} instruction performs an 8-bit addition of two values.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    ADD sX, #kk    '; Add immediate value \#kk to sX register (without carry).\\
+            \verb'    ADD sX, sY     '; Add content of sY register to sX register (without carry).\\
+            \verb'    ADDCY sX, #kk  '; Add immediate value \#kk to sX register (with carry).\\
+            \verb'    ADDCY sX, sY   '; Add content of sY register to sX register (with carry).
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LOAD    S0, #1      ; S0 = 1'\\
+            \verb'    LOAD    S1, #2      ; S0 = 2'\\
+            \verb''\\
+            \verb'    ADD     S0, S1      ; S0 = S0 + S1'\\
+            \verb'    ADD     S0, #5      ; S0 = S0 + 5'\\
+            \verb'    ADDCY   S0, S1      ; S0 = S0 + S1 + Carry'\\
+            \verb'    ADDCY   S0, #5      ; S0 = S0 + 5 + Carry'
+
+        \paragraph{Flags}
+            \footnote{\texttt{ADDCY} on PicoBlaze 6 behaves differently: Zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{ADDCY} instruction, otherwise it set to 0.}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 1 if results in an overflow, 0 otherwise
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{SUB, SUBCY}
+        The \texttt{SUB} instruction performs an 8-bit subtraction of two values without carry, and \texttt{SUBCY} instruction does the same but with carry.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    SUB sX, #kk       '; Subtract immediate value \#kk from sX register (without carry).\\
+            \verb'    SUB sX, sY        '; Subtract content of sY register from sX register (without carry).\\
+            \verb'    SUBCY sX, #kk     '; Subtract immediate value \#kk from sX register (with carry).\\
+            \verb'    SUBCY sX, sY      '; Subtract content of sY register from sX register (with carry).
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LOAD    S0, #10     ; S0 = 1'\\
+            \verb'    LOAD    S1, #2      ; S0 = 2'\\
+            \verb''\\
+            \verb'    SUB     S0, S1      ; S0 = S0 - S1'\\
+            \verb'    SUB     S0, #5      ; S0 = S0 - 5'\\
+            \verb'    SUBCY   S0, S1      ; S0 = S0 - S1 - Carry'\\
+            \verb'    SUBCY   S0, #5      ; S0 = S0 - 5 - Carry'
+
+        \paragraph{Flags}
+            \footnote{\texttt{SUBCY} on PicoBlaze 6 behaves differently: Zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{SUBCY} instruction, otherwise it set to 0.}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 1 if results in an overflow (i.e. the result is negative), 0 otherwise
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+\subsection{Test and Compare}
+    \instruction{TEST}
+        The \texttt{TEST} instruction performs bit\-wise logical AND operation, and discards its result except for the status flags.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    TEST sX, sY'\\
+            \verb'    TEST sX, #kk'
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    TEST    S0, #0       ; Set Z flag, if S0 == 0.'\\
+            \verb'    JUMP    Z, somewhere ; Jump to label "somewhere", if Z flag is set.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, 0 otherwise \\
+                C & 1 if the temporary result contains an odd number of 1 bits, 0 otherwise
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \no          & \no       & \no
+            \end{tabular}
+
+    \instruction{TESTCY}
+        The \texttt{TESTCY} instruction performs bit\-wise logical AND operation, and discards its result except for the status flags.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    TESTCY sX, sY'\\
+            \verb'    TESTCY sX, #kk'
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    TESTCY  S0, #0       ; Set Z flag, if S0 == 0.'\\
+            \verb'    JUMP    Z, somewhere ; Jump to label "somewhere", if Z flag is set.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero and zero flag was set prior to the instruction, otherwise it set to 0 \\
+                C & 1 if the temporary result together with the previous state of the carry flag contains an odd number of 1 bits, 0 otherwise
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+    \instruction{COMPARE, CMP}
+        The \texttt{COMPARE} instruction performs an 8-bit subtraction of two values. Unlike the \texttt{SUB} instruction, result of this operation is discarded, and only status flags are affected. \texttt{CMP} is only shorthand for \texttt{COMPARE}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    COMPARE  sX, #kk   '; Compare immediate value \#kk to content of register sX.\\
+            \verb'    COMPARE  sX, sY    '; Compare content of register sY to content of register sX.\\\
+            \verb'    CMP      sX, #kk   '; Same as ``COMPARE sX, \#kk''.\\
+            \verb'    CMP      sX, sY    '; Same as ``COMPARE sX, sY''.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    COMPARE S0, #1       ; Set Z flag, if S0 == 1.'\\
+            \verb'    JUMP    Z, somewhere ; Jump to label "somewhere", if Z flag is set.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if both values are equal (sX = kk or sX = sY), 0 if 1st > 2nd (sX > kk or sX > sY) \\
+                C & 1 if 1st < 2nd (sX < kk or sX < sY), 0 if 1st > 2nd (sX > kk or sX > sY)
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \no          & \no       & \no
+            \end{tabular}
+
+    \instruction{COMPARECY, CMPCY}
+        The \texttt{COMPARECY} instruction is \texttt{COMPARE} with carry. \texttt{CMPCY} is only shorthand for \texttt{COMPARECY}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    COMPARECY  sX, #kk   '; Compare immediate value \#kk to content of register sX.\\
+            \verb'    COMPARECY  sX, sY    '; Compare content of register sY to content of register sX.\\\
+            \verb'    CMPCY      sX, #kk   '; Same as ``COMPARECY sX, \#kk''.\\
+            \verb'    CMPCY      sX, sY    '; Same as ``COMPARECY sX, sY''.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    COMPARECY S0, #1       ; Set Z flag, if S0 == 1.'\\
+            \verb'    JUMP      Z, somewhere ; Jump to label "somewhere", if Z flag is set.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero and zero flag was set prior to the \texttt{COMPARECY} instruction, otherwise it set to 0. \\
+                C & 1 if results in an overflow (i.e. the result is negative), 0 otherwise
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Shift and Rotate}
+    \instruction{SL0, SL1, SLX, SLA}
+        Instructions \texttt{SL0}, \texttt{SL1}, \texttt{SLX}, and \texttt{SLA} all shift contents of the specified register by one bit to the left. The new lsb (least significant bit) depends on the instruction, and the msb (most significant bit) is shifted out to the C flag.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    SL0 sX    '; Shift 0 into the lsb .\\
+            \verb'    SL1 sX    '; Shift 1 into the lsb.\\
+            \verb'    SLX sX    '; Shift previous lsb back into the new lsb.\\
+            \verb'    SLA sX    '; Shift C into the lsb;
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LOAD    S0, #0x01 ; S0 = 0b00000001'\\
+            \verb'    SL0     S0        ; S0 = 0b00000010'\\
+            \verb'    SL1     S0        ; S0 = 0b00000101'\\
+            \verb'    SLX     S0        ; S0 = 0b00001011'\\
+            \verb'    SLA     S0        ; S0 = 0b0001011C (C is either 0 or 1)'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, otherwise  0 \\
+                C & the msb (most significant bit) of the original content of the sX register.
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{SR0, SR1, SRX, SRA}
+        Instructions \texttt{SR0}, \texttt{SR1}, \texttt{SRX}, and \texttt{SRA} all shift contents of the specified register by one bit to the right. The new msb (most significant bit) depends on the instruction, and the lsb (least significant bit) is shifted out to the C flag.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    SR0 sX    '; Shift 0 into the msb .\\
+            \verb'    SR1 sX    '; Shift 1 into the msb.\\
+            \verb'    SRX sX    '; Shift previous msb back into the new msb.\\
+            \verb'    SRA sX    '; Shift C into the msb;
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LOAD    S0, #0x80 ; S0 = 0b10000000'\\
+            \verb'    SR0     S0        ; S0 = 0b01000000'\\
+            \verb'    SR1     S0        ; S0 = 0b10100000'\\
+            \verb'    SRX     S0        ; S0 = 0b11010000'\\
+            \verb'    SRA     S0        ; S0 = 0bC1101000 (C is either 0 or 1)'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, otherwise  0 \\
+                C & the lsb (least significant bit) of the original content of the sX register.
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{RR, RL}
+        These instructions rotate the specified register by one bit to the left or right. The bit shifted out of the register and then shifted back to the other side.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    RR sX     '; Rotate Right.\\
+            \verb'    RL sX     '; Rotate Left.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    LOAD    S0, #0x18 ; S0 = 0b00011000'\\
+            \verb'    RR      S0        ; S0 = 0b00001100'\\
+            \verb'    RL      S0        ; S0 = 0b00011000'\\
+            \verb'    RL      S0        ; S0 = 0b00110000'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if result is zero, otherwise 0 \\
+                C & The bit shifted out of the register and then shifted back to the other side.
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+\subsection{Register Bank Selection}
+    \instruction{REGBANK, RB}
+        Set active register bank. \texttt{RB} is only shorthand for \texttt{REGBANK}, these two mnemonics can be used interchangeably.
+        \paragraph{Syntax}
+            ~\\
+            \verb'    REGBANK A '; Set active bank A.\\
+            \verb'    REGBANK B '; Set active bank B.\\
+            \verb'    RB A      '; Same as REGBANK A.\\
+            \verb'    RB B      '; Same as REGBANK B.\\
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    RB      A'\\
+            \verb'    LD      S0, #0xAA'\\
+            \verb''\\
+            \verb'    RB      B'\\
+            \verb'    LD      S0, #0x55'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Input/Output}
+    \instruction{INPUT, IN}
+        The \texttt{INPUT} instruction reads data from a port (i.e. from your hardware design) into the specified register. \texttt{IN} is only shorthand for \texttt{INPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    INPUT sX, pp   '; Copy from port at address pp to register at sX address.\\
+            \verb'    IN    sX, pp   '; Same as above.\\
+            \verb'    INPUT sX, @sY  '; Copy from port at address given by sY register to register sX.\\
+            \verb'    IN    sX, @sY  '; Same as above.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    IN      S0, 0x22  ; Read port at address 0x22 and copy its value to S0 reg.'\\
+            \verb'    LD      S1, #0x11 ; S1 = 0x11'\\
+            \verb''\\
+            \verb'    ; Read port at address given by S1 reg. (0x11) and copy its value to S0 reg.'\\
+            \verb'    IN      S0, @S1'\\
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{OUTPUT, OUT}
+        The \texttt{OUTPUT} instruction transfers data to a port (i.e. to your hardware design) from the specified register. \texttt{OUT} is only shorthand for \texttt{OUTPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    OUTPUT sX, pp   '; Copy from register at sX address to port at address pp.\\
+            \verb'    OUT    sX, pp   '; Same as above.\\
+            \verb'    OUTPUT sX, @sY  '; Copy from register sX to port at address given by sY register.\\
+            \verb'    OUT    sX, @sY  '; Same as above.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    OUT     S0, 0x22  ; Write content of S0 reg. to port at address 0x22.'\\
+            \verb'    LD      S1, #0x11 ; S1 = 0x11'\\
+            \verb''\\
+            \verb'    ; Write content of S0 reg. to port at address given by S1 reg. (0x11). '\\
+            \verb'    OUT     S0, @S1'\\
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{OUTPUTK, OUTK}
+        The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shorthand for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    OUTPUTK #kk, p    '; Copy immediate value kk to port at address p (in range 0x0..0xF).\\
+            \verb'    OUTK    #kk, p    '; Same as above.\\
+            \verb'    OUTPUTK #kk, @sY  '; Copy immediate value kk to port at address given by sY register.\\
+            \verb'    OUTK    #kk, @sY  '; Same as above.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    OUTK    #0xAA, 0x2  ; Write 0xAA to port at address 0x2.'\\
+            \verb''\\
+            \verb'    LD      S1, #0x1    ; S1 = 0x1'\\
+            \verb'    OUTK    #0x55, @S1  ; Write 0x55 to port at address given by S1 reg. (0x1).'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Storage}
+    \instruction{STORE, ST}
+        The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shorthand for \texttt{STORE}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    STORE sX, ss   '; Copy from register sX to SPR at address ss.\\
+            \verb'    STORE sX, @sY  '; Copy from register sX to SPR at address pointed by reg. sY.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    ; Store value of reg. S0 in SPR at address pointed by reg. S1.'\\
+            \verb'    STORE   S0, @S1'\\
+            \verb''\\
+            \verb'    ; Store value of reg. S0 in SPR at address 0x22.'\\
+            \verb'    STORE   S0, 0x22'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \no          & \no       & \no
+            \end{tabular}
+
+    \instruction{FETCH, FT}
+        The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shorthand for \texttt{FETCH}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    FETCH sX, ss   '; Copy from SPR at address ss to register sX.\\
+            \verb'    FETCH sX, @sY  '; Copy from SPR at address pointed by reg. sY and copy it to reg. sX.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    ; Fetch value from SPR at address pointed by reg. S1 and store it in S0 reg.'\\
+            \verb'    FETCH   S0, @S1'\\
+            \verb''\\
+            \verb'    ; Fetch value from SPR at address 0x22 and store it in S0 reg.'\\
+            \verb'    FETCH   S0, 0x22'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Interrupt group}
+    \instruction{RETURNI, RETIE, RETID}
+        Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. \texttt{RETIE} stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    RETURNI ENABLE    '; Return from ISR and enable interrupts.\\
+            \verb'    RETURNI DISABLE   '; Return from ISR and disable interrupts.\\
+            \verb'    RETIE             '; Same as ``RETURNI ENABLE''\\
+            \verb'    RETID             '; Same as ``RETURNI DISABLE''
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    ORG     0x3D0       ; Interrupt vector.'\\
+            \verb'    LOAD    S0, #0x55   ; (Load register S0 with immediate value 0x55.)'\\
+            \verb'    RETURNI DISABLE     ; Return from ISR and disable further interrupts.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{ENABLE/DISABLE INTERRUPT, ENA, DIS}
+        Enable or disable interrupts. \texttt{ENA} is only shorthand for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shorthand for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    ENABLE INTERRUPT  '; Enable interrupts.\\
+            \verb'    DISABLE INTERRUPT '; Disable interrupts.\\
+            \verb'    ENA               '; Same as ``ENABLE INTERRUPT''.\\
+            \verb'    DIS               '; Same as ``DISABLE INTERRUPT''.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    DIS                 ; Timing critical code begins here, disable interrupts.'\\
+            \verb'    CALL    something   ; Call subroutine "something".'\\
+            \verb'    ENA                 ; Timing critical code ends here, re-enable interrupts.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+\subsection{Program Control}
+    \instruction{JUMP}
+        Instruction \texttt{JUMP} loads program counter with the address specified by aaa operand or by @(sX, sY).
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    JUMP aaa          '; Unconditional jump.\\
+            \verb'    JUMP Z, aaa       '; Jump only if the Zero flag is set.\\
+            \verb'    JUMP NZ, aaa      '; Jump only if the Zero flag is NOT set.\\
+            \verb'    JUMP C, aaa       '; Jump only if the Carry flag is set.\\
+            \verb'    JUMP NC, aaa      '; Jump only if the Carry flag is NOT set.\\
+            \verb'    JUMP @(sX, sY)    '; Unconditional jump at sX[3..0]sY[7..0].
+
+        \paragraph{Examples}
+            ~\\
+            \verb'my_label:'\\
+            \verb'    ; ... code ...'\\
+            \verb'    JUMP    my_label     ; Jump to label "my_label".'\\
+            \verb''\\
+            \verb'    JUMP    0x300 + 0xff ; Jump to address 3FF hexadecimal.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{CALL}
+        Call subroutine at the address specified by aaa operand or by @(sX, sY).
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    CALL aaa          '; Unconditional call.\\
+            \verb'    CALL Z, aaa       '; Call only if the Zero flag is set.\\
+            \verb'    CALL NZ, aaa      '; Call only if the Zero flag is NOT set.\\
+            \verb'    CALL C, aaa       '; Call only if the Carry flag is set.\\
+            \verb'    CALL NC, aaa      '; Call only if the Carry flag is NOT set.
+            \verb'    JUMP @(sX, sY)    '; Unconditional subroutine call at sX[3..0]sY[7..0].
+
+        \paragraph{Examples}
+            ~\\
+            \verb'subprog:'\\
+            \verb'    ADD     S0, S1      ; S0 = S0 + S1'\\
+            \verb'    SUB     S1, # 5 * 2 ; S1 = S1 + 7'\\
+            \verb'    RETURN'\\
+            \verb''\\
+            \verb'    CALL    my_subprog'\\
+            \verb''\\
+            \verb'    CALL    40          ; Call subroutine at address 40 decimal.'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{RETURN, RET}
+        Return from subroutine. \texttt{RET} is only shorthand for \texttt{RETURN}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    RETURN    '; Unconditional return.\\
+            \verb'    RETURN Z  '; Return only if the Zero flag is set.\\
+            \verb'    RETURN NZ '; Return only if the Zero flag is NOT set.\\
+            \verb'    RETURN C  '; Return only if the Carry flag is set.\\
+            \verb'    RETURN NC '; Return only if the Carry flag is NOT set.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'subr:'\\
+            \verb'    ADD     S0, S1      ; S0 = S0 + S1'\\
+            \verb'    RETURN  Z           ; Return if S0 contains zero value.'\\
+            \verb'    LOAD    S0, #1      ; Load S1 with value 1.'\\
+            \verb'    RET                 ; Return unconditionally.'\\
+            \verb''\\
+            \verb'    CALL    subr'
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \yes        & \yes         & \yes      & \yes
+            \end{tabular}
+
+    \instruction{LOAD \& RETURN, LDRET}
+        Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shorthand for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    LOAD & RETURN     sX, #kk'\\
+            \verb'    LD & RET          sX, #kk'\\
+            \verb'    LDRET             sX, #kk'\\
+
+        \paragraph{Examples}
+            ~\\
+            \verb'my_subroutine:'\\
+            \verb'    ; ...'\\
+            \verb'    LDRET   S0, #0x55'\\
+            \verb''\\
+            \verb'    CALL    my_subroutine'\\
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & no effect \\
+                C & no effect
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
+
+\subsection{Version Control}
+    \instruction{HWBUILD}
+        Instruction \texttt{HWBUILD} load the specified register with "hwbuild".
+        \paragraph{Syntax}
+            ~\\
+            \verb'    HWBUILD  sX'\\
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    HWBUILD S0'\\
+
+        \paragraph{Flags}
+            ~\\\indent
+            \begin{tabular}{ll}
+                Z & 1 if loaded value is zero, 0 otherwise \\
+                C & 1
+            \end{tabular}
+
+        \paragraph{Availability}
+            ~\\\indent
+            \begin{tabular}{ccccc}
+                PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+                \yes        & \no         & \no          & \no       & \no
+            \end{tabular}
