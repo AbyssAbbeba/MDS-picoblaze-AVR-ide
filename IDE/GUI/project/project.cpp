@@ -2488,16 +2488,16 @@ int Project::start(QString file, QString dumpFiles)
         //qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
-            qDebug() << "Project: files do not exist";
+            //qDebug() << "Project: files do not exist";
             return 3;
         }
         if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
         {
-            qDebug() << "Project: files modified";
+            //qDebug() << "Project: files modified";
             return 4;
         }
-        qDebug() << "Orig ASM:" << asmPath;
-        qDebug() << "HEX:" << hexPath;
+        //qDebug() << "Orig ASM:" << asmPath;
+        //qDebug() << "HEX:" << hexPath;
         std::string stdPath = hexPath.toLocal8Bit().constData();
 
         PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
@@ -2509,13 +2509,13 @@ int Project::start(QString file, QString dumpFiles)
                                                         m_simControlUnit->DBGFILEID_HEX)
            )
         {
-            qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
+            //qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
             for (unsigned int i = 0; i < messages.size(); i++)
             {
                 qDebug() << QString::fromStdString(messages.at(i));
             }
-            qDebug() << "Project: start return 1";
+            //qDebug() << "Project: start return 1";
             return 1;
         }
         //else
@@ -2642,16 +2642,16 @@ void Project::setBreakpoints(bool set)
                 //const std::string basepath = path(prjPath.toLocal8Bit().constData()).parent_path().string();
 // qDebug() << "basepath='"<<basepath.c_str()<<"', file='"<<file.c_str()<<"', result='"<<make_relative(basepath, file).string().c_str()<<"'";
                 relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file)));
-                qDebug() << "Project: absoluteFilePath" << relativePath;
+                //qDebug() << "Project: absoluteFilePath" << relativePath;
                 breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
             }
             for (unsigned int i = 0; i < breakpointsVector.size(); i++)
             {
-                qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
-                foreach (const unsigned int &value, breakpointsVector.at(i).second)
-                {
-                    qDebug() << "Project: breakpoint line" << value;
-                }
+                //qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                //foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                //{
+                    //qDebug() << "Project: breakpoint line" << value;
+                //}
             }
             m_simControlUnit->setBreakPoints(breakpointsVector);
         }
@@ -2672,12 +2672,12 @@ void Project::setBreakpoints(bool set)
 void Project::stop()
 {
     //qDebug() << "Project: stop()";
-    std::string fileName; //= new std::string;
-    m_simControlUnit->getLineNumber(this->currSim);
+    //std::string fileName; //= new std::string;
+    /*m_simControlUnit->getLineNumber(this->currSim);
     if (currSim.empty() == true)
     {
         //return;
-    }
+    }*/
     //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
     m_simControlUnit->stopSimulation();
     this->simulatedFile = "";
@@ -2714,6 +2714,11 @@ void Project::reset()
 
 void Project::handleUpdateRequest(int mask)
 {
+    //run
+    if ("" == this->simulatedFile)
+    {
+        return;
+    }
     if (4 & mask)
     {
         //std::string fileName; //= new std::string();
@@ -2721,7 +2726,7 @@ void Project::handleUpdateRequest(int mask)
         if (this->currSim.empty() == true)
         {
             //qDebug() << "Project: currline empty, should never happen";
-            //return;
+            return;
         }
         //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
         //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
