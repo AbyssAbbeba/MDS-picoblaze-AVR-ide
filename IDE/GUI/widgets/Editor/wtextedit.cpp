@@ -1293,6 +1293,23 @@ void WTextEdit::shortcutJmpToBookmarkPrev()
 
 void WTextEdit::shortcutJmpToLine()
 {
+    //int lineToJmp;
+    //QTextCursor cursor(this->textCursor());
+    //if (lineToJmp < cursor.block().blockNumber())
+    //{
+    //  while (cursor.block().blockNumber() < lineToJmp)
+    //  {
+    //      cursor->movePosition(QTextCursor::NextBlock);
+    //  }
+    //}
+    //else
+    //{
+    //  while (cursor.block().blockNumber() > lineToJmp)
+    //  {
+    //      cursor->movePosition(QTextCursor::PreviousBlock);
+    //  }
+    //}
+    //this->setTextCursor(cursor);
 }
 
 
