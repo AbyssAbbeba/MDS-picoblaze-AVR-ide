@@ -68,11 +68,13 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          * @param[in,out] eventLogger
          * @param[in,out] instructionSet
          * @param[in,out] statusFlags
+         * @param[in,out] registers
          * @return
          */
         PicoBlazeInterruptController * link ( MCUSimEventLogger        * eventLogger,
                                               PicoBlazeInstructionSet  * instructionSet,
-                                              PicoBlazeStatusFlags     * statusFlags );
+                                              PicoBlazeStatusFlags     * statusFlags,
+                                              PicoBlazeRegisters       * m_registers );
 
         /**
          * @brief
@@ -121,10 +123,16 @@ class PicoBlazeInterruptController : public MCUSimSubsys
 
             ///
             PicoBlazeStatusFlags * m_statusFlags;
+
+            ///
+            PicoBlazeRegisters * m_registers;
         //@}
 
         ///
         bool m_irq;
+
+        ///
+        int m_regBank;
 };
 
 // -----------------------------------------------------------------------------
@@ -140,7 +148,11 @@ inline int PicoBlazeInterruptController::autoInterrupt()
     else if ( true == m_statusFlags->getInte() )
     {
         m_irq = false;
+        m_regBank = m_registers->getBank();
+
+        m_statusFlags->interrupt();
         m_instructionSet->irq();
+
         logEvent ( EVENT_INT_ENTERING_INTERRUPT );
         return 1;
     }

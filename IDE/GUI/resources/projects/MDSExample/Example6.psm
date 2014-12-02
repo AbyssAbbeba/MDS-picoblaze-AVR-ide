@@ -113,12 +113,12 @@ fill        macro       target, value, length
             local       n
     n       set         0
 
-        #if ( length == 0 )
-            warning     "Zero length doesn't make sense here."
-        #elseif ( target == S1 )
-            warning     "I won't accept S1 as target ... for some reason, I guess."
-            exitm
-        #endif
+;        #if ( length == 0 )
+;            warning     "Zero length doesn't make sense here."
+;        #elseif ( target == S1 )
+;            warning     "I won't accept S1 as target ... for some reason, I guess."
+;            exitm
+;        #endif
 
         #while n < length
             ld          target + n, #value
