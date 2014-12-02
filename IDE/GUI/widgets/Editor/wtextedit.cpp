@@ -1394,9 +1394,9 @@ void WTextEdit::shortcutSwitchChars()
     QTextCursor cursor(this->textCursor());
     if (false == cursor.hasSelection())
     {
-        cursor.move(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
         cursor.removeSelectedText();
-        cursor.move(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
         cursor.removeSelectedText();
         this->setTextCursor(cursor);
     }
