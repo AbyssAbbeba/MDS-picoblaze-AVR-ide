@@ -20,9 +20,6 @@ PicoBlazeIO::PicoBlazeIO()
     m_numberOfBits   = ( NUMBER_OF_PORTS * NUMBER_OF_BITS_PER_PORT );
     m_inputBitArray  = new char [ NUMBER_OF_PORTS ];
     m_outputBitArray = new char [ NUMBER_OF_PORTS ];
-
-    m_readStrobe = false;
-    m_writeStrobe = false;
 }
 
 PicoBlazeIO::~PicoBlazeIO()
@@ -53,6 +50,7 @@ void PicoBlazeIO::reset ( MCUSimBase::ResetMode mode )
         case MCUSim::RSTMD_MCU_RESET:
             m_readStrobe = false;
             m_writeStrobe = false;
+            m_writeStrobePrev = false;
             break;
         default:
             // Irrelevant requests are silently ignored
