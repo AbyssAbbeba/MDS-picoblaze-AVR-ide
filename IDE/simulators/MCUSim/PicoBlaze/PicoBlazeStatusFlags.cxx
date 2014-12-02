@@ -41,15 +41,15 @@ PicoBlazeStatusFlags * PicoBlazeStatusFlags::link ( MCUSimEventLogger * eventLog
 
 void PicoBlazeStatusFlags::interrupt()
 {
-    m_preCarry = m_carry;
-    m_preZero  = m_zero;
-    m_inte     = false;
-    m_interrupted++;
+    setPreZero(getZero());
+    setPreCarry(getCarry());
+    setInte(false);
+    setInterrupted(getInterrupted() + 1);
 }
 
 void PicoBlazeStatusFlags::returni()
 {
-    m_carry = m_preCarry;
-    m_zero  = m_preZero;
-    m_interrupted--;
+    setZero(getPreZero());
+    setCarry(getPreCarry());
+    setInterrupted(getInterrupted() - 1);
 }

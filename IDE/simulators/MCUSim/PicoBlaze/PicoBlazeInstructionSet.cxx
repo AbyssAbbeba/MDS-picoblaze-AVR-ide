@@ -105,5 +105,4 @@ void PicoBlazeInstructionSet::irq()
     logEvent ( EVENT_CPU_IRQ, m_pc );
     m_stack -> pushOnStack ( m_pc );
     m_pc = m_config.m_interruptVector;
-    m_statusFlags->interrupt();
 }

@@ -1,0 +1,174 @@
+\definecolor{psinstruction_bg}{rgb}{0.6, 0.9, 1.0}
+\newcommand{\psinstruction}[1]{~\\[7pt]\addcontentsline{toc}{subsection}{#1}\colorbox{psinstruction_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
+
+MDS assembler supports a number of pseudo instructions which can improve understandability of your source code. Assembler will replace these instructions with one or more PicoBlaze instructions to achieve the purpose of that pseudo-instruction.
+
+\psinstruction{INC}
+    Increments the given register value by one.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    INC   sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    ADD   sX, #1'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    INC   s0'
+
+\psinstruction{DEC}
+    Decrements the given register value by one.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    DEC   sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    SUB   sX, #1'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    DEC   s0'
+
+\psinstruction{SETR}
+    Sets the given register to binary ones.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    SETR  sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    OR    sX, #0xFF'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    SETR  s0'
+
+\psinstruction{CLRR}
+    Clears the given register (set it to 0).
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CLRR  sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    AND   sX, #0'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    CLRR  s0'
+
+\psinstruction{CPL}
+    Performs ones' complement with the given register.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CPL  sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, #0xFF'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    CPL   s0'
+
+\psinstruction{CPL2}
+    Performs two's complement with the given register.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CPL2  sX'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, #0xFF'\\
+        \verb'    ADD   sX, #1'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    CPL2  s0'
+
+\psinstruction{SETB}
+    Sets one bit in the given register.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    SETB  sX, bit ; bit belongs to interval [0,7]'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    OR    sX, # 1 << bit'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    SETB  S0, 3'
+
+\psinstruction{CLRB}
+    Clears one bit in the given register.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CLRB  sX, bit ; bit belongs to interval [0,7]'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    AND   sX, # ( 0xFF ^ ( 1 << bit ) )'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    CLRB  S0, 7'
+
+\psinstruction{NOTB}
+    Negates one bit in the given register.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    NOTB  sX, bit ; bit belongs to interval [0,7]'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, # ( ~( 1 << bit ) )'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    NOTB  S0, 7'
+
+\psinstruction{DJNZ}
+    Decrements the given register and jumps at the given label until the register contains zero.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    DJNZ  sX, label'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    SUB   sX, #1'\\
+        \verb'    JUMP  NZ, label'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    loop:             '\\
+        \verb'        DJNZ  s0, loop'
+
+\psinstruction{IJNZ}
+    Increments the given register and jumps at the given label until the register contains zero.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    IJNZ sX, label'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    ADD   sX, #1'\\
+        \verb'    JUMP  NZ, label'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    loop:             '\\
+        \verb'        IJNZ  s0, loop'

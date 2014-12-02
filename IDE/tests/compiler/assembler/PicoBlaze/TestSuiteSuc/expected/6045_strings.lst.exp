@@ -1,14 +1,14 @@
                    1             device  kcpsm6
                    2
   00003            3     my_port portout 3
-                   4     my_str  string  "Omnubus Formosior Semper In Te Glorior."
+                   4     my_str  string  "Omnibus Formosior Semper In Te Glorior."
                    5
   00000            6             org     0
                    7
 000 2104F          8             ldret   S0, my_str
 001 2106D
 002 2106E
-003 21075
+003 21069
 004 21062
 005 21075
 006 21073
@@ -67,10 +67,10 @@
 03B 21172
 03C 21161
 03D 2112E
-03E 2B4F3         10             outputk my_str, my_port
+03E 2B4F3         10             outk    my_str, my_port
 03F 2B6D3
 040 2B6E3
-041 2B753
+041 2B693
 042 2B623
 043 2B753
 044 2B733
@@ -106,7 +106,7 @@
 062 2B6F3
 063 2B723
 064 2B2E3
-065 2B4F3         11             outputk "O Fortuna, Venut Luna", my_port
+065 2B4F3         11             outk    "O Fortuna, Venut Luna", my_port
 066 2B203
 067 2B463
 068 2B6F3
@@ -128,4 +128,32 @@
 078 2B6E3
 079 2B613
                   12
-                  13             end
+07A 2207A         13             jump    $
+07B 36D6E         14             db      my_str
+07C 16275
+07D 32046
+07E 3726D
+07F 37369
+080 37220
+081 3656D
+082 06572
+083 0496E
+084 05465
+085 0476C
+086 37269
+087 3722E
+W: instruction word is only 18 bits wide, value 0x4f6d6e trimmed to 0x36d6e.
+W: instruction word is only 18 bits wide, value 0x696275 trimmed to 0x16275.
+W: instruction word is only 18 bits wide, value 0x732046 trimmed to 0x32046.
+W: instruction word is only 18 bits wide, value 0x6f726d trimmed to 0x3726d.
+W: instruction word is only 18 bits wide, value 0x6f7369 trimmed to 0x37369.
+W: instruction word is only 18 bits wide, value 0x6f7220 trimmed to 0x37220.
+W: instruction word is only 18 bits wide, value 0x53656d trimmed to 0x3656d.
+W: instruction word is only 18 bits wide, value 0x706572 trimmed to 0x06572.
+W: instruction word is only 18 bits wide, value 0x20496e trimmed to 0x0496e.
+W: instruction word is only 18 bits wide, value 0x205465 trimmed to 0x05465.
+W: instruction word is only 18 bits wide, value 0x20476c trimmed to 0x0476c.
+W: instruction word is only 18 bits wide, value 0x6f7269 trimmed to 0x37269.
+W: instruction word is only 18 bits wide, value 0x6f722e trimmed to 0x3722e.
+                  15
+                  16             end

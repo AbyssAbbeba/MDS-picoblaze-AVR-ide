@@ -36,6 +36,11 @@ ProjectCfg_Compiler::ProjectCfg_Compiler(QWidget *parentWidget, Project *currPro
     else
     {
     }
+    connect(this->ui.cmbMainFile,
+            SIGNAL(currentIndexChanged(const QString&)),
+            this,
+            SIGNAL(setMainFile(QString))
+           );
 }
 
 
@@ -58,12 +63,12 @@ void ProjectCfg_Compiler::load()
     this->ui.chckVHDLFile->setChecked(project->compileOpt.at(11));
     if (project->prjPath == "untracked" && project->prjName == "untracked")
     {
-        this->ui.leMain->setDisabled(true);
+        this->ui.cmbMainFile->setDisabled(true);
         this->ui.chckMain->setDisabled(true);
     }
     else
     {
-        this->ui.leMain->setText(project->mainFileName);
+        //this->ui.leMain->setText(project->mainFileName);
         this->ui.chckMain->setChecked(project->useMainFile);
     }
 }
@@ -113,4 +118,21 @@ QList<bool> ProjectCfg_Compiler::getOpt()
     opt.append(this->ui.chckVHDLFile->isChecked());
 
     return opt;
+}
+
+
+void ProjectCfg_Compiler::setFiles(QList<QString> files, QString mainFile)
+{
+    this->ui.cmbMainFile->clear();
+    this->ui.cmbMainFile->addItem("");
+    int index = 0;
+    for (int i = 0; i < files.count(); i++)
+    {
+        if (mainFile == files.at(i))
+        {
+            index = i+1;
+        }
+        this->ui.cmbMainFile->addItem(files.at(i));
+    }
+    this->ui.cmbMainFile->setCurrentIndex(index);
 }

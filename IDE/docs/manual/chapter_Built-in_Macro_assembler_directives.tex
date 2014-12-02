@@ -1,0 +1,664 @@
+\definecolor{asmdirective_bg}{rgb}{0.7, 1.0, 0.7}
+\newcommand{\asmdirective}[1]{~\\[7pt]\addcontentsline{toc}{subsubsection}{#1}\colorbox{asmdirective_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
+
+Assembler directives are commands for the assembler executed at compilation time, their purpose is to instruct the assembler how to compile your code, to define constants, implement conditional compilation, and evaluate various things at compilation time.
+
+\asmdirective{INCLUDE}
+    Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the INCLUDE directive appears and optionally to any of the include path list specified as assembler option.
+
+    \subsubsection{Syntax}
+        \verb'    INCLUDE "file_name"'
+
+    \subsubsection{Examples}
+        \verb'    INCLUDE "some_file.asm"'\\
+        \verb'    INCLUDE "sub_dir/another_file.asm"'\\
+        \verb'    INCLUDE "C:/my_dir/my_file.asm"'\\
+        \verb'    INCLUDE "C:\\my_dir\\my_file.asm"'\\
+        \verb'    INCLUDE "/home/user/project/file.asm"'
+
+\asmdirective{EQU}
+    EQU stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive EQU can be used as register addresses, port addresses, and many others.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> EQU <expression>'
+
+    \subsubsection{Examples}
+        \verb'    First_symb   EQU   0b10011100        ; Binary.'\\
+        \verb'    Second_symb  EQU   47                ; Decimal.'\\
+        \verb'    Third_symb   EQU   0x39              ; Hexadecimal.'\\
+        \verb'    Fourth_symb  EQU   (A - 4) + 18 / B) ; An expression.'\\
+        \verb'    Fifth_symb   EQU   0x09 << 2         ; Another expression.'\\
+        \verb''\\
+        \verb'                 LOAD  S0, #First_symb   ; Loads S0 register with 0b10011100.'
+
+\asmdirective{CONSTANT}
+    This directive is nothing more or less than the EQU directive with another syntax.
+
+    \subsubsection{Syntax}
+        \verb'    CONSTANT <symbol>, <expression>'
+
+\asmdirective{SET}
+    The SET directive does the same thing as the EQU directive, the only difference is that symbols defined with SET are re-definable while symbols defined with EQU are constant.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> SET <expression>'
+
+    \subsubsection{Examples}
+        \verb'    my_symbol SET   0x10           ; my_symbol = 0x10'\\
+        \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x10.'\\
+        \verb''\\
+        \verb'    my_symbol SET   0x20           ; re-defining my_symbol to new value: 0x20'\\
+        \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x20.'
+
+\asmdirective{VARIABLE}
+    This directive is nothing more or less than the SET directive with another syntax.
+
+    \subsubsection{Syntax}
+        \verb'    VARIABLE <symbol>, <expression>'
+
+    \subsubsection{Examples}
+        \verb'    VARIABLE  First_symb, 0b10011100        ; Binary.'\\
+        \verb'    VARIABLE  Second_symb, 47               ; Decimal.'\\
+        \verb'    VARIABLE  Third_symb, 0x39              ; Hexadecimal.'\\
+        \verb'    VARIABLE  Fourth_symb, (A -4)+ 18 / B)  ; An expression.'\\
+        \verb'    VARIABLE  Fifth_symb, 0x09 << 2         ; Another expression.'\\
+        \verb''\\
+        \verb'    LOAD      S0, #First_symb               ; Loads S0 with 0b10011100.'
+
+\asmdirective{REG}
+    Symbols defined with the REG directive are considered to be register addresses only and cannot be used for anything else, except for that REG is just another EQU.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> REG <address>'
+
+    \subsubsection{Examples}
+        \verb'    A_reg  REG    s1'\\
+        \verb'    B_reg  REG    s2'\\
+        \verb'    C_reg  REG    s3'\\
+        \verb'    D_reg  REG    0x4'\\
+        \verb'    E_reg  REG    0x5'\\
+        \verb''\\
+        \verb'           LOAD   A_reg, D_reg  ; S0 = S5'\\
+        \verb'           LOAD   B_reg, #0x55  ; S2 = 0x55'
+
+\asmdirective{NAMEREG}
+    This directive is nothing more the REG directive with another syntax.
+
+    \subsubsection{Syntax}
+        \verb'    NAMEREG <symbol>, <address> '
+
+    \subsubsection{Examples}
+        \verb'    NAMEREG     a, s1'\\
+        \verb'    NAMEREG     b, s2'\\
+        \verb'    NAMEREG     x, s3'\\
+        \verb'    NAMEREG     y, 4'\\
+        \verb'    NAMEREG     z, 0xA'
+        \verb''\\
+        \verb'    LOAD        a, b         ; S1 = S2'\\
+        \verb'    LOAD        x, #0x55     ; S3 = 0x55'
+
+\asmdirective{DATA}
+    Symbols defined with the DATA directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that DATA is just another EQU.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> DATA <expression>'
+
+    \subsubsection{Examples}
+        \verb'    my_location   PORT    0x12'\\
+        \verb''\\
+        \verb'                  STORE   S0, my_location'
+
+\asmdirective{CODE}
+    Symbols defined with the CODE directive are considered to be program memory addresses only and cannot be used for anything else, except for that CODE is just another EQU.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> CODE <expression>'
+
+    \subsubsection{Examples}
+        \verb'    somewhere     CODE    0x3ff'\\
+        \verb'                  ; ...'\\
+        \verb'                  ORG     somewhere'\\
+        \verb'                  ; ...'\\
+        \verb'                  CALL    somewhere'
+
+\asmdirective{PORT}
+    Symbols defined with the PORT directive are considered to be port addresses only and cannot be used for anything else, except for that PORT is just another EQU.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> PORT <expression>'
+
+    \subsubsection{Examples}
+        \verb'    my_port       PORT    0x22'\\
+        \verb''\\
+        \verb'                  OUTPUT  S0, my_port'
+
+\asmdirective{AUTOREG}
+    It will automatically assign a register at some address starting from 0x00 which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the REG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> AUTOREG [<address>]'
+
+    \subsubsection{Examples}
+        \verb'    reg_1  AUTOREG                ; reg_1 = 0'\\
+        \verb'    reg_2  AUTOREG                ; reg_2 = 1'\\
+        \verb'    reg_3  AUTOREG                ; reg_3 = 2'\\
+        \verb'    reg_4  AUTOREG  10            ; Start counting from 10 so reg_4 =10'\\
+        \verb'    reg_5  AUTOREG                ; my_reg_5 = 11'
+        \verb''\\
+        \verb'           LOAD     reg_3, reg_4  ; S2 = SA'\\
+        \verb'           LOAD     reg_1, #0x22  ; S0 = 0x22'
+
+\asmdirective{AUTOSPR}
+    This directive provides exactly the same functionality as the AUTOREG directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> AUTOSPR [<address>]'
+
+    \subsubsection{Examples}
+        \verb'    my_data  AUTOSPR'\\
+        \verb''\\
+        \verb'             STORE    S0, my_data'
+
+\asmdirective{INITSPR}
+    Initializes scratch-pad RAM (SPR) with the given value(s), content of such initialized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> INITSPR <value>'
+
+    \subsubsection{Examples}
+        \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+        \verb'my_data2      INITSPR         0x2b'\\
+        \verb''\\
+        \verb'              FETCH           S0, my_data'\\
+        \verb'              FETCH           S1, my_data + 1'\\
+        \verb'              FETCH           S2, my_data + 2'\\
+        \verb'              FETCH           S3, my_data + 3'\\
+        \verb''\\
+        \verb'              FETCH           S8, my_data2'
+
+\asmdirective{ORGSPR}
+    Specify address of origin for scratch-pad RAM initialization (directive INITSPR).
+
+    \subsubsection{Syntax}
+        \verb'    ORGSPR <address>'
+
+    \subsubsection{Examples}
+        \verb'              ORGSPR          0x10'\\
+        \verb'my_data       INITSPR         "Hello PicoBlaze!" ; <-- address assigned to my_data is 0x10'\\
+        \verb''\\
+        \verb'              FETCH           S0, my_data'\\
+        \verb'              FETCH           S1, my_data + 1'\\
+        \verb'              FETCH           S2, my_data + 2'
+
+\asmdirective{MERGESPR}
+    Merge scratch-pad RAM initialization with program memory initialization at the specified address.
+
+    \subsubsection{Syntax}
+        \verb'    MERGESPR <address>'
+
+    \subsubsection{Examples}
+        \verb'              MERGESPR        0x280'\\
+        \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+        \verb''\\
+        \verb'              FETCH           S0, my_data'\\
+        \verb'              FETCH           S1, my_data + 1'\\
+        \verb'              FETCH           S2, my_data + 2'
+
+\asmdirective{STRING}
+    Defines a named character string (sequence of characters) which can later be used with ``LOAD \& RETURN'' and ``OUTPUTK'' instructions, and with ``DB'' directive.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> STRING "<string>"'
+
+    \subsubsection{Examples}
+        \verb'my_string     STRING          "Hello PicoBlaze!"'\\
+        \verb''\\
+        \verb'              LOAD & RETURN   S0, my_string'\\
+        \verb'              OUTPUTK         my_string, 2'\\
+        \verb'              DB              my_string'
+
+\asmdirective{DEFINE}
+    Define and expression which is evaluated every time separately when used in the code. These expressions can handle unlimited number of parameters, parameters are defined in curly brackets and are numbered from 0 to infinity (in decimal radix), using expressions with parameters resembles calling a function in C language, please see the example below.
+
+    \subsubsection{Syntax}
+        \verb'    <symbol> DEFINE <expression>'
+
+    \subsubsection{Examples}
+        \verb'    A     EQU     10              ; A = 10 (decimal)'\\
+        \verb'    B     SET     25              ; B = 25 (decimal)'\\
+        \verb'    C     DEFINE  ( A + B ) * 2   ; Value of C is unknown for now.'\\
+        \verb''\\
+        \verb'          LOAD    S0, #C          ; Load S0 with ( ( 10 + 25 ) * 2 ) = 70.'\\
+        \verb''\\
+        \verb'    B     SET     11              ; B = 11 (decimal)'\\
+        \verb'          LOAD    S0, #C          ; Now load S0 with ( ( 10 + 11 ) * 2 ) = 42.'\\
+        \verb''\\
+        \verb''\\
+        \verb'    X     DEFINE  ( {0} + {1} )   ; Value of C is unknown for now.'\\
+        \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'\\
+
+\asmdirective{ORG, ADDRESS}
+    The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With ORG or ADDRESS directive this location counter can be changed to instruct the assembler to start writing the code following the ORG directive at the new location counter position.
+
+    \subsubsection{Syntax}
+        \verb'    ORG     <expression>'\\
+        \verb'    ADDRESS <expression>'
+
+
+    \subsubsection{Examples}
+        \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
+        \verb'    JUMP  handle_interrupt'
+
+\asmdirective{REPT}
+    Repeats the specified block of code for the specified number of times.
+
+    \subsubsection{Syntax}
+        \verb'    REPT <number-of-repeats>'\\
+        \verb'        <code>'\\
+        \verb'    ENDR'
+
+    \subsubsection{Examples}
+        \verb'    REPT          5'\\
+        \verb'        SR0       sF'\\
+        \verb'    ENDR'\\
+        \verb''\\
+        \verb'    ; Equivalent to.'\\
+        \verb'    SR0           sF'\\
+        \verb'    SR0           sF'\\
+        \verb'    SR0           sF'\\
+        \verb'    SR0           sF'\\
+        \verb'    SR0           sF'
+
+\asmdirective{\#WHILE}
+    Repeats the specified block of code until expression equals to zero.
+
+    \subsubsection{Syntax}
+        \verb'    #WHILE <expression>'\\
+        \verb'        <code>'\\
+        \verb'    #ENDW'
+
+    \subsubsection{Examples}
+        \verb'    ld          S0, #0xAA       ; (value to output)'\\
+        \verb'    ld          S1, #0          ; (starting address)'\\
+        \verb''\\
+        \verb'    while       S1 < #5         ; C: while ( S1 < 5 ) {'\\
+        \verb'        out     S0, @S1         ; C:     S0 = *S1;'\\
+        \verb'        inc     S1              ; C:     S1++;'\\
+        \verb'    endw                        ; C: }'
+
+\asmdirective{SKIP}
+    \subsubsection{Syntax}
+        \verb'    SKIP <expression>'
+
+    \subsubsection{Examples}
+
+\asmdirective{UNDEFINE, UNDEF}
+    All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
+
+    \subsubsection{Syntax}
+        \verb'UNDEFINE <symbol>'\\
+        \verb'UNDEF    <symbol>'
+
+    \subsubsection{Examples}
+        \verb'My_symbol             SET             15'\\
+        \verb'LOAD                  s0, #My_symbol'\\
+        \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be used'\\
+        \verb'LOAD                  s0, #My_symbol          ; this will cause an error'
+
+\asmdirective{DB}
+    The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit but trims 6 MSB bits making it 18-bit value, so it can fit into program memory. You can insert infinite number of string characters and MDS assembler separates them into triplets of bytes replaced with their ASCII value. The assembler then trims upper 6 bits making it 18-bit value. See the examples for better understanding of DB directive.
+
+    \subsubsection{Syntax}
+        \verb'; Expresion syntax'\\
+        \verb'DB  <expression1>  [, <expression2>, ...]'\\
+        \verb''\\
+        \verb'; String syntax'\\
+        \verb'DB <"string">'\\
+        \verb''\\
+        \verb'; Combination of string(s) and expression(s)'\\
+        \verb'DB <"string"> [, <expression1>, ...]'
+
+        Parameter can be unlimited number of string characters, or expressions divided by comma.
+
+
+    \subsubsection{Examples}
+        \verb'DB      0x060FC                 ; Hexadecimal 0x060FC'\\
+        \verb'DB      "my string"             ; String.'\\
+        \verb'DB      "my string",2+1,3...    ; Combination of string and expressions.'\\
+
+\asmdirective{LIMIT}
+    Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler. In this example when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
+
+    \subsubsection{Syntax}
+        \verb'LIMIT  D, <number> ; Size of scratch-pad RAM(D stands for data).'\\
+        \verb'LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
+        \verb'LIMIT  C, <number> ; Size of program memory (C stands for code).'\\
+
+    \subsubsection{Examples}
+        \verb'LIMIT          R,16                   ; Number of registers 16'\\
+        \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
+        \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
+
+\asmdirective{DEVICE}
+    Normally, you choose the target architecture when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
+
+    \subsubsection{Syntax}
+        \verb'DEVICE <device_name>'
+
+    \subsubsection{Examples}
+        \verb'DEVICE kcpsm6'\\
+        \verb'DEVICE kcpsm3'\\
+        \verb'DEVICE kcpsm2'\\
+        \verb'DEVICE kcpsm1'\\
+        \verb'DEVICE kcpsm1cpld'
+
+\asmdirective{LIST, NOLIST}
+    You can turn on/off printing to code listing in some parts of your code.
+
+    \subsubsection{Syntax}
+        \verb'LIST'\\
+        \verb'NOLIST'
+
+\asmdirective{TITLE}
+    This will put a title into corresponding line in code listing.
+
+    \subsubsection{Syntax}
+        \verb'TITLE "<title text>"'
+
+    \subsubsection{Examples}
+        \verb'TITLE         "Text, that will show up in the code listing"'
+
+\asmdirective{MESSAGE}
+    You can define message, that will show up after compilation.
+
+    \subsubsection{Syntax}
+        \verb'MESSAGE "<message text>"'
+
+    \subsubsection{Examples}
+        \verb'MESSAGE         "Text, that will show up in the code listing"'
+
+\asmdirective{ERROR}
+    You can define an error report, which aborts compilation when is executed.
+
+    \subsubsection{Syntax}
+        \verb'ERROR "<error message>"'
+
+    \subsubsection{Examples}
+        \verb'ERROR         "Text, that will show up in the code listing"'
+
+\asmdirective{WARNING}
+    This will put title into corresponding line in code listing.
+
+    \subsubsection{Syntax}
+        \verb'WARNING "<warning message>"'
+
+    \subsubsection{Examples}
+        \verb'WARNING         "Text, that will show up in the code listing"'
+
+\asmdirective{LOCAL}
+    This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels or symbols.
+
+    \subsubsection{Syntax}
+        \verb'LOCAL <name>'
+
+    \subsubsection{Examples}
+        \verb'MACRO         name_of_macro'\\
+        \verb'LOCAL         wait'\\
+        \verb'wait:'\\
+        \verb'SUBCY         s0,#10h'\\
+        \verb'SUB           s0,#1h' \\
+        \verb'LOAD          s0,#F0h'\\
+        \verb'JUMP          C,wait'\\
+        \verb'ENDM'
+
+\asmdirective{END}
+    The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesn't have to be syntactically correct.
+
+    \subsubsection{Syntax}
+        \verb'END'
+
+    \subsubsection{Examples}
+            \verb'END'
+
+\asmdirective{FAILJMP,DEFAULT\_JUMP}
+    Fills program memory with jump to the specified address. Simple protection against errors.
+
+    \subsubsection{Syntax}
+        \verb'FAILJMP     <expression>'\\
+        \verb'DEFAULT_JMP <expression>'
+
+    \subsubsection{Examples}
+        \verb'FAILJMP                   Start'\\
+        \verb'DEFAULT\_JUMP             0x000'
+
+\section{Code generation directives}
+MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program. Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used. Table of allowed instructions is displayed below.
+
+\begin{table}[h!]
+    \mysmallfont{}
+    \centering{}
+    \begin{tabular}{|c|c|}
+        \hline
+        Condition operator & Example  \\
+        \verb'=='          & \verb'A == B'  \\
+        \verb'!='          & \verb'A != B'  \\
+        \verb'>'           & \verb'A >  B'  \\
+        \verb'<'           & \verb'A <  B'  \\
+        \verb'>='          & \verb'A >= B'  \\
+        \verb'<='          & \verb'A <= B'  \\
+        \verb'&'           & \verb'A &  B'  \\
+        \verb'!&'          & \verb'A !& B'  \\\hline
+    \end{tabular}
+    \caption{Allowed conditions with IF, WHILE}
+\end{table}
+
+\asmdirective{IF}
+    \subsubsection{Syntax}
+        \verb'IF      <condition>'\\
+        \verb'        <code>'\\
+        \verb'ELSEIF  <condition>'\\
+        \verb'        <code>'\\
+        \verb'ELSE'\\
+        \verb'        <code>'\\
+        \verb'ENDIF'
+
+    \subsubsection{Description}
+        You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares symbol with register address. So 5 would have been replaced with value stored in register with address 5.
+
+    \subsubsection{Examples}
+        \verb'IF      s0 == #10'\\
+        \verb'        LOAD  s0, #10h'\\
+        \verb'ELSEIF  B >= #100'\\
+        \verb'        SR0   s0'\\
+        \verb'ELSE    A >= 5'\\
+        \verb'        INPUT   s0,RX_data'\\
+        \verb'ENDIF'
+
+\asmdirective{WHILE}
+    \subsubsection{Syntax}
+        \verb'WHILE <condition>'\\
+        \verb'      <code>'\\
+        \verb'ENDW'
+
+    \subsubsection{Description}
+        You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax.
+
+    \subsubsection{Examples}
+        \verb'WHILE s0 == #10'\\
+        \verb'      ADDCY S1,#1'\\
+        \verb'ENDW'
+        \verb''\\
+        \verb'WHILE s0 > #10'\\
+        \verb'      ADDCY S1,#1'\\
+        \verb'ENDW'
+        \verb''\\
+        \verb'WHILE s0  != #10'\\
+        \verb'      ADDCY S1,#1'\\
+        \verb'ENDW'
+
+\asmdirective{FOR}
+    \subsubsection{Syntax}
+        \verb'FOR   <condition>'\\
+        \verb'      <code>'\\
+        \verb'ENDW'
+
+    \subsubsection{Description}
+        You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case, counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger. See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
+
+    \subsubsection{Examples}
+        \verb'; In this case, incrementing is from 0 to 10. Incrementing step is 1.'
+        \verb'FOR   s0, 10'\\
+        \verb'      NOP'\\
+        \verb'ENDF'
+        \verb''\\
+        \verb'; In this case, incrementing is in the range 10 to 20. Incrementing step is 1.'
+        \verb'FOR   s0, 10..20'\\
+        \verb'      NOP'\\
+        \verb'ENDF'
+        \verb''\\
+        \verb'; In this case, incrementing is from 10 to 50. Last number defines'\\
+        \verb'; incrementing step. (In this case 10).'\\
+        \verb'FOR   s0, 10..50, 10'\\
+        \verb'      NOP'\\
+        \verb'ENDF'
+
+\section{Macro instructions}
+Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code.
+
+\asmdirective{Syntax}
+    \verb'MACRO     [<parameter1>]  [,<parameter2>..]'\\
+    \verb'          <macro source code>'\\
+    \verb'ENDM      ; end of macro definition'
+    \verb''~\\
+    \verb'EXPAND    ; Expanding of macros enabled'\\
+    \verb'NOEXPAND  ; Expanding of macros disabled'
+
+    \begin{table}[h!]
+        \begin{tabular}{|ll|}
+            \hline
+            MACRO      & Define a new macro \\
+            EXITM      & Exit macro  \\
+            ENDM       & End of macro definition \\
+            EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
+            NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
+            \hline
+        \end{tabular}
+        \caption{Macro commands}
+    \end{table}
+
+\asmdirective{Description}
+    Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro with no parameters  or unlimited number of parameters.
+
+\asmdirective{Examples}
+    This can be well demonstrated on examples:\\
+    {
+        \usecodefont
+        \verb'abc           macro           ; Define named macro '\\
+        \verb'      load    s2,s0'\\
+        \verb'      add     s2,#1'\\
+        \verb'      load    s1,s2'\\
+        \verb'endm'\\\\
+        \verb'abc           ; Expand macro "abc"  here'\\
+        \verb'abc           ; Expand macro "abc"  here'\\\\
+        \verb'; This is the same as if you wrote this:'\\
+        \verb'      load    s2,s0'\\
+        \verb'      add     s2,#1'\\
+        \verb'      load    s1,s2'\\
+        \verb'      load    s2,s0'\\
+        \verb'      add     s2,#1'\\
+        \verb'      load    s1,s2'\\
+    }
+
+    Macro without parameters.\\
+    {
+        \usecodefont
+        \verb'; Define macro named as "xyz" with two mandatory parameters'\\
+        \verb'xyz       macro   foo, bar'\\
+        \verb'          load    foo, #10h'\\
+        \verb'          add     bar, #1'\\
+        \verb'endm'\\\\
+        \verb'          xyz     s2,s3           ; Expand macro "xyz"  here'\\
+        \verb'          xyz     s5,s5           ; Expand macro "xyz"  here'\\\\
+        \verb'; This is the same as if you wrote this:'\\
+        \verb'; xyz     s2,s3'\\
+        \verb'          load    s2, #10h'\\
+        \verb'          add     s3, #1'\\
+        \verb'; xyz     s5,s5'\\
+        \verb'          load    s5, #10h'\\
+        \verb'          add     s5, #1'\\
+    }
+
+    An example of named macro with two parameters.\\
+    {
+        \usecodefont
+        \verb'ijk           macro   foo'\\
+        \verb'          add     s1,s0'\\
+        \verb''\\
+        \verb'          if    foo = 4d'\\
+        \verb'              nop'\\
+        \verb'          endif'\\
+        \verb'          sub     s1, #foo'\\
+        \verb'endm'\\\\
+        \verb'ijk   5'\\
+        \verb'ijk   4'\\\\
+        \verb'; This is the same as if you wrote this:'\\
+        \verb'      ; ijk   5'\\\\
+        \verb'          add     s1,s0'\\
+        \verb'          if    5 = 4d'\\
+        \verb'              nop'\\
+        \verb'          endif'\\
+        \verb'          subb    s1,#5'\\
+        \verb'      ; ijk   4'\\\\
+        \verb'          add     s1,s0'\\
+        \verb'          if    4 = 4d'\\
+        \verb'              nop'\\
+        \verb'          endif'\\
+        \verb'          sub     s1,#4'\\
+    }
+
+    An example of named macro used with if statement.
+
+\section{Conditional Assembly}
+The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions to work with conditional assembly:
+
+\begin{itemize}
+    \item IF <condition>
+    \item IFN <condition>
+    \item IFDEF <symbol>
+    \item IFNDEF <symbol>
+    \item ELSE
+    \item ELSEIF <condition>
+    \item ELSEIFN <condition>
+    \item ELSEIFDEF <symbol>
+    \item ELSEIFNDEF <symbol>
+    \item ENDIF
+\end{itemize}
+
+This can be best demonstrated on an example:
+\begin{code}[h!]
+    \mysmallfont{}
+    \verb'abc     equ     14              ; Assign number 14 to symbol abc'\\
+    \verb'xyz     equ     10              ; Assign number 10 to symbol abc'\\
+    \verb''\\
+    \verb'ifdef abc                       ;<--+ Assemble only if symbol abc has been defined'\\
+    \verb'  if ( abc = 13 )               ;   | <--+ Assemble if 13 has been assigned to symbol abc'\\
+    \verb'        load     a, #01010101b  ;   |    |'\\
+    \verb'  elseif ( abc = 14 )           ;   | <--+ Assemble if 14 has been assigned to symbol abc'\\
+    \verb'        load     a, #0aah       ;   |    |'\\
+    \verb'  elseifn ( abc % 2 )           ;   | <--+ Assemble if the value assigned to symbol abc is even'\\
+    \verb'        load     a, #abc        ;   |    |'\\
+    \verb'  else                          ;   | <--+ Else ..'\\
+    \verb'        load     a, #377q       ;   |    |'\\
+    \verb'  endif                         ;   | <--+'\\
+    \verb'elseifndef xyz                  ;<--+ Assemble if symbol xyz has NOT been defined'\\
+    \verb'        clrr     s1             ;   |'\\
+    \verb'else                            ;<--+ Else ...'\\
+    \verb'  ifn ( xyz mod 2 )               ;   | <--+ Assemble if ( yxz modulo 2 ) is 0'\\
+    \verb'        load     a, #128d       ;   |    |'\\
+    \verb'  endif                         ;   | <--+'\\
+    \verb'endif                           ;<--+'\\
+    \verb''\\
+    \verb'jmp    $                       ; Infinite loop'\\
+    \verb'end                            ; End of assembly'\\
+    \caption{An example of conditional assembly usage}
+\end{code}

@@ -83,8 +83,19 @@ ProjectConfigDialog_Core::ProjectConfigDialog_Core(QWidget *parent, Project *cur
             this->memoryCfg,
             SLOT(setProgMemMaximum(int))
            );
+    connect(this->fileMgr,
+            SIGNAL(setFiles(QList<QString>, QString)),
+            this->compilerCfg,
+            SLOT(setFiles(QList<QString>, QString))
+           );
+    connect(this->compilerCfg,
+            SIGNAL(setMainFile(QString)),
+            this->fileMgr,
+            SLOT(setMainFileByName(QString))
+           );
     this->memoryCfg->setScratchpadMaximum(this->generalCfg->getScratchpadMaximum());
     this->memoryCfg->setProgMemMaximum(this->generalCfg->getProgMemMaximum());
+    this->fileMgr->requestFiles();
     //qDebug() << "ProjectConfigDialog_Core: return ProjectConfigDialog_Core()";
 }
 

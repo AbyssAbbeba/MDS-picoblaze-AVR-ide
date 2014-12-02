@@ -25,6 +25,7 @@ class MCUSimObserver;
 
 #include "../MCUSim/MCUSim.h"
 
+#include <map>
 #include <set>
 #include <list>
 #include <vector>
@@ -393,6 +394,9 @@ class MCUSimControl : public QThread
         MCUSimEventLogger * m_simulatorLog;
 
         /// @brief
+        MCUSimCPU * m_simCPU;
+
+        /// @brief
         const McuDeviceSpec * m_deviceSpec;
 
         /// @brief
@@ -408,7 +412,7 @@ class MCUSimControl : public QThread
         bool m_breakPointsSet;
 
         /// @brief
-        std::vector<std::set<unsigned int>> m_breakpoints;
+        std::map<unsigned int, std::pair<int, int>> m_breakpoints;
 
         /// @brief
         unsigned long long m_totalMCycles;

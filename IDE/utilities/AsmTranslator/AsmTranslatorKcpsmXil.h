@@ -164,6 +164,9 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
         std::set<std::string> m_usedIDs;
 
         /// @brief
+        std::set<std::string> m_strings;
+
+        /// @brief
         std::map<std::string,std::string> m_idTranslationMap;
 
         /// @brief

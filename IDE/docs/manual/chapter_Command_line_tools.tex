@@ -1,0 +1,302 @@
+Assembler, Disassembler, and Assembler Translator may also be invoked from command line and therefore used in your scripts. On Linux versions there is also man page for each one of them.
+
+\section{Assembler}
+    \subsection{Description}
+        MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.\\
+
+    \subsection{Usage}
+        \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'
+
+    \subsection{Options}
+        \begin{description}
+            \item[--arch, -a <architecture>]~\\
+                Specify target architecture, supported architectures are:
+                \begin{description}
+                    \item[PicoBlaze] KCPSM soft-core processor
+                \end{description}
+
+            \item[--plang, -p <programming language>]~\\
+                Specify programming language, supported languages are:
+                \begin{description}
+                    \item[asm] Assembly language
+                \end{description}
+
+            \item[--hex, -x <intel HEX-file>]~\\
+                Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
+
+            \item[--dbg, -d <MDS-native-debug-file>]~\\
+                Specify output file with code for MCU simulator and other debugging tools.
+
+            \item[--srec <Motorola-S-REC-file>]~\\
+                Specify output file with machine code generated as a result of compilation, data will be stored in Motorola S-record format.
+
+            \item[--srec --binary <binary-file>]~\\
+                Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
+
+            \item[--lst, -l <code-listing>]~\\
+                Specify output file where code listing generated during compilation will be stored.
+
+            \item[--mtable, -m <table-of-macros>]~\\
+                Specify file in which the compiler will put table of macros defined in your code.
+
+            \item[--stable, -s <table-of-symbols>]~\\
+                Specify file in which the compiler will put table of symbols defined in your code.
+
+            \item[--strtable <table of symbols>]~\\
+                Specify file in which the compiler will put table of strings defined in your code.
+
+            \item[--help, -h]~\\
+                Print help message.
+
+            \item[--version, -V]~\\
+                Print compiler version and exit.
+
+            \item[--check, -c]~\\
+                Do not perform the actual compilation, do only lexical and syntax analysis of the the provided source code and exit.
+
+            \item[--no-backup]~\\
+                Don't generate backup files.
+
+            \item[--brief-msg]~\\
+                Print only unique messages.
+
+            \item[--no-strict]~\\
+                Disable certain error and warning messages.
+
+            \item[--no-warnings]~\\
+                Do not print any warnings.
+
+            \item[--no-errors]~\\
+                Do not print any errors.
+
+            \item[--no-remarks]~\\
+                Do not print any remarks.
+
+            \item[--silent]~\\
+                Do not print any warnings, errors, or any other messages, stay completely silent.
+
+            \item[--include, -I <directory>]~\\
+                Add directory where the compiler will search for include files.
+
+            \item[--dev, -D <device>]~\\
+                Specify exact target device, options are:
+                \begin{description}
+                    \item[For PicoBlaze]
+                        kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                \end{description}
+
+            \item[--precompile, -P <.prc-file>]~\\
+                Specify target file for generation of precompiled code.
+
+            \item[--vhdl <.vhd-file>]~\\
+                Specify target file for generation of VHDL code.
+
+            \item[--vhdl-tmpl <.vhd-file>]~\\
+                Specify VHDL template file.
+
+            \item[--verilog <.v-file>]~\\
+                Specify target file for generation of verilog code.
+
+            \item[--verilog-tmpl <.v-file>]~\\
+                Specify verilog template file.
+
+            \item[--mem <.mem-file>]~\\
+                Specify target file for generation of MEM file.
+
+            \item[--raw-hex-dump <.hex-file>]~\\
+                Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
+
+            \item[--secondary <.hex file>]~\\
+                Specify target file for SPR initialization, output format is Intel HEX.
+        \end{description}
+
+    \subsection{Notes}
+        \begin{itemize}
+            \item `--' marks the end of options, it becomes useful when you want to compile file(s) which name(s) could be mistaken for a command line option.
+            \item When multiple source files are specified, they are compiled as one unit in the order in which they appear on the command line (from left to right).
+        \end{itemize}
+
+    \subsection{Examples}
+        \begin{itemize}
+            \item \verb'mds-compiler --arch=PicoBlaze --plang=asm --hex=abc.hex abc.asm'\\
+                Compile source code file `abc.asm' (--file=abc.asm) for architecture PicoBlaze (--arch=PicoBlaze) written in assembly language (--plang=asm), and create file `abc.hex' containing machine code generated generated by the compiler.
+
+            \item \verb'mds-compiler --plang asm --arch PicoBlaze --hex abc.hex abc.asm'\\
+                Do the same at the above, only in this case we have used another variant of usage of switches with argument.
+
+            \item \verb'mds-compiler -p asm -a PicoBlaze -x abc.hex abc.asm'\\
+                Do the same at the above, only in this case we have used short version of the switches.
+        \end{itemize}
+
+\section{Disassembler}
+    \subsection{Description}
+        Disassembler is a tool intended to generate assembly language code from an object file. In other words it has certain level of capability of reversing the assembly process and regaining the original source code from any object code.
+
+    \subsection{Usage}
+        \verb'mds-disasm  <OPTIONS>  [ -- ] <input-file>'
+
+    \subsection{Options}
+        \begin{description}
+            \item[--arch, -a <architecture>]~\\
+                Specify target architecture, supported architectures are: \textbf{PicoBlaze}
+
+            \item[--family, -f <family>]~\\
+                Specify processor family, supported families for the given architectures are:
+                \begin{description}
+                    \item[For PicoBlaze]
+                        kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                \end{description}
+
+            \item[--out, -o <output-file>]~\\
+                Specify output file where the resulting assembly language code will be stored.
+
+            \item[--type, -t <input-file-format>]~\\
+                Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
+                \begin{description}
+                    \item [hex]I ntel 8 HEX, or Intel 16 HEX.
+                    \item [srec] Motorola S-Record.
+                    \item [bin] Raw binary file.
+                    \item [mem] Xilinx MEM file (for PicoBlaze only).
+                    \item [vhd] VHDL file (for PicoBlaze only).
+                    \item [v] Verilog file (for PicoBlaze only).
+                \end{description}
+
+            \item[--cfg-ind <indentation>]~\\
+                Indent with:
+                \begin{description}
+                    \item [spaces] Indent with spaces (default).
+                    \item [tabs] Indent with tabs.
+                \end{description}
+
+            \item[--cfg-tabsz <n>]~\\
+                Consider tab to be displayed at most n spaces wide, here it is by default 8.
+
+            \item[--cfg-eof <end-of-line-character>]~\\
+                Specify line separator, available options are:
+                \begin{description}
+                    \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
+                    \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
+                    \item [cr] (APPLE) use single carriage return (0x0d = '').
+                \end{description}
+
+            \item[--cfg-sym <symbols>]~\\
+                Which kind of addresses should be translated to symbolic names, and which should remain to be represented as numbers, available options are:
+                \begin{description}
+                    \item [c] Program memory.
+                    \item [d] Data memory.
+                    \item [r] Register file.
+                    \item [p] Port address.
+                    \item [k] Immediate constants.
+                \end{description}
+                This options takes any combination of these, i.e. for example "cdr" stands for program memory + data memory + register file.
+
+            \item[--cfg-lc <character>]~\\
+                Use uppercase, or lowercase characters:
+                \begin{description}
+                    \item [l] Lowercase.
+                    \item [u] Uppercase.
+                \end{description}
+
+            \item[--cfg-radix <radix>]~\\
+                Radix, available options are:
+                \begin{description}
+                    \item [h] Hexadecimal.
+                    \item [d] Decimal.
+                    \item [b] Binary.
+                    \item [o] Octal.
+                \end{description}
+
+            \item[--help, -h]~\\
+                Print help message.
+
+            \item[--version, -V]~\\
+                Print disassembler version and exit.
+        \end{description}
+
+    \subsection{Notes}
+        \begin{itemize}
+            \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+        \end{itemize}
+
+\section{Assembler translator}
+    \subsection{Description}
+        mds-translator is tool for translating assembly language source code from one dialect to another; in this case it translates into assembly language used by MDS (Multitarget Development System) from dialect used by other companies or projects.
+
+    \subsection{Usage}
+        \verb'mds-translator  <OPTIONS>  [ -- ] <input-file>'
+
+    \subsection{Options}
+        \begin{description}
+            \item[--type, -t <asm-variant>]~\\
+                Specify variant of assembly language used in the input file, possible options are:
+                \begin{description}
+                    \item [1] Xilinx KCPSMx
+                    \item [2] Mediatronix KCPSMx
+                    \item [3] openPICIDE KCPSMx
+                \end{description}
+
+            \item[--output, -o <file.asm>]~\\
+                Specify output file.
+
+            \item[--cfg-ind <indentation>]~\\
+                Indent with:
+                \begin{description}
+                    \item [keep] Do not alter original indentation.
+                    \item [spaces] Indent with spaces.
+                    \item [tabs] Indent with tabs.
+                \end{description}
+
+            \item[--cfg-tabsz <n>]~\\
+                Consider tab to be displayed at most n spaces wide, here it is by default 8.
+
+            \item[--cfg-eof <end-of-line-character>]~\\
+                Specify line separator, available options are:
+                \begin{description}
+                    \item [clrf] (WINDOWS) use sequence of carriage return and line feed characters
+                    \item [If] (UNIX) use a single line feed character (0x0a = ') (default),
+                    \item [cr] (APPLE) use single carriage return (0x0d = '').
+                \end{description}
+
+            \item[--short-inst <true|false>]~\\
+                Use instruction shortcuts, e.g. `in' instead of `input', etc. (default: false).
+
+            \item[--cfg-lc-sym <character>]~\\
+                Use uppercase, or lowercase characters for symbols:
+                \begin{description}
+                    \item [l] Lowercase.
+                    \item [u] Uppercase.
+                \end{description}
+
+            \item[--cfg-lc-dir <character>]~\\
+                Use uppercase, or lowercase characters for directives:
+                \begin{description}
+                    \item [l] Lowercase.
+                    \item [u] Uppercase.
+                \end{description}
+
+            \item[--cfg-lc-inst <character>]~\\
+                Use uppercase, or lowercase characters for instructions:
+                \begin{description}
+                    \item [l] Lowercase.
+                    \item [u] Uppercase.
+                \end{description}
+
+            \item[--backup, -b]~\\
+                Enable generation of backup files.
+
+            \item[--version, -V]~\\
+                Print version and exit.
+
+            \item[--help, -h]~\\
+                Print help message.
+        \end{description}
+
+    \subsection{Notes}
+        \begin{itemize}
+            \item `--' marks the end of options, it becomes useful when you want to disassemble file which name could be mistaken for a command line option.
+        \end{itemize}
+
+    \subsection{Examples}
+        \begin{itemize}
+            \item \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
+        \end{itemize}

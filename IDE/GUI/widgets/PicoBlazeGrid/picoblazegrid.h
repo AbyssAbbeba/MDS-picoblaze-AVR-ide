@@ -109,6 +109,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         double clock;
         double clockMult;
 
+        bool interruptSet;
+
         GuiCfg::WarningsOpt warningOptions;
         
 
