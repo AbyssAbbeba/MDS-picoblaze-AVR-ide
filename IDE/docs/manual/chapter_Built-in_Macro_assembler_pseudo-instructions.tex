@@ -5,7 +5,7 @@
         \subsubsection{Syntax}
             \verb'INC <expression>'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'ADD       sX, #1'
 
         \subsubsection{Description}
@@ -18,7 +18,7 @@
         \subsubsection{Syntax}
             \verb'DEC <expression>'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'SUB       sX, #1'
 
         \subsubsection{Description}
@@ -31,7 +31,7 @@
         \subsubsection{Syntax}
             \verb'SETR <expression>'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'OR       sX, #0xFF'
 
         \subsubsection{Description}
@@ -44,7 +44,7 @@
         \subsubsection{Syntax}
             \verb'CLRR <expression>'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'AND       sX, #0x00'
 
         \subsubsection{Description}
@@ -57,7 +57,7 @@
         \subsubsection{Syntax}
             \verb'CPL <expression>'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'XOR       sX, #0xFF'
 
         \subsubsection{Description}
@@ -70,9 +70,9 @@
         \subsubsection{Syntax}
             \verb'CPL2 <expression>'
 
-        \subsubsection{Equal to:}
-            \verb'XOR              s0,#0xFF'\\
-            \verb'ADD              s0,#1'
+        \subsubsection{Equals to:}
+            \verb'XOR              s0, #0xFF'\\
+            \verb'ADD              s0, #1'
 
         \subsubsection{Description}
             This instruction executes 1\'s complement with given register.
@@ -84,33 +84,33 @@
         \subsubsection{Syntax}
             \verb'SETB <register>, <bit> ; bit belongs to interval [0,7]'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'OR       sX, #1 << bit'
 
         \subsubsection{Description}
             Sets bit in given register.
 
         \subsubsection{Examples}
-            \verb'SETB              s0,3'
+            \verb'SETB              s0, 3'
 
     \subsection{CLRB}
         \subsubsection{Syntax}
             \verb'CLRB <register>, <bit> ; bit belongs to interval [0,7]'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'AND       sX,#(0xFF ^ (1 << bit))'
 
         \subsubsection{Description}
             Clears bit in given register.
 
         \subsubsection{Examples}
-            \verb'CLRB              s0,7'
+            \verb'CLRB              s0, 7'
 
     \subsection{NOTB}
         \subsubsection{Syntax}
             \verb'NOTB <register>, <bit> ; bit belongs to interval [0,7]'
 
-        \subsubsection{Equal to:}
+        \subsubsection{Equals to:}
             \verb'XOR       sX,#(~(1 << bit))'
 
         \subsubsection{Description}
@@ -123,8 +123,8 @@
         \subsubsection{Syntax}
             \verb'DJNZ <register>, <label>'
 
-        \subsubsection{Equal to:}
-            \verb'SUB               s0,#1'\\
+        \subsubsection{Equals to:}
+            \verb'SUB               s0, #1'\\
             \verb'JUMP              NZ,loop'
 
         \subsubsection{Description}
@@ -138,8 +138,8 @@
         \subsubsection{Syntax}
             \verb'IJNZ <register>, <label>'
 
-        \subsubsection{Equal to:}
-            \verb'ADD               s0,#1'\\
+        \subsubsection{Equals to:}
+            \verb'ADD               s0, #1'\\
             \verb'JUMP              NZ,loop'
 
         \subsubsection{Description}
