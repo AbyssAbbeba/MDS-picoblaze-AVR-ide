@@ -177,6 +177,9 @@ class PicoBlazeIO : public MCUSimPureLogicIO
 
         /// @brief
         bool m_writeStrobe;
+
+        /// @brief
+        bool m_writeStrobePrev;
 };
 
 // -----------------------------------------------------------------------------
