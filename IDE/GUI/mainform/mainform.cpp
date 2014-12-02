@@ -2836,7 +2836,7 @@ void MainForm::simulationFlowHandle()
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
         projectMan->getSimulated()->stop();
-        this->unhighlight();
+        //this->unhighlight();
         this->wDockManager->getCentralTextEdit()->clearHighlight();
     }
 }
@@ -3694,7 +3694,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         simulatedFilePath = QDir::cleanPath(QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/' + value);
         if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
-            qDebug() << "MainForm: simHighlightLines value" << value;
+            //qDebug() << "MainForm: simHighlightLines value" << value;
             this->openFilePath(simulatedFilePath);
             this->getWDockManager()->setCentralByPath(simulatedFilePath);
         }
