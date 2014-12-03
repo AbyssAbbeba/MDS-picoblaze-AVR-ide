@@ -1,9 +1,9 @@
 In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "if ( S0 == S1 )" to easy write conditions instead of compares and conditional jumps, "for ( S0, 0 .. 9 )" for loops, "\#if my\_constant > 20" for conditional compilation, "abc macro x, y, z" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
+MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use "\verb'if ( S0 == S1 )'" to easy write conditions instead of compares and conditional jumps, "\verb'for ( S0, 0 .. 9 )'" for loops, "\verb'#if my_constant > 20'" for conditional compilation, "\verb'abc macro x, y, z'" for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
 
 \section{Basics}
-    \subsection{Differences from Xilinx assembler}
+    \subsection{Differences from the Xilinx assembler}
         \begin{itemize}
             \item Code is case insensitive.
             \item Default radix is decimal.
@@ -11,28 +11,26 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \end{itemize}
 
     \subsection{Statements}
-        Source code files for this assembler must be text files where lines are formed like these:\\
-        {
-            \usecodefont
-            \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
-            \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
-            \verb'            symbol         directive argument                       [ ;comment ]'\\
-            \verb'            directive      symbol, argument                         [ ;comment ]'
-        }
+        Source code files for this assembler have to be text files formed like:\\
+        ~\\
+        \verb'[ label: ]  [ instruction  [ operand [ , operand [ , operand ] ] ]  [ ;comment ]'\\
+        \verb'[ label: ]  directive      [ argument ]                             [ ;comment ]'\\
+        \verb'            symbol         directive argument                       [ ;comment ]'\\
+        \verb'            directive      symbol, argument                         [ ;comment ]'\\
 
-        Everything in square brackets is optional. Compilation does not go beyond line containing "end" directive so after that directive the code does not have to be syntactically valid. Empty lines are allowed as well as lines containing only comment or label. Statements are be separated by white spaces or tabs. Statements are case insensitive and their length is not limited, overall line length is also not limited.
+        Anything in square brackets is optional. Compilation does not go beyond line containing the \texttt{END} directive so after that directive the code does not have to be syntactically valid. Empty lines are valid, as well as lines containing only comment or label. Statements are separated by white space (spaces or tabs). Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
     \subsection{Symbols}
-        Symbolic names for numbers, macros or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they cannot be the same as language keywords. Be aware of that there cannot coexists two or more symbols only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
+        Symbolic names for numbers or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they cannot be the same as language keywords. Be aware of that there cannot coexists two or more symbols only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
 
         ~\\
         {
             \usecodefont
-            \verb'First_symb      EQU     0b100111 ; Number in binary'\\
-            \verb'Second_symb     SET     47q      ; Octal'\\
-            \verb'Third_symb      REG     39d      ; Decimal'\\
-            \verb'Fourth_symb     DATA    27h      ; Hexadecimal'\\
-            \verb'Fifth_symb      CODE    27h      ; Hexadecimal'
+            \verb'First_symbol      EQU     0b100111 ; Number in binary'\\
+            \verb'Second_symbol     SET     47q      ; Octal'\\
+            \verb'Third_symbol      REG     39d      ; Decimal'\\
+            \verb'Fourth_symbol     DATA    27h      ; Hexadecimal'\\
+            \verb'Fifth_symbol      CODE    27h      ; Hexadecimal'
         }
 
     \subsection{Constants}
@@ -254,9 +252,9 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                 Comparing two immediate constants, result will be always same.
             \item[Comparing two immediate constants, result is always negative]
                 Comparing two immediate constants, result will be always same.
-            \item[Sign overflow. Result is negative number lower than the lowest negative number representable in two's         complement arithmetic by the given number of bits ]
+            \item[Sign overflow. Result is negative number lower than the lowest negative...]
                 Two's complement sign overflow.
-            \item[Result is negative number X, this will be represented as X-bit number in two's complement arithmetic]
+            \item[Result is negative number X, this will be represented as X-bit number...]
                 Result is negative number. This will be represented as number in two's complement arithmetic.
             \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ]
                 Value out of range. Adjust input value.
@@ -267,96 +265,97 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \end{description}
 
 \section{Symbol table}
-    Symbol table contains list of macros in your source code with additional informations.\\
-    {
-        \usecodefont
-        \verb'  +-------------------//------------------//-----------------------+'\\
-        \verb'  |  name  |  group  |  value   |  usage  |  type  |  declaration  |'\\
-        \verb'  +-------------------//------------------//-----------------------+'\\
-    }
+    Symbol table contains list of symbols defined in your source code with additional information.
+
+    \paragraph{File format}
+        ~\\
+        The table of symbols is text file consisting of a number of lines with following format:\\
+        \begin{tabular}{|cccccc|}
+            \hline
+            Name & Type & Value & Usage & Parameter & Location \\
+            \hline
+        \end{tabular}
 
     \begin{description}
-        \item[NAME]
-            Describes the name of symbol.
+        \item[Name]
+            Symbol name.
 
-        \item[GROUP]
-            Defines what given symbol is and how will compiler handle it. Compiler will warn you, if you for example want to load symbol defined as group "PORT" into register. Symbols can be one of the following types.
+        \item[Type]
+            Defines symbol type.
             \begin{itemize}
-                \item REGISTER: Symbol represents one of the internal registers.
-                \item PORT: Symbol should be used as PORT\_id indicator.
-                \item DATA: Symbol should be handled only as a scatch\-pad ram data.
-                \item EXPRESION: Symbol is defined as an expression, which is evaluated later.
+                \item PORT: Symbol should be used as PORT\_ID indicator.
+                \item DATA: Symbol should be used only as a scatch\-pad ram data.
                 \item LABEL: Symbol is label defining address in program memory.
-                \item NUMBER: Symbol does not have specified type.
+                \item REGISTER: Symbol represents one of the internal registers.
+                \item EXPRESION: Symbol is defined as an expression.
+                \item NUMBER: Symbol does not have specific type.
             \end{itemize}
 
-        \item[VALUE]
-            Value which is represented by the symbol.
+        \item[Value]
+            Value assigned to the symbol.
 
-        \item[USAGE]
-            If it was USED or NOT USED in your source code.
+        \item[Usage]
+            USED or NOT USED.
 
-        \item[TYPE]
-            Tells you some additional info.
+        \item[Parameter]
             \begin{itemize}
-                \item IMPLICIT: Symbol is defined by default.
-                \item LOCAL: Local symbol can be only used in macro body.
-                \item REDEFINABLE: Symbol can be redefined everywhere in the source code.
-                \item CONSTANT: Symbol cannot be redefined.
+                \item IMPLICIT: Symbol is defined implicitly for your architecture.
+                \item LOCAL: Local symbol in some macro.
+                \item REDEFINABLE: Symbol is re-definable, i.e. is not constant.
+                \item CONSTANT: Symbol cannot be redefined, i.e. is constant.
             \end{itemize}
 
-        \item[DECLARATION]
-            Information where is the symbol defined. Two scenarios. First can be location in your source code It consist of name of the file and line + column number with format: <nameoffile>:<firstlinenumber>.<columns>.<lastlinenumber>. Second is IMPLICIT, which means symbol is defined by default, not in your code.
+        \item[Location]
+            Location of symbol definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
     \end{description}
 
 \section{Macro table}
-    Macro table contains list of macros in your source code with additional informations.\\
-    {
-        \usecodefont
-        \verb'  +-------------------//----------------------+'\\
-        \verb'  |  name  |  usage  |  type  |  declaration  |'\\
-        \verb'  +-------------------//----------------------+'\\
-    }
+    Macro table contains list of macros in your source code with additional information.\\
+
+    \paragraph{File format}
+        ~\\
+        The table of symbols is text file consisting of a number of lines with following format:\\
+        \begin{tabular}{|cccccc|}
+            \hline
+            Name & & Usage & Type & Location \\
+            \hline
+        \end{tabular}
 
     \begin{description}
-        \item[NAME]
-            Describes the name of Macro.
-        \item[USAGE]
-            It tells you how many times Macro was USED or NOT USED in your source code. Compiler will add number of macro expansions.
-        \item[TYPE]
-            Tells you some additional info.
-        \item[DECLARATION]
-            Information where is the macro defined. Two scenarios. First can be location in your source code It consist of name of the file and line + column number with format: <nameoffile>:<firstlinenumber>.<columns>.<lastlinenumber>. Second is IMPLICIT, which means symbol is defined by default, not in your code.
+        \item[Name]
+            Name of macro.
+        \item[Usage]
+            It tells you how many times the macro was used.
+        \item[Location]
+            Location of macro definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
     \end{description}
 
-\section{Mem File}
-    Mem file contains program memory in special format. There is seventeen 4byte wide columns, first is starting with \@ and represents starting address. Every other position increments address by one. Unused memory is filled with zeroes.
+\clearpage
+\section{MEM File}
+    MEM file contains machine code generated by the assembler. There are 17 columns 4 byte wide, the first column starts with ``\@'' and represents address, other columns contain instruction opcodes. Unused locations are filled with zeros, i.e. if there is no instruction on a certain address, it is filled with zeros.
 
-    Example:\\
-    {
-        \usecodefont
-        \verb'; Starting address 0x0000, sixteen OPcodes'\\
-        \verb'@0000 000011F7 00001299 0000132E ... ... ... ... ... ... 00004577 00007789 000015A4'\\
-        \verb'; Starting address 0x0040'\\
-        \verb'@0040 000004DF 000047F4 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
-        \verb'@0080 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
-        \verb'@00C0 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
-        \verb'@0100 00000000 00000000 00000000 ... ... ... ... ... ... 00000000 00000000 00000000'\\
+    \paragraph{Example}
+        ~\\
+        \verb'@0000 000011F7 00001299 0000132E ... ... ... 00004577 00007789 000015A4'\\
         \verb'...'\\
         \verb'...'\\
         \verb'...'\\
-        \verb'@3F80 000011F7 00001299 0000132E ... ... ... ... ... ... 00000000 00000000 00000000'\\
-        \verb'@3FC0 000011F7 00001299 0000132E ... ... ... ... ... ... 00000000 00000000 00000000'\\
-        \verb'; end of program memory'\\
-    }
+        \verb'@0040 000004DF 000047F4 00000000 ... ... ... 00000000 00000000 00000000'\\
+        \verb'@0080 00000000 00000000 00000000 ... ... ... 00000000 00000000 00000000'\\
+        \verb'@00C0 00000000 00000000 00000000 ... ... ... 00000000 00000000 00000000'\\
+        \verb'@0100 00000000 00000000 00000000 ... ... ... 00000000 00000000 00000000'\\
+        \verb'...'\\
+        \verb'...'\\
+        \verb'...'\\
+        \verb'@3F80 000011F7 00001299 0000132E ... ... ... 00000000 00000000 00000000'\\
+        \verb'@3FC0 000011F7 00001299 0000132E ... ... ... 00000000 00000000 00000000'\\
 
+\clearpage
 \section{Raw Hex Dump file}
-    Raw Hex Dump is very simple. File starts with OP Code of your first instruction at address 0x0, then it is followed by OPcode on address 0x1, 0x2, and so on. If there is no instruction on a certain address, it is filled with zeros.
+    Raw Hex Dump is very simple: file starts with hexadecimal representation of opcode of the first instruction in your program at address 0 then it is followed by opcode at address 0x1, 0x2, and so on. Unused locations are filled with zeros.
 
-    Example:\\
-    {
-        \usecodefont
-        \verb'; Starting at address 0x0'\\
+    \paragraph{Example}
+        ~\\
         \verb'011F7'\\
         \verb'01299'\\
         \verb'0132E'\\
@@ -370,10 +369,8 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \verb'00...'\\
         \verb'.....'\\
         \verb'...00'\\
-        \verb'; end of program memory'\\
-    }
 
-\section{Bin file}
+\section{Raw binary file}
     Bin file gives you raw data from program memory. It contains OP Codes of instructions in 3 bytes (18 bit instructions) or 2 bytes (16 bit instructions) sorted in a line. It does not contain unused memory.
 
     Example:\\
