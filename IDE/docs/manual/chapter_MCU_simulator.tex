@@ -5,7 +5,7 @@
     Following picture shows main window of the simulator. You can find here internal registers, scratch-pad ram, input
     and output ports, stack, program counter, elapsed time and cycles, current clock and internal flags: CARRY and ZERO.
     All those features can be edited during processor simulation. If some value changes state, it will turn yellow. You
-    can drag out whole simulation panel and place outside of the main window (for example another display/monitor on
+    can drag out whole simulation panel and place outside of the main window, for example another display/monitor on
     your computer.
 
    \begin{figure}[h!]
@@ -32,7 +32,7 @@
             Panel on the right side of simulation panel gives you general information about simulated code. You can find
             there the program counter, number of executed cycles, clock frequency, elapsed time and status flags Carry
             and Zero, plus normally hidden Interrupt Enable flag. You can also invoke an interrupt by clicking on the
-            Interrupt button.
+            Interrupt button. Buttons showing status flags or other flags can also change them (click on such button to invert the flag). Green text in ``flag button'' indicates that the flag is set to 1, black text indicates that value of the flag is 0.
     \end{description}
 
     \subsection{Simulator warnings}
@@ -53,7 +53,7 @@
 
     \subsection{Breakpoints and bookmarks}
         \begin{wrapfigure}{r}{0pt}
-            \centering{}
+            \centering
                 \includegraphics[width=.35\textwidth]{img/breakpoints1.png}
                 \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
         \end{wrapfigure}
@@ -108,7 +108,7 @@
         The simulator can operate three different modes:
 
         \begin{figure}[h!]
-            \centering{}
+            \centering
             \includegraphics[width=.4\textwidth]{img/simulation_panel.png}
             \caption{Simulator toolbar.}
         \end{figure}
