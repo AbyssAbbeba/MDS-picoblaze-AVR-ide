@@ -519,7 +519,7 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
         }
 
         std::string opr = lineFields.getOperand(oprerandNumber);
-        if ( ( false == ishex(opr) ) || 3 != opr.size() )
+        if ( ( false == ishex(opr) ) || 3 == opr.size() )
         {
             fixRadix(lineFields, oprerandNumber);
         }
