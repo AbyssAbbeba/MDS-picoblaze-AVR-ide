@@ -95,6 +95,7 @@ class CodeEdit : public QWidget
         void breakpointsRemoveLines(int line, int linesRemoved);
         void bookmarksAddLines(int line, int linesAdded);
         void bookmarksRemoveLines(int line, int linesRemoved);
+        
 
     signals:
         void splitSignal(Qt::Orientation orient, int line);
@@ -112,6 +113,11 @@ class CodeEdit : public QWidget
         //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
+
+    private slots:
+        void updateStatusBar();
+        void textEditChanged(bool modified);
+        void textEditReadOnly(bool readOnly);
 
     private:
         QString name;
