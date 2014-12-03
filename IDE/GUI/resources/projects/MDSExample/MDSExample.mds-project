@@ -30,11 +30,14 @@
   </BreakpointFile>
   <BreakpointFile path="Example6.psm"/>
   <BreakpointFile path="Example3.psm"/>
+  <BreakpointFile path="Example1.vhd"/>
  </Breakpoints>
  <Bookmarks>
   <BookmarkFile path="Example6.psm">
    <Bookmark line="116"/>
   </BookmarkFile>
+  <BookmarkFile path="Example1.vhd"/>
+  <BookmarkFile path="Example1.ihex"/>
  </Bookmarks>
  <Simulator>
   <Clock clockMult="1000000" clock="10"/>

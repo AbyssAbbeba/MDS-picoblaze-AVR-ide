@@ -118,6 +118,10 @@ class CodeEdit : public QWidget
         void updateStatusBar();
         void textEditChanged(bool modified);
         void textEditReadOnly(bool readOnly);
+        void requestScrollToBookmark(int currLine, bool next);
+        void findDialog();
+        void findAndReplaceDialog();
+        void jumpToLineDialog();
 
     private:
         QString name;

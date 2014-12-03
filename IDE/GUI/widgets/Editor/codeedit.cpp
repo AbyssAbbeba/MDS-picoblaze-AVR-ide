@@ -27,7 +27,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()";
+    qDebug() << "CodeEdit: CodeEdit()";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
     this->hidden = false;
@@ -238,6 +238,26 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this,
             SLOT(textEditReadOnly(bool))
            );
+    connect(textEdit,
+            SIGNAL(requestScrollToBookmark(int, bool)),
+            this,
+            SLOT(requestScrollToBookmark(int, bool))
+           );
+    connect(textEdit,
+            SIGNAL(findDialog()),
+            this,
+            SLOT(findDialog())
+           );
+    connect(textEdit,
+            SIGNAL(findAndReplaceDialog()),
+            this,
+            SLOT(findAndReplaceDialog())
+           );
+    connect(textEdit,
+            SIGNAL(jumpToLineDialog()),
+            this,
+            SLOT(jumpToLineDialog())
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
@@ -251,7 +271,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()2";
+    qDebug() << "CodeEdit: CodeEdit()2";
     this->parentCodeEdit = parentCodeEdit;
     this->curCodeEdit = NULL;
     this->hidden = false;
@@ -421,6 +441,26 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             SIGNAL(editorReadOnly(bool)),
             this,
             SLOT(textEditReadOnly(bool))
+           );
+    connect(textEdit,
+            SIGNAL(requestScrollToBookmark(int, bool)),
+            this,
+            SLOT(requestScrollToBookmark(int, bool))
+           );
+    connect(textEdit,
+            SIGNAL(findDialog()),
+            this,
+            SLOT(findDialog())
+           );
+    connect(textEdit,
+            SIGNAL(findAndReplaceDialog()),
+            this,
+            SLOT(findAndReplaceDialog())
+           );
+    connect(textEdit,
+            SIGNAL(jumpToLineDialog()),
+            this,
+            SLOT(jumpToLineDialog())
            );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
@@ -912,6 +952,7 @@ Project* CodeEdit::getParentProject()
 void CodeEdit::addBreakpointLine(int line)
 {
     this->breakpointsLines->append(line);
+    qSort(this->breakpointsLines->begin(), this->breakpointsLines->end());
     this->lineCount->getWidget()->update();
 }
 
@@ -932,6 +973,7 @@ QList<int>* CodeEdit::getBreakpointsLines()
 void CodeEdit::addBookmarkLine(int line)
 {
     this->bookmarksLines->append(line);
+    qSort(this->bookmarksLines->begin(), this->bookmarksLines->end());
     this->lineCount->getWidget()->update();
 }
 
@@ -1112,6 +1154,7 @@ void CodeEdit::setBreakpointsLines(QList<unsigned int> breakpoints)
             this->breakpointsLines->append((int)breakpoints.at(i));
         }
         //qDebug() << "CodeEdit: setBreakpoints - updateWidget()";
+        qSort(this->breakpointsLines->begin(), this->breakpointsLines->end());
         this->lineCount->getWidget()->update();
     }
 }
@@ -1126,6 +1169,7 @@ void CodeEdit::setBreakpointsLines(QList<int> breakpoints)
         {
             this->breakpointsLines->append(breakpoints.at(i));
         }
+        qSort(this->breakpointsLines->begin(), this->breakpointsLines->end());
         this->lineCount->getWidget()->update();
     }
 }
@@ -1140,6 +1184,7 @@ void CodeEdit::setBookmarksLines(QList<unsigned int> bookmarks)
         {
             this->bookmarksLines->append((int)bookmarks.at(i));
         }
+        qSort(this->bookmarksLines->begin(), this->bookmarksLines->end());
         this->lineCount->getWidget()->update();
     } 
 }
@@ -1154,6 +1199,7 @@ void CodeEdit::setBookmarksLines(QList<int> bookmarks)
         {
             this->bookmarksLines->append(bookmarks.at(i));
         }
+        qSort(this->bookmarksLines->begin(), this->bookmarksLines->end());
         this->lineCount->getWidget()->update();
     }
 }
@@ -1208,3 +1254,61 @@ void CodeEdit::textEditReadOnly(bool readOnly)
         this->updateStatusBar();
     }
 }
+
+
+void CodeEdit::requestScrollToBookmark(int currLine, bool next)
+{
+    int line = currLine+1;
+    if (true == next)
+    {
+        for (int i = 0; i < bookmarksLines->count(); i++)
+        {
+            line = bookmarksLines->at(i);
+            if (line  > currLine+1)
+            {
+                break;
+            }
+
+        }
+        //qDebug() << "CodeEdit: currLine+1" << currLine+1;
+        //qDebug() << "CodeEdit: line" << line;
+        if (currLine+1 == line && bookmarksLines->count() > 0)
+        {
+            line = bookmarksLines->at(0);
+        }
+    }
+    else
+    {
+        for (int i = bookmarksLines->count()-1; i >= 0; i--)
+        {
+            line = bookmarksLines->at(i);
+            if (line < currLine+1)
+            {
+                break;
+            }
+        }
+        //qDebug() << "CodeEdit: currLine+1" << currLine+1;
+        //qDebug() << "CodeEdit: line" << line;
+        if (currLine+1 == line && bookmarksLines->count() > 0)
+        {
+            line = bookmarksLines->at(bookmarksLines->count()-1);
+        }
+    }
+    textEdit->jumpToLine(line-1);
+}
+
+
+void CodeEdit::findDialog()
+{
+}
+
+
+void CodeEdit::findAndReplaceDialog()
+{
+}
+
+
+void CodeEdit::jumpToLineDialog()
+{
+}
+

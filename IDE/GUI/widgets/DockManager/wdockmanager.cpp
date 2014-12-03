@@ -855,19 +855,25 @@ void WDockManager::showDockWidgetArea(int area)
             {
                 case 1:
                 {
-                    (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
-                    (*i)->getQDockWidget()->setMaximumWidth(999);
-                    (*i)->getQDockWidget()->setMinimumWidth(1);
-                    wDockRightPrevWidth = 0;
+                    if ("Hide" != rightAreaTabs->tabText(rightAreaTabs->currentIndex()))
+                    {
+                        (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
+                        (*i)->getQDockWidget()->setMaximumWidth(999);
+                        (*i)->getQDockWidget()->setMinimumWidth(1);
+                        wDockRightPrevWidth = 0;
+                    }
                     break;
                 }
                 case 2:
                 {
-                    (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
-                    (*i)->getQDockWidget()->setMaximumHeight(999);
-                    (*i)->getQDockWidget()->setMinimumHeight(280);
-                    //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
-                    wDockBotPrevHeight = 0;
+                    if ("Hide" != bottomAreaTabs->tabText(bottomAreaTabs->currentIndex()))
+                    {
+                        (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
+                        (*i)->getQDockWidget()->setMaximumHeight(999);
+                        (*i)->getQDockWidget()->setMinimumHeight(280);
+                        //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
+                        wDockBotPrevHeight = 0;
+                    }
                     break;
                 }
             }
@@ -1051,6 +1057,10 @@ void WDockManager::highlightError(QString filename, int line)
 void WDockManager::handleShowHideBottom(int index)
 {
     //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
+    if (NULL == activeCodeEdit)
+    {
+        return;
+    }
     if ("Hide" == bottomAreaTabs->tabText(index))
     {
         if (true == bottomVisible)
@@ -1091,6 +1101,10 @@ void WDockManager::handleShowHideBottom(int index)
 void WDockManager::handleShowHideRight(int index)
 {
     //qDebug() << "WDockManager: right changed to" << rightAreaTabs->tabText(index);
+    if (NULL == activeCodeEdit)
+    {
+        return;
+    }
     if ("Hide" == rightAreaTabs->tabText(index))
     {
         if (true == rightVisible)
