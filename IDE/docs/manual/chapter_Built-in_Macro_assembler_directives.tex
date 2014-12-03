@@ -122,7 +122,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'                  CALL    somewhere'
 
 \asmdirective{PORT}
-    Symbols defined with the PORT directive are considered to be port addresses only and cannot be used for anything else, except for that PORT is just another EQU.
+    Symbols defined with the \texttt{PORT} directive are considered to be port addresses only and cannot be used for anything else, except for that \texttt{PORT} is just another \texttt{EQU}.
 
     \subsubsection{Syntax}
         \verb'    <symbol> PORT <expression>'
@@ -133,7 +133,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'                  OUTPUT  S0, my_port'
 
 \asmdirective{AUTOREG}
-    It will automatically assign a register at some address starting from 0x00 which is incremented with every other AUTOREG directive. Optionally, you can change starting address counter by adding a parameter after AUTOREG directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the REG directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
+    It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
 
     \subsubsection{Syntax}
         \verb'    <symbol> AUTOREG [<address>]'
@@ -149,7 +149,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'           LOAD     reg_1, #0x22  ; S0 = 0x22'
 
 \asmdirective{AUTOSPR}
-    This directive provides exactly the same functionality as the AUTOREG directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
+    This directive provides exactly the same functionality as the \texttt{AUTOREG} directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
 
     \subsubsection{Syntax}
         \verb'    <symbol> AUTOSPR [<address>]'
@@ -177,7 +177,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'              FETCH           S8, my_data2'
 
 \asmdirective{ORGSPR}
-    Specify address of origin for scratch-pad RAM initialization (directive INITSPR).
+    Specify address of origin for scratch-pad RAM initialization (directive \texttt{INITSPR}).
 
     \subsubsection{Syntax}
         \verb'    ORGSPR <address>'
@@ -205,7 +205,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'              FETCH           S2, my_data + 2'
 
 \asmdirective{STRING}
-    Defines a named character string (sequence of characters) which can later be used with ``LOAD \& RETURN'' and ``OUTPUTK'' instructions, and with ``DB'' directive.
+    Defines a named character string (sequence of characters) which can later be used with \texttt{LOAD \& RETURN} and \texttt{OUTPUTK} instructions, and with \texttt{DB} directive.
 
     \subsubsection{Syntax}
         \verb'    <symbol> STRING "<string>"'
@@ -238,7 +238,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'
 
 \asmdirective{ORG, ADDRESS}
-    The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With ORG or ADDRESS directive this location counter can be changed to instruct the assembler to start writing the code following the ORG directive at the new location counter position.
+    The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With \texttt{ORG} or \texttt{ADDRESS} directive this location counter can be changed to instruct the assembler to start writing the code following the \texttt{ORG} directive at the new location counter position.
 
     \subsubsection{Syntax}
         \verb'    ORG     <expression>'\\
@@ -300,7 +300,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    DB  "my string", 2+1, 3     ; Combination of string, expression, and constant.'
 
 \asmdirective{LIMIT}
-    Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or JUMP to address higher than 512, compiler reports such attempt as error.
+    Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or \texttt{JUMP} to address higher than 512, compiler reports such attempt as error.
 
     \subsubsection{Syntax}
         \verb'    LIMIT  D, <number> ; Size of scratch-pad RAM (D stands for data).'\\
@@ -313,7 +313,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
 
 \asmdirective{DEVICE}
-    Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with DEVICE directive. This will affect predefined symbols.
+    Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with \texttt{DEVICE} directive. This will affect predefined symbols.
 
     \subsubsection{Syntax}
         \verb'    DEVICE <device_name>'

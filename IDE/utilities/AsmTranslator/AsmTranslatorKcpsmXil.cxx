@@ -510,13 +510,16 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( std::vector<std::pair<u
             return false;
         }
     }
-    else if ( "jump" == instruction )
+    else if ( ( "jump" == instruction ) || ( "call" == instruction ) )
     {
-        fixRadix(lineFields, 0);
-    }
-    else if ( "call" == instruction )
-    {
-        fixRadix(lineFields, 0);
+        if ( true == lineFields.hasOperand(1) )
+        {
+            fixRadix(lineFields, 1);
+        }
+        else
+        {
+            fixRadix(lineFields, 0);
+        }
     }
     else if ( "return" == instruction )
     {
