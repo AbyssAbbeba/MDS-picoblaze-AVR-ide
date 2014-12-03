@@ -356,7 +356,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    MESSAGE "text text text..."'
 
 \asmdirective{ERROR}
-    This directive does the same things as the MESSAGE directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
+    This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
 
     \subsubsection{Syntax}
         \verb'    ERROR "error message"'
@@ -365,7 +365,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    ERROR "my error message"'
 
 \asmdirective{WARNING}
-    This directive does the same things as the MESSAGE directive but in this case the printed message is considered as a warning.
+    This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as a warning.
 
     \subsubsection{Syntax}
         \verb'WARNING "warning message"'
@@ -411,7 +411,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    endw                        ; C: }'
 
 \asmdirective{END}
-    The END directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
+    The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
 
     \subsubsection{Syntax}
         \verb'    END'
@@ -438,9 +438,9 @@ Assembler directives are commands for the assembler executed at compilation time
 \section{Code generation directives}
     MDS assembler supports several special directives for automated generation of run-time loops and conditions.
 
-    \paragraph{Loops:} Instead of writing loops with loads, compares, and jumps, you might find it to be more straightforward to use the assembler to generate them for you. You can use three types of FOR loop and one type of WHILE loop.
+    \paragraph{Loops:} Instead of writing loops with loads, compares, and jumps, you might find it to be more straightforward to use the assembler to generate them for you. You can use three types of \texttt{FOR} loop and one type of \texttt{WHILE} loop.
 
-    \paragraph{Conditions:} Instead of writing conditional branching using compares and jumps, you can let the assembler do at least some this work for you with IF, ELSEIF, ELSE, and ENDIF directives. This feature resembles C language but don't forget that you are still working with assembler, these branching directives are merely a "syntax sugar", they are translated as compare and conditional jump, nothing more.
+    \paragraph{Conditions:} Instead of writing conditional branching using compares and jumps, you can let the assembler do at least some this work for you with \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives. This feature resembles C language but don't forget that you are still working with assembler, these branching directives are merely a "syntax sugar", they are translated as compare and conditional jump, nothing more.
 
     \paragraph{Condition syntax}
         ~\\
@@ -465,7 +465,7 @@ Assembler directives are commands for the assembler executed at compilation time
         ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\#''. So immediate constants are specified with ``\#'' prefix. A value without ``\#'' is considered to be a register address.
 
     \asmdirective{IF, ELSEIF, ELSE, ENDIF}
-        You can use IF, ELSEIF, ELSE, and ENDIF directives for better readability of you code. Assembler translates these directives as predefined macros containing COMPARE, TEST, and JUMP instructions. You can use registers and immediate constants in conditions.
+        You can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
 
         \subsubsection{Syntax}
             \verb'    IF      <condition>'\\
@@ -488,7 +488,7 @@ Assembler directives are commands for the assembler executed at compilation time
             ~\\In this example, the first condition compares register S0 to immediate value of 10 (decimal). The second condition compares register at address given by ``B'' symbol to register S1, and the third condition compares two immediate values (in this case the result of comparison is known in advance and the assembler with exploit that fact and print warning).
 
     \asmdirective{WHILE}
-        Assembler translates the WHILE directive to COMPARE, TEST, and JUMP instructions to implement the loop.
+        Assembler translates the \texttt{WHILE} directive to \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions to implement the loop.
 
         \subsubsection{Syntax}
             \verb'    WHILE <condition>'\\
@@ -504,34 +504,35 @@ Assembler directives are commands for the assembler executed at compilation time
             \verb'        INC     S1              ; C:     S1++;'\\
             \verb'    ENDW                        ; C: }'
 
+    \clearpage
     \asmdirective{FOR}
-        The FOR directive provides another way how to relatively easily write a program loop, it's best demonstrated on examples (see below).
+        The \texttt{FOR} directive provides another way how to relatively easily write a program loop, it's best demonstrated on examples (see below).
 
         \subsubsection{Syntax}
             \verb'    FOR   <iterator-register>, <number-of-iterations>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'
+            \verb'    ENDW'\\
             \verb''\\
             \verb'    FOR   <iterator-register>, <start> .. <end>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'
+            \verb'    ENDW'\\
             \verb''\\
             \verb'    FOR   <iterator-register>, <start> .. <end>, <step>'\\
             \verb'          <code>'\\
             \verb'    ENDW'
 
         \subsubsection{Examples}
-            \verb'    ; In this case, S0 starts from 0 and goes up to 9 (S0 is incremented after each iteration).'
+            \verb'    ; S0 starts from 0 and goes up to 9 (S0 is incremented after each iteration).'\\
             \verb'    FOR s0, 10'\\
             \verb'        NOP'\\
-            \verb'    ENDF'
+            \verb'    ENDF'\\
             \verb''\\
-            \verb'    ; In this case, S0 goes from 10 to 15 (6 iterations: 10, 11, 12, 13, 14, 15).'
+            \verb'    ; S0 goes from 10 to 15 (6 iterations: 10, 11, 12, 13, 14, 15).'\\
             \verb'    FOR s0, 10..15'\\
             \verb'        NOP'\\
-            \verb'    ENDF'
+            \verb'    ENDF'\\
             \verb''\\
-            \verb'    ; In this case, S0 goes from 10 to 50 by steps of 10 (5 iterations: 10, 20, 30, 40, 50).'\\
+            \verb'    ; S0 goes from 10 to 50 by steps of 10 (5 iterations: 10, 20, 30, 40, 50).'\\
             \verb'    FOR s0, 10..50, 10'\\
             \verb'        NOP'\\
             \verb'    ENDF'
@@ -541,18 +542,18 @@ Assembler directives are commands for the assembler executed at compilation time
     Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code. Macros can have no parameters or any number of parameters (number of parameters is unlimited).
 
     \subsection{Syntax}
-        \verb'    MACRO     [<parameter1>]  [,<parameter2>..]'\\
-        \verb'        <code>'\\
+        \verb'    <name-of-macro>  MACRO  [<parameter1>]  [, <parameter2> ...]'\\
+        \verb'                     <code>'\\
         \verb'    ENDM'
 
         \begin{table}[h!]
             \begin{tabular}{|ll|}
                 \hline
-                MACRO      & Define a new macro. \\
-                ENDM       & End of macro definition. \\
-                EXITM      & Exit macro expansion. \\
-                EXPAND     & Disable macro expansions.\\
-                NOEXPAND   & (Re-)enable macro expansions.\\
+                \texttt{MACRO}      & Define a new macro. \\
+                \texttt{ENDM}       & End of macro definition. \\
+                \texttt{EXITM}      & Exit macro expansion. \\
+                \texttt{EXPAND}     & Disable macro expansions.\\
+                \texttt{NOEXPAND}   & (Re-)enable macro expansions.\\
                 \hline
             \end{tabular}
             \caption{Macro processing directives.}
@@ -612,7 +613,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    ;       load    s0, 1'\\
         \verb''\\
         \verb'            abc     s0, 3'\\
-        \verb'    ; But this produces different result because of the exitm directive:'\\
+        \verb'    ; But this produces different result because of the EXITM directive:'\\
         \verb'    ;       load    s0, #1'\\
 
     \subsection{Local symbols}
@@ -638,16 +639,16 @@ Assembler directives are commands for the assembler executed at compilation time
     The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these directives to cope with conditional assembly:
 
     \begin{itemize}
-        \item \#IF     <condition>
-        \item \#IFN    <condition>
-        \item \#IFDEF  <symbol>
-        \item \#IFNDEF <symbol>
-        \item \#ELSE
-        \item \#ELSEIF     <condition>
-        \item \#ELSEIFN    <condition>
-        \item \#ELSEIFDEF  <symbol>
-        \item \#ELSEIFNDEF <symbol>
-        \item \#ENDIF
+        \item \texttt{\#IF}     <condition>
+        \item \texttt{\#IFN}    <condition>
+        \item \texttt{\#IFDEF}  <symbol>
+        \item \texttt{\#IFNDEF} <symbol>
+        \item \texttt{\#ELSE}
+        \item \texttt{\#ELSEIF}     <condition>
+        \item \texttt{\#ELSEIFN}    <condition>
+        \item \texttt{\#ELSEIFDEF}  <symbol>
+        \item \texttt{\#ELSEIFNDEF} <symbol>
+        \item \texttt{\#ENDIF}
     \end{itemize}
 
     \subsection{Example}
