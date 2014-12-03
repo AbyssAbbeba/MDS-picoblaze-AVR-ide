@@ -14,6 +14,7 @@
 // =============================================================================
 
 #include "PicoBlazeInterruptController.h"
+#include "PicoBlazeRegisters.h"
 
 PicoBlazeInterruptController::PicoBlazeInterruptController()
 {
