@@ -77,6 +77,7 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectAll();
         void shortcutDeselect();
         void shortcutComment();
+        void shortcutDeleteComment();
         void shortcutJmpToBookmarkNext();
         void shortcutJmpToBookmarkPrev();
         void shortcutJmpToLine();
@@ -96,6 +97,9 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectWordRight();
         void shortcutUndo();
         void shortcutRedo();
+        void shortcutChangeTabLeft();
+        void shortcutChangeTabRight();
+        void shortcutCloseTab();
         //void editedUndo();
         //void editedRedo();
         //void editedCut();
@@ -119,6 +123,8 @@ class WTextEdit : public QPlainTextEdit
         void jumpToLineDialog();
         void updateStatusBar();
         void editorReadOnly(bool readOnly);
+        void closeTab();
+        void changeTab(bool next);
 
     //private slots:
     //    void updateUndoRedo(int position, int charsRemoved, int charsAdded);
@@ -146,6 +152,7 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectAll;
         QShortcut *shctDeselect;
         QShortcut *shctComment;
+        QShortcut *shctDeleteComment;
         QShortcut *shctJmpToBookmarkNext;
         QShortcut *shctJmpToBookmarkPrev;
         QShortcut *shctJmpToLine;
@@ -165,6 +172,9 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectWordRight;
         QShortcut *shctUndo;
         QShortcut *shctRedo;
+        QShortcut *shctCloseTab;
+        QShortcut *shctChangeTabLeft;
+        QShortcut *shctChangeTabRight;
         
 
 

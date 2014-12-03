@@ -208,7 +208,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             {
                 if (true == this->tabToSpaces)
                 {
-                    //TODO:
+                    //qDebug() << "WTextEdit: backtab";
                     int prevPosStart = cursor.selectionStart();
                     int prevPosEnd = cursor.selectionEnd();
                     QString line;
@@ -236,7 +236,17 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                                 break;
                             }
                         }
-                        spacesToInsert = spaces%this->spacesInTab;
+                        if (spaces > 0)
+                        {
+                            if (spaces%this->spacesInTab != 0)
+                            {
+                                spacesToInsert = spaces%this->spacesInTab;
+                            }
+                            else
+                            {
+                                spacesToInsert = this->spacesInTab;
+                            }
+                        }
                         for (int i = 0; i < spacesToInsert; i++)
                         {
                             cursor.deleteChar();
@@ -1140,6 +1150,7 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectAll->setEnabled(!readOnly);
     shctDeselect->setEnabled(!readOnly);
     shctComment->setEnabled(!readOnly);
+    shctDeleteComment->setEnabled(!readOnly);
     shctJmpToBookmarkNext->setEnabled(!readOnly);
     shctJmpToBookmarkPrev->setEnabled(!readOnly);
     shctJmpToLine->setEnabled(!readOnly);
@@ -1159,6 +1170,9 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectWordRight->setEnabled(!readOnly);
     shctUndo->setEnabled(!readOnly);
     shctRedo->setEnabled(!readOnly);
+    shctCloseTab->setEnabled(!readOnly);
+    shctChangeTabLeft->setEnabled(!readOnly);
+    shctChangeTabRight->setEnabled(!readOnly);
     emit editorReadOnly(readOnly);
     if (false == this->isReadOnly())
     {
@@ -1202,6 +1216,9 @@ void WTextEdit::setShortcuts()
     shctComment = new QShortcut(this);
     shctComment->setKey(Qt::CTRL + Qt::Key_D);
     connect(shctComment, SIGNAL(activated()), this, SLOT(shortcutComment()));
+    shctDeleteComment = new QShortcut(this);
+    shctDeleteComment->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_D);
+    connect(shctDeleteComment, SIGNAL(activated()), this, SLOT(shortcutDeleteComment()));
     shctJmpToBookmarkNext = new QShortcut(this);
     shctJmpToBookmarkNext->setKey(Qt::ALT + Qt::Key_PageUp);
     connect(shctJmpToBookmarkNext, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkNext()));
@@ -1259,6 +1276,15 @@ void WTextEdit::setShortcuts()
     shctRedo = new QShortcut(this);
     shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
     connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
+    shctCloseTab = new QShortcut(this);
+    shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
+    connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
+    shctChangeTabLeft = new QShortcut(this);
+    shctChangeTabLeft->setKey(Qt::CTRL + Qt::Key_Left);
+    connect(shctChangeTabLeft, SIGNAL(activated()), this, SLOT(shortcutChangeTabLeft()));
+    shctChangeTabRight = new QShortcut(this);
+    shctChangeTabRight->setKey(Qt::CTRL + Qt::Key_Right);
+    connect(shctChangeTabRight, SIGNAL(activated()), this, SLOT(shortcutChangeTabRight()));
 }
 
 
@@ -1353,6 +1379,69 @@ void WTextEdit::shortcutComment()
             cursor.setPosition(cursor.position() + linePos);
         }
     }
+}
+
+
+void WTextEdit::shortcutDeleteComment()
+{
+    QTextCursor cursor(this->textCursor());
+    if (true == cursor.hasSelection())
+    {
+        if (cursor.selectedText().startsWith("/*") && cursor.selectedText().endsWith("*/"))
+        {
+            QString text = cursor.selectedText();
+            text.remove(0, 2);
+            text.remove(text.size() - 2, 2);
+            cursor.removeSelectedText();
+            cursor.insertText(text);
+        }
+        else
+        {
+            QTextBlock block = this->document()->findBlock(cursor.selectionStart());
+            QTextBlock blockEnd = this->document()->findBlock(cursor.selectionEnd());
+            int startPos = cursor.selectionStart();
+            int endPos = cursor.selectionEnd();
+            cursor.setPosition(cursor.selectionStart());
+            bool notOnBlockStart = (cursor.positionInBlock() > 0);
+            
+            cursor.setPosition(cursor.position() - cursor.positionInBlock());
+            if (cursor.block().text().startsWith(";"))
+            {
+                cursor.deleteChar();
+                if (true == notOnBlockStart)
+                {
+                    startPos--;
+                }
+                endPos--;
+            }
+            while (block != blockEnd)
+            {
+                block = block.next();
+                cursor.setPosition(block.position());
+                if (block.text().startsWith(";"))
+                {
+                    cursor.deleteChar();
+                    endPos--;
+                }
+            }
+            cursor.setPosition(startPos);
+            cursor.setPosition(endPos, QTextCursor::KeepAnchor);
+        }
+    }
+    else
+    {
+        int linePos = cursor.positionInBlock();
+        if (cursor.block().text().startsWith(";"))
+        {
+            cursor.deleteChar();
+            cursor.setPosition(cursor.position() + linePos - 1);
+        }
+        else
+        {
+            cursor.setPosition(cursor.position() + linePos);
+        }
+    }
+    this->setTextCursor(cursor);
 }
 
 
@@ -1516,4 +1605,22 @@ void WTextEdit::shortcutUndo()
 void WTextEdit::shortcutRedo()
 {
     this->redo();
+}
+
+
+void WTextEdit::shortcutCloseTab()
+{
+    emit closeTab();
+}
+
+
+void WTextEdit::shortcutChangeTabLeft()
+{
+    emit changeTab(false);
+}
+
+
+void WTextEdit::shortcutChangeTabRight()
+{
+    emit changeTab(true);
 }
