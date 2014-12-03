@@ -1,5 +1,5 @@
 \definecolor{asmdirective_bg}{rgb}{0.7, 1.0, 0.7}
-\newcommand{\asmdirective}[1]{~\\[7pt]\addcontentsline{toc}{subsubsection}{#1}\colorbox{asmdirective_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
+\newcommand{\asmdirective}[1]{~\\[7pt]\addcontentsline{toc}{subsection}{#1}\colorbox{asmdirective_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
 
 Assembler directives are commands for the assembler executed at compilation time, their purpose is to instruct the assembler how to compile your code, to define constants, implement conditional compilation, and evaluate various things at compilation time.
 
@@ -235,7 +235,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb''\\
         \verb''\\
         \verb'    X     DEFINE  ( {0} + {1} )   ; Value of C is unknown for now.'\\
-        \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'\\
+        \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'
 
 \asmdirective{ORG, ADDRESS}
     The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With ORG or ADDRESS directive this location counter can be changed to instruct the assembler to start writing the code following the ORG directive at the new location counter position.
@@ -248,6 +248,130 @@ Assembler directives are commands for the assembler executed at compilation time
     \subsubsection{Examples}
         \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
         \verb'    JUMP  handle_interrupt'
+
+\asmdirective{SKIP}
+    Do not initialize the given number of program memory words and skip to the next nearest location.
+
+    \subsubsection{Syntax}
+        \verb'    SKIP <expression>'
+
+    \subsubsection{Examples}
+        \verb'    ORG   0'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x0.'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x1.'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x2.'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x3.'\\
+        \verb'    SKIP  5          ; Skip next 5 program memory locations.'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x8.'\\
+        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x9.'
+
+\asmdirective{UNDEFINE, UNDEF}
+    All symbols can be undefined, undefined symbols are be deleted from the symbol table and compiler will not recognize them.
+
+    \subsubsection{Syntax}
+        \verb'    UNDEFINE <symbol>'\\
+        \verb'    UNDEF    <symbol>'
+
+    \subsubsection{Examples}
+        \verb'    symbol  SET     15'\\
+        \verb'            LOAD    S0, #symbol'\\
+        \verb'            UNDEF   symbol'\\
+        \verb'            LOAD    s0, #symbol  ; This will cause compilation error.'
+
+\asmdirective{DB}
+    This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
+
+    \subsubsection{Syntax}
+        \verb'    ; Expresion syntax'\\
+        \verb'    DB  <expression1>  [, <expression2>, ...]'\\
+        \verb''\\
+        \verb'    ; String syntax'\\
+        \verb'    DB <"string">'\\
+        \verb''\\
+        \verb'    ; Combination of string(s) and expression(s)'\\
+        \verb'    DB <"string"> [, <expression1>, ...]'
+
+        Parameter can be unlimited number of string characters, or expressions divided by comma.
+
+
+    \subsubsection{Examples}
+        \verb'    DB  0x060FC                 ; Constant.'\\
+        \verb'    DB  "my string"             ; String.'\\
+        \verb'    DB  "my string", 2+1, 3     ; Combination of string, expression, and constant.'
+
+\asmdirective{LIMIT}
+    Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or JUMP to address higher than 512, compiler reports such attempt as error.
+
+    \subsubsection{Syntax}
+        \verb'    LIMIT  D, <number> ; Size of scratch-pad RAM (D stands for data).'\\
+        \verb'    LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
+        \verb'    LIMIT  C, <number> ; Size of program memory (C stands for code).'
+
+    \subsubsection{Examples}
+        \verb'    LIMIT  R, 8   ; Limit maximum register address to 7.'\\
+        \verb'    LIMIT  D, 32  ; Limit maximum address in scratch-pad ram to 31. '\\
+        \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
+
+\asmdirective{DEVICE}
+    Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with DEVICE directive. This will affect predefined symbols.
+
+    \subsubsection{Syntax}
+        \verb'    DEVICE <device_name>'
+
+    \subsubsection{Examples}
+        \verb'    DEVICE kcpsm6'\\
+        \verb'    DEVICE kcpsm3'\\
+        \verb'    DEVICE kcpsm2'\\
+        \verb'    DEVICE kcpsm1'\\
+        \verb'    DEVICE kcpsm1cpld'
+
+\asmdirective{LIST, NOLIST}
+    Temporarily turns on and off output to the code listing.
+
+    \subsubsection{Syntax}
+        \verb'    LIST    ; Turn code listing ON.'\\
+        \verb'    NOLIST  ; Turn code listing OFF.'
+
+    \subsubsection{Examples}
+        \verb'    NOLIST'\\
+        \verb'    INCLUDE "some_file.asm" ; The included file will not appear in the code listing.'\\
+        \verb'    LIST'
+
+\asmdirective{TITLE}
+    Set title for code listing.
+
+    \subsubsection{Syntax}
+        \verb'    TITLE  "<title text>"'
+
+    \subsubsection{Examples}
+        \verb'    TITLE  "My program for something, etc."'
+
+\asmdirective{MESSAGE}
+    Print compiler message, the message will be printed by the compiler in the same was as errors and warnings are. Such message, however, is not considered to be neither error nor warning.
+
+    \subsubsection{Syntax}
+        \verb'    MESSAGE "some message..."'
+
+    \subsubsection{Examples}
+        \verb'    MESSAGE "text text text..."'
+
+\asmdirective{ERROR}
+    This directive does the same things as the MESSAGE directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
+
+    \subsubsection{Syntax}
+        \verb'    ERROR "error message"'
+
+    \subsubsection{Examples}
+        \verb'    ERROR "my error message"'
+
+\asmdirective{WARNING}
+    This directive does the same things as the MESSAGE directive but in this case the printed message is considered as a warning.
+
+    \subsubsection{Syntax}
+        \verb'WARNING "warning message"'
+
+    \subsubsection{Examples}
+        \verb'WARNING "my warning message"'
 
 \asmdirective{REPT}
     Repeats the specified block of code for the specified number of times.
@@ -286,273 +410,155 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'        inc     S1              ; C:     S1++;'\\
         \verb'    endw                        ; C: }'
 
-\asmdirective{SKIP}
-    \subsubsection{Syntax}
-        \verb'    SKIP <expression>'
-
-    \subsubsection{Examples}
-
-\asmdirective{UNDEFINE, UNDEF}
-    All symbols can be UNDEFINED. Those symbols will be deleted from symbol table (file .sym) and compiler will not recognize them.
-
-    \subsubsection{Syntax}
-        \verb'UNDEFINE <symbol>'\\
-        \verb'UNDEF    <symbol>'
-
-    \subsubsection{Examples}
-        \verb'My_symbol             SET             15'\\
-        \verb'LOAD                  s0, #My_symbol'\\
-        \verb'UNDEFINE              My_symbol               ; My_symbol undeclared, cannot be used'\\
-        \verb'LOAD                  s0, #My_symbol          ; this will cause an error'
-
-\asmdirective{DB}
-    The DB directive initializes code memory with 18-bit values. The assembler accepts size up to 24-bit but trims 6 MSB bits making it 18-bit value, so it can fit into program memory. You can insert infinite number of string characters and MDS assembler separates them into triplets of bytes replaced with their ASCII value. The assembler then trims upper 6 bits making it 18-bit value. See the examples for better understanding of DB directive.
-
-    \subsubsection{Syntax}
-        \verb'; Expresion syntax'\\
-        \verb'DB  <expression1>  [, <expression2>, ...]'\\
-        \verb''\\
-        \verb'; String syntax'\\
-        \verb'DB <"string">'\\
-        \verb''\\
-        \verb'; Combination of string(s) and expression(s)'\\
-        \verb'DB <"string"> [, <expression1>, ...]'
-
-        Parameter can be unlimited number of string characters, or expressions divided by comma.
-
-
-    \subsubsection{Examples}
-        \verb'DB      0x060FC                 ; Hexadecimal 0x060FC'\\
-        \verb'DB      "my string"             ; String.'\\
-        \verb'DB      "my string",2+1,3...    ; Combination of string and expressions.'\\
-
-\asmdirective{LIMIT}
-    Useful when you want to change max. number of registers or size of  data and program memory. It is information for compiler. In this example when you want to use 17 registers or JUMP to address bigger than 512, compiler gives you an error.
-
-    \subsubsection{Syntax}
-        \verb'LIMIT  D, <number> ; Size of scratch-pad RAM(D stands for data).'\\
-        \verb'LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
-        \verb'LIMIT  C, <number> ; Size of program memory (C stands for code).'\\
-
-    \subsubsection{Examples}
-        \verb'LIMIT          R,16                   ; Number of registers 16'\\
-        \verb'LIMIT          D,7                    ; Size of scratch-pad ram   '\\
-        \verb'LIMIT          C,0b100000000          ; Size of program memory '\\
-
-\asmdirective{DEVICE}
-    Normally, you choose the target architecture when you are creating a project. But you can also specific architecture with directive DEVICE. This will affect predefined symbols.
-
-    \subsubsection{Syntax}
-        \verb'DEVICE <device_name>'
-
-    \subsubsection{Examples}
-        \verb'DEVICE kcpsm6'\\
-        \verb'DEVICE kcpsm3'\\
-        \verb'DEVICE kcpsm2'\\
-        \verb'DEVICE kcpsm1'\\
-        \verb'DEVICE kcpsm1cpld'
-
-\asmdirective{LIST, NOLIST}
-    You can turn on/off printing to code listing in some parts of your code.
-
-    \subsubsection{Syntax}
-        \verb'LIST'\\
-        \verb'NOLIST'
-
-\asmdirective{TITLE}
-    This will put a title into corresponding line in code listing.
-
-    \subsubsection{Syntax}
-        \verb'TITLE "<title text>"'
-
-    \subsubsection{Examples}
-        \verb'TITLE         "Text, that will show up in the code listing"'
-
-\asmdirective{MESSAGE}
-    You can define message, that will show up after compilation.
-
-    \subsubsection{Syntax}
-        \verb'MESSAGE "<message text>"'
-
-    \subsubsection{Examples}
-        \verb'MESSAGE         "Text, that will show up in the code listing"'
-
-\asmdirective{ERROR}
-    You can define an error report, which aborts compilation when is executed.
-
-    \subsubsection{Syntax}
-        \verb'ERROR "<error message>"'
-
-    \subsubsection{Examples}
-        \verb'ERROR         "Text, that will show up in the code listing"'
-
-\asmdirective{WARNING}
-    This will put title into corresponding line in code listing.
-
-    \subsubsection{Syntax}
-        \verb'WARNING "<warning message>"'
-
-    \subsubsection{Examples}
-        \verb'WARNING         "Text, that will show up in the code listing"'
-
-\asmdirective{LOCAL}
-    This directive is used to define local variables in macros, so when you expand macro multiple times, there will be no redefinition of labels or symbols.
-
-    \subsubsection{Syntax}
-        \verb'LOCAL <name>'
-
-    \subsubsection{Examples}
-        \verb'MACRO         name_of_macro'\\
-        \verb'LOCAL         wait'\\
-        \verb'wait:'\\
-        \verb'SUBCY         s0,#10h'\\
-        \verb'SUB           s0,#1h' \\
-        \verb'LOAD          s0,#F0h'\\
-        \verb'JUMP          C,wait'\\
-        \verb'ENDM'
-
 \asmdirective{END}
-    The END directive informs the assembler, that it has reached the end of a source file. Compiler ignores following code, so it doesn't have to be syntactically correct.
+    The END directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
 
     \subsubsection{Syntax}
-        \verb'END'
+        \verb'    END'
 
     \subsubsection{Examples}
-            \verb'END'
+        \verb'    LOAD  S0, S1'\\
+        \verb'    END'\\
+        \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
 
-\asmdirective{FAILJMP,DEFAULT\_JUMP}
-    Fills program memory with jump to the specified address. Simple protection against errors.
+\asmdirective{FAILJMP, DEFAULT\_JUMP}
+    Fills program memory with jumps to the specified address. Purpose of this directive is to provide a simple means of protection against random errors.
 
     \subsubsection{Syntax}
-        \verb'FAILJMP     <expression>'\\
-        \verb'DEFAULT_JMP <expression>'
+        \verb'    FAILJMP     <expression>'\\
+        \verb'    DEFAULT_JMP <expression>'
 
     \subsubsection{Examples}
-        \verb'FAILJMP                   Start'\\
-        \verb'DEFAULT\_JUMP             0x000'
+        \verb'    something_is_wrong:'\\
+        \verb'          ; ... do something ...'\\
+        \verb''\\
+        \verb'    FAILJMP  something_is_wrong'
 
+\clearpage
 \section{Code generation directives}
-MDS assembler contains some special directives, which are evaluated during run time sequence. You can use them to evaluate simple conditions in your program. Those directives are IF, ELSEIF, WHILE, FOR.\\ Not all conditions allowed by assembler can be used. Table of allowed instructions is displayed below.
+    MDS assembler supports several special directives for automated generation of run-time loops and conditions.
 
-\begin{table}[h!]
-    \mysmallfont{}
-    \centering{}
-    \begin{tabular}{|c|c|}
-        \hline
-        Condition operator & Example  \\
-        \verb'=='          & \verb'A == B'  \\
-        \verb'!='          & \verb'A != B'  \\
-        \verb'>'           & \verb'A >  B'  \\
-        \verb'<'           & \verb'A <  B'  \\
-        \verb'>='          & \verb'A >= B'  \\
-        \verb'<='          & \verb'A <= B'  \\
-        \verb'&'           & \verb'A &  B'  \\
-        \verb'!&'          & \verb'A !& B'  \\\hline
-    \end{tabular}
-    \caption{Allowed conditions with IF, WHILE}
-\end{table}
+    \paragraph{Loops:} Instead of writing loops with loads, compares, and jumps, you might find it to be more straightforward to use the assembler to generate them for you. You can use three types of FOR loop and one type of WHILE loop.
 
-\asmdirective{IF}
-    \subsubsection{Syntax}
-        \verb'IF      <condition>'\\
+    \paragraph{Conditions:} Instead of writing conditional branching using compares and jumps, you can let the assembler do at least some this work for you with IF, ELSEIF, ELSE, and ENDIF directives. This feature resembles C language but don't forget that you are still working with assembler, these branching directives are merely a "syntax sugar", they are translated as compare and conditional jump, nothing more.
+
+    \paragraph{Condition syntax}
+        ~\\
+        \begin{table}[h!]
+            \mysmallfont{}
+            \centering{}
+            \begin{tabular}{|c|c|}
+                \hline
+                Condition & Example  \\
+                \verb'A == B' & \verb'S0 == S1' \\
+                \verb'A != B' & \verb'S0 != #0xA5' \\
+                \verb'A >  B' & \verb'#(0x5A + 2) > S0' \\
+                \verb'A <  B' & \verb'#A < my_reg' \\
+                \verb'A >= B' & \verb'A >= #B' \\
+                \verb'A <= B' & \verb'S4 <= #B' \\
+                \verb'A &  B' & \verb'#A & S0' \\
+                \verb'A !& B' & \verb'S0 !& S0' \\\hline
+            \end{tabular}
+            \caption{Condition syntax used for all code generation directives.}
+        \end{table}
+
+        ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\#''. So immediate constants are specified with ``\#'' prefix. A value without ``\#'' is considered to be a register address.
+
+    \asmdirective{IF, ELSEIF, ELSE, ENDIF}
+        You can use IF, ELSEIF, ELSE, and ENDIF directives for better readability of you code. Assembler translates these directives as predefined macros containing COMPARE, TEST, and JUMP instructions. You can use registers and immediate constants in conditions.
+
+        \subsubsection{Syntax}
+            \verb'    IF      <condition>'\\
+            \verb'        <code>'\\
+            \verb'    ELSEIF  <condition>'\\
+            \verb'        <code>'\\
+            \verb'    ELSE'\\
+            \verb'        <code>'\\
+            \verb'    ENDIF'
+
+        \subsubsection{Example}
+            \verb'    IF          s0 == #10         ; Register to immediate value.'\\
+            \verb'        LOAD    s0, #10h'\\
+            \verb'    ELSEIF      B >= S1           ; Register to register.'\\
+            \verb'        SR0     s0'\\
+            \verb'    ELSE        #0x5 >= #0x6      ; Immediate value to immediate value.'\\
+            \verb'        INPUT   s0,RX_data'\\
+            \verb'    ENDIF'
+
+            ~\\In this example, the first condition compares register S0 to immediate value of 10 (decimal). The second condition compares register at address given by ``B'' symbol to register S1, and the third condition compares two immediate values (in this case the result of comparison is known in advance and the assembler with exploit that fact and print warning).
+
+    \asmdirective{WHILE}
+        Assembler translates the WHILE directive to COMPARE, TEST, and JUMP instructions to implement the loop.
+
+        \subsubsection{Syntax}
+            \verb'    WHILE <condition>'\\
+            \verb'          <code>'\\
+            \verb'    ENDW'
+
+        \subsubsection{Example}
+            \verb'    LOAD        S0, #0xAA       ; (value to output)'\\
+            \verb'    LOAD        S1, #0          ; (starting address)'\\
+            \verb''\\
+            \verb'    WHILE       S1 < #5         ; C: while ( S1 < 5 ) {'\\
+            \verb'        OUTPUT  S0, @S1         ; C:     S0 = *S1;'\\
+            \verb'        INC     S1              ; C:     S1++;'\\
+            \verb'    ENDW                        ; C: }'
+
+    \asmdirective{FOR}
+        The FOR directive provides another way how to relatively easily write a program loop, it's best demonstrated on examples (see below).
+
+        \subsubsection{Syntax}
+            \verb'    FOR   <iterator-register>, <number-of-iterations>'\\
+            \verb'          <code>'\\
+            \verb'    ENDW'
+            \verb''\\
+            \verb'    FOR   <iterator-register>, <start> .. <end>'\\
+            \verb'          <code>'\\
+            \verb'    ENDW'
+            \verb''\\
+            \verb'    FOR   <iterator-register>, <start> .. <end>, <step>'\\
+            \verb'          <code>'\\
+            \verb'    ENDW'
+
+        \subsubsection{Examples}
+            \verb'    ; In this case, S0 starts from 0 and goes up to 9 (S0 is incremented after each iteration).'
+            \verb'    FOR s0, 10'\\
+            \verb'        NOP'\\
+            \verb'    ENDF'
+            \verb''\\
+            \verb'    ; In this case, S0 goes from 10 to 15 (6 iterations: 10, 11, 12, 13, 14, 15).'
+            \verb'    FOR s0, 10..15'\\
+            \verb'        NOP'\\
+            \verb'    ENDF'
+            \verb''\\
+            \verb'    ; In this case, S0 goes from 10 to 50 by steps of 10 (5 iterations: 10, 20, 30, 40, 50).'\\
+            \verb'    FOR s0, 10..50, 10'\\
+            \verb'        NOP'\\
+            \verb'    ENDF'
+
+\clearpage
+\section{Macro processing}
+    Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code. Macros can have no parameters or any number of parameters (number of parameters is unlimited).
+
+    \subsection{Syntax}
+        \verb'    MACRO     [<parameter1>]  [,<parameter2>..]'\\
         \verb'        <code>'\\
-        \verb'ELSEIF  <condition>'\\
-        \verb'        <code>'\\
-        \verb'ELSE'\\
-        \verb'        <code>'\\
-        \verb'ENDIF'
+        \verb'    ENDM'
 
-    \subsubsection{Description}
-        You can use RT\_IF for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax. In example below, first condition is comparing register with constant 10. Second condition compares symbol with constant and third condition compares symbol with register address. So 5 would have been replaced with value stored in register with address 5.
+        \begin{table}[h!]
+            \begin{tabular}{|ll|}
+                \hline
+                MACRO      & Define a new macro. \\
+                ENDM       & End of macro definition. \\
+                EXITM      & Exit macro expansion. \\
+                EXPAND     & Disable macro expansions.\\
+                NOEXPAND   & (Re-)enable macro expansions.\\
+                \hline
+            \end{tabular}
+            \caption{Macro processing directives.}
+        \end{table}
 
-    \subsubsection{Examples}
-        \verb'IF      s0 == #10'\\
-        \verb'        LOAD  s0, #10h'\\
-        \verb'ELSEIF  B >= #100'\\
-        \verb'        SR0   s0'\\
-        \verb'ELSE    A >= 5'\\
-        \verb'        INPUT   s0,RX_data'\\
-        \verb'ENDIF'
-
-\asmdirective{WHILE}
-    \subsubsection{Syntax}
-        \verb'WHILE <condition>'\\
-        \verb'      <code>'\\
-        \verb'ENDW'
-
-    \subsubsection{Description}
-        You can use WHILE for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. You can use registers, immediate constants (symbols) or register address. Immediate constants are specified as number with \# prefix. Number without \# is considered as register address. See example for conditions syntax.
-
-    \subsubsection{Examples}
-        \verb'WHILE s0 == #10'\\
-        \verb'      ADDCY S1,#1'\\
-        \verb'ENDW'
-        \verb''\\
-        \verb'WHILE s0 > #10'\\
-        \verb'      ADDCY S1,#1'\\
-        \verb'ENDW'
-        \verb''\\
-        \verb'WHILE s0  != #10'\\
-        \verb'      ADDCY S1,#1'\\
-        \verb'ENDW'
-
-\asmdirective{FOR}
-    \subsubsection{Syntax}
-        \verb'FOR   <condition>'\\
-        \verb'      <code>'\\
-        \verb'ENDW'
-
-    \subsubsection{Description}
-        You can use FOR for better readability of you code. Compiler translates this directive as predefined MACRO with instructions COMPARE and TEST and evaluates result. There are three types of FOR conditions. In first, you have to write the name of used register and number of repetitions. In this case, counting starts at number 0 and incrementing to number of repetitions. In second type, you write used register and range of repetitions ( for example 5..10). In third type, you can even define size of one step, so incremented number can be for some reason bigger. See examples for better understanding.\\ WARNING: Using FOR directive will override used register( s0 in example)
-
-    \subsubsection{Examples}
-        \verb'; In this case, incrementing is from 0 to 10. Incrementing step is 1.'
-        \verb'FOR   s0, 10'\\
-        \verb'      NOP'\\
-        \verb'ENDF'
-        \verb''\\
-        \verb'; In this case, incrementing is in the range 10 to 20. Incrementing step is 1.'
-        \verb'FOR   s0, 10..20'\\
-        \verb'      NOP'\\
-        \verb'ENDF'
-        \verb''\\
-        \verb'; In this case, incrementing is from 10 to 50. Last number defines'\\
-        \verb'; incrementing step. (In this case 10).'\\
-        \verb'FOR   s0, 10..50, 10'\\
-        \verb'      NOP'\\
-        \verb'ENDF'
-
-\section{Macro instructions}
-Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code.
-
-\asmdirective{Syntax}
-    \verb'MACRO     [<parameter1>]  [,<parameter2>..]'\\
-    \verb'          <macro source code>'\\
-    \verb'ENDM      ; end of macro definition'
-    \verb''~\\
-    \verb'EXPAND    ; Expanding of macros enabled'\\
-    \verb'NOEXPAND  ; Expanding of macros disabled'
-
-    \begin{table}[h!]
-        \begin{tabular}{|ll|}
-            \hline
-            MACRO      & Define a new macro \\
-            EXITM      & Exit macro  \\
-            ENDM       & End of macro definition \\
-            EXPAND     & After usage of this directive, expanding of macros is allowed.(turned on by default)\\
-            NOEXPAND   & After usage of this directive, no expanding of macros is allowed.\\
-            \hline
-        \end{tabular}
-        \caption{Macro commands}
-    \end{table}
-
-\asmdirective{Description}
-    Standard macro, consisting of name, code and optional exit command. Macro can be expanded only after his declaration. You can use macro with no parameters  or unlimited number of parameters.
-
-\asmdirective{Examples}
-    This can be well demonstrated on examples:\\
-    {
-        \usecodefont
+    \subsection{Examples}
         \verb'abc           macro           ; Define named macro '\\
         \verb'      load    s2,s0'\\
         \verb'      add     s2,#1'\\
@@ -567,11 +573,7 @@ Macro is a sequence of instructions which can be expanded anywhere in the code a
         \verb'      load    s2,s0'\\
         \verb'      add     s2,#1'\\
         \verb'      load    s1,s2'\\
-    }
 
-    Macro without parameters.\\
-    {
-        \usecodefont
         \verb'; Define macro named as "xyz" with two mandatory parameters'\\
         \verb'xyz       macro   foo, bar'\\
         \verb'          load    foo, #10h'\\
@@ -586,11 +588,7 @@ Macro is a sequence of instructions which can be expanded anywhere in the code a
         \verb'; xyz     s5,s5'\\
         \verb'          load    s5, #10h'\\
         \verb'          add     s5, #1'\\
-    }
 
-    An example of named macro with two parameters.\\
-    {
-        \usecodefont
         \verb'ijk           macro   foo'\\
         \verb'          add     s1,s0'\\
         \verb''\\
@@ -613,52 +611,65 @@ Macro is a sequence of instructions which can be expanded anywhere in the code a
         \verb'          if    4 = 4d'\\
         \verb'              nop'\\
         \verb'          endif'\\
-        \verb'          sub     s1,#4'\\
-    }
+        \verb'          sub     s1,#4'
 
-    An example of named macro used with if statement.
+    \subsection{Local symbols}
+        \asmdirective{LOCAL}
+            Declares a symbol as local for the macro in which it appears.
 
+            \subsubsection{Syntax}
+                \verb'    LOCAL <symbols>'
+
+            \subsubsection{Example}
+                \verb'    MACRO            my_macro'\\
+                \verb'            LOCAL    wait'\\
+                \verb''\\
+                \verb'        wait:'\\
+                \verb'            SUBCY    S0, #0x10'\\
+                \verb'            SUB      S0, #0x01' \\
+                \verb'            LOAD     S0, #0xF0'\\
+                \verb'            JUMP     C,  wait'\\
+                \verb'    ENDM'
+
+\clearpage
 \section{Conditional Assembly}
-The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these instructions to work with conditional assembly:
+    The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these directives to cope with conditional assembly:
 
-\begin{itemize}
-    \item IF <condition>
-    \item IFN <condition>
-    \item IFDEF <symbol>
-    \item IFNDEF <symbol>
-    \item ELSE
-    \item ELSEIF <condition>
-    \item ELSEIFN <condition>
-    \item ELSEIFDEF <symbol>
-    \item ELSEIFNDEF <symbol>
-    \item ENDIF
-\end{itemize}
+    \begin{itemize}
+        \item \#IF     <condition>
+        \item \#IFN    <condition>
+        \item \#IFDEF  <symbol>
+        \item \#IFNDEF <symbol>
+        \item \#ELSE
+        \item \#ELSEIF     <condition>
+        \item \#ELSEIFN    <condition>
+        \item \#ELSEIFDEF  <symbol>
+        \item \#ELSEIFNDEF <symbol>
+        \item \#ENDIF
+    \end{itemize}
 
-This can be best demonstrated on an example:
-\begin{code}[h!]
-    \mysmallfont{}
-    \verb'abc     equ     14              ; Assign number 14 to symbol abc'\\
-    \verb'xyz     equ     10              ; Assign number 10 to symbol abc'\\
-    \verb''\\
-    \verb'ifdef abc                       ;<--+ Assemble only if symbol abc has been defined'\\
-    \verb'  if ( abc = 13 )               ;   | <--+ Assemble if 13 has been assigned to symbol abc'\\
-    \verb'        load     a, #01010101b  ;   |    |'\\
-    \verb'  elseif ( abc = 14 )           ;   | <--+ Assemble if 14 has been assigned to symbol abc'\\
-    \verb'        load     a, #0aah       ;   |    |'\\
-    \verb'  elseifn ( abc % 2 )           ;   | <--+ Assemble if the value assigned to symbol abc is even'\\
-    \verb'        load     a, #abc        ;   |    |'\\
-    \verb'  else                          ;   | <--+ Else ..'\\
-    \verb'        load     a, #377q       ;   |    |'\\
-    \verb'  endif                         ;   | <--+'\\
-    \verb'elseifndef xyz                  ;<--+ Assemble if symbol xyz has NOT been defined'\\
-    \verb'        clrr     s1             ;   |'\\
-    \verb'else                            ;<--+ Else ...'\\
-    \verb'  ifn ( xyz mod 2 )               ;   | <--+ Assemble if ( yxz modulo 2 ) is 0'\\
-    \verb'        load     a, #128d       ;   |    |'\\
-    \verb'  endif                         ;   | <--+'\\
-    \verb'endif                           ;<--+'\\
-    \verb''\\
-    \verb'jmp    $                       ; Infinite loop'\\
-    \verb'end                            ; End of assembly'\\
-    \caption{An example of conditional assembly usage}
-\end{code}
+    \subsection{Example}
+        ~\\
+        {
+            \mysmallfont
+            \verb'    abc     equ     14           ; Assign number 14 to symbol abc.'\\
+            \verb'    xyz     equ     10           ; Assign number 10 to symbol abc.'\\
+            \verb''\\
+            \verb'    ifdef abc                    ; <--+ Assemble only if symbol abc has been defined.'\\
+            \verb'      if ( abc = 13 )            ;    | <--+ Assemble if 13 has been assigned to symbol abc.'\\
+            \verb'            load     S0, #0b1101 ;    |    |'\\
+            \verb'      elseif ( abc = 14 )        ;    | <--+ Assemble if 14 has been assigned to symbol abc.'\\
+            \verb'            load     S0, #0x21   ;    |    |'\\
+            \verb'      elseifn ( abc % 2 )        ;    | <--+ Assemble if the value assigned to symbol abc is even.'\\
+            \verb'            load     S0, #abc    ;    |    |'\\
+            \verb'      else                       ;    | <--+ Else ..'\\
+            \verb'            load     S0, #077    ;    |    |'\\
+            \verb'      endif                      ;    | <--+'\\
+            \verb'    elseifndef xyz               ; <--+ Assemble if symbol xyz has NOT been defined.'\\
+            \verb'            clrr     S0          ;    |'\\
+            \verb'    else                         ; <--+ Else ...'\\
+            \verb'      ifn ( xyz mod 2 )          ;    | <--+ Assemble if ( yxz modulo 2 ) is 0.'\\
+            \verb'            load     S0, #128    ;    |    |'\\
+            \verb'      endif                      ;    | <--+'\\
+            \verb'    endif                        ; <--+'
+        }
