@@ -132,6 +132,8 @@ WLineCounterWidget::WLineCounterWidget(WLineCounter *parent, bool icons, bool he
     //qDebug() << "WLineCounterWidget: ";
     this->parent = parent;
     this->icons = icons;
+    this->bookmarkList = NULL;
+    this->breakpointList = NULL;
     //font.setPixelSize(font.pixelSize()-2);
     this->setFont(font);
     QFontMetrics fontMetrics(font);
@@ -205,21 +207,24 @@ void WLineCounterWidget::paintEvent(QPaintEvent *)
         rect.moveTopLeft(point);
         if (icons == true)
         {
-            if (breakpointList->contains(i+1) == true && bookmarkList->contains(i+1) == true)
+            if (NULL != breakpointList && NULL != bookmarkList)
             {
-                gradient.setStart(rect.topLeft());
-                gradient.setFinalStop(rect.topRight());
-                paint.fillRect(rect, gradient);
-            }
-            else
-            {
-                if (bookmarkList->contains(i+1))
+                if (breakpointList->contains(i+1) == true && bookmarkList->contains(i+1) == true)
                 {
-                    paint.fillRect(rect, Qt::yellow);
+                    gradient.setStart(rect.topLeft());
+                    gradient.setFinalStop(rect.topRight());
+                    paint.fillRect(rect, gradient);
                 }
-                if (breakpointList->contains(i+1))
+                else
                 {
-                    paint.fillRect(rect, Qt::red);
+                    if (bookmarkList->contains(i+1))
+                    {
+                        paint.fillRect(rect, Qt::yellow);
+                    }
+                    if (breakpointList->contains(i+1))
+                    {
+                        paint.fillRect(rect, Qt::red);
+                    }
                 }
             }
         }
