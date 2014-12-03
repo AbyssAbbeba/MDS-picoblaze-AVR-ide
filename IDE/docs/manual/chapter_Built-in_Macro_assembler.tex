@@ -18,60 +18,55 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \verb'            symbol         directive argument                       [ ;comment ]'\\
         \verb'            directive      symbol, argument                         [ ;comment ]'\\
 
-        Anything in square brackets is optional. Compilation does not go beyond line containing the \texttt{END} directive so after that directive the code does not have to be syntactically valid. Empty lines are valid, as well as lines containing only comment or label. Statements are separated by white space (spaces or tabs). Statements are case insensitive and their length is not limited, overall line length is also not limited.
+        Anything in square brackets is optional. Compilation does not continue beyond line containing the \texttt{END} directive so after that directive the code does not have to be syntactically valid. Empty lines are valid, as well as lines containing only comment or label. Statements are separated by white space (spaces or tabs). Statements are case insensitive and their length is not limited, overall line length is also not limited.
 
     \subsection{Symbols}
-        Symbolic names for numbers or addresses defined by user in the code using appropriate directive. Like with ``\texttt{equ}'' directive you can define a new symbol and assign a value to it right away. Symbols may consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they cannot be the same as language keywords. Be aware of that there cannot coexists two or more symbols only by letter casing, in other words symbols ``\texttt{abc}'' and ``\texttt{ABC}'' are completely the same thing.
+        Symbols are user defined symbolic names for numbers or addresses. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be one symbol.
+
+        \paragraph{Example}
+        ~\\
+        \verb'    First_symbol      EQU     0b100111 ; Number in binary'\\
+        \verb'    Second_symbol     SET     47q      ; Octal'\\
+        \verb'    Third_symbol      REG     39d      ; Decimal'\\
+        \verb'    Fourth_symbol     DATA    27h      ; Hexadecimal'\\
+        \verb'    Fifth_symbol      CODE    27h      ; Hexadecimal'
+
+    \subsection{Numeric constants}
+        MDS assembler supports multiple radixes for numeric constants, radix is specified wither using prefix or suffix notation.
 
         ~\\
-        {
-            \usecodefont
-            \verb'First_symbol      EQU     0b100111 ; Number in binary'\\
-            \verb'Second_symbol     SET     47q      ; Octal'\\
-            \verb'Third_symbol      REG     39d      ; Decimal'\\
-            \verb'Fourth_symbol     DATA    27h      ; Hexadecimal'\\
-            \verb'Fifth_symbol      CODE    27h      ; Hexadecimal'
-        }
-
-    \subsection{Constants}
-        MDS supports multiple radixes for numeric constants, radix can be specified using both prefix and suffix notation.
-
-        \begin{code}[h!]
-        {
-            \usecodefont
-
-            \verb'x       equ     10         ; Decimal'\\
-            \verb'x       equ     10D        ; Decimal'\\
-            \verb'x       equ     0xFE       ; Hexadecimal'\\
-            \verb'x       equ     FEh        ; Hexadecimal'\\
-            \verb'x       equ     O52        ; Octal'\\
-            \verb'x       equ     52q        ; Octal'\\
-            \verb'x       equ     52o        ; Octal'\\
-            \verb'x       equ     01011110b  ; Binary'\\
-            \verb'x       equ     0b00100001 ; Binary'\\
-            \verb'x       equ     0b01       ; Binary'\\
-            \verb'x       equ     01b        ; Binary'\\
-            \verb"x       equ     'x'        ; ASCII"
-
-            \caption{Examples}
-            \label{code:svcb}
-        }
-        \end{code}
+        \verb"    ; Hexadecimal."\\
+        \verb"    ld          S0, #0xAB       ; prefix notation (`0x...')"\\
+        \verb"    ld          S0, #0ABh       ; suffix notation (`...h')"\\
+        \verb"    ; Decimal."\\
+        \verb"    ld          S0, #123        ; no prefix - default radix - decimal"\\
+        \verb"    ld          S0, #123d       ; suffix notation (`d')"\\
+        \verb"    ; Octal."\\
+        \verb"    ld          S0, #076        ; prefix notation (`0...')"\\
+        \verb"    ld          S0, #76q        ; suffix notation (`...q')"\\
+        \verb"    ld          S0, #76o        ; suffix notation (`...o')"\\
+        \verb"    ; Binary."\\
+        \verb"    ld          S0, #0b1100     ; prefix notation (`0b...')"\\
+        \verb"    ld          S0, #1100b      ; suffix notation (`...b')"\\
+        \verb"    ; ASCII."\\
+        \verb"    ld          S0, #'A'        ; character capital A"\\
+        \verb"    ld          S0, #'\t'       ; tab character"
 
     \subsection{Expressions}
-        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expressions comprise of arithmetical operators, constants, and symbols. Example of such expressions:
+        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expressions comprise of arithmetical operators, constants, and symbols. Examples of such expressions:
 
         \begin{itemize}
             \item \texttt{2+1}
             \item \texttt{(2 + 4) - ABC}
-            \item \texttt{A \&\& B}
-            \item \texttt{X XOR 0FF00h}
+            \item \texttt{A \& B}
+            \item \texttt{X / 0FF00h}
             \item \texttt{X * Y + X \% Y}
         \end{itemize}
 
-        When multiple operators occur in an expression, the expression is evaluated in a specific order depending upon the operators in the expression. All logical operators have priorities lower than arithmetic and relational operators.
+        When multiple operators occur in an expression, the expression is evaluated in a specific order depending on priorities of the used operators. All logical operators have priorities lower than arithmetic and relational operators.
 
-        The following table shows priority of expression operators.
+        The following table shows priority of expression operators, 1 is the highest priority; if priorities are equal then the expression is evaluated from left to right.
+
         \begin{table}[h!]
             \centering{}
             \mysmallfont{}
