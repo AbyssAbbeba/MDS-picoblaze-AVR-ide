@@ -4,7 +4,7 @@
 Assembler directives are commands for the assembler executed at compilation time, their purpose is to instruct the assembler how to compile your code, to define constants, implement conditional compilation, and evaluate various things at compilation time.
 
 \asmdirective{INCLUDE}
-    Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the INCLUDE directive appears and optionally to any of the include path list specified as assembler option.
+    Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the \texttt{INCLUDE} directive appears and optionally to any of the include path list specified as assembler option.
 
     \subsubsection{Syntax}
         \verb'    INCLUDE "file_name"'
@@ -17,7 +17,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    INCLUDE "/home/user/project/file.asm"'
 
 \asmdirective{EQU}
-    EQU stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive EQU can be used as register addresses, port addresses, and many others.
+    \texttt{EQU} stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive \texttt{EQU} can be used as register addresses, port addresses, and many others.
 
     \subsubsection{Syntax}
         \verb'    <symbol> EQU <expression>'
@@ -32,13 +32,13 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'                 LOAD  S0, #First_symb   ; Loads S0 register with 0b10011100.'
 
 \asmdirective{CONSTANT}
-    This directive is nothing more or less than the EQU directive with another syntax.
+    This directive is nothing more or less than the \texttt{EQU} directive with another syntax.
 
     \subsubsection{Syntax}
         \verb'    CONSTANT <symbol>, <expression>'
 
 \asmdirective{SET}
-    The SET directive does the same thing as the EQU directive, the only difference is that symbols defined with SET are re-definable while symbols defined with EQU are constant.
+    The \texttt{SET} directive does the same thing as the \texttt{EQU} directive, the only difference is that symbols defined with \texttt{SET} are re-definable while symbols defined with \texttt{EQU} are constant.
 
     \subsubsection{Syntax}
         \verb'    <symbol> SET <expression>'
@@ -51,7 +51,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x20.'
 
 \asmdirective{VARIABLE}
-    This directive is nothing more or less than the SET directive with another syntax.
+    This directive is nothing more or less than the \texttt{SET} directive with another syntax.
 
     \subsubsection{Syntax}
         \verb'    VARIABLE <symbol>, <expression>'
@@ -66,7 +66,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    LOAD      S0, #First_symb               ; Loads S0 with 0b10011100.'
 
 \asmdirective{REG}
-    Symbols defined with the REG directive are considered to be register addresses only and cannot be used for anything else, except for that REG is just another EQU.
+    Symbols defined with the \texttt{REG} directive are considered to be register addresses only and cannot be used for anything else, except for that \texttt{REG} is just another \texttt{EQU}.
 
     \subsubsection{Syntax}
         \verb'    <symbol> REG <address>'
@@ -82,7 +82,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'           LOAD   B_reg, #0x55  ; S2 = 0x55'
 
 \asmdirective{NAMEREG}
-    This directive is nothing more the REG directive with another syntax.
+    This directive is nothing more the \texttt{REG} directive with another syntax.
 
     \subsubsection{Syntax}
         \verb'    NAMEREG <symbol>, <address> '
@@ -98,7 +98,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    LOAD        x, #0x55     ; S3 = 0x55'
 
 \asmdirective{DATA}
-    Symbols defined with the DATA directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that DATA is just another EQU.
+    Symbols defined with the \texttt{DATA} directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that \texttt{DATA} is just another \texttt{EQU}.
 
     \subsubsection{Syntax}
         \verb'    <symbol> DATA <expression>'
@@ -109,7 +109,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'                  STORE   S0, my_location'
 
 \asmdirective{CODE}
-    Symbols defined with the CODE directive are considered to be program memory addresses only and cannot be used for anything else, except for that CODE is just another EQU.
+    Symbols defined with the \texttt{CODE} directive are considered to be program memory addresses only and cannot be used for anything else, except for that \texttt{CODE} is just another \texttt{EQU}.
 
     \subsubsection{Syntax}
         \verb'    <symbol> CODE <expression>'
@@ -546,17 +546,15 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'                     <code>'\\
         \verb'    ENDM'
 
+    \subsection{Directives}
         \begin{table}[h!]
-            \begin{tabular}{|ll|}
-                \hline
+            \begin{tabular}{ll}
                 \texttt{MACRO}      & Define a new macro. \\
                 \texttt{ENDM}       & End of macro definition. \\
                 \texttt{EXITM}      & Exit macro expansion. \\
                 \texttt{EXPAND}     & Disable macro expansions.\\
                 \texttt{NOEXPAND}   & (Re-)enable macro expansions.\\
-                \hline
             \end{tabular}
-            \caption{Macro processing directives.}
         \end{table}
 
     \subsection{Examples}
@@ -587,34 +585,34 @@ Assembler directives are commands for the assembler executed at compilation time
 
         \paragraph{Macro with parameters}
         ~\\
-        \verb'abc         macro   x, y'\\
-        \verb'            load    x, #y'\\
-        \verb'            load    x, y'\\
-        \verb'endm'\\
+        \verb'    abc         macro   x, y'\\
+        \verb'                load    x, #y'\\
+        \verb'                load    x, y'\\
+        \verb'    endm'\\
         \verb''\\
-        \verb'            abc     s2, 3'\\
-        \verb'    ; This produces the same result as if you wrote this:'\\
-        \verb'    ;       load    s2, #3'\\
-        \verb'    ;       load    s2, 3'
+        \verb'                abc     s2, 3'\\
+        \verb'        ; This produces the same result as if you wrote this:'\\
+        \verb'        ;       load    s2, #3'\\
+        \verb'        ;       load    s2, 3'
 
         \paragraph{Premature end of macro expansion}
         ~\\
-        \verb'abc         macro   x, y'\\
-        \verb'            load    x, #y'\\
-        \verb'        #if y > 2'\\
-        \verb'            exitm'\\
-        \verb'        #endif'\\
-        \verb'            load    x, y'\\
-        \verb'endm'\\
+        \verb'    abc         macro   x, y'\\
+        \verb'                load    x, #y'\\
+        \verb'            #if y > 2'\\
+        \verb'                exitm'\\
+        \verb'            #endif'\\
+        \verb'                load    x, y'\\
+        \verb'    endm'\\
         \verb''\\
-        \verb'            abc     s0, 1'\\
-        \verb'    ; This produces the same result as if you wrote this:'\\
-        \verb'    ;       load    s0, #1'\\
-        \verb'    ;       load    s0, 1'\\
+        \verb'                abc     s0, 1'\\
+        \verb'        ; This produces the same result as if you wrote this:'\\
+        \verb'        ;       load    s0, #1'\\
+        \verb'        ;       load    s0, 1'\\
         \verb''\\
-        \verb'            abc     s0, 3'\\
-        \verb'    ; But this produces different result because of the EXITM directive:'\\
-        \verb'    ;       load    s0, #1'\\
+        \verb'                abc     s0, 3'\\
+        \verb'        ; But this produces different result because of the EXITM directive:'\\
+        \verb'        ;       load    s0, #1'\\
 
     \subsection{Local symbols}
         \asmdirective{LOCAL}
