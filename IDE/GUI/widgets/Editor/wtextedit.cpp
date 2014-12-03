@@ -16,6 +16,7 @@
 #include "wtextedit.h"
 #include "../Highlighter/highlighter.h"
 
+
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
     : QPlainTextEdit(parent)
 {
@@ -864,7 +865,7 @@ void WTextEdit::cursorPositionChangedSlot()
 {
     if (this->textCursor().blockNumber() != this->prevBlock)
     {
-        if (this->isReadOnly() == false)
+        if (false == this->isReadOnly())
         {
             QList<QTextEdit::ExtraSelection> extraSelections;
 
@@ -894,26 +895,33 @@ void WTextEdit::cursorPositionChangedSlot()
         this->prevBlock = this->textCursor().blockNumber();
         emit updateLineCounter();
     }
+    if (false == this->isReadOnly())
+    {
+        emit updateStatusBar();
+    }
 }
 
 
 void WTextEdit::contextMenuEvent(QContextMenuEvent *event)
 {
     //if (target == textEdit)
-    qDebug() << "WTextEdit: contextMenuEvent";
-    if (this->textCursor().selectedText() == NULL)
+    //qDebug() << "WTextEdit: contextMenuEvent";
+    if (false == this->isReadOnly())
     {
-        cutAct->setEnabled(false);
-        copyAct->setEnabled(false);
-        deselectAct->setEnabled(false);
+        if (this->textCursor().selectedText() == NULL)
+        {
+            cutAct->setEnabled(false);
+            copyAct->setEnabled(false);
+            deselectAct->setEnabled(false);
+        }
+        else
+        {
+            cutAct->setEnabled(true);
+            copyAct->setEnabled(true);
+            deselectAct->setEnabled(true);
+        }
+        editorPopup->popup(event->globalPos());
     }
-    else
-    {
-        cutAct->setEnabled(true);
-        copyAct->setEnabled(true);
-        deselectAct->setEnabled(true);
-    }
-    editorPopup->popup(event->globalPos());
 }
 
 
@@ -1099,13 +1107,82 @@ void WTextEdit::deleteHighlighter()
 }
 
 
+void WTextEdit::jumpToLine(int lineToJmp)
+{
+    /*if (lineToJmp < cursor.block().blockNumber())
+    {
+        while (cursor.block().blockNumber() < lineToJmp)
+        {
+            cursor.movePosition(QTextCursor::NextBlock);
+        }
+    }
+    else
+    {
+        while (cursor.block().blockNumber() > lineToJmp)
+        {
+            cursor.movePosition(QTextCursor::PreviousBlock);
+        }
+    }*/
+    QTextCursor cursor(this->document()->findBlockByNumber(lineToJmp));
+    this->setTextCursor(cursor);
+    this->ensureCursorVisible();
+}
+
+
+void WTextEdit::queryReadOnly(bool readOnly)
+{
+    this->setReadOnly(readOnly);
+    shctBreakpoint->setEnabled(!readOnly);
+    shctBookmark->setEnabled(!readOnly);
+    shctCopy->setEnabled(!readOnly);
+    shctPaste->setEnabled(!readOnly);
+    shctCut->setEnabled(!readOnly);
+    shctSelectAll->setEnabled(!readOnly);
+    shctDeselect->setEnabled(!readOnly);
+    shctComment->setEnabled(!readOnly);
+    shctJmpToBookmarkNext->setEnabled(!readOnly);
+    shctJmpToBookmarkPrev->setEnabled(!readOnly);
+    shctJmpToLine->setEnabled(!readOnly);
+    shctFind->setEnabled(!readOnly);
+    shctReplace->setEnabled(!readOnly);
+    shctMoveLineUp->setEnabled(!readOnly);
+    shctMoveLineDown->setEnabled(!readOnly);
+    shctMoveWordLeft->setEnabled(!readOnly);
+    shctMoveWordRight->setEnabled(!readOnly);
+    shctToUpper->setEnabled(!readOnly);
+    shctToLower->setEnabled(!readOnly);
+    shctFirstToUpper->setEnabled(!readOnly);
+    shctDeleteLine->setEnabled(!readOnly);
+    shctSwitchChars->setEnabled(!readOnly);
+    shctSelectWordUnder->setEnabled(!readOnly);
+    shctSelectWordLeft->setEnabled(!readOnly);
+    shctSelectWordRight->setEnabled(!readOnly);
+    shctUndo->setEnabled(!readOnly);
+    shctRedo->setEnabled(!readOnly);
+    emit editorReadOnly(readOnly);
+    if (false == this->isReadOnly())
+    {
+        QList<QTextEdit::ExtraSelection> extraSelections;
+
+        QTextEdit::ExtraSelection selection;
+
+        selection.format.setBackground(*cursorLineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = this->textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+        this->setExtraSelections(extraSelections);
+    }
+}
+
+
 void WTextEdit::setShortcuts()
 {
     shctBreakpoint = new QShortcut(this);
     shctBreakpoint->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_B);
     connect(shctBreakpoint, SIGNAL(activated()), this, SLOT(shortcutBreakpoint()));
     shctBookmark = new QShortcut(this);
-    shctBookmark->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_M);
+    shctBookmark->setKey(Qt::CTRL + Qt::Key_B);
     connect(shctBookmark, SIGNAL(activated()), this, SLOT(shortcutBookmark()));
     shctCopy = new QShortcut(this);
     shctCopy->setKey(Qt::CTRL + Qt::Key_C);
@@ -1293,33 +1370,19 @@ void WTextEdit::shortcutJmpToBookmarkPrev()
 
 void WTextEdit::shortcutJmpToLine()
 {
-    //int lineToJmp;
-    //QTextCursor cursor(this->textCursor());
-    //if (lineToJmp < cursor.block().blockNumber())
-    //{
-    //  while (cursor.block().blockNumber() < lineToJmp)
-    //  {
-    //      cursor->movePosition(QTextCursor::NextBlock);
-    //  }
-    //}
-    //else
-    //{
-    //  while (cursor.block().blockNumber() > lineToJmp)
-    //  {
-    //      cursor->movePosition(QTextCursor::PreviousBlock);
-    //  }
-    //}
-    //this->setTextCursor(cursor);
+    emit jumpToLineDialog();
 }
 
 
 void WTextEdit::shortcutFind()
 {
+    emit findDialog();
 }
 
 
 void WTextEdit::shortcutReplace()
 {
+    emit findAndReplaceDialog();
 }
 
 

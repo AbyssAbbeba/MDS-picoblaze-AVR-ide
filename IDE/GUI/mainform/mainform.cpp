@@ -2837,7 +2837,7 @@ void MainForm::simulationFlowHandle()
         projectCompileAct->setEnabled(true);
         projectMan->getSimulated()->stop();
         //this->unhighlight();
-        this->wDockManager->getCentralTextEdit()->clearHighlight();
+        //this->wDockManager->getCentralTextEdit()->clearHighlight();
     }
 }
 
