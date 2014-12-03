@@ -23,6 +23,7 @@
     \end{description}
 
 \paragraph{Addressing modes}
+    \index{Addressing modes}
     \begin{description}
         \item[Immediate]
             Instead of reading operand value from memory, the operand value is taken from the instruction opcode itself.
@@ -288,7 +289,8 @@
             ~\\\indent
             \begin{tabular}{ll}
                 Z & 1 if result is zero and zero flag was set prior to the instruction, otherwise it set to 0 \\
-                C & 1 if the temporary result together with the previous state of the carry flag contains an odd number of 1 bits, 0 otherwise
+                C & 1 if the temporary result together with the previous state of the carry flag contains an \\
+                  & odd number of 1 bits, and 0 otherwise
             \end{tabular}
 
         \paragraph{Availability}
@@ -345,7 +347,7 @@
         \paragraph{Flags}
             ~\\\indent
             \begin{tabular}{ll}
-                Z & 1 if result is zero and zero flag was set prior to the \texttt{COMPARECY} instruction, otherwise it set to 0. \\
+                Z & 1 if result is zero and zero flag was set prior to the \texttt{COMPARECY} instruction, 0 otherwise \\
                 C & 1 if results in an overflow (i.e. the result is negative), 0 otherwise
             \end{tabular}
 

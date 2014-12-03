@@ -12,13 +12,11 @@
 \usepackage{xcolor}
 \usepackage{wrapfig}
 \usepackage[footnotesize,bf]{caption}
-\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=yyy,pdfkeywords=zzz,pdfauthor=Moravia Microsystems s.r.o.,bookmarksopen=false,pdfpagemode=None]{hyperref}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue,pdftitle=MDS manual,pdfsubject=MDS_manual,pdfkeywords=PicoBlaze,pdfauthor=Moravia Microsystems s.r.o.,bookmarksopen=false,pdfpagemode=None]{hyperref}
 
 \title{Multitarget Development System}
 \author{Moravia Microsystems s.r.o.}
 
-\newcommand{\menuitem}[1]{\texttt{#1}}
-\newcommand{\fileextension}[1]{\texttt{#1}}
 \newcommand{\mysmallfont}{\fontsize{8pt}{10pt} \selectfont{}}
 \newcommand{\usecodefont}{\ttfamily \fontsize{8pt}{10pt} \selectfont}
 
@@ -80,7 +78,7 @@
 
     \begin{titlepage}
         \begin{figure}[ht!]
-            \centering{}
+            \centering
             \includegraphics[width=.9\textwidth]{img/Moravia_Microsystems.png}
         \end{figure}
         \begin{center}
@@ -127,5 +125,6 @@
         \input{chapter_Command_line_tools.tex}
 
     \printindex
+    \listoftables
 
 \end{document}

@@ -136,13 +136,13 @@ Assembler directives are commands for the assembler executed at compilation time
     It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
 
     \subsubsection{Syntax}
-        \verb'    <symbol> AUTOREG [<address>]'
+        \verb'    <symbol> AUTOREG [AT <address>]'
 
     \subsubsection{Examples}
         \verb'    reg_1  AUTOREG                ; reg_1 = 0'\\
         \verb'    reg_2  AUTOREG                ; reg_2 = 1'\\
         \verb'    reg_3  AUTOREG                ; reg_3 = 2'\\
-        \verb'    reg_4  AUTOREG  10            ; Start counting from 10 so reg_4 =10'\\
+        \verb'    reg_4  AUTOREG AT 10          ; Start counting from 10 so reg_4 =10'\\
         \verb'    reg_5  AUTOREG                ; my_reg_5 = 11'
         \verb''\\
         \verb'           LOAD     reg_3, reg_4  ; S2 = SA'\\
@@ -152,7 +152,7 @@ Assembler directives are commands for the assembler executed at compilation time
     This directive provides exactly the same functionality as the \texttt{AUTOREG} directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
 
     \subsubsection{Syntax}
-        \verb'    <symbol> AUTOSPR [<address>]'
+        \verb'    <symbol> AUTOSPR [AT <address>]'
 
     \subsubsection{Examples}
         \verb'    my_data  AUTOSPR'\\
@@ -373,10 +373,14 @@ Assembler directives are commands for the assembler executed at compilation time
     \subsubsection{Examples}
         \verb'WARNING "my warning message"'
 
-\asmdirective{REPT}
-    Repeats the specified block of code for the specified number of times.
+\asmdirective{REPEAT}
+    Repeats the specified block of code for the specified number of times. \texttt{REPT} is shorthand for \texttt{REPT}, and \texttt{ENDR} is shorthand for \texttt{ENDREPEAT}.
 
     \subsubsection{Syntax}
+        \verb'    REPEAT <number-of-repeats>'\\
+        \verb'        <code>'\\
+        \verb'    ENDREPEAT'\\
+        \verb''\\
         \verb'    REPT <number-of-repeats>'\\
         \verb'        <code>'\\
         \verb'    ENDR'
@@ -394,9 +398,13 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    SR0           sF'
 
 \asmdirective{\#WHILE}
-    Repeats the specified block of code until expression equals to zero.
+    Repeats the specified block of code until expression equals to zero. \texttt{\#ENDW} is shorthand for \texttt{\#ENDWHILE}.
 
     \subsubsection{Syntax}
+        \verb'    #WHILE <expression>'\\
+        \verb'        <code>'\\
+        \verb'    #ENDWHILE'\\
+        \verb''\\
         \verb'    #WHILE <expression>'\\
         \verb'        <code>'\\
         \verb'    #ENDW'
@@ -443,26 +451,24 @@ Assembler directives are commands for the assembler executed at compilation time
     \paragraph{Conditions:} Instead of writing conditional branching using compares and jumps, you can let the assembler do at least some this work for you with \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives. This feature resembles C language but don't forget that you are still working with assembler, these branching directives are merely a "syntax sugar", they are translated as compare and conditional jump, nothing more.
 
     \paragraph{Condition syntax}
-        ~\\
+        ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\#''. So immediate constants are specified with ``\#'' prefix. A value without ``\#'' is considered to be a register address.
+
         \begin{table}[h!]
-            \mysmallfont{}
-            \centering{}
-            \begin{tabular}{|c|c|}
+            \centering
+            \begin{tabular}{|c|l|l|}
                 \hline
-                Condition & Example  \\
-                \verb'A == B' & \verb'S0 == S1' \\
-                \verb'A != B' & \verb'S0 != #0xA5' \\
-                \verb'A >  B' & \verb'#(0x5A + 2) > S0' \\
-                \verb'A <  B' & \verb'#A < my_reg' \\
-                \verb'A >= B' & \verb'A >= #B' \\
-                \verb'A <= B' & \verb'S4 <= #B' \\
-                \verb'A &  B' & \verb'#A & S0' \\
-                \verb'A !& B' & \verb'S0 !& S0' \\\hline
+                \textbf{Syntax} & \textbf{Description} & \textbf{Example} \\\hline
+                \verb'A == B' & equal to         & \verb'S0 == S1' \\
+                \verb'A != B' & not equal to     & \verb'S0 != #0xA5' \\
+                \verb'A >  B' & greater than     & \verb'#(0x5A + 2) > S0' \\
+                \verb'A <  B' & lower than       & \verb'#A < my_reg' \\
+                \verb'A >= B' & greater or equal & \verb'A >= #B' \\
+                \verb'A <= B' & lower or equal   & \verb'S4 <= #B' \\
+                \verb'A &  B' & bitwise AND      & \verb'#A & S0' \\
+                \verb'A !& B' & bitwise NAND     & \verb'S0 !& S0' \\\hline
             \end{tabular}
             \caption{Condition syntax used for all code generation directives.}
         \end{table}
-
-        ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\#''. So immediate constants are specified with ``\#'' prefix. A value without ``\#'' is considered to be a register address.
 
     \asmdirective{IF, ELSEIF, ELSE, ENDIF}
         You can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
@@ -651,7 +657,7 @@ Assembler directives are commands for the assembler executed at compilation time
     \subsection{Example}
         ~\\
         {
-            \mysmallfont
+            \fontsize{8pt}{10pt}\selectfont
             \verb'    abc     equ     14           ; Assign number 14 to symbol abc.'\\
             \verb'    xyz     equ     10           ; Assign number 10 to symbol abc.'\\
             \verb''\\
