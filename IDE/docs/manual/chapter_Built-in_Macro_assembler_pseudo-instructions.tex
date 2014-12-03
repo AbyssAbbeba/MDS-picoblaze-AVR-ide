@@ -1,150 +1,191 @@
+\definecolor{psinstruction_bg}{rgb}{0.6, 0.9, 1.0}
+\newcommand{\psinstruction}[1]{~\\[7pt]\addcontentsline{toc}{subsection}{#1}\colorbox{psinstruction_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
 
-    MDS assembler supports some useful pseudo instructions, which can improve understandability of your source code. Compiler will replace those instructions with one or more PicoBlaze instructions, to achieve desired purpose of that instruction.
+MDS assembler supports a number of pseudo instructions which can improve understandability of your source code. Assembler will replace these instructions with one or more PicoBlaze instructions to achieve the purpose of that pseudo-instruction.
 
-    \subsection{INC}
-        \subsubsection{Syntax}
-            \verb'INC <expression>'
+\psinstruction{NOP}
+    No operation. This instruction does not do anything, it just consumes processor time.
 
-        \subsubsection{Equals to:}
-            \verb'ADD       sX, #1'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    NOP'
 
-        \subsubsection{Description}
-            This instruction increments given register value by one.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    LOAD  s0, s0'
 
-        \subsubsection{Examples}
-            \verb'INC              s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    NOP'\\
+        \verb'    NOP'\\
+        \verb'    NOP'
 
-    \subsection{DEC}
-        \subsubsection{Syntax}
-            \verb'DEC <expression>'
+\psinstruction{INC}
+    Increments the given register value by one.
 
-        \subsubsection{Equals to:}
-            \verb'SUB       sX, #1'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    INC   sX'
 
-        \subsubsection{Description}
-            This instruction decrements given register value by one.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    ADD   sX, #1'
 
-        \subsubsection{Examples}
-            \verb'DEC s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    INC   s0'
 
-    \subsection{SETR}
-        \subsubsection{Syntax}
-            \verb'SETR <expression>'
+\psinstruction{DEC}
+    Decrements the given register value by one.
 
-        \subsubsection{Equals to:}
-            \verb'OR       sX, #0xFF'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    DEC   sX'
 
-        \subsubsection{Description}
-            This instruction sets given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    SUB   sX, #1'
 
-        \subsubsection{Examples}
-            \verb'SETR              s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    DEC   s0'
 
-    \subsection{CLRR}
-        \subsubsection{Syntax}
-            \verb'CLRR <expression>'
+\psinstruction{SETR}
+    Sets the given register to binary ones.
 
-        \subsubsection{Equals to:}
-            \verb'AND       sX, #0x00'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    SETR  sX'
 
-        \subsubsection{Description}
-            This instruction clears given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    OR    sX, #0xFF'
 
-        \subsubsection{Examples}
-            \verb'CLRR              s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    SETR  s0'
 
-    \subsection{CPL}
-        \subsubsection{Syntax}
-            \verb'CPL <expression>'
+\psinstruction{CLRR}
+    Clears the given register (set it to 0).
 
-        \subsubsection{Equals to:}
-            \verb'XOR       sX, #0xFF'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CLRR  sX'
 
-        \subsubsection{Description}
-            This instruction execute 1\'s complement with given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    AND   sX, #0'
 
-        \subsubsection{Examples}
-            \verb'CPL              s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    CLRR  s0'
 
-    \subsection{CPL2}
-        \subsubsection{Syntax}
-            \verb'CPL2 <expression>'
+\psinstruction{CPL}
+    Performs ones' complement with the given register.
 
-        \subsubsection{Equals to:}
-            \verb'XOR              s0, #0xFF'\\
-            \verb'ADD              s0, #1'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CPL  sX'
 
-        \subsubsection{Description}
-            This instruction executes 1\'s complement with given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, #0xFF'
 
-        \subsubsection{Examples}
-            \verb'CPL2              s0'
+    \paragraph{Examples}
+        ~\\
+        \verb'    CPL   s0'
 
-    \subsection{SETB}
-        \subsubsection{Syntax}
-            \verb'SETB <register>, <bit> ; bit belongs to interval [0,7]'
+\psinstruction{CPL2}
+    Performs two's complement with the given register.
 
-        \subsubsection{Equals to:}
-            \verb'OR       sX, #1 << bit'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CPL2  sX'
 
-        \subsubsection{Description}
-            Sets bit in given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, #0xFF'\\
+        \verb'    ADD   sX, #1'
 
-        \subsubsection{Examples}
-            \verb'SETB              s0, 3'
+    \paragraph{Examples}
+        ~\\
+        \verb'    CPL2  s0'
 
-    \subsection{CLRB}
-        \subsubsection{Syntax}
-            \verb'CLRB <register>, <bit> ; bit belongs to interval [0,7]'
+\psinstruction{SETB}
+    Sets one bit in the given register.
 
-        \subsubsection{Equals to:}
-            \verb'AND       sX,#(0xFF ^ (1 << bit))'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    SETB  sX, bit ; bit belongs to interval [0,7]'
 
-        \subsubsection{Description}
-            Clears bit in given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    OR    sX, # 1 << bit'
 
-        \subsubsection{Examples}
-            \verb'CLRB              s0, 7'
+    \paragraph{Examples}
+        ~\\
+        \verb'    SETB  S0, 3'
 
-    \subsection{NOTB}
-        \subsubsection{Syntax}
-            \verb'NOTB <register>, <bit> ; bit belongs to interval [0,7]'
+\psinstruction{CLRB}
+    Clears one bit in the given register.
 
-        \subsubsection{Equals to:}
-            \verb'XOR       sX,#(~(1 << bit))'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    CLRB  sX, bit ; bit belongs to interval [0,7]'
 
-        \subsubsection{Description}
-            Negates bit in given register.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    AND   sX, # ( 0xFF ^ ( 1 << bit ) )'
 
-        \subsubsection{Examples}
-            \verb'NOTB              s0,7'
+    \paragraph{Examples}
+        ~\\
+        \verb'    CLRB  S0, 7'
 
-    \subsection{DJNZ}
-        \subsubsection{Syntax}
-            \verb'DJNZ <register>, <label>'
+\psinstruction{NOTB}
+    Negates one bit in the given register.
 
-        \subsubsection{Equals to:}
-            \verb'SUB               s0, #1'\\
-            \verb'JUMP              NZ,loop'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    NOTB  sX, bit ; bit belongs to interval [0,7]'
 
-        \subsubsection{Description}
-            Given register is decremented until it is zero.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    XOR   sX, # ( ~( 1 << bit ) )'
 
-        \subsubsection{Examples}
-            \verb'loop:             '\\
-            \verb'DJNZ              s0, loop'
+    \paragraph{Examples}
+        ~\\
+        \verb'    NOTB  S0, 7'
 
-    \subsection{IJNZ}
-        \subsubsection{Syntax}
-            \verb'IJNZ <register>, <label>'
+\psinstruction{DJNZ}
+    Decrements the given register and jumps at the given label until the register contains zero.
 
-        \subsubsection{Equals to:}
-            \verb'ADD               s0, #1'\\
-            \verb'JUMP              NZ,loop'
+    \paragraph{Syntax}
+        ~\\
+        \verb'    DJNZ  sX, label'
 
-        \subsubsection{Description}
-            Given register is incremented until overflow.
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    SUB   sX, #1'\\
+        \verb'    JUMP  NZ, label'
 
-        \subsubsection{Examples}
-            \verb'loop:             '\\
-            \verb'IJNZ              s0, loop'
+    \paragraph{Examples}
+        ~\\
+        \verb'    loop:             '\\
+        \verb'        DJNZ  s0, loop'
+
+\psinstruction{IJNZ}
+    Increments the given register and jumps at the given label until the register contains zero.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    IJNZ sX, label'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    ADD   sX, #1'\\
+        \verb'    JUMP  NZ, label'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    loop:             '\\
+        \verb'        IJNZ  s0, loop'

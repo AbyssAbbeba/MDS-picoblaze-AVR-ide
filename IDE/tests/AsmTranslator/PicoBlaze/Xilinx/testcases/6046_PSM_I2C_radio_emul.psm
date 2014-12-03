@@ -1,17 +1,23 @@
 ;==============================================================================;
 ;==============================================================================;
 
-; CONSTANT ID_I2C_radio_Dev_Addr_REG  , 84
-; CONSTANT ID_I2C_radio_Reg_Addr_REG  , 85
-; CONSTANT ID_I2C_radio_Data_In_REG   , 86
-; CONSTANT ID_I2C_radio_Data_Out_REG  , 87
-; CONSTANT ID_I2C_radio_St_Ctrl_REG   , 88
+ CONSTANT ID_I2C_radio_Dev_Addr_REG  , 84
+ CONSTANT ID_I2C_radio_Reg_Addr_REG  , 85
+ CONSTANT ID_I2C_radio_Data_In_REG   , 86
+ CONSTANT ID_I2C_radio_Data_Out_REG  , 87
+ CONSTANT ID_I2C_radio_St_Ctrl_REG   , 88
 ;        -- (0) write, (1) read, (6) I2C_radio_Last_Err, (7) I2C_radio_Busy
-; CONSTANT I2C_busy               , 10000000'b
-; CONSTANT I2C_ACK_error          , 01000000'b
-; CONSTANT I2C_read               , 00000010'b
-; CONSTANT I2C_write              , 00000001'b
+ CONSTANT I2C_busy               , 10000000'b
+ CONSTANT I2C_ACK_error          , 01000000'b
+ CONSTANT I2C_read               , 00000010'b
+ CONSTANT I2C_write              , 00000001'b
 
+ 
+ send_CRLF:
+ send_CHAR:
+ send_TAB:
+ send_BYTE:
+ send_SPACE:
 ;==============================================================================;
 
 I2C_radio_read:     INPUT       s0, ID_I2C_radio_St_Ctrl_REG    ; check I2C interface status

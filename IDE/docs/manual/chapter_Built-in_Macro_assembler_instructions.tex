@@ -490,7 +490,7 @@
             ~\\
             \verb'    INPUT sX, pp   '; Copy from port at address pp to register at sX address.\\
             \verb'    IN    sX, pp   '; Same as above.\\
-            \verb'    INPUT sX, @sY  '; Copy from port at address pp to register at address given by sY register.\\
+            \verb'    INPUT sX, @sY  '; Copy from port at address given by sY register to register sX.\\
             \verb'    IN    sX, @sY  '; Same as above.
 
         \paragraph{Examples}
@@ -522,7 +522,7 @@
             ~\\
             \verb'    OUTPUT sX, pp   '; Copy from register at sX address to port at address pp.\\
             \verb'    OUT    sX, pp   '; Same as above.\\
-            \verb'    OUTPUT sX, @sY  '; Copy from register at address given by sY register to port at address pp.\\
+            \verb'    OUTPUT sX, @sY  '; Copy from register sX to port at address given by sY register.\\
             \verb'    OUT    sX, @sY  '; Same as above.
 
         \paragraph{Examples}
@@ -530,7 +530,7 @@
             \verb'    OUT     S0, 0x22  ; Write content of S0 reg. to port at address 0x22.'\\
             \verb'    LD      S1, #0x11 ; S1 = 0x11'\\
             \verb''\\
-            \verb'    ; Write content of S0 reg. Read port at address given by S1 reg. (0x11) and copy its value to '\\
+            \verb'    ; Write content of S0 reg. to port at address given by S1 reg. (0x11). '\\
             \verb'    OUT     S0, @S1'\\
 
         \paragraph{Flags}
@@ -548,15 +548,21 @@
             \end{tabular}
 
     \instruction{OUTPUTK, OUTK}
-        The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address.
-        OUTK is only shorthand for OUTPUTK, these two mnemonics can be used interchangeably.
+        The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shorthand for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
-            \verb'    OUTPUTK #kk, p'\\
-            \verb'    OUTPUTK #kk, @sY'\\
-            \verb'    OUTK    #kk, p'\\
-            \verb'    OUTK    #kk, @sY'
+            \verb'    OUTPUTK #kk, p    '; Copy immediate value kk to port at address p (in range 0x0..0xF).\\
+            \verb'    OUTK    #kk, p    '; Same as above.\\
+            \verb'    OUTPUTK #kk, @sY  '; Copy immediate value kk to port at address given by sY register.\\
+            \verb'    OUTK    #kk, @sY  '; Same as above.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    OUTK    #0xAA, 0x2  ; Write 0xAA to port at address 0x2.'\\
+            \verb''\\
+            \verb'    LD      S1, #0x1    ; S1 = 0x1'\\
+            \verb'    OUTK    #0x55, @S1  ; Write 0x55 to port at address given by S1 reg. (0x1).'
 
         \paragraph{Flags}
             ~\\\indent
@@ -574,13 +580,20 @@
 
 \subsection{Storage}
     \instruction{STORE, ST}
-        The \texttt{STORE} instructions write the contents of a register "sX" into the scratch pad memory (SPM).
-        \texttt{ST} is only shorthand for \texttt{STORE}, these two mnemonics can be used interchangeably.
+        The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shorthand for \texttt{STORE}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
-            \verb'    STORE sX, ss'\\
-            \verb'    STORE sX, @sY'
+            \verb'    STORE sX, ss   '; Copy from register sX to SPR at address ss.\\
+            \verb'    STORE sX, @sY  '; Copy from register sX to SPR at address pointed by reg. sY.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    ; Store value of reg. S0 in SPR at address pointed by reg. S1.'\\
+            \verb'    STORE   S0, @S1'\\
+            \verb''\\
+            \verb'    ; Store value of reg. S0 in SPR at address 0x22.'\\
+            \verb'    STORE   S0, 0x22'
 
         \paragraph{Flags}
             ~\\\indent
@@ -597,13 +610,20 @@
             \end{tabular}
 
     \instruction{FETCH, FT}
-        The fetch instructions read the contents of a location of scratch pad memory (SPM) into a register "sX".
-        FT is only shorthand for FETCH, these two mnemonics can be used interchangeably.
+        The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shorthand for \texttt{FETCH}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
-            \verb'    FETCH sX, ss'\\
-            \verb'    FETCH sX, @sY'
+            \verb'    FETCH sX, ss   '; Copy from SPR at address ss to register sX.\\
+            \verb'    FETCH sX, @sY  '; Copy from SPR at address pointed by reg. sY and copy it to reg. sX.
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    ; Fetch value from SPR at address pointed by reg. S1 and store it in S0 reg.'\\
+            \verb'    FETCH   S0, @S1'\\
+            \verb''\\
+            \verb'    ; Fetch value from SPR at address 0x22 and store it in S0 reg.'\\
+            \verb'    FETCH   S0, 0x22'
 
         \paragraph{Flags}
             ~\\\indent
@@ -621,7 +641,7 @@
 
 \subsection{Interrupt group}
     \instruction{RETURNI, RETIE, RETID}
-        Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. RETIE stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
+        Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. \texttt{RETIE} stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
 
         \paragraph{Syntax}
             ~\\
@@ -632,7 +652,7 @@
 
         \paragraph{Examples}
             ~\\
-            \verb'    ORG     0x3ff       ; Interrupt vector.'\\
+            \verb'    ORG     0x3D0       ; Interrupt vector.'\\
             \verb'    LOAD    S0, #0x55   ; (Load register S0 with immediate value 0x55.)'\\
             \verb'    RETURNI DISABLE     ; Return from ISR and disable further interrupts.'
 
@@ -651,7 +671,7 @@
             \end{tabular}
 
     \instruction{ENABLE/DISABLE INTERRUPT, ENA, DIS}
-        Enable or disable interrupts. ENA is only shorthand for ENABLE INTERRUPT, these two mnemonics can be used interchangeably. DIS is only shorthand for DISABLE INTERRUPT, these two mnemonics can be used interchangeably.
+        Enable or disable interrupts. \texttt{ENA} is only shorthand for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shorthand for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -663,7 +683,7 @@
         \paragraph{Examples}
             ~\\
             \verb'    DIS                 ; Timing critical code begins here, disable interrupts.'\\
-            \verb'    LOAD    S0, #0x55   ; (Load register S0 with immediate value 0x55.)'\\
+            \verb'    CALL    something   ; Call subroutine "something".'\\
             \verb'    ENA                 ; Timing critical code ends here, re-enable interrupts.'
 
         \paragraph{Flags}
@@ -682,7 +702,7 @@
 
 \subsection{Program Control}
     \instruction{JUMP}
-        Instruction JUMP loads program counter with the address specified by aaa operand. This instruction has no effect on the status flags.
+        Instruction \texttt{JUMP} loads program counter with the address specified by aaa operand or by @(sX, sY).
 
         \paragraph{Syntax}
             ~\\
@@ -690,7 +710,8 @@
             \verb'    JUMP Z, aaa       '; Jump only if the Zero flag is set.\\
             \verb'    JUMP NZ, aaa      '; Jump only if the Zero flag is NOT set.\\
             \verb'    JUMP C, aaa       '; Jump only if the Carry flag is set.\\
-            \verb'    JUMP NC, aaa      '; Jump only if the Carry flag is NOT set.
+            \verb'    JUMP NC, aaa      '; Jump only if the Carry flag is NOT set.\\
+            \verb'    JUMP @(sX, sY)    '; Unconditional jump at sX[3..0]sY[7..0].
 
         \paragraph{Examples}
             ~\\
@@ -715,7 +736,7 @@
             \end{tabular}
 
     \instruction{CALL}
-        Call subroutine at the address specified by aaa operand.
+        Call subroutine at the address specified by aaa operand or by @(sX, sY).
 
         \paragraph{Syntax}
             ~\\
@@ -724,6 +745,7 @@
             \verb'    CALL NZ, aaa      '; Call only if the Zero flag is NOT set.\\
             \verb'    CALL C, aaa       '; Call only if the Carry flag is set.\\
             \verb'    CALL NC, aaa      '; Call only if the Carry flag is NOT set.
+            \verb'    JUMP @(sX, sY)    '; Unconditional subroutine call at sX[3..0]sY[7..0].
 
         \paragraph{Examples}
             ~\\
@@ -751,8 +773,7 @@
             \end{tabular}
 
     \instruction{RETURN, RET}
-        Return from subroutine.
-        RET is only shorthand for RETURN, these two mnemonics can be used interchangeably.
+        Return from subroutine. \texttt{RET} is only shorthand for \texttt{RETURN}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -787,7 +808,21 @@
             \end{tabular}
 
     \instruction{LOAD \& RETURN, LDRET}
-        LDRET is only shorthand for LOAD \& RETURN, these two mnemonics can be used interchangeably.
+        Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shorthand for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
+
+        \paragraph{Syntax}
+            ~\\
+            \verb'    LOAD & RETURN     sX, #kk'\\
+            \verb'    LD & RET          sX, #kk'\\
+            \verb'    LDRET             sX, #kk'\\
+
+        \paragraph{Examples}
+            ~\\
+            \verb'my_subroutine:'\\
+            \verb'    ; ...'\\
+            \verb'    LDRET   S0, #0x55'\\
+            \verb''\\
+            \verb'    CALL    my_subroutine'\\
 
         \paragraph{Flags}
             ~\\\indent
@@ -805,12 +840,20 @@
 
 \subsection{Version Control}
     \instruction{HWBUILD}
+        Instruction \texttt{HWBUILD} load the specified register with "hwbuild".
+        \paragraph{Syntax}
+            ~\\
+            \verb'    HWBUILD  sX'\\
+
+        \paragraph{Examples}
+            ~\\
+            \verb'    HWBUILD S0'\\
 
         \paragraph{Flags}
             ~\\\indent
             \begin{tabular}{ll}
-                Z & no effect \\
-                C & no effect
+                Z & 1 if loaded value is zero, 0 otherwise \\
+                C & 1
             \end{tabular}
 
         \paragraph{Availability}

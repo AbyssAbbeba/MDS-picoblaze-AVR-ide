@@ -35,14 +35,14 @@
 ;
 ;==============================================================================;
 ;
-;   CONSTANT ID_HOST_select             , 90
-;   CONSTANT ID_HOST_stat_ctrl          , 91
-;   CONSTANT ID_HOST_data_0             , 92
-;   CONSTANT ID_HOST_data_1             , 93
-;   CONSTANT ID_HOST_data_2             , 94
-;   CONSTANT ID_HOST_data_3             , 95
-;   CONSTANT ID_HOST_addr_L             , 96
-;   CONSTANT ID_HOST_addr_H             , 97
+   CONSTANT ID_HOST_select             , 00
+   CONSTANT ID_HOST_stat_ctrl          , 00
+   CONSTANT ID_HOST_data_0             , 00
+   CONSTANT ID_HOST_data_1             , 00
+   CONSTANT ID_HOST_data_2             , 00
+   CONSTANT ID_HOST_data_3             , 00
+   CONSTANT ID_HOST_addr_L             , 00
+   CONSTANT ID_HOST_addr_H             , 00
 ;
 ;==============================================================================;
 ;
