@@ -36,8 +36,7 @@
     \end{description}
 
     \subsection{Simulator warnings}
-        MDS offers some warnings to ensure your debugging process will be less painful, it handles some common mistakes
-        like PC overflow, stack overflow and, some other problems. See pictures for more information or go to
+        The simulator can display several warnings to handle some common mistakes in software development like program counter overflow, stack overflow, and some others; it is meant to make your debugging process less painful. Please see pictures bellow for more information, or go to
         [Main~Menu] -> [Interface] -> [Config] -> [Simulator~warnings] in the main window.
 
         \begin{table}[h!]
@@ -53,21 +52,20 @@
         \end{table}
 
     \subsection{Breakpoints and bookmarks}
+        \begin{wrapfigure}{r}{0pt}
+            \centering{}
+                \includegraphics[width=.35\textwidth]{img/breakpoints1.png}
+                \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
+        \end{wrapfigure}
         MDS simulator supports breakpoints, breakpoint is a mark associated with a location in the program code; when
         reached, it triggers a temporarily halt in the running simulation. You can use breakpoints to test and debug
         programs in a manner that the program can be examined in stages delimited by breakpoints. Please be also aware
         that using breakpoints slows down the simulator; if you want maximum simulation speed, you may temporarily
-        disable (switch off) breakpoints generally in [Main~Menu] -> [Simulation] -> [Disable~Breakpoints].
+        disable (switch off) breakpoints generally in [Main~Menu]~-> [Simulation]~-> [Disable~Breakpoints].
 
         Another feature is bookmarks; when editing one location in your source code more often, it may be useful to add
         a bookmark to it so you can quickly get back when you need. Like breakpoints bookmarks are marks in your source
         code but they are meant solely for quick navigation, they do not affect simulation in any way.
-
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=.4\textwidth]{img/breakpoints1.png}
-            \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
-        \end{figure}
 
     \subsection{Simulation cursor}
         Simulation cursor shows what instruction will be executed in next step. Two previous instructions are less and
@@ -89,6 +87,7 @@
             \caption{Simulation cursor}
         \end{figure}
 
+    \clearpage
     \subsection{List of macros, breakpoints and bookmarks}
         For better orientation in what are you actually doing, MDS provides some additional tools located on the right
         panel, this includes List of Macros, List of Breakpoints, and List of Bookmarks.
