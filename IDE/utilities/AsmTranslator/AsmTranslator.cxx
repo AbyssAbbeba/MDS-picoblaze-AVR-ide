@@ -85,10 +85,17 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     {
         buffer.push_back(std::string());
         std::getline(input, buffer.back());
+
         if ( true == input.bad() )
         {
             m_messages.push_back ( { 0, QObject::tr("Error: input failure.").toStdString() } );
             return false;
+        }
+
+        // Remove CR before LF.
+        if ( ( false == buffer.back().empty() ) && ( '\r' == buffer.back().back() ) )
+        {
+            buffer.back().pop_back();
         }
     }
 

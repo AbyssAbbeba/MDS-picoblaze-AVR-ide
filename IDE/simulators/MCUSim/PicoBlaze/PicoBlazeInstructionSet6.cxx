@@ -1185,22 +1185,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int 
 
     // RETURNI DISABLE
     m_statusFlags -> setInte ( false );
-
-    // Chech whether there is an ISR in progress to return from.
-    if ( m_statusFlags->getInterrupted() <= 0 )
-    {
-        m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
-    }
-    else
-    {
-        logEvent ( EVENT_CPU_RETURN_FROM_ISR, m_pc );
-        m_interruptController->returni();
-    }
-
-    // Return from ISR (Interrupt Service Routine).
-    setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags -> returni();
+    returni();
 }
 
 inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
@@ -1209,6 +1194,11 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
 
     // RETURNI ENABLE
     m_statusFlags -> setInte ( true );
+    returni();
+}
+
+inline void PicoBlazeInstructionSet6::returni()
+{
 
     // Chech whether there is an ISR in progress to return from.
     if ( m_statusFlags->getInterrupted() <= 0 )
@@ -1224,7 +1214,6 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
 
     // Return from ISR (Interrupt Service Routine).
     setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags -> returni();
 }
 
 void PicoBlazeInstructionSet6::inst_JUMP_aaa ( const unsigned int opCode )

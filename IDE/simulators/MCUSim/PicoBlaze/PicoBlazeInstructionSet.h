@@ -20,6 +20,7 @@
 class PicoBlazeIO;
 class PicoBlazeStack;
 class PicoBlazeRegisters;
+class PicoBlazeRegisters;
 class PicoBlazeDataMemory;
 class PicoBlazeProgramMemory;
 class PicoBlazeInterruptController;

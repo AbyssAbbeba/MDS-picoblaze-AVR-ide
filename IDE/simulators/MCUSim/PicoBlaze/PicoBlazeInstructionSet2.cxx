@@ -560,7 +560,6 @@ void PicoBlazeInstructionSet2::inst_RETURNI ( const unsigned int opCode )
 
     // Return from ISR (Interrupt Service Routine).
     setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags -> returni();
 }
 
 inline void PicoBlazeInstructionSet2::inst_ENABLE_INT ( const unsigned int )
