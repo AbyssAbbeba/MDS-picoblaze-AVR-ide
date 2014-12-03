@@ -2484,8 +2484,8 @@ int Project::start(QString file, QString dumpFiles)
         QFileInfo infoAsm(asmPath);
         QFileInfo infoHex(hexPath + ".ihex");
         QFileInfo infoDbg(hexPath + ".dbg");
-        //qDebug() << "Project: sim file" << asmPath;
-        //qDebug() << "Project: sim dump file" << hexPath;
+        qDebug() << "Project: sim file" << asmPath;
+        qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists() || false == infoDbg.exists())
         {
             //qDebug() << "Project: files do not exist";
@@ -2496,8 +2496,6 @@ int Project::start(QString file, QString dumpFiles)
             //qDebug() << "Project: files modified";
             return 4;
         }
-        //qDebug() << "Orig ASM:" << asmPath;
-        //qDebug() << "HEX:" << hexPath;
         std::string stdPath = hexPath.toLocal8Bit().constData();
 
         PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));

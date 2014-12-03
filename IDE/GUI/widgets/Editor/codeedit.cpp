@@ -19,6 +19,9 @@
 #include "../../guicfg/guicfg.h"
 #include "../Counters/wlinecounter.h"
 #include "wtextedit.h"
+#include "../EditorWidgets/JumpToLine/jumptoline.h"
+#include "../EditorWidgets/Find/find.h"
+#include "../EditorWidgets/FindAndReplace/findandreplace.h"
 
 
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
@@ -105,11 +108,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    //statusBar = new QStatusBar(this);
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    //layout->addWidget(statusBar, 1, 1, 2, 1);
+    layout->addWidget(statusBar, 1, 1, 2, 1);
     setLayout(layout);
     name = wName;
     path = wPath;
@@ -225,6 +228,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this->textEdit,
             SLOT(setSpacesInTab(int))
            );
+    connect(textEdit,
+            SIGNAL(updateStatusBar()),
+            this,
+            SLOT(updateStatusBar())
+           );
+    connect(textEdit,
+            SIGNAL(editorReadOnly(bool)),
+            this,
+            SLOT(textEditReadOnly(bool))
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     //this->show();
@@ -293,11 +306,11 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
     textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
     lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    //statusBar = new QStatusBar(this);
+    statusBar = new QStatusBar(this);
     layout = new QGridLayout(this);
     layout->addWidget(lineCount, 0, 0);
     layout->addWidget(textEdit, 0, 1);
-    //layout->addWidget(statusBar, 1, 0, 2, 1);
+    layout->addWidget(statusBar, 1, 0, 2, 1);
     name = wName;
     path = wPath;
     parentWidget = parent;
@@ -399,6 +412,16 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             this->textEdit,
             SLOT(setSpacesInTab(int))
            );
+    connect(textEdit,
+            SIGNAL(updateStatusBar()),
+            this,
+            SLOT(updateStatusBar())
+           );
+    connect(textEdit,
+            SIGNAL(editorReadOnly(bool)),
+            this,
+            SLOT(textEditReadOnly(bool))
+           );
     //this->connectAct();
     prevBlockCount = this->textEdit->document()->blockCount();
     this->changeHeight();
@@ -422,8 +445,21 @@ CodeEdit::~CodeEdit()
 void CodeEdit::connectAct()
 {
     //qDebug() << "CodeEdit: connectAct()";
-    connect(textEdit, SIGNAL(textChanged()), this, SLOT(setChanged()));
+    connect(textEdit, SIGNAL(modificationChanged(bool)), this, SLOT(textEditChanged(bool)));
     //qDebug() << "CodeEdit: return connectAct()";
+}
+
+
+void CodeEdit::textEditChanged(bool modified)
+{
+    if (true == modified)
+    {
+        this->setChanged();
+    }
+    else
+    {
+        this->setSaved();
+    }
 }
 
 
@@ -434,17 +470,17 @@ void CodeEdit::setChanged()
     if (changed == false)
     {
         changed = true;
-        if (tabs == true)
-        {
+        //if (tabs == true)
+        //{
             //QString newName("*" + name);
             //qDebug() << "codeedit: emit changed tab status: changed";
             emit changedTabStatus(this->name, this->path, true);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
-        }
-        else
-        {
-            emit changedTabStatus(this->name, this->path, true);
-        }
+        //}
+        //else
+        //{
+        //    emit changedTabStatus(this->name, this->path, true);
+        //}
     }
     //qDebug() << "CodeEdit: return setChanged()";
 }
@@ -456,17 +492,18 @@ void CodeEdit::setSaved()
     if (changed == true)
     {
         changed = false;
-        if (tabs == true)
-        {
+        //if (tabs == true)
+        //{
             //qDebug() << "codeedit: emit changed tab status: saved";
             emit changedTabStatus(this->name, this->path, false);
+            textEdit->document()->setModified(false);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
-        }
-        else
-        {
+        //}
+        //else
+        //{
             //qDebug() << "codeedit: emit changed tab status: saved without tabs";
-            emit changedTabStatus(this->name, this->path, false);
-        }
+        //    emit changedTabStatus(this->name, this->path, false);
+        //}
     }
     /*else
     {
@@ -1149,4 +1186,25 @@ void CodeEdit::setCursorValue(QTextCursor value)
 void CodeEdit::setHidden(bool hide)
 {
     this->hidden = hide;
+}
+
+
+void CodeEdit::updateStatusBar()
+{
+    QString message = "Line: " + QString::number(textEdit->textCursor().blockNumber()+1);
+    message += " Column: " + QString::number(textEdit->textCursor().positionInBlock()+1);
+    statusBar->showMessage(message);
+}
+
+
+void CodeEdit::textEditReadOnly(bool readOnly)
+{
+    if (true == readOnly)
+    {
+        statusBar->showMessage("Read Only");
+    }
+    else
+    {
+        this->updateStatusBar();
+    }
 }
