@@ -3,6 +3,23 @@
 
 MDS assembler supports a number of pseudo instructions which can improve understandability of your source code. Assembler will replace these instructions with one or more PicoBlaze instructions to achieve the purpose of that pseudo-instruction.
 
+\psinstruction{NOP}
+    No operation. This instruction does not do anything, it just consumes processor time.
+
+    \paragraph{Syntax}
+        ~\\
+        \verb'    NOP'
+
+    \paragraph{Equivalent}
+        ~\\
+        \verb'    LOAD  s0, s0'
+
+    \paragraph{Examples}
+        ~\\
+        \verb'    NOP'\\
+        \verb'    NOP'\\
+        \verb'    NOP'
+
 \psinstruction{INC}
     Increments the given register value by one.
 
