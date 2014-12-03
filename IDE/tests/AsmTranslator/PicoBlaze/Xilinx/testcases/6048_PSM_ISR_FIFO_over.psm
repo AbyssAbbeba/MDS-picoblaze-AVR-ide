@@ -22,7 +22,7 @@ FIFO_over_ISR:      CALL        send_CRLF
 
                     CALL        send_TAB
                     CALL        mess_AGR
-                    INPUT       s9, ID_AGR_FIFO_status          ; read operation clears overflow status
+                    INPUT       s9, 00         ; read operation clears overflow status
                     CALL        send_BYTE
                     CALL        send_CRLF
                     CALL        wait_1s
@@ -31,5 +31,13 @@ FIFO_over_ISR:      CALL        send_CRLF
 
 
 ;==============================================================================;
-ISR_FIFO_over_end:  JUMP        Int_End
+ISR_FIFO_over_end:  JUMP        000
 ;==============================================================================;
+send_CRLF:
+send_SPACE:
+send_BYTE:
+send_TAB:
+wait_1s:
+mess_AGR:
+mess_Error:
+mess_FIFO:

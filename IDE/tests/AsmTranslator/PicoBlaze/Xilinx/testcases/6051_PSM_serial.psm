@@ -40,21 +40,21 @@
 ;
 ; Procedures used: NONE
 ;==============================================================================;
-SMI_RD:             INPUT     s5, ID_SMI_addr       ; check SMI status
+SMI_RD:             INPUT     s5, 00       ; check SMI status
                     TEST      s5, C0                ; is selected SMI Idle? (bit 6,7 = 0)
                     JUMP      NZ, SMI_RD            ; if not, wait
 
-                    OUTPUT    s3, ID_PHY_SMI_addr   ; select required device (set device address)
+                    OUTPUT    s3, 00  ; select required device (set device address)
                     AND       s4, 1F                ; clear non-address bits of s3 register
                     OR        s4, 80                ; set bit 7 = read operation
-                    OUTPUT    s4, ID_SMI_addr       ; initialize read operation
+                    OUTPUT    s4, 00       ; initialize read operation
                     AND       s4, 1F                ; clear non-address bits of s3 register
 ; do not leave the procedure until s1 and s2 are updated from PHY!
-SMI_RD_w:           INPUT     s5, ID_SMI_addr       ; check SMI status
+SMI_RD_w:           INPUT     s5, 00      ; check SMI status
                     TEST      s5, C0                ; is selected SMI Idle? (bit 6,7 = 0)
                     JUMP      NZ, SMI_RD_w          ; if not, wait
-                    INPUT     s6, ID_SMI_datH       ; read data H
-                    INPUT     s5, ID_SMI_datL       ; read data H
+                    INPUT     s6, 00      ; read data H
+                    INPUT     s5, 00      ; read data H
                     RETURN                          ; Return from the procedure
 
                     
@@ -77,16 +77,16 @@ SMI_RD_w:           INPUT     s5, ID_SMI_addr       ; check SMI status
 ;
 ; Procedures used: NONE
 ;==============================================================================;
-SMI_WR:             INPUT     s7, ID_SMI_addr       ; check SMI status
+SMI_WR:             INPUT     s7, 00       ; check SMI status
                     TEST      s7, C0                ; is SMI Idle? (bit 6,7 = 0)
                     JUMP      NZ, SMI_WR            ; if not, wait
 
-                    OUTPUT    s3, ID_PHY_SMI_addr   ; select required device (set device address)
-                    OUTPUT    s6, ID_SMI_datH       ; write required dataH (s2) to SMI data reg
-                    OUTPUT    s5, ID_SMI_datL       ; write required dataL (s1) to SMI data reg
+                    OUTPUT    s3, 00   ; select required device (set device address)
+                    OUTPUT    s6, 00       ; write required dataH (s2) to SMI data reg
+                    OUTPUT    s5, 00       ; write required dataL (s1) to SMI data reg
                     AND       s4, 1F                ; clear non-address bits of s3 register
                     OR        s4, 40                ; set bit 6 = write operation
-                    OUTPUT    s4, ID_SMI_addr       ; initialize SMI write
+                    OUTPUT    s4, 00       ; initialize SMI write
                     RETURN                          ; return from subroutine
 
 
@@ -106,19 +106,19 @@ SMI_WR:             INPUT     s7, ID_SMI_addr       ; check SMI status
 ; Procedures used: NONE
 ;
 ;==============================================================================;
-SFP_ROM_RD:         INPUT       s5, ID_SFP_status   ; check SFP interface status
+SFP_ROM_RD:         INPUT       s5, 00   ; check SFP interface status
                     TEST        s5, C0              ; SFP available?
                     JUMP        NZ, SFP_ROM_RD        ; wait until SFP become available
-                    CALL        wait_5ms            ; 5 ms delay between two
+                    CALL        000            ; 5 ms delay between two
                                                     ; consecutive operations on TWI
-                    OUTPUT      s3, ID_SFP_TW_addr  ; Set required device
-                    OUTPUT      s4, ID_SFP_addr     ; Set required address
+                    OUTPUT      s3, 00  ; Set required device
+                    OUTPUT      s4, 00     ; Set required address
                     LOAD        s5, 80              ; Read command, page 1
-                    OUTPUT      s5, ID_SFP_status   ; Initialize read operation
-wait_rd_sfp:        INPUT       s5, ID_SFP_status   ; check SFP interface status
+                    OUTPUT      s5, 00   ; Initialize read operation
+wait_rd_sfp:        INPUT       s5, 00   ; check SFP interface status
                     TEST        s5, 80              ; read-out complete?
                     JUMP        NZ, wait_rd_sfp     ; wait until read-out complete
-                    INPUT       s5, ID_SFP_data     ; read data from SFP
+                    INPUT       s5, 00     ; read data from SFP
                     RETURN                          ; return from subroutine
 
 ;==============================================================================;
@@ -165,25 +165,25 @@ SFP_PHY_RD:         CALL        SFP_ROM_RD          ; read MSB (to s5)
 ; Procedures used: NONE
 ;
 ;==============================================================================;
-SFP_PHY_WR:         INPUT       s7, ID_SFP_status   ; check SFP interface status
+SFP_PHY_WR:         INPUT       s7, 00   ; check SFP interface status
                     TEST        s7, C0              ; SFP available?
                     JUMP        NZ, SFP_PHY_WR      ; wait until SFP become available
-                    CALL        wait_5ms            ; 5 ms delay between two
+                    CALL        000           ; 5 ms delay between two
                                                     ; consecutive operations on TWI
-                    OUTPUT      s3, ID_SFP_TW_addr  ; Set device address
-                    OUTPUT      s4, ID_SFP_addr     ; Set register address
-                    OUTPUT      s6, ID_SFP_data     ; Set data (MSB)
+                    OUTPUT      s3, 00  ; Set device address
+                    OUTPUT      s4, 00     ; Set register address
+                    OUTPUT      s6, 00     ; Set data (MSB)
                     LOAD        s7, 40              ; Write command
-                    OUTPUT      s7, ID_SFP_status   ; Initialize write operation
+                    OUTPUT      s7, 00  ; Initialize write operation
     
-wait_wr_sfp_1:      INPUT       s7, ID_SFP_status   ; check SFP interface status
+wait_wr_sfp_1:      INPUT       s7, 00   ; check SFP interface status
                     TEST        s7, 40              ; write complete?
                     JUMP        NZ, wait_wr_sfp_1   ; wait until write MSB is complete
-                    CALL        wait_5ms            ; 5 ms delay between two
+                    CALL        000           ; 5 ms delay between two
                                                     ; consecutive operations on TWI
-                    OUTPUT      s5, ID_SFP_data     ; Set data (LSB)
+                    OUTPUT      s5, 00     ; Set data (LSB)
                     LOAD        s7, 40              ; Write command
-                    OUTPUT      s7, ID_SFP_status   ; Initialize write operation
+                    OUTPUT      s7, 00   ; Initialize write operation
 
                     RETURN                          ; return from subroutine
 
@@ -235,5 +235,9 @@ send_SFP_reg:       CALL      send_TAB
                     CALL      send_BYTE
 
                     RETURN
-
+send_CRLF:
+send_SPACE:
+send_BYTE:
+send_TAB:
+					
 ;==============================================================================;

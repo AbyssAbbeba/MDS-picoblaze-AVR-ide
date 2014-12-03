@@ -183,8 +183,8 @@ STRING  st_I2C$,         "I2C"
 ; Procedures used:  NONE
 ;==============================================================================;
 
-reset_UART:         OUTPUTK     UART_reset, ID_K_UART_reset
-                    OUTPUTK     UART_operate, ID_K_UART_reset
+reset_UART:         OUTPUTK     UART_reset, F
+                    OUTPUTK     UART_operate, F
                     RETURN 
 
 ;==============================================================================;
@@ -196,10 +196,10 @@ reset_UART:         OUTPUTK     UART_reset, ID_K_UART_reset
 ; Reister used: s0, (s1, s2,) s9
 ; Procedures used: send_CHAR (s0, s9 + s1, s2 when BrayTerminal patch active)
 ;==============================================================================;
-send_CHAR:          INPUT       s0, ID_UART_status      ; checking UART status
+send_CHAR:          INPUT       s0, 00     ; checking UART status
                     TEST        s0, UART_Tx_half_full   ; can Tx accept another byte?
                     JUMP        NZ, send_CHAR           ; if not, wait until Tx is ready
-                    OUTPUT      s9, ID_UART_data        ; Send the character
+                    OUTPUT      s9, 00      ; Send the character
                    ;CALL        wait_1ms                ; patch for Bray Terminal
                     RETURN                              ; Return from procedure
                     
@@ -292,7 +292,7 @@ I2C_WR_string:      CALL@       (sB, sA)                ; load next character fr
                     COMPARE     s9, 00                  ; string delimiter
                     RETURN      Z                       ; return when string delimiter detected
                     LOAD        s5, s9                  ; otherwise prepare data for write
-                    CALL        EEPROM_WR               ; write character to memory
+                    CALL        000             ; write character to memory
                     ADD         sA, 01                  ; increment string pointer (lower byte)
                     ADDCY       sB, 00                  ; increment string pointer (upper byte)
                     ADD         s4, 01                  ; increment I2C memory (register) address
@@ -734,7 +734,7 @@ mess_I2C:           LOAD      sB, st_I2C'upper
 
 
 wellcome_msg:       CALL        send_CLRSCR     ; clear terminal screen
-                    CALL        wait_100ms
+                   ;CALL        wait_100ms
                     CALL        send_CRLF
                     CALL        send_CRLF
         ; line 1 of the wellcome message
@@ -764,5 +764,5 @@ wellcome_msg:       CALL        send_CLRSCR     ; clear terminal screen
                     CALL        mess_line
                     CALL        send_CRLF
                     RETURN
-
+		
 ;==============================================================================;
