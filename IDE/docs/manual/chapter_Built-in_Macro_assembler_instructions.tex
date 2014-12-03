@@ -23,6 +23,7 @@
     \end{description}
 
 \paragraph{Addressing modes}
+    \index{Addressing modes}
     \begin{description}
         \item[Immediate]
             Instead of reading operand value from memory, the operand value is taken from the instruction opcode itself.
@@ -32,6 +33,7 @@
             Effective address of the operand is taken from contents of register which address is given in the instruction opcode
     \end{description}
 
+\clearpage
 \subsection{Register Loading}
     \instruction{LOAD, LD}
         The \texttt{LOAD} instruction provides a method for specifying the contents of any register. The new value can be a taken from an immediate constant, or contents of any other register. \texttt{LD} is only shorthand for \texttt{LOAD}, these two mnemonics can be used interchangeably.
@@ -90,6 +92,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Logical}
     \instruction{OR}
         The \texttt{OR} instruction performs bit-wise logical inclusive-OR operation.
@@ -145,6 +148,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{AND}
         The \texttt{AND} instruction performs bit\-wise logical AND operation.
 
@@ -172,6 +176,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
 \subsection{Arithmetic}
     \instruction{ADD, ADDCY}
         The \texttt{ADD} instruction performs an 8-bit addition of two values.
@@ -208,6 +213,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{SUB, SUBCY}
         The \texttt{SUB} instruction performs an 8-bit subtraction of two values without carry, and \texttt{SUBCY} instruction does the same but with carry.
 
@@ -243,6 +249,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
 \subsection{Test and Compare}
     \instruction{TEST}
         The \texttt{TEST} instruction performs bit\-wise logical AND operation, and discards its result except for the status flags.
@@ -288,7 +295,8 @@
             ~\\\indent
             \begin{tabular}{ll}
                 Z & 1 if result is zero and zero flag was set prior to the instruction, otherwise it set to 0 \\
-                C & 1 if the temporary result together with the previous state of the carry flag contains an odd number of 1 bits, 0 otherwise
+                C & 1 if the temporary result together with the previous state of the carry flag contains an \\
+                  & odd number of 1 bits, and 0 otherwise
             \end{tabular}
 
         \paragraph{Availability}
@@ -298,6 +306,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
     \instruction{COMPARE, CMP}
         The \texttt{COMPARE} instruction performs an 8-bit subtraction of two values. Unlike the \texttt{SUB} instruction, result of this operation is discarded, and only status flags are affected. \texttt{CMP} is only shorthand for \texttt{COMPARE}, these two mnemonics can be used interchangeably.
 
@@ -345,7 +354,7 @@
         \paragraph{Flags}
             ~\\\indent
             \begin{tabular}{ll}
-                Z & 1 if result is zero and zero flag was set prior to the \texttt{COMPARECY} instruction, otherwise it set to 0. \\
+                Z & 1 if result is zero and zero flag was set prior to the \texttt{COMPARECY} instruction, 0 otherwise \\
                 C & 1 if results in an overflow (i.e. the result is negative), 0 otherwise
             \end{tabular}
 
@@ -356,6 +365,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Shift and Rotate}
     \instruction{SL0, SL1, SLX, SLA}
         Instructions \texttt{SL0}, \texttt{SL1}, \texttt{SLX}, and \texttt{SLA} all shift contents of the specified register by one bit to the left. The new lsb (least significant bit) depends on the instruction, and the msb (most significant bit) is shifted out to the C flag.
@@ -389,6 +399,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{SR0, SR1, SRX, SRA}
         Instructions \texttt{SR0}, \texttt{SR1}, \texttt{SRX}, and \texttt{SRA} all shift contents of the specified register by one bit to the right. The new msb (most significant bit) depends on the instruction, and the lsb (least significant bit) is shifted out to the C flag.
 
@@ -421,6 +432,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{RR, RL}
         These instructions rotate the specified register by one bit to the left or right. The bit shifted out of the register and then shifted back to the other side.
 
@@ -450,6 +462,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
 \subsection{Register Bank Selection}
     \instruction{REGBANK, RB}
         Set active register bank. \texttt{RB} is only shorthand for \texttt{REGBANK}, these two mnemonics can be used interchangeably.
@@ -482,6 +495,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Input/Output}
     \instruction{INPUT, IN}
         The \texttt{INPUT} instruction reads data from a port (i.e. from your hardware design) into the specified register. \texttt{IN} is only shorthand for \texttt{INPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
@@ -515,6 +529,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{OUTPUT, OUT}
         The \texttt{OUTPUT} instruction transfers data to a port (i.e. to your hardware design) from the specified register. \texttt{OUT} is only shorthand for \texttt{OUTPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
 
@@ -547,6 +562,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{OUTPUTK, OUTK}
         The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shorthand for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
 
@@ -578,6 +594,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Storage}
     \instruction{STORE, ST}
         The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shorthand for \texttt{STORE}, these two mnemonics can be used interchangeably.
@@ -609,6 +626,7 @@
                 \yes        & \yes        & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
     \instruction{FETCH, FT}
         The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shorthand for \texttt{FETCH}, these two mnemonics can be used interchangeably.
 
@@ -639,6 +657,7 @@
                 \yes        & \yes        & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Interrupt group}
     \instruction{RETURNI, RETIE, RETID}
         Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. \texttt{RETIE} stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
@@ -670,6 +689,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{ENABLE/DISABLE INTERRUPT, ENA, DIS}
         Enable or disable interrupts. \texttt{ENA} is only shorthand for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shorthand for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
 
@@ -700,6 +720,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
 \subsection{Program Control}
     \instruction{JUMP}
         Instruction \texttt{JUMP} loads program counter with the address specified by aaa operand or by @(sX, sY).
@@ -735,6 +756,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{CALL}
         Call subroutine at the address specified by aaa operand or by @(sX, sY).
 
@@ -772,6 +794,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{RETURN, RET}
         Return from subroutine. \texttt{RET} is only shorthand for \texttt{RETURN}, these two mnemonics can be used interchangeably.
 
@@ -807,6 +830,7 @@
                 \yes        & \yes        & \yes         & \yes      & \yes
             \end{tabular}
 
+\clearpage
     \instruction{LOAD \& RETURN, LDRET}
         Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shorthand for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
 
@@ -838,6 +862,7 @@
                 \yes        & \no         & \no          & \no       & \no
             \end{tabular}
 
+\clearpage
 \subsection{Version Control}
     \instruction{HWBUILD}
         Instruction \texttt{HWBUILD} load the specified register with "hwbuild".
