@@ -16,6 +16,18 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    INCLUDE "C:\\my_dir\\my_file.asm"'\\
         \verb'    INCLUDE "/home/user/project/file.asm"'
 
+\asmdirective{END}
+    The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
+
+    \subsubsection{Syntax}
+        \verb'    END'
+
+    \subsubsection{Examples}
+        \verb'    LOAD  S0, S1'\\
+        \verb'    END'\\
+        \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
+
+\clearpage
 \asmdirective{EQU}
     \texttt{EQU} stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive \texttt{EQU} can be used as register addresses, port addresses, and many others.
 
@@ -37,6 +49,7 @@ Assembler directives are commands for the assembler executed at compilation time
     \subsubsection{Syntax}
         \verb'    CONSTANT <symbol>, <expression>'
 
+\clearpage
 \asmdirective{SET}
     The \texttt{SET} directive does the same thing as the \texttt{EQU} directive, the only difference is that symbols defined with \texttt{SET} are re-definable while symbols defined with \texttt{EQU} are constant.
 
@@ -65,6 +78,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb''\\
         \verb'    LOAD      S0, #First_symb               ; Loads S0 with 0b10011100.'
 
+\clearpage
 \asmdirective{REG}
     Symbols defined with the \texttt{REG} directive are considered to be register addresses only and cannot be used for anything else, except for that \texttt{REG} is just another \texttt{EQU}.
 
@@ -97,6 +111,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    LOAD        a, b         ; S1 = S2'\\
         \verb'    LOAD        x, #0x55     ; S3 = 0x55'
 
+\clearpage
 \asmdirective{DATA}
     Symbols defined with the \texttt{DATA} directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that \texttt{DATA} is just another \texttt{EQU}.
 
@@ -132,6 +147,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb''\\
         \verb'                  OUTPUT  S0, my_port'
 
+\clearpage
 \asmdirective{AUTOREG}
     It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
 
@@ -159,6 +175,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb''\\
         \verb'             STORE    S0, my_data'
 
+\clearpage
 \asmdirective{INITSPR}
     Initializes scratch-pad RAM (SPR) with the given value(s), content of such initialized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
 
@@ -190,6 +207,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'              FETCH           S1, my_data + 1'\\
         \verb'              FETCH           S2, my_data + 2'
 
+\clearpage
 \asmdirective{MERGESPR}
     Merge scratch-pad RAM initialization with program memory initialization at the specified address.
 
@@ -217,6 +235,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'              OUTPUTK         my_string, 2'\\
         \verb'              DB              my_string'
 
+\clearpage
 \asmdirective{DEFINE}
     Define and expression which is evaluated every time separately when used in the code. These expressions can handle unlimited number of parameters, parameters are defined in curly brackets and are numbered from 0 to infinity (in decimal radix), using expressions with parameters resembles calling a function in C language, please see the example below.
 
@@ -249,6 +268,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
         \verb'    JUMP  handle_interrupt'
 
+\clearpage
 \asmdirective{SKIP}
     Do not initialize the given number of program memory words and skip to the next nearest location.
 
@@ -278,6 +298,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'            UNDEF   symbol'\\
         \verb'            LOAD    s0, #symbol  ; This will cause compilation error.'
 
+\clearpage
 \asmdirective{DB}
     This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
 
@@ -312,6 +333,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    LIMIT  D, 32  ; Limit maximum address in scratch-pad ram to 31. '\\
         \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
 
+\clearpage
 \asmdirective{DEVICE}
     Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with \texttt{DEVICE} directive. This will affect predefined symbols.
 
@@ -337,6 +359,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    INCLUDE "some_file.asm" ; The included file will not appear in the code listing.'\\
         \verb'    LIST'
 
+\clearpage
 \asmdirective{TITLE}
     Set title for code listing.
 
@@ -373,6 +396,7 @@ Assembler directives are commands for the assembler executed at compilation time
     \subsubsection{Examples}
         \verb'WARNING "my warning message"'
 
+\clearpage
 \asmdirective{REPEAT}
     Repeats the specified block of code for the specified number of times. \texttt{REPT} is shorthand for \texttt{REPT}, and \texttt{ENDR} is shorthand for \texttt{ENDREPEAT}.
 
@@ -397,6 +421,7 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'    SR0           sF'\\
         \verb'    SR0           sF'
 
+\clearpage
 \asmdirective{\#WHILE}
     Repeats the specified block of code until expression equals to zero. \texttt{\#ENDW} is shorthand for \texttt{\#ENDWHILE}.
 
@@ -417,17 +442,6 @@ Assembler directives are commands for the assembler executed at compilation time
         \verb'        out     S0, @S1         ; C:     S0 = *S1;'\\
         \verb'        inc     S1              ; C:     S1++;'\\
         \verb'    endw                        ; C: }'
-
-\asmdirective{END}
-    The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
-
-    \subsubsection{Syntax}
-        \verb'    END'
-
-    \subsubsection{Examples}
-        \verb'    LOAD  S0, S1'\\
-        \verb'    END'\\
-        \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
 
 \asmdirective{FAILJMP, DEFAULT\_JUMP}
     Fills program memory with jumps to the specified address. Purpose of this directive is to provide a simple means of protection against random errors.
@@ -470,6 +484,7 @@ Assembler directives are commands for the assembler executed at compilation time
             \caption{Condition syntax used for all code generation directives.}
         \end{table}
 
+    \clearpage
     \asmdirective{IF, ELSEIF, ELSE, ENDIF}
         You can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
 
@@ -493,6 +508,7 @@ Assembler directives are commands for the assembler executed at compilation time
 
             ~\\In this example, the first condition compares register S0 to immediate value of 10 (decimal). The second condition compares register at address given by ``B'' symbol to register S1, and the third condition compares two immediate values (in this case the result of comparison is known in advance and the assembler with exploit that fact and print warning).
 
+    \clearpage
     \asmdirective{WHILE}
         Assembler translates the \texttt{WHILE} directive to \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions to implement the loop.
 
