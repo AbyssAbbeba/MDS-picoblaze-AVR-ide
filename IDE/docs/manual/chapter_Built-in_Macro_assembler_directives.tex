@@ -559,62 +559,61 @@ Assembler directives are commands for the assembler executed at compilation time
 
     \subsection{Examples}
         \paragraph{Macro without parameters}
-        ~\\
-        \verb'    abc     macro'\\
-        \verb'            load    s2, s0'\\
-        \verb'            add     s2, #1'\\
-        \verb'            load    s1, s2'\\
-        \verb'    endm'\\
-        \verb''\\
-        \verb'            abc           ; Expand macro "abc" here'\\
-        \verb'            abc           ; And here...'\\
-        \verb'            abc           ; And here...'\\
-        \verb''\\
-        \verb'    ; This produces the same result as if you wrote this:'\\
-        \verb'    ;       load    s2, s0'\\
-        \verb'    ;       add     s2, #1'\\
-        \verb'    ;       load    s1, s2'\\
-        \verb'    ;'\\
-        \verb'    ;       load    s2, s0'\\
-        \verb'    ;       add     s2, #1'\\
-        \verb'    ;       load    s1, s2'\\
-        \verb'    ;'\\
-        \verb'    ;       load    s2, s0'\\
-        \verb'    ;       add     s2, #1'\\
-        \verb'    ;       load    s1, s2'\\
+            ~\\
+            \verb'    abc     macro'\\
+            \verb'            load    s2, s0'\\
+            \verb'            add     s2, #1'\\
+            \verb'            load    s1, s2'\\
+            \verb'    endm'\\
+            \verb''\\
+            \verb'            abc           ; Expand macro "abc" here'\\
+            \verb'            abc           ; And here...'\\
+            \verb'            abc           ; And here...'\\
+            \verb''\\
+            \verb'    ; This produces the same result as if you wrote this:'\\
+            \verb'    ;       load    s2, s0'\\
+            \verb'    ;       add     s2, #1'\\
+            \verb'    ;       load    s1, s2'\\
+            \verb'    ;'\\
+            \verb'    ;       load    s2, s0'\\
+            \verb'    ;       add     s2, #1'\\
+            \verb'    ;       load    s1, s2'\\
+            \verb'    ;'\\
+            \verb'    ;       load    s2, s0'\\
+            \verb'    ;       add     s2, #1'\\
+            \verb'    ;       load    s1, s2'\\
 
         \paragraph{Macro with parameters}
-        ~\\
-        \verb'    abc         macro   x, y'\\
-        \verb'                load    x, #y'\\
-        \verb'                load    x, y'\\
-        \verb'    endm'\\
-        \verb''\\
-        \verb'                abc     s2, 3'\\
-        \verb'        ; This produces the same result as if you wrote this:'\\
-        \verb'        ;       load    s2, #3'\\
-        \verb'        ;       load    s2, 3'
+            ~\\
+            \verb'    abc         macro   x, y'\\
+            \verb'                load    x, #y'\\
+            \verb'                load    x, y'\\
+            \verb'    endm'\\
+            \verb''\\
+            \verb'                abc     s2, 3'\\
+            \verb'        ; This produces the same result as if you wrote this:'\\
+            \verb'        ;       load    s2, #3'\\
+            \verb'        ;       load    s2, 3'
 
         \paragraph{Premature end of macro expansion}
-        ~\\
-        \verb'    abc         macro   x, y'\\
-        \verb'                load    x, #y'\\
-        \verb'            #if y > 2'\\
-        \verb'                exitm'\\
-        \verb'            #endif'\\
-        \verb'                load    x, y'\\
-        \verb'    endm'\\
-        \verb''\\
-        \verb'                abc     s0, 1'\\
-        \verb'        ; This produces the same result as if you wrote this:'\\
-        \verb'        ;       load    s0, #1'\\
-        \verb'        ;       load    s0, 1'\\
-        \verb''\\
-        \verb'                abc     s0, 3'\\
-        \verb'        ; But this produces different result because of the EXITM directive:'\\
-        \verb'        ;       load    s0, #1'\\
+            ~\\
+            \verb'    abc         macro   x, y'\\
+            \verb'                load    x, #y'\\
+            \verb'            #if y > 2'\\
+            \verb'                exitm'\\
+            \verb'            #endif'\\
+            \verb'                load    x, y'\\
+            \verb'    endm'\\
+            \verb''\\
+            \verb'                abc     s0, 1'\\
+            \verb'        ; This produces the same result as if you wrote this:'\\
+            \verb'        ;       load    s0, #1'\\
+            \verb'        ;       load    s0, 1'\\
+            \verb''\\
+            \verb'                abc     s0, 3'\\
+            \verb'        ; But this produces different result because of the EXITM directive:'\\
+            \verb'        ;       load    s0, #1'\\
 
-    \subsection{Local symbols}
         \asmdirective{LOCAL}
             Declares a symbol as local for the macro in which it appears.
 
