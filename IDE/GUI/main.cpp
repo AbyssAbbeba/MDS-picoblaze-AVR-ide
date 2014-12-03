@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            qDebug() << "Main: else";
+            //qDebug() << "Main: else";
             splash.close();
             LicenseInitWidget *widget = new LicenseInitWidget(0);
             if (QDialog::Rejected == widget->exec())

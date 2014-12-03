@@ -1020,10 +1020,10 @@ void WDockManager::setCentralByIndex(int index)
 
 void WDockManager::setEditorsReadOnly(bool readonly)
 {
-    for (int i = 0; i < codeEditList.count(); i++)
-    {
-        activeCodeEdit->getTextEdit()->setReadOnly(readonly);
-    }
+    //for (int i = 0; i < codeEditList.count(); i++)
+    //{
+        activeCodeEdit->getTextEdit()->queryReadOnly(readonly);
+    //}
 }
 
 
@@ -1057,12 +1057,14 @@ void WDockManager::handleShowHideBottom(int index)
         {
             hideDockWidgetArea(2);
             bottomVisible = false;
+            QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
         }
     }
     else if (false == bottomVisible)
     {
         showDockWidgetArea(2);
         bottomVisible = true;
+        QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
     }
 }
 

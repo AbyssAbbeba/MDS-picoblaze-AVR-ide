@@ -29,6 +29,7 @@
    <Breakpoint line="50"/>
   </BreakpointFile>
   <BreakpointFile path="Example6.psm"/>
+  <BreakpointFile path="Example3.psm"/>
  </Breakpoints>
  <Bookmarks/>
  <Simulator>
