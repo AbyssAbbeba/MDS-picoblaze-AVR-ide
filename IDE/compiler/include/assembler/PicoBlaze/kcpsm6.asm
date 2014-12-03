@@ -2,7 +2,7 @@
 ;
 ; Basic definitions for KCPSM6 soft-core processor assembler.
 ;
-;(C) copyright 2013 Moravia Microsystems, s.r.o., Brno, CZ, European Union.
+;(C) copyright 2013, 2014 Moravia Microsystems, s.r.o., Brno, CZ, European Union.
 ; All rights reserved.
 ;
 ; -----------------------------------------------------------------------------
