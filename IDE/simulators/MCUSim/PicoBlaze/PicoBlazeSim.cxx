@@ -63,7 +63,7 @@ PicoBlazeSim::PicoBlazeSim()
                                            m_programMemory,
                                            m_interruptController ) );
 
-    regSubSys ( m_interruptController -> link ( m_eventLogger, m_instructionSet, m_statusFlags ) );
+    regSubSys ( m_interruptController -> link ( m_eventLogger, m_instructionSet, m_statusFlags, m_registers ) );
 
     checkSubSystems();
 
@@ -215,7 +215,7 @@ inline void PicoBlazeSim::loadConfig()
         }
 
         m_instructionSet->adapt(origInstructionSet);
-        m_interruptController->link(m_eventLogger, m_instructionSet, m_statusFlags);
+        m_interruptController->link(m_eventLogger, m_instructionSet, m_statusFlags, m_registers);
         delete origInstructionSet;
 
         unregSubSys(origInstructionSet);
