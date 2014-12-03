@@ -16,12 +16,12 @@
 #ifndef PICOBLAZEINTERRUPTCONTROLLER_H
 #define PICOBLAZEINTERRUPTCONTROLLER_H
 
-class PicoBlazeRegisters;
 
 #include "../MCUSim.h"
 
-#include "PicoBlazeInstructionSet.h"
+#include "PicoBlazeRegisters.h"
 #include "PicoBlazeStatusFlags.h"
+#include "PicoBlazeInstructionSet.h"
 
 /**
  * @brief
