@@ -173,6 +173,8 @@ DIS_INT_INST            "disable"{WS}"interrupt"
  /* Special directives. */
 "#if"                   { return D_IF;         }
 "#ifn"                  { return D_IFN;        }
+"#ifb"                  { return D_IFB;        }
+"#ifnb"                 { return D_IFNB;       }
 "#ifdef"                { return D_IFDEF;      }
 "#ifndef"               { return D_IFNDEF;     }
 "#elseifb"              { return D_ELSEIFB;    }
@@ -183,8 +185,6 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "#elseifdef"            { return D_ELSEIFDEF;  }
 "#elseifndef"           { return D_ELSEIFNDEF; }
 "#endif"                { return D_ENDIF;      }
-"#ifnb"                 { return D_IFNB;       }
-"#ifb"                  { return D_IFB;        }
 "#while"                { return D_WHILE;      }
 "#endwhile"             { return D_ENDW;       }
 "#endw"                 { return D_ENDW;       }
@@ -349,8 +349,10 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 "endif"                 { return M_RTENDIF;  }
 "while"                 { return M_RTWHILE;  }
 "endw"                  { return M_RTENDW;   }
+"endwhile"              { return M_RTENDW;   }
 "for"                   { return M_RTFOR;    }
 "endf"                  { return M_RTENDF;   }
+"endfor"                { return M_RTENDF;   }
 
  /* Special "operators". */
 "high"                  { return F_HIGH;    }

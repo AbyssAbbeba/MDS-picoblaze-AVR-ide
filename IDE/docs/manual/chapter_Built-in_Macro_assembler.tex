@@ -1,12 +1,14 @@
 In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
 
-MDS has the most advanced assembler for PicoBlaze currently available on the market. MDS macro-assembler is enhanced with features designed to save your time and make programming a little bit easier. For instance you may use ``\verb'if ( S0 == S1 )''' to easy write conditions instead of compares and conditional jumps, ``\verb'for ( S0, 0 .. 9 )''' for loops, ``\verb'#if my_constant > 20''' for conditional compilation, ``\verb'abc macro x, y, z''' for defining your own macros, and plenty more... It supports features for smooth and transparent debugging and it's regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability.
+MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Intel assemblers and the C language. It supports wide range of output data formats, and when you master its advanced features like macro processing, conditions, loops, etc. it might give you means to write code with run-time efficiency typical for an assembly language while giving you some of the comfort of a more high-level language like C. For instance you may use ``\verb'if ( S0 == S1 )''' to easy write conditions instead of compares and conditional jumps, ``\verb'for ( S0, 0 .. 9 )''' for loops, ``\verb'#if my_constant > 20''' for conditional compilation, ``\verb'abc macro x, y, z''' for defining your own macros, and more. MDS macro-assembler is enhanced with features in hope it will help you save your time and make programming a little bit easier. MDS assembler supports features for smooth and transparent debugging and it is regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability. For these reasons we are convinced that this is the most advanced assembler for PicoBlaze currently available on the market.
+
+\paragraph{Note about this documentation:}to write a document properly describing basically any programming language, including the assembly language, is always a challenging task. If you find a mistake or improperly covered area in this documentation, please let us know, we will fix that and provide you with the fixed version right away.
 
 \section{Basics}
     \subsection{Main differences from the Xilinx assembler}
         \begin{description}
             \item[Default radix is decimal, not hexadecimal.]~\\
-                You can use different radix for each numerical literal, if you do not specify radix, it's decimal by default. For hexadecimal radix use `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use `0' (zero) prefix: 076, 011, 027, ...; for binary radix use `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
+                You can use different radix for each numerical literal, if you do not specify radix, it is decimal by default. For hexadecimal radix use `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use `0' (zero) prefix: 076, 011, 027, ...; for binary radix use `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
             \item[Addressing mode specification is mandatory.]~\\
                 For immediate addressing use `\#' prefix: \texttt{LOAD~S0,~\#0xAB}; for indirect addressing you ``@'' prefix: ``\texttt{STORE~S0,~@S1}''; for direct addressing use no prefix: ``\texttt{LOAD~S0,~S1~+~3}'' (this loads S0 with S4).
             \item[This assembler is case insensitive.]~\\
@@ -37,18 +39,6 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \verb'     */'\\
             \verb'    '\\
             \verb'    LOAD /* Comment, */ S0, /* another comment, */ S1 ; more comment.'
-
-    \subsection{Symbols}
-        \index{Symbols}
-        Symbols are user defined symbolic names for numbers or addresses. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be one symbol.
-
-        \paragraph{Example}
-        ~\\
-        \verb'    First_symbol      EQU     0b100111 ; Number in binary'\\
-        \verb'    Second_symbol     SET     47q      ; Octal'\\
-        \verb'    Third_symbol      REG     39d      ; Decimal'\\
-        \verb'    Fourth_symbol     DATA    27h      ; Hexadecimal'\\
-        \verb'    Fifth_symbol      CODE    27h      ; Hexadecimal'
 
     \clearpage
     \subsection{Numeric constants}
@@ -82,7 +72,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|}
+                \begin{tabular}{|c|l|c|}
                     \hline
                     \textbf{Sequence} & \textbf{Description} & \textbf{Value} \\\hline
                     \verb'\a'         & alarm (bell)         & 0x07 \\\hline
@@ -113,10 +103,64 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                     To write a unicode character specified by max. 8 hexadecimal digits.
             \end{description}
 
-    \clearpage
+    \subsection{Symbols}
+        \index{Symbols}
+        Symbols are user defined symbolic names for numbers or addresses. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be one symbol.
+
+        \paragraph{Example}
+        ~\\
+        \verb'    first_symbol      EQU     0b100111 ; Binary radix, number.'\\
+        \verb'    second_symbol     SET     047      ; Octal radix, number.'\\
+        \verb'    third_symbol      REG     39       ; Decimal radix, register address.'\\
+        \verb'    fourth_symbol     DATA    0x27     ; Hexadecimal radix, scratch-pad ram address.'\\
+        \verb'    fifth_symbol      CODE    0x27     ; Hexadecimal radix, program memory address.'
+
+        \subsubsection{Special Symbols}
+            MDS assembler support only one special symbol which is always defined on every line containing an instruction (or the \texttt{DB} directive), symbol ``\texttt{\$}'' contains address in program memory where this instruction is going to be placed by the assembler.
+
+            \paragraph{Example}
+                ~\\
+                \verb'    ; Since $ conatins the address of the JUMP instruction,'\\
+                \verb'    ; this jump results in infinite loop.'\\
+                \verb'    JUMP    $'\\
+                \verb''\\
+                \verb'    ; Skip the next instruction ($+1 would "skip" only the jump itself).'\\
+                \verb'    JUMP    $+2'\\
+                \verb'    LOAD    S0, S1   ; <-- This instruction is goigh to be skipped.'\\
+                \verb'    LOAD    S2, S3'
+
+        \clearpage
+        \subsubsection{Predefined Symbols}
+            These symbols are defined by default when you specify the target device (directive ``device''). Symbols S10..S1F are defined for KCPSM2 only, and S8..S1F are not defined for KCPSM1-CPLD. All these symbols are defined as register addresses.
+
+            \begin{table}[h!]
+                \centering
+                \begin{tabular}{|cc|cc|}
+                    \hline
+                    \textbf{Symbol} & \textbf{Value} & \textbf{Symbol} & \textbf{Value} \\\hline
+                    \texttt{S0}     & 0x00           & \texttt{S10}    & 0x10           \\\hline
+                    \texttt{S1}     & 0x01           & \texttt{S11}    & 0x11           \\\hline
+                    \texttt{S2}     & 0x02           & \texttt{S12}    & 0x12           \\\hline
+                    \texttt{S3}     & 0x03           & \texttt{S13}    & 0x13           \\\hline
+                    \texttt{S4}     & 0x04           & \texttt{S14}    & 0x14           \\\hline
+                    \texttt{S5}     & 0x05           & \texttt{S15}    & 0x15           \\\hline
+                    \texttt{S6}     & 0x06           & \texttt{S16}    & 0x16           \\\hline
+                    \texttt{S7}     & 0x07           & \texttt{S17}    & 0x17           \\\hline
+                    \texttt{S8}     & 0x08           & \texttt{S18}    & 0x18           \\\hline
+                    \texttt{S9}     & 0x09           & \texttt{S19}    & 0x19           \\\hline
+                    \texttt{SA}     & 0x0A           & \texttt{S1A}    & 0x1A           \\\hline
+                    \texttt{SB}     & 0x0B           & \texttt{S1B}    & 0x1B           \\\hline
+                    \texttt{SC}     & 0x0C           & \texttt{S1C}    & 0x1C           \\\hline
+                    \texttt{SD}     & 0x0D           & \texttt{S1D}    & 0x1D           \\\hline
+                    \texttt{SE}     & 0x0E           & \texttt{S1E}    & 0x1E           \\\hline
+                    \texttt{SF}     & 0x0F           & \texttt{S1F}    & 0x1F           \\\hline
+                \end{tabular}
+                \caption{Predefined symbols}
+            \end{table}
+
     \subsection{Expressions}
         \index{Expressions}
-        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expressions comprise of arithmetical operators, constants, and symbols. Examples of such expressions:
+        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expression calculation is performed on 32-bit unsigned integers, the resulting values are trimmed to 16-bits at most (with exception for DB where values might be trimmed to 18 bits). Expressions comprise of arithmetical operators, constants, and symbols. Examples of such expressions:
 
         \begin{itemize}
             \item \texttt{2+1}
@@ -126,37 +170,38 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             \item \texttt{X * Y + X \% Y}
         \end{itemize}
 
-        When operators with different priority levels appear in an expression, operations are evaluated according to priorities. When operators of the same priority appear in an expression, operations are evaluated from left to right. Also parenthesis may be used to force order of evaluation.
+        When operators with different priority levels appear in an expression, operations are evaluated according to priorities. When operators of the same priority appear in an expression, operations are evaluated from left to right. Parenthesis may be used to force order of evaluation, for example \texttt{2 + 2 * 2} is evaluated as 6 because multiplication has higher priority than addition, but \texttt{( 2 + 2 ) * 2} results in 8 because addition is enclosed by parenthesis and therefore it is evaluated prior to the multiplication.
 
         The table below show priorities for all supported operators, priority 1 is the highest priority, and priority 9 is the lowest priority. All logical operators have priorities lower than arithmetic and relational operators.
 
         \begin{table}[h!]
             \centering
-            \begin{tabular}{|l|l|l|l|}
+            \begin{tabular}{|c|c|l|l|}
                 \hline
                 \textbf{Priority} & \textbf{Operator} & \textbf{Description} & \textbf{Example} \\\hline
-                1        & +        & unary plus sign         & +12             \\\hline
-                1        & -        & unary minus sign        & -5              \\\hline
-                2        & \~{}     & bitwise NOT             & \~{}0a55ah      \\\hline
-                2        & !        & logical NOT             & !0a55ah         \\\hline
-                3        & *        & unsigned multiplication & 11 * 12         \\\hline
-                3        & /        & unsigned divisiono      & 11 / 12         \\\hline
-                3        & \%       & unsigned remainder      & 13 \% 11        \\\hline
-                4        & +        & unsigned addition       & 3 + 5           \\\hline
-                4        & -        & unsigned substraction   & 20 - 4          \\\hline
-                5        & <{}<     & binary shift left       & 21 <{}< 4       \\\hline
-                5        & >{}>     & binary shift right      & 32 >{}> 2       \\\hline
-                6        & <        & less than               & 11 < 12         \\\hline
-                6        & <=       & less or equal than      & 11 <= 11        \\\hline
-                6        & >        & greater than            & 12 > 11         \\\hline
-                6        & >=       & greater or equal than   & 12 >= 11        \\\hline
-                7        & ==       & equal to                & 11 == 11        \\\hline
-                7        & !=       & not equal to            &  A != B         \\\hline
-                8        & \&       & bitwise and             & 48 \& 16        \\\hline
-                8        & |        & bitwise or              & 370q | 7        \\\hline
-                9        & \&\&     & logical and             & 48 \&\& 16      \\\hline
-                9        & ||       & logical or              & 370q || 7       \\\hline
-                9        & \^{}     & exclusive or            & 00fh \^{} 005h  \\\hline
+                1        & \texttt{+}    & unary plus sign         & \texttt{+12}               \\\hline
+                1        & \texttt{-}    & unary minus sign        & \texttt{-5}                \\\hline
+                2        & \texttt{\~{}} & bitwise NOT             & \texttt{\~{}0a55ah}        \\\hline
+                2        & \texttt{!}    & logical NOT             & \texttt{!0a55ah}           \\\hline
+                3        & \texttt{*}    & unsigned multiplication & \texttt{11 * 12}           \\\hline
+                3        & \texttt{/}    & unsigned division       & \texttt{11 / 12}           \\\hline
+                3        & \texttt{\%}   & unsigned modulo         & \texttt{13 \% 11}          \\\hline
+                4        & \texttt{+}    & unsigned addition       & \texttt{3 + 5}             \\\hline
+                4        & \texttt{-}    & unsigned subtraction    & \texttt{20 - 4}            \\\hline
+                5        & \texttt{<{}<} & binary shift left       & \texttt{21 <{}< 4}         \\\hline
+                5        & \texttt{>{}>} & binary shift right      & \texttt{32 >{}> 2}         \\\hline
+                6        & \texttt{<}    & less than               & \texttt{11 < 12}           \\\hline
+                6        & \texttt{<=}   & less or equal than      & \texttt{11 <= 11}          \\\hline
+                6        & \texttt{>}    & greater than            & \texttt{12 > 11}           \\\hline
+                6        & \texttt{>=}   & greater or equal than   & \texttt{12 >= 11}          \\\hline
+                7        & \texttt{==}   & equal to                & \texttt{11 == 11}          \\\hline
+                7        & \texttt{!=}   & not equal to            & \texttt{A != B}           \\\hline
+                7        & \texttt{<>}   & not equal to            & \texttt{A <> B}           \\\hline
+                8        & \texttt{\&}   & bitwise AND             & \texttt{48 \& 16}          \\\hline
+                8        & \texttt{|}    & bitwise OR              & \texttt{370q | 7}          \\\hline
+                9        & \texttt{\&\&} & logical AND             & \texttt{48 \&\& 16}        \\\hline
+                9        & \texttt{||}   & logical OR              & \texttt{370q || 7}         \\\hline
+                9        & \texttt{\^{}} & bitwise XOR             & \texttt{00fh \^{} 005h}    \\\hline
             \end{tabular}
             \caption{Operators priorities.}
         \end{table}
@@ -174,108 +219,93 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
                     Operator \texttt{..} is used only with the \texttt{FOR} directive to specify loop interval.
             \end{description}
 
-    \clearpage
-    \subsection{Predefined Symbols}
-        These symbols are defined by default when you specify the target device (directive ``device''). Symbols S10..S1F are defined for KCPSM2 only, and S8..S1F are not defined for KCPSM1-CPLD. All these symbols are defined as register addresses.
-
-        \begin{table}[h!]
-            \centering
-            \begin{tabular}{|cc|cc|}
-                \hline
-                Symbol & Value & Symbol & Value \\\hline
-                S0     & 0x00  & S10    & 0x10  \\\hline
-                S1     & 0x01  & S11    & 0x11  \\\hline
-                S2     & 0x02  & S12    & 0x12  \\\hline
-                S3     & 0x03  & S13    & 0x13  \\\hline
-                S4     & 0x04  & S14    & 0x14  \\\hline
-                S5     & 0x05  & S15    & 0x15  \\\hline
-                S6     & 0x06  & S16    & 0x16  \\\hline
-                S7     & 0x07  & S17    & 0x17  \\\hline
-                S8     & 0x08  & S18    & 0x18  \\\hline
-                S9     & 0x09  & S19    & 0x19  \\\hline
-                SA     & 0x0A  & S1A    & 0x1A  \\\hline
-                SB     & 0x0B  & S1B    & 0x1B  \\\hline
-                SC     & 0x0C  & S1C    & 0x1C  \\\hline
-                SD     & 0x0D  & S1D    & 0x1D  \\\hline
-                SE     & 0x0E  & S1E    & 0x1E  \\\hline
-                SF     & 0x0F  & S1F    & 0x1F  \\\hline
-            \end{tabular}
-        \end{table}
-
     \subsection{Reserved keywords}
-        \subsection{Instruction mnemonics}
+        Please remember that the assembler is case insensitive.
+        \subsubsection{Instruction mnemonics}
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|l|l|}
-                    \hline
-                    cpl2 & cpl  & inc  & dec  & setr & clrr \\\hline
-                    setb & clrb & notb & djnz & ijnz & nop  \\\hline
-                \end{tabular}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|l|}
+                        \hline
+                        cpl2 & cpl  & inc  & dec  & setr & clrr \\\hline
+                        setb & clrb & notb & djnz & ijnz & nop  \\\hline
+                    \end{tabular}
+                }
                 \caption{Pseudo-instructions}
             \end{table}
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|l|l|l|}
-                    \hline
-                    ldret & ena  & dis & retie & retid & cmp & in  \\\hline
-                    out   & outk & ld  & cmpcy & st    & ft  & ret \\\hline
-                \end{tabular}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|l|l|}
+                        \hline
+                        ldret & ena  & dis & retie & retid & cmp & in  \\\hline
+                        out   & outk & ld  & cmpcy & st    & ft  & ret \\\hline
+                    \end{tabular}
+                }
                 \caption{Instruction shorthands}
             \end{table}
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|l|l|}
-                    \hline
-                    add     & addcy & sub    & subcy   & compare & load      \\\hline
-                    and     & or    & xor    & test    & store   & fetch     \\\hline
-                    sr0     & sr1   & srx    & sra     & rr      & sl0       \\\hline
-                    sl1     & slx   & sla    & rl      & input   & output    \\\hline
-                    hwbuild & star  & testcy & outputk & jump    & comparecy \\\hline
-                    return  & jump  & call   &         &         &           \\\hline
-                \end{tabular}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|l|l|}
+                        \hline
+                        add     & addcy & sub    & subcy   & compare & load      & return \\\hline
+                        and     & or    & xor    & test    & store   & fetch     & jump   \\\hline
+                        sr0     & sr1   & srx    & sra     & rr      & sl0       & call   \\\hline
+                        sl1     & slx   & sla    & rl      & input   & output    &        \\\hline
+                        hwbuild & star  & testcy & outputk & jump    & comparecy &        \\\hline
+                    \end{tabular}
+                }
                 \caption{Regular instructions}
             \end{table}
 
-        \subsection{Directives}
+        \subsubsection{Directives}
             Regular directives directives can be prefixed with ``\texttt{.}'' (period) character without any effect on their meaning and function.
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|}
-                    \hline
-                    if    & elseif  & else  & endif \\\hline
-                    while & endw    & for   & endf  \\\hline
-                \end{tabular}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|}
+                        \hline
+                        if       & elseif & else & endif & while  \\\hline
+                        endwhile & endw   & for  & endf  & endfor \\\hline
+                    \end{tabular}
+                }
                 \caption{Special macros}
             \end{table}
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|l|}
-                    \hline
-                    \#if         & \#ifn   & \#ifdef  & \#ifndef  & \#elseifb   \\\hline
-                    \#elseifnb   & \#else  & \#elseif & \#elseifn & \#elseifdef \\\hline
-                    \#elseifndef & \#endif & \#ifnb   & \#ifb     & \#while     \\\hline
-                    \#endwhile   & \#endw  &          &           &             \\\hline
-                \end{tabular}
-                \caption{Conditional compilation \& \#WHILE}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|l|}
+                        \hline
+                        \#if         & \#ifn   & \#ifdef  & \#ifndef  & \#elseifb   & \#endwhile \\\hline
+                        \#elseifnb   & \#else  & \#elseif & \#elseifn & \#elseifdef & \#endw     \\\hline
+                        \#elseifndef & \#endif & \#ifnb   & \#ifb     & \#while     &            \\\hline
+                    \end{tabular}
+                }
+                \caption{Conditional compilation \& the \texttt{\#WHILE}}
             \end{table}
+
+            \enlargethispage{6\baselineskip}
 
             \begin{table}[h!]
                 \centering
-                \begin{tabular}{|l|l|l|l|l|l|}
-                    \hline
-                    failjmp & device   & limit    & reg       & string   & default\_jump \\\hline
-                    namereg & address  & org      & define    & undefine & undef         \\\hline
-                    equ     & constant & set      & variable  & port     & portin        \\\hline
-                    portout & data     & code     & string    & db       & error         \\\hline
-                    warning & list     & message  & messg     & nolist   & skip          \\\hline
-                    title   & expand   & noexpand & local     & endmacro & endm          \\\hline
-                    exitm   & repeat   & rept     & endrepeat & endr     & autoreg       \\\hline
-                    autospr & orgspr   & initspr  & mergespr  & macro    & end           \\\hline
-                \end{tabular}
+                \texttt{
+                    \begin{tabular}{|l|l|l|l|l|l|}
+                        \hline
+                        failjmp & device   & limit    & reg       & string   & default\_jump \\\hline
+                        namereg & address  & org      & define    & undefine & undef         \\\hline
+                        equ     & constant & set      & variable  & port     & portin        \\\hline
+                        portout & data     & code     & string    & db       & error         \\\hline
+                        warning & list     & message  & messg     & nolist   & skip          \\\hline
+                        title   & expand   & noexpand & local     & endmacro & endm          \\\hline
+                        exitm   & repeat   & rept     & endrepeat & endr     & autoreg       \\\hline
+                        autospr & orgspr   & initspr  & mergespr  & macro    & end           \\\hline
+                    \end{tabular}
+                }
                 \caption{Regular directives}
             \end{table}
 
@@ -288,125 +318,170 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
     \input{chapter_Built-in_Macro_assembler_pseudo-instructions.tex}
 
 \clearpage
-\section{Assembler directives}
-    \input{chapter_Built-in_Macro_assembler_directives.tex}
+\input{chapter_Built-in_Macro_assembler_directives.tex}
 
-\section{Error and warning messages}
+\clearpage
+\section{Compiler messages}
     This chapter lists the error messages generated by MDS. The following sections include a brief description of the possible error messages along with a description of the error and any corrective actions you can take to avoid or eliminate the error. Errors terminate the assembly and generate a message that is displayed on the console. Warnings generate a message in the assembly listing file but do not terminate the assembly.
 
-    \subsection{Errors}
-        \begin{description}
-            \item[Unable to open file]~\\
-                The given file cannot be opened for some reason.
-            \item[Unable to write to file]~\\
-                It is not possible to write into given file.
-            \item[Unable to save file]~\\
-                The given file cannot be saved. Check if you have enough space on your disk.
-            \item[The resulting machine code is too big to be stored in a file]~\\
-                Size of the resulting machine code is bigger, than free disk space.
-            \item[Some of the source code files were aparently changed during compilation]~\\
-                Do not change source files during the compilation. Wait for compilation to be finished.
-            \item[User defined memory limit for program memory exceeded]~\\
-                You have exceeded maximum program memory defined with directive LIMIT or project configuration.
-            \item[User defined memory limit for register file exceeded]~\\
-                You have exceeded maximum number of working registers defined with directive LIMITor project configuration.
-            \item[User defined memory limit for Scratch Pad RAM exceeded]~\\
-                You have exceeded maximum scratch pad RAM defined with directive LIMIT or project configuration.
-            \item[Instruction X requires operand \#Y to be of type(s) Z]~\\
-                Wrong type of operand.
-            \item[Macro not defined ]~\\
-                The given macro has not been defined. You must define macro before you can use it. See chapter MACROS for more info.
-            \item[Too many arguments given, expecting at most X arguments]~\\
-                Too many arguments. Reduce number of given arguments.
-            \item[Attempting to use unavailable space in X memory at address: Y]~\\
-                Desired memory space is not available.
-            \item[The last error was critical, compilation aborted]~\\
-                Critical error has occured. Compilation cannot continue.
-            \item[Device not supported]~\\
-                The given device is not supported. Please choose different device in project configuration.
-            \item[Device specification code is already loaded ]~\\
-                You have already specified architecture in project configuration.
-            \item[Limit value X is not valid]~\\
-                Invalid limit value. Viz. LIMIT directive chapter for valid values.
-            \item[Directive `LOCAL' cannot appear outside of macro definition ]~\\
-                Directive LOCAL must be only used inside of macro. Use different directive for symbol definition( EQU,SET etc.), or put it inside of macro.
-            \item[Directive EXITM' cannot apper outside macro definition]~\\
-                The given directive is used to immediately exit macro. It does not make sense to use it differently.
-            \item[Maximum macro expansion level X reached]~\\
-                Maximum macro expansion level reached. You can change your compiler settings and set bigger expansion level. By default, macro expansion level is unlimited.
-            \item[Maximum number of WHILE directive iterations reached]~\\
-                Maximum WHILE directive iterations reached. You can change your compiler settings and allow more iterations. By default, number of iterations is unlimited.
-            \item[Maximum number of REPEAT directive iterations reached]~\\
-                Maximum REPEAT directive iterations reached. You can change your compiler settings and allow more iterations. By default, number of iterations is unlimited.
-            \item[Instruction word is only 18 bits wide, value X trimmed to Y]~\\
-                You have exceeded instruction word length. Value has been trimmed to  appropriate length.
-            \item[Symbol already defined]~\\
-                The given symbol has been already defined. Symbol cannot be defined more than one time.
-            \item[Symbol not defined: X]~\\
-                The given symbol has not been defined. Symbol has to be defined before usage.
-            \item[Symbol X already defined with type Y]~\\
-                The given symbol has been already defined with type Y. Symbol cannot be defined more than one time.
-            \item[Undefined value]~\\
-                Undefined value. You need to specify the value.
-            \item[Real numbers are not supported in assembler]~\\
-                Real numbers cannot be used on 8-bit processor.
-            \item[Undefined symbol: X]~\\
-                Symbol has not been defined. Define symbol before usage.
-            \item[This value is not valid inside of expression ]~\\
-                The given expression contains forbidden value.
-            \item[Division by zero]~\\
-                Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
-            \item[Unable to resolve this expression]~\\
-                The given expression cannot be resolved. Check if expression is syntactically right.
-            \item[Syntax not understood]~\\
-                There is syntax error in your source code.
-            \item[Character constant is too long]~\\
-                Character constant is too long. Check ASCII table for appropriate values.
-            \item[Unterminated string or character constant]~\\
-                Unterminated string or character constant. You probably forgot to end with ''.
-            \item[Unrecognized escape sequence:]~\\
-                Unrecognized escape sequence. Check ASCII table for appropriate values.
-            \item[No file name specified]~\\
-                File name has to be specified.~\\
-            \item[Unable to open the specified file: X]~\\
-                The given file cannot be opened for some reason.
-            \item[Unrecognized token:]~\\
-                Source code contains invalid characters.
-        \end{description}
+    \begin{description}
+        \item[Unable to open file]~\\
+            The given file cannot be opened, probably does not exists or your operating system refuses to grad you access to it. Check whether the file exists, and check your permissions.
+        \item[Unable to write to file]~\\
+            It is not possible to write into the given file. This is in most cases caused by wrong permissions on file or directory, or nonexistent directory in the file path.
+        \item[Unable to save file]~\\
+            The given file cannot be saved. This might indicate that there is something badly wrong, like not enough space left on your storage device (HDD, etc.).
+        \item[The resulting machine code is too big to be stored in a file]~\\
+            Size of the resulting machine code is bigger than your processor could possibly handle in its current configuration.
+        \item[Some of the source code files were apparently changed during compilation]~\\
+            Solution to that is: do not change source files during the compilation, wait for the compilation finish first.
+        \item[User defined memory limit for X exceeded]~\\
+            You have exceeded boundary of X memory defined for your processor configuration.
+        \item[User defined memory limit for X exceeded]~\\
+            You have exceeded boundary of X memory defined for the \texttt{LIMIT} directive.
+        \item[Instruction X requires operand Y to be of type(s) Z]~\\
+            This means you are for example trying to use a symbol defined as port address in place of register address.
+        \item[Macro not defined ]~\\
+            The macro you are attempting to use has not (yet) been defined, possibly you are trying to expand a macro before its definition.
+        \item[Too many arguments given, expecting at most X arguments]~\\
+            Directives require certain number of arguments, when you provide different number of arguments, the directive would in certain cases just not make sense.
+        \item[Attempting to use unavailable space in X memory at address: Y]~\\
+            Suppose you have 8 registers and you try for example to write to register at address 10, the assembler will then give you this error. The same, of course, apply also to program memory, or any other memory.
+        \item[The last error was critical, compilation aborted]~\\
+            Normally the assembler tries to carry on compiling for as long as possible despite errors, it is implemented that way to provide you with as many error message at the time as possible. But in certain cases it is not possible and compilation has to aborted instantaneously.
+        \item[Device not supported]~\\
+            The given processor is not supported, this usually happens due to some typo.
+        \item[Device specification code is already loaded ]~\\
+            The processor architecture has to be specified only once, multiple specifications for one source code would not make sense because they could "collide" with each other.
+        \item[Limit value X is not valid]~\\
+            Invalid limit specifier for the \texttt{LIMIT} directive.
+        \item[Directive `LOCAL' cannot appear outside of macro definition ]~\\
+            Directive \texttt{LOCAL} can be only used inside of macro definition, outside macro definition it has no meaning and therefore cannot be used.
+        \item[Directive `EXITM' cannot appear outside macro definition]~\\
+            Directive \texttt{EXITM} can be only used inside of macro definition, outside macro definition it has no meaning and therefore cannot be used.
+        \item[Maximum macro expansion level X reached]~\\
+            Maximum macro expansion level reached. You can change your compiler settings and set higher expansion level. By default, maximum macro expansion level is unlimited, which is possibly dangerous and users should set some limit for them selfs.
+        \item[Maximum number of \#WHILE directive iterations reached]~\\
+            Maximum number of the \texttt{\#WHILE} directive iterations has been reached. You can change your compiler settings to allow more iterations. By default, maximum number of \texttt{\#WHILE} iterations is unlimited, which is possibly dangerous and users should set some limit for them selfs.
+        \item[Maximum number of REPEAT directive iterations reached]~\\
+            Maximum number of the \texttt{REPEAT} directive iterations has been reached. You can change your compiler settings to allow more iterations. By default, maximum number of \texttt{REPEAT} iterations is unlimited, which is possibly dangerous and users should set some limit for them selfs.
+        \item[Instruction word is only X bits wide, value Y trimmed to Z]~\\
+            You have exceeded instruction word length, opcode value has been trimmed to X bits which reduces value Y to value Z.
+        \item[Symbol already defined]~\\
+            The given symbol has been already defined, there cannot coexist more symbols with the same name in one compilation unit.
+        \item[Symbol not defined: X]~\\
+            The given symbol has not been defined, maybe you are just trying to use it prior to its definition.
+        \item[Symbol X already defined with type Y]~\\
+            The given symbol has been already defined with type Y, you are trying to define more symbols with the same name but with different types. This is not allowed in this assembler because such practice tends to lower software quality.
+        \item[Undefined value]~\\
+            You are attempting to use some value whose numerical representation is unknown.
+        \item[Real numbers are not supported in assembler]~\\
+            Real numbers (1.8, 22.65, etc.) are not supported by this assembler.
+        \item[Undefined symbol: X]~\\
+            Symbol X has been undefined, i.e. deleted from the symbol table using the \texttt{UNDEFINE} directive and therefore can be no longer used.
+        \item[This value is not valid inside of expression ]~\\
+            Expressions in this assembler can be calculated only from integer values, strings, etc. are not allowed.
+        \item[Division by zero]~\\
+            Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
+        \item[Unable to resolve this expression]~\\
+            The given expression cannot be resolved, check if expression is syntactically correct.
+        \item[Syntax not understood]~\\
+            There is syntax error in your source code which is for this assembler completely ununderstandable.
+        \item[Character constant is too long]~\\
+            Character constant is one letter only.
+        \item[Unterminated string or character constant]~\\
+            Strings and character constants start with ``\texttt{"}'' respectively ``\texttt{'}'', and has to end with the same character, i.e. ``\texttt{"}'' respectively ``\texttt{'}''.
+        \item[Unrecognized escape sequence:]~\\
+            Unrecognized escape sequence, please check the table of escape sequences for reference.
+        \item[No file name specified]~\\
+            You are trying to compile something but you did not provide file name of the source code file.
+        \item[Unable to open the specified file: X]~\\
+            The specified file cannot be opened, probably does not exists or your operating system refuses to grad you access to it. Check whether the file exists, and check your permissions.
+        \item[Unrecognized token: X]~\\
+            Lexical analyzer was unable to recognize this token. Normally this does not happen but in case your code contains some binary values with no printable representation or something like that, this may happen.
+        \item[Maximum number of messages reached, suppressing compiler message generation]~\\
+            Source code contains a huge number of errors, further error messages are from now on suppressed in order to prevent enormous size of code listing file, and enormous and impractical assembler console output.
+        \item[Redefinition macro]~\\
+            Once a macro is defined, it cannot be redefined.
+        \item[Macro X will not be expanded because macro expansion has been disabled]~\\
+            The given macro cannot be expanded because macro expansion has been temporarily disabled by \texttt{NOEXPAND} directive. You can use \texttt{EXPAND} directive to enable the expansion.
+        \item[Parameter X substituted for blank value ]~\\
+            Macros parameters are optional, those parameters which has not been substituted with arguments are filled with blank values. Parameters can be checked if they are blanks using \texttt{\#IFB} and \texttt{\#IFNB} directives.
+        \item[Symbol X already declared as local]~\\
+            You are trying to declare a symbol as local macro symbol multiple times.
+        \item[Reusing already reserved space in X memory at address: Y]~\\
+            There is a collision in two different attempts to utilize a memory space. For instance with the \texttt{ORG} directive you can easily by mistake attempt to put two instruction at the same location in the program memory.
+        \item[Limit value -1 means unlimited]~\\
+            Using -1 as directive argument for the \texttt{LIMIT} directive removes the limit, there is nothing bat at all about that but for some people it might be surprising so the assembler notifies you about it.
+        \item[Symbol X declared as local but never used, declaration ignored]~\\
+            What is the point of having a local symbol inside a macro and do not use it? This is not an error but its possible side effect from some error or mistake, that is why the compiler warns you about it.
+        \item[Comparing two immediate constants, result is always positive]~\\
+            When using autogenerated run-time conditions, it does not make much sense to write a condition which result is always known in advance, that is why you get this warning message.
+        \item[Comparing two immediate constants, result is always negative]~\\
+            When using autogenerated run-time conditions, it does not make much sense to write a condition which result is always known in advance, that is why you get this warning message.
+        \item[Sign overflow. Result is negative number lower than the lowest negative...]~\\
+            Two's complement signed arithmetic overflow occurred during expression evaluation.
+        \item[File name contains a null character]~\\
+            This is a very unlikely error message, it means that the provided file name contains an invalid character, in this case it is the NULL character.
+        \item[Result is negative number X, this will be represented as X-bit number...]~\\
+            Result is negative number, in two's complement signed arithmetic that means the number contains binary ones in high order bits, after the values is trimmed to fit binary width required for the specific purpose, it might result in a different value, even a positive number.
+        \item[Value out of range, allowed range is [X,Y] (trimmed to Z bits) which makes it N]~\\
+            Value exceeds the required range for the specific purpose.
+    \end{description}
 
-    \subsection{Warnings}
-        \begin{description}
-            \item[Maximum number of messages reached, suppressing compiler message generation]~\\
-                Source code contains a big number of errors. Those errors were suppressed to prevent enormous size of code listing file.
-            \item[Redefinition macro]~\\
-                The given macro has already been defined.
-            \item[Macro X will not be expanded because macro expansion has been disabled]~\\
-                The given macro cannot be expanded because macro expansion has been disabled by NOEXPAND directive. You can use EXPAND directive to allow expansion again.
-            \item[Parameter X substituted for blank value ]~\\
-                Macro expected input parameter. Compiler replaced it with blank parameter.
-            \item[Symbol X already declared as local]~\\
-                Symbol is already used as local inside of macro.
-            \item[Reusing already reserved space in X memory at address: Y]~\\
-                Memory space is already defined. Make sure the collision will not occur.
-            \item[Limit value -1 means unlimited]~\\
-                You can define limit values with LIMIT directive. Using -1 as directive argument, means unlimited.
-            \item[Symbol X declared as local but never used, declaration ignored]~\\
-                The given local symbol has been declared but never used. Declaration will be ignored.
-            \item[Comparing two immediate constants, result is always positive]~\\
-                Comparing two immediate constants, result will be always same.
-            \item[Comparing two immediate constants, result is always negative]~\\
-                Comparing two immediate constants, result will be always same.
-            \item[Sign overflow. Result is negative number lower than the lowest negative...]~\\
-                Two's complement sign overflow.
-            \item[Result is negative number X, this will be represented as X-bit number...]~\\
-                Result is negative number. This will be represented as number in two's complement arithmetic.
-            \item[Value out of range, allowed range is [0,2] (trimmed to 3 bits) which makes it 4 ]~\\
-                Value out of range. Adjust input value.
-            \item[Maximum number of messages reached, suppressing compiler message generation ]~\\
-                Compiler is suppressing error messages generation to avoid massive code listing file size.
-            \item[File name contains a null character ]~\\
-                Null character in file name is forbidden. Please change the name of the given file.
-        \end{description}
+\clearpage
+\section{Generated VHDL and Verilog files}
+    As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow. MDS will generate all necessary files that are needed for implementation in FPGA. The compiler will read a VHDL template and insert the generated machine code for PicoBlaze to complete the definition of program ROM and write the result into a new 'VHDL file that is ready for synthesis and simulation.
+
+    Template can be modified to define alternative memory definitions. However, you are responsible for ensuring the template is correct as the compiler does not perform any checking of the validity VHDL template.
+
+    The compiler identifies all text enclosed by {} characters, and replaces these character strings. Templates have to contain these {} characters enclosed strings for the compiler to work correctly. The MDS assembler replaces instances on {INIT\_XX}, {INITP\_XX} and {INIT64\_X}, {INIT128\_X}, {INIT256\_X} by constant strings with the appropriate values, similar to the kcpsmX tools from Xilinx.
+
+\section{Raw binary file}
+    Raw binary file file contains machine code generated by the assembler in raw form. It contains opodes of instructions in formatted as either as sequence of byte triplets (in case of 18 bit instruction opcodes), or sequence of byte pairs (in case of 16 bit instructions opcodes). Unused memory locations and higher bits of bytes which are not used in their entire width are filled with binary zeros. Byte order is big-endian.
+
+\section{String table}
+    String table contains list of strings defined in your source code with additional information.\\
+
+    \paragraph{File format}
+        ~\\
+        The table of strings is text file consisting of a number of lines with following format:\\
+        \begin{tabular}{|ccc|}
+            \hline
+            Name & Location & "Value" \\
+            \hline
+        \end{tabular}
+
+    \begin{description}
+        \item[Name]~\\
+            Name of string.
+        \item[Location]~\\
+            Location of string definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
+        \item[Value]~\\
+            The character string assigned to the name.
+    \end{description}
+
+\clearpage
+\section{Macro table}
+    Macro table contains list of macros in your source code with additional information.\\
+
+    \paragraph{File format}
+        ~\\
+        The table of symbols is text file consisting of a number of lines with following format:\\
+        \begin{tabular}{|ccc|}
+            \hline
+            Name & Usage & Location \\
+            \hline
+        \end{tabular}
+
+    \begin{description}
+        \item[Name]~\\
+            Name of macro.
+        \item[Usage]~\\
+            It tells you how many times the macro was used.
+        \item[Location]~\\
+            Location of macro definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
+    \end{description}
 
 \section{Symbol table}
     Symbol table contains list of symbols defined in your source code with additional information.
@@ -428,7 +503,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
             Defines symbol type.
             \begin{itemize}
                 \item PORT: Symbol should be used as PORT\_ID indicator.
-                \item DATA: Symbol should be used only as a scatch\-pad ram data.
+                \item DATA: Symbol should be used only as a scatch-pad ram data.
                 \item LABEL: Symbol is label defining address in program memory.
                 \item REGISTER: Symbol represents one of the internal registers.
                 \item EXPRESION: Symbol is defined as an expression.
@@ -452,37 +527,6 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
         \item[Location]
             Location of symbol definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
     \end{description}
-
-\section{Macro table}
-    Macro table contains list of macros in your source code with additional information.\\
-
-    \paragraph{File format}
-        ~\\
-        The table of symbols is text file consisting of a number of lines with following format:\\
-        \begin{tabular}{|cccc|}
-            \hline
-            Name & Usage & Type & Location \\
-            \hline
-        \end{tabular}
-
-    \begin{description}
-        \item[Name]~\\
-            Name of macro.
-        \item[Usage]~\\
-            It tells you how many times the macro was used.
-        \item[Location]~\\
-            Location of macro definition formatted as: <file-name>:<line-number>.<column>.<line-number>.<column>
-    \end{description}
-
-\section{Generated VHDL and Verilog files}
-    As you know, the PicoBlaze microcontroller is primarily designed for use in a VHDL design flow. MDS will generate all necessary files that are needed for implementation in FPGA. The compiler will read a VHDL template and insert the generated machine code for PicoBlaze to complete the definition of program ROM and write the result into a new 'VHDL file that is ready for synthesis and simulation.
-
-    Template can be modified to define alternative memory definitions. However, you are responsible for ensuring the template is correct as the compiler does not perform any checking of the validity VHDL template.
-
-    The compiler identifies all text enclosed by {} characters, and replaces these character strings. Templates have to contain these {} characters enclosed strings for the compiler to work correctly. The MDS assembler replaces instances on {INIT\_XX}, {INITP\_XX} and {INIT64\_X}, {INIT128\_X}, {INIT256\_X} by constant strings with the appropriate values, similar to the kcpsmX tools from Xilinx.
-
-\section{Raw binary file}
-    Raw binary file file contains machine code generated by the assembler in raw form. It contains opodes of instructions in formatted as either as sequence of byte triplets (in case of 18 bit instruction opcodes), or sequence of byte pairs (in case of 16 bit instructions opcodes). Unused memory locations and higher bits of bytes which are not used in their entire width are filled with binary zeros. Byte order is big-endian.
 
 \clearpage
 \section{MEM File}
@@ -645,8 +689,7 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
     Code listing serves as an additional information about the assembled code and the progress of the assembly process. It contains information about all symbols defined in the code. Where and how they have been defined, what are their values and whether they are used in the code. Also detailed information about all macros defined in the code and/or expanded in the code. Conditional compilation configuration, instruction opcodes, address space reservations, inclusion of code from other files. And all warnings, errors, and notes generated during the assembly by the assembler. There are assembler directives which alters formatting of the code listing file.
 
     \begin{code}[h]
-        \verb'demo0                                         PAGE 1'\\
-        \verb'                         1     ; Demostration code'\\
+        \verb'                         1     ; Comment.'\\
         \verb'                         2             org     0'\\
         \verb'                         3'\\
         \verb'0000 01001               4     main:   load    s0, #1'\\
@@ -661,26 +704,23 @@ MDS has the most advanced assembler for PicoBlaze currently available on the mar
     Code listing contains entire source code which has been assembled but with each line prefixed with line number and some additional information which will be explained later. Each line of the code listing which contains an original source code line may contain besides line number also some additional information regarding the compilation of the given line of code. Such a additional information might look like this and is composed of these parts:
 
     \begin{code}[h]
-        \verb'  '{\color{Lavender}{0055}}\verb'                  '{\color{Goldenrod}{18}}\verb'      '{\color{Gray}{X      data     55h}}\\
-        {\color{Apricot}{0014}}\verb' '{\color{GreenYellow}{1122}}\verb'       '{\color{LimeGreen}{=1}}\verb'      '{\color{Goldenrod}{33}}\verb'      '{\color{Gray}{l:     inc      s0}}\\
-        \verb'                        '{\color{Goldenrod}{35}}\verb' '{\color{ProcessBlue}{+1}}\verb'   '{\color{Gray}{abc     ; Expand macro ``abc'' here}}\\
-        {\color{Apricot}{001E}}\verb' '{\color{GreenYellow}{E580}}\verb'               '{\color{Goldenrod}{36}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                LOAD     s1, s0}}\\
-        {\color{Apricot}{0020}}\verb' '{\color{GreenYellow}{F410}}\verb'               '{\color{Goldenrod}{37}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                SR0     s1}}\\
-        {\color{Apricot}{0021}}\verb' '{\color{GreenYellow}{F590}}\verb'               '{\color{Goldenrod}{38}}\verb' '{\color{ProcessBlue}{+1}}\verb'  '{\color{Gray}{                LOAD     s2, s1}}\\
+        \verb'  '{\color{highlight_lst_number}\verb'00055'}\verb'                  '{\color{highlight_lst_line}\verb'1'}\verb'      '{\color{highlight_comment}\verb'X           EQU         0x55'}\\
+        \verb'                         '{\color{highlight_lst_line}\verb'2'}\verb'      '{\color{highlight_comment}\verb'            INCLUDE     "file.asm"'}\\
+        {\color{highlight_lst_address}\verb'0007'}\verb' '{\color{highlight_lst_code}\verb'00100'}\verb'      '{\color{highlight_label}\verb'=1'}\verb'       '{\color{highlight_lst_line}\verb'3'}\verb' '{\color{highlight_constant}\verb'+1'}\verb'   '{\color{highlight_comment}\verb'label:      LOAD        S1, S0'}\\
 
-        \colorbox{Goldenrod}{\color{Goldenrod}X} Line number\\
-        \colorbox{LimeGreen}{\color{LimeGreen}X} Level of file inclusion\\
-        \colorbox{ProcessBlue}{\color{ProcessBlue}X} Level of macro expansion\\
-        \colorbox{Apricot}{\color{Apricot}X} Address in program memory\\
-        \colorbox{GreenYellow}{\color{GreenYellow}X} Machine code or another value to be stored in the code memory\\
-        \colorbox{Lavender}{\color{Lavender}X} Value of a symbol\\
-        \colorbox{Gray}{\color{Gray}X} Original line
+        \colorbox{highlight_lst_number}{\color{highlight_lst_number}X} Expression value\\
+        \colorbox{highlight_lst_address}{\color{highlight_lst_address}X} Address in program memory\\
+        \colorbox{highlight_lst_code}{\color{highlight_lst_code}X} Machine code\\
+        \colorbox{highlight_label}{\color{highlight_label}X} Level of file inclusion\\
+        \colorbox{highlight_lst_line}{\color{highlight_lst_line}X} Line number\\
+        \colorbox{highlight_constant}{\color{highlight_constant}X} Level of macro expansion\\
+        \colorbox{highlight_comment}{\color{highlight_comment}X} Original line
         \caption{Format of code listing}
     \end{code}
 
     \begin{code}[h]
         \verb'complicated_lst                                                         PAGE 1'\\
-        {\color{highlight_lst_number}\verb'  001C'}{\color{highlight_lst_line}\verb'               1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc.'}\\
+        {\color{highlight_lst_number}\verb' 0001C'}{\color{highlight_lst_line}\verb'               1'}\verb'     '{\color{highlight_constant}\verb'abc'}\verb'     '{\color{highlight_directive}\verb'equ'}\verb'     '{\color{highlight_symbol}\verb'('}\verb' '{\color{highlight_unknown_base}\verb'14'}\verb' '{\color{highlight_symbol}\verb'*'}\verb' '{\color{highlight_unknown_base}\verb'2'}\verb' '{\color{highlight_symbol}\verb')'}\verb'      '{\color{highlight_comment}\verb'; Define symbol abc.'}\\
         {\color{highlight_lst_line}\verb'                     2'}\verb'             '{\color{highlight_directive}\verb'org'}\verb'     '{\color{highlight_unknown_base}\verb'0'}\verb'               '{\color{highlight_comment}\verb'; Code at address 0.'}\\
         {\color{highlight_lst_line}\verb'                     3'}\\
         {\color{highlight_lst_include}\verb'             =1'}{\color{highlight_lst_line}\verb'      4'}\verb'             '{\color{highlight_directive}\verb'include'}\verb' '{\color{highlight_string}\verb''\verb"'"\verb'macros.asm'\verb"'"\verb' '{\color{highlight_comment}\verb'; Include macros.asm'}}\\

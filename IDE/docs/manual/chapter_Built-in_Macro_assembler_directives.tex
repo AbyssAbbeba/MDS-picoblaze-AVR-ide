@@ -1,471 +1,473 @@
 \definecolor{asmdirective_bg}{rgb}{0.7, 1.0, 0.7}
 \newcommand{\asmdirective}[1]{~\\[7pt]\addcontentsline{toc}{subsection}{#1}\colorbox{asmdirective_bg}{\parbox{\dimexpr\textwidth-2\fboxsep}{\color{black}\textbf{#1}}}\bigskip}
 
-Assembler directives are commands for the assembler executed at compilation time, their purpose is to instruct the assembler how to compile your code, to define constants, implement conditional compilation, and evaluate various things at compilation time.
-
-\asmdirective{INCLUDE}
-    Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the \texttt{INCLUDE} directive appears and optionally to any of the include path list specified as assembler option.
-
-    \subsubsection{Syntax}
-        \verb'    INCLUDE "file_name"'
-
-    \subsubsection{Examples}
-        \verb'    INCLUDE "some_file.asm"'\\
-        \verb'    INCLUDE "sub_dir/another_file.asm"'\\
-        \verb'    INCLUDE "C:/my_dir/my_file.asm"'\\
-        \verb'    INCLUDE "C:\\my_dir\\my_file.asm"'\\
-        \verb'    INCLUDE "/home/user/project/file.asm"'
-
-\asmdirective{END}
-    The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
-
-    \subsubsection{Syntax}
-        \verb'    END'
-
-    \subsubsection{Examples}
-        \verb'    LOAD  S0, S1'\\
-        \verb'    END'\\
-        \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
-
-\clearpage
-\asmdirective{EQU}
-    \texttt{EQU} stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive \texttt{EQU} can be used as register addresses, port addresses, and many others.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> EQU <expression>'
-
-    \subsubsection{Examples}
-        \verb'    First_symb   EQU   0b10011100        ; Binary.'\\
-        \verb'    Second_symb  EQU   47                ; Decimal.'\\
-        \verb'    Third_symb   EQU   0x39              ; Hexadecimal.'\\
-        \verb'    Fourth_symb  EQU   (A - 4) + 18 / B) ; An expression.'\\
-        \verb'    Fifth_symb   EQU   0x09 << 2         ; Another expression.'\\
-        \verb''\\
-        \verb'                 LOAD  S0, #First_symb   ; Loads S0 register with 0b10011100.'
-
-\asmdirective{CONSTANT}
-    This directive is nothing more or less than the \texttt{EQU} directive with another syntax.
-
-    \subsubsection{Syntax}
-        \verb'    CONSTANT <symbol>, <expression>'
-
-\clearpage
-\asmdirective{SET}
-    The \texttt{SET} directive does the same thing as the \texttt{EQU} directive, the only difference is that symbols defined with \texttt{SET} are re-definable while symbols defined with \texttt{EQU} are constant.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> SET <expression>'
-
-    \subsubsection{Examples}
-        \verb'    my_symbol SET   0x10           ; my_symbol = 0x10'\\
-        \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x10.'\\
-        \verb''\\
-        \verb'    my_symbol SET   0x20           ; re-defining my_symbol to new value: 0x20'\\
-        \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x20.'
-
-\asmdirective{VARIABLE}
-    This directive is nothing more or less than the \texttt{SET} directive with another syntax.
-
-    \subsubsection{Syntax}
-        \verb'    VARIABLE <symbol>, <expression>'
-
-    \subsubsection{Examples}
-        \verb'    VARIABLE  First_symb, 0b10011100        ; Binary.'\\
-        \verb'    VARIABLE  Second_symb, 47               ; Decimal.'\\
-        \verb'    VARIABLE  Third_symb, 0x39              ; Hexadecimal.'\\
-        \verb'    VARIABLE  Fourth_symb, (A -4)+ 18 / B)  ; An expression.'\\
-        \verb'    VARIABLE  Fifth_symb, 0x09 << 2         ; Another expression.'\\
-        \verb''\\
-        \verb'    LOAD      S0, #First_symb               ; Loads S0 with 0b10011100.'
-
-\clearpage
-\asmdirective{REG}
-    Symbols defined with the \texttt{REG} directive are considered to be register addresses only and cannot be used for anything else, except for that \texttt{REG} is just another \texttt{EQU}.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> REG <address>'
-
-    \subsubsection{Examples}
-        \verb'    A_reg  REG    s1'\\
-        \verb'    B_reg  REG    s2'\\
-        \verb'    C_reg  REG    s3'\\
-        \verb'    D_reg  REG    0x4'\\
-        \verb'    E_reg  REG    0x5'\\
-        \verb''\\
-        \verb'           LOAD   A_reg, D_reg  ; S0 = S5'\\
-        \verb'           LOAD   B_reg, #0x55  ; S2 = 0x55'
-
-\asmdirective{NAMEREG}
-    This directive is nothing more the \texttt{REG} directive with another syntax.
-
-    \subsubsection{Syntax}
-        \verb'    NAMEREG <symbol>, <address> '
-
-    \subsubsection{Examples}
-        \verb'    NAMEREG     a, s1'\\
-        \verb'    NAMEREG     b, s2'\\
-        \verb'    NAMEREG     x, s3'\\
-        \verb'    NAMEREG     y, 4'\\
-        \verb'    NAMEREG     z, 0xA'
-        \verb''\\
-        \verb'    LOAD        a, b         ; S1 = S2'\\
-        \verb'    LOAD        x, #0x55     ; S3 = 0x55'
-
-\clearpage
-\asmdirective{DATA}
-    Symbols defined with the \texttt{DATA} directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that \texttt{DATA} is just another \texttt{EQU}.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> DATA <expression>'
-
-    \subsubsection{Examples}
-        \verb'    my_location   PORT    0x12'\\
-        \verb''\\
-        \verb'                  STORE   S0, my_location'
-
-\asmdirective{CODE}
-    Symbols defined with the \texttt{CODE} directive are considered to be program memory addresses only and cannot be used for anything else, except for that \texttt{CODE} is just another \texttt{EQU}.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> CODE <expression>'
-
-    \subsubsection{Examples}
-        \verb'    somewhere     CODE    0x3ff'\\
-        \verb'                  ; ...'\\
-        \verb'                  ORG     somewhere'\\
-        \verb'                  ; ...'\\
-        \verb'                  CALL    somewhere'
-
-\asmdirective{PORT}
-    Symbols defined with the \texttt{PORT} directive are considered to be port addresses only and cannot be used for anything else, except for that \texttt{PORT} is just another \texttt{EQU}.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> PORT <expression>'
-
-    \subsubsection{Examples}
-        \verb'    my_port       PORT    0x22'\\
-        \verb''\\
-        \verb'                  OUTPUT  S0, my_port'
-
-\clearpage
-\asmdirective{AUTOREG}
-    It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> AUTOREG [AT <address>]'
-
-    \subsubsection{Examples}
-        \verb'    reg_1  AUTOREG                ; reg_1 = 0'\\
-        \verb'    reg_2  AUTOREG                ; reg_2 = 1'\\
-        \verb'    reg_3  AUTOREG                ; reg_3 = 2'\\
-        \verb'    reg_4  AUTOREG AT 10          ; Start counting from 10 so reg_4 =10'\\
-        \verb'    reg_5  AUTOREG                ; my_reg_5 = 11'
-        \verb''\\
-        \verb'           LOAD     reg_3, reg_4  ; S2 = SA'\\
-        \verb'           LOAD     reg_1, #0x22  ; S0 = 0x22'
-
-\asmdirective{AUTOSPR}
-    This directive provides exactly the same functionality as the \texttt{AUTOREG} directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> AUTOSPR [AT <address>]'
-
-    \subsubsection{Examples}
-        \verb'    my_data  AUTOSPR'\\
-        \verb''\\
-        \verb'             STORE    S0, my_data'
-
-\clearpage
-\asmdirective{INITSPR}
-    Initializes scratch-pad RAM (SPR) with the given value(s), content of such initialized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> INITSPR <value>'
-
-    \subsubsection{Examples}
-        \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
-        \verb'my_data2      INITSPR         0x2b'\\
-        \verb''\\
-        \verb'              FETCH           S0, my_data'\\
-        \verb'              FETCH           S1, my_data + 1'\\
-        \verb'              FETCH           S2, my_data + 2'\\
-        \verb'              FETCH           S3, my_data + 3'\\
-        \verb''\\
-        \verb'              FETCH           S8, my_data2'
-
-\asmdirective{ORGSPR}
-    Specify address of origin for scratch-pad RAM initialization (directive \texttt{INITSPR}).
-
-    \subsubsection{Syntax}
-        \verb'    ORGSPR <address>'
-
-    \subsubsection{Examples}
-        \verb'              ORGSPR          0x10'\\
-        \verb'my_data       INITSPR         "Hello PicoBlaze!" ; <-- address assigned to my_data is 0x10'\\
-        \verb''\\
-        \verb'              FETCH           S0, my_data'\\
-        \verb'              FETCH           S1, my_data + 1'\\
-        \verb'              FETCH           S2, my_data + 2'
-
-\clearpage
-\asmdirective{MERGESPR}
-    Merge scratch-pad RAM initialization with program memory initialization at the specified address.
-
-    \subsubsection{Syntax}
-        \verb'    MERGESPR <address>'
-
-    \subsubsection{Examples}
-        \verb'              MERGESPR        0x280'\\
-        \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
-        \verb''\\
-        \verb'              FETCH           S0, my_data'\\
-        \verb'              FETCH           S1, my_data + 1'\\
-        \verb'              FETCH           S2, my_data + 2'
-
-\asmdirective{STRING}
-    Defines a named character string (sequence of characters) which can later be used with \texttt{LOAD \& RETURN} and \texttt{OUTPUTK} instructions, and with \texttt{DB} directive.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> STRING "<string>"'
-
-    \subsubsection{Examples}
-        \verb'my_string     STRING          "Hello PicoBlaze!"'\\
-        \verb''\\
-        \verb'              LOAD & RETURN   S0, my_string'\\
-        \verb'              OUTPUTK         my_string, 2'\\
-        \verb'              DB              my_string'
-
-\clearpage
-\asmdirective{DEFINE}
-    Define and expression which is evaluated every time separately when used in the code. These expressions can handle unlimited number of parameters, parameters are defined in curly brackets and are numbered from 0 to infinity (in decimal radix), using expressions with parameters resembles calling a function in C language, please see the example below.
-
-    \subsubsection{Syntax}
-        \verb'    <symbol> DEFINE <expression>'
-
-    \subsubsection{Examples}
-        \verb'    A     EQU     10              ; A = 10 (decimal)'\\
-        \verb'    B     SET     25              ; B = 25 (decimal)'\\
-        \verb'    C     DEFINE  ( A + B ) * 2   ; Value of C is unknown for now.'\\
-        \verb''\\
-        \verb'          LOAD    S0, #C          ; Load S0 with ( ( 10 + 25 ) * 2 ) = 70.'\\
-        \verb''\\
-        \verb'    B     SET     11              ; B = 11 (decimal)'\\
-        \verb'          LOAD    S0, #C          ; Now load S0 with ( ( 10 + 11 ) * 2 ) = 42.'\\
-        \verb''\\
-        \verb''\\
-        \verb'    X     DEFINE  ( {0} + {1} )   ; Value of C is unknown for now.'\\
-        \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'
-
-\asmdirective{ORG, ADDRESS}
-    The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With \texttt{ORG} or \texttt{ADDRESS} directive this location counter can be changed to instruct the assembler to start writing the code following the \texttt{ORG} directive at the new location counter position.
-
-    \subsubsection{Syntax}
-        \verb'    ORG     <expression>'\\
-        \verb'    ADDRESS <expression>'
-
-
-    \subsubsection{Examples}
-        \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
-        \verb'    JUMP  handle_interrupt'
-
-\clearpage
-\asmdirective{SKIP}
-    Do not initialize the given number of program memory words and skip to the next nearest location.
-
-    \subsubsection{Syntax}
-        \verb'    SKIP <expression>'
-
-    \subsubsection{Examples}
-        \verb'    ORG   0'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x0.'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x1.'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x2.'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x3.'\\
-        \verb'    SKIP  5          ; Skip next 5 program memory locations.'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x8.'\\
-        \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x9.'
-
-\asmdirective{UNDEFINE, UNDEF}
-    All symbols can be undefined, undefined symbols are be deleted from the symbol table and compiler will not recognize them.
-
-    \subsubsection{Syntax}
-        \verb'    UNDEFINE <symbol>'\\
-        \verb'    UNDEF    <symbol>'
-
-    \subsubsection{Examples}
-        \verb'    symbol  SET     15'\\
-        \verb'            LOAD    S0, #symbol'\\
-        \verb'            UNDEF   symbol'\\
-        \verb'            LOAD    s0, #symbol  ; This will cause compilation error.'
-
-\clearpage
-\asmdirective{DB}
-    This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
-
-    \subsubsection{Syntax}
-        \verb'    ; Expresion syntax'\\
-        \verb'    DB  <expression1>  [, <expression2>, ...]'\\
-        \verb''\\
-        \verb'    ; String syntax'\\
-        \verb'    DB <"string">'\\
-        \verb''\\
-        \verb'    ; Combination of string(s) and expression(s)'\\
-        \verb'    DB <"string"> [, <expression1>, ...]'
-
-        Parameter can be unlimited number of string characters, or expressions divided by comma.
-
-
-    \subsubsection{Examples}
-        \verb'    DB  0x060FC                 ; Constant.'\\
-        \verb'    DB  "my string"             ; String.'\\
-        \verb'    DB  "my string", 2+1, 3     ; Combination of string, expression, and constant.'
-
-\asmdirective{LIMIT}
-    Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or \texttt{JUMP} to address higher than 512, compiler reports such attempt as error.
-
-    \subsubsection{Syntax}
-        \verb'    LIMIT  D, <number> ; Size of scratch-pad RAM (D stands for data).'\\
-        \verb'    LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
-        \verb'    LIMIT  C, <number> ; Size of program memory (C stands for code).'
-
-    \subsubsection{Examples}
-        \verb'    LIMIT  R, 8   ; Limit maximum register address to 7.'\\
-        \verb'    LIMIT  D, 32  ; Limit maximum address in scratch-pad ram to 31. '\\
-        \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
-
-\clearpage
-\asmdirective{DEVICE}
-    Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with \texttt{DEVICE} directive. This will affect predefined symbols.
-
-    \subsubsection{Syntax}
-        \verb'    DEVICE <device_name>'
-
-    \subsubsection{Examples}
-        \verb'    DEVICE kcpsm6'\\
-        \verb'    DEVICE kcpsm3'\\
-        \verb'    DEVICE kcpsm2'\\
-        \verb'    DEVICE kcpsm1'\\
-        \verb'    DEVICE kcpsm1cpld'
-
-\asmdirective{LIST, NOLIST}
-    Temporarily turns on and off output to the code listing.
-
-    \subsubsection{Syntax}
-        \verb'    LIST    ; Turn code listing ON.'\\
-        \verb'    NOLIST  ; Turn code listing OFF.'
-
-    \subsubsection{Examples}
-        \verb'    NOLIST'\\
-        \verb'    INCLUDE "some_file.asm" ; The included file will not appear in the code listing.'\\
-        \verb'    LIST'
-
-\clearpage
-\asmdirective{TITLE}
-    Set title for code listing.
-
-    \subsubsection{Syntax}
-        \verb'    TITLE  "<title text>"'
-
-    \subsubsection{Examples}
-        \verb'    TITLE  "My program for something, etc."'
-
-\asmdirective{MESSAGE}
-    Print compiler message, the message will be printed by the compiler in the same was as errors and warnings are. Such message, however, is not considered to be neither error nor warning.
-
-    \subsubsection{Syntax}
-        \verb'    MESSAGE "some message..."'
-
-    \subsubsection{Examples}
-        \verb'    MESSAGE "text text text..."'
-
-\asmdirective{ERROR}
-    This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
-
-    \subsubsection{Syntax}
-        \verb'    ERROR "error message"'
-
-    \subsubsection{Examples}
-        \verb'    ERROR "my error message"'
-
-\asmdirective{WARNING}
-    This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as a warning.
-
-    \subsubsection{Syntax}
-        \verb'WARNING "warning message"'
-
-    \subsubsection{Examples}
-        \verb'WARNING "my warning message"'
-
-\clearpage
-\asmdirective{REPEAT}
-    Repeats the specified block of code for the specified number of times. \texttt{REPT} is shorthand for \texttt{REPT}, and \texttt{ENDR} is shorthand for \texttt{ENDREPEAT}.
-
-    \subsubsection{Syntax}
-        \verb'    REPEAT <number-of-repeats>'\\
-        \verb'        <code>'\\
-        \verb'    ENDREPEAT'\\
-        \verb''\\
-        \verb'    REPT <number-of-repeats>'\\
-        \verb'        <code>'\\
-        \verb'    ENDR'
-
-    \subsubsection{Examples}
-        \verb'    REPT          5'\\
-        \verb'        SR0       sF'\\
-        \verb'    ENDR'\\
-        \verb''\\
-        \verb'    ; Equivalent to.'\\
-        \verb'    SR0           sF'\\
-        \verb'    SR0           sF'\\
-        \verb'    SR0           sF'\\
-        \verb'    SR0           sF'\\
-        \verb'    SR0           sF'
-
-\clearpage
-\asmdirective{\#WHILE}
-    Repeats the specified block of code until expression equals to zero. \texttt{\#ENDW} is shorthand for \texttt{\#ENDWHILE}.
-
-    \subsubsection{Syntax}
-        \verb'    #WHILE <expression>'\\
-        \verb'        <code>'\\
-        \verb'    #ENDWHILE'\\
-        \verb''\\
-        \verb'    #WHILE <expression>'\\
-        \verb'        <code>'\\
-        \verb'    #ENDW'
-
-    \subsubsection{Examples}
-        \verb'    ld          S0, #0xAA       ; (value to output)'\\
-        \verb'    ld          S1, #0          ; (starting address)'\\
-        \verb''\\
-        \verb'    while       S1 < #5         ; C: while ( S1 < 5 ) {'\\
-        \verb'        out     S0, @S1         ; C:     S0 = *S1;'\\
-        \verb'        inc     S1              ; C:     S1++;'\\
-        \verb'    endw                        ; C: }'
-
-\asmdirective{FAILJMP, DEFAULT\_JUMP}
-    Fills program memory with jumps to the specified address. Purpose of this directive is to provide a simple means of protection against random errors.
-
-    \subsubsection{Syntax}
-        \verb'    FAILJMP     <expression>'\\
-        \verb'    DEFAULT_JMP <expression>'
-
-    \subsubsection{Examples}
-        \verb'    something_is_wrong:'\\
-        \verb'          ; ... do something ...'\\
-        \verb''\\
-        \verb'    FAILJMP  something_is_wrong'
+\section{Regular directives}
+
+    Assembler directives are commands for the assembler executed at compilation time, their purpose is to instruct the assembler how to compile your code, to define constants, implement conditional compilation, and evaluate various things at compilation time.
+
+    \asmdirective{INCLUDE}
+        Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the \texttt{INCLUDE} directive appears and optionally to any of the include path list specified as assembler option.
+
+        \subsubsection{Syntax}
+            \verb'    INCLUDE "file_name"'
+
+        \subsubsection{Examples}
+            \verb'    INCLUDE "some_file.asm"'\\
+            \verb'    INCLUDE "sub_dir/another_file.asm"'\\
+            \verb'    INCLUDE "C:/my_dir/my_file.asm"'\\
+            \verb'    INCLUDE "C:\\my_dir\\my_file.asm"'\\
+            \verb'    INCLUDE "/home/user/project/file.asm"'
+
+    \asmdirective{END}
+        The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
+
+        \subsubsection{Syntax}
+            \verb'    END'
+
+        \subsubsection{Examples}
+            \verb'    LOAD  S0, S1'\\
+            \verb'    END'\\
+            \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
+
+    \clearpage
+    \asmdirective{EQU}
+        \texttt{EQU} stands for EQUals, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive \texttt{EQU} can be used as register addresses, port addresses, and many others.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> EQU <expression>'
+
+        \subsubsection{Examples}
+            \verb'    First_symb   EQU   0b10011100        ; Binary.'\\
+            \verb'    Second_symb  EQU   47                ; Decimal.'\\
+            \verb'    Third_symb   EQU   0x39              ; Hexadecimal.'\\
+            \verb'    Fourth_symb  EQU   (A - 4) + 18 / B) ; An expression.'\\
+            \verb'    Fifth_symb   EQU   0x09 << 2         ; Another expression.'\\
+            \verb''\\
+            \verb'                 LOAD  S0, #First_symb   ; Loads S0 register with 0b10011100.'
+
+    \asmdirective{CONSTANT}
+        This directive is nothing more or less than the \texttt{EQU} directive with another syntax.
+
+        \subsubsection{Syntax}
+            \verb'    CONSTANT <symbol>, <expression>'
+
+    \clearpage
+    \asmdirective{SET}
+        The \texttt{SET} directive does the same thing as the \texttt{EQU} directive, the only difference is that symbols defined with \texttt{SET} are re-definable while symbols defined with \texttt{EQU} are constant.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> SET <expression>'
+
+        \subsubsection{Examples}
+            \verb'    my_symbol SET   0x10           ; my_symbol = 0x10'\\
+            \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x10.'\\
+            \verb''\\
+            \verb'    my_symbol SET   0x20           ; re-defining my_symbol to new value: 0x20'\\
+            \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x20.'
+
+    \asmdirective{VARIABLE}
+        This directive is nothing more or less than the \texttt{SET} directive with another syntax.
+
+        \subsubsection{Syntax}
+            \verb'    VARIABLE <symbol>, <expression>'
+
+        \subsubsection{Examples}
+            \verb'    VARIABLE  First_symb, 0b10011100        ; Binary.'\\
+            \verb'    VARIABLE  Second_symb, 47               ; Decimal.'\\
+            \verb'    VARIABLE  Third_symb, 0x39              ; Hexadecimal.'\\
+            \verb'    VARIABLE  Fourth_symb, (A -4)+ 18 / B)  ; An expression.'\\
+            \verb'    VARIABLE  Fifth_symb, 0x09 << 2         ; Another expression.'\\
+            \verb''\\
+            \verb'    LOAD      S0, #First_symb               ; Loads S0 with 0b10011100.'
+
+    \clearpage
+    \asmdirective{REG}
+        Symbols defined with the \texttt{REG} directive are considered to be register addresses only and cannot be used for anything else, except for that \texttt{REG} is just another \texttt{EQU}.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> REG <address>'
+
+        \subsubsection{Examples}
+            \verb'    A_reg  REG    s1'\\
+            \verb'    B_reg  REG    s2'\\
+            \verb'    C_reg  REG    s3'\\
+            \verb'    D_reg  REG    0x4'\\
+            \verb'    E_reg  REG    0x5'\\
+            \verb''\\
+            \verb'           LOAD   A_reg, D_reg  ; S0 = S5'\\
+            \verb'           LOAD   B_reg, #0x55  ; S2 = 0x55'
+
+    \asmdirective{NAMEREG}
+        This directive is nothing more the \texttt{REG} directive with another syntax.
+
+        \subsubsection{Syntax}
+            \verb'    NAMEREG <symbol>, <address> '
+
+        \subsubsection{Examples}
+            \verb'    NAMEREG     a, s1'\\
+            \verb'    NAMEREG     b, s2'\\
+            \verb'    NAMEREG     x, s3'\\
+            \verb'    NAMEREG     y, 4'\\
+            \verb'    NAMEREG     z, 0xA'
+            \verb''\\
+            \verb'    LOAD        a, b         ; S1 = S2'\\
+            \verb'    LOAD        x, #0x55     ; S3 = 0x55'
+
+    \clearpage
+    \asmdirective{DATA}
+        Symbols defined with the \texttt{DATA} directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that \texttt{DATA} is just another \texttt{EQU}.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> DATA <expression>'
+
+        \subsubsection{Examples}
+            \verb'    my_location   PORT    0x12'\\
+            \verb''\\
+            \verb'                  STORE   S0, my_location'
+
+    \asmdirective{CODE}
+        Symbols defined with the \texttt{CODE} directive are considered to be program memory addresses only and cannot be used for anything else, except for that \texttt{CODE} is just another \texttt{EQU}.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> CODE <expression>'
+
+        \subsubsection{Examples}
+            \verb'    somewhere     CODE    0x3ff'\\
+            \verb'                  ; ...'\\
+            \verb'                  ORG     somewhere'\\
+            \verb'                  ; ...'\\
+            \verb'                  CALL    somewhere'
+
+    \asmdirective{PORT}
+        Symbols defined with the \texttt{PORT} directive are considered to be port addresses only and cannot be used for anything else, except for that \texttt{PORT} is just another \texttt{EQU}.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> PORT <expression>'
+
+        \subsubsection{Examples}
+            \verb'    my_port       PORT    0x22'\\
+            \verb''\\
+            \verb'                  OUTPUT  S0, my_port'
+
+    \clearpage
+    \asmdirective{AUTOREG}
+        It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> AUTOREG [AT <address>]'
+
+        \subsubsection{Examples}
+            \verb'    reg_1  AUTOREG                ; reg_1 = 0'\\
+            \verb'    reg_2  AUTOREG                ; reg_2 = 1'\\
+            \verb'    reg_3  AUTOREG                ; reg_3 = 2'\\
+            \verb'    reg_4  AUTOREG AT 10          ; Start counting from 10 so reg_4 =10'\\
+            \verb'    reg_5  AUTOREG                ; my_reg_5 = 11'
+            \verb''\\
+            \verb'           LOAD     reg_3, reg_4  ; S2 = SA'\\
+            \verb'           LOAD     reg_1, #0x22  ; S0 = 0x22'
+
+    \asmdirective{AUTOSPR}
+        This directive provides exactly the same functionality as the \texttt{AUTOREG} directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> AUTOSPR [AT <address>]'
+
+        \subsubsection{Examples}
+            \verb'    my_data  AUTOSPR'\\
+            \verb''\\
+            \verb'             STORE    S0, my_data'
+
+    \clearpage
+    \asmdirective{INITSPR}
+        Initializes scratch-pad RAM (SPR) with the given value(s), content of such initialized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> INITSPR <value>'
+
+        \subsubsection{Examples}
+            \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+            \verb'my_data2      INITSPR         0x2b'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'\\
+            \verb'              FETCH           S3, my_data + 3'\\
+            \verb''\\
+            \verb'              FETCH           S8, my_data2'
+
+    \asmdirective{ORGSPR}
+        Specify address of origin for scratch-pad RAM initialization (directive \texttt{INITSPR}).
+
+        \subsubsection{Syntax}
+            \verb'    ORGSPR <address>'
+
+        \subsubsection{Examples}
+            \verb'              ORGSPR          0x10'\\
+            \verb'my_data       INITSPR         "Hello PicoBlaze!" ; <-- address assigned to my_data is 0x10'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'
+
+    \clearpage
+    \asmdirective{MERGESPR}
+        Merge scratch-pad RAM initialization with program memory initialization at the specified address.
+
+        \subsubsection{Syntax}
+            \verb'    MERGESPR <address>'
+
+        \subsubsection{Examples}
+            \verb'              MERGESPR        0x280'\\
+            \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
+            \verb''\\
+            \verb'              FETCH           S0, my_data'\\
+            \verb'              FETCH           S1, my_data + 1'\\
+            \verb'              FETCH           S2, my_data + 2'
+
+    \asmdirective{STRING}
+        Defines a named character string (sequence of characters) which can later be used with \texttt{LOAD \& RETURN} and \texttt{OUTPUTK} instructions, and with \texttt{DB} directive.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> STRING "<string>"'
+
+        \subsubsection{Examples}
+            \verb'my_string     STRING          "Hello PicoBlaze!"'\\
+            \verb''\\
+            \verb'              LOAD & RETURN   S0, my_string'\\
+            \verb'              OUTPUTK         my_string, 2'\\
+            \verb'              DB              my_string'
+
+    \clearpage
+    \asmdirective{DEFINE}
+        Define and expression which is evaluated every time separately when used in the code. These expressions can handle unlimited number of parameters, parameters are defined in curly brackets and are numbered from 0 to infinity (in decimal radix), using expressions with parameters resembles calling a function in C language, please see the example below.
+
+        \subsubsection{Syntax}
+            \verb'    <symbol> DEFINE <expression>'
+
+        \subsubsection{Examples}
+            \verb'    A     EQU     10              ; A = 10 (decimal)'\\
+            \verb'    B     SET     25              ; B = 25 (decimal)'\\
+            \verb'    C     DEFINE  ( A + B ) * 2   ; Value of C is unknown for now.'\\
+            \verb''\\
+            \verb'          LOAD    S0, #C          ; Load S0 with ( ( 10 + 25 ) * 2 ) = 70.'\\
+            \verb''\\
+            \verb'    B     SET     11              ; B = 11 (decimal)'\\
+            \verb'          LOAD    S0, #C          ; Now load S0 with ( ( 10 + 11 ) * 2 ) = 42.'\\
+            \verb''\\
+            \verb''\\
+            \verb'    X     DEFINE  ( {0} + {1} )   ; Value of C is unknown for now.'\\
+            \verb'          LOAD    S0, #X(4, 5)    ; Now load S0 with ( 4 + 5 ) = 9.'
+
+    \asmdirective{ORG, ADDRESS}
+        The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With \texttt{ORG} or \texttt{ADDRESS} directive this location counter can be changed to instruct the assembler to start writing the code following the \texttt{ORG} directive at the new location counter position.
+
+        \subsubsection{Syntax}
+            \verb'    ORG     <expression>'\\
+            \verb'    ADDRESS <expression>'
+
+
+        \subsubsection{Examples}
+            \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
+            \verb'    JUMP  handle_interrupt'
+
+    \clearpage
+    \asmdirective{SKIP}
+        Do not initialize the given number of program memory words and skip to the next nearest location.
+
+        \subsubsection{Syntax}
+            \verb'    SKIP <expression>'
+
+        \subsubsection{Examples}
+            \verb'    ORG   0'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x0.'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x1.'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x2.'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x3.'\\
+            \verb'    SKIP  5          ; Skip next 5 program memory locations.'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x8.'\\
+            \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x9.'
+
+    \asmdirective{UNDEFINE, UNDEF}
+        All symbols can be undefined, undefined symbols are be deleted from the symbol table and compiler will not recognize them.
+
+        \subsubsection{Syntax}
+            \verb'    UNDEFINE <symbol>'\\
+            \verb'    UNDEF    <symbol>'
+
+        \subsubsection{Examples}
+            \verb'    symbol  SET     15'\\
+            \verb'            LOAD    S0, #symbol'\\
+            \verb'            UNDEF   symbol'\\
+            \verb'            LOAD    s0, #symbol  ; This will cause compilation error.'
+
+    \clearpage
+    \asmdirective{DB}
+        This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
+
+        \subsubsection{Syntax}
+            \verb'    ; Expresion syntax'\\
+            \verb'    DB  <expression1>  [, <expression2>, ...]'\\
+            \verb''\\
+            \verb'    ; String syntax'\\
+            \verb'    DB <"string">'\\
+            \verb''\\
+            \verb'    ; Combination of string(s) and expression(s)'\\
+            \verb'    DB <"string"> [, <expression1>, ...]'
+
+            Parameter can be unlimited number of string characters, or expressions divided by comma.
+
+
+        \subsubsection{Examples}
+            \verb'    DB  0x060FC                 ; Constant.'\\
+            \verb'    DB  "my string"             ; String.'\\
+            \verb'    DB  "my string", 2+1, 3     ; Combination of string, expression, and constant.'
+
+    \asmdirective{LIMIT}
+        Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or \texttt{JUMP} to address higher than 512, compiler reports such attempt as error.
+
+        \subsubsection{Syntax}
+            \verb'    LIMIT  D, <number> ; Size of scratch-pad RAM (D stands for data).'\\
+            \verb'    LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
+            \verb'    LIMIT  C, <number> ; Size of program memory (C stands for code).'
+
+        \subsubsection{Examples}
+            \verb'    LIMIT  R, 8   ; Limit maximum register address to 7.'\\
+            \verb'    LIMIT  D, 32  ; Limit maximum address in scratch-pad ram to 31. '\\
+            \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
+
+    \clearpage
+    \asmdirective{DEVICE}
+        Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with \texttt{DEVICE} directive. This will affect predefined symbols.
+
+        \subsubsection{Syntax}
+            \verb'    DEVICE <device_name>'
+
+        \subsubsection{Examples}
+            \verb'    DEVICE kcpsm6'\\
+            \verb'    DEVICE kcpsm3'\\
+            \verb'    DEVICE kcpsm2'\\
+            \verb'    DEVICE kcpsm1'\\
+            \verb'    DEVICE kcpsm1cpld'
+
+    \asmdirective{LIST, NOLIST}
+        Temporarily turns on and off output to the code listing.
+
+        \subsubsection{Syntax}
+            \verb'    LIST    ; Turn code listing ON.'\\
+            \verb'    NOLIST  ; Turn code listing OFF.'
+
+        \subsubsection{Examples}
+            \verb'    NOLIST'\\
+            \verb'    INCLUDE "some_file.asm" ; The included file will not appear in the code listing.'\\
+            \verb'    LIST'
+
+    \clearpage
+    \asmdirective{TITLE}
+        Set title for code listing.
+
+        \subsubsection{Syntax}
+            \verb'    TITLE  "<title text>"'
+
+        \subsubsection{Examples}
+            \verb'    TITLE  "My program for something, etc."'
+
+    \asmdirective{MESSAGE}
+        Print compiler message, the message will be printed by the compiler in the same was as errors and warnings are. Such message, however, is not considered to be neither error nor warning.
+
+        \subsubsection{Syntax}
+            \verb'    MESSAGE "some message..."'
+
+        \subsubsection{Examples}
+            \verb'    MESSAGE "text text text..."'
+
+    \asmdirective{ERROR}
+        This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
+
+        \subsubsection{Syntax}
+            \verb'    ERROR "error message"'
+
+        \subsubsection{Examples}
+            \verb'    ERROR "my error message"'
+
+    \asmdirective{WARNING}
+        This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as a warning.
+
+        \subsubsection{Syntax}
+            \verb'WARNING "warning message"'
+
+        \subsubsection{Examples}
+            \verb'WARNING "my warning message"'
+
+    \clearpage
+    \asmdirective{REPEAT}
+        Repeats the specified block of code for the specified number of times. \texttt{REPT} is shorthand for \texttt{REPT}, and \texttt{ENDR} is shorthand for \texttt{ENDREPEAT}.
+
+        \subsubsection{Syntax}
+            \verb'    REPEAT <number-of-repeats>'\\
+            \verb'        <code>'\\
+            \verb'    ENDREPEAT'\\
+            \verb''\\
+            \verb'    REPT <number-of-repeats>'\\
+            \verb'        <code>'\\
+            \verb'    ENDR'
+
+        \subsubsection{Examples}
+            \verb'    REPT          5'\\
+            \verb'        SR0       sF'\\
+            \verb'    ENDR'\\
+            \verb''\\
+            \verb'    ; Equivalent to.'\\
+            \verb'    SR0           sF'\\
+            \verb'    SR0           sF'\\
+            \verb'    SR0           sF'\\
+            \verb'    SR0           sF'\\
+            \verb'    SR0           sF'
+
+    \clearpage
+    \asmdirective{\#WHILE}
+        Repeats the specified block of code until expression equals to zero. \texttt{\#ENDW} is shorthand for \texttt{\#ENDWHILE}.
+
+        \subsubsection{Syntax}
+            \verb'    #WHILE <expression>'\\
+            \verb'        <code>'\\
+            \verb'    #ENDWHILE'\\
+            \verb''\\
+            \verb'    #WHILE <expression>'\\
+            \verb'        <code>'\\
+            \verb'    #ENDW'
+
+        \subsubsection{Examples}
+            \verb'                ld          S0, #0x44       ; (value to output)'\\
+            \verb'    addr        set         0               ; (starting address)'\\
+            \verb''\\
+            \verb'            #while ( addr < 5 )             ; Repeat while "addr" is lower than 5.'\\
+            \verb'                out         S0, addr'\\
+            \verb'    addr        set         addr + 1        ; Redefine "addr": addr := addr + 1.'\\
+            \verb'            #endwhile                       ; End the while loop.'
+
+    \asmdirective{FAILJMP, DEFAULT\_JUMP}
+        Fills program memory with jumps to the specified address. Purpose of this directive is to provide a simple means of protection against random errors.
+
+        \subsubsection{Syntax}
+            \verb'    FAILJMP     <expression>'\\
+            \verb'    DEFAULT_JMP <expression>'
+
+        \subsubsection{Examples}
+            \verb'    something_is_wrong:'\\
+            \verb'          ; ... do something ...'\\
+            \verb''\\
+            \verb'    FAILJMP  something_is_wrong'
 
 \clearpage
 \section{Code generation directives}
-    MDS assembler supports several special directives for automated generation of run-time loops and conditions.
+    MDS assembler supports several special directives for automated generation of run-time loops and conditions. Note that condition and loop blocks may contain any other code including other loops and conditions.
 
     \paragraph{Loops:} Instead of writing loops with loads, compares, and jumps, you might find it to be more straightforward to use the assembler to generate them for you. You can use three types of \texttt{FOR} loop and one type of \texttt{WHILE} loop.
 
     \paragraph{Conditions:} Instead of writing conditional branching using compares and jumps, you can let the assembler do at least some this work for you with \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives. This feature resembles C language but don't forget that you are still working with assembler, these branching directives are merely a "syntax sugar", they are translated as compare and conditional jump, nothing more.
 
     \paragraph{Condition syntax}
-        ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\#''. So immediate constants are specified with ``\#'' prefix. A value without ``\#'' is considered to be a register address.
+        ~\\``A'' and ``B'' can be either register address or immediate value, in case of immediate value it has to be prefixed with ``\texttt{\#}''. So immediate constants are specified with ``\texttt{\#}'' prefix. A value without ``\texttt{\#}'' is considered to be a register address.
 
         \begin{table}[h!]
             \centering
@@ -486,7 +488,7 @@ Assembler directives are commands for the assembler executed at compilation time
 
     \clearpage
     \asmdirective{IF, ELSEIF, ELSE, ENDIF}
-        You can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
+        To implement run-time conditions you can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
 
         \subsubsection{Syntax}
             \verb'    IF      <condition>'\\
@@ -509,39 +511,39 @@ Assembler directives are commands for the assembler executed at compilation time
             ~\\In this example, the first condition compares register S0 to immediate value of 10 (decimal). The second condition compares register at address given by ``B'' symbol to register S1, and the third condition compares two immediate values (in this case the result of comparison is known in advance and the assembler with exploit that fact and print warning).
 
     \clearpage
-    \asmdirective{WHILE}
-        Assembler translates the \texttt{WHILE} directive to \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions to implement the loop.
+    \asmdirective{WHILE, ENDWHILE}
+        To implement run-time loops you can use the \texttt{WHILE} directive. Assembler translates the \texttt{WHILE} directive to \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions to implement the loop. Directive \texttt{ENDWHILE} closes the loop body; \texttt{ENDW} is only shorthand for \texttt{ENDWHILE}, they can be used interchangeably.
 
         \subsubsection{Syntax}
             \verb'    WHILE <condition>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'
+            \verb'    ENDWHILE'
 
         \subsubsection{Example}
-            \verb'    LOAD        S0, #0xAA       ; (value to output)'\\
-            \verb'    LOAD        S1, #0          ; (starting address)'\\
+            \verb'    load        S0, #0xAA       ; (value to output)'\\
+            \verb'    load        S1, #0          ; (starting address)'\\
             \verb''\\
-            \verb'    WHILE       S1 < #5         ; C: while ( S1 < 5 ) {'\\
-            \verb'        OUTPUT  S0, @S1         ; C:     S0 = *S1;'\\
-            \verb'        INC     S1              ; C:     S1++;'\\
-            \verb'    ENDW                        ; C: }'
+            \verb'    while       S1 < #5         ; C: while ( S1 < 5 ) {'\\
+            \verb'        output  S0, @S1         ; C:     S0 = *S1;'\\
+            \verb'        inc     S1              ; C:     S1++;'\\
+            \verb'    endwhile                    ; C: }'
 
     \clearpage
-    \asmdirective{FOR}
-        The \texttt{FOR} directive provides another way how to relatively easily write a program loop, it's best demonstrated on examples (see below).
+    \asmdirective{FOR, ENDFOR}
+        The \texttt{FOR} directive provides another way to relatively easily implement run-time program loops, it is best demonstrated on examples (see below). Directive \texttt{ENDFOR} closes the loop body; \texttt{ENDF} is only shorthand for \texttt{ENDFOR}, they can be used interchangeably.
 
         \subsubsection{Syntax}
             \verb'    FOR   <iterator-register>, <number-of-iterations>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'\\
+            \verb'    ENDFOR'\\
             \verb''\\
             \verb'    FOR   <iterator-register>, <start> .. <end>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'\\
+            \verb'    ENDFOR'\\
             \verb''\\
             \verb'    FOR   <iterator-register>, <start> .. <end>, <step>'\\
             \verb'          <code>'\\
-            \verb'    ENDW'
+            \verb'    ENDFOR'
 
         \subsubsection{Examples}
             \verb'    ; S0 starts from 0 and goes up to 9 (S0 is incremented after each iteration).'\\
@@ -560,8 +562,71 @@ Assembler directives are commands for the assembler executed at compilation time
             \verb'    ENDF'
 
 \clearpage
-\section{Macro processing}
-    Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code. Macros can have no parameters or any number of parameters (number of parameters is unlimited).
+\section{Conditional Assembly directives}
+    The aim of the conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. Note that condition blocks may contain any other code including other conditions. This assembler provides these directives to cope with conditional assembly:
+
+    \begin{description}
+        \item[\texttt{\#IF} <expression>]~\\
+            Compiles the following block only if the expression value is not zero.
+        \item[\texttt{\#IFN} <expression>]~\\
+            Means ``If Not'', compiles the following block only if the expression value is zero.
+        \item[\texttt{\#IFB} <macro-parameter>]~\\
+            Means ``If Blank'', compiles the following block only if the macro-parameter is blank.
+        \item[\texttt{\#IFNB} <macro-parameter>]~\\
+            Means ``IF Not Blank'', compiles the following block only if the macro-parameter is not blank.
+        \item[\texttt{\#IFDEF}  <symbol>]~\\
+            Means ``IF DEFined'', compiles the following block only if the symbol is defined.
+        \item[\texttt{\#IFNDEF} <symbol>]~\\
+            Means ``IF Not DEFined'', compiles the following block only if the symbol is not defined.
+        \item[\texttt{\#ELSE}]~\\
+            Compiles the following block only if none of the previous conditions was met.
+        \item[\texttt{\#ELSEIF} <expression>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the expression value is not zero.
+        \item[\texttt{\#ELSEIFN} <expression>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the expression value is zero.
+        \item[\texttt{\#ELSEIFB} <macro-parameter>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the macro-parameter is blank.
+        \item[\texttt{\#ELSEIFNB} <macro-parameter>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the macro-parameter is not blank.
+        \item[\texttt{\#ELSEIFDEF} <symbol>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the symbol is defined.
+        \item[\texttt{\#ELSEIFNDEF} <symbol>]~\\
+            Compiles the following block only if none of the previous conditions was met and if the symbol is not defined.
+        \item[\texttt{\#ENDIF}]~\\
+            Closes the tree of conditions, using this directive is mandatory.
+    \end{description}
+
+    \subsection{Example}
+        ~\\
+        {
+            \fontsize{8pt}{10pt}\selectfont
+            \verb'    abc     equ     14           ; Assign number 14 to symbol abc.'\\
+            \verb'    xyz     equ     10           ; Assign number 10 to symbol abc.'\\
+            \verb''\\
+            \verb'    ifdef abc                    ; <--+ Assemble only if symbol abc has been defined.'\\
+            \verb'      if ( abc = 13 )            ;    | <--+ Assemble if 13 has been assigned to symbol abc.'\\
+            \verb'            load     S0, #0b1101 ;    |    |'\\
+            \verb'      elseif ( abc = 14 )        ;    | <--+ Assemble if 14 has been assigned to symbol abc.'\\
+            \verb'            load     S0, #0x21   ;    |    |'\\
+            \verb'      elseifn ( abc % 2 )        ;    | <--+ Assemble if the value assigned to symbol abc is even.'\\
+            \verb'            load     S0, #abc    ;    |    |'\\
+            \verb'      else                       ;    | <--+ Else ..'\\
+            \verb'            load     S0, #077    ;    |    |'\\
+            \verb'      endif                      ;    | <--+'\\
+            \verb'    elseifndef xyz               ; <--+ Assemble if symbol xyz has NOT been defined.'\\
+            \verb'            clrr     S0          ;    |'\\
+            \verb'    else                         ; <--+ Else ...'\\
+            \verb'      ifn ( xyz mod 2 )          ;    | <--+ Assemble if ( yxz modulo 2 ) is 0.'\\
+            \verb'            load     S0, #128    ;    |    |'\\
+            \verb'      endif                      ;    | <--+'\\
+            \verb'    endif                        ; <--+'
+        }
+
+\clearpage
+\section{Macro processing directives}
+    Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code. Note that macros may contain any other code including other macro expansions and/or definitions.
+
+    Macros can have no parameters or any number of parameters, number of parameters is unlimited. All parameters are optional, parameters which has not been substituted with corresponding arguments are filled with blank values. Blank values have special meaning, cannot be used in arithmetical expressions or as operands but can be checked if they are blank or not using \texttt{\#IFB} and \texttt{\#IFNB} directives.
 
     \subsection{Syntax}
         \verb'    <name-of-macro>  MACRO  [<parameter1>]  [, <parameter2> ...]'\\
@@ -579,6 +644,24 @@ Assembler directives are commands for the assembler executed at compilation time
             \end{tabular}
         \end{table}
 
+    \asmdirective{LOCAL}
+        Directive \texttt{LOCAL} declares a symbol as local for the macro in which it appears.
+
+        \subsubsection{Syntax}
+            \verb'    LOCAL <symbols>'
+
+        \subsubsection{Example}
+            \verb'    MACRO            my_macro'\\
+            \verb'            LOCAL    wait'\\
+            \verb''\\
+            \verb'        wait:'\\
+            \verb'            SUBCY    S0, #0x10'\\
+            \verb'            SUB      S0, #0x01' \\
+            \verb'            LOAD     S0, #0xF0'\\
+            \verb'            JUMP     C,  wait'\\
+            \verb'    ENDM'
+
+    \clearpage
     \subsection{Examples}
         \paragraph{Macro without parameters}
             ~\\
@@ -613,10 +696,30 @@ Assembler directives are commands for the assembler executed at compilation time
             \verb'    endm'\\
             \verb''\\
             \verb'                abc     s2, 3'\\
-            \verb'        ; This produces the same result as if you wrote this:'\\
+            \verb'        ; This produces this result:'\\
             \verb'        ;       load    s2, #3'\\
             \verb'        ;       load    s2, 3'
 
+        \enlargethispage{5\baselineskip}
+        \paragraph{Using blank parameters}
+            ~\\
+            \verb'    abc         macro   x, y'\\
+            \verb'              #ifb      y     ; If blank...'\\
+            \verb'                load    x, S0'\\
+            \verb'              #else           ; Else...'\\
+            \verb'                load    x, y'\\
+            \verb'              #endif          ; End of condition.'\\
+            \verb'    endm'\\
+            \verb''\\
+            \verb'                abc     S0, S1        ; Parameter y is S1 here.'\\
+            \verb'        ; Produces this result:'\\
+            \verb'        ;       load    S0, S1'\\
+            \verb''\\
+            \verb'                abc     S0            ; Parameter y is "blank" here.'\\
+            \verb'        ; Produces this result:'\\
+            \verb'        ;       load    S0, S0'\\
+
+        \clearpage
         \paragraph{Premature end of macro expansion}
             ~\\
             \verb'    abc         macro   x, y'\\
@@ -628,70 +731,37 @@ Assembler directives are commands for the assembler executed at compilation time
             \verb'    endm'\\
             \verb''\\
             \verb'                abc     s0, 1'\\
-            \verb'        ; This produces the same result as if you wrote this:'\\
+            \verb'        ; Produces:'\\
             \verb'        ;       load    s0, #1'\\
             \verb'        ;       load    s0, 1'\\
             \verb''\\
             \verb'                abc     s0, 3'\\
-            \verb'        ; But this produces different result because of the EXITM directive:'\\
+            \verb'        ; Produces:'\\
             \verb'        ;       load    s0, #1'\\
 
-        \asmdirective{LOCAL}
-            Declares a symbol as local for the macro in which it appears.
-
-            \subsubsection{Syntax}
-                \verb'    LOCAL <symbols>'
-
-            \subsubsection{Example}
-                \verb'    MACRO            my_macro'\\
-                \verb'            LOCAL    wait'\\
-                \verb''\\
-                \verb'        wait:'\\
-                \verb'            SUBCY    S0, #0x10'\\
-                \verb'            SUB      S0, #0x01' \\
-                \verb'            LOAD     S0, #0xF0'\\
-                \verb'            JUMP     C,  wait'\\
-                \verb'    ENDM'
-
-\clearpage
-\section{Conditional Assembly}
-    The aim of conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. This assembler provides these directives to cope with conditional assembly:
-
-    \begin{itemize}
-        \item \texttt{\#IF}     <condition>
-        \item \texttt{\#IFN}    <condition>
-        \item \texttt{\#IFDEF}  <symbol>
-        \item \texttt{\#IFNDEF} <symbol>
-        \item \texttt{\#ELSE}
-        \item \texttt{\#ELSEIF}     <condition>
-        \item \texttt{\#ELSEIFN}    <condition>
-        \item \texttt{\#ELSEIFDEF}  <symbol>
-        \item \texttt{\#ELSEIFNDEF} <symbol>
-        \item \texttt{\#ENDIF}
-    \end{itemize}
-
-    \subsection{Example}
-        ~\\
-        {
-            \fontsize{8pt}{10pt}\selectfont
-            \verb'    abc     equ     14           ; Assign number 14 to symbol abc.'\\
-            \verb'    xyz     equ     10           ; Assign number 10 to symbol abc.'\\
+        \paragraph{A few simple practical examples}
+            ~\\
+            \verb'    ; Copy content of registers at addresses [source, source+4]'\\
+            \verb'    ; to registers at addresses [target, target+4].'\\
+            \verb'    copy5       macro       target, source'\\
+            \verb'                load        target + 0, source + 0'\\
+            \verb'                load        target + 1, source + 1'\\
+            \verb'                load        target + 2, source + 2'\\
+            \verb'                load        target + 3, source + 3'\\
+            \verb'                load        target + 4, source + 4'\\
+            \verb'    endm'\\
             \verb''\\
-            \verb'    ifdef abc                    ; <--+ Assemble only if symbol abc has been defined.'\\
-            \verb'      if ( abc = 13 )            ;    | <--+ Assemble if 13 has been assigned to symbol abc.'\\
-            \verb'            load     S0, #0b1101 ;    |    |'\\
-            \verb'      elseif ( abc = 14 )        ;    | <--+ Assemble if 14 has been assigned to symbol abc.'\\
-            \verb'            load     S0, #0x21   ;    |    |'\\
-            \verb'      elseifn ( abc % 2 )        ;    | <--+ Assemble if the value assigned to symbol abc is even.'\\
-            \verb'            load     S0, #abc    ;    |    |'\\
-            \verb'      else                       ;    | <--+ Else ..'\\
-            \verb'            load     S0, #077    ;    |    |'\\
-            \verb'      endif                      ;    | <--+'\\
-            \verb'    elseifndef xyz               ; <--+ Assemble if symbol xyz has NOT been defined.'\\
-            \verb'            clrr     S0          ;    |'\\
-            \verb'    else                         ; <--+ Else ...'\\
-            \verb'      ifn ( xyz mod 2 )          ;    | <--+ Assemble if ( yxz modulo 2 ) is 0.'\\
-            \verb'            load     S0, #128    ;    |    |'\\
-            \verb'      endif                      ;    | <--+'\\
-            \verb'    endif                        ; <--+'
-        }
+            \verb'                ; Copy [S0..S4] to [S5..S9]'\\
+            \verb'                copy5       S5, S0'\\
+            \verb''\\
+            \verb''\\
+            \verb'    ; Wait for the given number number of instruction cycles,'\\
+            \verb'    ; and use the given register as iterator for the delay loop.'\\
+            \verb'    wait        macro       register, cycles'\\
+            \verb'                for         register, ( cycles - 1 ) / 4'\\
+            \verb'                    nop'\\
+            \verb'                endfor'\\
+            \verb'    endm'\\
+            \verb''\\
+            \verb'                ; Wait 100 instruction cycles here.'\\
+            \verb'                wait        S0, 100'
