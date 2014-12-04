@@ -1394,6 +1394,33 @@ void WDockManager::setBottomAreaToSimulationInfo()
 }
 
 
+void WDockManager::changeTab(bool next)
+{
+    if (true == next)
+    {
+        if (wTab->currentIndex()+1 < wTab->count())
+        {
+            wTab->setCurrentIndex(wTab->currentIndex()+1);
+        }
+    }
+    else
+    {
+        if (wTab->currentIndex()-1 >= 0)
+        {
+            wTab->setCurrentIndex(wTab->currentIndex()-1);
+        }
+    }
+}
+
+
+void WDockManager::closeCurrentTab()
+{
+    if (wTab->count() > 0)
+    {
+        this->closeTab(wTab->currentIndex());
+    }
+}
+
 
 
 

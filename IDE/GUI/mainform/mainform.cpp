@@ -278,7 +278,7 @@ MainForm::MainForm()
     //this->dockWidgets = false;
     createActions();
     createMenu();
-    //createShortcuts();
+    createShortcuts();
     createToolbar();
     //this->welcomeDialog();
     //CreateDockWidgets();
@@ -761,6 +761,15 @@ void MainForm::createActions()
 
 void MainForm::createShortcuts()
 {
+    QShortcut *shctCloseTab = new QShortcut(this);
+    shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
+    connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
+    QShortcut *shctChangeTabLeft = new QShortcut(this);
+    shctChangeTabLeft->setKey(Qt::ALT + Qt::Key_Left);
+    connect(shctChangeTabLeft, SIGNAL(activated()), this, SLOT(shortcutChangeTabLeft()));
+    QShortcut *shctChangeTabRight = new QShortcut(this);
+    shctChangeTabRight->setKey(Qt::ALT + Qt::Key_Right);
+    connect(shctChangeTabRight, SIGNAL(activated()), this, SLOT(shortcutChangeTabRight()));
     //QShortcut *srtSave = new QShortcut(QKeySequence("Ctrl+S"), this);
     //connect(srtSave, SIGNAL(activated()), this, SLOT(saveFile()));
 
@@ -3944,4 +3953,22 @@ void MainForm::saveOnClose(QString path)
 {
     wDockManager->setCentralByPath(path);
     this->saveFile();
+}
+
+
+void MainForm::shortcutCloseTab()
+{
+    wDockManager->closeCurrentTab();
+}
+
+
+void MainForm::shortcutChangeTabLeft()
+{
+    wDockManager->changeTab(false);
+}
+
+
+void MainForm::shortcutChangeTabRight()
+{
+    wDockManager->changeTab(true);
 }
