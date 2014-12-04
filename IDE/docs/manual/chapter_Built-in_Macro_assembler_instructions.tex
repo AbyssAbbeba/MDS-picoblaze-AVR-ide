@@ -6,30 +6,30 @@
 
 \paragraph{Legend}
     \begin{description}
-        \item[sX, sY]
-            direct addresses in register file, e.g. S0, S1, S2, ...
-        \item[@sX, @sY]
-            are indirect addresses, e.g. @S0, @S1, @S2, ...
-        \item[\#kk]
-            is immediate value (literal), e.g. \#0x21 (hex.), \#26 (dec.), \#'A' (ascii).
-        \item[aaa]
-            is address in program memory.
-        \item[pp]
-            is port address in the range from 0x00 to 0xFF.
-        \item[p]
-            is port address in the range from 0x0 to 0xF.
-        \item[ss]
-            is address in scratch-pad RAM.
+        \item[sX, sY]~\\
+            Direct address in register file, e.g. \texttt{S0}, \texttt{S1}, \texttt{S2}, ...
+        \item[@sX, @sY]~\\
+            Indirect address, e.g. \texttt{@S0}, \texttt{@S1}, \texttt{@S2}, ...
+        \item[\#kk]~\\
+            Immediate value, e.g. \texttt{\#0x21} (hex.), \texttt{\#26} (dec.), \texttt{\#'A'} (ascii).
+        \item[aaa]~\\
+            Address in program memory.
+        \item[pp]~\\
+            8-bit port address, i.e. in the range from 0x00 to 0xFF.
+        \item[p]~\\
+            4-bit port address, i.e. in the range from 0x0 to 0xF.
+        \item[ss]~\\
+            Address in scratch-pad RAM.
     \end{description}
 
 \paragraph{Addressing modes}
     \index{Addressing modes}
     \begin{description}
-        \item[Immediate]
+        \item[Immediate]~\\
             Instead of reading operand value from memory, the operand value is taken from the instruction opcode itself.
-        \item[Direct]
+        \item[Direct]~\\
             Effective address of the operand is address as given in the instruction opcode.
-        \item[Indirect]
+        \item[Indirect]~\\
             Effective address of the operand is taken from contents of register which address is given in the instruction opcode
     \end{description}
 

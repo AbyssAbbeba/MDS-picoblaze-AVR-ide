@@ -44,6 +44,7 @@ foreach ( PSM_FILE ${PSM_FILES} )
                                         --binary=${FILE_BASE}.bin
                                         --mtable=${FILE_BASE}.mtbl
                                         --stable=${FILE_BASE}.stbl
+                                        --strtable=${FILE_BASE}.strtbl
                                         --vhdl=${FILE_BASE}.vhd
                                         --verilog=${FILE_BASE}.v
                                         --raw-hex-dump=${FILE_BASE}.rawhex
