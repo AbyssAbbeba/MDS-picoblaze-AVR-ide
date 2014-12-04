@@ -74,9 +74,10 @@
             \item [Replace:] replace a given string in the open document by a new string
         \end{description}
 
-        \subsubsection{Key shortcuts}
+        \subsubsection{Action shortcuts}
             \index{Main window shortcuts}
             These are key shortcuts for the main windows, code editor shortcuts will be discussed later in this manual.
+
             \begin{table}[h!]
                 \centering
                 \fontsize{8pt}{9pt}
@@ -100,6 +101,11 @@
                 }
                 \caption{Default key shortcuts for the Main Window.}
             \end{table}
+
+    \subsection{Exit \& Restoration}
+        When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
+
+        When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
 
 \clearpage
 \section{Source code editor}
