@@ -68,7 +68,10 @@ typedef enum ErrorCode
     ERR_NO_MAINFILE,
     ERR_COMPILE_DURING_SIMULATION,
 
-    ERR_NO_LICENSE
+    ERR_NO_LICENSE,
+
+    ERR_END_OF_DOCUMENT,
+    ERR_START_OF_DOCUMENT
 } ErrorCode;
 
 
@@ -94,6 +97,14 @@ typedef enum WidgetCode
     WBOTTOMHIDE,
     WRIGHTHIDE
 } WidgetCode;
+
+
+typedef enum CodeEditBottomWidget
+{
+    WFIND = 0,
+    WFINDANDREPLACE,
+    WJUMPTOLINE
+} CodeEditBottomWidget;
 
 
 #endif

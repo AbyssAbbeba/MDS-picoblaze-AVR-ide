@@ -28,6 +28,20 @@ Find::Find(QWidget *parent, QString query)
     ui.leQuery->setText(query);
     connect(ui.btnNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(ui.btnPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
+    connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
+    connect(ui.leQuery, SIGNAL(returnPressed()), ui.btnNext, SIGNAL(clicked()));
+}
+
+
+void Find::reloadFocus()
+{
+    ui.leQuery->setFocus();
+}
+
+
+void Find::setQuery(QString query)
+{
+    ui.leQuery->setText(query);
 }
 
 
@@ -46,4 +60,10 @@ void Find::findPrevious()
     {
         emit find(ui.leQuery->text(), false, ui.chckCase->isChecked());
     }
+}
+
+
+void Find::closeClicked()
+{
+    emit closeWidget(CodeEditBottomWidget::WFIND);
 }

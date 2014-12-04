@@ -1368,7 +1368,7 @@ void WDockManager::setBottomAreaToCompilerInfo()
     }
     for (int i = 0; i < bottomAreaTabs->count(); i++)
     {
-        if ("Compiler Info" == bottomAreaTabs->tabText(i))
+        if ("Compiler Messages" == bottomAreaTabs->tabText(i))
         {
             bottomAreaTabs->setCurrentIndex(i);
             break;
@@ -1385,7 +1385,7 @@ void WDockManager::setBottomAreaToSimulationInfo()
     }
     for (int i = 0; i < bottomAreaTabs->count(); i++)
     {
-        if ("Simulation Info" == bottomAreaTabs->tabText(i))
+        if ("Simulator" == bottomAreaTabs->tabText(i))
         {
             bottomAreaTabs->setCurrentIndex(i);
             break;
@@ -1431,7 +1431,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         }
         case wCompileInfo:
         {
-            wDockWidget = new QDockWidget("Compiler Info", parentWindow);
+            wDockWidget = new QDockWidget("Compiler Messages", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
@@ -1537,7 +1537,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
     {
         case wSimulationInfo:
         {
-            wDockWidget = new QDockWidget("Simulation Info", parentWindow);
+            wDockWidget = new QDockWidget("Simulator", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);

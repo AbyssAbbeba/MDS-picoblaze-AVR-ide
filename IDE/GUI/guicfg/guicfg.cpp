@@ -302,6 +302,7 @@ void GuiCfg::setDefaultProject()
     this->compileOpt.append(false);
     this->compileOpt.append(true);
     this->compileOpt.append(true);
+    this->compileOpt.append(true);
 
     this->defaultVerilog = true;
     this->defaultVHDL = true;

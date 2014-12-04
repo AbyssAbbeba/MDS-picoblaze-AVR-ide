@@ -15,6 +15,7 @@
 #include <QtGui>
 #include "wtextedit.h"
 #include "../Highlighter/highlighter.h"
+#include "../../errordialog/errordlg.h"
 
 
 WTextEdit::WTextEdit(QWidget *parent, SourceType type)
@@ -1133,9 +1134,83 @@ void WTextEdit::jumpToLine(int lineToJmp)
             cursor.movePosition(QTextCursor::PreviousBlock);
         }
     }*/
-    QTextCursor cursor(this->document()->findBlockByNumber(lineToJmp));
-    this->setTextCursor(cursor);
-    this->ensureCursorVisible();
+    if (this->document()->blockCount()-1 >= lineToJmp)
+    {
+        QTextCursor cursor(this->document()->findBlockByNumber(lineToJmp));
+        /*QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
+        QTextEdit::ExtraSelection selection;
+        selection.format.setBackground(*cursorLineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = cursor;
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+
+        this->setExtraSelections(extraSelections);*/
+        this->setTextCursor(cursor);
+        this->ensureCursorVisible();
+    }
+}
+
+
+void WTextEdit::findAndMark(QString query, bool next, bool caseSensitive)
+{
+    QTextDocument::FindFlags options;
+    if (false == next)
+    {
+        options |= QTextDocument::FindBackward;
+    }
+    if (true == caseSensitive)
+    {
+        options |= QTextDocument::FindCaseSensitively;
+    }
+
+    QTextCursor cur = this->document()->find(query, this->textCursor(), options);
+    if (!cur.isNull())
+    {
+        this->setTextCursor(cur);
+    }
+    else
+    {
+        if (true == next)
+        {
+            QString text = "End of document reached.\nDo you want to continue searching from the start of the document?";
+            if (QMessageBox::Yes == QMessageBox::question(this, "", text, QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes))
+            {
+                QTextCursor curAgain = this->document()->find(query, 0, options);
+                if (!curAgain.isNull())
+                {
+                    this->setTextCursor(curAgain);
+                }
+                else
+                {
+                    text = "String \"" + query + "\" was not found in the document.";
+                    QMessageBox::information(this, "", text, QMessageBox::Ok, QMessageBox::Ok);
+                }
+            }
+        }
+        else
+        {
+            QString text = "Start of document reached.\nDo you want to continue searching from the end of the document?";
+            if (QMessageBox::Yes == QMessageBox::question(this, "", text, QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes))
+            {
+                QTextCursor curAgain = this->document()->find(query, this->document()->characterCount(), options);
+                if (!curAgain.isNull())
+                {
+                    this->setTextCursor(curAgain);
+                }
+                else
+                {
+                    text = "String \"" + query + "\" was not found in the document.";
+                    QMessageBox::information(this, "", text, QMessageBox::Ok, QMessageBox::Ok);
+                }
+            }
+        }
+    }
+}
+
+
+void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool caseSensitive)
+{
 }
 
 
@@ -1277,14 +1352,18 @@ void WTextEdit::setShortcuts()
     shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
     connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
     shctCloseTab = new QShortcut(this);
+    //TODO:
     shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
     connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
     shctChangeTabLeft = new QShortcut(this);
+    //TODO:
     shctChangeTabLeft->setKey(Qt::CTRL + Qt::Key_Left);
     connect(shctChangeTabLeft, SIGNAL(activated()), this, SLOT(shortcutChangeTabLeft()));
     shctChangeTabRight = new QShortcut(this);
+    //TODO:
     shctChangeTabRight->setKey(Qt::CTRL + Qt::Key_Right);
     connect(shctChangeTabRight, SIGNAL(activated()), this, SLOT(shortcutChangeTabRight()));
+    ////TODO: F3, shift+f3, + move lines up, down
 }
 
 
@@ -1332,6 +1411,7 @@ void WTextEdit::shortcutDeselect()
 }
 
 
+    //TODO:
 void WTextEdit::shortcutComment()
 {
     QTextCursor cursor(this->textCursor());
@@ -1459,19 +1539,19 @@ void WTextEdit::shortcutJmpToBookmarkPrev()
 
 void WTextEdit::shortcutJmpToLine()
 {
-    emit jumpToLineDialog();
+    emit jumpToLineDialog(this->textCursor().blockNumber(), this->document()->blockCount());
 }
 
 
 void WTextEdit::shortcutFind()
 {
-    emit findDialog();
+    emit findDialog(this->textCursor().selectedText());
 }
 
 
 void WTextEdit::shortcutReplace()
 {
-    emit findAndReplaceDialog();
+    emit findAndReplaceDialog(this->textCursor().selectedText());
 }
 
 

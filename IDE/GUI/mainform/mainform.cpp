@@ -1948,6 +1948,12 @@ void MainForm::compileProject()
                                   + ".vhd"
                                   ).toLocal8Bit().constData();
         }
+        if (projectMan->getActive()->compileOpt.at(12))
+        {
+            options->m_stringTable = ( mainFile
+                                  + ".strtbl"
+                                  ).toLocal8Bit().constData();
+        }
         //return;
     }
     else if ( false == projectMan->getActive()->useMainFile )
@@ -2084,6 +2090,10 @@ void MainForm::compileProject()
             if (projectMan->getActive()->compileOpt.at(11))
             {
                 options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
+            }
+            if (projectMan->getActive()->compileOpt.at(12))
+            {
+                options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
             }
         }
         else
@@ -2270,6 +2280,10 @@ void MainForm::compileProject()
                                     + ".vhd"
                                     ).toLocal8Bit().constData();
             }
+            if (projectMan->getActive()->compileOpt.at(12))
+            {
+                options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
+            }
         }
         //return;
     }
@@ -2395,6 +2409,10 @@ void MainForm::compileProject()
         if (projectMan->getActive()->compileOpt.at(11))
         {
             options->m_vhdlFile = ( mainFile + ".vhd").toLocal8Bit().constData();
+        }
+        if (projectMan->getActive()->compileOpt.at(12))
+        {
+            options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
         }
     }
 
