@@ -1219,7 +1219,13 @@ void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool ca
 
     if (false == all)
     {
-        QTextCursor cur = this->document()->find(query, this->textCursor(), options);
+        QTextCursor currCursor = this->textCursor();
+        if (true == currCursor.hasSelection())
+        {
+            currCursor.setPosition(currCursor.selectionStart());
+        }
+            
+        QTextCursor cur = this->document()->find(query, currCursor, options);
         if (!cur.isNull())
         {
             cur.removeSelectedText();
@@ -1234,8 +1240,8 @@ void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool ca
                 QTextCursor curAgain = this->document()->find(query, 0, options);
                 if (!curAgain.isNull())
                 {
-                    cur.removeSelectedText();
-                    cur.insertText(replace);
+                    curAgain.removeSelectedText();
+                    curAgain.insertText(replace);
                     this->setTextCursor(curAgain);
                 }
                 else
