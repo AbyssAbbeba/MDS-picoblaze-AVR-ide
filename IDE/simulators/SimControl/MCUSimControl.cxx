@@ -587,15 +587,27 @@ const char * MCUSimControl::getDeviceName() const
     }
 }
 
-MCUSim::Arch MCUSimControl::getArch() const
+MCUSimBase::Arch MCUSimControl::getArch() const
 {
     if ( nullptr == m_simulator )
     {
-        return MCUSim::ARCH_INVALID;
+        return MCUSimBase::ARCH_INVALID;
     }
     else
     {
         return m_architecture;
+    }
+}
+
+MCUSimBase::Family MCUSimControl::getFamily() const
+{
+    if ( nullptr == m_simulator )
+    {
+        return MCUSimBase::FAMILY_INVALID;
+    }
+    else
+    {
+        return m_simulator->family();
     }
 }
 

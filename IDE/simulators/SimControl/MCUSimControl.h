@@ -194,7 +194,13 @@ class MCUSimControl : public QThread
          * @brief
          * @return
          */
-        MCUSim::Arch getArch() const;
+        MCUSimBase::Arch getArch() const;
+
+        /**
+         * @brief
+         * @return
+         */
+        MCUSimBase::Family getFamily() const;
 
         /**
          * @brief
