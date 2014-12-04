@@ -62,7 +62,7 @@
 
     \begin{description}
         \item[Default radix is decimal, not hexadecimal.]~\\
-            You can use different radix for each numerical literal, if you do not specify radix, it's decimal by default. For hexadecimal radix use `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use `0' (zero) prefix: 076, 011, 027, ...; for binary radix use `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
+            You can use different radix for each numerical literal, if you do not specify radix, it is decimal by default. For hexadecimal radix use `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use `0' (zero) prefix: 076, 011, 027, ...; for binary radix use `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
         \item[Addressing mode specification is mandatory.]~\\
             For immediate addressing use `\#' prefix: \texttt{LOAD~S0,~\#0xAB}; for indirect addressing you ``@'' prefix: ``\texttt{STORE~S0,~@S1}''; for direct addressing use no prefix: ``\texttt{LOAD~S0,~S1~+~3}'' (this loads S0 with S4).
         \item[This assembler is case insensitive.]~\\
