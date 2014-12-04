@@ -19,6 +19,7 @@
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStatusFlags.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeInterruptController.h"
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeStack.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeIO.h"
 #include "../StackWidget/stackwidget.h"
 #include "../RegistersWidget/registerswidget.h"
 #include "../PortHexEdit/porthexedit.h"
@@ -71,7 +72,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
                 MCUSimPureLogicIO::EVENT_PLIO_WRITE,
                 MCUSimPureLogicIO::EVENT_PLIO_READ, 
                 MCUSimPureLogicIO::EVENT_PLIO_WRITE_END,
-                MCUSimPureLogicIO::EVENT_PLIO_READ_END
+                MCUSimPureLogicIO::EVENT_PLIO_READ_END,
+                PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK
             };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_PLIO, mask);
 
@@ -81,6 +83,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
 
     int offsetMove = 0;
+    this->lblWRK = NULL;
     
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     this->memRegs->move(10, 42);
@@ -134,6 +137,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->lblRD->setMaximumWidth(25);
     //this->lblRD->setFrameRect(QRect(0,0,0,0));
     //this->lblRD->setFrameShape(QFrame::Box);
+    /*if ("kcpsm6" == QString::fromUtf8(controlUnit->getDeviceName()))
+    {
+        this->lblWRK = new QLabel("WRK", this);
+        this->lblWR->move(900 - offsetMove, 0);
+    }*/
     this->lblWR = new QLabel("WR", this);
     this->lblWR->move(925 - offsetMove, 0);
     //this->lblWR->setMaximumWidth(25);
@@ -496,11 +504,23 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
             {
                 this->lblWR->setStyleSheet("color: none");
+                if (NULL != this->lblWRK)
+                {
+                    this->lblWRK->setStyleSheet("color: none");
+                }
                 break;
             }
             case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
             {
                 this->lblRD->setStyleSheet("color: none");
+                break;
+            }
+            case PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK:
+            {
+                if (NULL != this->lblWRK)
+                {
+                    this->lblWRK->setStyleSheet("color: #00ff00");
+                }
                 break;
             }
             default:
@@ -617,6 +637,28 @@ void PicoBlazeGrid::deviceChanged()
         qDebug() << "PicoBlazeGrid: not null scratch";
     }*/
     //qDebug() << "PicoBlazeGrid: size" << (dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size();
+    if (MCUSim::FAMILY_KCPSM6 == m_simControlUnit->getFamily())
+    {
+        if (NULL == this->lblWRK)
+        {
+            this->lblWRK = new QLabel("WRK", this);
+            this->lblWRK->show();
+            if (NULL == this->memScratch)
+            {
+                this->lblWRK->move(890 - 215, 0);
+            }
+            else
+            {
+                this->lblWRK->move(890, 0);
+            }
+        }
+    }
+    else if (NULL != this->lblWRK)
+    {
+        delete this->lblWRK;
+        this->lblWRK = NULL;
+    }
+    
     m_cpu = dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_flags = dynamic_cast<PicoBlazeStatusFlags*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_FLAGS));
     m_interrupt = dynamic_cast<PicoBlazeInterruptController*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS));
@@ -632,6 +674,10 @@ void PicoBlazeGrid::deviceChanged()
         this->lblPortsIn->move(560, 0);
         this->lblPortsOut->move(770, 0);
         this->lblRD->move(710, 0);
+        if (MCUSim::FAMILY_KCPSM6 == m_simControlUnit->getFamily())
+        {
+            this->lblWRK->move(890, 0);
+        }
         this->lblWR->move(925, 0);
         this->lblStack->move(960, 0);
         this->lblPC->move(1080, 0);
@@ -649,7 +695,11 @@ void PicoBlazeGrid::deviceChanged()
         this->btnInte->move(1080, 200);
 
 
-        this->lblScratch = new QLabel("Scratchpad RAM", this);
+        if (NULL == this->lblScratch)
+        {
+            this->lblScratch = new QLabel("Scratchpad RAM", this);
+            this->lblScratch->show();
+        }
         this->lblScratch->move(345,0);
         this->memScratch = new McuMemoryView(this, m_simControlUnit, MCUSimSubsys::SubsysId::ID_MEM_DATA);
         this->memScratch->move(305,10);
@@ -676,6 +726,10 @@ void PicoBlazeGrid::deviceChanged()
             this->lblPortsIn->move(560 - 215, 0);
             this->lblPortsOut->move(770 - 215, 0);
             this->lblRD->move(710 - 215, 0);
+            if (MCUSim::FAMILY_KCPSM6 == m_simControlUnit->getFamily())
+            {
+                this->lblWRK->move(890 - 215, 0);
+            }
             this->lblWR->move(925 - 215, 0);
             this->lblStack->move(960 - 215, 0);
             this->lblPC->move(1080 - 215, 0);
