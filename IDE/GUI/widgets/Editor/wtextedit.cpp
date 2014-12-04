@@ -1033,10 +1033,12 @@ void WTextEdit::setTabToSpaces(bool enabled)
     this->tabToSpaces = enabled;
 }
 
+
 void WTextEdit::setSpacesInTab(int spacesInTab)
 {
     this->spacesInTab = spacesInTab;
 }
+
 
 bool WTextEdit::highlightLineAppend(int line, QColor *color)
 {
@@ -1297,9 +1299,6 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectWordRight->setEnabled(!readOnly);
     shctUndo->setEnabled(!readOnly);
     shctRedo->setEnabled(!readOnly);
-    shctCloseTab->setEnabled(!readOnly);
-    shctChangeTabLeft->setEnabled(!readOnly);
-    shctChangeTabRight->setEnabled(!readOnly);
     emit editorReadOnly(readOnly);
     if (false == this->isReadOnly())
     {
@@ -1403,18 +1402,6 @@ void WTextEdit::setShortcuts()
     shctRedo = new QShortcut(this);
     shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
     connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
-    shctCloseTab = new QShortcut(this);
-    //TODO:
-    shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
-    connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
-    shctChangeTabLeft = new QShortcut(this);
-    //TODO:
-    shctChangeTabLeft->setKey(Qt::CTRL + Qt::Key_Left);
-    connect(shctChangeTabLeft, SIGNAL(activated()), this, SLOT(shortcutChangeTabLeft()));
-    shctChangeTabRight = new QShortcut(this);
-    //TODO:
-    shctChangeTabRight->setKey(Qt::CTRL + Qt::Key_Right);
-    connect(shctChangeTabRight, SIGNAL(activated()), this, SLOT(shortcutChangeTabRight()));
     ////TODO: F3, shift+f3, + move lines up, down
 }
 
@@ -1463,53 +1450,46 @@ void WTextEdit::shortcutDeselect()
 }
 
 
-    //TODO:
 void WTextEdit::shortcutComment()
 {
     QTextCursor cursor(this->textCursor());
     if (true == cursor.hasSelection())
     {
-        QString a(cursor.selectedText());
-        if (a.startsWith("/*") && a.endsWith("*/"))
+        int curStart = cursor.selectionStart();
+        int startBlockPos = this->document()->findBlock(curStart).position();
+        QString blockText = this->document()->findBlock(curStart).text();
+        int curEnd = cursor.selectionEnd();
+        QRegExp whiteRegExp("[\\s]*");
+        if ( this->document()->findBlock(curStart).blockNumber() == this->document()->findBlock(curEnd).blockNumber()
+          && true == whiteRegExp.exactMatch(blockText.left(curStart - startBlockPos))
+           )
         {
-            a.remove(0, 2);
-            a.remove(a.size() - 2, 2);
-        }
-        else if (a.startsWith("/*"))
-        {
-            a = a + "*/";
-        }
-        else if (a.endsWith("*/"))
-        {
-            a = "/*" + a;
+            cursor.setPosition(startBlockPos);
+            cursor.insertText(";");
+            cursor.setPosition(curStart+1);
+            cursor.setPosition(curEnd+1, QTextCursor::KeepAnchor);
+            this->setTextCursor(cursor);
         }
         else
         {
-            a = "/*" + a + "*/";
+            QString selection = cursor.selectedText();
+            selection = "/*" + selection + "*/";
+            cursor.removeSelectedText();
+            cursor.insertText(selection);
+            cursor.setPosition(curStart);
+            cursor.setPosition(curEnd+4, QTextCursor::KeepAnchor);
+            this->setTextCursor(cursor);
         }
         //emit selectionRemovedSignal(cursor.selectionStart(), cursor.selectionEnd());
-        cursor.removeSelectedText();
         //emit textChangedSignal(a, cursor.position());
-        cursor.insertText(a);
     }
     else
     {
         int linePos = cursor.positionInBlock();
         cursor.setPosition(cursor.position() - linePos);
-        if (cursor.block().text().startsWith(";"))
-        {
-            //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-            cursor.deleteChar();
-            cursor.setPosition(cursor.position() + linePos - 1);
-            //emit textChangedSignal(QKeySequence(Qt::Key_Backspace).toString(), cursor.position());
-            //cursor.deleteChar();
-        }
-        else
-        {
-            //emit textChangedSignal(";", cursor.position());
-            cursor.insertText(";");
-            cursor.setPosition(cursor.position() + linePos);
-        }
+        cursor.insertText(";");
+        cursor.setPosition(cursor.position() + linePos);
+        this->setTextCursor(cursor);
     }
 }
 
@@ -1565,6 +1545,7 @@ void WTextEdit::shortcutDeleteComment()
         int linePos = cursor.positionInBlock();
         if (cursor.block().text().startsWith(";"))
         {
+            cursor.setPosition(cursor.position() - linePos);
             cursor.deleteChar();
             cursor.setPosition(cursor.position() + linePos - 1);
         }
@@ -1740,19 +1721,19 @@ void WTextEdit::shortcutRedo()
 }
 
 
-void WTextEdit::shortcutCloseTab()
-{
-    emit closeTab();
-}
-
-
-void WTextEdit::shortcutChangeTabLeft()
-{
-    emit changeTab(false);
-}
-
-
-void WTextEdit::shortcutChangeTabRight()
-{
-    emit changeTab(true);
-}
+// void WTextEdit::shortcutCloseTab()
+// {
+//     emit closeTab();
+// }
+// 
+// 
+// void WTextEdit::shortcutChangeTabLeft()
+// {
+//     emit changeTab(false);
+// }
+// 
+// 
+// void WTextEdit::shortcutChangeTabRight()
+// {
+//     emit changeTab(true);
+// }

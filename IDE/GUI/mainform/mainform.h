@@ -181,6 +181,9 @@ class MainForm : public QMainWindow
         void openRecentProjectSlot(QAction *action);
         void welcomeDialog();
         void saveOnClose(QString path);
+        void shortcutCloseTab();
+        void shortcutChangeTabLeft();
+        void shortcutChangeTabRight();
 
     signals:
         void unhighlightSim();
