@@ -61,6 +61,7 @@ void ProjectCfg_Compiler::load()
     this->ui.chckRawHexFile->setChecked(project->compileOpt.at(9));
     this->ui.chckVerilogFile->setChecked(project->compileOpt.at(10));
     this->ui.chckVHDLFile->setChecked(project->compileOpt.at(11));
+    this->ui.chckStringList->setChecked(project->compileOpt.at(12));
     if (project->prjPath == "untracked" && project->prjName == "untracked")
     {
         this->ui.cmbMainFile->setDisabled(true);
@@ -92,6 +93,7 @@ void ProjectCfg_Compiler::save()
     opt.append(this->ui.chckRawHexFile->isChecked());
     opt.append(this->ui.chckVerilogFile->isChecked());
     opt.append(this->ui.chckVHDLFile->isChecked());
+    opt.append(this->ui.chckStringList->isChecked());
     
     this->project->setCompileOpt(opt);
     this->project->setUseMainFile(this->ui.chckMain->isChecked());
@@ -116,6 +118,7 @@ QList<bool> ProjectCfg_Compiler::getOpt()
     opt.append(this->ui.chckRawHexFile->isChecked());
     opt.append(this->ui.chckVerilogFile->isChecked());
     opt.append(this->ui.chckVHDLFile->isChecked());
+    opt.append(this->ui.chckStringList->isChecked());
 
     return opt;
 }

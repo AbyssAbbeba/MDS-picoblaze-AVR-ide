@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include "ui_find.h"
+#include "../../../enums/enums.h"
 
 
 
@@ -30,13 +31,17 @@ class Find : public QWidget
     Q_OBJECT
     public:
         Find(QWidget *parent, QString query = QString());
+        void setQuery(QString query);
+        void reloadFocus();
 
     signals:
         void find(QString query, bool next, bool caseSensitive);
+        void closeWidget(CodeEditBottomWidget widget);
 
     private slots:
         void findNext();
         void findPrevious();
+        void closeClicked();
 
     private:
         Ui_Find ui;

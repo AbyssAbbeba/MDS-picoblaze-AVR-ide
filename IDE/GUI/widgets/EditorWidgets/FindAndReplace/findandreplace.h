@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include "ui_findandreplace.h"
+#include "../../../enums/enums.h"
 
 
 
@@ -30,16 +31,19 @@ class FindAndReplace : public QWidget
     Q_OBJECT
     public:
         FindAndReplace(QWidget *parent, QString query = QString());
+        void setQuery(QString query);
 
     signals:
         void find(QString query, bool next, bool caseSensitive);
         void findAndReplace(QString find, QString replace, bool all, bool caseSensitive);
+        void closeWidget(CodeEditBottomWidget widget);
 
     private slots:
         void findNext();
         void findPrevious();
         void replace();
         void replaceAll();
+        void closeClicked();
 
     private:
         Ui_FindAndReplace ui;

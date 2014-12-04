@@ -17,7 +17,7 @@
    <item row="7" column="2">
     <widget class="QCheckBox" name="chckVHDLFile">
      <property name="text">
-      <string>VHDL file</string>
+      <string>VHDL File</string>
      </property>
     </widget>
    </item>
@@ -146,7 +146,7 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="9" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -161,6 +161,13 @@
    </item>
    <item row="1" column="0" colspan="3">
     <widget class="QComboBox" name="cmbMainFile"/>
+   </item>
+   <item row="8" column="0">
+    <widget class="QCheckBox" name="chckStringList">
+     <property name="text">
+      <string>String List</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
