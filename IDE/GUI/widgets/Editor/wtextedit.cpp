@@ -1211,6 +1211,52 @@ void WTextEdit::findAndMark(QString query, bool next, bool caseSensitive)
 
 void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool caseSensitive)
 {
+    QTextDocument::FindFlags options;
+    if (true == caseSensitive)
+    {
+        options |= QTextDocument::FindCaseSensitively;
+    }
+
+    if (false == all)
+    {
+        QTextCursor cur = this->document()->find(query, this->textCursor(), options);
+        if (!cur.isNull())
+        {
+            cur.removeSelectedText();
+            cur.insertText(replace);
+            this->setTextCursor(cur);
+        }
+        else
+        {
+            QString text = "End of document reached.\nDo you want to continue searching from the start of the document?";
+            if (QMessageBox::Yes == QMessageBox::question(this, "", text, QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes))
+            {
+                QTextCursor curAgain = this->document()->find(query, 0, options);
+                if (!curAgain.isNull())
+                {
+                    cur.removeSelectedText();
+                    cur.insertText(replace);
+                    this->setTextCursor(curAgain);
+                }
+                else
+                {
+                    text = "String \"" + query + "\" was not found in the document.";
+                    QMessageBox::information(this, "", text, QMessageBox::Ok, QMessageBox::Ok);
+                }
+            }
+        }
+    }
+    else
+    {
+        QTextCursor cur = this->document()->find(query, 0, options);
+        while (!cur.isNull())
+        {
+            cur.removeSelectedText();
+            cur.insertText(replace);
+            this->setTextCursor(cur);
+            cur = this->document()->find(query, this->textCursor(), options);
+        }
+    }
 }
 
 

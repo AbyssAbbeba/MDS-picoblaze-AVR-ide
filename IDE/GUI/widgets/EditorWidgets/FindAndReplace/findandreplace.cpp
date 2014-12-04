@@ -32,6 +32,8 @@ FindAndReplace::FindAndReplace(QWidget *parent, QString query)
     connect(ui.btnReplace, SIGNAL(clicked()), this, SLOT(replace()));
     connect(ui.btnReplaceAll, SIGNAL(clicked()), this, SLOT(replaceAll()));
     connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
+    connect(ui.leFind, SIGNAL(returnPressed()), ui.btnFindNext, SIGNAL(clicked()));
+    connect(ui.leReplace, SIGNAL(returnPressed()), ui.btnReplace, SIGNAL(clicked()));
 }
 
 

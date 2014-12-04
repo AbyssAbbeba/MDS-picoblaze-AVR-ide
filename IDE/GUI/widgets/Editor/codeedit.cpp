@@ -1373,14 +1373,14 @@ void CodeEdit::findAndReplaceDialog(QString query)
                 SLOT(closeBottomWidget(CodeEditBottomWidget))
                );
         connect(m_findAndReplaceDialog,
-                SIGNAL(find(QString, int, int)),
+                SIGNAL(find(QString, bool, bool)),
                 this,
-                SLOT(find(QString, int, int))
+                SLOT(find(QString, bool, bool))
                );
         connect(m_findAndReplaceDialog,
-                SIGNAL(findAndReplace(QString, int, int)),
+                SIGNAL(findAndReplace(QString, QString, bool, bool)),
                 this,
-                SLOT(findAndReplace(QString, QString, int, int))
+                SLOT(findAndReplace(QString, QString, bool, bool))
                );
         this->changeHeight();
         //QLabel *label = new QLabel("ASDSDASASASSDA", this);
