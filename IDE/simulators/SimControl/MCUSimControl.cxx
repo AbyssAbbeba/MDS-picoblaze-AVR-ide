@@ -498,8 +498,8 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
 {
     if ( nullptr != m_simulator )
     {
-        m_simulator = nullptr;
         delete m_simulator;
+        m_simulator = nullptr;
     }
 
     if ( false ) {}
