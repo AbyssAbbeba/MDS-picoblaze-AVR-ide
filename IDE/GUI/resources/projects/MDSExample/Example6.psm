@@ -87,6 +87,9 @@ copy5       macro       target, source
             ld          target + 4, source + 4
 endm
 
+            ; Copy [S0..S4] to [S5..S9]
+            copy5       S5, S0
+
 ; Put the given number of NOPs (No Operation instruction) at the place where this macro is expanded.
 nops        macro       number
             repeat      number
@@ -104,6 +107,9 @@ wait        macro       register, cycles
             endf
 endm
 
+            ; Wait 100 instruction cycles here.
+            wait        100
+
 ; ======================================================================================================================
 ; A pretty complex example: macro with local symbol(s), and forced exit combined with conditions and loops.
 ; ======================================================================================================================
@@ -113,12 +119,12 @@ fill        macro       target, value, length
             local       n
     n       set         0
 
-;        #if ( length == 0 )
-;            warning     "Zero length doesn't make sense here."
-;        #elseif ( target == S1 )
-;            warning     "I won't accept S1 as target ... for some reason, I guess."
-;            exitm
-;        #endif
+        #if ( length == 0 )
+            warning     "Zero length doesn't make sense here."
+        #elseif ( target == S1 )
+            warning     "I won't accept S1 as target ... for some reason, I guess."
+            exitm
+        #endif
 
         #while n < length
             ld          target + n, #value
