@@ -64,7 +64,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         void setWarningOpt(GuiCfg::WarningsOpt options);
         
     private:
-        MCUSimControl *controlUnit;
+        //MCUSimControl *controlUnit;
         QScrollArea *m_regListScroll;
         QHBoxLayout *layout;
         QWidget *parent;
@@ -82,6 +82,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QLabel *lblPortsOut;
         QLabel *lblStack;
         QLabel *lblRD;
+        QLabel *lblWRK;
         QLabel *lblWR;
         QLabel *lblPC;
         QLabel *lblTime;
