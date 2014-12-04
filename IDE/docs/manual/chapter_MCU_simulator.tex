@@ -1,5 +1,5 @@
 \section{Main simulation panel}
-    This panel is the main part of the simulator user interface. Simulator mimics functionality of PicoBlaze instruction set and provide detailed view in its registers, overview of input and output ports, etc., and displays warning when the simulated program behaves strangely i.e. does something which under normal circumstances results an error. Following picture shows main window of the simulator. You can find here internal registers, scratch-pad ram, input and output ports, stack, program counter, elapsed time and cycles, current clock and internal flags: CARRY and ZERO. All those features can be edited during processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place outside of the main window, for example another display/monitor on your computer.
+    This panel is the main part of the simulator user interface. Simulator mimics functionality of PicoBlaze instruction set and provide detailed view in its registers, overview of input and output ports, etc., and displays warning when the simulated program behaves strangely i.e. does something which under normal circumstances results an error. Following picture shows main window of the simulator. You can find here internal registers, scratch-pad ram, input and output ports, stack, program counter, elapsed time and cycles, current clock and internal flags: carry and zero. All those features can be edited during processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place outside of the main window, for example another display on your computer.
 
    \begin{figure}[h!]
         \centering
@@ -13,7 +13,7 @@
         \item [Scratch-pad RAM]
             This hexadecimal editor represents values stored in the scratch-pad RAM. Address of a particular field is addition of the line and column numbers.
         \item [Ports]
-            Output and input ports are represented by hex editors in full their address range. Besides viewing and changing input and output values, you can also see the status of PicoBlaze RD and WR signals. It can be useful for easier debugging.
+            Output and input ports are represented by hexadecimal editors in their full address range. Besides viewing and changing input and output values, you can also see the status of PicoBlaze RD, WR, and WRK signals (read and write strobes).
         \item [Stack]
             Stack window represents values stored in stack. You can change the stack content by pushing and popping values, and view its virtual stack pointer.
         \item [Info panel]
@@ -35,20 +35,9 @@
             \end{tabular}
         \end{table}
 
-    \subsection{Breakpoints and bookmarks}
-        \index{Breakpoints} \index{Bookmarks}
-        \begin{wrapfigure}{r}{0pt}
-            \centering
-                \includegraphics[width=.35\textwidth]{img/breakpoints1.png}
-                \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
-        \end{wrapfigure}
-
-        MDS simulator supports breakpoints, breakpoint is a mark associated with a location in the program code; when reached, it triggers a temporarily halt in the running simulation. You can use breakpoints to test and debug programs in a manner that the program can be examined in stages delimited by breakpoints. Please be also aware that using breakpoints slows down the simulator; if you want maximum simulation speed, you may temporarily disable (switch off) breakpoints generally in [Main~Menu]~-> [Simulation]~-> [Disable~Breakpoints].
-
-        Another feature is bookmarks; when editing one location in your source code more often, it may be useful to add a bookmark to it so you can quickly get back when you need. Like breakpoints bookmarks are marks in your source code but they are meant solely for quick navigation, they do not affect simulation in any way.
-
+    \clearpage
     \subsection{Simulation cursor}
-        Simulation cursor shows what instruction will be executed in next step. Two previous instructions are less and less highlighted, so you can track two previous steps. following figure displays actual cursor on line 8, one step before is on line 5 and another step is on 4.
+        Simulation cursor shows what instruction will be executed in next step. Two previously executed instructions are highlighted but with lower and fading intensity; you can use that to easier track previous steps. Following figure shows actual cursor on line 8, one step before is on line 5, and two steps before is on 4.
         \begin{figure}[h!]
             \centering
             \includegraphics[width=\textwidth]{img/simulationcursor1.png}
@@ -62,31 +51,8 @@
             \caption{Simulation cursor}
         \end{figure}
 
-    \clearpage
-    \subsection{List of macros, breakpoints and bookmarks}
-        For better orientation in what are you actually doing, MDS provides some additional tools located on the right panel, this includes List of Macros, List of Breakpoints, and List of Bookmarks.
-
-        \begin{table}[h!]
-            \begin{tabular}{ccc}
-                \includegraphics[width=.3\textwidth]{img/listmacros.png}
-                    &
-                \includegraphics[width=.3\textwidth]{img/listbreakpoints.png}
-                    &
-                \includegraphics[width=.3\textwidth]{img/listbookmarks.png}
-                \\ Macros & Breakpoints & Bookmarks
-            \end{tabular}
-        \end{table}
-
-
     \subsection{Modes of simulation}
         The simulator can operate three different modes:
-
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=.4\textwidth]{img/simulation_panel.png}
-            \caption{Simulator toolbar.}
-        \end{figure}
-
         \begin{description}
             \item [Step]
                 \index{Step mode}
