@@ -103,9 +103,24 @@
             \end{table}
 
     \subsection{Exit \& Restoration}
-        When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
+        \paragraph{Session}
+            ~\\When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
 
-        When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
+        \paragraph{Exit Dialog}
+            \begin{wrapfigure}{r}{0pt}
+                \centering
+                \includegraphics[width=130pt]{img/exit_dialog.png}
+                \caption{Exit Dialog}
+            \end{wrapfigure}
+            ~\\When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog (Exit Dialog) asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
+
+            \begin{description}
+                \item[Button Save]
+                \item[Button Save All]
+                \item[Button Discard]
+                \item[Button Discard All]
+                \item[Button Cancel]
+            \end{description}
 
 \clearpage
 \section{Source code editor}
@@ -169,9 +184,6 @@
 \clearpage
 \section{Project management}
     \index{Project management}
-
-
-
     \subsection{Project configuration}
         In project configuration window, you can edit project and compiler settings. You can open project configuration
         window by right clicking on project name in the left panel and choosing Configuration, see the pictures below.
