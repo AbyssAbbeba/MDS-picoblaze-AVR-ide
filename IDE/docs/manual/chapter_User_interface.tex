@@ -4,40 +4,38 @@
    \begin{figure}[h]
         \centering
         \includegraphics[width=\textwidth]{img/Main_window.png}
-        \caption{Window layout concept}
+        \caption{Layout of the main window}
     \end{figure}
+
+    \clearpage
+    \subsection{Top panel}
+        \index{Toolbar}
+        Top panel contains main menu and the toolbar, both can be used to invoke various actions which will described alter in this documentation.
+
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=.9\textwidth]{img/top_panel.png}
+            \caption{Top panel}
+        \end{figure}
+
+    \subsection{Left and right panel}
+        \index{Left panel}\paragraph{Left panel} displays files in your project tree. You can perform various actions from here using context menus (right click), like configure project, close project, open file, close file, remove file from this list, or set some file as the project's main source file.
+
+        \index{Right panel}\paragraph{Right panel} contains lists of breakpoints, bookmarks, and macros defined in your source code. From these lists you can easily navigate to the corresponding line in your source code just by clicking on an item. List of macros might sometimes need to refresh which can be achieved by [Right~Click] -> [Refresh].
+
+        \begin{table}[h!]
+            \centering
+            \begin{tabular}{cc}
+                \includegraphics[width=.3\textwidth]{img/left_panel.png}
+                    &
+                \includegraphics[width=.3\textwidth]{img/right_panel.png}
+                    \\
+                Left panel & Right panel
+            \end{tabular}
+        \end{table}
 
     \subsection{Central panel}
         Central panel contains the main text editor with syntax highlight for writing a source code. In the editor you can also easily add breakpoints and bookmarks just by clicking on desired line number by left or right mouse button, each invokes different action.
-
-    \subsection{Top panel}
-    \begin{figure}[h!]
-            \centering
-            \includegraphics[width=0.33\textwidth]{img/top_panel.png}
-            \caption{Toolbar icons}
-        \end{figure}
-
-        \subsubsection{Top panel icons}
-            \begin{itemize}
-                \item New project: Creates a new project.
-                \item Open project: Opens an existing project file.
-                \item Save project: Saves current project file.
-                \item Compile: Compiles your code.
-                \item Start Simulation: Enters simulation mode.
-                \item Run: High speed simulation.
-                \item Animate: Simulation with GUI (such as register view, etc.) updated after each executed instruction.
-                \item Step: Step by step simulation.
-                \item Reset: Resets simulator to its initial state.
-                \item Unhighlight: Clear highlight from register view and other graphical components of the simulator panel.
-                \item Undo: will undo all edit actions on the open document in reverse order
-                \item Redo: will redo all undo actions
-                \item Cut: cuts all selected parts of the open document and puts it in the clipboard.
-                \item Copy: copies all selected parts of the open document to the clipboard
-                \item Paste: pastes the text contents of the clipboard in the open document
-                \item Select: All selects all text in the open document
-                \item Find: find a to be given string through the open document
-                \item Replace: replace a given string in the open document by a new string
-            \end{itemize}
 
     \subsection{Bottom panel}
         Bottom panel consists of simulator main panel, and compiler messages.
@@ -50,92 +48,124 @@
 
         \begin{figure}[h!]
             \centering
-            \includegraphics[width=\textwidth]{img/bottom_panel.png}
+            \includegraphics[width=.9\textwidth]{img/bottom_panel.png}
             \caption{Bottom panel}
         \end{figure}
 
-    \subsection{Left panel}
-        Here you can see main project tree. You can close or configure project by right clicking on the project name, add a
-        file to the project or create a new one. You can also see included files or opened compiled files like .lst, etc.
+    \subsection{Actions}
+        \begin{description}
+            \item [New project:] Creates a new project.
+            \item [Open project:] Opens an existing project file.
+            \item [Save project:] Saves current project file.
+            \item [Compile:] Compiles your code.
+            \item [Start Simulation:] Enters simulation mode.
+            \item [Run:] High speed simulation.
+            \item [Animate:] Simulation with GUI (such as register view, etc.) updated after each executed instruction.
+            \item [Step:] Step by step simulation.
+            \item [Reset:] Resets simulator to its initial state.
+            \item [Unhighlight:] Clear highlight from register view and other graphical components of the simulator panel.
+            \item [Undo:] will undo all edit actions on the open document in reverse order
+            \item [Redo:] will redo all undo actions
+            \item [Cut:] cuts all selected parts of the open document and puts it in the clipboard.
+            \item [Copy:] copies all selected parts of the open document to the clipboard
+            \item [Paste:] pastes the text contents of the clipboard in the open document
+            \item [Select:] All selects all text in the open document
+            \item [Find:] find a to be given string through the open document
+            \item [Replace:] replace a given string in the open document by a new string
+        \end{description}
 
-    \subsection{Right panel}
-        Right panel contains lists of breakpoints, bookmarks, symbols, and macros in your source code.
+        \subsubsection{Key shortcuts}
+            \index{Main window shortcuts}
+            These are key shortcuts for the main windows, code editor shortcuts will be discussed later in this manual.
+            \begin{table}[h!]
+                \centering
+                \fontsize{8pt}{9pt}
+                {
+                    \begin{tabular}{|l|l|l|l|}
+                        \hline
+                        \textbf{Shortcut}               & \textbf{Description}          &
+                        \textbf{Shortcut}               & \textbf{Description}          \\\hline
+                        \texttt{Ctrl + N}               & New file                      &
+                        \texttt{Ctrl + O}               & Open file                     \\
+                        \texttt{Ctrl + S}               & Save file                     &
+                        \texttt{Ctrl + W}               & Close file                    \\
+                        \texttt{F5}                     & Compile                       &
+                        \texttt{F6}                     & Start simulator               \\
+                        \texttt{F7}                     & Simulator: Run                &
+                        \texttt{F8}                     & Simulator: Animate            \\
+                        \texttt{F9}                     & Simulator: Step               &
+                        \texttt{F10}                    & Simulator: Reset              \\
+                        \hline
+                    \end{tabular}
+                }
+                \caption{Default key shortcuts for the Main Window.}
+            \end{table}
 
-        \begin{table}[h!]
-            \centering
-            \begin{tabular}{cc}
-                \includegraphics[width=.4\textwidth]{img/left_panel.png}
-                    &
-                \includegraphics[width=.4\textwidth]{img/right_panel.png}
-                    \\
-                Left panel & Right panel
-            \end{tabular}
-        \end{table}
+\clearpage
+\section{Source code editor}
+    \index{Code editor}
+    \paragraph{Syntax highlight} is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
+
+    \paragraph{Left panel} of the editor shows numbers of lines in your source code for easier navigation.
+
+    \paragraph{Editor status bar} displays information about current column and line number.
+
+    \paragraph{Context menu} pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
 
     \subsection{Key shortcuts}
+        \index{Editor shortcuts}
         \begin{table}[h!]
             \centering
-            \begin{tabular}{|l|l|}
-                \hline
-                \textbf{Shortcut}               & \textbf{Description}          \\\hline
-                Ctrl + N                        & New file                      \\\hline
-                Ctrl + O                        & Open file                     \\\hline
-                Ctrl + S                        & Save file                     \\\hline
-                Ctrl + W                        & Close file                    \\\hline
-                F5                              & Compile                       \\\hline
-                F6                              & Start simulator               \\\hline
-                F7                              & Simulator: Run                \\\hline
-                F8                              & Simulator: Animate            \\\hline
-                F9                              & Simulator: Step               \\\hline
-                F10                             & Simulator: Reset              \\\hline
-            \end{tabular}
-            \caption{Default Main Window shortcuts.}
-        \end{table}
-
-\section{Code editor}
-    \subsection{Key shortcuts}
-        \begin{table}[h!]
-            \centering
-            \begin{tabular}{|l|l|}
-                \hline
-                \textbf{Shortcut}               & \textbf{Description}          \\\hline
-                    Ctrl + X                    & Cut                           \\\hline
-                    Ctrl + C                    & Copy                          \\\hline
-                    Ctrl + V                    & Paste                         \\\hline
-                    Ctrl + Z                    & Undo                          \\\hline
-                    Ctrl + Shift + Z            & Redo                          \\\hline
-                    Ctrl + D                    & Comment                       \\\hline
-                    Ctrl + Shift + D            & Uncomment                     \\\hline
-                    Ctrl + B                    & Set bookmark                  \\\hline
-                    Ctrl + Shift + B            & Set breakpoint                \\\hline
-                    Ctrl + A                    & Select all                    \\\hline
-                    Ctrl + Shift + A            & Deselect                      \\\hline
-                    Ctrl + G                    & Go to line                    \\\hline
-                    Ctrl + F                    & Find                          \\\hline
-                    Ctrl + F3                   & Find next                     \\\hline
-                    Ctrl + Shift + F3           & Find previous                 \\\hline
-                    Ctrl + R                    & Replace                       \\\hline
-                    Ctrl + Up                   & Scroll one line up            \\\hline
-                    Ctrl + Down                 & Scroll one line down          \\\hline
-                    Ctrl + Left                 & Move cursor one word left     \\\hline
-                    Ctrl + Right                & Move cursor one word right    \\\hline
-                    Ctrl + U                    & Convert to uppercase          \\\hline
-                    Ctrl + Shift + U            & Convert to lowercase          \\\hline
-                    Ctrl + Alt + U              & Capitalize                    \\\hline
-                    Ctrl + K                    & Delete line                   \\\hline
-                    Ctrl + T                    & Swap characters               \\\hline
-                    Ctrl + H                    & Select word under cursor      \\\hline
-                    Ctrl + Shift + Left         & Select one word to the left   \\\hline
-                    Ctrl + Shift + Right        & Select one word to the right  \\\hline
-                    Ctrl + Shift + Up           & Move line up                  \\\hline
-                    Ctrl + Shift + Down         & Move line down                \\\hline
-                    Alt + PageUp                & Go to previous bookmark       \\\hline
-                    Alt + PageDown              & Go to next bookmark           \\\hline
-            \end{tabular}
+            \fontsize{8pt}{9pt}
+            {
+                \begin{tabular}{|ll|ll|}
+                    \hline
+                    \textbf{Shortcut}                       & \textbf{Description}          &
+                    \textbf{Shortcut}                       & \textbf{Description}          \\\hline
+                        \texttt{Ctrl + X}                   & Cut                           &
+                        \texttt{Ctrl + C}                   & Copy                          \\
+                        \texttt{Ctrl + V}                   & Paste                         &
+                        \texttt{Ctrl + Z}                   & Undo                          \\
+                        \texttt{Ctrl + Shift + Z}           & Redo                          &
+                        \texttt{Ctrl + D}                   & Comment                       \\
+                        \texttt{Ctrl + Shift + D}           & Uncomment                     &
+                        \texttt{Ctrl + B}                   & Set bookmark                  \\
+                        \texttt{Ctrl + Shift + B}           & Set breakpoint                &
+                        \texttt{Ctrl + A}                   & Select all                    \\
+                        \texttt{Ctrl + Shift + A}           & Deselect                      &
+                        \texttt{Ctrl + G}                   & Go to line                    \\
+                        \texttt{Ctrl + F}                   & Find                          &
+                        \texttt{Ctrl + F3}                  & Find next                     \\
+                        \texttt{Ctrl + Shift + F3}          & Find previous                 &
+                        \texttt{Ctrl + R}                   & Replace                       \\
+                        \texttt{Ctrl + Up}                  & Scroll one line up            &
+                        \texttt{Ctrl + Down}                & Scroll one line down          \\
+                        \texttt{Ctrl + Left}                & Move cursor one word left     &
+                        \texttt{Ctrl + Right}               & Move cursor one word right    \\
+                        \texttt{Ctrl + U}                   & Convert to uppercase          &
+                        \texttt{Ctrl + Shift + U}           & Convert to lowercase          \\
+                        \texttt{Ctrl + Alt + U}             & Capitalize                    &
+                        \texttt{Ctrl + K}                   & Delete line                   \\
+                        \texttt{Ctrl + T}                   & Swap characters               &
+                        \texttt{Ctrl + H}                   & Select word under cursor      \\
+                        \texttt{Ctrl + Shift + Left}        & Select one word to the left   &
+                        \texttt{Ctrl + Shift + Right}       & Select one word to the right  \\
+                        \texttt{Ctrl + Shift + Up}          & Move line up                  &
+                        \texttt{Ctrl + Shift + Down}        & Move line down                \\
+                        \texttt{Alt + PageUp}               & Go to previous bookmark       &
+                        \texttt{Alt + PageDown}             & Go to next bookmark           \\
+                        \hline
+                \end{tabular}
+            }
             \caption{Default Editor shortcuts.}
         \end{table}
 
+\clearpage
 \section{Project management}
+    \index{Project management}
+
+
+
     \subsection{Project configuration}
         In project configuration window, you can edit project and compiler settings. You can open project configuration
         window by right clicking on project name in the left panel and choosing Configuration, see the pictures below.
@@ -170,10 +200,11 @@
 
         \subsubsection{Compiler - Options}
             \begin{itemize}
-                \item Main file: If you have "Use main file" checked, you can choose which file will always chosen for
-                        compilation and simulation instead of the file current opened in the editor.
-                \item Generate: Select which files should the assembler generate in your project's directory from the
-                        given source code.
+                \item
+                    \index{Main file}
+                    Main file: If you have "Use main file" checked, you can choose which file will always chosen for compilation and simulation instead of the file current opened in the editor.
+                \item
+                    Generate: Select which files should the assembler generate in your project's directory from the given source code.
             \end{itemize}
 
             \begin{table}[h!]
@@ -204,7 +235,7 @@
                 \end{tabular}
                 \end{table}
 
-\section{User interface configuration}
+\section{UI Configuration}
     In interface configuration dialog, you can edit IDE behavior and appearance, for instance editor font, tab width,
     etc., or simulator warnings. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] ->
     [Config].
@@ -239,144 +270,144 @@
         \end{table}
 
 \section{Tools}
-\subsection{Data file converter}
-    This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
-    .srec, .mem, .rawhex, .v, and .vhd.
-    \begin{description}
-        \item[Section Input File] Here you can select desired input data file which will be converted.
-        \item[Section Input Options] In this section, you define what type of input file will be converted.
-        \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
-        \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
-        \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
-        \item[Section Output File] Defines target.
-        \item[Section Output Options] Here you can select desired output data file.
-        \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
-        \item[Tab size]  Define number of inserted spaces when you press Tab.
-        \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
-    \end{description}
+    \subsection{Data file converter}
+        This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
+        .srec, .mem, .rawhex, .v, and .vhd.
+        \begin{description}
+            \item[Section Input File] Here you can select desired input data file which will be converted.
+            \item[Section Input Options] In this section, you define what type of input file will be converted.
+            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+            \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
+            \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
+            \item[Section Output File] Defines target.
+            \item[Section Output Options] Here you can select desired output data file.
+            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+            \item[Tab size]  Define number of inserted spaces when you press Tab.
+            \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
+        \end{description}
 
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
-        \caption{DATA file converter}
-    \end{figure}
-
-\subsection{Assembler translator}
-    With this tool, you can translate your previously written assembler code in different syntax.
-    You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
-    errors.
-    \begin{description}
-        \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
-        \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of
-             three choices - Xilinx, Mediatronix and OpenPicIde.
-        \item[Symbol] Case of symbols - uppercase or lowercase
-        \item[End of line] Indentation - Choose between Tabs or Spaces
-        \item[Directive] Case of Directives - uppercase or lowercase
-        \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
-        \item[Instruction] Case of instructions - uppercase or lowercase
-        \item[Tab size]  Define number of inserted spaces when you press Tab.
-        \item[Short instructions] Here you can allow short instructions like LD, RETI or others
-    \end{description}
-
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=.5\textwidth]{img/ASM_translator.png}
-        \caption{ASM translator}
-    \end{figure}
-
-\subsection{Disassembler}
-    Disassembler is a tool that translates machine language into assembly language. The inverse
-    operation to that of an assembler.
-
-    \begin{description}
-        \item[Section File] Choose which file you want to disassemble.
-        \item[Section Target] Your processor architecture
-        \item[Family] Processor family of the selected architecture.
-        \item[Indentation] Choose between tabs and spaces.
-        \item[Tab size] Tab size measured in number of spaces.
-        \item[Radix] Binary, octal, decimal, or hexadecimal.
-        \item[Line break] CRLF (Windows), LF (Linux), or CR (Mac)
-        \item[Case] Use upper case or lower case characters.
-        \item[Generate symbols] Which symbols should be named.
-    \end{description}
-
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=.5\textwidth]{img/disassembler_window.png}
-        \caption{Disassembler}
-    \end{figure}
-
-\subsection{Delay loop generator}
-    In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
-    development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
-    enter desired time of delay or number of cycles and clock frequency.
-
-    \begin{description}
-        \item[Section Input variable] Choose between time or cycles
-        \item[Section Desired waiting time] Number of executed time or cycles
-        \item[Section Frequency] Clock frequency
-        \item[Section Register names] Set register names used in the generated code (optional).
-        \item[Section Generated code] The generated code.
-        \item[Instruction] Instruction used in loop.
-        \item[Type] Type of waiting loop you want to create (blank/macro).
-        \item[Upper Case and Comments]  Turn off automatically added comments, and use upper case.
-        \item[Button Copy to clipboard] This will copy the generated code to clipboard.
-        \item[Button Generate] Generate code.
-    \end{description}
-
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=.6\textwidth]{img/loop_gen.png}
-        \caption{Delay loop generator dialog}
-    \end{figure}
-
-\subsection{8-segment editor}
-    \begin{wrapfigure}{r}{0pt}
-        \centering
-        \includegraphics[width=110pt]{img/8segment.png}
-        \caption{8-segment editor}
-    \end{wrapfigure}
-    With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED
-    display. In the left part of the dialog window, you can find numerical values corresponding to the displayed digit
-    in the middle part. These values are represented for both common cathode and common anode and in three numerical
-    bases: hexadecimal, decimal, and octal. Buttons on left side from entry boxes copies value from the adjacent entry
-    box to clipboard. In the right part of the window you can set what port pin is connected to what LED segment, this
-    sets permutation of the resulting value(s).
-
-\subsection{LED panel simulator}
-    \begin{wrapfigure}{r}{0pt}
-        \centering
-        \includegraphics[width=150pt]{img/Led_panel.png}
-        \caption{8-segment editor}
-    \end{wrapfigure}
-
-    Simple LED panel simulator. You can observe output port behavior with visual representation of eight LEDs. You can
-    set BCD and Gray decoder to simulate common FPGA logic.
-
-    \begin{description}
-        \item[GRAY] Converts output port value to gray code.
-        \item[BCD] Output port value will be presented as BCD. Remember that bigger number than 99 cannot be displayed.
-    \end{description}
-
-\subsection{7-segment simulator}
-    \begin{wrapfigure}{r}{0pt}
-        \centering
-        \includegraphics[width=110pt]{img/7seg_sim.png}
-        \caption{7-segment simulator}
-    \end{wrapfigure}
-    Simulator of 7-segment display with common anode, the display is connected to an output port. Port bits can be
-    assigned to any display segment. Multiple instances of this simulator can be opened at once. You can set BCD decoder
-    to simulate commonly used FPGA logic.
-
-    \begin{description}
-        \item[BCDlowNibb] Low-order nibble is decoded and displayed.
-        \item[BCDhighNibb] High-order nibble is decoded and displayed.
-    \end{description}
-
-\subsection{Numeric base converter}
-    \begin{wrapfigure}{r}{0pt}
+        \begin{figure}[h]
             \centering
-            \includegraphics[width=90pt]{img/converter.png}
-            \caption{Converter}
-    \end{wrapfigure}
-    This tool is useful when you want to quickly convert some number to another radix.
+            \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
+            \caption{DATA file converter}
+        \end{figure}
+
+    \subsection{Assembler translator}
+        With this tool, you can translate your previously written assembler code in different syntax.
+        You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
+        errors.
+        \begin{description}
+            \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
+            \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of
+                three choices - Xilinx, Mediatronix and OpenPicIde.
+            \item[Symbol] Case of symbols - uppercase or lowercase
+            \item[End of line] Indentation - Choose between Tabs or Spaces
+            \item[Directive] Case of Directives - uppercase or lowercase
+            \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
+            \item[Instruction] Case of instructions - uppercase or lowercase
+            \item[Tab size]  Define number of inserted spaces when you press Tab.
+            \item[Short instructions] Here you can allow short instructions like LD, RETI or others
+        \end{description}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=.5\textwidth]{img/ASM_translator.png}
+            \caption{ASM translator}
+        \end{figure}
+
+    \subsection{Disassembler}
+        Disassembler is a tool that translates machine language into assembly language. The inverse
+        operation to that of an assembler.
+
+        \begin{description}
+            \item[Section File] Choose which file you want to disassemble.
+            \item[Section Target] Your processor architecture
+            \item[Family] Processor family of the selected architecture.
+            \item[Indentation] Choose between tabs and spaces.
+            \item[Tab size] Tab size measured in number of spaces.
+            \item[Radix] Binary, octal, decimal, or hexadecimal.
+            \item[Line break] CRLF (Windows), LF (Linux), or CR (Mac)
+            \item[Case] Use upper case or lower case characters.
+            \item[Generate symbols] Which symbols should be named.
+        \end{description}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=.5\textwidth]{img/disassembler_window.png}
+            \caption{Disassembler}
+        \end{figure}
+
+    \subsection{Delay loop generator}
+        In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
+        development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
+        enter desired time of delay or number of cycles and clock frequency.
+
+        \begin{description}
+            \item[Section Input variable] Choose between time or cycles
+            \item[Section Desired waiting time] Number of executed time or cycles
+            \item[Section Frequency] Clock frequency
+            \item[Section Register names] Set register names used in the generated code (optional).
+            \item[Section Generated code] The generated code.
+            \item[Instruction] Instruction used in loop.
+            \item[Type] Type of waiting loop you want to create (blank/macro).
+            \item[Upper Case and Comments]  Turn off automatically added comments, and use upper case.
+            \item[Button Copy to clipboard] This will copy the generated code to clipboard.
+            \item[Button Generate] Generate code.
+        \end{description}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=.6\textwidth]{img/loop_gen.png}
+            \caption{Delay loop generator dialog}
+        \end{figure}
+
+    \subsection{8-segment editor}
+        \begin{wrapfigure}{r}{0pt}
+            \centering
+            \includegraphics[width=110pt]{img/8segment.png}
+            \caption{8-segment editor}
+        \end{wrapfigure}
+        With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED
+        display. In the left part of the dialog window, you can find numerical values corresponding to the displayed digit
+        in the middle part. These values are represented for both common cathode and common anode and in three numerical
+        bases: hexadecimal, decimal, and octal. Buttons on left side from entry boxes copies value from the adjacent entry
+        box to clipboard. In the right part of the window you can set what port pin is connected to what LED segment, this
+        sets permutation of the resulting value(s).
+
+    \subsection{LED panel simulator}
+        \begin{wrapfigure}{r}{0pt}
+            \centering
+            \includegraphics[width=150pt]{img/Led_panel.png}
+            \caption{8-segment editor}
+        \end{wrapfigure}
+
+        Simple LED panel simulator. You can observe output port behavior with visual representation of eight LEDs. You can
+        set BCD and Gray decoder to simulate common FPGA logic.
+
+        \begin{description}
+            \item[GRAY] Converts output port value to gray code.
+            \item[BCD] Output port value will be presented as BCD. Remember that bigger number than 99 cannot be displayed.
+        \end{description}
+
+    \subsection{7-segment simulator}
+        \begin{wrapfigure}{r}{0pt}
+            \centering
+            \includegraphics[width=110pt]{img/7seg_sim.png}
+            \caption{7-segment simulator}
+        \end{wrapfigure}
+        Simulator of 7-segment display with common anode, the display is connected to an output port. Port bits can be
+        assigned to any display segment. Multiple instances of this simulator can be opened at once. You can set BCD decoder
+        to simulate commonly used FPGA logic.
+
+        \begin{description}
+            \item[BCDlowNibb] Low-order nibble is decoded and displayed.
+            \item[BCDhighNibb] High-order nibble is decoded and displayed.
+        \end{description}
+
+    \subsection{Numeric base converter}
+        \begin{wrapfigure}{r}{0pt}
+                \centering
+                \includegraphics[width=90pt]{img/converter.png}
+                \caption{Converter}
+        \end{wrapfigure}
+        This tool might be useful when you want to quickly convert some number to another radix.

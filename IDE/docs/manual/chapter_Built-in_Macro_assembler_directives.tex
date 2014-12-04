@@ -562,7 +562,8 @@
             \verb'    ENDF'
 
 \clearpage
-\section{Conditional Assembly directives}
+\section{Conditional Assembly Directives}
+    \index{Conditional Assembly}
     The aim of the conditional assembly to to assemble certain parts of the code if and only if certain arithmetically expressed condition is met. This feature can prove useful particularly when the user want to make the code somehow ``configurable''. Note that condition blocks may contain any other code including other conditions. This assembler provides these directives to cope with conditional assembly:
 
     \begin{description}
@@ -624,6 +625,7 @@
 
 \clearpage
 \section{Macro processing directives}
+    \index{Macro}
     Macro is a sequence of instructions which can be expanded anywhere in the code and for any number of times. That may reduce necessity of repeating code fragments as well as source code size and make the solved task easier to comprehend and solve. Unlike subprograms macros do not add extra run-time overhead, repeating usage of macros may significantly increase size of the resulting machine code. Note that macros may contain any other code including other macro expansions and/or definitions.
 
     Macros can have no parameters or any number of parameters, number of parameters is unlimited. All parameters are optional, parameters which has not been substituted with corresponding arguments are filled with blank values. Blank values have special meaning, cannot be used in arithmetical expressions or as operands but can be checked if they are blank or not using \texttt{\#IFB} and \texttt{\#IFNB} directives.
