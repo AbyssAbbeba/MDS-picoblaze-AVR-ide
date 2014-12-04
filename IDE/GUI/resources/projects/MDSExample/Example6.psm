@@ -108,7 +108,7 @@ wait        macro       register, cycles
 endm
 
             ; Wait 100 instruction cycles here.
-            wait        100
+            wait        S0, 100
 
 ; ======================================================================================================================
 ; A pretty complex example: macro with local symbol(s), and forced exit combined with conditions and loops.
