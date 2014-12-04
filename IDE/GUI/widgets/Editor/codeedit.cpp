@@ -31,19 +31,10 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     m_parentCodeEdit = parentCodeEdit;
     m_curCodeEdit = NULL;
     m_hidden = false;
-    //if (this->parentCodeEdit == NULL)
-    //{
-        //qDebug() << "parentCodeEdit is NULL";
-        m_breakpointsLines = new QList<int>();
-        m_bookmarksLines = new QList<int>();
-    //}
-    //else
-    //{
-        //?
-        //qDebug() << "parentCodeEdit is not NULL";
-        //this->breakpointsLines = NULL;
-        //this->breakpointsLines = new QList<unsigned int>();
-    //}
+
+    m_breakpointsLines = new QList<int>();
+    m_bookmarksLines = new QList<int>();
+
     if (wName == NULL || wPath == NULL || wPath == "untracked")
     {
         //qDebug() << "CodeEdit: untracked";
@@ -74,19 +65,19 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         if (index > 0)
         {
             QString text(wName.right(wName.size() - index));
-            if (text == ".h")
+            if (text.toLower() == ".h")
             {
                 m_textEdit = new WTextEdit(this, C);
             }
-            else if (text == ".cpp" || text == ".cxx" || text == ".cc")
+            else if (text.toLower() == ".cpp" || text.toLower() == ".cxx" || text.toLower() == ".cc")
             {
                 m_textEdit = new WTextEdit(this, CPP);
             }
-            else if (text == ".c")
+            else if (text.toLower() == ".c")
             {
                 m_textEdit = new WTextEdit(this, C);
             }
-            else if (text == ".asm" || text == ".psm")
+            else if (text.toLower() == ".asm" || text.toLower() == ".psm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
                 m_textEdit = new WTextEdit(this, PICOBLAZEASM);
@@ -192,21 +183,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             this,
             SLOT(manageBookmarkEmit(int))
            );
-    /*connect(textEdit,
-            SIGNAL(blockCountChanged(int)),
-            this,
-            SLOT(changeHeight())
-           );*/
-    /*connect(textEdit,
-            SIGNAL(textChangedSignal(const QString&, int)),
-            this,
-            SLOT(updateTextSlotOut(const QString&, int))
-           );*/
-    /*connect(textEdit,
-            SIGNAL(selectionRemovedSignal(int, int)),
-            this,
-            SLOT(selectionRemovedOut(int, int))
-           );*/
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
             this,
@@ -279,37 +255,28 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     m_parentCodeEdit = parentCodeEdit;
     m_curCodeEdit = NULL;
     m_hidden = false;
-    //if (this->parentCodeEdit == NULL)
-    //{
-        //qDebug() << "parentCodeEdit is NULL";
-        m_breakpointsLines = new QList<int>();
-        m_bookmarksLines = new QList<int>();
-    //}
-    //else
-    //{
-        //?
-        //qDebug() << "parentCodeEdit is not NULL";
-        //this->breakpointsLines = NULL;
-        //this->breakpointsLines = new QList<unsigned int>();
-    //}
+
+    m_breakpointsLines = new QList<int>();
+    m_bookmarksLines = new QList<int>();
+
     
     int index = wName.lastIndexOf(".");
     if (index > 0)
     {
         QString text(wName.right(wName.size() - index));
-        if (text == ".h")
+        if (text.toLower() == ".h")
         {
             m_textEdit = new WTextEdit(this, C);
         }
-        else if (text == ".cpp" || text == ".cxx" || text == ".cc")
+        else if (text.toLower() == ".cpp" || text.toLower() == ".cxx" || text.toLower() == ".cc")
         {
             m_textEdit = new WTextEdit(this, CPP);
         }
-        else if (text == ".c")
+        else if (text.toLower() == ".c")
         {
             m_textEdit = new WTextEdit(this, C);
         }
-        else if (text == ".asm" || text == ".psm")
+        else if (text.toLower() == ".asm" || text.toLower() == ".psm")
         {
             //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
             m_textEdit = new WTextEdit(this, PICOBLAZEASM);
@@ -400,21 +367,6 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
             this,
             SLOT(updateLineCounter())
            );
-    /*connect(textEdit,
-            SIGNAL(blockCountChanged(int)),
-            this,
-            SLOT(changeHeight())
-           );*/
-    /*connect(textEdit,
-            SIGNAL(textChangedSignal(const QString&, int)),
-            this,
-            SLOT(updateTextSlotOut(const QString&, int))
-           );
-    connect(textEdit,
-            SIGNAL(selectionRemovedSignal(int, int)),
-            this,
-            SLOT(selectionRemovedOut(int, int))
-           );*/
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
             this,
@@ -514,50 +466,24 @@ void CodeEdit::textEditChanged(bool modified)
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    //qDebug() << "CodeEdit: setChanged()";
     if (m_changed == false)
     {
         m_changed = true;
-        //if (tabs == true)
-        //{
-            //QString newName("*" + name);
-            //qDebug() << "codeedit: emit changed tab status: changed";
             emit changedTabStatus(m_name, m_path, true);
-            //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
-        //}
-        //else
-        //{
-        //    emit changedTabStatus(this->name, this->path, true);
-        //}
+
     }
-    //qDebug() << "CodeEdit: return setChanged()";
 }
 
 
 void CodeEdit::setSaved()
 {
-    //qDebug() << "CodeEdit: setSaved()";
     if (m_changed == true)
     {
         m_changed = false;
-        //if (tabs == true)
-        //{
-            //qDebug() << "codeedit: emit changed tab status: saved";
-            emit changedTabStatus(m_name, m_path, false);
-            m_textEdit->document()->setModified(false);
-            //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
-        //}
-        //else
-        //{
-            //qDebug() << "codeedit: emit changed tab status: saved without tabs";
-        //    emit changedTabStatus(this->name, this->path, false);
-        //}
+        emit changedTabStatus(m_name, m_path, false);
+        m_textEdit->document()->setModified(false);
     }
-    /*else
-    {
-        qDebug() << "codeedit: not changed";
-    }*/
-    //qDebug() << "CodeEdit: return setSaved()";
+
 }
 
 
@@ -634,127 +560,8 @@ void CodeEdit::splitVertical()
 }
 
 
-/*void CodeEdit::selectionRemovedOut(int posStart, int posEnd)
-{
-    emit updateRemoveSelection(posStart, posEnd, this);
-    emit updateAnalysers(this);
-    if (prevBlockCount != this->textEdit->document()->blockCount())
-    {
-        this->changeHeight();
-        prevBlockCount = this->textEdit->document()->blockCount();
-    }
-}
-
-
-void CodeEdit::selectionRemovedIn(int posStart, int posEnd, CodeEdit *editor)
-{
-    if ( this != editor )
-    {
-        QTextCursor textCursor = this->textEdit->textCursor();
-        int prevPos = textCursor.position();
-        textCursor.setPosition(posStart);
-        textCursor.setPosition(posEnd, QTextCursor::KeepAnchor);
-        textCursor.removeSelectedText();
-
-        textCursor.setPosition(prevPos);
-        if ( NULL == parentCodeEdit )
-        {
-            //qDebug() << "CodeEdit: updateTextSlotIn parent";
-            emit updateRemoveSelection(posStart, posEnd, editor);
-        }
-        else if ( this->textEdit->document()->blockCount() != prevBlockCount )
-        {
-            this->changeHeight();
-            prevBlockCount = this->textEdit->document()->blockCount();
-        }
-        prevBlockCount = this->textEdit->document()->blockCount();
-    }
-}
-
-
-void CodeEdit::updateTextSlotOut(const QString& text, int pos)
-{
-    qDebug() << "CodeEdit: updateTextSlotOut()";
-    emit updateText(text, pos, this);
-    emit updateAnalysers(this);
-    if (prevBlockCount != this->textEdit->document()->blockCount())
-    {
-        this->changeHeight();
-        prevBlockCount = this->textEdit->document()->blockCount();
-    }
-    qDebug() << "CodeEdit: return updateTextSlotOut()";
-}
-
-void CodeEdit::updateTextSlotIn(const QString& textIn, int pos, CodeEdit *editor)
-{
-    qDebug() << "CodeEdit: updateTextSlotIn()";
-    //qDebug() << "Code Edit: update";
-    if ( this != editor )
-    {
-        QTextCursor textCursor = this->textEdit->textCursor();
-        int prevPos = textCursor.position();
-        textCursor.setPosition(pos);
-        if (textIn.length() == 1)
-        {
-            //printable 32 - 126 ASCII or space or tab
-            if ( textIn[0].isPrint() || textIn[0].isSpace() )
-            {
-                textCursor.insertText(textIn);
-            }
-            //backspace
-            else if ( textIn[0].toAscii() == 8 )
-            {
-                textCursor.deletePreviousChar();
-            }
-            //delete
-            else if ( textIn[0].toAscii() == 127 )
-            {
-                textCursor.deleteChar();
-            }
-        }
-        else
-        {
-            textCursor.insertText(textIn);
-        }
-        textCursor.setPosition(prevPos);
-        if ( NULL == parentCodeEdit )
-        {
-            //qDebug() << "CodeEdit: updateTextSlotIn parent";
-            emit updateText(textIn, pos, editor);
-        }
-        else if ( this->textEdit->document()->blockCount() != prevBlockCount )
-        {
-            this->changeHeight();
-            prevBlockCount = this->textEdit->document()->blockCount();
-        }
-        prevBlockCount = this->textEdit->document()->blockCount();
-    }
-    qDebug() << "CodeEdit: return updateTextSlotIn()";
-}*/
-
-
 void CodeEdit::loadCodeEdit(CodeEdit* editor)
 {
-    //qDebug() << "CodeEdit: loadCodeEditor()";
-    //disconnect(textEdit, SIGNAL(textChanged()), 0, 0);
-    //disconnect(this, SIGNAL(updateText(const QString&, int, CodeEdit*)), 0, 0);
-    //disconnect(this, SIGNAL(updateRemoveSelection(int, int, CodeEdit*)), 0, 0);
-    //disconnect(this, SIGNAL(), 0, 0);
-    //disconnect(this, SIGNAL(bookmarkListAdd(QString,int)), 0, 0);
-    //disconnect(this, SIGNAL(bookmarkListRemove(QString,int)), 0, 0);
-    //disconnect(this, SIGNAL(breakpointListAdd(QString,int)), 0, 0);
-    //disconnect(this, SIGNAL(breakpointListRemove(QString,int)), 0, 0);
-    //this->breakpointList.clear();
-    //this->bookmarkList.clear();
-    /*if (editor->getTextEdit()->toPlainText().isEmpty() == false)
-    {
-        this->textEdit->setPlainText(editor->getTextEdit()->toPlainText());
-    }
-    else
-    {
-        this->textEdit->setPlainText(" ");
-    }*/
-    //qDebug() << "is changed?" << editor->isChanged();
     if (m_curCodeEdit != NULL)
     {
         if (true == m_changed)
@@ -774,8 +581,6 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     this->setPath(editor->getPath());
     m_textEdit->deleteHighlighter();
     m_textEdit->setDocument(editor->getTextEdit()->document());
-    //this->show();
-    //this->update();
     m_breakpointsLines = editor->getBreakpointsLines();
     m_bookmarksLines = editor->getBookmarksLines();
     if (m_breakpointsLines == NULL)
@@ -788,40 +593,6 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     }
     m_lineCount->getWidget()->setBreakpointList(m_breakpointsLines);
     m_lineCount->getWidget()->setBookmarkList(m_bookmarksLines);
-    /*if (name != NULL)
-    {
-        int index = this->name.lastIndexOf(".");
-        if (index > 0)
-        {
-            QString text(this->name.right(this->name.size() - index));
-            if (text == ".h")
-            {
-                this->textEdit->reloadHighlighter(C);
-            }
-            else if (text == ".cpp" || text == ".cxx" || text == ".cc")
-            {
-                this->textEdit->reloadHighlighter(CPP);
-            }
-            else if (text == ".c")
-            {
-                this->textEdit->reloadHighlighter(C);
-            }
-            else if (text == ".asm")
-            {
-                //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-                //qDebug() << "CodeEdit: asm";
-                this->textEdit->reloadHighlighter(PICOBLAZEASM);
-            }
-            else
-            {
-                this->textEdit->reloadHighlighter(PLAIN);
-            }
-        }
-        else
-        {
-                this->textEdit->reloadHighlighter(PLAIN);
-        }
-    }*/
     emit CodeEditChanged(editor);
     changeHeight();
     m_changed = prevChanged;
@@ -835,17 +606,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         m_textEdit->setTextCursor(m_curCodeEdit->getCursorValue());
     }
     m_textEdit->verticalScrollBar()->setValue(m_curCodeEdit->getScrollValue());
-    /*if (true == editor->isChanged())
-    {
-        //qDebug() << "CodeEdit: loadcodeedit is changed";
-        this->changed = true;
-    }
-    else
-    {
-        //qDebug() << "CodeEdit: loadcodeedit is saved";
-        this->changed = false;
-    }*/
-    //qDebug() << "CodeEdit: return loadCodeEditor()";
+
 }
 
 
@@ -858,55 +619,21 @@ QWidget* CodeEdit::getParent()
 
 void CodeEdit::getFocus()
 {
-    //qDebug() << "CodeEdit: getFocus()";
     if (m_parentWidget != NULL)
     {
         ((BaseEditor*)m_parentWidget)->focusIn();
     }
-    //qDebug() << "CodeEdit: return getFocus()";
 }
 
 void CodeEdit::manageBreakpointEmit(int line)
 {
-    //qDebug() << "CodeEdit: manageBreakpointEmit()";
-    /*bool prevChanged = this->changed;
-    if (prevChanged == true)
-    {
-        qDebug() << "CodeEdit: already changed";
-    }
-    if (false == textEdit->isLineHighlighted(line, breakpointColor))
-    {
-        textEdit->highlightLine(line, breakpointColor);
-        emit breakpointEmit(this->path, line);
-    }
-    else
-    {
-        textEdit->highlightLine(line, NULL);
-    }
-    if (false == prevChanged)
-    {
-        this->setSaved();
-    }*/
     emit breakpointEmit(m_path, line);
-    //qDebug() << "CodeEdit: return manageBreakpointEmit()";
 }
 
 void CodeEdit::manageBookmarkEmit(int line)
 {
-    //qDebug() << "CodeEdit: manageBookmarkEmit()";
     emit bookmarkEmit(m_path, line);
-    //qDebug() << "CodeEdit: return manageBookmarkEmit()";
 }
-
-/*QList<int> CodeEdit::getBreakpointList()
-{
-    return breakpointList;
-}*/
-
-/*QList<int> CodeEdit::getBookmarkList()
-{
-    return bookmarkList;
-}*/
 
 
 CodeEdit* CodeEdit::getParentCodeEdit()
@@ -924,18 +651,13 @@ CodeEdit* CodeEdit::getParentCodeEdit()
 
 void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
 {
-    //qDebug() << "CodeEdit: setParentCodeEdit()";
     m_parentCodeEdit = parentCodeEdit;
-    //qDebug() << "CodeEdit: return setParentCodeEdit()";
 }
 
 
 void CodeEdit::changeHeight()
 {
-    //qDebug() << "CodeEdit: changeHeight()";
     m_lineCount->getWidget()->changeHeight();
-    //this->lineCount->getWidget()->update();
-    //qDebug() << "CodeEdit: return changeHeight()";
 }
 
 

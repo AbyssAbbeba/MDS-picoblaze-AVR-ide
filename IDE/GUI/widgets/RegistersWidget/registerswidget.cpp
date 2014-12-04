@@ -569,5 +569,16 @@ void RegistersWidget::updateWidget()
 
 void RegistersWidget::unhighlightCell(int row, int column)
 {
-    this->item(row, column)->setBackground(this->palette().base().color());
+    if (column < 4)
+    {
+        this->item(row, 1)->setBackground(this->palette().base().color());
+        this->item(row, 2)->setBackground(this->palette().base().color());
+        this->item(row, 3)->setBackground(this->palette().base().color());
+    }
+    else
+    {
+        this->item(row, 5)->setBackground(this->palette().base().color());
+        this->item(row, 6)->setBackground(this->palette().base().color());
+        this->item(row, 7)->setBackground(this->palette().base().color());
+    }
 }

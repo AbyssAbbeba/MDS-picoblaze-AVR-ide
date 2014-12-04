@@ -117,6 +117,8 @@ class CodeEdit : public QWidget
         //void breakpointListRemove(QString file, int line);
         void updateAnalysers(CodeEdit *editor);
         void updateRemoveSelection(int posStart, int posEnd, CodeEdit *editor);
+//         void changeTab(bool next);
+//         void closeTab();
 
     private slots:
         void updateStatusBar();
@@ -130,6 +132,8 @@ class CodeEdit : public QWidget
         void find(QString query, bool next, bool caseSensitive);
         void jumpToLine(int line);
         void findAndReplace(QString find, QString replace, bool all, bool caseSensitive);
+//         void changeTabSlot();
+//         void closeTabSlot();
 
     private:
         QString m_name;

@@ -122,10 +122,11 @@ class WDockManager : public QObject
         //void handleShowHideLeft(int index);
         void handleShowHideRight(int index);
         void compilationFinishedSlot(bool success);
+        void changeTab(bool next);
+        void closeCurrentTab();
         
 
     private slots:
-        void closeTab(int index);
         void changeTabStatusSlot(QString name, QString path, bool changed);
         void changeCodeEditor(int index);
         void changeActiveCodeEdit(CodeEdit* editor);
@@ -145,6 +146,7 @@ class WDockManager : public QObject
         void welcomeScrManual();
         void welcomeScrGuide();
         void welcomeScrRecent(QString path);
+        void closeTab(int index);
         //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);
