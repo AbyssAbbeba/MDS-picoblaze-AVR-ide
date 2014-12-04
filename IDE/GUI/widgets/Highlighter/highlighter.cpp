@@ -351,7 +351,8 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
                         << "(\\.)?mergespr"
                         << "(\\.)?macro"
                         << "(\\.)?end"
-                        << "(\\.)?include";
+                        << "(\\.)?include"
+                        << "(\\.)?string";
                         
         QStringList keywordPatternsFinal;
         foreach (const QString &pattern, keywordPatterns)

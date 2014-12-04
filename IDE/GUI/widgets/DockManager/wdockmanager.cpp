@@ -855,19 +855,25 @@ void WDockManager::showDockWidgetArea(int area)
             {
                 case 1:
                 {
-                    (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
-                    (*i)->getQDockWidget()->setMaximumWidth(999);
-                    (*i)->getQDockWidget()->setMinimumWidth(1);
-                    wDockRightPrevWidth = 0;
+                    if ("Hide" != rightAreaTabs->tabText(rightAreaTabs->currentIndex()))
+                    {
+                        (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
+                        (*i)->getQDockWidget()->setMaximumWidth(999);
+                        (*i)->getQDockWidget()->setMinimumWidth(1);
+                        wDockRightPrevWidth = 0;
+                    }
                     break;
                 }
                 case 2:
                 {
-                    (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
-                    (*i)->getQDockWidget()->setMaximumHeight(999);
-                    (*i)->getQDockWidget()->setMinimumHeight(280);
-                    //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
-                    wDockBotPrevHeight = 0;
+                    if ("Hide" != bottomAreaTabs->tabText(bottomAreaTabs->currentIndex()))
+                    {
+                        (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
+                        (*i)->getQDockWidget()->setMaximumHeight(999);
+                        (*i)->getQDockWidget()->setMinimumHeight(280);
+                        //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
+                        wDockBotPrevHeight = 0;
+                    }
                     break;
                 }
             }
@@ -1051,6 +1057,10 @@ void WDockManager::highlightError(QString filename, int line)
 void WDockManager::handleShowHideBottom(int index)
 {
     //qDebug() << "WDockManager: bottom changed to" << bottomAreaTabs->tabText(index);
+    if (NULL == activeCodeEdit)
+    {
+        return;
+    }
     if ("Hide" == bottomAreaTabs->tabText(index))
     {
         if (true == bottomVisible)
@@ -1091,6 +1101,10 @@ void WDockManager::handleShowHideBottom(int index)
 void WDockManager::handleShowHideRight(int index)
 {
     //qDebug() << "WDockManager: right changed to" << rightAreaTabs->tabText(index);
+    if (NULL == activeCodeEdit)
+    {
+        return;
+    }
     if ("Hide" == rightAreaTabs->tabText(index))
     {
         if (true == rightVisible)
@@ -1354,7 +1368,7 @@ void WDockManager::setBottomAreaToCompilerInfo()
     }
     for (int i = 0; i < bottomAreaTabs->count(); i++)
     {
-        if ("Compiler Info" == bottomAreaTabs->tabText(i))
+        if ("Compiler Messages" == bottomAreaTabs->tabText(i))
         {
             bottomAreaTabs->setCurrentIndex(i);
             break;
@@ -1371,7 +1385,7 @@ void WDockManager::setBottomAreaToSimulationInfo()
     }
     for (int i = 0; i < bottomAreaTabs->count(); i++)
     {
-        if ("Simulation Info" == bottomAreaTabs->tabText(i))
+        if ("Simulator" == bottomAreaTabs->tabText(i))
         {
             bottomAreaTabs->setCurrentIndex(i);
             break;
@@ -1417,7 +1431,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         }
         case wCompileInfo:
         {
-            wDockWidget = new QDockWidget("Compiler Info", parentWindow);
+            wDockWidget = new QDockWidget("Compiler Messages", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
@@ -1523,7 +1537,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
     {
         case wSimulationInfo:
         {
-            wDockWidget = new QDockWidget("Simulation Info", parentWindow);
+            wDockWidget = new QDockWidget("Simulator", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);

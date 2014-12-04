@@ -213,6 +213,18 @@ void error(int errCode)
             msgBox.setText("Can not compile during active simulation.");
             break;
         }
+        case ERR_END_OF_DOCUMENT:
+        {
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText("End of document reached.");
+            break;
+        }
+        case ERR_START_OF_DOCUMENT:
+        {
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText("Beginning of document reached.");
+            break;
+        }
         default:
         {
             msgBox.setIcon(QMessageBox::Critical);

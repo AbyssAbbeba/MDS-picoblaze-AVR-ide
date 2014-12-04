@@ -13,29 +13,29 @@
 
 
 #include <QtGui>
+#include "../EditorWidgets/JumpToLine/jumptoline.h"
+#include "../EditorWidgets/Find/find.h"
+#include "../EditorWidgets/FindAndReplace/findandreplace.h"
 #include "codeedit.h"
 #include "../DockManager/wdockmanager.h"
 #include "baseeditor.h"
 #include "../../guicfg/guicfg.h"
 #include "../Counters/wlinecounter.h"
 #include "wtextedit.h"
-#include "../EditorWidgets/JumpToLine/jumptoline.h"
-#include "../EditorWidgets/Find/find.h"
-#include "../EditorWidgets/FindAndReplace/findandreplace.h"
 
 
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()";
-    this->parentCodeEdit = parentCodeEdit;
-    this->curCodeEdit = NULL;
-    this->hidden = false;
+    qDebug() << "CodeEdit: CodeEdit()";
+    m_parentCodeEdit = parentCodeEdit;
+    m_curCodeEdit = NULL;
+    m_hidden = false;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
-        this->breakpointsLines = new QList<int>();
-        this->bookmarksLines = new QList<int>();
+        m_breakpointsLines = new QList<int>();
+        m_bookmarksLines = new QList<int>();
     //}
     //else
     //{
@@ -51,22 +51,22 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         {
             if (wName == "ASM Translator" || wName == "ASM Translator error")
             {
-                textEdit = new WTextEdit(this, PICOBLAZEASM);
+                m_textEdit = new WTextEdit(this, PICOBLAZEASM);
             }
             else if (wName == "disasm")
             {
-                textEdit = new WTextEdit(this, PICOBLAZEASM);
+                m_textEdit = new WTextEdit(this, PICOBLAZEASM);
             }
             else
             {
-                textEdit = new WTextEdit(this, PLAIN);
+                m_textEdit = new WTextEdit(this, PLAIN);
             }
         }
         else
         {
-            textEdit = new WTextEdit(this, PLAIN);
+            m_textEdit = new WTextEdit(this, PLAIN);
         }
-        this->textEdit->setPlainText(" ");
+        m_textEdit->setPlainText(" ");
     }
     else
     {
@@ -76,53 +76,57 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             QString text(wName.right(wName.size() - index));
             if (text == ".h")
             {
-                textEdit = new WTextEdit(this, C);
+                m_textEdit = new WTextEdit(this, C);
             }
             else if (text == ".cpp" || text == ".cxx" || text == ".cc")
             {
-                textEdit = new WTextEdit(this, CPP);
+                m_textEdit = new WTextEdit(this, CPP);
             }
             else if (text == ".c")
             {
-                textEdit = new WTextEdit(this, C);
+                m_textEdit = new WTextEdit(this, C);
             }
             else if (text == ".asm" || text == ".psm")
             {
                 //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-                textEdit = new WTextEdit(this, PICOBLAZEASM);
+                m_textEdit = new WTextEdit(this, PICOBLAZEASM);
             }
             else
             {
-                textEdit = new WTextEdit(this, PLAIN);
+                m_textEdit = new WTextEdit(this, PLAIN);
             }
         }
         else
         {
-            textEdit = new WTextEdit(this, PLAIN);
+            m_textEdit = new WTextEdit(this, PLAIN);
         }
     }
     //textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(GuiCfg::getInstance().getEditorFont());
-    QFontMetrics fontMetrics(textEdit->font());
-    textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
-    textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
-    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
-    layout = new QGridLayout(this);
-    layout->addWidget(lineCount, 0, 0);
-    layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 1, 1, 2, 1);
-    setLayout(layout);
-    name = wName;
-    path = wPath;
-    parentWidget = parent;
-    this->tabs = tabs;
-    parentProject = NULL;
-    breakpointColor = new QColor(0,255,0);
+    m_textEdit->setFont(GuiCfg::getInstance().getEditorFont());
+    QFontMetrics fontMetrics(m_textEdit->font());
+    m_textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
+    m_textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
+    m_textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
+    m_lineCount = new WLineCounter(m_textEdit, true, false, 0, m_textEdit->font());
+    m_statusBar = new QStatusBar(this);
+    m_layout = new QGridLayout(this);
+    m_layout->addWidget(m_lineCount, 0, 0);
+    m_layout->addWidget(m_textEdit, 0, 1);
+    m_layout->addWidget(m_statusBar, 1, 1);
+    setLayout(m_layout);
+    m_name = wName;
+    m_path = wPath;
+    m_parentWidget = parent;
+    m_tabs = tabs;
+    m_parentProject = NULL;
+    m_breakpointColor = new QColor(0,255,0);
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
-    textEdit->setWordWrapMode(QTextOption::WordWrap);
-    textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+    m_textEdit->setWordWrapMode(QTextOption::WordWrap);
+    m_textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+
+    m_findDialog = NULL;
+    m_findAndReplaceDialog = NULL;
+    m_jumpToLineDialog = NULL;
     //this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->textEdit->setFocusPolicy(Qt::NoFocus);
@@ -130,60 +134,60 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     if (wPath != NULL && wPath != "untracked")
     {
         //qDebug() << "CodeEdit: Not untracked";
-        QFile file(path);
+        QFile file(m_path);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            this->textEdit->setPlainText(file.readAll());
+            m_textEdit->setPlainText(file.readAll());
             file.close();
         }
     }
-    changed = false;
-    connect(textEdit,
+    m_changed = false;
+    connect(m_textEdit,
             SIGNAL(focusIn()),
             this,
             SLOT(getFocus())
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpoint(int)),
             this,
             SLOT(manageBreakpointEmit(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpointsAddLines(int, int)),
             this,
             SLOT(breakpointsAddLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpointsRemoveLines(int, int)),
             this,
             SLOT(breakpointsRemoveLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmark(int)),
             this,
             SLOT(manageBookmarkEmit(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmarksAddLines(int, int)),
             this,
             SLOT(bookmarksAddLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmarksRemoveLines(int, int)),
             this,
             SLOT(bookmarksRemoveLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(updateLineCounter()),
             this,
             SLOT(updateLineCounter())
            );
-    connect(lineCount,
+    connect(m_lineCount,
             SIGNAL(breakpoint(int)),
             this,
             SLOT(manageBreakpointEmit(int))
            );
-    connect(lineCount,
+    connect(m_lineCount,
             SIGNAL(bookmark(int)),
             this,
             SLOT(manageBookmarkEmit(int))
@@ -210,7 +214,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
-            this->lineCount,
+            m_lineCount,
             SLOT(changeFont(QFont))
            );
     connect(&GuiCfg::getInstance(),
@@ -220,29 +224,49 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(tabToSpacesChanged(bool)),
-            this->textEdit,
+            m_textEdit,
             SLOT(setTabToSpaces(bool))
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(spacesInTabChanged(int)),
-            this->textEdit,
+            m_textEdit,
             SLOT(setSpacesInTab(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(updateStatusBar()),
             this,
             SLOT(updateStatusBar())
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(editorReadOnly(bool)),
             this,
             SLOT(textEditReadOnly(bool))
            );
+    connect(m_textEdit,
+            SIGNAL(requestScrollToBookmark(int, bool)),
+            this,
+            SLOT(requestScrollToBookmark(int, bool))
+           );
+    connect(m_textEdit,
+            SIGNAL(findDialog(QString)),
+            this,
+            SLOT(findDialog(QString))
+           );
+    connect(m_textEdit,
+            SIGNAL(findAndReplaceDialog(QString)),
+            this,
+            SLOT(findAndReplaceDialog(QString))
+           );
+    connect(m_textEdit,
+            SIGNAL(jumpToLineDialog(int, int)),
+            this,
+            SLOT(jumpToLineDialog(int, int))
+           );
     //this->connectAct();
-    prevBlockCount = this->textEdit->document()->blockCount();
+    m_prevBlockCount = m_textEdit->document()->blockCount();
     //this->show();
-    this->changeHeight();
-    textEdit->setShortcuts();
+    changeHeight();
+    m_textEdit->setShortcuts();
     //qDebug() << "CodeEdit: return CodeEdit()";
 }
 
@@ -251,15 +275,15 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    //qDebug() << "CodeEdit: CodeEdit()2";
-    this->parentCodeEdit = parentCodeEdit;
-    this->curCodeEdit = NULL;
-    this->hidden = false;
+    qDebug() << "CodeEdit: CodeEdit()2";
+    m_parentCodeEdit = parentCodeEdit;
+    m_curCodeEdit = NULL;
+    m_hidden = false;
     //if (this->parentCodeEdit == NULL)
     //{
         //qDebug() << "parentCodeEdit is NULL";
-        this->breakpointsLines = new QList<int>();
-        this->bookmarksLines = new QList<int>();
+        m_breakpointsLines = new QList<int>();
+        m_bookmarksLines = new QList<int>();
     //}
     //else
     //{
@@ -275,99 +299,103 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         QString text(wName.right(wName.size() - index));
         if (text == ".h")
         {
-            textEdit = new WTextEdit(this, C);
+            m_textEdit = new WTextEdit(this, C);
         }
         else if (text == ".cpp" || text == ".cxx" || text == ".cc")
         {
-            textEdit = new WTextEdit(this, CPP);
+            m_textEdit = new WTextEdit(this, CPP);
         }
         else if (text == ".c")
         {
-            textEdit = new WTextEdit(this, C);
+            m_textEdit = new WTextEdit(this, C);
         }
         else if (text == ".asm" || text == ".psm")
         {
             //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
-            textEdit = new WTextEdit(this, PICOBLAZEASM);
+            m_textEdit = new WTextEdit(this, PICOBLAZEASM);
         }
         else
         {
-            textEdit = new WTextEdit(this, PLAIN);
+            m_textEdit = new WTextEdit(this, PLAIN);
         }
     }
     else
     {
-        textEdit = new WTextEdit(this, PLAIN);
+        m_textEdit = new WTextEdit(this, PLAIN);
     }
     //textEdit->setContextMenuPolicy(Qt::NoContextMenu);
-    textEdit->setFont(GuiCfg::getInstance().getEditorFont());
-    QFontMetrics fontMetrics(textEdit->font());
-    textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
-    textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
-    textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
-    lineCount = new WLineCounter(textEdit, true, false, 0, textEdit->font());
-    statusBar = new QStatusBar(this);
-    layout = new QGridLayout(this);
-    layout->addWidget(lineCount, 0, 0);
-    layout->addWidget(textEdit, 0, 1);
-    layout->addWidget(statusBar, 1, 0, 2, 1);
-    name = wName;
-    path = wPath;
-    parentWidget = parent;
-    this->tabs = tabs;
-    parentProject = parentPrj;
-    breakpointColor = new QColor(0,255,0);
-    textEdit->setWordWrapMode(QTextOption::WordWrap);
-    textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+    m_textEdit->setFont(GuiCfg::getInstance().getEditorFont());
+    QFontMetrics fontMetrics(m_textEdit->font());
+    m_textEdit->setTabStopWidth(GuiCfg::getInstance().getTabWidth() * fontMetrics.width(' '));
+    m_textEdit->setTabToSpaces(GuiCfg::getInstance().getTabToSpaces());
+    m_textEdit->setSpacesInTab(GuiCfg::getInstance().getSpacesInTab());
+    m_lineCount = new WLineCounter(m_textEdit, true, false, 0, m_textEdit->font());
+    m_statusBar = new QStatusBar(this);
+    m_layout = new QGridLayout(this);
+    m_layout->addWidget(m_lineCount, 0, 0);
+    m_layout->addWidget(m_textEdit, 0, 1);
+    m_layout->addWidget(m_statusBar, 1, 1);
+    m_name = wName;
+    m_path = wPath;
+    m_parentWidget = parent;
+    m_tabs = tabs;
+    m_parentProject = parentPrj;
+    m_breakpointColor = new QColor(0,255,0);
+    m_textEdit->setWordWrapMode(QTextOption::WordWrap);
+    m_textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
+
+    m_findDialog = NULL;
+    m_findAndReplaceDialog = NULL;
+    m_jumpToLineDialog = NULL;
     //this->makeMenu();
     //this->setFocusPolicy(Qt::StrongFocus);
     //this->installEventFilter(this);
     if (wPath != NULL)
     {
-        QFile file(path);
+        QFile file(m_path);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            this->textEdit->setPlainText(file.readAll());
+            m_textEdit->setPlainText(file.readAll());
             file.close();
         }
     }
-    changed = false;
-    connect(textEdit,
+    m_changed = false;
+    connect(m_textEdit,
             SIGNAL(focusIn()),
             this,
             SLOT(getFocus())
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpoint(int)),
             this,
             SLOT(manageBreakpointEmit(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpointsAddLines(int, int)),
             this,
             SLOT(breakpointsAddLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(breakpointsRemoveLines(int, int)),
             this,
             SLOT(breakpointsRemoveLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmark(int)),
             this,
             SLOT(manageBookmarkEmit(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmarksAddLines(int, int)),
             this,
             SLOT(bookmarksAddLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(bookmarksRemoveLines(int, int)),
             this,
             SLOT(bookmarksRemoveLines(int, int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(updateLineCounter()),
             this,
             SLOT(updateLineCounter())
@@ -394,7 +422,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(editorFontChanged(QFont)),
-            this->lineCount,
+            m_lineCount,
             SLOT(changeFont(QFont))
            );
     connect(&GuiCfg::getInstance(),
@@ -404,38 +432,58 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(tabToSpacesChanged(bool)),
-            this->textEdit,
+            m_textEdit,
             SLOT(setTabToSpaces(bool))
            );
     connect(&GuiCfg::getInstance(),
             SIGNAL(spacesInTabChanged(int)),
-            this->textEdit,
+            m_textEdit,
             SLOT(setSpacesInTab(int))
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(updateStatusBar()),
             this,
             SLOT(updateStatusBar())
            );
-    connect(textEdit,
+    connect(m_textEdit,
             SIGNAL(editorReadOnly(bool)),
             this,
             SLOT(textEditReadOnly(bool))
            );
+    connect(m_textEdit,
+            SIGNAL(requestScrollToBookmark(int, bool)),
+            this,
+            SLOT(requestScrollToBookmark(int, bool))
+           );
+    connect(m_textEdit,
+            SIGNAL(findDialog(QString)),
+            this,
+            SLOT(findDialog(QString))
+           );
+    connect(m_textEdit,
+            SIGNAL(findAndReplaceDialog(QString)),
+            this,
+            SLOT(findAndReplaceDialog(QString))
+           );
+    connect(m_textEdit,
+            SIGNAL(jumpToLineDialog(int, int)),
+            this,
+            SLOT(jumpToLineDialog(int, int))
+           );
     //this->connectAct();
-    prevBlockCount = this->textEdit->document()->blockCount();
+    m_prevBlockCount = m_textEdit->document()->blockCount();
     this->changeHeight();
-    textEdit->setShortcuts();
+    m_textEdit->setShortcuts();
     //qDebug() << "CodeEdit: return CodeEdit()2";
 }
 
 
 CodeEdit::~CodeEdit()
 {
-    if (parentCodeEdit == NULL)
+    if (m_parentCodeEdit == NULL)
     {
-        delete this->breakpointsLines;
-        delete this->bookmarksLines;
+        delete m_breakpointsLines;
+        delete m_bookmarksLines;
     }
 }
 
@@ -445,7 +493,7 @@ CodeEdit::~CodeEdit()
 void CodeEdit::connectAct()
 {
     //qDebug() << "CodeEdit: connectAct()";
-    connect(textEdit, SIGNAL(modificationChanged(bool)), this, SLOT(textEditChanged(bool)));
+    connect(m_textEdit, SIGNAL(modificationChanged(bool)), this, SLOT(textEditChanged(bool)));
     //qDebug() << "CodeEdit: return connectAct()";
 }
 
@@ -467,14 +515,14 @@ void CodeEdit::textEditChanged(bool modified)
 void CodeEdit::setChanged()
 {
     //qDebug() << "CodeEdit: setChanged()";
-    if (changed == false)
+    if (m_changed == false)
     {
-        changed = true;
+        m_changed = true;
         //if (tabs == true)
         //{
             //QString newName("*" + name);
             //qDebug() << "codeedit: emit changed tab status: changed";
-            emit changedTabStatus(this->name, this->path, true);
+            emit changedTabStatus(m_name, m_path, true);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), "*" + name);
         //}
         //else
@@ -489,14 +537,14 @@ void CodeEdit::setChanged()
 void CodeEdit::setSaved()
 {
     //qDebug() << "CodeEdit: setSaved()";
-    if (changed == true)
+    if (m_changed == true)
     {
-        changed = false;
+        m_changed = false;
         //if (tabs == true)
         //{
             //qDebug() << "codeedit: emit changed tab status: saved";
-            emit changedTabStatus(this->name, this->path, false);
-            textEdit->document()->setModified(false);
+            emit changedTabStatus(m_name, m_path, false);
+            m_textEdit->document()->setModified(false);
             //((QTabWidget*)parentWidget)->setTabText(((QTabWidget*)parentWidget)->indexOf(this), name);
         //}
         //else
@@ -517,38 +565,38 @@ bool CodeEdit::isChanged()
 {
     //qDebug() << "CodeEdit: isChanged()";
     //qDebug() << "CodeEdit: return isChanged()";
-    return (changed == true);
+    return (m_changed == true);
 }
 
 void CodeEdit::setName(QString wName)
 {
     //qDebug() << "CodeEdit: setName()";
-    name = wName;
+    m_name = wName;
     //qDebug() << "CodeEdit: return setName()";
 }
 
 void CodeEdit::setPath(QString wPath)
 {
     //qDebug() << "CodeEdit: setPath()";
-    path = wPath;
+    m_path = wPath;
     //qDebug() << "CodeEdit: return setPath()";
 }
 
 
 QString CodeEdit::getName()
 {
-    return name;
+    return m_name;
 }
 
 QString CodeEdit::getPath()
 {
-    return path;
+    return m_path;
 }
 
 
 bool CodeEdit::isChild(Project* project)
 {
-    return (project == parentProject);
+    return (project == m_parentProject);
 }
 
 
@@ -556,7 +604,7 @@ bool CodeEdit::isChild(Project* project)
 void CodeEdit::setParentProject(Project* project)
 {
     //qDebug() << "CodeEdit: setParentProject()";
-    this->parentProject = project;
+    m_parentProject = project;
     //TODO: refresh breakpointLines and bookmarkLines
     //qDebug() << "CodeEdit: return setParentProject()";
 }
@@ -565,7 +613,7 @@ void CodeEdit::setParentProject(Project* project)
 
 WTextEdit* CodeEdit::getTextEdit()
 {
-    return textEdit;
+    return m_textEdit;
 }
 
 
@@ -707,39 +755,39 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         this->textEdit->setPlainText(" ");
     }*/
     //qDebug() << "is changed?" << editor->isChanged();
-    if (curCodeEdit != NULL)
+    if (m_curCodeEdit != NULL)
     {
-        if (true == this->changed)
+        if (true == m_changed)
         {
-            curCodeEdit->setChanged();
+            m_curCodeEdit->setChanged();
         }
         else
         {
-            curCodeEdit->setSaved();
+            m_curCodeEdit->setSaved();
         }
-        curCodeEdit->setScrollValue(this->textEdit->verticalScrollBar()->value());
-        curCodeEdit->setCursorValue(this->textEdit->textCursor());
+        m_curCodeEdit->setScrollValue(m_textEdit->verticalScrollBar()->value());
+        m_curCodeEdit->setCursorValue(m_textEdit->textCursor());
     }
     
     bool prevChanged = editor->isChanged();
     this->setName(editor->getName());
     this->setPath(editor->getPath());
-    this->textEdit->deleteHighlighter();
-    this->textEdit->setDocument(editor->getTextEdit()->document());
+    m_textEdit->deleteHighlighter();
+    m_textEdit->setDocument(editor->getTextEdit()->document());
     //this->show();
     //this->update();
-    this->breakpointsLines = editor->getBreakpointsLines();
-    this->bookmarksLines = editor->getBookmarksLines();
-    if (this->breakpointsLines == NULL)
+    m_breakpointsLines = editor->getBreakpointsLines();
+    m_bookmarksLines = editor->getBookmarksLines();
+    if (m_breakpointsLines == NULL)
     {
         qDebug() << "CodeEdit: breakpointsLines == NULL";
     }
-    if (this->bookmarksLines == NULL)
+    if (m_bookmarksLines == NULL)
     {
         qDebug() << "CodeEdit: bookmarskLines == NULL";
     }
-    this->lineCount->getWidget()->setBreakpointList(this->breakpointsLines);
-    this->lineCount->getWidget()->setBookmarkList(this->bookmarksLines);
+    m_lineCount->getWidget()->setBreakpointList(m_breakpointsLines);
+    m_lineCount->getWidget()->setBookmarkList(m_bookmarksLines);
     /*if (name != NULL)
     {
         int index = this->name.lastIndexOf(".");
@@ -775,18 +823,18 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         }
     }*/
     emit CodeEditChanged(editor);
-    this->changeHeight();
-    this->changed = prevChanged;
-    if (false == this->changed)
+    changeHeight();
+    m_changed = prevChanged;
+    if (false == m_changed)
     {
-        emit changedTabStatus(this->name, this->path, false);
+        emit changedTabStatus(m_name, m_path, false);
     }
-    curCodeEdit = editor;
-    if (false == curCodeEdit->getCursorValue().isNull())
+    m_curCodeEdit = editor;
+    if (false == m_curCodeEdit->getCursorValue().isNull())
     {
-        this->textEdit->setTextCursor(curCodeEdit->getCursorValue());
+        m_textEdit->setTextCursor(m_curCodeEdit->getCursorValue());
     }
-    this->textEdit->verticalScrollBar()->setValue(curCodeEdit->getScrollValue());
+    m_textEdit->verticalScrollBar()->setValue(m_curCodeEdit->getScrollValue());
     /*if (true == editor->isChanged())
     {
         //qDebug() << "CodeEdit: loadcodeedit is changed";
@@ -803,7 +851,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
 
 QWidget* CodeEdit::getParent()
 {
-    return parentWidget;
+    return m_parentWidget;
 }
 
 
@@ -811,9 +859,9 @@ QWidget* CodeEdit::getParent()
 void CodeEdit::getFocus()
 {
     //qDebug() << "CodeEdit: getFocus()";
-    if (parentWidget != NULL)
+    if (m_parentWidget != NULL)
     {
-        ((BaseEditor*)parentWidget)->focusIn();
+        ((BaseEditor*)m_parentWidget)->focusIn();
     }
     //qDebug() << "CodeEdit: return getFocus()";
 }
@@ -839,14 +887,14 @@ void CodeEdit::manageBreakpointEmit(int line)
     {
         this->setSaved();
     }*/
-    emit breakpointEmit(this->path, line);
+    emit breakpointEmit(m_path, line);
     //qDebug() << "CodeEdit: return manageBreakpointEmit()";
 }
 
 void CodeEdit::manageBookmarkEmit(int line)
 {
     //qDebug() << "CodeEdit: manageBookmarkEmit()";
-    emit bookmarkEmit(this->path, line);
+    emit bookmarkEmit(m_path, line);
     //qDebug() << "CodeEdit: return manageBookmarkEmit()";
 }
 
@@ -863,13 +911,13 @@ void CodeEdit::manageBookmarkEmit(int line)
 
 CodeEdit* CodeEdit::getParentCodeEdit()
 {
-    if (this->parentCodeEdit == NULL)
+    if (m_parentCodeEdit == NULL)
     {
         return this;
     }
     else
     {
-        return this->parentCodeEdit;
+        return m_parentCodeEdit;
     }
 }
 
@@ -877,7 +925,7 @@ CodeEdit* CodeEdit::getParentCodeEdit()
 void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
 {
     //qDebug() << "CodeEdit: setParentCodeEdit()";
-    this->parentCodeEdit = parentCodeEdit;
+    m_parentCodeEdit = parentCodeEdit;
     //qDebug() << "CodeEdit: return setParentCodeEdit()";
 }
 
@@ -885,7 +933,7 @@ void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
 void CodeEdit::changeHeight()
 {
     //qDebug() << "CodeEdit: changeHeight()";
-    this->lineCount->getWidget()->changeHeight();
+    m_lineCount->getWidget()->changeHeight();
     //this->lineCount->getWidget()->update();
     //qDebug() << "CodeEdit: return changeHeight()";
 }
@@ -893,72 +941,74 @@ void CodeEdit::changeHeight()
 
 void CodeEdit::updateLineCounter()
 {
-    this->lineCount->getWidget()->update();
+    m_lineCount->getWidget()->update();
 }
 
 
 void CodeEdit::changeFont(QFont font)
 {
-    this->textEdit->setFont(font);
+    m_textEdit->setFont(font);
 }
 
 
 Project* CodeEdit::getParentProject()
 {
-    return this->parentProject;
+    return m_parentProject;
 }
 
 
 void CodeEdit::addBreakpointLine(int line)
 {
-    this->breakpointsLines->append(line);
-    this->lineCount->getWidget()->update();
+    m_breakpointsLines->append(line);
+    qSort(m_breakpointsLines->begin(), m_breakpointsLines->end());
+    m_lineCount->getWidget()->update();
 }
 
 
 void CodeEdit::removeBreakpointLine(int line)
 {
-    this->breakpointsLines->removeAll(line);
-    this->lineCount->getWidget()->update();
+    m_breakpointsLines->removeAll(line);
+    m_lineCount->getWidget()->update();
 }
 
 
 QList<int>* CodeEdit::getBreakpointsLines()
 {
-    return this->breakpointsLines;
+    return m_breakpointsLines;
 }
 
 
 void CodeEdit::addBookmarkLine(int line)
 {
-    this->bookmarksLines->append(line);
-    this->lineCount->getWidget()->update();
+    m_bookmarksLines->append(line);
+    qSort(m_bookmarksLines->begin(), m_bookmarksLines->end());
+    m_lineCount->getWidget()->update();
 }
 
 
 void CodeEdit::removeBookmarkLine(int line)
 {
-    this->bookmarksLines->removeAll(line);
-    this->lineCount->getWidget()->update();
+    m_bookmarksLines->removeAll(line);
+    m_lineCount->getWidget()->update();
 }
 
 
 QList<int>* CodeEdit::getBookmarksLines()
 {
-    return this->bookmarksLines;
+    return m_bookmarksLines;
 }
 
 
 void CodeEdit::breakpointsAddLines(int line, int linesAdded)
 {
     //qDebug() << "CodeEdit: breakpointsAddLines";
-    emit breakpointsAddLines(this->path, line, linesAdded);
+    emit breakpointsAddLines(m_path, line, linesAdded);
 }
 
 
 void CodeEdit::breakpointsRemoveLines(int line, int linesRemoved)
 {
-    emit breakpointsRemoveLines(this->path, line, linesRemoved);
+    emit breakpointsRemoveLines(m_path, line, linesRemoved);
 }
 
 
@@ -967,11 +1017,11 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
     bool update = false;
     if (true == added)
     {
-        for (int i = 0; i < this->breakpointsLines->count(); i++)
+        for (int i = 0; i < m_breakpointsLines->count(); i++)
         {
-            if (this->breakpointsLines->at(i) > line)
+            if (m_breakpointsLines->at(i) > line)
             {
-                (*(this->breakpointsLines))[i] += linesChanged;
+                (*(m_breakpointsLines))[i] += linesChanged;
                 update = true;
             }
         }
@@ -979,7 +1029,7 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
     else
     {
         QList<int>::iterator i;
-        for (i = this->breakpointsLines->begin(); i != this->breakpointsLines->end(); i++)
+        for (i = m_breakpointsLines->begin(); i != m_breakpointsLines->end(); i++)
         {
             if ( *i >= line
             && *i < line + linesChanged
@@ -997,7 +1047,7 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
                 }
             }
         }
-        this->breakpointsLines->removeAll(-1);
+        m_breakpointsLines->removeAll(-1);
         /*if (this->breakpointsLines->contains(line))
         {
             this->breakpointsLines->removeAll(line);
@@ -1025,7 +1075,7 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
     }
     if (true == update)
     {
-        this->lineCount->getWidget()->update();
+        m_lineCount->getWidget()->update();
     }
 }
 
@@ -1033,13 +1083,13 @@ void CodeEdit::moveBreakpointsLines(int line, int linesChanged, bool added)
 void CodeEdit::bookmarksAddLines(int line, int linesAdded)
 {
     //qDebug() << "CodeEdit: bookmarksAddLines";
-    emit bookmarksAddLines(this->path, line, linesAdded);
+    emit bookmarksAddLines(m_path, line, linesAdded);
 }
 
 
 void CodeEdit::bookmarksRemoveLines(int line, int linesRemoved)
 {
-    emit bookmarksRemoveLines(this->path, line, linesRemoved);
+    emit bookmarksRemoveLines(m_path, line, linesRemoved);
 }
 
 
@@ -1048,11 +1098,11 @@ void CodeEdit::moveBookmarksLines(int line, int linesChanged, bool added)
     bool update = false;
     if (true == added)
     {
-        for (int i = 0; i < this->bookmarksLines->count(); i++)
+        for (int i = 0; i < m_bookmarksLines->count(); i++)
         {
-            if (this->bookmarksLines->at(i) > line)
+            if (m_bookmarksLines->at(i) > line)
             {
-                (*(this->bookmarksLines))[i] += linesChanged;
+                (*(m_bookmarksLines))[i] += linesChanged;
                 update = true;
             }
         }
@@ -1060,7 +1110,7 @@ void CodeEdit::moveBookmarksLines(int line, int linesChanged, bool added)
     else
     {
         QList<int>::iterator i;
-        for (i = this->bookmarksLines->begin(); i != this->bookmarksLines->end(); i++)
+        for (i = m_bookmarksLines->begin(); i != m_bookmarksLines->end(); i++)
         {
             if ( *i >= line
             && *i < line + linesChanged
@@ -1078,19 +1128,19 @@ void CodeEdit::moveBookmarksLines(int line, int linesChanged, bool added)
                 }
             }
         }
-        this->bookmarksLines->removeAll(-1);
+        m_bookmarksLines->removeAll(-1);
     }
     if (true == update)
     {
-        this->lineCount->getWidget()->update();
+        m_lineCount->getWidget()->update();
     }
 }
 
 
 void CodeEdit::changeTabStopWidth(int width)
 {
-    QFontMetrics fontMetrics(textEdit->font());
-    textEdit->setTabStopWidth(width * fontMetrics.width(' '));
+    QFontMetrics fontMetrics(m_textEdit->font());
+    m_textEdit->setTabStopWidth(width * fontMetrics.width(' '));
 }
 
 
@@ -1103,97 +1153,101 @@ void CodeEdit::setBreakpointsLines(QList<unsigned int> breakpoints)
     }*/
     //qDebug() << "breakpoints count" << breakpoints.count();
     //if (breakpoints != NULL && breakpointsLines != NULL)
-    if (breakpointsLines != NULL)
+    if (m_breakpointsLines != NULL)
     {
-        this->breakpointsLines->clear();
+        m_breakpointsLines->clear();
         for (int i = 0; i < breakpoints.count(); i++)
         {
             //qDebug() << "CodeEdit: appending breakpoint";
-            this->breakpointsLines->append((int)breakpoints.at(i));
+            m_breakpointsLines->append((int)breakpoints.at(i));
         }
         //qDebug() << "CodeEdit: setBreakpoints - updateWidget()";
-        this->lineCount->getWidget()->update();
+        qSort(m_breakpointsLines->begin(), m_breakpointsLines->end());
+        m_lineCount->getWidget()->update();
     }
 }
 
 
 void CodeEdit::setBreakpointsLines(QList<int> breakpoints)
 {
-    if (breakpointsLines != NULL)
+    if (m_breakpointsLines != NULL)
     {
-        this->breakpointsLines->clear();
+        m_breakpointsLines->clear();
         for (int i = 0; i < breakpoints.count(); i++)
         {
-            this->breakpointsLines->append(breakpoints.at(i));
+            m_breakpointsLines->append(breakpoints.at(i));
         }
-        this->lineCount->getWidget()->update();
+        qSort(m_breakpointsLines->begin(), m_breakpointsLines->end());
+        m_lineCount->getWidget()->update();
     }
 }
 
 
 void CodeEdit::setBookmarksLines(QList<unsigned int> bookmarks)
 {
-    if (this->bookmarksLines != NULL)
+    if (m_bookmarksLines != NULL)
     {
-        this->bookmarksLines->clear();
+        m_bookmarksLines->clear();
         for (int i = 0; i < bookmarks.count(); i++)
         {
-            this->bookmarksLines->append((int)bookmarks.at(i));
+            m_bookmarksLines->append((int)bookmarks.at(i));
         }
-        this->lineCount->getWidget()->update();
+        qSort(m_bookmarksLines->begin(), m_bookmarksLines->end());
+        m_lineCount->getWidget()->update();
     } 
 }
 
 
 void CodeEdit::setBookmarksLines(QList<int> bookmarks)
 {
-    if (this->bookmarksLines != NULL)
+    if (m_bookmarksLines != NULL)
     {
-        this->bookmarksLines->clear();
+        m_bookmarksLines->clear();
         for (int i = 0; i < bookmarks.count(); i++)
         {
-            this->bookmarksLines->append(bookmarks.at(i));
+            m_bookmarksLines->append(bookmarks.at(i));
         }
-        this->lineCount->getWidget()->update();
+        qSort(m_bookmarksLines->begin(), m_bookmarksLines->end());
+        m_lineCount->getWidget()->update();
     }
 }
 
 
 int CodeEdit::getScrollValue()
 {
-    return this->curScrollValue;
+    return m_curScrollValue;
 }
 
 
 void CodeEdit::setScrollValue(int value)
 {
-    this->curScrollValue = value;
+    m_curScrollValue = value;
 }
 
 
 QTextCursor CodeEdit::getCursorValue()
 {
-    return this->curCursorPos;
+    return m_curCursorPos;
 }
 
 
 void CodeEdit::setCursorValue(QTextCursor value)
 {
-    this->curCursorPos = value;
+    m_curCursorPos = value;
 }
 
 
 void CodeEdit::setHidden(bool hide)
 {
-    this->hidden = hide;
+    m_hidden = hide;
 }
 
 
 void CodeEdit::updateStatusBar()
 {
-    QString message = "Line: " + QString::number(textEdit->textCursor().blockNumber()+1);
-    message += " Column: " + QString::number(textEdit->textCursor().positionInBlock()+1);
-    statusBar->showMessage(message);
+    QString message = "Line: " + QString::number(m_textEdit->textCursor().blockNumber()+1);
+    message += " Column: " + QString::number(m_textEdit->textCursor().positionInBlock()+1);
+    m_statusBar->showMessage(message);
 }
 
 
@@ -1201,10 +1255,223 @@ void CodeEdit::textEditReadOnly(bool readOnly)
 {
     if (true == readOnly)
     {
-        statusBar->showMessage("Read Only");
+        m_statusBar->showMessage("Read Only");
     }
     else
     {
-        this->updateStatusBar();
+        updateStatusBar();
     }
+}
+
+
+void CodeEdit::requestScrollToBookmark(int currLine, bool next)
+{
+    int line = currLine+1;
+    if (true == next)
+    {
+        for (int i = 0; i < m_bookmarksLines->count(); i++)
+        {
+            line = m_bookmarksLines->at(i);
+            if (line  > currLine+1)
+            {
+                break;
+            }
+
+        }
+        //qDebug() << "CodeEdit: currLine+1" << currLine+1;
+        //qDebug() << "CodeEdit: line" << line;
+        if (currLine+1 == line && m_bookmarksLines->count() > 0)
+        {
+            line = m_bookmarksLines->at(0);
+        }
+    }
+    else
+    {
+        for (int i = m_bookmarksLines->count()-1; i >= 0; i--)
+        {
+            line = m_bookmarksLines->at(i);
+            if (line < currLine+1)
+            {
+                break;
+            }
+        }
+        //qDebug() << "CodeEdit: currLine+1" << currLine+1;
+        //qDebug() << "CodeEdit: line" << line;
+        if (currLine+1 == line && m_bookmarksLines->count() > 0)
+        {
+            line = m_bookmarksLines->at(m_bookmarksLines->count()-1);
+        }
+    }
+    m_textEdit->jumpToLine(line-1);
+}
+
+
+void CodeEdit::findDialog(QString query)
+{
+    //FindDialog
+    if (NULL != m_findAndReplaceDialog)
+    {
+        delete m_findAndReplaceDialog;
+        m_findAndReplaceDialog = NULL;
+    }
+    if (NULL != m_jumpToLineDialog)
+    {
+        delete m_jumpToLineDialog;
+        m_jumpToLineDialog = NULL;
+    }
+    
+    if (NULL == m_findDialog)
+    {
+        m_findDialog = new Find(this, query);
+        m_findDialog->show();
+        m_findDialog->reloadFocus();
+        m_layout->addWidget(m_findDialog, 2, 1);
+        connect(m_findDialog,
+                SIGNAL(closeWidget(CodeEditBottomWidget)),
+                this,
+                SLOT(closeBottomWidget(CodeEditBottomWidget))
+               );
+        connect(m_findDialog,
+                SIGNAL(find(QString, bool, bool)),
+                this,
+                SLOT(find(QString, bool, bool))
+               );
+        this->changeHeight();
+        //QLabel *label = new QLabel("ASDSDASASASSDA", this);
+        //m_layout->addWidget(label, 2, 1);
+    }
+    else
+    {
+        m_findDialog->setQuery(query);
+        m_findDialog->reloadFocus();
+    }
+}
+
+
+void CodeEdit::findAndReplaceDialog(QString query)
+{
+    //FindDialog
+    if (NULL != m_findDialog)
+    {
+        delete m_findDialog;
+        m_findDialog = NULL;
+    }
+    if (NULL != m_jumpToLineDialog)
+    {
+        delete m_jumpToLineDialog;
+        m_jumpToLineDialog = NULL;
+    }
+
+    if (NULL == m_findAndReplaceDialog)
+    {
+        m_findAndReplaceDialog = new FindAndReplace(this, query);
+        m_findAndReplaceDialog->show();
+        m_layout->addWidget(m_findAndReplaceDialog, 2, 1);
+        connect(m_findAndReplaceDialog,
+                SIGNAL(closeWidget(CodeEditBottomWidget)),
+                this,
+                SLOT(closeBottomWidget(CodeEditBottomWidget))
+               );
+        connect(m_findAndReplaceDialog,
+                SIGNAL(find(QString, bool, bool)),
+                this,
+                SLOT(find(QString, bool, bool))
+               );
+        connect(m_findAndReplaceDialog,
+                SIGNAL(findAndReplace(QString, QString, bool, bool)),
+                this,
+                SLOT(findAndReplace(QString, QString, bool, bool))
+               );
+        this->changeHeight();
+        //QLabel *label = new QLabel("ASDSDASASASSDA", this);
+        //m_layout->addWidget(label, 2, 1);
+    }
+    else
+    {
+        m_findAndReplaceDialog->setQuery(query);
+    }
+}
+
+
+void CodeEdit::jumpToLineDialog(int line, int maxLines)
+{
+    //FindDialog
+    if (NULL != m_findAndReplaceDialog)
+    {
+        delete m_findAndReplaceDialog;
+        m_findAndReplaceDialog = NULL;
+    }
+    if (NULL != m_findDialog)
+    {
+        delete m_findDialog;
+        m_findDialog = NULL;
+    }
+
+    if (NULL == m_jumpToLineDialog)
+    {
+        m_jumpToLineDialog = new JumpToLine(this, line+1, maxLines);
+        m_jumpToLineDialog->show();
+        m_layout->addWidget(m_jumpToLineDialog, 2, 1);
+        connect(m_jumpToLineDialog,
+                SIGNAL(closeWidget(CodeEditBottomWidget)),
+                this,
+                SLOT(closeBottomWidget(CodeEditBottomWidget))
+               );
+        connect(m_jumpToLineDialog,
+                SIGNAL(jmpToLine(int)),
+                this,
+                SLOT(jumpToLine(int))
+               );
+        this->changeHeight();
+        //QLabel *label = new QLabel("ASDSDASASASSDA", this);
+        //m_layout->addWidget(label, 2, 1);
+    }
+}
+
+
+void CodeEdit::closeBottomWidget(CodeEditBottomWidget widget)
+{
+    switch (widget)
+    {
+        case CodeEditBottomWidget::WFIND:
+        {
+            delete m_findDialog;
+            m_findDialog = NULL;
+            break;
+        }
+        case CodeEditBottomWidget::WFINDANDREPLACE:
+        {
+            delete m_findAndReplaceDialog;
+            m_findAndReplaceDialog = NULL;
+            break;
+        }
+        case CodeEditBottomWidget::WJUMPTOLINE:
+        {
+            delete m_jumpToLineDialog;
+            m_jumpToLineDialog = NULL;
+            break;
+        }
+    }
+    this->changeHeight();
+}
+
+
+void CodeEdit::find(QString query, bool next, bool caseSensitive)
+{
+    m_textEdit->findAndMark(query, next, caseSensitive);
+}
+
+
+void CodeEdit::jumpToLine(int line)
+{
+    m_textEdit->jumpToLine(line-1);
+    delete m_jumpToLineDialog;
+    m_jumpToLineDialog = NULL;
+    m_textEdit->setFocus();
+}
+
+
+void CodeEdit::findAndReplace(QString find, QString replace, bool all, bool caseSensitive)
+{
+    m_textEdit->findAndReplace(find, replace, all, caseSensitive);
 }
