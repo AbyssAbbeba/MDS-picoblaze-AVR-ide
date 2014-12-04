@@ -43,7 +43,7 @@ add_library(${PROJECT_NAME}
 # This is required due to header files: ui_timewidget.ui, and ui_welcomescr.h
 add_dependencies(${PROJECT_NAME} TimeWidget WelcomeScr)
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter GuiCfg Find FindAndReplace JumpToLine)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Counters Highlighter GuiCfg Find FindAndReplace JumpToLine ErrorDialog)
 
 
 # ------------------------------------------------------------------------------

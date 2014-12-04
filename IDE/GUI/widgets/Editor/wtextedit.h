@@ -45,13 +45,15 @@ class WTextEdit : public QPlainTextEdit
         void scrollToLine(int line);
         void selectLine(int line);
         void setShortcuts();
-        void jumpToLine(int lineToJmp);
 
         //only use in CodeEdit::loadCodeEdit(...)
         //SourceType getSourceType();
         //void setSourceType(SourceType type);
         void deleteHighlighter();
         void queryReadOnly(bool readOnly);
+        void findAndMark(QString query, bool next, bool caseSensitive);
+        void jumpToLine(int lineToJmp);
+        void findAndReplace(QString query, QString replace, bool all, bool caseSensitive);
 
         
 
@@ -118,9 +120,9 @@ class WTextEdit : public QPlainTextEdit
         void bookmarksAddLines(int line, int linesAdded);
         void bookmarksRemoveLines(int line, int linesRemoved);
         void requestScrollToBookmark(int currLine, bool next);
-        void findDialog();
-        void findAndReplaceDialog();
-        void jumpToLineDialog();
+        void findDialog(QString query);
+        void findAndReplaceDialog(QString query);
+        void jumpToLineDialog(int line, int maxLines);
         void updateStatusBar();
         void editorReadOnly(bool readOnly);
         void closeTab();

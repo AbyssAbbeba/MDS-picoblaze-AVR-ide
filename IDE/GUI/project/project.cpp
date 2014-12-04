@@ -376,7 +376,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     mainFileName = "";
     mainFilePath = "";
     useMainFile = false;
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 13; i++)
     {
         compileOpt.append(false);
     }
@@ -644,6 +644,13 @@ Project::Project(QFile *file, ProjectMan *parent)
                                         if (xmlCompileOptElem.attribute("enable") == "true")
                                         {
                                             compileOpt[11] = true;
+                                        }
+                                    }
+                                    else if (xmlCompileOptElem.tagName() == "StringFile")
+                                    {
+                                        if (xmlCompileOptElem.attribute("enable") == "true")
+                                        {
+                                            compileOpt[12] = true;
                                         }
                                     }
                                     xmlCompileOptNode = xmlCompileOptNode.nextSibling();
@@ -1005,7 +1012,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     this->treeProjOther->setText(0, "Other");
 
-    for (int i = 0; i < 12; i++)
+    for (int i = 0; i < 13; i++)
     {
         compileOpt.append(false);
     }
@@ -1099,6 +1106,9 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlVHDLFile = domDoc.createElement("VHDLFile");
     xmlVHDLFile.setAttribute("enable", "true");
     xmlCompilerOpt.appendChild(xmlVHDLFile);
+    QDomElement xmlStringFile = domDoc.createElement("StringFile");
+    xmlStringFile.setAttribute("enable", "true");
+    xmlCompilerOpt.appendChild(xmlStringFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
 
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
@@ -1401,6 +1411,15 @@ void Project::saveProject()
     else
     {
         xmlVHDLFile.setAttribute("enable", "false");
+    }
+    QDomElement xmlStringFile = domDoc.createElement("StringList");
+    if (true == this->compileOpt.at(12))
+    {
+        xmlStringFile.setAttribute("enable", "true");
+    }
+    else
+    {
+        xmlStringFile.setAttribute("enable", "false");
     }
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
@@ -2721,72 +2740,30 @@ void Project::handleUpdateRequest(int mask)
     {
         //std::string fileName; //= new std::string();
         m_simControlUnit->getLineNumber(this->currSim);
-        if (this->currSim.empty() == true)
-        {
+        //if (this->currSim.empty() == true)
+        //{
             //qDebug() << "Project: currline empty, should never happen";
-            return;
-        }
-        //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
-        //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-        //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-        //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-        /*emit highlightLine(this->prevFile3, this->prevLine3, NULL);
-        emit highlightLine(this->prevFile2, this->prevLine2, NULL);
-        emit highlightLine(this->prevFile, this->prevLine, NULL);
-        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));*/
+            //return;
+        //}
 
         this->prevSim.clear();
         this->prevSim2.clear();
         emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
 
-        //emit setCentralByName(this->currFile);
-        //emit scrollToLine(this->line);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-        /*this->prevLine3 = -1;
-        this->prevLine2 = -1;
-        this->prevLine = std::get<1>(this->currLine.at(0))-1;
-
-        this->prevFile3 = this->currFile;
-        this->prevFile2 = this->currFile;
-        this->prevFile = this->currFile;*/
         this->prevSim = this->currSim;
     }
     else if (2 & mask)
     {
-        //std::string fileName; //= new std::string();
         m_simControlUnit->getLineNumber(this->currSim);
-        if (this->currSim.empty() == true)
-        {
+        //if (this->currSim.empty() == true)
+        //{
             //qDebug() << "Project: currline empty, should never happen";
             //return;
-        }
-        //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
-        //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-        //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-        //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-        /*emit highlightLine(this->prevFile3, this->prevLine3, NULL);
-        emit highlightLine(this->prevFile2, this->prevLine2,&(this->prevLine2Color));
-        emit highlightLine(this->prevFile, this->prevLine, &(this->prevLineColor));
-        emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));*/
+        //}
 
         emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
 
-        //emit setCentralByName(this->currFile);
-        //emit scrollToLine(this->line);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
-        //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-        /*this->prevLine3 = this->prevLine2;
-        this->prevLine2 = this->prevLine;
-        this->prevLine = std::get<1>(this->currLine.at(0))-1;
 
-        this->prevFile3 = this->prevFile2;
-        this->prevFile2 = this->prevFile;
-        this->prevFile = this->currFile;*/
         this->prevSim2 = this->prevSim;
         this->prevSim = this->currSim;
     }
@@ -2799,37 +2776,6 @@ void Project::handleUpdateRequest(int mask)
 void Project::step()
 {
     m_simControlUnit->stepProgram();
-    /*std::string fileName; //= new std::string();
-    m_simControlUnit->getLineNumber(currLine);
-    if (currLine.empty() == true)
-    {
-        return;
-    }
-    this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
-    //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-    //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-    //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    emit highlightLine(this->prevFile3, this->prevLine3, NULL);
-    emit highlightLine(this->prevFile2, this->prevLine2,this-> prevLine2Color);
-    emit highlightLine(this->prevFile, this->prevLine, this->prevLineColor);
-    emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, this->currLineColor);
-
-    //emit setCentralByName(this->currFile);
-    //emit scrollToLine(this->line);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, prevLineColor, origPrevLineCol);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, prevLine2Color, origPrevLine2Col);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
-    this->prevLine3 = this->prevLine2;
-    this->prevLine2 = this->prevLine;
-    this->prevLine = std::get<1>(this->currLine.at(0))-1;
-
-    this->prevFile3 = this->prevFile2;
-    this->prevFile2 = this->prevFile;
-    this->prevFile = this->currFile;*/
-    /*origPrevLine3Col = origPrevLine2Col;
-    origPrevLine2Col = origPrevLineCol;
-    origPrevLineCol = origCurrLineCol;*/
 }
 
 
@@ -2888,192 +2834,6 @@ void Project::setCompileOpt(QList<bool> opt)
     {
         this->compileOpt[i] = opt.at(i);
     }
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            while (!xmlNode.isNull())
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Compiler")
-                    {
-                        QDomNode xmlCompilerNode = xmlElement.firstChild();
-                        QDomElement xmlCompilerElement;
-                        while (!xmlCompilerNode.isNull())
-                        {
-                            xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "Options")
-                            {
-                                QDomNode xmlCompOptNode = xmlCompilerNode.firstChild();
-                                while (!xmlCompOptNode.isNull())
-                                {
-                                    QDomElement xmlCompOptElem = xmlCompOptNode.toElement();
-                                    //prochazeni elementu
-                                    if (xmlCompOptElem.tagName() == "SymbolTable")
-                                    {
-                                        if (true == this->compileOpt.at(0))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "MacroTable")
-                                    {
-                                        if (true == this->compileOpt.at(1))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "DebugFile")
-                                    {
-                                        if (true == this->compileOpt.at(2))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "CodeTree")
-                                    {
-                                        if (true == this->compileOpt.at(3))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "ListFile")
-                                    {
-                                        if (true == this->compileOpt.at(4))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "HexFile")
-                                    {
-                                        if (true == this->compileOpt.at(5))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "BinFile")
-                                    {
-                                        if (true == this->compileOpt.at(6))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "SRecFile")
-                                    {
-                                        if (true == this->compileOpt.at(7))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "MemFile")
-                                    {
-                                        if (true == this->compileOpt.at(8))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "RawHexFile")
-                                    {
-                                        if (true == this->compileOpt.at(9))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "VerilogFile")
-                                    {
-                                        if (true == this->compileOpt.at(10))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    else if (xmlCompOptElem.tagName() == "VHDLFile")
-                                    {
-                                        if (true == this->compileOpt.at(11))
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "true");
-                                        }
-                                        else
-                                        {
-                                            xmlCompOptElem.setAttribute("enable", "false");
-                                        }
-                                    }
-                                    xmlCompOptNode = xmlCompOptNode.nextSibling();
-                                }
-                            }
-                            xmlCompilerNode = xmlCompilerNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -3084,65 +2844,6 @@ void Project::setCompileIncPaths(QList<QString> paths)
     {
         this->compileIncPaths.append(paths.at(i));
     }
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            while (!xmlNode.isNull())
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Compiler")
-                    {
-                        QDomNode xmlCompilerNode = xmlElement.firstChild();
-                        QDomElement xmlCompilerElement;
-                        while (!xmlCompilerNode.isNull())
-                        {
-                            xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "IncludePaths")
-                            {
-                                //smazat tag
-                                xmlNode.removeChild(xmlCompilerNode);
-                                //znovu pridat tag
-                                QDomElement xmlNewCompilerElement = domDoc.createElement("IncludePaths");
-                                for (int i = 0; i < this->compileIncPaths.size(); i++)
-                                {
-                                    QDomElement xmlNewPathElem = domDoc.createElement("Path");
-                                    xmlNewPathElem.setAttribute("path", this->compileIncPaths.at(i));
-                                    xmlNewCompilerElement.appendChild(xmlNewPathElem);
-                                }
-                                xmlElement.appendChild(xmlNewCompilerElement);
-                                break;
-                            }
-                            xmlCompilerNode = xmlCompilerNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -3241,19 +2942,6 @@ int Project::handleBreakpoint(QString file, int line)
             return 0;
             //emit breakpointAppend(file, line);
         }
-        /*else
-        {
-            for (int j = 0; j < this->breakPoints.count(); j++)
-            {
-                if (this->breakPoints.at(j).first == file && true == this->breakPoints.at(j).second.contains(line))
-                {
-                    //qDebug() << "Project: breakpoint file found, removed";
-
-                    return;
-                }
-            }
-        }*/
-        //}
     }
     //qDebug() << "Project: does not contain" << fileRelative;
     return -1;
@@ -3299,10 +2987,6 @@ void Project::moveBreakpointsAdd(QString file, int line, unsigned int linesAdded
                     this->breakPoints.removeAt(i);
                     QPair<QString, QSet<unsigned int>> pair(file, set);
                     this->breakPoints.append(pair);
-                    /*if (this->prjPath != "untracked")
-                    {
-                        this->xmlBreakpointFileReplace(file);
-                    }*/
                 }
                 break;
             }
@@ -3438,19 +3122,6 @@ int Project::handleBookmark(QString file, int line)
             return 0;
             //emit breakpointAppend(file, line);
         }
-        /*else
-        {
-            for (int j = 0; j < this->bookmarks.count(); j++)
-            {
-                if (this->bookmarks.at(j).first == file && true == this->bookmarks.at(j).second.contains(line))
-                {
-                    //qDebug() << "Project: breakpoint file found, removed";
-
-                    return;
-                }
-            }
-        }*/
-        //}
     }
     //qDebug() << "Project: does not contain" << fileRelative;
     return -1;
@@ -3590,233 +3261,13 @@ QList<QPair<QString, QSet<unsigned int>>>* Project::getBookmarksListRef()
 }
 
 
-/*void Project::xmlBreakpointAdd(QString file, unsigned int line)
-{
-    //qDebug() << "Project: xmlBreakpointAdd()";
-    QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
-    QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Breakpoints")
-                    {
-                        QDomNode xmlBreakpointFileNode = xmlElement.firstChild();
-                        QDomElement xmlBreakpointFileElement;
-                        while (!xmlBreakpointFileNode.isNull())
-                        {
-                            //qDebug() << "Project: checking paths";
-                            //qDebug() << xmlBreakpointFileElement.attribute("path");
-                            //qDebug() << relativePath;
-                            xmlBreakpointFileElement = xmlBreakpointFileNode.toElement();
-                            if ( xmlBreakpointFileElement.tagName() == "BreakpointFile"
-                              && xmlBreakpointFileElement.attribute("path") == relativePath)
-                            {
-                                QDomElement xmlBreakpointElement = domDoc.createElement("Breakpoint");
-                                xmlBreakpointElement.setAttribute("line", QString::number(line));
-                                xmlBreakpointFileNode.appendChild(xmlBreakpointElement);
-                                done = true;
-                                break;
-                            }
-                            xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-            prjFile.close();
-        }
-    }
-}*/
-
-
-/*void Project::xmlBreakpointRemove(QString file, unsigned int line)
-{
-    //qDebug() << "Project: xmlBreakpointRemove()";
-    QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
-    QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Breakpoints")
-                    {
-                        QDomNode xmlBreakpointFileNode = xmlElement.firstChild();
-                        QDomElement xmlBreakpointFileElement;
-                        while (!xmlBreakpointFileNode.isNull() && done == false)
-                        {
-                            xmlBreakpointFileElement = xmlBreakpointFileNode.toElement();
-                            if ( xmlBreakpointFileElement.tagName() == "BreakpointFile"
-                              && xmlBreakpointFileElement.attribute("path") == relativePath)
-                            {
-                                QDomNode xmlBreakpointNode = xmlBreakpointFileNode.firstChild();
-                                QDomElement xmlBreakpointElement;
-                                while (!xmlBreakpointNode.isNull())
-                                {
-                                    xmlBreakpointElement = xmlBreakpointNode.toElement();
-                                    if ( xmlBreakpointElement.tagName() == "Breakpoint"
-                                      && xmlBreakpointElement.attribute("line").toUInt() == line)
-                                    {
-                                        xmlBreakpointFileNode.removeChild(xmlBreakpointNode);
-                                        done = true;
-                                        break;
-                                    }
-                                    xmlBreakpointNode = xmlBreakpointNode.nextSibling();
-                                }
-                            }
-                            xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-            prjFile.close();
-        }
-    }
-}*/
-
-
-/*void Project::xmlBreakpointFileReplace(QString file)
-{
-    //qDebug() << "Project: xmlBreakpointFileReplace()";
-    QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = project.relativeFilePath(file);
-    QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Breakpoints")
-                    {
-                        QDomNode xmlBreakpointFileNode = xmlElement.firstChild();
-                        QDomElement xmlBreakpointFileElement;
-                        while (!xmlBreakpointFileNode.isNull() && done == false)
-                        {
-                            xmlBreakpointFileElement = xmlBreakpointFileNode.toElement();
-                            if ( xmlBreakpointFileElement.tagName() == "BreakpointFile"
-                              && xmlBreakpointFileElement.attribute("path") == relativePath)
-                            {
-                                for (int i = 0; i < this->breakPoints.count(); i++)
-                                {
-                                    //qDebug() << "Project: checking paths";
-                                    //qDebug() << this->breakPoints.at(i).first;
-                                    //qDebug() << file;
-                                    if (this->breakPoints.at(i).first == file)
-                                    {
-                                        QDomElement xmlNewBreakpointFile = domDoc.createElement("BreakpointFile");
-                                        xmlNewBreakpointFile.setAttribute("path", relativePath);
-                                        foreach (unsigned int value, this->breakPoints.at(i).second)
-                                        {
-                                            QDomElement xmlNewBreakpoint = domDoc.createElement("Breakpoint");
-                                            xmlNewBreakpoint.setAttribute("line", value);
-                                            xmlNewBreakpointFile.appendChild(xmlNewBreakpoint);
-                                        }
-                                        xmlNode.removeChild(xmlBreakpointFileNode);
-                                        xmlNode.appendChild(xmlNewBreakpointFile);
-                                        done = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-            prjFile.close();
-        }
-    }
-}*/
-
 
 QList<unsigned int> Project::getBreakpointsForFileAbsolute(QString file)
 {
-    //QDir project(QFileInfo(this->prjPath).dir());
-    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->breakPoints.count(); i++)
     {
-        //qDebug() << "Project: checking" << this->breakPoints.at(i).first << "with relative" << relativePath;
-        //qDebug() << "Project: original file path" << file;
         if (this->breakPoints.at(i).first == file)
         {
-            //QList<unsigned int> list(this->breakPoints.at(i).second.toList());
-            //qDebug() << "Project: breakPoints count" << list.count();
-            //return list;
             return this->breakPoints.at(i).second.toList();
         }
     }
@@ -3826,8 +3277,6 @@ QList<unsigned int> Project::getBreakpointsForFileAbsolute(QString file)
 
 QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 {
-    //QDir project(QFileInfo(this->prjPath).dir());
-    //QString relativePath = project.relativeFilePath(file);
     for (int i = 0; i < this->bookmarks.count(); i++)
     {
         if (this->bookmarks.at(i).first == file)

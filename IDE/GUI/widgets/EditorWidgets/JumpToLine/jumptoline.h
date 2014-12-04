@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include "ui_jumptoline.h"
+#include "../../../enums/enums.h"
 
 
 
@@ -30,16 +31,21 @@ class JumpToLine : public QWidget
 {
     Q_OBJECT
     public:
-        JumpToLine(QWidget *parent, int maxLines, int currLine);
+        JumpToLine(QWidget *parent, int currLine, int maxLines);
 
     signals:
-        void jmptoline(int line);
+        void jmpToLine(int line);
+        void closeWidget(CodeEditBottomWidget widget);
 
     private slots:
         void emitJump();
+        void closeClicked();
 
     private:
         Ui_JumpToLine ui;
+
+    protected:
+        bool eventFilter(QObject *target, QEvent *event);
 
 };
 

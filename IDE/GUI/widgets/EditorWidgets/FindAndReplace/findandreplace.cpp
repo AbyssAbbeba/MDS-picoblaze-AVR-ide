@@ -26,10 +26,18 @@ FindAndReplace::FindAndReplace(QWidget *parent, QString query)
 {
     ui.setupUi(this);
     ui.leFind->setText(query);
+    ui.leFind->setFocus();
     connect(ui.btnFindNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(ui.btnFindPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
     connect(ui.btnReplace, SIGNAL(clicked()), this, SLOT(replace()));
     connect(ui.btnReplaceAll, SIGNAL(clicked()), this, SLOT(replaceAll()));
+    connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
+}
+
+
+void FindAndReplace::setQuery(QString query)
+{
+    ui.leFind->setText(query);
 }
 
 
@@ -66,4 +74,10 @@ void FindAndReplace::replaceAll()
     {
         emit findAndReplace(ui.leFind->text(), ui.leReplace->text(), true, ui.chckCase->isCheckable());
     }
+}
+
+
+void FindAndReplace::closeClicked()
+{
+    emit closeWidget(CodeEditBottomWidget::WFINDANDREPLACE);
 }

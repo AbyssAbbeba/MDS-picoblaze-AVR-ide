@@ -20,6 +20,7 @@
 #include <QWidget>
 #include <QList>
 #include <QTextCursor>
+#include "../../enums/enums.h"
 //#include "../../project/project.h"
 
 
@@ -28,6 +29,9 @@ class WLineCounter;
 class WTextEdit;
 class QStatusBar;
 class QGridLayout;
+class Find;
+class FindAndReplace;
+class JumpToLine;
 
 /**
  * @brief Code Editor, include splitter, wtextedit and line counter
@@ -119,32 +123,40 @@ class CodeEdit : public QWidget
         void textEditChanged(bool modified);
         void textEditReadOnly(bool readOnly);
         void requestScrollToBookmark(int currLine, bool next);
-        void findDialog();
-        void findAndReplaceDialog();
-        void jumpToLineDialog();
+        void findDialog(QString query);
+        void findAndReplaceDialog(QString query);
+        void jumpToLineDialog(int line, int maxLines);
+        void closeBottomWidget(CodeEditBottomWidget widget);
+        void find(QString query, bool next, bool caseSensitive);
+        void jumpToLine(int line);
+        void findAndReplace(QString find, QString replace, bool all, bool caseSensitive);
 
     private:
-        QString name;
-        QString path;
-        bool changed;
-        bool tabs;
-        Project *parentProject;
-        QWidget *parentWidget;
-        QStatusBar *statusBar;
-        WTextEdit *textEdit;
-        QGridLayout *layout;
-        WLineCounter *lineCount;
+        QString m_name;
+        QString m_path;
+        bool m_changed;
+        bool m_tabs;
+        Project *m_parentProject;
+        QWidget *m_parentWidget;
+        QStatusBar *m_statusBar;
+        WTextEdit *m_textEdit;
+        QGridLayout *m_layout;
+        WLineCounter *m_lineCount;
         //QList<int> breakpointList;
         //QList<int> bookmarkList;
-        CodeEdit *parentCodeEdit;
-        QColor *breakpointColor;
-        int prevBlockCount;
-        QList<int> *bookmarksLines;
-        QList<int> *breakpointsLines;
-        CodeEdit *curCodeEdit;
-        int curScrollValue;
-        QTextCursor curCursorPos;
-        bool hidden;
+        CodeEdit *m_parentCodeEdit;
+        QColor *m_breakpointColor;
+        int m_prevBlockCount;
+        QList<int> *m_bookmarksLines;
+        QList<int> *m_breakpointsLines;
+        CodeEdit *m_curCodeEdit;
+        int m_curScrollValue;
+        QTextCursor m_curCursorPos;
+        bool m_hidden;
+
+        Find *m_findDialog;
+        FindAndReplace *m_findAndReplaceDialog;
+        JumpToLine *m_jumpToLineDialog;
 };
 
 
