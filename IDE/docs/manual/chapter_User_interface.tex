@@ -8,21 +8,7 @@
     \end{figure}
 
     \clearpage
-    \subsection{Top panel}
-        \index{Toolbar}
-        Top panel contains main menu and the toolbar, both can be used to invoke various actions which will described alter in this documentation.
-
-        \begin{figure}[h!]
-            \centering
-            \includegraphics[width=.9\textwidth]{img/top_panel.png}
-            \caption{Top panel}
-        \end{figure}
-
     \subsection{Left and right panel}
-        \index{Left panel}\paragraph{Left panel} displays files in your project tree. You can perform various actions from here using context menus (right click), like configure project, close project, open file, close file, remove file from this list, or set some file as the project's main source file.
-
-        \index{Right panel}\paragraph{Right panel} contains lists of breakpoints, bookmarks, and macros defined in your source code. From these lists you can easily navigate to the corresponding line in your source code just by clicking on an item. List of macros might sometimes need to refresh which can be achieved by [Right~Click] -> [Refresh].
-
         \begin{table}[h!]
             \centering
             \begin{tabular}{cc}
@@ -34,8 +20,37 @@
             \end{tabular}
         \end{table}
 
+        \subsubsection{Left panel}
+            \index{Left panel}
+            Left panel displays files in your project tree. You can perform various actions from here using context menus (right click), like configure project, close project, open file, close file, remove file from this list, or set some file as the project's main source file.
+
+        \subsubsection{Right panel}
+            \index{Right panel}
+            Right panel contains lists of breakpoints, bookmarks, and macros defined in your source code. From these lists you can easily navigate to the corresponding line in your source code just by clicking on an item. List of macros might sometimes need to refresh which can be achieved by [Right~Click] -> [Refresh].
+
+            \begin{table}[h!]
+                \begin{tabular}{ccc}
+                    \includegraphics[width=.3\textwidth]{img/listbookmarks.png}
+                        &
+                    \includegraphics[width=.3\textwidth]{img/listbreakpoints.png}
+                        &
+                    \includegraphics[width=.3\textwidth]{img/listmacros.png}
+                    \\ Bookmarks & Breakpoints & Macros
+                \end{tabular}
+            \end{table}
+
     \subsection{Central panel}
         Central panel contains the main text editor with syntax highlight for writing a source code. In the editor you can also easily add breakpoints and bookmarks just by clicking on desired line number by left or right mouse button, each invokes different action.
+
+    \subsection{Top panel}
+        \index{Toolbar}
+        Top panel contains main menu and the toolbar, both can be used to invoke various actions which will described alter in this documentation.
+
+        \begin{figure}[h!]
+            \centering
+            \includegraphics[width=.9\textwidth]{img/top_panel.png}
+            \caption{Top panel}
+        \end{figure}
 
     \subsection{Bottom panel}
         Bottom panel consists of simulator main panel, and compiler messages.
@@ -52,6 +67,29 @@
             \caption{Bottom panel}
         \end{figure}
 
+    \clearpage
+    \subsection{Exit \& Restoration}
+        \subsubsection{Session Restoration}
+            When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
+
+        \subsubsection{Exit Dialog}
+            \begin{wrapfigure}{r}{0pt}
+                \centering
+                \includegraphics[width=130pt]{img/exit_dialog.png}
+                \caption{Exit Dialog}
+            \end{wrapfigure}
+
+            When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog (Exit Dialog) asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
+
+            \begin{description}
+                \item[Button Save:] Saves the selected file; if there is only one file left, exits the IDE.
+                \item[Button Save All:] Saves all files and exits the IDE.
+                \item[Button Discard:] Discards recent changes in the selected file; if there is only one file left, exits the IDE.
+                \item[Button Discard All:] Discard recent changes in all files and exits the IDE.
+                \item[Button Cancel:] Closes the dialog and return to the IDE, the main window will remain opened.
+            \end{description}
+
+    \clearpage
     \subsection{Actions}
         \begin{description}
             \item [New project:] Creates a new project.
@@ -102,36 +140,17 @@
                 \caption{Default key shortcuts for the Main Window.}
             \end{table}
 
-    \subsection{Exit \& Restoration}
-        \paragraph{Session}
-            ~\\When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
-
-        \paragraph{Exit Dialog}
-            \begin{wrapfigure}{r}{0pt}
-                \centering
-                \includegraphics[width=130pt]{img/exit_dialog.png}
-                \caption{Exit Dialog}
-            \end{wrapfigure}
-            ~\\When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog (Exit Dialog) asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
-
-            \begin{description}
-                \item[Button Save:] Saves the selected file; if there is only one file left, exits the IDE.
-                \item[Button Save All:] Saves all files and exits the IDE.
-                \item[Button Discard:] Discards recent changes in the selected file; if there is only one file left, exits the IDE.
-                \item[Button Discard All:] Discard recent changes in all files and exits the IDE.
-                \item[Button Cancel:] Closes the dialog and return to the IDE, the main window will remain opened.
-            \end{description}
-
 \clearpage
-\section{Source code editor}
+\section{Source Code Editor}
     \index{Code editor}
-    \paragraph{Syntax highlight} is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
+    \subsection{Main features}
+        \paragraph{Syntax highlight} is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
 
-    \paragraph{Left panel} of the editor shows numbers of lines in your source code for easier navigation.
+        \paragraph{Left panel} of the editor shows numbers of lines in your source code for easier navigation.
 
-    \paragraph{Editor status bar} displays information about current column and line number.
+        \paragraph{Editor status bar} displays information about current column and line number.
 
-    \paragraph{Context menu} pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
+        \paragraph{Context menu} pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
 
     \subsection{Key shortcuts}
         \index{Editor shortcuts}
@@ -181,7 +200,18 @@
             \caption{Default Editor shortcuts.}
         \end{table}
 
-\clearpage
+    \subsection{Breakpoints and bookmarks}
+        \index{Breakpoints} \index{Bookmarks}
+        \begin{wrapfigure}{r}{0pt}
+            \centering
+                \includegraphics[width=.35\textwidth]{img/breakpoints1.png}
+                \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
+        \end{wrapfigure}
+
+        MDS simulator supports breakpoints, breakpoint is a mark associated with a location in the program code; when reached, it triggers a temporarily halt in the running simulation. You can use breakpoints to test and debug programs in a manner that the program can be examined in stages delimited by breakpoints. Please be also aware that using breakpoints slows down the simulator; if you want maximum simulation speed, you may temporarily disable (switch off) breakpoints generally in [Main~Menu]~-> [Simulation]~-> [Disable~Breakpoints].
+
+        Another feature is bookmarks; when editing one location in your source code more often, it may be useful to add a bookmark to it so you can quickly get back when you need. Like breakpoints bookmarks are marks in your source code but they are meant solely for quick navigation, they do not affect simulation in any way.
+
 \section{Project management}
     \index{Project management}
     \subsection{Project configuration}
@@ -253,6 +283,7 @@
                 \end{tabular}
                 \end{table}
 
+\clearpage
 \section{UI Configuration}
     In interface configuration dialog, you can edit IDE behavior and appearance, for instance editor font, tab width,
     etc., or simulator warnings. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] ->
@@ -287,6 +318,7 @@
             \end{tabular}
         \end{table}
 
+\clearpage
 \section{Tools}
     \subsection{Data file converter}
         This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
@@ -304,12 +336,14 @@
             \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
         \end{description}
 
+        \enlargethispage{6\baselineskip}
         \begin{figure}[h]
             \centering
             \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
             \caption{DATA file converter}
         \end{figure}
 
+    \clearpage
     \subsection{Assembler translator}
         With this tool, you can translate your previously written assembler code in different syntax.
         You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
@@ -355,6 +389,7 @@
             \caption{Disassembler}
         \end{figure}
 
+    \clearpage
     \subsection{Delay loop generator}
         In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
         development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
@@ -379,6 +414,7 @@
             \caption{Delay loop generator dialog}
         \end{figure}
 
+    \clearpage
     \subsection{8-segment editor}
         \begin{wrapfigure}{r}{0pt}
             \centering
