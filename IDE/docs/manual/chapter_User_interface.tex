@@ -115,11 +115,11 @@
             ~\\When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog (Exit Dialog) asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
 
             \begin{description}
-                \item[Button Save]
-                \item[Button Save All]
-                \item[Button Discard]
-                \item[Button Discard All]
-                \item[Button Cancel]
+                \item[Button Save:] Saves the selected file; if there is only one file left, exits the IDE.
+                \item[Button Save All:] Saves all files and exits the IDE.
+                \item[Button Discard:] Discards recent changes in the selected file; if there is only one file left, exits the IDE.
+                \item[Button Discard All:] Discard recent changes in all files and exits the IDE.
+                \item[Button Cancel:] Closes the dialog and return to the IDE, the main window will remain opened.
             \end{description}
 
 \clearpage
