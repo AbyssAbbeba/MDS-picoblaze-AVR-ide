@@ -502,15 +502,15 @@ void MainForm::createMenu()
     #endif
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
-    #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
-        helpMenu->addAction(licenseAct);
-    #endif
     helpMenu->addAction(aboutAct);
-    helpMenu->addAction(aboutQTAct);
-    helpMenu->addAction(welcomeAct);
     helpMenu->addAction(helpAct);
     helpMenu->addSeparator();
     helpMenu->addAction(example1Act);
+    helpMenu->addAction(welcomeAct);
+    helpMenu->addAction(aboutQTAct);
+    #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
+        helpMenu->addAction(licenseAct);
+    #endif
     //qDebug() << "MainForm: return createMenu()";
 }
 
@@ -663,7 +663,7 @@ void MainForm::createActions()
 
     this->pm_simStep = new QPixmap(":resources/icons/simulationStep.png");
     this->icon_simStep = new QIcon(*pm_simStep);
-    simulationStepAct = new QAction(*icon_simStep, tr("Do step"), this);
+    simulationStepAct = new QAction(*icon_simStep, tr("Step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
     simulationStepAct->setDisabled(true);
     simulationStepAct->setShortcut(Qt::Key_F9);
@@ -687,7 +687,7 @@ void MainForm::createActions()
     simulationBreakpointAct->setDisabled(true);
     connect(simulationBreakpointAct, SIGNAL(triggered()), this, SLOT(breakpointActHandle()));
 
-    simulationDisableBreakpointsAct = new QAction(tr("Disable breakpoints"), this);
+    simulationDisableBreakpointsAct = new QAction(tr("Disable Breakpoints"), this);
     simulationDisableBreakpointsAct->setDisabled(true);
     connect(simulationDisableBreakpointsAct, SIGNAL(triggered()), this, SLOT(disableBreakpointsHandle()));
 
@@ -698,15 +698,15 @@ void MainForm::createActions()
         connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     #endif
     #ifdef MDS_FEATURE_TRANSLATOR
-        toolTranslatorAct = new QAction(tr("ASM Translator"), this);
+        toolTranslatorAct = new QAction(tr("Assembler Translator"), this);
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
-        toolFileConvertAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_gear.png")), tr("Data file Converter"), this);
+        toolFileConvertAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_gear.png")), tr("Data File Converter"), this);
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
-        toolConvertorAct = new QAction(tr("Radix converter"), this);
+        toolConvertorAct = new QAction(tr("Radix Converter"), this);
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
@@ -718,17 +718,17 @@ void MainForm::createActions()
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
     #ifdef MDS_FEATURE_SIM_LED_PANEL
-        toolSimLedsAct = new QAction(QIcon(QPixmap(":resources/icons/ledpanel.png")), tr("LED panel"), this);
+        toolSimLedsAct = new QAction(QIcon(QPixmap(":resources/icons/ledpanel.png")), tr("LED Panel"), this);
         toolSimLedsAct->setDisabled(true);
         connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
     #endif
     #ifdef MDS_FEATURE_SIM_7_SEGMENT
-        toolSim7SegAct = new QAction(QIcon(QPixmap(":resources/icons/8seg.png")), tr("7 Segment"), this);
+        toolSim7SegAct = new QAction(QIcon(QPixmap(":resources/icons/8seg.png")), tr("7 Segment Display"), this);
         toolSim7SegAct->setDisabled(true);
         connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
     #endif
     #ifdef MDS_FEATURE_SIM_SWITCH
-        toolSimSwitchAct = new QAction(QIcon(QPixmap(":resources/icons/simplekeypad.png")), tr("Switch"), this);
+        toolSimSwitchAct = new QAction(QIcon(QPixmap(":resources/icons/simplekeypad.png")), tr("Switch panel"), this);
         toolSimSwitchAct->setDisabled(true);
         connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
     #endif
@@ -749,9 +749,9 @@ void MainForm::createActions()
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     welcomeAct = new QAction(tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
-    helpAct = new QAction(QIcon(QPixmap(":resources/icons/help.png")), tr("Help"), this);
+    helpAct = new QAction(QIcon(QPixmap(":resources/icons/help.png")), tr("User Manual"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("See Tutorial Project"), this);
+    example1Act = new QAction(tr("Open Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":resources/icons/pause.png");
@@ -3184,7 +3184,7 @@ void MainForm::translatorOutput(std::vector<std::string> & text)
             qText.append(QString::fromStdString(text.at(i)));
         }
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
-        this->wDockManager->addUntrackedCentralWidget("ASM Translator","untracked",qText);
+        this->wDockManager->addUntrackedCentralWidget("Assembler Translator","untracked",qText);
         //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
         //getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
@@ -3204,7 +3204,7 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
             qText.append(QString::fromStdString(std::get<1>(text.at(i))));
         }
         //QString name = this->projectMan->addUntrackedFile(NULL, "disasm");
-        this->wDockManager->addUntrackedCentralWidget("ASM Translator error","untracked",qText);
+        this->wDockManager->addUntrackedCentralWidget("Assembler Translator error","untracked",qText);
         //qDebug() << getWDockManager()->getCentralTextEdit()->toPlainText();
         //this->getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
