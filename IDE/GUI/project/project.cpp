@@ -1469,114 +1469,41 @@ QString Project::addFile(QString path, QString name)
                 return "";
             }
         }
-        /*QString relativePath;
-        QDomDocument domDoc("MDSProject");
-        QFile *file = new QFile(prjPath);
-        if(!file->open(QIODevice::ReadWrite | QIODevice::Text))
+        QDir project(QFileInfo(this->prjPath).dir());
+        QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
+        if (true == filePaths.contains(relativePath))
         {
-            error(ERR_OPENFILE);
+            qDebug() << "Project: file already in project";
             return "";
         }
-        if (!domDoc.setContent(file))
+        fileNames.append(name);
+        fileCount++;
+        filePaths.append(relativePath);
+
+        QTreeWidgetItem *treeProjFile;
+        int index = name.lastIndexOf(".");
+        if (index > 0)
         {
-            error(ERR_XML_ASSIGN);
-        }
-        else
-        {
-            QDir project(QFileInfo(this->prjPath).dir());
-            relativePath = project.relativeFilePath(path);
-            QDomElement xmlRoot = domDoc.documentElement();
-            if (xmlRoot.tagName() != "MDSProject")
+            QString text(name.right(name.size() - index));
+            if (text == ".inc")
             {
-                error(ERR_XML_CONTENT);
+                treeProjFile = new QTreeWidgetItem(treeProjInclude);
+            }
+            else if (text == ".asm" || text == ".psm")
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjSource);
             }
             else
             {
-                QDomNode xmlNode = xmlRoot.firstChild();
-                QDomElement xmlElement;
-                while (!xmlNode.isNull())
-                {
-                    xmlElement = xmlNode.toElement();
-                    if (!xmlElement.isNull())
-                    {
-                        if (xmlElement.tagName() == "Files")
-                        {
-                            QDomElement xmlFile = domDoc.createElement("File");
-                            xmlFile.setAttribute("name", name);
-                            xmlFile.setAttribute("path", relativePath);
-                            xmlElement.appendChild(xmlFile);
-
-                            fileNames.append(name);
-                            fileCount++;
-                            filePaths.append(relativePath);
-                        }
-                        else if (xmlElement.tagName() == "Mainfile")
-                        {
-                            if (mainFileName == ""
-                                && mainFilePath == "")
-                            {
-                                mainFileName = name;
-                                mainFilePath = relativePath;
-                                xmlElement.setAttribute("name", mainFileName);
-                                xmlElement.setAttribute("path", mainFilePath);
-                                xmlElement.setAttribute("enabled", "false");
-                            }
-                        }
-                        else if (xmlElement.tagName() == "Breakpoints")
-                        {
-                            QDomElement xmlBreakpointFile = domDoc.createElement("File");
-                            xmlBreakpointFile.setAttribute("path", relativePath);
-                            xmlElement.appendChild(xmlBreakpointFile);
-                        }
-                    }
-                    xmlNode = xmlNode.nextSibling();
-                }
-                file->close();
-                file->open(QIODevice::WriteOnly);
-
-                QTextStream xmlStream(file);
-                xmlStream << domDoc.toString();*/
-                QDir project(QFileInfo(this->prjPath).dir());
-                QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
-                for (int i = 0; i < filePaths.count(); i++)
-                {
-                    if (relativePath == filePaths.at(i))
-                    {
-                        return "";
-                    }
-                }
-                fileNames.append(name);
-                fileCount++;
-                filePaths.append(relativePath);
-
-                QTreeWidgetItem *treeProjFile;
-                int index = name.lastIndexOf(".");
-                if (index > 0)
-                {
-                    QString text(name.right(name.size() - index));
-                    if (text == ".inc")
-                    {
-                        treeProjFile = new QTreeWidgetItem(treeProjInclude);
-                    }
-                    else if (text == ".asm" || text == ".psm")
-                    {
-                        treeProjFile = new QTreeWidgetItem(treeProjSource);
-                    }
-                    else
-                    {
-                        treeProjFile = new QTreeWidgetItem(treeProjOther);
-                    }
-                }
-                else
-                {
-                    treeProjFile = new QTreeWidgetItem(treeProjOther);
-                }
-                treeProjFile->setText(0, name);
-                treeProjFile->setData(0, Qt::ToolTipRole, path);
-
-            //}
-        //}
-        //file->close();
+                treeProjFile = new QTreeWidgetItem(treeProjOther);
+            }
+        }
+        else
+        {
+            treeProjFile = new QTreeWidgetItem(treeProjOther);
+        }
+        treeProjFile->setText(0, name);
+        treeProjFile->setData(0, Qt::ToolTipRole, path);
     }
     else
     {
@@ -1700,50 +1627,6 @@ void Project::setMainFile(QString path, QString name)
     mainFileName = name;
     mainFilePath = relativePath;
 
-    //QDir project(QFileInfo(prjPath).dir());
-    //QString relativePath = project.relativeFilePath(path);
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Mainfile")
-                    {
-                        xmlElement.setAttribute("name", mainFileName);
-                        xmlElement.setAttribute("path", mainFilePath);
-                        done = true;
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
-    //qDebug() << "Project: return setMainFile()";
 }
 
 /**
@@ -1752,59 +1635,8 @@ void Project::setMainFile(QString path, QString name)
  */
 void Project::setUseMainFile(bool enabled)
 {
-    //qDebug() << "Project: setUseMainFile()";
-    //QDir project(QFileInfo(prjPath).dir());
-
-    //QDir project(QFileInfo(prjPath).dir());
-    //QString relativePath = project.relativeFilePath(path);
     useMainFile = enabled;
 
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Mainfile")
-                    {
-                        if (enabled == true)
-                        {
-                            xmlElement.setAttribute("enabled", "true");
-                        }
-                        else
-                        {
-                            xmlElement.setAttribute("enabled", "false");
-                        }
-                        done = true;
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
     //qDebug() << "Project: return setUseMainFile()";
 }
 
@@ -1816,59 +1648,6 @@ void Project::setUseMainFile(bool enabled)
 void Project::setIntVector(int value)
 {
     intVector = value;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (xmlNode.isNull() == false && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (xmlGeneralNode.isNull() == false && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "IntVector")
-                                {
-                                    xmlGeneralElement.setAttribute("value", QString::number(value));
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -1879,59 +1658,6 @@ void Project::setIntVector(int value)
 void Project::setHWBuild(int value)
 {
     hwBuild = value;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "HWBuild")
-                                {
-                                    xmlGeneralElement.setAttribute("value", QString::number(value));
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -1942,59 +1668,6 @@ void Project::setHWBuild(int value)
 void Project::setScratchpad(int value)
 {
     scratchpadSize = value;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "ScratchpadSize")
-                                {
-                                    xmlGeneralElement.setAttribute("value", QString::number(value));
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -2005,59 +1678,6 @@ void Project::setScratchpad(int value)
 void Project::setProgMem(int value)
 {
     progMemSize = value;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "ProgMemSize")
-                                {
-                                    xmlGeneralElement.setAttribute("value", QString::number(value));
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -2068,59 +1688,6 @@ void Project::setProgMem(int value)
 void Project::setName(QString name)
 {
     prjName = name;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "Name")
-                                {
-                                    xmlGeneralElement.setAttribute("name", name);
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -2131,59 +1698,6 @@ void Project::setName(QString name)
 void Project::setFamily(QString family)
 {
     this->family = family;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            while (!xmlNode.isNull() && done == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "General")
-                    {
-                        QDomNode xmlGeneralNode = xmlElement.firstChild();
-                        QDomElement xmlGeneralElement;
-                        while (!xmlGeneralNode.isNull() && done == false)
-                        {
-                            xmlGeneralElement = xmlGeneralNode.toElement();
-                            if (!xmlGeneralElement.isNull())
-                            {
-                                if (xmlGeneralElement.tagName() == "Family")
-                                {
-                                    xmlGeneralElement.setAttribute("family", family);
-                                    done = true;
-                                }
-                            }
-                            xmlGeneralNode = xmlGeneralNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
     emit changeFamily(family);
 }
 
@@ -2194,87 +1708,6 @@ void Project::setTemplates(bool verilog, QString verilogTemplate, bool VHDL, QSt
     this->defaultVHDL = VHDL;
     this->templateVerilog = verilogTemplate;
     this->templateVHDL = VHDLTemplate;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            while (!xmlNode.isNull())
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Compiler")
-                    {
-                        QDomNode xmlCompilerNode = xmlElement.firstChild();
-                        QDomElement xmlCompilerElement;
-                        while (!xmlCompilerNode.isNull())
-                        {
-                            xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "Templates")
-                            {
-                                QDomNode xmlTemplatesNode = xmlCompilerElement.firstChild();
-                                QDomElement xmlTemplatesElement;
-                                while (!xmlTemplatesNode.isNull())
-                                {
-                                    xmlTemplatesElement = xmlTemplatesNode.toElement();
-                                    if (!xmlTemplatesElement.isNull())
-                                    {
-                                        if (xmlTemplatesElement.tagName() == "VHDLTemplate")
-                                        {
-                                            if (true == this->defaultVHDL)
-                                            {
-                                                xmlTemplatesElement.setAttribute("default", "true");
-                                            }
-                                            else
-                                            {
-                                                xmlTemplatesElement.setAttribute("default", "false");
-                                            }
-                                            xmlTemplatesElement.setAttribute("path", this->templateVHDL);
-                                        }
-                                        else if (xmlTemplatesElement.tagName() == "VerilogTemplate")
-                                        {
-                                            if (true == this->defaultVerilog)
-                                            {
-                                                xmlTemplatesElement.setAttribute("default", "true");
-                                            }
-                                            else
-                                            {
-                                                xmlTemplatesElement.setAttribute("default", "false");
-                                            }
-                                            xmlTemplatesElement.setAttribute("path", this->templateVerilog);
-                                        }
-                                    }
-                                    xmlTemplatesNode = xmlTemplatesNode.nextSibling();
-                                }
-                            }
-                            xmlCompilerNode = xmlCompilerNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -2282,55 +1715,6 @@ void Project::setClock(double clock, int mult)
 {
     this->clock = clock;
     this->clockMult = mult;
-
-    /*QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            while (!xmlNode.isNull())
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Simulator")
-                    {
-                        QDomNode xmlSimulatorNode = xmlElement.firstChild();
-                        QDomElement xmlSimulatorElement;
-                        while (!xmlSimulatorNode.isNull())
-                        {
-                            xmlSimulatorElement = xmlSimulatorNode.toElement();
-                            if (xmlSimulatorElement.tagName() == "Clock")
-                            {
-                                xmlSimulatorElement.setAttribute("clock", QString::number(clock, 'f', 3));
-                                xmlSimulatorElement.setAttribute("clockMult", QString::number(mult));
-                            }
-                            xmlSimulatorNode = xmlSimulatorNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-        }
-    }*/
 }
 
 
@@ -2342,88 +1726,18 @@ void Project::setClock(double clock, int mult)
 void Project::removeFile(QString path, QString name)
 {
     //qDebug() << "Project: removeFile()";
-    /*QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = project.relativeFilePath(path);
-    if (relativePath == this->mainFilePath && name == mainFileName)
-    {
-        this->setMainFile("", "");
-    }
-
-    QFile prjFile(prjPath);
-    prjFile.open(QIODevice::ReadOnly);
-    QDomDocument domDoc("MDSProject");
-    if (!domDoc.setContent(&prjFile))
-    {
-        error(ERR_XML_ASSIGN);
-    }
-    else
-    {
-        //otevrit xml, upravit a ulozit
-        QDomElement xmlRoot = domDoc.documentElement();
-        if (xmlRoot.tagName() != "MDSProject")
-        {
-            error(ERR_XML_CONTENT);
-        }
-        else
-        {
-            QDomNode xmlNode = xmlRoot.firstChild();
-            QDomElement xmlElement;
-            bool done = false;
-            bool breakpointDone = false;
-            while (!xmlNode.isNull() && done == false && breakpointDone == false)
-            {
-                xmlElement = xmlNode.toElement();
-                if (!xmlElement.isNull())
-                {
-                    if (xmlElement.tagName() == "Files")
-                    {
-                        QDomNode xmlFilesNode = xmlElement.firstChild();
-                        QDomElement xmlFilesElement;
-                        while (!xmlFilesNode.isNull())
-                        {
-                            xmlFilesElement = xmlFilesNode.toElement();
-                            if ( xmlFilesElement.tagName() == "File"
-                              && xmlFilesElement.attribute("name") == name
-                              && xmlFilesElement.attribute("path") == relativePath)
-                            {
-                                xmlFilesNode.parentNode().removeChild(xmlFilesNode);
-                                done = true;
-                                break;
-                            }
-                            xmlFilesNode = xmlFilesNode.nextSibling();
-                        }
-                    }
-                    else if (xmlElement.tagName() == "Breakpoints")
-                    {
-                        QDomNode xmlBreakpointFileNode = xmlElement.firstChild();
-                        QDomElement xmlBreakpointFileElement;
-                        while (!xmlBreakpointFileNode.isNull())
-                        {
-                            xmlBreakpointFileElement = xmlBreakpointFileNode.toElement();
-                            if ( xmlBreakpointFileElement.tagName() == "BreakpointFile"
-                              && xmlBreakpointFileElement.attribute("path") == relativePath)
-                            {
-                                xmlNode.removeChild(xmlBreakpointFileNode);
-                                breakpointDone = true;
-                                break;
-                            }
-                            xmlBreakpointFileNode = xmlBreakpointFileNode.nextSibling();
-                        }
-                    }
-                }
-                xmlNode = xmlNode.nextSibling();
-            }
-            prjFile.close();
-            prjFile.open(QIODevice::WriteOnly);
-            QTextStream xmlStream(&prjFile);
-            xmlStream << domDoc.toString();
-            prjFile.close();
-        }
-    }*/
     //TODO
     //pozor na stejna jmena, musi se to smazat zaroven (item at index check pres iterator)
-    fileNames.removeOne(name);
-    filePaths.removeOne(path);
+    QDir project(QFileInfo(prjPath).dir());
+    QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
+    int index = filePaths.indexOf(relativePath);
+    if (-1 == index)
+    {
+        qDebug() << "Project: File" << relativePath << "not in project";
+        return;
+    }
+    fileNames.removeAt(index);
+    filePaths.removeAt(index);
     fileCount--;
     //qDebug() << "Project: return removeFile()";
 }
