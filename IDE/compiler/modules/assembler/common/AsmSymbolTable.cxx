@@ -337,7 +337,7 @@ int AsmSymbolTable::getExprValue ( ExprValSide side,
         {
             m_compilerCore -> semanticMessage ( expr->m_location,
                                                 CompilerBase::MT_ERROR,
-                                                QObject::tr("real numbers are not supported in assembler")
+                                                QObject::tr("real numbers are not supported in this assembler")
                                                            .toStdString(),
                                                 true );
             break;

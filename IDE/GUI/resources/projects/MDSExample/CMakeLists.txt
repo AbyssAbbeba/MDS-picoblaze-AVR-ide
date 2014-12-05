@@ -56,7 +56,7 @@ foreach ( PSM_FILE ${PSM_FILES} )
                             COMMENT "Tutorial Project file ${FILE_BASE}.psm is already built ... skipping." )
     endif()
 
-    foreach ( extension "psm" "bin" "dbg" "ihex" "lst" "mem" "mtbl" "rawhex" "srec" "stbl" "v" "vhd" )
+    foreach ( extension "psm" "bin" "dbg" "ihex" "lst" "mem" "mtbl" "rawhex" "srec" "stbl" "v" "vhd" "strtbl" )
         install ( FILES "${FILE_BASE}.${extension}" DESTINATION ${INSTALL_DIR_DEMOPROJECT} )
     endforeach ( extension )
 endforeach ( PSM_FILE )

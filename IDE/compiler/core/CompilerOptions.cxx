@@ -39,8 +39,8 @@ CompilerOptions::ProcessorLimits::ProcessorLimits()
 
 CompilerOptions::CompilerOptions()
 {
-    m_maxMacroExp     = -1;
-    m_maxInclusion    = -1;
+    m_maxMacroExp     = 1024;
+    m_maxInclusion    = 1024;
     m_hexMaxRecLength = 16;
     m_messageLimit    = 1024;
 

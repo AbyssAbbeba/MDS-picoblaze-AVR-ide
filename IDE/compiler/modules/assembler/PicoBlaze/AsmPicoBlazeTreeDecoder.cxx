@@ -877,7 +877,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore -> semanticMessage ( node->location(),
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr ( "maximum macro expansion level (%1) reached " )
+                                            QObject::tr ( "maximum macro expansion depth (%1) reached " )
                                                         . arg ( m_opts->m_maxMacroExp )
                                                         . toStdString(),
                                             true );
@@ -1020,8 +1020,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LOCAL ( CompilerStatement * node,
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive `LOCAL' cannot appear outside macro "
-                                                        "definition" )
+                                          QObject::tr ( "directive `LOCAL' cannot appear outside macro definition" )
                                                       . toStdString(),
                                           true );
     }
@@ -1435,7 +1434,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         {
             m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,
-                                              QObject::tr("Device not supported: ").toStdString()
+                                              QObject::tr("device not supported: ").toStdString()
                                               + '"' + deviceName + '"' );
             return CA_RETURN_FALSE;
         }
