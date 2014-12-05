@@ -1201,6 +1201,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_OUTPUTK_STR_P ( CompilerStatement * nod
     {
         if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
         {
+            m_compilerCore->semanticMessage ( node->location(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "string %1 not defined" )
+                                                          . arg ( val->m_data.m_symbol )
+                                                          . toStdString () );
             return;
         }
     }
@@ -1239,6 +1244,11 @@ inline void AsmPicoBlazeTreeDecoder::dir_LD_RET_SX_STR ( CompilerStatement * nod
     {
         if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
         {
+            m_compilerCore->semanticMessage ( node->location(),
+                                              CompilerBase::MT_ERROR,
+                                              QObject::tr ( "string %1 not defined" )
+                                                          . arg ( val->m_data.m_symbol )
+                                                          . toStdString () );
             return;
         }
     }
