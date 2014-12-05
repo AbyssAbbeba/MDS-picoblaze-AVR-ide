@@ -177,8 +177,15 @@
             \end{table}
 
 \clearpage
-\section{Source Code Editor}
+\section{Code Editor}
     \index{Code editor}
+    Code editor is optimized for writing source code for your applications, it generally behaves as you would probably expect from a code editor. The editor has two different modes of operations:
+
+    \begin{enumerate}
+        \item Editing mode: for editing your files, this mode allows reading and writing.
+        \item Simulation mode: for displaying progress of the program simulation, in this mode the displayed text is for reading only.
+    \end{enumerate}
+
     \subsection{Main features}
         \subsubsection{Syntax highlight}
             Syntax highlight is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
@@ -192,6 +199,7 @@
         \subsubsection{Context menu}
             Context menu pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
 
+    \enlargethispage{6\baselineskip}
     \subsection{Key shortcuts}
         \index{Editor shortcuts}
         \begin{table}[h!]
