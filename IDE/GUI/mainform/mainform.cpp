@@ -2605,7 +2605,6 @@ void MainForm::simulationRunHandle()
     if (true == simulationStatus)
     {
         delete this->icon_simRun;
-        qDebug() << "Mainform: runhandle" << simulationRunStatus;
         if (true == simulationRunStatus)
         {
             this->icon_simRun = new QIcon(*pm_simRun);
@@ -3280,7 +3279,7 @@ void MainForm::stopSimSlot()
     {
         this->simulationRunHandle();
     }
-    else if (true == simulationAnimateStatus)
+    if (true == simulationAnimateStatus)
     {
         this->simulationAnimateHandle();
     }
@@ -3608,6 +3607,7 @@ void MainForm::closeEvent(QCloseEvent *event)
         QApplication::closeAllWindows();
         event->accept();
     }
+    qDebug() << "MainForm: closeEvent done";
 }
 
 

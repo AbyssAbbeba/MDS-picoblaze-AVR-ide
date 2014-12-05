@@ -732,9 +732,11 @@ void WTextEdit::scrollToLine(int line)
 
 void WTextEdit::deselect()
 {
+    int scrollBarValue = this->verticalScrollBar()->value();
     QTextCursor cursor = this->textCursor();
     cursor.clearSelection();
     this->setTextCursor(cursor);
+    this->verticalScrollBar()->setValue(scrollBarValue);
 }
 
 
