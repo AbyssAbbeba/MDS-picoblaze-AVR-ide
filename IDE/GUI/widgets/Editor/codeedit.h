@@ -105,7 +105,7 @@ class CodeEdit : public QWidget
         void splitSignal(Qt::Orientation orient, int line);
         void changedTabName(QString name, QString path, bool changed);
         void changedTabStatus(QString name, QString path, bool changed);
-        void updateText(const QString& text, int pos, CodeEdit *editor);
+        //void updateText(const QString& text, int pos, CodeEdit *editor);
         void CodeEditChanged(CodeEdit* editor);
         //void breakpointListStateChanged(QString file, int line);
         void breakpointEmit(QString file, int line);
