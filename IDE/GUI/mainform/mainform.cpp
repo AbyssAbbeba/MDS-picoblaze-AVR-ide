@@ -1651,14 +1651,14 @@ void MainForm::saveFile(CodeEdit *editor)
  */
 void MainForm::saveAll()
 {
-    qDebug() << "MainForm: saveAll()";
+    //qDebug() << "MainForm: saveAll()";
     //ulozi vsechny zmenene a nepojmenovane
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
-        if (wDockManager->getTabWidget(i)->isChanged() == true
+        if (wDockManager->getTabStatusChanged(i) == true
             || wDockManager->getTabWidget(i)->getPath() == "untracked")
         {
-            qDebug() << "MainForm: saveFile codeedit";
+            //qDebug() << "MainForm: saveFile codeedit";
             saveFile(wDockManager->getTabWidget(i));
         }
     }
