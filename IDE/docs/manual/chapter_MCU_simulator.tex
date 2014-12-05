@@ -1,4 +1,4 @@
-\section{Main simulation panel}
+\section{Main simulator panel}
     This panel is the main part of the simulator user interface. Simulator mimics functionality of PicoBlaze instruction set and provide detailed view in its registers, overview of input and output ports, etc., and displays warning when the simulated program behaves strangely i.e. does something which under normal circumstances results an error. Following picture shows main window of the simulator. You can find here internal registers, scratch-pad ram, input and output ports, stack, program counter, elapsed time and cycles, current clock and internal flags: carry and zero. All those features can be edited during processor simulation. If some value changes state, it will turn yellow. You can drag out whole simulation panel and place outside of the main window, for example another display on your computer.
 
    \begin{figure}[h!]
@@ -20,20 +20,32 @@
             Panel on the right side of simulation panel gives you general information about simulated code. You can find there the program counter, number of executed cycles, clock frequency, elapsed time and status flags Carry and Zero, plus normally hidden Interrupt Enable flag. You can also invoke an interrupt by clicking on the Interrupt button. Buttons showing status flags or other flags can also change them (click on such button to invert the flag). Green text in ``flag button'' indicates that the flag is set to 1, black text indicates that value of the flag is 0.
     \end{description}
 
-    \subsection{Simulator warnings}
-        The simulator can display several warnings to handle some common mistakes in software development like program counter overflow, stack overflow, and some others; it is meant to make your debugging process less painful. Please see pictures bellow for more information, or go to [Main~Menu] -> [Interface] -> [Config] -> [Simulator~warnings] in the main window.
+    \subsection{Modes of simulation}
+        The simulator can operate three different modes:
+        \begin{description}
+            \item [Step]
+                \index{Step mode}
+                Step by step simulation, executes only one instruction when invoked, no matter how many machine cycles it will take (this does not apply for macro-instruction, in that case each instruction of the macro is executed separately).
+            \item [Animation]
+                \index{Animation mode}
+                Similar to the step mode but in a loop, instructions are executed one after another until stopped on user request, or by a simulator waring message.
+            \item [Run]
+                \index{Run mode}
+                Run is generally the same as animation but much faster, GUI is not updated so often, and changes in the registers, ports, etc. are not shown until the run is halted.
+        \end{description}
 
-        \begin{table}[h!]
-            \begin{tabular}{cc}
-                \includegraphics[width=.45\textwidth]{img/interface4.png}
-                    &
-                \includegraphics[width=.45\textwidth]{img/interface5.png}
-                \\ Simulator -> Warnings -> Memory & Simulator -> Warnings -> Stack
-                \\
-                \\ \includegraphics[width=.5\textwidth]{img/interface4.png}
-                \\ Simulator -> Warnings -> CPU
-            \end{tabular}
-        \end{table}
+    \subsection{Simulator warnings}
+        The simulator can display several warnings to handle some common mistakes in software development like program counter overflow, stack overflow, and some others; it is meant to make your debugging process less painful. To adjust settings related simulator warnings, please go to [Main~Menu]~-> [Interface]~-> [Configure]~-> [Simulator~warnings].
+
+        \subsubsection{Simulator warning groups}
+        \begin{description}
+            \item[Memory]~\\
+                The memory group relates to suspicious and invalid attempts to access program memory, register file, scratch-pad memory, and even ports of the simulated processor.
+            \item[Stack]
+                The stack group is related to processor call stack.
+            \item[CPU]
+                The CPU group contains warnings related control flow and interrupt handling.
+        \end{description}
 
     \clearpage
     \subsection{Simulation cursor}
@@ -48,19 +60,5 @@
         \begin{figure}[h!]
             \centering
             \includegraphics[width=\textwidth]{img/simulationcursor2.png}
-            \caption{Simulation cursor}
+            \caption{Simulation cursor (with macros}
         \end{figure}
-
-    \subsection{Modes of simulation}
-        The simulator can operate three different modes:
-        \begin{description}
-            \item [Step]
-                \index{Step mode}
-                Step by step simulation, executes only one instruction when invoked, no matter how many machine cycles it will take (this does not apply for macro-instruction, in that case each instruction of the macro is executed separately).
-            \item [Animation]
-                \index{Animation mode}
-                Similar to the step mode but in a loop, instructions are executed one after another until stopped on user request, or by a simulator waring message.
-            \item [Run]
-                \index{Run mode}
-                Run is generally the same as animation but much faster, GUI is not updated so often, and changes in the registers, ports, etc. are not shown until the run is halted.
-        \end{description}

@@ -2,76 +2,44 @@
 <ui version="4.0">
  <class>InterfaceCfg_EditFonts</class>
  <widget class="QWidget" name="InterfaceCfg_EditFonts">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>400</width>
-    <height>300</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>20</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Font</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>20</y>
-     <width>66</width>
-     <height>17</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Size</string>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="listFonts">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>231</width>
-     <height>161</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="listSize">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>50</y>
-     <width>91</width>
-     <height>161</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblSample">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>230</y>
-     <width>351</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>The Quick Brown Fox Jumps Over A Lazy Dog</string>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Font</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Size</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QListWidget" name="listFonts"/>
+   </item>
+   <item row="1" column="1">
+    <widget class="QListWidget" name="listSize"/>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="lblSample">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>The Quick Brown Fox Jumps Over A Lazy Dog</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>
