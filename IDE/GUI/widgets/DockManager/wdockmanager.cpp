@@ -769,7 +769,7 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
         connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
         simWidget->setProjectPath(path);
         simWidget->fixHeight();
-        //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
         this->openSimWidgets.append(simWidget);
         simWidget->hide();
     }
@@ -1133,6 +1133,7 @@ void WDockManager::handleShowHideRight(int index)
 
 void WDockManager::stopSimSlot()
 {
+    //qDebug() << "WDockManager: stopsimslot";
     emit stopSimSig();
 }
 
