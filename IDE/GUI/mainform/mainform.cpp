@@ -770,26 +770,6 @@ void MainForm::createShortcuts()
     QShortcut *shctChangeTabRight = new QShortcut(this);
     shctChangeTabRight->setKey(Qt::ALT + Qt::Key_Right);
     connect(shctChangeTabRight, SIGNAL(activated()), this, SLOT(shortcutChangeTabRight()));
-    //QShortcut *srtSave = new QShortcut(QKeySequence("Ctrl+S"), this);
-    //connect(srtSave, SIGNAL(activated()), this, SLOT(saveFile()));
-
-    /*QShortcut *srtCompile = new QShortcut(QKeySequence("F5"), this);
-    connect(srtCompile, SIGNAL(activated()), this, SLOT(compileProject()));
-
-    QShortcut *srtSimFlow = new QShortcut(QKeySequence("F6"), this);
-    connect(srtSimFlow, SIGNAL(activated()), this, SLOT(simulationFlowHandle()));
-
-    QShortcut *srtSimRun = new QShortcut(QKeySequence("F7"), this);
-    connect(srtSimRun, SIGNAL(activated()), this, SLOT(simulationRunHandle()));
-
-    QShortcut *srtSimAnimate = new QShortcut(QKeySequence("F8"), this);
-    connect(srtSimAnimate, SIGNAL(activated()), this, SLOT(simulationAnimateHandle()));
-
-    QShortcut *srtSimStep = new QShortcut(QKeySequence("F9"), this);
-    connect(srtSimStep, SIGNAL(activated()), this, SLOT(simulationStep()));
-
-    QShortcut *srtSimReset = new QShortcut(QKeySequence("F10"), this);
-    connect(srtSimReset, SIGNAL(activated()), this, SLOT(simulationReset()));*/
 }
 
 
@@ -1197,11 +1177,11 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
-    //qDebug() << absoluteFilePath;
+    qDebug() << path;
     if (NULL != path)
     {
         QFile file(path);
@@ -2625,6 +2605,7 @@ void MainForm::simulationRunHandle()
     if (true == simulationStatus)
     {
         delete this->icon_simRun;
+        qDebug() << "Mainform: runhandle" << simulationRunStatus;
         if (true == simulationRunStatus)
         {
             this->icon_simRun = new QIcon(*pm_simRun);
@@ -3779,9 +3760,11 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 
     //const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     QString simulatedFilePath;
+    QString simulatedFileChop = QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
     foreach (const QString &value, files)
     {
-        simulatedFilePath = QDir::cleanPath(QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/' + value);
+        simulatedFilePath = QDir::cleanPath(simulatedFileChop + value);
+        qDebug() << "MainForm: simulated file path" << simulatedFilePath;
         if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
             //qDebug() << "MainForm: simHighlightLines value" << value;
@@ -3805,7 +3788,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             {
                 if (QString::fromStdString(*(std::get<0>(prev.at(i)))) != "")
                 {
-                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))));
+                    simulatedFilePath = simulatedFileChop;
+                    simulatedFilePath += QString::fromStdString(*(std::get<0>(prev.at(i))));
+                    simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+                    this->getWDockManager()->setCentralByPath(simulatedFilePath);
                     this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)) - 1, colors.at(1));
                     //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(i)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(i)), colors.at(1));
                 }
@@ -3813,7 +3799,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         }
         else
         {
-            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))));
+            simulatedFilePath = simulatedFileChop;
+            simulatedFilePath += QString::fromStdString(*(std::get<0>(prev.at(0))));
+            simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+            this->getWDockManager()->setCentralByPath(simulatedFilePath);
             this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)) - 1, colors.at(1));
             //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev.at(0)), colors.at(1));
         }
@@ -3827,7 +3816,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             {
                 if (QString::fromStdString(*(std::get<0>(prev2.at(i)))) != "")
                 {
-                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
+                    simulatedFilePath = simulatedFileChop;
+                    simulatedFilePath += QString::fromStdString(*(std::get<0>(prev2.at(i))));
+                    simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+                    this->getWDockManager()->setCentralByPath(simulatedFilePath);
                     this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(i)) - 1, colors.at(2));
                     //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
                 }
@@ -3835,7 +3827,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         }
         else
         {
-            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))));
+            simulatedFilePath = simulatedFileChop;
+            simulatedFilePath += QString::fromStdString(*(std::get<0>(prev2.at(0))));
+            simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+            this->getWDockManager()->setCentralByPath(simulatedFilePath);
             this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)) - 1, colors.at(2));
             //this->getWDockManager()->getCentralByPath(QString::fromStdString(*(std::get<0>(prev2.at(0)))))->getTextEdit()->highlightLineAppend(std::get<1>(prev2.at(0)), colors.at(2));
         }
@@ -3849,14 +3844,20 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             {
                 if (QString::fromStdString(*(std::get<0>(curr.at(i)))) != "")
                 {
-                    this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
+                    simulatedFilePath = simulatedFileChop;
+                    simulatedFilePath += QString::fromStdString(*(std::get<0>(curr.at(i))));
+                    simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+                    this->getWDockManager()->setCentralByPath(simulatedFilePath);
                     this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(i)) - 1, colors.at(0));
                 }
             }
         }
         else
         {
-            this->getWDockManager()->setCentralByPath(QString::fromStdString(*(std::get<0>(curr.at(0)))));
+            simulatedFilePath = simulatedFileChop;
+            simulatedFilePath += QString::fromStdString(*(std::get<0>(curr.at(0))));
+            simulatedFilePath = QDir::cleanPath(simulatedFilePath);
+            this->getWDockManager()->setCentralByPath(simulatedFilePath);
             this->getWDockManager()->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)) - 1, colors.at(0));
         }
     }
