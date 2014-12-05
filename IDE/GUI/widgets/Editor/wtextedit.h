@@ -71,6 +71,8 @@ class WTextEdit : public QPlainTextEdit
         void cursorPositionChangedSlot();
         void setTabToSpaces(bool enabled);
         void setSpacesInTab(int spacesInTab);
+
+    private slots:
         void shortcutBreakpoint();
         void shortcutBookmark();
         void shortcutCopy();
@@ -99,6 +101,8 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectWordRight();
         void shortcutUndo();
         void shortcutRedo();
+        void shortcutFindNext();
+        void shortcutFindPrevious();
 //         void shortcutChangeTabLeft();
 //         void shortcutChangeTabRight();
 //         void shortcutCloseTab();
@@ -174,9 +178,8 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectWordRight;
         QShortcut *shctUndo;
         QShortcut *shctRedo;
-        /*QShortcut *shctCloseTab;
-        QShortcut *shctChangeTabLeft;
-        QShortcut *shctChangeTabRight;*/
+        QShortcut *shctFindNext;
+        QShortcut *shctFindPrevious;
         
 
 
