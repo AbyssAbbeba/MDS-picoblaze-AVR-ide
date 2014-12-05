@@ -472,24 +472,16 @@ void CodeEdit::textEditChanged(bool modified)
 //najit efektivnejsi reseni, neco jako signal disable pri zmene a enable pri savu
 void CodeEdit::setChanged()
 {
-    if (m_changed == false)
-    {
-        m_changed = true;
-            emit changedTabStatus(m_name, m_path, true);
-
-    }
+    m_changed = true;
+    emit changedTabStatus(m_name, m_path, true);
 }
 
 
 void CodeEdit::setSaved()
 {
-    if (m_changed == true)
-    {
-        m_changed = false;
-        emit changedTabStatus(m_name, m_path, false);
-        m_textEdit->document()->setModified(false);
-    }
-
+    m_changed = false;
+    emit changedTabStatus(m_name, m_path, false);
+    m_textEdit->document()->setModified(false);
 }
 
 

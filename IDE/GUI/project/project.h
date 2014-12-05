@@ -143,6 +143,7 @@ class Project : public QObject
         QList<QPair<QString, QSet<unsigned int>>>* getBookmarksListRef();
         QList<unsigned int> getBreakpointsForFileAbsolute(QString file);
         QList<unsigned int> getBookmarksForFileAbsolute(QString file);
+        void renameFile(QString oldPath, QString newPath);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
