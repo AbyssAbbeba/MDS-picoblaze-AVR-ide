@@ -2759,6 +2759,7 @@ void MainForm::simulationFlowHandle()
         }
         //qDebug() << "MainForm: sim file" << file;
         //qDebug() << "MainForm: sim dump file" << dumpFiles;
+        projectMan->setSimulated(projectMan->getActive());
         int start = projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
@@ -2788,7 +2789,6 @@ void MainForm::simulationFlowHandle()
             #endif
             projectConfigAct->setDisabled(true);
             projectCompileAct->setDisabled(true);
-            projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
                 //qDebug() << "MainForm: simulationBreakpointsEnabled true";
@@ -2803,6 +2803,7 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
+            projectMan->setSimulated(NULL);
             switch (start)
             {
                 case 1:
@@ -3760,6 +3761,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 
     //const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     QString simulatedFilePath;
+    //qDebug() << "MainForm: simulatedFile" << projectMan->getSimulated()->simulatedFile;
     QString simulatedFileChop = QDir(projectMan->getSimulated()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
     foreach (const QString &value, files)
     {
