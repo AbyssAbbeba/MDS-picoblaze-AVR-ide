@@ -1,16 +1,26 @@
-In this chapter, we will be concerned with build-in macro assembler. With syntax of its statements, directives, and PicoBlaze assembler instructions. It is assumed, that the reader is familiar with general concepts of assembly language programming and PicoBlaze architecture.
+In this chapter, we will be concerned with the build-in macro assembler. With syntax of its statements, directives, and PicoBlaze instructions. We assume that the reader is familiar with general concepts of the assembly language programming and with PicoBlaze architecture.
 
-MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Intel assemblers and the C language. It supports wide range of output data formats, and when you master its advanced features like macro processing, conditions, loops, etc. it might give you means to write code with run-time efficiency typical for an assembly language while giving you some of the comfort of a more high-level language like C. For instance you may use ``\verb'if ( S0 == S1 )''' to easy write conditions instead of compares and conditional jumps, ``\verb'for ( S0, 0 .. 9 )''' for loops, ``\verb'#if my_constant > 20''' for conditional compilation, ``\verb'abc macro x, y, z''' for defining your own macros, and more. MDS macro-assembler is enhanced with features in hope it will help you save your time and make programming a little bit easier. MDS assembler supports features for smooth and transparent debugging and it is regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability. For these reasons we are convinced that this is the most advanced assembler for PicoBlaze currently available on the market.
+MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Intel assemblers and the C language. It supports wide range of output data formats and a number of advanced features like macro processing, conditions, loops, etc. it is meant to give you means to write code with run-time efficiency typical for the assembly language while giving you some of the comfort of a more high-level language like C. For instance you may use ``\verb'if ( S0 == S1 )''' to easy write conditions instead of compares and conditional jumps, ``\verb'for ( S0, 0 .. 9 )''' for loops, ``\verb'#if my_constant > 20''' for conditional compilation, ``\verb'abc macro x, y, z''' for defining your own macros, and more. MDS macro-assembler is enhanced with these features in hope it will help you save your time and make your work a little bit easier. MDS assembler also has a number of features for smooth and transparent debugging and it is regularly subjected to extensive automated testing to ensure its very functionality and to provide high reliability. For these reasons we are convinced that this is the most advanced assembler for PicoBlaze currently available on the market.
 
-\paragraph{Note about this documentation:}to write a document properly describing basically any programming language, including the assembly language, is always a challenging task. If you find a mistake or improperly covered area in this documentation, please let us know, we will fix that and provide you with the fixed version right away.
+\paragraph{Note about this documentation:}to write a document properly describing any programming language, including the assembly language, is always a challenging task. If you find a mistake or improperly covered area in this documentation, please let us know, we will fix that and provide you with the fixed version as soon as possible.
 
 \section{Basics}
+    \subsection{Supported processors}
+        MDS assembler supports all PicoBlaze versions publicly available at the time of its release, those are:
+        \begin{itemize}
+            \item PicoBlaze 6
+            \item PicoBlaze 3
+            \item PicoBlaze II
+            \item PicoBlaze CPLD
+            \item PicoBlaze
+        \end{itemize}
+
     \subsection{Main differences from the Xilinx assembler}
         \begin{description}
             \item[Default radix is decimal, not hexadecimal.]~\\
-                You can use different radix for each numerical literal, if you do not specify radix, it is decimal by default. For hexadecimal radix use `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use `0' (zero) prefix: 076, 011, 027, ...; for binary radix use `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
+                You can use different radix for each numerical literal, if you do not specify radix, it is decimal by default. For hexadecimal radix use the `0x' prefix: 0x1a, 0xbc, 0x23, ...; for octal radix use the `0' (zero) prefix: 076, 011, 027, ...; for binary radix use the `0b' prefix: 0b11001100, 0b10101010, 0b11111111, ...; for ASCII value put the character in single quotes: 'a', 'A', '3', ... Suffix notation is also supported: 80h (hex.), 128d (dec.), 200q (oct.), 10000000b (bin.), for ASCII characters, you can also use C language escape sequences: \verb"'\0'"~(NUL), \verb"'\n'"~(LF), \verb"'\r"~(CR), \verb"'\t"~(TAB), ...
             \item[Addressing mode specification is mandatory.]~\\
-                For immediate addressing use `\#' prefix: \texttt{LOAD~S0,~\#0xAB}; for indirect addressing you ``@'' prefix: ``\texttt{STORE~S0,~@S1}''; for direct addressing use no prefix: ``\texttt{LOAD~S0,~S1~+~3}'' (this loads S0 with S4).
+                For immediate addressing use the `\#' prefix: \texttt{LOAD~S0,~\#0xAB}; for indirect addressing use the ``@'' prefix: ``\texttt{STORE~S0,~@S1}''; and for direct addressing do not use any prefix: ``\texttt{LOAD~S0,~S1~+~3}'' (this loads S0 with S4).
             \item[This assembler is case insensitive.]~\\
                 ``\texttt{load~S0,~S1}'' is the same as ``\texttt{LOAD~s0,~s1}'', or ``\texttt{Load~S0,~s1}''.
             \item[This assembler supports user defined macro instructions, and expressions.]~\\
@@ -18,17 +28,17 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
         \end{description}
 
     \subsection{Statements}
-        Source code files for this assembler have to be text files formed like:\\
+        Source code files for this assembler have to be text files in the following format:\\
         ~\\
         \verb'[ label: ]  [ instruction  [ operand  [ , operand  ] ]    [ ;comment ]'\\
         \verb'[ label: ]  directive      [ argument [ , argument ] ]    [ ;comment ]'\\
         \verb'[ symbol ]  directive      [ argument [ , argument ... ]  [ ;comment ]'\\
         \verb'            directive      symbol, argument               [ ;comment ]'\\
 
-        Tokens in square brackets are optional. Compilation does not continue beyond line containing the \texttt{END} directive so after that directive the code does not have to be syntactically valid. Empty lines are valid, as well as lines containing only comment or label. Statements are separated by white space (spaces or tabs). Statements are case insensitive and their length is not limited, overall line length is also not limited.
+        Tokens in square brackets are optional. Compilation does not continue beyond line containing the \texttt{END} directive, after that directive the code does not have to be syntactically correct. Empty lines are valid, as well as lines containing only comment or label. Statements are separated by white space (spaces or tabs). Statements are case insensitive and their length is not limited, overall line length is also not limited. Allowed line delimiters are: LF, CR, and sequence CRLF. Expected encoding is UTF-8 but it is not necessarily required.
 
     \subsection{Comments}
-        Comments in source code are ignored by the assembler (the are supposed to serve only as notes to the developer). MDS assembler uses two types of comments: single-line comment starting with ``\texttt{;}'' (semicolon) character and ending with the end of line, and multi-line comments starting with ``\texttt{/*}'' (slash followed by asterisk) sequence and ending with ``\texttt{*/}'' (asterisk followed by slash) sequence (just like in C language).
+        Comments in source code are ignored by the assembler (they are supposed to serve only as notes to the developer). MDS assembler uses two types of comments: single-line comment starting with ``\texttt{;}'' (semicolon) character and ending with the end of line, and multi-line comments starting with ``\texttt{/*}'' sequence (slash followed by asterisk) and ending with ``\texttt{*/}'' sequence (asterisk followed by slash), like in the C language.
 
         \paragraph{Example}
             ~\\
@@ -42,7 +52,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
 
     \clearpage
     \subsection{Numeric constants}
-        MDS assembler supports multiple radixes for numeric constants, radix is specified wither using prefix or suffix notation.
+        MDS assembler supports multiple radixes for numeric constants, radix is specified using prefix or suffix notation. Default radix is decimal (like in the C language).
 
         ~\\
         \verb"    ; Hexadecimal."\\
@@ -91,7 +101,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
                 \caption{Escape sequences.}
             \end{table}
 
-            In addition to the escape sequences sequences described int the table above, MDS assembler also supports these escape sequences:
+            In addition to the escape sequences sequences described in the table above, MDS assembler also supports these escape sequences:
             \begin{description}
                 \item[$\backslash$NNN]~\\
                     To write a character whose numerical value is given by \texttt{NNN} interpreted as an octal number (e.g. \verb'\0', \verb'\22', \verb'\377', etc.).
@@ -105,7 +115,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
 
     \subsection{Symbols}
         \index{Symbols}
-        Symbols are user defined symbolic names for numbers or addresses. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be one symbol.
+        Symbols are user defined symbolic names for numbers and addresses used in the program. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Symbol names cannot start with digit. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be the same symbol. Symbols have to be defined before they are used.
 
         \paragraph{Example}
         ~\\
@@ -113,10 +123,11 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
         \verb'    second_symbol     SET     047      ; Octal radix, number.'\\
         \verb'    third_symbol      REG     39       ; Decimal radix, register address.'\\
         \verb'    fourth_symbol     DATA    0x27     ; Hexadecimal radix, scratch-pad ram address.'\\
-        \verb'    fifth_symbol      CODE    0x27     ; Hexadecimal radix, program memory address.'
+        \verb'    fifth_symbol      CODE    0x27     ; Hexadecimal radix, program memory address.'\\
+        \verb'    my_label:                          ; Program memory address, initialized by address counter.'
 
         \subsubsection{Special Symbols}
-            MDS assembler support only one special symbol which is always defined on every line containing an instruction (or the \texttt{DB} directive), symbol ``\texttt{\$}'' contains address in program memory where this instruction is going to be placed by the assembler.
+            MDS assembler supports only one special symbol, this symbol is always automatically defined on every line containing an instruction (or the \texttt{DB} directive, \ref{DB}), it is symbol ``\texttt{\$}''. ``\texttt{\$}'' contains address in the program memory where ``this instruction'' is going to be placed by the assembler.
 
             \paragraph{Example}
                 ~\\
@@ -131,7 +142,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
 
         \clearpage
         \subsubsection{Predefined Symbols}
-            These symbols are defined by default when you specify the target device (directive ``device''). Symbols S10..S1F are defined for KCPSM2 only, and S8..S1F are not defined for KCPSM1-CPLD. All these symbols are defined as register addresses.
+            These symbols are defined by default when you specify the target device (using the ``\texttt{DEVICE}'' directive). Symbols \texttt{S10}..\texttt{S1F} are defined for KCPSM2 only, symbols \texttt{S8}..\texttt{S1F} are not defined for KCPSM1-CPLD but defined for every other PicoBlaze. All these symbols are defined as register addresses.
 
             \begin{table}[h!]
                 \centering
@@ -160,7 +171,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
 
     \subsection{Expressions}
         \index{Expressions}
-        Arithmetical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting value. Expression calculation is performed on 32-bit unsigned integers, the resulting values are trimmed to 16-bits at most (with exception for DB where values might be trimmed to 18 bits). Expressions comprise of arithmetical operators, constants, and symbols. Examples of such expressions:
+        Mathematical expressions are evaluated at compilation time and replaced with constants corresponding to their resulting values. Expression calculation is performed on 32-bit unsigned integers, the resulting values then are trimmed from left to 16-bits at most (with exception for the \texttt{DB} directive where values might be trimmed to 18 bits). Expression comprises of arithmetical operators, numeric literals, and symbols. Examples of such expressions include:
 
         \begin{itemize}
             \item \texttt{2+1}
@@ -170,9 +181,9 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
             \item \texttt{X * Y + X \% Y}
         \end{itemize}
 
-        When operators with different priority levels appear in an expression, operations are evaluated according to priorities. When operators of the same priority appear in an expression, operations are evaluated from left to right. Parenthesis may be used to force order of evaluation, for example \texttt{2 + 2 * 2} is evaluated as 6 because multiplication has higher priority than addition, but \texttt{( 2 + 2 ) * 2} results in 8 because addition is enclosed by parenthesis and therefore it is evaluated prior to the multiplication.
+        When operators with different priority levels appear in the expression, operations are evaluated according to priorities. When operators of the same priority appear in the expression, operations are evaluated from left to right. Parenthesis may be used to force a different order of evaluation, for example \texttt{2 + 2 * 2} is evaluated as 6 because multiplication has higher priority than addition, but \texttt{( 2 + 2 ) * 2} results in 8 because addition is enclosed by parenthesis and therefore it is evaluated prior to the multiplication.
 
-        The table below show priorities for all supported operators, priority 1 is the highest priority, and priority 9 is the lowest priority. All logical operators have priorities lower than arithmetic and relational operators.
+        The table below shows priorities for all supported operators, priority 1 is the highest priority, priority 9 is the lowest priority. Arithmetic operators have higher priority than relational operators, and relational operators have higher priority than logical operators.
 
         \begin{table}[h!]
             \centering
@@ -207,20 +218,20 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
         \end{table}
 
         \subsubsection{Special operators}
-            Special operators can appear only at certain places and servers special purpose.
+            Special operators can appear only at certain places and serve special purposes.
             \begin{description}
                 \item[high(...)]~\\
-                    Operator \texttt{HIGH(...)} extract the high order byte from 16 bit value. For example \texttt{LOAD  S0, \#high(0x2233)} would load S0 with immediate value of 0x22.
+                    Operator \texttt{HIGH(...)} extracts the high order byte from 16 bit value. For example \texttt{LOAD  S0, \#high(0x2233)} would load S0 with immediate value of 0x22.
                 \item[low(...)]~\\
-                    Operator \texttt{LOW(...)} extract the low order byte from 16 bit value. For example \texttt{LOAD  S0, \#low(0x2233)} would load S0 with immediate value of 0x33.
+                    Operator \texttt{LOW(...)} extracts the low order byte from 16 bit value. For example \texttt{LOAD  S0, \#low(0x2233)} would load S0 with immediate value of 0x33.
                 \item[at]~\\
                     Operator \texttt{AT} is used only in conjunction with \texttt{AUTOREG} and \texttt{AUTOSPR} directives to set address counter to the specified value.
                 \item[..]~\\
-                    Operator \texttt{..} is used only with the \texttt{FOR} directive to specify loop interval.
+                    Operator \texttt{..} is used only with the \texttt{FOR} directive to specify the loop iteration interval.
             \end{description}
 
     \subsection{Reserved keywords}
-        Please remember that the assembler is case insensitive.
+        Please remember that the assembler is case \textbf{in-}sensitive.
         \subsubsection{Instruction mnemonics}
             \begin{table}[h!]
                 \centering
@@ -243,7 +254,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
                         out   & outk & ld  & cmpcy & st    & ft  & ret \\\hline
                     \end{tabular}
                 }
-                \caption{Instruction shorthands}
+                \caption{Instruction shortcuts}
             \end{table}
 
             \begin{table}[h!]
@@ -262,7 +273,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
             \end{table}
 
         \subsubsection{Directives}
-            Regular directives directives can be prefixed with ``\texttt{.}'' (period) character without any effect on their meaning and function.
+            Regular directives and special macros directives can be prefixed with ``\texttt{.}'' (period) character without any effect on their meaning and function.
 
             \begin{table}[h!]
                 \centering
@@ -322,53 +333,53 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
 
 \clearpage
 \section{Compiler messages}
-    This chapter lists the error messages generated by MDS. The following sections include a brief description of the possible error messages along with a description of the error and any corrective actions you can take to avoid or eliminate the error. Errors terminate the assembly and generate a message that is displayed on the console. Warnings generate a message in the assembly listing file but do not terminate the assembly.
+    This chapter lists the messages generated by the MDS assembler. The following sections include a brief description of the possible error and warning messages along with a description of the error or warning and any corrective actions you can take to avoid or eliminate the error or warning. Errors terminate the assembly and generate a message that is displayed on the console. Warnings generate a message that is displayed on the console but do not terminate the assembly. All messages are recorded in the code listing file.
 
     \begin{description}
         \item[Unable to open file]~\\
-            The given file cannot be opened, probably does not exists or your operating system refuses to grad you access to it. Check whether the file exists, and check your permissions.
+            The given file cannot be opened, probably does not exist or your operating system refuses to grad the access to it. Check whether the file exists, and check your permissions.
         \item[Unable to write to file]~\\
-            It is not possible to write into the given file. This is in most cases caused by wrong permissions on file or directory, or nonexistent directory in the file path.
+            It is not possible to write into the given file. This is in most cases caused by wrong permissions set on the file or directory, or nonexistent directory in the file path.
         \item[Unable to save file]~\\
             The given file cannot be saved. This might indicate that there is something badly wrong, like not enough space left on your storage device (HDD, etc.).
         \item[The resulting machine code is too big to be stored in a file]~\\
-            Size of the resulting machine code is bigger than your processor could possibly handle in its current configuration.
+            Size of the resulting machine code is bigger than your processor could handle in its current configuration.
         \item[Some of the source code files were apparently changed during compilation]~\\
-            Solution to that is: do not change source files during the compilation, wait for the compilation finish first.
+            Please do not change source files during the compilation, wait for the compilation finish first.
         \item[User defined memory limit for X exceeded]~\\
             You have exceeded boundary of X memory defined for your processor configuration.
         \item[User defined memory limit for X exceeded]~\\
-            You have exceeded boundary of X memory defined for the \texttt{LIMIT} directive.
+            You have exceeded boundary of X memory defined by the \texttt{LIMIT} directive.
         \item[Instruction X requires operand Y to be of type(s) Z]~\\
-            This means you are for example trying to use a symbol defined as port address in place of register address.
+            This means for example that you are trying to use a symbol defined as port address in place of register address.
         \item[Macro not defined ]~\\
             The macro you are attempting to use has not (yet) been defined, possibly you are trying to expand a macro before its definition.
         \item[Too many arguments given, expecting at most X arguments]~\\
-            Directives require certain number of arguments, when you provide different number of arguments, the directive would in certain cases just not make sense.
+            Directives require certain number of arguments, when you provide a different number of arguments, the directive makes no sense to the assembler.
         \item[Attempting to use unavailable space in X memory at address: Y]~\\
-            Suppose you have 8 registers and you try for example to write to register at address 10, the assembler will then give you this error. The same, of course, apply also to program memory, or any other memory.
+            Suppose you have 8 registers and you try for example to write to register at address 10, then the assembler will give you this error. The same, of course, apply also to program memory, or any other memory space.
         \item[The last error was critical, compilation aborted]~\\
-            Normally the assembler tries to carry on compiling for as long as possible despite errors, it is implemented that way to provide you with as many error message at the time as possible. But in certain cases it is not possible and compilation has to aborted instantaneously.
+            Normally the assembler tries to carry on compiling for as long as possible despite errors, it is implemented that way to provide you with as many error message at the time as possible. But in certain cases compilation has to aborted instantaneously.
         \item[Device not supported]~\\
             The given processor is not supported, this usually happens due to some typo.
         \item[Device specification code is already loaded ]~\\
-            The processor architecture has to be specified only once, multiple specifications for one source code would not make sense because they could "collide" with each other.
+            The processor architecture has to be specified only once, multiple specifications for one source code would not make sense, they could "collide" with each other.
         \item[Limit value X is not valid]~\\
-            Invalid limit specifier for the \texttt{LIMIT} directive.
+            Invalid limit specifier for the \texttt{LIMIT} directive, only \texttt{D}, \texttt{R}, and \texttt{C} are valid.
         \item[Directive `LOCAL' cannot appear outside of macro definition ]~\\
-            Directive \texttt{LOCAL} can be only used inside of macro definition, outside macro definition it has no meaning and therefore cannot be used.
+            Directive \texttt{LOCAL} can be only used inside macro definition, outside macro definition it has no meaning and therefore cannot be used.
         \item[Directive `EXITM' cannot appear outside macro definition]~\\
-            Directive \texttt{EXITM} can be only used inside of macro definition, outside macro definition it has no meaning and therefore cannot be used.
+            Directive \texttt{EXITM} can be only used inside macro definition, outside macro definition it has no meaning and therefore cannot be used.
         \item[Maximum macro expansion level X reached]~\\
-            Maximum macro expansion level reached. You can change your compiler settings and set higher expansion level. By default, maximum macro expansion level is unlimited, which is possibly dangerous and users should set some limit for them selfs.
+            You can change your compiler settings and set higher expansion level. By default, maximum macro expansion level is unlimited, which is possibly dangerous and users should set some limit for them selfs.
         \item[Maximum number of \#WHILE directive iterations reached]~\\
             Maximum number of the \texttt{\#WHILE} directive iterations has been reached. You can change your compiler settings to allow more iterations. By default, maximum number of \texttt{\#WHILE} iterations is unlimited, which is possibly dangerous and users should set some limit for them selfs.
         \item[Maximum number of REPEAT directive iterations reached]~\\
             Maximum number of the \texttt{REPEAT} directive iterations has been reached. You can change your compiler settings to allow more iterations. By default, maximum number of \texttt{REPEAT} iterations is unlimited, which is possibly dangerous and users should set some limit for them selfs.
         \item[Instruction word is only X bits wide, value Y trimmed to Z]~\\
-            You have exceeded instruction word length, opcode value has been trimmed to X bits which reduces value Y to value Z.
+            You have exceeded instruction word length, opcode value has been trimmed from left to X bits which reduces value Y to value Z.
         \item[Symbol already defined]~\\
-            The given symbol has been already defined, there cannot coexist more symbols with the same name in one compilation unit.
+            The given symbol has already been defined, there cannot coexist two or more symbols with the same name in one compilation unit.
         \item[Symbol not defined: X]~\\
             The given symbol has not been defined, maybe you are just trying to use it prior to its definition.
         \item[Symbol X already defined with type Y]~\\

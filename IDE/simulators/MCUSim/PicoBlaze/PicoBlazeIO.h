@@ -201,7 +201,6 @@ inline void PicoBlazeIO::output ( unsigned int portID,
     m_outputBitArray [ portID ] = ( char ) value;
 }
 
-#include<iostream>
 inline void PicoBlazeIO::outputk ( unsigned int portID,
                                    unsigned int value )
 {
@@ -212,7 +211,6 @@ inline void PicoBlazeIO::outputk ( unsigned int portID,
 
     logEvent ( EVENT_PICOBLAZEIO_OUTPUTK, portID, value );
     m_writeStrobe = true;
-std::cout<<"m_outputBitArray [ "<<portID<<" ] = ( char ) "<<value<<";\n";
     m_outputBitArray [ portID ] = ( char ) value;
 }
 
