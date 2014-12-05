@@ -3760,11 +3760,11 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 
     //const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     QString simulatedFilePath;
-    QString simulatedFileChop = QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
+    QString simulatedFileChop = QDir(projectMan->getSimulated()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
     foreach (const QString &value, files)
     {
         simulatedFilePath = QDir::cleanPath(simulatedFileChop + value);
-        qDebug() << "MainForm: simulated file path" << simulatedFilePath;
+        //qDebug() << "MainForm: simulated file path" << simulatedFilePath;
         if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
             //qDebug() << "MainForm: simHighlightLines value" << value;
