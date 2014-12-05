@@ -2605,7 +2605,6 @@ void MainForm::simulationRunHandle()
     if (true == simulationStatus)
     {
         delete this->icon_simRun;
-        qDebug() << "Mainform: runhandle" << simulationRunStatus;
         if (true == simulationRunStatus)
         {
             this->icon_simRun = new QIcon(*pm_simRun);
@@ -2760,6 +2759,7 @@ void MainForm::simulationFlowHandle()
         }
         //qDebug() << "MainForm: sim file" << file;
         //qDebug() << "MainForm: sim dump file" << dumpFiles;
+        projectMan->setSimulated(projectMan->getActive());
         int start = projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
@@ -2789,7 +2789,6 @@ void MainForm::simulationFlowHandle()
             #endif
             projectConfigAct->setDisabled(true);
             projectCompileAct->setDisabled(true);
-            projectMan->setSimulated(projectMan->getActive());
             if (true == simulationBreakpointsEnabled)
             {
                 //qDebug() << "MainForm: simulationBreakpointsEnabled true";
@@ -2804,6 +2803,7 @@ void MainForm::simulationFlowHandle()
         }
         else
         {
+            projectMan->setSimulated(NULL);
             switch (start)
             {
                 case 1:
@@ -3280,7 +3280,7 @@ void MainForm::stopSimSlot()
     {
         this->simulationRunHandle();
     }
-    else if (true == simulationAnimateStatus)
+    if (true == simulationAnimateStatus)
     {
         this->simulationAnimateHandle();
     }
@@ -3608,6 +3608,7 @@ void MainForm::closeEvent(QCloseEvent *event)
         QApplication::closeAllWindows();
         event->accept();
     }
+    qDebug() << "MainForm: closeEvent done";
 }
 
 
@@ -3760,11 +3761,12 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
 
     //const QString prjDir = QDir::cleanPath(QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
     QString simulatedFilePath;
-    QString simulatedFileChop = QDir(projectMan->getActive()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
+    //qDebug() << "MainForm: simulatedFile" << projectMan->getSimulated()->simulatedFile;
+    QString simulatedFileChop = QDir(projectMan->getSimulated()->simulatedFile.section('/',0, -2)).absolutePath() + '/';
     foreach (const QString &value, files)
     {
         simulatedFilePath = QDir::cleanPath(simulatedFileChop + value);
-        qDebug() << "MainForm: simulated file path" << simulatedFilePath;
+        //qDebug() << "MainForm: simulated file path" << simulatedFilePath;
         if (false == this->getWDockManager()->setCentralByPath(simulatedFilePath))
         {
             //qDebug() << "MainForm: simHighlightLines value" << value;

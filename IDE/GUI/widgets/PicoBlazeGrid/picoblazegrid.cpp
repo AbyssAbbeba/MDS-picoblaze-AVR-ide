@@ -563,7 +563,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
             case PicoBlazeStatusFlags::EVENT_FLAGS_IE_CHANGED:
             {
-                qDebug() << "PicoBlazeGrid: EVENT_FLAGS_IE_CHANGED" << detail;
+                //qDebug() << "PicoBlazeGrid: EVENT_FLAGS_IE_CHANGED" << detail;
                 if (detail == 0)
                 {
                     this->btnInte->setStyleSheet("color: none");
