@@ -67,15 +67,18 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
             QString text(wName.right(wName.size() - index));
             if (text.toLower() == ".h")
             {
-                m_textEdit = new WTextEdit(this, C);
+                m_textEdit = new WTextEdit(this, PLAIN);
+                //m_textEdit = new WTextEdit(this, C);
             }
             else if (text.toLower() == ".cpp" || text.toLower() == ".cxx" || text.toLower() == ".cc")
             {
-                m_textEdit = new WTextEdit(this, CPP);
+                m_textEdit = new WTextEdit(this, PLAIN);
+                //m_textEdit = new WTextEdit(this, CPP);
             }
             else if (text.toLower() == ".c")
             {
-                m_textEdit = new WTextEdit(this, C);
+                m_textEdit = new WTextEdit(this, PLAIN);
+                //m_textEdit = new WTextEdit(this, C);
             }
             else if (text.toLower() == ".asm" || text.toLower() == ".psm")
             {
@@ -266,15 +269,18 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
         QString text(wName.right(wName.size() - index));
         if (text.toLower() == ".h")
         {
-            m_textEdit = new WTextEdit(this, C);
+            m_textEdit = new WTextEdit(this, PLAIN);
+            //m_textEdit = new WTextEdit(this, C);
         }
         else if (text.toLower() == ".cpp" || text.toLower() == ".cxx" || text.toLower() == ".cc")
         {
-            m_textEdit = new WTextEdit(this, CPP);
+            m_textEdit = new WTextEdit(this, PLAIN);
+            //m_textEdit = new WTextEdit(this, CPP);
         }
         else if (text.toLower() == ".c")
         {
-            m_textEdit = new WTextEdit(this, C);
+            m_textEdit = new WTextEdit(this, PLAIN);
+            //m_textEdit = new WTextEdit(this, C);
         }
         else if (text.toLower() == ".asm" || text.toLower() == ".psm")
         {
