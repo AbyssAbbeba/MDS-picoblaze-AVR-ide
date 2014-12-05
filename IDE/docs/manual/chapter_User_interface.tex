@@ -89,27 +89,63 @@
                 \item[Button Cancel:] Closes the dialog and return to the IDE, the main window will remain opened.
             \end{description}
 
-    \clearpage
-    \subsection{Actions}
+    \subsection{Main menu actions}
         \begin{description}
-            \item [New project:] Creates a new project.
-            \item [Open project:] Opens an existing project file.
-            \item [Save project:] Saves current project file.
-            \item [Compile:] Compiles your code.
-            \item [Start Simulation:] Enters simulation mode.
-            \item [Run:] High speed simulation.
-            \item [Animate:] Simulation with GUI (such as register view, etc.) updated after each executed instruction.
-            \item [Step:] Step by step simulation.
-            \item [Reset:] Resets simulator to its initial state.
-            \item [Unhighlight:] Clear highlight from register view and other graphical components of the simulator panel.
-            \item [Undo:] will undo all edit actions on the open document in reverse order
-            \item [Redo:] will redo all undo actions
-            \item [Cut:] cuts all selected parts of the open document and puts it in the clipboard.
-            \item [Copy:] copies all selected parts of the open document to the clipboard
-            \item [Paste:] pastes the text contents of the clipboard in the open document
-            \item [Select:] All selects all text in the open document
-            \item [Find:] find a to be given string through the open document
-            \item [Replace:] replace a given string in the open document by a new string
+            \item[File / New File] Create a new file in your current project.
+            \item[File / New Untracked File] Create a new file outside your current project.
+            \item[File / Open File] Open an existing file and adds it to your current project.
+            \item[File / Open Recent] Keep track of recently opened files and allow you to reopen them.
+            \item[File / Save File] Save your current file in your current project.
+            \item[File / Save As] Save your current file in your current project under a different name.
+            \item[File / Save All]
+            \item[File / Exit] Exit the MDS environment.
+
+            \item[Edit / Undo] Undo the last edition action in code editor.
+            \item[Edit / Redo] Revert the last undo action.
+            \item[Edit / Cut] Cut the selected text in the code editor and copies it into clipboard.
+            \item[Edit / Copy] Copy the selected text into clipboard.
+            \item[Edit / Paste] Paste the clipboard content in the code editor.
+            \item[Edit / Select All] Select all text in the code editor.
+            \item[Edit / Deselect] Deselect the selected text in the code editor.
+
+            \item[Interface / Configure] Open user interface configuration dialog.
+
+            \item[Project / New Project] Open wizard for creating new projects.
+            \item[Project / Open Project] Open and existing MDS project.
+            \item[Project / Open Recent] Keeps track of recently opened MDS projects and allow you to reopen them.
+            \item[Project / Save Project]
+            \item[Project / Close Project] Close the current project.
+            \item[Project / Compile] Run compiler on your current file or the main file in your current project.
+            \item[Project / Save Project Config]
+            \item[Project / Configure] Open project configuration dialog.
+
+            \item[Simulation / Start Simulation] Starts processor simulator with machine code generated from your current file or the main file.
+            \item[Simulation / Run] Run the program loaded in the simulator.
+            \item[Simulation / Animate] Animate the program loaded in the simulator.
+            \item[Simulation / Step] Execute one instruction cycle in the simulator.
+            \item[Simulation / Reset] Reset the processor simulator.
+            \item[Simulation / Unhighlight] Remove highlight for recently changed values in the simulator GUI components.
+            \item[Simulation / Breakpoint] Set breakpoint for the current line in the current file in the current project.
+            \item[Simulation / Disable Breakpoints] Disable simulator breakpoints generally.
+            \item[Simulation / Enable Breakpoints] (Re-)Enable simulator breakpoints generally.
+
+            \item[Tools / Disassembler] Open disassembler wizard.
+            \item[Tools / Assembler translator] Open Assembler Translator wizard.
+            \item[Tools / Data File Converter] Open Data File Converted utility.
+            \item[Tools / Radix Converter] Open Radix Converter window.
+            \item[Tools / 8 Segment Editor] Open editor for single digit LED displays.
+            \item[Tools / Loop Generator] Open Loop Generator utility.
+
+            \item[Simulation Tools / LED Panel] Open simple LED panel simulator.
+            \item[Simulation Tools / 7 Segment Display] Open simple LED display simulator.
+            \item[Simulation Tools / Switch Panel] Open switch panel simulator.
+
+            \item[Help / About] Displays basic information about your MDS version.
+            \item[Help / User Manual] Open user manual, this document.
+            \item[Help / Open Tutorial Project] Open the Tutorial Project, each user should read the tutorial before using this IDE.
+            \item[Help / Welcome Dialog] Reopen the welcome dialog, you have already seen the welcome dialog when you first started the MDS.
+            \item[Help / About Qt] Display basic information about the Nokia Qt framework.
+            \item[Help / License] Display detailed information about the terms of license for this product.
         \end{description}
 
         \subsubsection{Action shortcuts}
@@ -144,13 +180,17 @@
 \section{Source Code Editor}
     \index{Code editor}
     \subsection{Main features}
-        \paragraph{Syntax highlight} is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
+        \subsubsection{Syntax highlight}
+            Syntax highlight is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
 
-        \paragraph{Left panel} of the editor shows numbers of lines in your source code for easier navigation.
+        \subsubsection{Left panel}
+            Left panel of the editor shows numbers of lines in your source code for easier navigation.
 
-        \paragraph{Editor status bar} displays information about current column and line number.
+        \subsubsection{Editor status bar}
+            Editor status bar displays information about current column and line number.
 
-        \paragraph{Context menu} pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
+        \subsubsection{Context menu}
+            Context menu pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
 
     \subsection{Key shortcuts}
         \index{Editor shortcuts}
@@ -200,6 +240,7 @@
             \caption{Default Editor shortcuts.}
         \end{table}
 
+    \clearpage
     \subsection{Breakpoints and bookmarks}
         \index{Breakpoints} \index{Bookmarks}
         \begin{wrapfigure}{r}{0pt}
@@ -214,6 +255,18 @@
 
 \section{Project management}
     \index{Project management}
+    MDS can organize your file into groups called projects, a project is also bound with its specific configuration. Project specific configuration contains:
+    \begin{itemize}
+        \item Information about which exact processor do you use and in what exact configuration (memory size, etc.).
+        \item Compiler settings to be applied: paths to search for file inclusion, which file formats you wish to generate, what VHDL template you want to use, etc.
+        \item If your project comprises of a set of independent files, or if it has one main file and other files are included in it (using the \texttt{INCLUDE} directive).
+    \end{itemize}
+
+    \subsection{Untracked files}
+        \index{Untracked files}
+        Besides files bound with particular project, you can also open, modify, save, compile, and simulate on files which are not part of your current MDS project. These files, files not bound with a project, are called untracked files. Using untracked files has some limitations and under normal circumstances it should be avoided, for instance when you run simulator on an untracked file, note that in that case compiler has to be run first, MDS does not know what processor it should use as target, what is the size of its program memory, whether to generate MEM file or not, etc. All these configuration options can be set for also untracked files but these setting are ultimately lost when you leave the MDS environment, while if you used project, the would be saved. The purpose of project is to provide you better comfort while using this IDE, although in some cases you just do not want to bother with creating a new project just for one file, for a few minutes of work, and that is where the untracked files comes handy.
+
+    \clearpage
     \subsection{Project configuration}
         In project configuration window, you can edit project and compiler settings. You can open project configuration
         window by right clicking on project name in the left panel and choosing Configuration, see the pictures below.
@@ -285,16 +338,9 @@
 
 \clearpage
 \section{UI Configuration}
-    In interface configuration dialog, you can edit IDE behavior and appearance, for instance editor font, tab width,
-    etc., or simulator warnings. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] ->
-    [Config].
+    In interface configuration dialog, you can edit appearance and behavior of the IDE. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] -> [Config].
 
-    \subsubsection{IDE - General}
-        In the general settings you can set if you want splash screen, session restoration, or change language of whole
-        IDE (this option is available only when language pack for your language is available.).
-
-    \subsubsection{Editor - General}
-        General settings of IDE editor. You can set tab width, number of spaces .
+    In the general settings, you can set if you wish the splash screen to show at start-up, etc. In the code editor settings, you can set tab width, fonts, etc. In simulator settings, you can slightly adjust simulator behavior.
 
         \begin{table}[h!]
             \begin{tabular}{cc}
@@ -320,30 +366,53 @@
 
 \clearpage
 \section{Tools}
-    \subsection{Data file converter}
-        This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
-        .srec, .mem, .rawhex, .v, and .vhd.
+    \subsection{Delay loop generator}
+        In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
+        development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
+        enter desired time of delay or number of cycles and clock frequency.
+
         \begin{description}
-            \item[Section Input File] Here you can select desired input data file which will be converted.
-            \item[Section Input Options] In this section, you define what type of input file will be converted.
-            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
-            \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
-            \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
-            \item[Section Output File] Defines target.
-            \item[Section Output Options] Here you can select desired output data file.
-            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
-            \item[Tab size]  Define number of inserted spaces when you press Tab.
-            \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
+            \item[Section Input variable] Choose between time or cycles
+            \item[Section Desired waiting time] Number of executed time or cycles
+            \item[Section Frequency] Clock frequency
+            \item[Section Register names] Set register names used in the generated code (optional).
+            \item[Section Generated code] The generated code.
+            \item[Instruction] Instruction used in loop.
+            \item[Type] Type of waiting loop you want to create (blank/macro).
+            \item[Upper Case and Comments]  Turn off automatically added comments, and use upper case.
+            \item[Button Copy to clipboard] This will copy the generated code to clipboard.
+            \item[Button Generate] Generate code.
         \end{description}
 
-        \enlargethispage{6\baselineskip}
         \begin{figure}[h]
             \centering
-            \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
-            \caption{DATA file converter}
+            \includegraphics[width=.6\textwidth]{img/loop_gen.png}
+            \caption{Delay loop generator dialog}
         \end{figure}
 
     \clearpage
+    \subsection{Disassembler}
+        Disassembler is a tool that translates machine language into assembly language. The inverse
+        operation to that of an assembler.
+
+        \begin{description}
+            \item[Section File] Choose which file you want to disassemble.
+            \item[Section Target] Your processor architecture
+            \item[Family] Processor family of the selected architecture.
+            \item[Indentation] Choose between tabs and spaces.
+            \item[Tab size] Tab size measured in number of spaces.
+            \item[Radix] Binary, octal, decimal, or hexadecimal.
+            \item[Line break] CRLF (Windows), LF (Linux), or CR (Mac)
+            \item[Case] Use upper case or lower case characters.
+            \item[Generate symbols] Which symbols should be named.
+        \end{description}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=.5\textwidth]{img/disassembler_window.png}
+            \caption{Disassembler}
+        \end{figure}
+
     \subsection{Assembler translator}
         With this tool, you can translate your previously written assembler code in different syntax.
         You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
@@ -367,51 +436,28 @@
             \caption{ASM translator}
         \end{figure}
 
-    \subsection{Disassembler}
-        Disassembler is a tool that translates machine language into assembly language. The inverse
-        operation to that of an assembler.
-
-        \begin{description}
-            \item[Section File] Choose which file you want to disassemble.
-            \item[Section Target] Your processor architecture
-            \item[Family] Processor family of the selected architecture.
-            \item[Indentation] Choose between tabs and spaces.
-            \item[Tab size] Tab size measured in number of spaces.
-            \item[Radix] Binary, octal, decimal, or hexadecimal.
-            \item[Line break] CRLF (Windows), LF (Linux), or CR (Mac)
-            \item[Case] Use upper case or lower case characters.
-            \item[Generate symbols] Which symbols should be named.
-        \end{description}
-
-        \begin{figure}[h]
-            \centering
-            \includegraphics[width=.5\textwidth]{img/disassembler_window.png}
-            \caption{Disassembler}
-        \end{figure}
-
     \clearpage
-    \subsection{Delay loop generator}
-        In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
-        development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
-        enter desired time of delay or number of cycles and clock frequency.
-
+    \subsection{Data file converter}
+        This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
+        .srec, .mem, .rawhex, .v, and .vhd.
         \begin{description}
-            \item[Section Input variable] Choose between time or cycles
-            \item[Section Desired waiting time] Number of executed time or cycles
-            \item[Section Frequency] Clock frequency
-            \item[Section Register names] Set register names used in the generated code (optional).
-            \item[Section Generated code] The generated code.
-            \item[Instruction] Instruction used in loop.
-            \item[Type] Type of waiting loop you want to create (blank/macro).
-            \item[Upper Case and Comments]  Turn off automatically added comments, and use upper case.
-            \item[Button Copy to clipboard] This will copy the generated code to clipboard.
-            \item[Button Generate] Generate code.
+            \item[Section Input File] Here you can select desired input data file which will be converted.
+            \item[Section Input Options] In this section, you define what type of input file will be converted.
+            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+            \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
+            \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
+            \item[Section Output File] Defines target.
+            \item[Section Output Options] Here you can select desired output data file.
+            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+            \item[Tab size]  Define number of inserted spaces when you press Tab.
+            \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
         \end{description}
 
+        \enlargethispage{6\baselineskip}
         \begin{figure}[h]
             \centering
-            \includegraphics[width=.6\textwidth]{img/loop_gen.png}
-            \caption{Delay loop generator dialog}
+            \includegraphics[width=.5\textwidth]{img/DATA_converter.png}
+            \caption{DATA file converter}
         \end{figure}
 
     \clearpage
@@ -460,8 +506,8 @@
 
     \subsection{Numeric base converter}
         \begin{wrapfigure}{r}{0pt}
-                \centering
-                \includegraphics[width=90pt]{img/converter.png}
-                \caption{Converter}
+            \centering
+            \includegraphics[width=100pt]{img/converter.png}
+            \caption{Converter}
         \end{wrapfigure}
         This tool might be useful when you want to quickly convert some number to another radix.
