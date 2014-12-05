@@ -218,7 +218,10 @@ class MainForm : public QMainWindow
         //toolbars
         QToolBar *fileToolBar;
         QToolBar *projectToolBar;
-        QToolBar *simulationToolBar;
+        QToolBar * simulationToolBar;
+        QToolBar * m_toolToolBar;
+        QToolBar * m_simtoolToolBar;
+        QToolBar * m_helpToolBar;
 
         //actions
         QAction *newAct;

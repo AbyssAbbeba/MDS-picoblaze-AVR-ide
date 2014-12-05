@@ -698,7 +698,7 @@ void MainForm::createActions()
         connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     #endif
     #ifdef MDS_FEATURE_TRANSLATOR
-        toolTranslatorAct = new QAction(tr("Assembler Translator"), this);
+        toolTranslatorAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_switch.png")), tr("Assembler Translator"), this);
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
@@ -800,15 +800,53 @@ void MainForm::createShortcuts()
 void MainForm::createToolbar()
 {
     //qDebug() << "MainForm: CreateToolbar()";
-    //fileToolBar = addToolBar(tr("File Toolbar"));
-    projectToolBar = addToolBar(tr("Project Toolbar"));
+    fileToolBar = addToolBar(tr("File Toolbar"));
+//     projectToolBar = addToolBar(tr("Project Toolbar"));
     simulationToolBar = addToolBar(tr("Simulation Toolbar"));
+    m_toolToolBar = addToolBar(tr("Tools Toolbar"));
+    m_simtoolToolBar = addToolBar(tr("Simulation Tools Toolbar"));
+    m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
+    #ifdef MDS_FEATURE_DISASSEMBLER
+        m_toolToolBar->addAction(toolDisassemblerAct);
+    #endif
+    #ifdef MDS_FEATURE_TRANSLATOR
+        m_toolToolBar->addAction(toolTranslatorAct);
+    #endif
+    #ifdef MDS_FEATURE_FILECONVERTER
+        m_toolToolBar->addAction(toolFileConvertAct);
+    #endif
+    #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
+        m_toolToolBar->addAction(toolDisplayAct);
+    #endif
+    #ifdef MDS_FEATURE_LOOP_GENERATOR
+        m_toolToolBar->addAction(toolLoopGenAct);
+    #endif
+    #ifdef MDS_FEATURE_SIM_LED_PANEL
+        m_simtoolToolBar->addAction(toolSimLedsAct);
+    #endif
+    #ifdef MDS_FEATURE_SIM_7_SEGMENT
+        m_simtoolToolBar->addAction(toolSim7SegAct);
+    #endif
+    #ifdef MDS_FEATURE_SIM_SWITCH
+        m_simtoolToolBar->addAction(toolSimSwitchAct);
+    #endif
 
-    projectToolBar->addAction(newProjAct);
-    projectToolBar->addAction(openProjAct);
-    projectToolBar->addAction(saveProjAct);
-    projectToolBar->addAction(newAddAct);
+    m_helpToolBar->addAction(aboutAct);
+    m_helpToolBar->addAction(helpAct);
+
+    fileToolBar->addAction(newAddAct);
+    fileToolBar->addAction(openAct);
+    fileToolBar->addAction(saveAct);
+    fileToolBar->addAction(saveAsAct);
+    fileToolBar->addAction(saveAllAct);
+
+//     projectToolBar->addAction(newProjAct);
+//     projectToolBar->addAction(openProjAct);
+//     projectToolBar->addAction(saveProjAct);
+//     projectToolBar->addSeparator();
+//     projectToolBar->addAction(newAct);
+
     //projectToolBar->addAction(removeFileAct);
     //projectToolBar->addAction(addAct);
 
@@ -816,22 +854,27 @@ void MainForm::createToolbar()
 
 
     simulationToolBar->addAction(projectCompileAct);
+    simulationToolBar->addSeparator();
     simulationToolBar->addAction(simulationFlowAct);
-    simulationToolBar->addAction(simulationRunAct);
-    simulationToolBar->addAction(simulationAnimateAct);
     simulationToolBar->addAction(simulationStepAct);
+    simulationToolBar->addAction(simulationAnimateAct);
+    simulationToolBar->addAction(simulationRunAct);
     simulationToolBar->addAction(simulationResetAct);
-    simulationToolBar->addAction(simulationUnhighlightAct);
-    simulationToolBar->addAction(simulationBreakpointAct);
-    simulationToolBar->addAction(simulationDisableBreakpointsAct);
+//     simulationToolBar->addAction(simulationUnhighlightAct);
+//     simulationToolBar->addAction(simulationBreakpointAct);
+//     simulationToolBar->addAction(simulationDisableBreakpointsAct);
 
 
 
-    projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
+//     projectToolBar->setAllowedAreas(Qt::TopToolBarArea);
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    //fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    addToolBar(Qt::TopToolBarArea, projectToolBar);
-    addToolBar(Qt::TopToolBarArea, simulationToolBar);
+    m_toolToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    m_simtoolToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    m_helpToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
+//     addToolBar(Qt::TopToolBarArea, projectToolBar);
+//     addToolBar(Qt::TopToolBarArea, simulationToolBar);
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         QToolBar *toolBar = addToolBar("NON-COMMERCIAL");
         toolBar->setFloatable(false);
