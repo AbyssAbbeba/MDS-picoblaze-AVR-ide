@@ -115,25 +115,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexTextEdit->setOverwriteMode(true);
     hexTextEdit->setWordWrapMode(QTextOption::NoWrap);
     hexTextEdit->setFont(font);
-    //qDebug() << "HexEdit: font point size" << hexTextEdit->fontInfo().pointSize();
-    //qDebug() << "HexEdit: font point size float" << hexTextEdit->fontInfo().pointSizeF();
-    //qDebug() << "HexEdit: font pixel size" << hexTextEdit->fontInfo().pixelSize();
-    //qDebug() << "HexEdit: font fixed pitch" << hexTextEdit->font().fixedPitch();
-    //qDebug() << "HexEdit: font hint" << hexTextEdit->font().hintingPreference();
-    //qDebug() << "HexEdit: font spacing" << hexTextEdit->font().letterSpacing();
-    //qDebug() << "HexEdit: font word spacing" << hexTextEdit->font().wordSpacing();
-    //hexTextEdit->resize((columns*2-1)*10,5);
     QFontMetrics metrics(hexTextEdit->font());
     hexTextEdit->setFixedWidth(columns*3*metrics.averageCharWidth()+5);
     hexTextEdit->setMinimumHeight(175);
-    //qDebug() << "HexEdit: metrics '0' width" << metrics.width('0');
-    //qDebug() << "HexEdit: metrics '1' width" << metrics.width('1');
-    //qDebug() << "HexEdit: metrics ' ' width" << metrics.width(' ');
-    //qDebug() << "HexEdit: text edit width" << hexTextEdit->width();
-    //qDebug() << "HexEdit: average char width" << metrics.averageCharWidth();
-    //hexTextEdit->setMaximumHeight(175);
-    //hexTextEdit->verticalScrollBar()->hide();
-    //hexTextEdit->setStyleSheet("QScrollBar:vertical {border: none; width: 2px} ");
     hexTextEdit->setStyleSheet(QString(
                                     "QScrollBar:vertical"
                                     "{"
@@ -190,22 +174,6 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
 
     hexLayout->setSpacing(0);
-    //QWidget* nullWidget = new QWidget(this);
-    //nullWidget->setMaximumWidth(hexLineCount->width());
-    //nullWidget->setMaximumHeight(hexColumnCount->height());
-    //nullWidget->setMinimumHeight(hexColumnCount->height());
-    //nullWidget->setMinimumWidth(hexLineCount->width());
-    /*QVBoxLayout *vboxLayout = new QVBoxLayout(this);
-    QHBoxLayout *hboxLayout = new QHBoxLayout();
-    QHBoxLayout *hboxLayout2 = new QHBoxLayout();
-    //hboxLayout->addWidget(nullWidget);
-    hboxLayout->addWidget(hexColumnCount);
-    hboxLayout2->addWidget(hexLineCount);
-    hboxLayout2->addWidget(hexTextEdit);
-    vboxLayout->addLayout(hboxLayout);
-    vboxLayout->addLayout(hboxLayout2);
-    vboxLayout->addWidget(hexStatusLabel);
-    this->setLayout(vboxLayout);*/
     
     
     //hexLayout->addWidget(nullWidget, 0, 0);
@@ -267,22 +235,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     prevPosition = 0;
     asciiPrevPosition = 0;
 
-    //if (AsciiPanel == false)
-    //{
-        //this->setFixedWidth(hexTextEdit->width()+hexLineCount->width());
-    //}
-    //else
-    //{
-        //this->setFixedWidth(hexTextEdit->width()+hexAsciiEdit->width()+hexLineCount->width());
-    //}
-    //this->show();
-    //this->hexLineCount->getWidget()->changeHeight();
-    //qDebug() << "HexEdit: width" << this->width();
-    //qDebug() << "HexEdit: text edit in grid" << hexTextEdit->width();
-    //qDebug() << "HexEdit: column count in grid" << hexColumnCount->width();
-    //qDebug() << "HexEdit: line count in grid" << hexLineCount->width();
-    //qDebug() << "HexEdit: label in grid" << hexStatusLabel->width();
-    //this->hexTextEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     this->hexTextEdit->horizontalScrollBar()->setMaximum(0);
 }
 

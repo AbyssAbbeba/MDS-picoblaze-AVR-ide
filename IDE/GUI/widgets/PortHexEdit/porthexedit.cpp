@@ -21,6 +21,7 @@
 #include "../../../simulators/SimControl/MCUSimControl.h"
 #include "../HexEdit/hexedit.h"
 #include "../../../simulators/MCUSim/MCUSimPureLogicIO.h"
+#include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeIO.h"
 #include <cstdint>
 //#include "McuDeviceSpecAVR8.h"
 
@@ -36,6 +37,7 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
     this->subsys = subsys;
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
+    mask.push_back(PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK);
 	controlUnit->registerObserver(
 		this,
 		subsys,
@@ -90,15 +92,16 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
 	switch ( eventId )
     {
         case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
+        case PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK:
         {
-			uint value = m_plio->getOutputArray()[locationOrReason];
+            uint value = m_plio->getOutputArray()[locationOrReason];
            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
- 			m_hexEditOut->setVal(locationOrReason, (unsigned char)value);
- 			m_hexEditOut->setHighlighted(locationOrReason, true);
+            m_hexEditOut->setVal(locationOrReason, (unsigned char)value);
+            m_hexEditOut->setHighlighted(locationOrReason, true);
 
-			break;
-		}
+            break;
+        }
         case MCUSimPureLogicIO::EVENT_PLIO_READ:
         {
             uint value = m_plio->getInputArray()[locationOrReason];

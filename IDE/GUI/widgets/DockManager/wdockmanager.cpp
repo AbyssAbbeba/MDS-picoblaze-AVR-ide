@@ -172,7 +172,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
         {
             if (wTab->tabText(i) == "*"+name && wTab->tabToolTip(i) == path)
             {
-                //qDebug() << "wdockmanager: change tab status slot";
+                qDebug() << "wdockmanager: change tab status slot";
                 wTab->tabChanged(i, changed);
                 wTab->update();
                 break;
@@ -321,6 +321,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
     {
         CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
         this->codeEditList.append(newEditor);
+        connect(newEditor,
+               SIGNAL(changedTabStatus(QString, QString, bool)),
+               this,
+               SLOT(changeTabStatusSlot(QString, QString, bool))
+              );
         BaseEditor *newBaseEditor;
         if (centralBase == NULL)
         {
@@ -336,37 +341,37 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
                     SLOT(changeTabStatusSlot(QString, QString, bool))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(breakpointEmit(QString, int)),
                     this,
                     SLOT(breakpointEmitSlot(QString, int))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(breakpointsAddLines(QString, int, int)),
                     this,
                     SLOT(breakpointsAddLinesSlot(QString, int, int))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(breakpointsRemoveLines(QString, int, int)),
                     this,
                     SLOT(breakpointsRemoveLinesSlot(QString, int, int))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(bookmarkEmit(QString, int)),
                     this,
                     SLOT(bookmarkEmitSlot(QString, int))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(bookmarksAddLines(QString, int, int)),
                     this,
                     SLOT(bookmarksAddLinesSlot(QString, int, int))
-                );
+                   );
             connect(activeCodeEdit,
                     SIGNAL(bookmarksRemoveLines(QString, int, int)),
                     this,
                     SLOT(bookmarksRemoveLinesSlot(QString, int, int))
-                );
+                   );
             /*connect(activeCodeEdit,
                     SIGNAL(breakpointListRemove(QString, int)),
                     this,
@@ -442,6 +447,11 @@ void WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
     if (found != true)
     {
         CodeEdit *newEditor = new CodeEdit((QWidget *)(this->parent()), true, wName, wPath, NULL);
+        connect(newEditor,
+                SIGNAL(changedTabStatus(QString, QString, bool)),
+                this,
+                SLOT(changeTabStatusSlot(QString, QString, bool))
+               );
         //newEditor->getTextEdit()->reloadHighlighter(SourceType::PICOBLAZEASM);
         for (int i = 0; i < text.size(); i++)
         {

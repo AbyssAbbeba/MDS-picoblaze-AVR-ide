@@ -993,10 +993,16 @@ void WTextEdit::makeMenu()
             this,
             SLOT(editedCut())
            );*/
+    connect(cutAct,
+            SIGNAL(triggered()),
+            this,
+            SLOT(cut())
+           );
     connect(copyAct,
             SIGNAL(triggered()),
             this,
-            SLOT(copy()));
+            SLOT(copy())
+           );
     connect(pasteAct,
             SIGNAL(triggered()),
             this,
@@ -1621,10 +1627,14 @@ void WTextEdit::shortcutToUpper()
     QTextCursor cursor(this->textCursor());
     if (true == cursor.hasSelection())
     {
+        int selStart = cursor.selectionStart();
+        int selEnd = cursor.selectionEnd();
         QString text = cursor.selectedText();
         cursor.removeSelectedText();
         text = text.toUpper();
         cursor.insertText(text);
+        cursor.setPosition(selStart);
+        cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
         this->setTextCursor(cursor);
     }
 }
@@ -1635,10 +1645,14 @@ void WTextEdit::shortcutToLower()
     QTextCursor cursor(this->textCursor());
     if (true == cursor.hasSelection())
     {
+        int selStart = cursor.selectionStart();
+        int selEnd = cursor.selectionEnd();
         QString text = cursor.selectedText();
         cursor.removeSelectedText();
         text = text.toLower();
         cursor.insertText(text);
+        cursor.setPosition(selStart);
+        cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
         this->setTextCursor(cursor);
     }
 }
@@ -1649,11 +1663,25 @@ void WTextEdit::shortcutFirstToUpper()
     QTextCursor cursor(this->textCursor());
     if (false == cursor.hasSelection())
     {
+        int curPos = cursor.position();
         cursor.select(QTextCursor::WordUnderCursor);
         QString text = cursor.selectedText();
         cursor.removeSelectedText();
-        text = QString(text.at(0)).toUpper() + text.remove(0,1);
+        text = text.at(0).toUpper() + text.mid(1).toLower();
         cursor.insertText(text);
+        cursor.setPosition(curPos);
+        this->setTextCursor(cursor);
+    }
+    else
+    {
+        int selStart = cursor.selectionStart();
+        int selEnd = cursor.selectionEnd();
+        QString text = cursor.selectedText();
+        cursor.removeSelectedText();
+        text = text.at(0).toUpper() + text.mid(1).toLower();
+        cursor.insertText(text);
+        cursor.setPosition(selStart);
+        cursor.setPosition(selEnd, QTextCursor::KeepAnchor);
         this->setTextCursor(cursor);
     }
 }
