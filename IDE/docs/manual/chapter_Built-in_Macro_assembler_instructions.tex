@@ -36,7 +36,7 @@
 \clearpage
 \subsection{Register Loading}
     \instruction{LOAD, LD}
-        The \texttt{LOAD} instruction provides a method for specifying the contents of any register. The new value can be a taken from an immediate constant, or contents of any other register. \texttt{LD} is only shorthand for \texttt{LOAD}, these two mnemonics can be used interchangeably.
+        The \texttt{LOAD} instruction provides a method for specifying the contents of any register. The new value can be a taken from an immediate constant, or contents of any other register. \texttt{LD} is only shortcut for \texttt{LOAD}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -308,7 +308,7 @@
 
 \clearpage
     \instruction{COMPARE, CMP}
-        The \texttt{COMPARE} instruction performs an 8-bit subtraction of two values. Unlike the \texttt{SUB} instruction, result of this operation is discarded, and only status flags are affected. \texttt{CMP} is only shorthand for \texttt{COMPARE}, these two mnemonics can be used interchangeably.
+        The \texttt{COMPARE} instruction performs an 8-bit subtraction of two values. Unlike the \texttt{SUB} instruction, result of this operation is discarded, and only status flags are affected. \texttt{CMP} is only shortcut for \texttt{COMPARE}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -337,7 +337,7 @@
             \end{tabular}
 
     \instruction{COMPARECY, CMPCY}
-        The \texttt{COMPARECY} instruction is \texttt{COMPARE} with carry. \texttt{CMPCY} is only shorthand for \texttt{COMPARECY}, these two mnemonics can be used interchangeably.
+        The \texttt{COMPARECY} instruction is \texttt{COMPARE} with carry. \texttt{CMPCY} is only shortcut for \texttt{COMPARECY}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -465,7 +465,7 @@
 \clearpage
 \subsection{Register Bank Selection}
     \instruction{REGBANK, RB}
-        Set active register bank. \texttt{RB} is only shorthand for \texttt{REGBANK}, these two mnemonics can be used interchangeably.
+        Set active register bank. \texttt{RB} is only shortcut for \texttt{REGBANK}, these two mnemonics can be used interchangeably.
         \paragraph{Syntax}
             ~\\
             \verb'    REGBANK A '; Set active bank A.\\
@@ -498,7 +498,7 @@
 \clearpage
 \subsection{Input/Output}
     \instruction{INPUT, IN}
-        The \texttt{INPUT} instruction reads data from a port (i.e. from your hardware design) into the specified register. \texttt{IN} is only shorthand for \texttt{INPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
+        The \texttt{INPUT} instruction reads data from a port (i.e. from your hardware design) into the specified register. \texttt{IN} is only shortcut for \texttt{INPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
 
         \paragraph{Syntax}
             ~\\
@@ -531,7 +531,7 @@
 
 \clearpage
     \instruction{OUTPUT, OUT}
-        The \texttt{OUTPUT} instruction transfers data to a port (i.e. to your hardware design) from the specified register. \texttt{OUT} is only shorthand for \texttt{OUTPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
+        The \texttt{OUTPUT} instruction transfers data to a port (i.e. to your hardware design) from the specified register. \texttt{OUT} is only shortcut for \texttt{OUTPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
 
         \paragraph{Syntax}
             ~\\
@@ -564,7 +564,7 @@
 
 \clearpage
     \instruction{OUTPUTK, OUTK}
-        The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shorthand for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
+        The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shortcut for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -597,7 +597,7 @@
 \clearpage
 \subsection{Storage}
     \instruction{STORE, ST}
-        The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shorthand for \texttt{STORE}, these two mnemonics can be used interchangeably.
+        The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shortcut for \texttt{STORE}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -628,7 +628,7 @@
 
 \clearpage
     \instruction{FETCH, FT}
-        The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shorthand for \texttt{FETCH}, these two mnemonics can be used interchangeably.
+        The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shortcut for \texttt{FETCH}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -691,7 +691,7 @@
 
 \clearpage
     \instruction{ENABLE/DISABLE INTERRUPT, ENA, DIS}
-        Enable or disable interrupts. \texttt{ENA} is only shorthand for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shorthand for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
+        Enable or disable interrupts. \texttt{ENA} is only shortcut for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shortcut for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -796,7 +796,7 @@
 
 \clearpage
     \instruction{RETURN, RET}
-        Return from subroutine. \texttt{RET} is only shorthand for \texttt{RETURN}, these two mnemonics can be used interchangeably.
+        Return from subroutine. \texttt{RET} is only shortcut for \texttt{RETURN}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
@@ -832,7 +832,7 @@
 
 \clearpage
     \instruction{LOAD \& RETURN, LDRET}
-        Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shorthand for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
+        Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shortcut for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
             ~\\
