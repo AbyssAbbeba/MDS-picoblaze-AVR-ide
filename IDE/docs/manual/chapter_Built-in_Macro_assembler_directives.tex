@@ -302,7 +302,7 @@
 
     \clearpage
     \asmdirective{DB}
-        \label{DB}
+        \index{DB}
         This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
 
         \subsubsection{Syntax}
