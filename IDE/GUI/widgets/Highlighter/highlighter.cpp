@@ -555,9 +555,9 @@ Highlighter::Highlighter(QTextDocument *parent, SourceType type)
                           << "#"
                           << "\\.\\."
                           << "\\+"
-                          << "/"
+                          << "[^\\*]/[^\\*]"
                           << "\\-"
-                          << "\\*"
+                          << "[^/]\\*[^/]"
                           << "!"
                           << "%"
                           << "<<"
@@ -675,10 +675,16 @@ void Highlighter::highlightBlock(const QString &text)
         {
             startIndex = commentStartExpression.indexIn(text);
         }
+        else
+        {
+            //qDebug() << "Highlighter: currentBlockState = 1";
+            setCurrentBlockState(1);
+        }
 
         //qDebug() << "Highlighter: start" << startIndex << text;
         while (startIndex >= 0)
         {
+
             int endIndex = commentEndExpression.indexIn(text, startIndex);
             int commentLength;
             if (endIndex == -1)
@@ -688,7 +694,10 @@ void Highlighter::highlightBlock(const QString &text)
             }
             else
             {
+                //qDebug() << "Highlighter: currentBlockState = 0";
                 commentLength = endIndex - startIndex + commentEndExpression.matchedLength();
+                setCurrentBlockState(0);
+                //commentLength = commentEndExpression.matchedLength() - startIndex;
             }
             setFormat(startIndex, commentLength, multiLineCommentFormat);
             startIndex = commentStartExpression.indexIn(text, startIndex + commentLength);
@@ -710,6 +719,17 @@ void Highlighter::highlightBlock(const QString &text)
                     index = rule.pattern.indexIn(text, index + length);
                 }
             }
+        }
+    }
+    else
+    {
+        if (1 == previousBlockState())
+        {
+            setCurrentBlockState(1);
+        }
+        else
+        {
+            setCurrentBlockState(0);
         }
     }
     //qDebug() << "Highlighter: return highlightBlock()";

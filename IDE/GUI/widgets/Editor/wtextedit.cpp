@@ -1305,6 +1305,8 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectWordRight->setEnabled(!readOnly);
     shctUndo->setEnabled(!readOnly);
     shctRedo->setEnabled(!readOnly);
+    shctFindNext->setEnabled(!readOnly);
+    shctFindPrevious->setEnabled(!readOnly);
     emit editorReadOnly(readOnly);
     if (false == this->isReadOnly())
     {
@@ -1408,7 +1410,13 @@ void WTextEdit::setShortcuts()
     shctRedo = new QShortcut(this);
     shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
     connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
-    ////TODO: F3, shift+f3, + move lines up, down
+    shctFindNext = new QShortcut(this);
+    shctFindNext->setKey(Qt::Key_F3);
+    connect(shctFindNext, SIGNAL(activated()), this, SLOT(shortcutFindNext()));
+    shctFindPrevious = new QShortcut(this);
+    shctFindPrevious->setKey(Qt::SHIFT + Qt::Key_F3);
+    connect(shctFindPrevious, SIGNAL(activated()), this, SLOT(shortcutFindPrevious()));
+    ////TODO: move lines up, down
 }
 
 
@@ -1596,13 +1604,14 @@ void WTextEdit::shortcutReplace()
 
 void WTextEdit::shortcutMoveLineUp()
 {
-    this->scrollToLine(this->verticalScrollBar()->value()-1);
+    //qDebug() << "WTextEdit: scroll value" << this->verticalScrollBar()->value();
+    this->verticalScrollBar()->setValue(this->verticalScrollBar()->value()-1);
 }
 
 
 void WTextEdit::shortcutMoveLineDown()
 {
-    this->scrollToLine(this->verticalScrollBar()->value()+1);
+    this->verticalScrollBar()->setValue(this->verticalScrollBar()->value()+1);
 }
 
 
@@ -1704,10 +1713,14 @@ void WTextEdit::shortcutSwitchChars()
     QTextCursor cursor(this->textCursor());
     if (false == cursor.hasSelection())
     {
+        QString text;
         cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+        text = cursor.selectedText();
         cursor.removeSelectedText();
         cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+        text = cursor.selectedText() + text;
         cursor.removeSelectedText();
+        cursor.insertText(text);
         this->setTextCursor(cursor);
     }
 }
@@ -1749,19 +1762,11 @@ void WTextEdit::shortcutRedo()
 }
 
 
-// void WTextEdit::shortcutCloseTab()
-// {
-//     emit closeTab();
-// }
-// 
-// 
-// void WTextEdit::shortcutChangeTabLeft()
-// {
-//     emit changeTab(false);
-// }
-// 
-// 
-// void WTextEdit::shortcutChangeTabRight()
-// {
-//     emit changeTab(true);
-// }
+void WTextEdit::shortcutFindNext()
+{
+}
+
+
+void WTextEdit::shortcutFindPrevious()
+{
+}
