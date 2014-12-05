@@ -19,11 +19,13 @@ PicoBlazeStatusFlags::PicoBlazeStatusFlags()
 {
     reset(MCUSim::RSTMD_MCU_RESET);
 }
-
+#include<iostream>
 void PicoBlazeStatusFlags::reset ( MCUSimBase::ResetMode mode )
 {
+    std::cout<<"PicoBlazeStatusFlags::reset\n";
     if ( MCUSim::RSTMD_MCU_RESET == mode )
     {
+    std::cout<<"PicoBlazeStatusFlags::reset(MCUSim::RSTMD_MCU_RESET)\n";
         m_carry       = false;
         m_zero        = false;
         m_inte        = false;

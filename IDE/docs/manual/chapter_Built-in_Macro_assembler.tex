@@ -127,7 +127,7 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
         \verb'    my_label:                          ; Program memory address, initialized by address counter.'
 
         \subsubsection{Special Symbols}
-            MDS assembler supports only one special symbol, this symbol is always automatically defined on every line containing an instruction (or the \texttt{DB} directive, \ref{DB}), it is symbol ``\texttt{\$}''. ``\texttt{\$}'' contains address in the program memory where ``this instruction'' is going to be placed by the assembler.
+            MDS assembler supports only one special symbol, this symbol is always automatically defined on every line containing an instruction (or the \texttt{DB} directive), it is symbol ``\texttt{\$}''. ``\texttt{\$}'' contains address in the program memory where ``this instruction'' is going to be placed by the assembler.
 
             \paragraph{Example}
                 ~\\
@@ -381,19 +381,19 @@ MDS assembler for PicoBlaze is a two stage fast macro-assembler inspired by Inte
         \item[Symbol already defined]~\\
             The given symbol has already been defined, there cannot coexist two or more symbols with the same name in one compilation unit.
         \item[Symbol not defined: X]~\\
-            The given symbol has not been defined, maybe you are just trying to use it prior to its definition.
+            The given symbol has not been defined, maybe you are trying to use it prior to its definition.
         \item[Symbol X already defined with type Y]~\\
-            The given symbol has been already defined with type Y, you are trying to define more symbols with the same name but with different types. This is not allowed in this assembler because such practice tends to lower software quality.
+            The given symbol has been already defined with type Y, you are trying to define two or more symbols with the same name but with different types. This is not allowed in this assembler, such practice often tends to lower software quality.
         \item[Undefined value]~\\
-            You are attempting to use some value whose numerical representation is unknown.
+            You are attempting to use some value whose numerical representation is unknown to the assembler.
         \item[Real numbers are not supported in assembler]~\\
             Real numbers (1.8, 22.65, etc.) are not supported by this assembler.
         \item[Undefined symbol: X]~\\
             Symbol X has been undefined, i.e. deleted from the symbol table using the \texttt{UNDEFINE} directive and therefore can be no longer used.
         \item[This value is not valid inside of expression ]~\\
-            Expressions in this assembler can be calculated only from integer values, strings, etc. are not allowed.
+            Expressions in this assembler can be calculated only from integer values; other values like strings, etc. are not allowed.
         \item[Division by zero]~\\
-            Division by zero has been detected. It is not possible to divide with zero, therefore compilation is aborted.
+            During evaluation of an expression, the assembler encountered division by zero. Division by zero results in value not representable by this assembler therefore is reported as error. Examples of such case might be: ``\texttt{LOAD S0, \#10 / 0}'', or ``\texttt{A  EQU  ( 2 * A / B ) ; where B = 0}''.
         \item[Unable to resolve this expression]~\\
             The given expression cannot be resolved, check if expression is syntactically correct.
         \item[Syntax not understood]~\\
