@@ -116,8 +116,7 @@ CompilerStatement * AsmPicoBlazeSpecialMacros::runTimeFor ( CompilerStatement * 
     {
         m_compilerCore->semanticMessage ( args[0]->location(),
                                           CompilerBase::MT_WARNING,
-                                          QObject::tr ( "reuse of iterator register in nested for loop (the two loops "
-                                                        "will affect each other via their iterator registers)" )
+                                          QObject::tr ( "reuse of iterator register in nested for loop" )
                                                       .toStdString(),
                                           true );
     }

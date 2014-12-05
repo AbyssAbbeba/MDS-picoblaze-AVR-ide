@@ -595,7 +595,7 @@ bool CompilerCore::pushFileName ( const std::string & filename,
            &&
          ( m_fileNameStack.size() >= (size_t)(m_opts->m_maxInclusion) ) )
     {
-        coreMessage ( MT_ERROR, QObject::tr ( "maximum include level (%1) reached" )
+        coreMessage ( MT_ERROR, QObject::tr ( "maximum file inclusion depth (%1) reached" )
                                             .arg(m_opts->m_maxInclusion).toStdString() );
         fclose(*fileHandle);
         return false;

@@ -79,7 +79,7 @@ unsigned int AsmPicoBlazeInstructionSet::checkLimit ( LimitType type,
                               . toStdString();
             break;
         case LIM_D:
-            msg = QObject::tr ( "user defined memory limit for Scratch Pad RAM exceeded ( %1 > %2 )" )
+            msg = QObject::tr ( "user defined memory limit for Scratch-pad RAM exceeded ( %1 > %2 )" )
                               . arg ( value )
                               . arg ( limit - 1 )
                               . toStdString();
