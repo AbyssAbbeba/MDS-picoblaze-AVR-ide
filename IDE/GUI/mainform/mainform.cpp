@@ -1059,11 +1059,11 @@ void MainForm::newAddFile()
     {
         if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         if (path == NULL)
         {
@@ -1150,11 +1150,11 @@ void MainForm::openFile()
     QString path;
     if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
     }
     else
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     }
     if (path != NULL)
     {
@@ -1281,11 +1281,11 @@ void MainForm::addFile()
         {
             if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
             {
-                path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
             }
             else
             {
-                path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
             }
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
@@ -1329,11 +1329,11 @@ void MainForm::saveFile()
             {
                 if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
                 {
-                    path = QFileDialog::getSaveFileName (this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName (this, tr("Save File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 else
                 {
-                    path = QFileDialog::getSaveFileName (this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName (this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 if (path == NULL)
                 {
@@ -1442,11 +1442,11 @@ void MainForm::saveFileAs()
     {
         if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
         {
-            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         if (path == NULL)
         {
@@ -1520,6 +1520,7 @@ void MainForm::saveFileAs()
             QTextStream fout(&file);
             fout << wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
+            wDockManager->getCentralWidget()->getParentProject()->renameFile(wDockManager->getCentralPath(), path);
             wDockManager->setCentralPath(path);
             wDockManager->setCentralName(path.section('/', -1));
             wDockManager->getCentralWidget()->setSaved();
@@ -1546,11 +1547,11 @@ void MainForm::saveFile(CodeEdit *editor)
             {
                 if (projectMan->getActive() != NULL && projectMan->getActive()->prjPath != "untracked")
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 else
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 if (path == NULL)
                 {
@@ -1650,13 +1651,14 @@ void MainForm::saveFile(CodeEdit *editor)
  */
 void MainForm::saveAll()
 {
-    //qDebug() << "MainForm: saveAll()";
+    qDebug() << "MainForm: saveAll()";
     //ulozi vsechny zmenene a nepojmenovane
     for (int i = 0; i < wDockManager->getTabCount(); i++)
     {
         if (wDockManager->getTabWidget(i)->isChanged() == true
             || wDockManager->getTabWidget(i)->getPath() == "untracked")
         {
+            qDebug() << "MainForm: saveFile codeedit";
             saveFile(wDockManager->getTabWidget(i));
         }
     }
@@ -1682,7 +1684,7 @@ void MainForm::openProject()
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
     QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Project Directory"), QDir::homePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getOpenFileName (this, tr("Open Project"), QDir::homePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
 
     if (path.isEmpty() == false && projectMan->isOpened(path) == false)
     {
