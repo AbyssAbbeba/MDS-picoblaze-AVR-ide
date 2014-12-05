@@ -1726,8 +1726,6 @@ void Project::setClock(double clock, int mult)
 void Project::removeFile(QString path, QString name)
 {
     //qDebug() << "Project: removeFile()";
-    //TODO
-    //pozor na stejna jmena, musi se to smazat zaroven (item at index check pres iterator)
     QDir project(QFileInfo(prjPath).dir());
     QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
     int index = filePaths.indexOf(relativePath);
@@ -1883,32 +1881,6 @@ int Project::start(QString file, QString dumpFiles)
         QDir dir(prjPath.section('/',0, -2));
         this->simulatedFile = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
     }
-    /*if (this->breakPoints.count() > 0)
-    {
-        std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
-        for (int i = 0; i < this->breakPoints.count(); i++)
-        {
-            //qDebug() << "Project: breakpoint list at" << i;
-            std::set<unsigned int> breakpointsSet;
-            foreach (const unsigned int &value, this->breakPoints.at(i).second)
-            {
-                breakpointsSet.insert(value);
-            }
-            std::pair<std::string, std::set<unsigned int>> breakpointsPair;
-            breakpointsPair.first = this->breakPoints.at(i).first.toStdString();
-            breakpointsPair.second = breakpointsSet;
-            breakpointsVector.push_back(breakpointsPair);
-        }
-        for (unsigned int i = 0; i < breakpointsVector.size(); i++)
-        {
-            qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
-            foreach (const unsigned int &value, breakpointsVector.at(i).second)
-            {
-                qDebug() << "Project: breakpoint line" << value;
-            }
-        }
-        m_simControlUnit->setBreakPoints(breakpointsVector);
-    }*/
     //qDebug() << "Project: getLineNumber";
     //std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
     //m_simControlUnit->setBreakPoints(breakpointsVector);
@@ -1923,22 +1895,7 @@ int Project::start(QString file, QString dumpFiles)
     this->prevSim2.clear();
     //qDebug() << "Project: getLineNumber done";
     emit setEditorReadOnly(true);
-    //qDebug() << "Project: currFile";
-    //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
-    //qDebug() << "Project: current line number:" << line << "in file" << this->currFile;
-    //qDebug() << "Project: program counter value:" << dynamic_cast<MCUSimCPU*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU))->getProgramCounter();
-    //qDebug() << "Project: highlightLine";
-    //emit highlightLine(this->currFile, std::get<1>(this->currLine.at(0))-1, &(this->currLineColor));
     emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
-    //parentWindow->getWDockManager()->setCentralByName(fileNameQStr);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(line, currLineColor, origCurrLineCol);
-    /*this->prevLine = std::get<1>(this->currLine.at(0))-1;
-    this->prevLine2 = -1;
-    this->prevLine3 = -1;
-
-    this->prevFile = this->currFile;
-    this->prevFile2 = this->currFile;
-    this->prevFile3 = this->currFile;*/
     this->prevSim = this->currSim;
     //qDebug() << "Project: return start()";
     return 0;
@@ -1970,8 +1927,6 @@ void Project::setBreakpoints(bool set)
                 }
                 //qDebug() << "Path" << this->breakPoints.at(i).first;
                 const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
-                //const std::string basepath = path(prjPath.toLocal8Bit().constData()).parent_path().string();
-// qDebug() << "basepath='"<<basepath.c_str()<<"', file='"<<file.c_str()<<"', result='"<<make_relative(basepath, file).string().c_str()<<"'";
                 relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file)));
                 //qDebug() << "Project: absoluteFilePath" << relativePath;
                 breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
@@ -2002,25 +1957,10 @@ void Project::setBreakpoints(bool set)
  */
 void Project::stop()
 {
-    //qDebug() << "Project: stop()";
-    //std::string fileName; //= new std::string;
-    /*m_simControlUnit->getLineNumber(this->currSim);
-    if (currSim.empty() == true)
-    {
-        //return;
-    }*/
-    //this->currFile = QString::fromStdString(*(std::get<0>(this->currLine.at(0))));
+
     m_simControlUnit->stopSimulation();
     this->simulatedFile = "";
-    /*emit simHighlightLines()
-    emit highlightLine(this->prevFile3, this->prevLine3, NULL);
-    emit highlightLine(this->prevFile2, this->prevLine2, NULL);
-    emit highlightLine(this->prevFile, this->prevLine, NULL);*/
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine, NULL, NULL);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine2, NULL, NULL);
-    //parentWindow->getWDockManager()->getCentralTextEdit()->highlightLine(prevLine3, NULL, NULL);
     emit setEditorReadOnly(false);
-    //parentWindow->getWDockManager()->setEditorsReadOnly(false);
     //qDebug() << "Project: return stop()";
 }
 
@@ -2054,11 +1994,6 @@ void Project::handleUpdateRequest(int mask)
     {
         //std::string fileName; //= new std::string();
         m_simControlUnit->getLineNumber(this->currSim);
-        //if (this->currSim.empty() == true)
-        //{
-            //qDebug() << "Project: currline empty, should never happen";
-            //return;
-        //}
 
         this->prevSim.clear();
         this->prevSim2.clear();
@@ -2069,11 +2004,7 @@ void Project::handleUpdateRequest(int mask)
     else if (2 & mask)
     {
         m_simControlUnit->getLineNumber(this->currSim);
-        //if (this->currSim.empty() == true)
-        //{
-            //qDebug() << "Project: currline empty, should never happen";
-            //return;
-        //}
+
 
         emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
 
@@ -2605,10 +2536,88 @@ QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 void Project::reloadProjectTree()
 {
     qDebug() << "Project: reloadProjectTree()";
+    prjTreeWidget->clear();
+    //qDebug() << this->treeProjName->text(0);
+    this->treeProjName = new QTreeWidgetItem(prjTreeWidget);
+    treeProjName->setText(0, prjName);
+    treeProjName->setData(0, Qt::ToolTipRole, prjPath);
+
+    this->treeProjSource = new QTreeWidgetItem(treeProjName);
+    treeProjSource->setText(0, "Source");
+
+    this->treeProjInclude = new QTreeWidgetItem(treeProjName);
+    treeProjInclude->setText(0, "Include");
+
+    this->treeProjCompiled = new QTreeWidgetItem(treeProjName);
+    treeProjCompiled->setText(0, "Compiled");
+
+    this->treeProjOther = new QTreeWidgetItem(treeProjName);
+    treeProjOther->setText(0, "Other");
+
+
+    QDir projectDir = QFileInfo(prjPath).dir();
+    QString absolutePath = projectDir.path();
+    for (int i=0; i<fileCount; i++)
+    {
+        QTreeWidgetItem *treeProjFile;
+        int index = fileNames.at(i).lastIndexOf(".");
+        if (index > 0)
+        {
+            QString text(fileNames.at(i).right(fileNames.at(i).size() - index));
+            if (text == ".inc")
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjInclude);
+            }
+            else if (text == ".asm" || text == ".psm")
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjSource);
+            }
+            else
+            {
+                treeProjFile = new QTreeWidgetItem(treeProjOther);
+            }
+        }
+        else
+        {
+            treeProjFile = new QTreeWidgetItem(treeProjOther);
+        }
+        treeProjFile->setText(0, fileNames.at(i));
+        if ( NULL == QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath())
+        {
+            treeProjFile->setData(0, Qt::ToolTipRole, absolutePath + "/" + filePaths.at(i));
+            treeProjFile->setBackground(0, Qt::red);
+        }
+        else
+        {
+            treeProjFile->setData(0, Qt::ToolTipRole, QDir(absolutePath + "/" + filePaths.at(i)).canonicalPath());
+        }
+    }
+    if (mainFileName != "" && mainFilePath != "")
+    {
+        prjTreeWidget->setMainFileManual(mainFileName, mainFilePath);
+    }
+    prjTreeWidget->expandAll();
 }
 
 
 void Project::requestProjectPath()
 {
     prjTreeWidget->requestProjectPathAnswer(QDir(this->prjPath.section('/',0, -2)).absolutePath());
+}
+
+
+void Project::renameFile(QString oldPath, QString newPath)
+{
+    QDir project(QFileInfo(prjPath).dir());
+    QString relativePath = QDir::cleanPath(project.relativeFilePath(oldPath));
+    int index = filePaths.indexOf(relativePath);
+    if (-1 == index)
+    {
+        qDebug() << "Project: File" << relativePath << "not in project";
+        return;
+    }
+    relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+    fileNames[index] = relativePath.section('/', -1);
+    filePaths[index] = relativePath;
+    this->reloadProjectTree();
 }
