@@ -34,8 +34,8 @@ class RawHexDumpFile : public DataFile
          */
         enum OPCodeSize
         {
-            SIZE_16b = 0, ///<
-            SIZE_18b      ///<
+            SIZE_16b = 16, ///<
+            SIZE_18b = 18  ///<
         };
 
     ////    Constructors and Destructors    ////
