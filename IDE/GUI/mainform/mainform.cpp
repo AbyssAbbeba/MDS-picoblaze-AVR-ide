@@ -638,7 +638,7 @@ void MainForm::createActions()
     commentAct->setDisabled(true);
     commentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(commentAct, SIGNAL(triggered()), this, SLOT(commentSlot()));
-    deleteCommentAct = new QAction(tr("Delete Comment"), this);
+    deleteCommentAct = new QAction(tr("Uncomment"), this);
     deleteCommentAct->setShortcut(QKeySequence("Ctrl+Shift+D"));
     deleteCommentAct->setDisabled(true);
     deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);

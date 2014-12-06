@@ -869,7 +869,7 @@ void WDockManager::showDockWidgetArea(int area)
                     {
                         //(*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
                         (*i)->getQDockWidget()->setMaximumWidth(500);
-                        (*i)->getQDockWidget()->setMinimumWidth(200);
+                        (*i)->getQDockWidget()->setMinimumWidth(300);
                         wDockRightPrevWidth = 0;
                     }
                     break;
