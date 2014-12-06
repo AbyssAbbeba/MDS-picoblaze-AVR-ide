@@ -194,6 +194,12 @@ class AsmPicoBlazeTreeDecoder
          * @brief
          * @param[in,out] node
          */
+        inline void dir_AUTOxxx ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
         inline void dir_DB ( CompilerStatement * node );
 
         /**
@@ -312,6 +318,18 @@ class AsmPicoBlazeTreeDecoder
          * @brief
          * @param[in,out] node
          */
+        inline void dir_EQU_etc ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_STRING ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
         inline void dir_LD_RET_SX_STR ( CompilerStatement * node );
 
         /**
@@ -319,27 +337,6 @@ class AsmPicoBlazeTreeDecoder
          * @param[in,out] node
          */
         inline void dir_OUTPUTK_STR_P ( CompilerStatement * node );
-
-        /**
-         * @brief
-         * @param[in,out] node
-         * @return
-         */
-        inline CourseOfAction dir_EQU_etc ( CompilerStatement * node );
-
-        /**
-         * @brief
-         * @param[in,out] node
-         * @return
-         */
-        inline CourseOfAction dir_STRING ( CompilerStatement * node );
-
-        /**
-         * @brief
-         * @param[in,out] node
-         * @return
-         */
-        inline CourseOfAction dir_AUTOxxx ( CompilerStatement * node );
 
         /**
          * @brief

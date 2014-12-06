@@ -116,16 +116,16 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_PORTIN:
             case ASMPICOBLAZE_DIR_PORTOUT:
             case ASMPICOBLAZE_DIR_DATA:
-                HANDLE_ACTION( dir_EQU_etc(node) );
+                dir_EQU_etc(node);
                 break;
 
             case ASMPICOBLAZE_DIR_STRING:
-                HANDLE_ACTION( dir_STRING(node) );
+                dir_STRING(node);
                 break;
 
             case ASMPICOBLAZE_DIR_AUTOREG:
             case ASMPICOBLAZE_DIR_AUTOSPR:
-                HANDLE_ACTION ( dir_AUTOxxx(node) );
+                dir_AUTOxxx(node);
                 break;
 
             case ASMPICOBLAZE_LOCAL:
@@ -482,8 +482,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
     }
 }
 
-inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
+inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -558,13 +557,12 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                           CompilerBase::MT_ERROR,
                                           QObject::tr("attempting to override string: %1")
                                                      .arg(name.c_str()).toStdString());
-        return CA_RETURN_FALSE;
+        return;
     }
 
     CompilerExpr value(addr);
     m_symbolTable -> addSymbol ( name, &value, &( node->location() ), symbolType, true );
     m_codeListing->setValue(node->location(), addr);
-    return CA_NO_ACTION;
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_ORGSPR ( CompilerStatement * node )
@@ -1282,8 +1280,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LD_RET_SX_STR ( CompilerStatement * nod
     node->insertLink(instructions);
 }
 
-inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
+inline void AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
 {
     const CompilerValue * val;
 
@@ -1303,15 +1300,13 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                           CompilerBase::MT_ERROR,
                                           QObject::tr("attempting to override symbol: %1")
                                                      .arg(name.c_str()).toStdString());
-        return CA_RETURN_FALSE;
+        return;
     }
 
     m_stringTable->add(name, value, &(node->location()));
-    return CA_NO_ACTION;
 }
 
-inline AsmPicoBlazeTreeDecoder::CourseOfAction
-       AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
+inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -1358,7 +1353,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                           CompilerBase::MT_ERROR,
                                           QObject::tr("attempting to override string: %1")
                                                      .arg(name.c_str()).toStdString());
-        return CA_RETURN_FALSE;
+        return;
     }
 
     int value = m_symbolTable -> addSymbol ( name,
@@ -1380,8 +1375,6 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
             m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_DATA, (unsigned int) value );
         }
     }
-
-    return CA_NO_ACTION;
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
