@@ -53,6 +53,10 @@
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
 
+#ifdef Q_OS_WIN
+    #include <windows.h> // for Sleep
+#endif
+
 
 #ifdef MDS_FEATURE_DISASSEMBLER
     #include "../dialogs/disasmdlg/disasmdlg.h"
@@ -90,8 +94,8 @@
     #include "../widgets/Tools/SimSwitch/simswitch.h"
 #endif
 #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-    #define MDS_SIM_FEATURES
-    #include "../widgets/Tools/SimPortLogger/simportlogger.h"
+    //#define MDS_SIM_FEATURES
+    //#include "../widgets/Tools/SimPortLogger/simportlogger.h"
 #endif
 
 #include "../guicfg/guicfg.h"
@@ -114,7 +118,7 @@ MainForm::MainForm()
     this->setMinimumWidth(800);
     this->setMinimumHeight(600);
     this->setWindowTitle("Multitarget Development System");
-    this->setWindowIcon(QIcon(QPixmap(":resources/icons/mainIcon_64x64.png")));
+    this->setWindowIcon(QIcon(":resources/icons/mainIcon_64x64.png"));
     #ifdef MDS_VARIANT_NONCOMMERCIAL
         this->setWindowTitle("MDS NON-COMMERCIAL");
     #endif
@@ -296,37 +300,15 @@ MainForm::~MainForm()
     }
 
 
-    delete this->pm_projNewAdd;
-    delete this->pm_projNew;
-    delete this->pm_projOpen;
-    delete this->pm_projSave;
-    delete this->pm_projComp;
     delete this->pm_simFlowStart;
     delete this->pm_simFlowStop;
     delete this->pm_simRun;
     delete this->pm_simAnimate;
-    delete this->pm_simStep;
-    delete this->pm_simReset;
-    delete this->pm_simUnhighlight;
-    #ifdef MDS_FEATURE_DISASSEMBLER
-        delete this->pm_toolDis;
-    #endif
     delete this->pm_cross;
 
-    delete this->icon_projNewAdd;
-    delete this->icon_projNew;
-    delete this->icon_projOpen;
-    delete this->icon_projSave;
-    delete this->icon_projComp;
     delete this->icon_simFlow;
     delete this->icon_simRun;
     delete this->icon_simAnimate;
-    delete this->icon_simStep;
-    delete this->icon_simReset;
-    delete this->icon_simUnhighlight;
-    #ifdef MDS_FEATURE_DISASSEMBLER
-        delete this->icon_toolDis;
-    #endif
 
     if (true == GuiCfg::getInstance().getSessionRestoration())
     {
@@ -497,7 +479,7 @@ void MainForm::createMenu()
             simToolsMenu->addAction(toolSimSwitchAct);
         #endif
         #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-            simToolsMenu->addAction(toolSimLoggerAct);
+        //    simToolsMenu->addAction(toolSimLoggerAct);
         #endif
     #endif
 
@@ -525,19 +507,17 @@ void MainForm::createActions()
     //qDebug() << "MainForm: CreateActions()";
 
 
-    this->pm_projNewAdd = new QPixmap(":resources/icons/projNewAdd.png");
-    this->icon_projNewAdd = new QIcon(*pm_projNewAdd);
-    newAddAct = new QAction(*icon_projNewAdd, tr("New File"), this);
+    newAddAct = new QAction(QIcon(":resources/icons/projNewAdd.png"), tr("New File"), this);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
     newAddAct->setDisabled(true);
     newAddAct->setShortcut(QKeySequence("Ctrl+N"));
 
-    newAct = new QAction(QIcon(QPixmap(":resources/icons/page.png")), tr("New Untracked File"), this);
+    newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
     newAct->setDisabled(true);
 
-    openAct = new QAction(QIcon(QPixmap(":resources/icons/folder.png")), tr("Open File"), this);
+    openAct = new QAction(QIcon(":resources/icons/folder.png"), tr("Open File"), this);
     connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
     openAct->setDisabled(true);
     openAct->setShortcut(QKeySequence("Ctrl+O"));
@@ -556,40 +536,48 @@ void MainForm::createActions()
     connect(removeFileAct, SIGNAL(triggered()), this, SLOT(removeProjFile()));*/
 
 
-    saveAct = new QAction(QIcon(QPixmap(":resources/icons/disk.png")), tr("Save File"), this);
+    saveAct = new QAction(QIcon(":resources/icons/disk.png"), tr("Save File"), this);
     connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
     saveAct->setDisabled(true);
     saveAct->setShortcut(QKeySequence("Ctrl+S"));
 
-    saveAsAct = new QAction(QIcon(QPixmap(":resources/icons/disk2.png")), tr("Save As"), this);
+    saveAsAct = new QAction(QIcon(":resources/icons/disk2.png"), tr("Save As"), this);
     connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     saveAsAct->setDisabled(true);
+    saveAsAct->setShortcut(QKeySequence("Ctrl+Shift+S"));
 
-    saveAllAct = new QAction(QIcon(QPixmap(":resources/icons/disk_multiple.png")), tr("Save All"), this);
+    saveAllAct = new QAction(QIcon(":resources/icons/disk_multiple.png"), tr("Save All"), this);
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
     saveAllAct->setDisabled(true);
+    saveAllAct->setShortcut(QKeySequence("Ctrl+L"));
 
 
     //EDIT
-    undoAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_undo.png")), tr("Undo"), this);
+    undoAct = new QAction(QIcon(":resources/icons/arrow_undo.png"), tr("Undo"), this);
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undoSlot()));
-    redoAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_redo.png")), tr("Redo"), this);
+    undoAct->setShortcut(QKeySequence("Ctrl+Z"));
+    redoAct = new QAction(QIcon(":resources/icons/arrow_redo.png"), tr("Redo"), this);
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redoSlot()));
-    cutAct = new QAction(QIcon(QPixmap(":resources/icons/cut.png")), tr("Cut"), this);
+    redoAct->setShortcut(QKeySequence("Ctrl+Shift+Z"));
+    cutAct = new QAction(QIcon(":resources/icons/cut.png"), tr("Cut"), this);
     connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSlot()));
-    copyAct = new QAction(QIcon(QPixmap(":resources/icons/page_copy.png")), tr("Copy"), this);
+    cutAct->setShortcut(QKeySequence("Ctrl+X"));
+    copyAct = new QAction(QIcon(":resources/icons/page_copy.png"), tr("Copy"), this);
     connect(copyAct, SIGNAL(triggered()), this, SLOT(copySlot()));
+    copyAct->setShortcut(QKeySequence("Ctrl+C"));
     pasteAct = new QAction(tr("Paste"), this);
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(pasteSlot()));
+    pasteAct->setShortcut(QKeySequence("Ctrl+V"));
     selectAllAct = new QAction(tr("Select All"), this);
     connect(selectAllAct, SIGNAL(triggered()), this, SLOT(selectAllSlot()));
+    selectAllAct->setShortcut(QKeySequence("Ctrl+A"));
     deselectAct = new QAction(tr("Deselect"), this);
     connect(deselectAct, SIGNAL(triggered()), this, SLOT(deselectSlot()));
 
 
 
     //INTERFACE
-    interfaceConfigAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_wrench.png")), tr("Configure"), this);
+    interfaceConfigAct = new QAction(QIcon(":resources/icons/page_white_wrench.png"), tr("Configure"), this);
     connect(interfaceConfigAct, SIGNAL(triggered()), this, SLOT(interfaceConfig()));
     //pluginAct = new QAction(tr("Plugins"), this);
     //connect(pluginAct, SIGNAL(triggered()), this, SLOT(showPlugins()));
@@ -597,40 +585,32 @@ void MainForm::createActions()
 
 
 
-    this->pm_projNew = new QPixmap(":resources/icons/projNew.png");
-    this->icon_projNew = new QIcon(*pm_projNew);
-    newProjAct = new QAction(*icon_projNew, tr("New Project"), this);
+    newProjAct = new QAction(QIcon(":resources/icons/projNew.png"), tr("New Project"), this);
     connect(newProjAct, SIGNAL(triggered()), this, SLOT(newProject()));
 
-    this->pm_projOpen = new QPixmap(":resources/icons/projOpen.png");
-    this->icon_projOpen = new QIcon(*pm_projOpen);
-    openProjAct = new QAction(*icon_projOpen, tr("Open Project"), this);
+    openProjAct = new QAction(QIcon(":resources/icons/projOpen.png"), tr("Open Project"), this);
     connect(openProjAct, SIGNAL(triggered()), this, SLOT(openProject()));
 
-    this->pm_projSave = new QPixmap(":resources/icons/disk.png");
-    this->icon_projSave = new QIcon(*pm_projSave);
-    saveProjAct = new QAction(*icon_projSave, tr("Save project"), this);
+    saveProjAct = new QAction(QIcon(":resources/icons/disk.png"), tr("Save project"), this);
     connect(saveProjAct, SIGNAL(triggered()), this, SLOT(saveProject()));
     saveProjAct->setDisabled(true);
 
-    closeProjectAct = new QAction(QIcon(QPixmap(":resources/icons/breakpoint_disable.png")), tr("Close Project"), this);
+    closeProjectAct = new QAction(QIcon(":resources/icons/breakpoint_disable.png"), tr("Close Project"), this);
     connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
     closeProjectAct->setDisabled(true);
 
     saveProjConfigAct = new QAction(tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);
 
-    exitAct = new QAction(QIcon(QPixmap(":resources/icons/cancel.png")), tr("Exit"), this);
+    exitAct = new QAction(QIcon(":resources/icons/cancel.png"), tr("Exit"), this);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-    this->pm_projComp = new QPixmap(":resources/icons/compile.png");
-    this->icon_projComp = new QIcon(*pm_projComp);
-    projectCompileAct = new QAction(*icon_projComp, tr("Compile"), this);
+    projectCompileAct = new QAction(QIcon(":resources/icons/compile.png"), tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
     projectCompileAct->setDisabled(true);
     projectCompileAct->setShortcut(Qt::Key_F5);
 
-    projectConfigAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_wrench.png")), tr("Configure"), this);
+    projectConfigAct = new QAction(QIcon(":resources/icons/page_white_wrench.png"), tr("Configure"), this);
     connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(projectConfig()));
     projectConfigAct->setDisabled(true);
     //connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
@@ -661,29 +641,21 @@ void MainForm::createActions()
     simulationAnimateAct->setDisabled(true);
     simulationAnimateAct->setShortcut(Qt::Key_F8);
 
-    this->pm_simStep = new QPixmap(":resources/icons/simulationStep.png");
-    this->icon_simStep = new QIcon(*pm_simStep);
-    simulationStepAct = new QAction(*icon_simStep, tr("Step"), this);
+    simulationStepAct = new QAction(QIcon(":resources/icons/simulationStep.png"), tr("Step"), this);
     connect(simulationStepAct, SIGNAL(triggered()), this, SLOT(simulationStep()));
     simulationStepAct->setDisabled(true);
     simulationStepAct->setShortcut(Qt::Key_F9);
 
-    this->pm_simReset = new QPixmap(":resources/icons/simulationReset.png");
-    this->icon_simReset = new QIcon(*pm_simReset);
-    simulationResetAct = new QAction(*icon_simReset, tr("Reset"), this);
+    simulationResetAct = new QAction(QIcon(":resources/icons/simulationReset.png"), tr("Reset"), this);
     connect(simulationResetAct, SIGNAL(triggered()), this, SLOT(simulationReset()));
     simulationResetAct->setDisabled(true);
     simulationResetAct->setShortcut(Qt::Key_F10);
 
-    this->pm_simUnhighlight = new QPixmap(":resources/icons/unhighlight.png");
-    this->icon_simUnhighlight = new QIcon(*pm_simUnhighlight);
-    simulationUnhighlightAct = new QAction(*icon_simUnhighlight, tr("Unhighlight"), this);
+    simulationUnhighlightAct = new QAction(QIcon(":resources/icons/unhighlight.png"), tr("Unhighlight"), this);
     connect(simulationUnhighlightAct, SIGNAL(triggered()), this, SLOT(unhighlight()));
     simulationUnhighlightAct->setDisabled(true);
 
-    this->pm_breakpoint = new QPixmap(":resources/icons/breakpoint.png");
-    this->icon_breakpoint = new QIcon(*pm_breakpoint);
-    simulationBreakpointAct = new QAction(*icon_breakpoint, tr("Breakpoint"), this);
+    simulationBreakpointAct = new QAction(QIcon(":resources/icons/breakpoint.png"), tr("Breakpoint"), this);
     simulationBreakpointAct->setDisabled(true);
     connect(simulationBreakpointAct, SIGNAL(triggered()), this, SLOT(breakpointActHandle()));
 
@@ -692,17 +664,15 @@ void MainForm::createActions()
     connect(simulationDisableBreakpointsAct, SIGNAL(triggered()), this, SLOT(disableBreakpointsHandle()));
 
     #ifdef MDS_FEATURE_DISASSEMBLER
-        this->pm_toolDis = new QPixmap(":resources/icons/disassemble.png");
-        this->icon_toolDis = new QIcon(*pm_toolDis);
-        toolDisassemblerAct = new QAction(*icon_toolDis, tr("Disassembler"), this);
+        toolDisassemblerAct = new QAction(QIcon(":resources/icons/disassemble.png"), tr("Disassembler"), this);
         connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     #endif
     #ifdef MDS_FEATURE_TRANSLATOR
-        toolTranslatorAct = new QAction(QIcon(QPixmap(":resources/icons/arrow_switch.png")), tr("Assembler Translator"), this);
+        toolTranslatorAct = new QAction(QIcon(":resources/icons/arrow_switch.png"), tr("Assembler Translator"), this);
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
-        toolFileConvertAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_gear.png")), tr("Data File Converter"), this);
+        toolFileConvertAct = new QAction(QIcon(":resources/icons/page_white_gear.png"), tr("Data File Converter"), this);
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
@@ -710,32 +680,32 @@ void MainForm::createActions()
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
-        toolDisplayAct = new QAction(QIcon(QPixmap(":resources/icons/8segedit.png")), tr("8 Segment Editor"), this);
+        toolDisplayAct = new QAction(QIcon(":resources/icons/8segedit.png"), tr("8 Segment Editor"), this);
         connect(toolDisplayAct, SIGNAL(triggered()), this, SLOT(toolDisplay()));
     #endif
     #ifdef MDS_FEATURE_LOOP_GENERATOR
-        toolLoopGenAct = new QAction(QIcon(QPixmap(":resources/icons/page_white_lightning.png")), tr("Loop Generator"), this);
+        toolLoopGenAct = new QAction(QIcon(":resources/icons/page_white_lightning.png"), tr("Loop Generator"), this);
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
     #ifdef MDS_FEATURE_SIM_LED_PANEL
-        toolSimLedsAct = new QAction(QIcon(QPixmap(":resources/icons/ledpanel.png")), tr("LED Panel"), this);
+        toolSimLedsAct = new QAction(QIcon(":resources/icons/ledpanel.png"), tr("LED Panel"), this);
         toolSimLedsAct->setDisabled(true);
         connect(toolSimLedsAct, SIGNAL(triggered()), this, SLOT(simLeds()));
     #endif
     #ifdef MDS_FEATURE_SIM_7_SEGMENT
-        toolSim7SegAct = new QAction(QIcon(QPixmap(":resources/icons/8seg.png")), tr("7 Segment Display"), this);
+        toolSim7SegAct = new QAction(QIcon(":resources/icons/8seg.png"), tr("7 Segment Display"), this);
         toolSim7SegAct->setDisabled(true);
         connect(toolSim7SegAct, SIGNAL(triggered()), this, SLOT(sim7Seg()));
     #endif
     #ifdef MDS_FEATURE_SIM_SWITCH
-        toolSimSwitchAct = new QAction(QIcon(QPixmap(":resources/icons/simplekeypad.png")), tr("Switch panel"), this);
+        toolSimSwitchAct = new QAction(QIcon(":resources/icons/simplekeypad.png"), tr("Switch panel"), this);
         toolSimSwitchAct->setDisabled(true);
         connect(toolSimSwitchAct, SIGNAL(triggered()), this, SLOT(simSwitch()));
     #endif
     #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-        toolSimLoggerAct = new QAction(tr("Port Logger"), this);
-        toolSimLoggerAct->setDisabled(true);
-        connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
+        //toolSimLoggerAct = new QAction(tr("Port Logger"), this);
+        //toolSimLoggerAct->setDisabled(true);
+        //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
     #endif
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
@@ -743,13 +713,13 @@ void MainForm::createActions()
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
 
-    aboutAct = new QAction(QIcon(QPixmap(":resources/icons/mainIcon.png")), tr("About"), this);
+    aboutAct = new QAction(QIcon(":resources/icons/mainIcon.png"), tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     welcomeAct = new QAction(tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
-    helpAct = new QAction(QIcon(QPixmap(":resources/icons/help.png")), tr("User Manual"), this);
+    helpAct = new QAction(QIcon(":resources/icons/help.png"), tr("User Manual"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
     example1Act = new QAction(tr("Open Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
@@ -921,6 +891,11 @@ void MainForm::createDockWidgets()
         wDockManager->addDockWidget(wCompileInfo);
         wDockManager->addDockWidget(wSimulationInfo);
         wDockManager->addDockWidget(wBottomHide);
+        /*#ifdef Q_OS_WIN
+            Sleep(50);
+        #else
+            usleep(50000);
+        #endif*/
         tabList= this->findChildren<QTabBar*>();
         wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
         connect(tabList.at(tabList.size()-1),
@@ -954,6 +929,11 @@ void MainForm::createDockWidgets()
                 SLOT(reload(QString))
             );
         wDockManager->addDockWidget(wRightHide);
+        /*#ifdef Q_OS_WIN
+            Sleep(50);
+        #else
+            usleep(50000);
+        #endif*/
         tabList= this->findChildren<QTabBar*>();
         wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
         connect(tabList.at(tabList.size()-1),
@@ -992,11 +972,14 @@ void MainForm::createDockWidgets()
 
         wDockManager->hideDockWidgetArea(1);
         wDockManager->hideDockWidgetArea(2);
+        QApplication::processEvents();
+        reloadTabIcons();
     }
     else
     {
         wDockManager->addDockWidget(wSimulationInfo);
     }
+    //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
     //emit dockWidgetsCreated;
     //qDebug() << "MainForm: return CreateDockWidgets()";
 }
@@ -1141,7 +1124,7 @@ void MainForm::openFile()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            error(ERR_OPENFILE);
+            error(ERR_OPENFILE, path);
         }
         else
         {
@@ -1177,18 +1160,18 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(projectMan->getActive()->prjPath).dir().path() + "/" + path;
-    qDebug() << path;
+    //qDebug() << path;
     if (NULL != path)
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            qDebug() << "Mainform: openFilePath error" << path;
-            error(ERR_OPENFILE);
+            //qDebug() << "Mainform: openFilePath error" << path;
+            error(ERR_OPENFILE, path);
         }
         else
         {
@@ -1392,7 +1375,7 @@ void MainForm::saveFile()
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                error(ERR_OPENFILE);
+                error(ERR_OPENFILE, path);
             }
             else
             {
@@ -1493,7 +1476,7 @@ void MainForm::saveFileAs()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            error(ERR_OPENFILE);
+            error(ERR_OPENFILE, path);
         }
         else
         {
@@ -1609,7 +1592,7 @@ void MainForm::saveFile(CodeEdit *editor)
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                error(ERR_OPENFILE);
+                error(ERR_OPENFILE, path);
             }
             else
             {
@@ -1673,7 +1656,7 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            error(ERR_OPENFILE);
+            error(ERR_OPENFILE, path);
         }
         else
         {
@@ -1698,7 +1681,7 @@ bool MainForm::openProject(QString path)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            error(ERR_OPENFILE);
+            error(ERR_OPENFILE, path);
             return false;
         }
         else
@@ -1834,11 +1817,11 @@ void MainForm::compileProject()
         {
             return;
         }
-        qDebug() << "MainForm: compiled untracked project, untracked actual file";
+        //qDebug() << "MainForm: compiled untracked project, untracked actual file";
 
         if (wDockManager->getCentralWidget() == NULL)
         {
-            qDebug() << "MainForm: returned";
+            //qDebug() << "MainForm: returned";
             return;
         }
 
@@ -2024,7 +2007,7 @@ void MainForm::compileProject()
         }
         if (found == true)
         {
-            qDebug() << "MainForm: compiled actual project, actual file" << filePath;
+            //qDebug() << "MainForm: compiled actual project, actual file" << filePath;
             options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
 
 
@@ -2143,7 +2126,7 @@ void MainForm::compileProject()
                 return;
             }
 
-            qDebug() << "MainForm: compiled untracked project, actual file";
+            //qDebug() << "MainForm: compiled untracked project, actual file";
             if (this->projectMan->getUntracked() != NULL)
             {
                 this->projectMan->getUntracked()->addFile(wDockManager->getCentralPath(),wDockManager->getCentralName());
@@ -2161,7 +2144,7 @@ void MainForm::compileProject()
                     }
                     if (projectTabs->count() <= index)
                     {
-                        qDebug() << "MainForm: projectTabs overflow";
+                        //qDebug() << "MainForm: projectTabs overflow";
                         projectTabs->setCurrentIndex(projectTabs->count()-1);
                     }
                     else
@@ -2324,7 +2307,7 @@ void MainForm::compileProject()
     //else compile main file of actual project
     else
     {
-        qDebug() << "MainForm: actual project, main file";
+        //qDebug() << "MainForm: actual project, main file";
         if (projectMan->getActive()->mainFileName == "" && projectMan->getActive()->mainFilePath == "")
         {
             error(ERR_NO_MAINFILE);
@@ -2780,9 +2763,8 @@ void MainForm::simulationFlowHandle()
             #ifdef MDS_FEATURE_SIM_7_SEGMENT
                 toolSim7SegAct->setEnabled(true);
             #endif
-                //TODO:ifdef
             #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-                toolSimLoggerAct->setEnabled(true);
+                //toolSimLoggerAct->setEnabled(true);
             #endif
             #ifdef MDS_FEATURE_SIM_SWITCH
                 toolSimSwitchAct->setEnabled(true);
@@ -2898,7 +2880,7 @@ void MainForm::simulationFlowHandle()
             toolSim7SegAct->setDisabled(true);
         #endif
         #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-            toolSimLoggerAct->setDisabled(true);
+        //    toolSimLoggerAct->setDisabled(true);
         #endif
         #ifdef MDS_FEATURE_SIM_SWITCH
             toolSimSwitchAct->setDisabled(true);
@@ -3099,6 +3081,13 @@ void MainForm::setEditorReadOnly(bool readOnly)
 {
     //qDebug() << "MainForm: setEditorReadOnly";
     this->getWDockManager()->setEditorsReadOnly(readOnly);
+    undoAct->setEnabled(!readOnly);
+    redoAct->setEnabled(!readOnly);
+    copyAct->setEnabled(!readOnly);
+    cutAct->setEnabled(!readOnly);
+    pasteAct->setEnabled(!readOnly);
+    selectAllAct->setEnabled(!readOnly);
+    deselectAct->setEnabled(!readOnly);
     //qDebug() << "MainForm: return setEditorReadOnly";
 }
 
@@ -3536,7 +3525,7 @@ void MainForm::sessionRestorationSlot()
     //hack for fixing the linecount height (bigger at start)
     QTimer::singleShot(50, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
     //qDebug() << "MainForm: height" << this->height();
-    qDebug() << "MainForm: session loaded";
+    //qDebug() << "MainForm: session loaded";
 }
 
 
@@ -3959,11 +3948,11 @@ void MainForm::simSwitch()
 void MainForm::simPortLogger()
 {
     #ifdef MDS_FEATURE_SIM_PORT_LOGGER
-        if (true == this->simulationStatus)
-        {
-            SimPortLogger *widget = new SimPortLogger(0, this->projectMan->getSimulated()->getSimControl());
-            widget->show();
-        }
+        //if (true == this->simulationStatus)
+        //{
+        //    SimPortLogger *widget = new SimPortLogger(0, this->projectMan->getSimulated()->getSimControl());
+        //    widget->show();
+        //}
     #endif
 }
 
@@ -4019,4 +4008,61 @@ void MainForm::shortcutChangeTabLeft()
 void MainForm::shortcutChangeTabRight()
 {
     wDockManager->changeTab(true);
+}
+
+
+void MainForm::reloadTabIcons()
+{
+    for (int i = 0; i < wDockManager->rightAreaTabs->count(); i++)
+    {
+        QString text = wDockManager->rightAreaTabs->tabText(i);
+        if ("Breakpoints" == text)
+        {
+            QPixmap pixmap(":resources/icons/breakpoint.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Bookmarks" == text)
+        {
+            QPixmap pixmap(":resources/icons/bullet_star.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Macros" == text)
+        {
+            QPixmap pixmap(":resources/icons/brick.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Hide" == text)
+        {
+            QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+    }
+    for (int i = 0; i < wDockManager->bottomAreaTabs->count(); i++)
+    {
+        QString text = wDockManager->bottomAreaTabs->tabText(i);
+        if ("Compiler Messages" == text)
+        {
+            wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/messages.png"));
+        }
+        else if ("Simulator" == text)
+        {
+            wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/cog.png"));
+        }
+        else if ("Hide" == text)
+        {
+            wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
+        }
+    }
 }

@@ -43,7 +43,7 @@ class CodeEdit : public QWidget
     Q_OBJECT   
     public:
         CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit);
-        CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit);
+        //CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit);
         ~CodeEdit();
         QString getName();
         QString getPath();
