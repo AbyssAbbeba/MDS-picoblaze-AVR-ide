@@ -71,6 +71,15 @@ class WTextEdit : public QPlainTextEdit
         void cursorPositionChangedSlot();
         void setTabToSpaces(bool enabled);
         void setSpacesInTab(int spacesInTab);
+        void shortcutFindNext();
+        void shortcutFindPrevious();
+        void shortcutJmpToLine();
+        void shortcutFind();
+        void shortcutReplace();
+        void shortcutComment();
+        void shortcutDeleteComment();
+        void shortcutJmpToBookmarkNext();
+        void shortcutJmpToBookmarkPrev();
 
     private slots:
         void shortcutBreakpoint();
@@ -80,13 +89,6 @@ class WTextEdit : public QPlainTextEdit
         void shortcutCut();
         void shortcutSelectAll();
         void shortcutDeselect();
-        void shortcutComment();
-        void shortcutDeleteComment();
-        void shortcutJmpToBookmarkNext();
-        void shortcutJmpToBookmarkPrev();
-        void shortcutJmpToLine();
-        void shortcutFind();
-        void shortcutReplace();
         void shortcutMoveLineUp();
         void shortcutMoveLineDown();
         void shortcutMoveWordLeft();
@@ -101,8 +103,6 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectWordRight();
         void shortcutUndo();
         void shortcutRedo();
-        void shortcutFindNext();
-        void shortcutFindPrevious();
 //         void shortcutChangeTabLeft();
 //         void shortcutChangeTabRight();
 //         void shortcutCloseTab();
@@ -152,7 +152,7 @@ class WTextEdit : public QPlainTextEdit
 
         QShortcut *shctBreakpoint;
         QShortcut *shctBookmark;
-        QShortcut *shctCopy;
+        /*QShortcut *shctCopy;
         QShortcut *shctPaste;
         QShortcut *shctCut;
         QShortcut *shctSelectAll;
@@ -163,7 +163,7 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctJmpToBookmarkPrev;
         QShortcut *shctJmpToLine;
         QShortcut *shctFind;
-        QShortcut *shctReplace;
+        QShortcut *shctReplace;*/
         QShortcut *shctMoveLineUp;
         QShortcut *shctMoveLineDown;
         QShortcut *shctMoveWordLeft;
@@ -176,10 +176,10 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectWordUnder;
         QShortcut *shctSelectWordLeft;
         QShortcut *shctSelectWordRight;
-        QShortcut *shctUndo;
+        /*QShortcut *shctUndo;
         QShortcut *shctRedo;
         QShortcut *shctFindNext;
-        QShortcut *shctFindPrevious;
+        QShortcut *shctFindPrevious;*/
         
 
 
