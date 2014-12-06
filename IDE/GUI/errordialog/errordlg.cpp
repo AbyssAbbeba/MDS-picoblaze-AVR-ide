@@ -19,7 +19,7 @@
  * @brief Shows error according to given code
  * @param errCode Error code
  */
-void error(int errCode)
+void error(int errCode, QString detail)
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle("Error");
@@ -28,7 +28,7 @@ void error(int errCode)
         case ERR_OPENFILE:
         {
             msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("File not found or cannot be opened");
+            msgBox.setText("File not found or cannot be opened\n" + detail);
             break;
         }
         case ERR_XML_ASSIGN:
@@ -174,7 +174,7 @@ void error(int errCode)
         case ERR_SIM_NOSTART:
         {
             msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, internal error");
+            msgBox.setText("Simulation could not start, try to recompile or check dbg file integrity\n" + detail);
             break;
         }
         case ERR_SIM_NOT_COMPILED:
