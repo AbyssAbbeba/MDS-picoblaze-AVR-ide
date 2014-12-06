@@ -152,8 +152,8 @@ inline int PicoBlazeInterruptController::autoInterrupt()
         m_irq = false;
         m_regBank = m_registers->getBank();
 
-        m_statusFlags->interrupt();
         m_instructionSet->irq();
+        m_statusFlags->interrupt();
 
         logEvent ( EVENT_INT_ENTERING_INTERRUPT );
         return 1;

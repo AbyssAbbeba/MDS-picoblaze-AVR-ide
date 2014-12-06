@@ -94,10 +94,9 @@ inline void PicoBlazeInstructionSet::resetToInitialValues()
         m_instructionCounter[i] = 0;
     }
 }
-#include<iostream>
+
 void PicoBlazeInstructionSet::irq()
 {
-std::cout<<"m_statusFlags->getInterrupted() = "<<m_statusFlags->getInterrupted()<<'\n';
     if ( m_statusFlags->getInterrupted() > 0 )
     {
         logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_WRN_INVALID_IRQ, m_pc );
