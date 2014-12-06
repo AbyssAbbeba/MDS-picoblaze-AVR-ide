@@ -11,7 +11,6 @@
  * @file fileconvertdlg.cpp
  */
 
-
 #include <QtGui>
 #include "fileconvertdlg.h"
 #include "../../../utilities/MCUDataFiles/HexFile.h"
@@ -23,12 +22,6 @@
 #include "../../../utilities/MCUDataFiles/RawHexDumpFile.h"
 #include "../../../utilities/MCUDataFiles/DataFile.h"
 
-
-/**
- * @brief
- * @param
- * @param
- */
 FileConvertDlg::FileConvertDlg(QWidget *parent)
     : QDialog(parent)
 {
@@ -42,38 +35,29 @@ FileConvertDlg::FileConvertDlg(QWidget *parent)
     connect(this->ui.btnTemplate, SIGNAL(clicked()), this, SLOT(setPathTemplate()));
     connect(this->ui.cmbTypeIn, SIGNAL(currentIndexChanged(int)), this, SLOT(setOptIn(int)));
     connect(this->ui.cmbTypeOut, SIGNAL(currentIndexChanged(int)), this, SLOT(setOptOut(int)));
+
+    setOptIn(this->ui.cmbTypeIn->currentIndex());
+    setOptOut(this->ui.cmbTypeOut->currentIndex());
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::setPathIn()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", "(*.hex *.bin *.srec *.mem *.v *.vhd)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
     if (path != NULL)
     {
         this->ui.lePathIn->setText(path);
     }
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::setPathOut()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", "(*.hex *.bin *.srec *.mem *.v *.vhd)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
     if (path != NULL)
     {
         this->ui.lePathOut->setText(path);
     }
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::setPathTemplate()
 {
     QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", "(*.v *.vhd)");
@@ -83,13 +67,8 @@ void FileConvertDlg::setPathTemplate()
     }
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::create()
 {
-    //bool finalResult;
     DataFile * input;
     DataFile * output;
 
@@ -97,73 +76,71 @@ void FileConvertDlg::create()
     {
         switch (this->ui.cmbTypeIn->currentIndex())
         {
-            case 0:
+            case 0: // HEX
                 input = new RawHexDumpFile((RawHexDumpFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
                 break;
-            case 1:
+            case 1: // MEM
                 input = new XilMemFile(this->ui.cmbBPRIn->currentText().toInt());
                 break;
-            case 2:
+            case 2: // VHDL
                 input = new XilVHDLFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
                 break;
-            case 3:
+            case 3: // Verilog
                 input = new XilVerilogFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
                 break;
-            case 4:
+            case 4: // Intel 8 HEX
                 input = new HexFile();
                 break;
-            case 5:
+            case 5: // S-Rec
                 input = new SrecFile();
                 break;
-            case 6:
+            case 6: // Raw binary
                 input = new BinFile();
                 break;
+            default:
+                return;
         }
-
-        input->clearAndLoad(this->ui.lePathIn->text().toStdString());
 
         switch (this->ui.cmbTypeOut->currentIndex())
         {
-            case 0:
-            {
-                output = new HexFile();
+            case 0: // HEX
+                input = new RawHexDumpFile ( (RawHexDumpFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()),
+                                             ui.spinBoxOutputOverallSize->value() * ( (this->ui.cmbOpcodeOut->currentText().toInt()) == 16 ? 2 : 3 ) );
                 break;
-            }
-            case 1:
-            {
-                output = new BinFile();
-                break;
-            }
-            case 2:
-            {
-                output = new SrecFile();
-                break;
-            }
-            case 3:
-            {
+            case 1: // MEM
                 output = new XilMemFile(this->ui.cmbBPROut->currentText().toInt());
                 break;
-            }
-            case 4:
-            {
-                output = new XilVerilogFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
-                                            (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
+            case 2: // VHDL
+                output = new XilVHDLFile ( this->ui.leTemplateName->text().toStdString(),
+                                           this->ui.leTemplate->text().toStdString(),
+                                           (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()) );
                 break;
-            }
-            case 5:
-            {
-                output = new XilVHDLFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
-                                        (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
+            case 3: // Verilog
+                output = new XilVerilogFile ( this->ui.leTemplateName->text().toStdString(),
+                                              this->ui.leTemplate->text().toStdString(),
+                                              (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()) );
                 break;
-            }
+            case 4: // Intel 8 HEX
+                output = new HexFile();
+                break;
+            case 5: // S-Rec
+                output = new SrecFile();
+                break;
+            case 6: // Raw binary
+                output = new BinFile();
+                break;
+            default:
+                return;
         }
 
+        input->clearAndLoad(this->ui.lePathIn->text().toStdString());
         output->setData(input->getData(), input->maxSize());
         output->save(this->ui.lePathOut->text().toStdString());
 
     }
     catch ( const DataFileException & e )
     {
+        // TODO: display some error message.
     }
 
     delete input;
@@ -172,160 +149,87 @@ void FileConvertDlg::create()
     accept();
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::setOptIn(int index)
 {
+    ui.lblBPRIn->setEnabled(false);
+    ui.cmbBPRIn->setEnabled(false);
+    ui.lblOpcodeIn->setEnabled(false);
+    ui.cmbOpcodeIn->setEnabled(false);
+
     switch (index)
     {
-        case 0:
-        {
-            this->ui.lblBPRIn->setEnabled(false);
-            this->ui.cmbBPRIn->setEnabled(false);
-            this->ui.lblOpcodeIn->setEnabled(false);
-            this->ui.cmbOpcodeIn->setEnabled(false);
+        case 0: // HEX
             break;
-        }
-        case 1:
-        {
-            this->ui.lblBPRIn->setEnabled(false);
-            this->ui.cmbBPRIn->setEnabled(false);
-            this->ui.lblOpcodeIn->setEnabled(false);
-            this->ui.cmbOpcodeIn->setEnabled(false);
+
+        case 1: // MEM
+            ui.lblBPRIn->setEnabled(true);
+            ui.cmbBPRIn->setEnabled(true);
             break;
-        }
-        case 2:
-        {
-            this->ui.lblBPRIn->setEnabled(false);
-            this->ui.cmbBPRIn->setEnabled(false);
-            this->ui.lblOpcodeIn->setEnabled(false);
-            this->ui.cmbOpcodeIn->setEnabled(false);
+
+        case 2: // VHDL
+        case 3: // Verilog
+            ui.lblOpcodeIn->setEnabled(true);
+            ui.cmbOpcodeIn->setEnabled(true);
             break;
-        }
-        case 3:
-        {
-            this->ui.lblBPRIn->setEnabled(true);
-            this->ui.cmbBPRIn->setEnabled(true);
-            this->ui.lblOpcodeIn->setEnabled(false);
-            this->ui.cmbOpcodeIn->setEnabled(false);
+
+        case 4: // Intel 8 HEX
+        case 5: // S-Rec
+        case 6: // Raw binary
             break;
-        }
-        case 4:
-        {
-            this->ui.lblBPRIn->setEnabled(false);
-            this->ui.cmbBPRIn->setEnabled(false);
-            this->ui.lblOpcodeIn->setEnabled(true);
-            this->ui.cmbOpcodeIn->setEnabled(true);
-            break;
-        }
-        case 5:
-        {
-            this->ui.lblBPRIn->setEnabled(false);
-            this->ui.cmbBPRIn->setEnabled(false);
-            this->ui.lblOpcodeIn->setEnabled(true);
-            this->ui.cmbOpcodeIn->setEnabled(true);
-            break;
-        }
+
         default:
-        {
             qDebug() << "FileConvertDlg: in type error occured";
             break;
-        }
     }
 }
 
-
-/**
- * @brief
- */
 void FileConvertDlg::setOptOut(int index)
 {
+    ui.lblBPROut->setEnabled(false);
+    ui.cmbBPROut->setEnabled(false);
+    ui.lblOpcodeOut->setEnabled(false);
+    ui.cmbOpcodeOut->setEnabled(false);
+    ui.lblTemplateName->setEnabled(false);
+    ui.leTemplateName->setEnabled(false);
+    ui.lblTemplate->setEnabled(false);
+    ui.leTemplate->setEnabled(false);
+    ui.btnTemplate->setEnabled(false);
+    ui.spinBoxOutputOverallSize->setEnabled(false);
+    ui.labelspinBoxOutputOverallSize->setEnabled(false);
+
     switch (index)
     {
-        case 0:
-        {
-            this->ui.lblBPROut->setEnabled(false);
-            this->ui.cmbBPROut->setEnabled(false);
-            this->ui.lblOpcodeOut->setEnabled(false);
-            this->ui.cmbOpcodeOut->setEnabled(false);
-            this->ui.lblTemplateName->setEnabled(false);
-            this->ui.leTemplateName->setEnabled(false);
-            this->ui.lblTemplate->setEnabled(false);
-            this->ui.leTemplate->setEnabled(false);
-            this->ui.btnTemplate->setEnabled(false);
+        case 0: // HEX
+            ui.lblBPROut->setEnabled(true);
+            ui.cmbBPROut->setEnabled(true);
+            ui.spinBoxOutputOverallSize->setEnabled(true);
+            ui.labelspinBoxOutputOverallSize->setEnabled(true);
             break;
-        }
-        case 1:
-        {
-            this->ui.lblBPROut->setEnabled(false);
-            this->ui.cmbBPROut->setEnabled(false);
-            this->ui.lblOpcodeOut->setEnabled(false);
-            this->ui.cmbOpcodeOut->setEnabled(false);
-            this->ui.lblTemplateName->setEnabled(false);
-            this->ui.leTemplateName->setEnabled(false);
-            this->ui.lblTemplate->setEnabled(false);
-            this->ui.leTemplate->setEnabled(false);
-            this->ui.btnTemplate->setEnabled(false);
+
+        case 1: // MEM
+            ui.lblBPROut->setEnabled(true);
+            ui.cmbBPROut->setEnabled(true);
             break;
-        }
-        case 2:
-        {
-            this->ui.lblBPROut->setEnabled(false);
-            this->ui.cmbBPROut->setEnabled(false);
-            this->ui.lblOpcodeOut->setEnabled(false);
-            this->ui.cmbOpcodeOut->setEnabled(false);
-            this->ui.lblTemplateName->setEnabled(false);
-            this->ui.leTemplateName->setEnabled(false);
-            this->ui.lblTemplate->setEnabled(false);
-            this->ui.leTemplate->setEnabled(false);
-            this->ui.btnTemplate->setEnabled(false);
+
+        case 2: // VHDL
+        case 3: // Verilog
+            ui.lblOpcodeOut->setEnabled(true);
+            ui.cmbOpcodeOut->setEnabled(true);
+            ui.lblTemplateName->setEnabled(true);
+            ui.leTemplateName->setEnabled(true);
+            ui.lblTemplate->setEnabled(true);
+            ui.leTemplate->setEnabled(true);
+            ui.btnTemplate->setEnabled(true);
             break;
-        }
-        case 3:
-        {
-            this->ui.lblBPROut->setEnabled(true);
-            this->ui.cmbBPROut->setEnabled(true);
-            this->ui.lblOpcodeOut->setEnabled(false);
-            this->ui.cmbOpcodeOut->setEnabled(false);
-            this->ui.lblTemplateName->setEnabled(false);
-            this->ui.leTemplateName->setEnabled(false);
-            this->ui.lblTemplate->setEnabled(false);
-            this->ui.leTemplate->setEnabled(false);
-            this->ui.btnTemplate->setEnabled(false);
+
+        case 4: // Intel 8 HEX
+        case 5: // S-Rec
+        case 6: // Raw binary
             break;
-        }
-        case 4:
-        {
-            this->ui.lblBPROut->setEnabled(false);
-            this->ui.cmbBPROut->setEnabled(false);
-            this->ui.lblOpcodeOut->setEnabled(true);
-            this->ui.cmbOpcodeOut->setEnabled(true);
-            this->ui.lblTemplateName->setEnabled(true);
-            this->ui.leTemplateName->setEnabled(true);
-            this->ui.lblTemplate->setEnabled(true);
-            this->ui.leTemplate->setEnabled(true);
-            this->ui.btnTemplate->setEnabled(true);
-            break;
-        }
-        case 5:
-        {
-            this->ui.lblBPROut->setEnabled(false);
-            this->ui.cmbBPROut->setEnabled(false);
-            this->ui.lblOpcodeOut->setEnabled(true);
-            this->ui.cmbOpcodeOut->setEnabled(true);
-            this->ui.lblTemplateName->setEnabled(true);
-            this->ui.leTemplateName->setEnabled(true);
-            this->ui.lblTemplate->setEnabled(true);
-            this->ui.leTemplate->setEnabled(true);
-            this->ui.btnTemplate->setEnabled(true);
-            break;
-        }
+
         default:
-        {
+
             qDebug() << "FileConvertDlg: out type error occured";
             break;
-        }
     }
 }
