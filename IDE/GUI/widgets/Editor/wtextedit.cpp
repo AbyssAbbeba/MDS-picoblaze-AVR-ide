@@ -226,9 +226,9 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                         cursor.setPosition(block.position());
                         line = block.text();
                         spaces = 0;
-                        for (int i = 0; i < line.size(); i++)
+                        for (int j = 0; j < line.size(); j++)
                         {
-                            if (line.at(i) == ' ')
+                            if (line.at(j) == ' ')
                             {
                                 spaces++;
                             }
@@ -248,7 +248,11 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
                                 spacesToInsert = this->spacesInTab;
                             }
                         }
-                        for (int i = 0; i < spacesToInsert; i++)
+                        else
+                        {
+                            spacesToInsert = 0;
+                        }
+                        for (int j = 0; j < spacesToInsert; j++)
                         {
                             cursor.deleteChar();
                         }
