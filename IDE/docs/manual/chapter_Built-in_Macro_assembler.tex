@@ -494,8 +494,8 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
         \indent\colorbox{Lavender}{\color{Lavender}X} Checksum\footnote{Checksum is two's complement of 8-bit sum of entire record, except for the start code and the checksum itself.}
 
     \clearpage
-    \subsection{Motorola S-Rec format}
-        Motorola S-records are a form of simple ASCII encoding for binary data. An S-record file consists of a sequence of specially formatted ASCII character strings. An S-record will be less than or equal to 78 bytes in length. The order of S-records within a file is of no significance and no particular order may be assumed.
+    \subsection{S-Rec format}
+        S-records are a form of simple ASCII encoding for binary data. An S-record file consists of a sequence of specially formatted ASCII character strings. An S-record will be less than or equal to 78 bytes in length. The order of S-records within a file is of no significance and no particular order may be assumed.
 
         For PicoBlaze, opcodes are divided into either 3 bytes (in case of 18-bit opcode, unused high order bits are filled with zeros) or 2 bytes (in case of 16-bit opcode), these bytes are placed in the file in big-endian byte order.
 
