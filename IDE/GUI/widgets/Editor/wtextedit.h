@@ -152,7 +152,7 @@ class WTextEdit : public QPlainTextEdit
 
         QShortcut *shctBreakpoint;
         QShortcut *shctBookmark;
-        QShortcut *shctCopy;
+        /*QShortcut *shctCopy;
         QShortcut *shctPaste;
         QShortcut *shctCut;
         QShortcut *shctSelectAll;
@@ -163,7 +163,7 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctJmpToBookmarkPrev;
         QShortcut *shctJmpToLine;
         QShortcut *shctFind;
-        QShortcut *shctReplace;
+        QShortcut *shctReplace;*/
         QShortcut *shctMoveLineUp;
         QShortcut *shctMoveLineDown;
         QShortcut *shctMoveWordLeft;
@@ -176,10 +176,10 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectWordUnder;
         QShortcut *shctSelectWordLeft;
         QShortcut *shctSelectWordRight;
-        QShortcut *shctUndo;
+        /*QShortcut *shctUndo;
         QShortcut *shctRedo;
         QShortcut *shctFindNext;
-        QShortcut *shctFindPrevious;
+        QShortcut *shctFindPrevious;*/
         
 
 
