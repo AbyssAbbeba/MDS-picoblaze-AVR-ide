@@ -2,7 +2,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
 
 \section{Assembler}
     \subsection{Description}
-        MDS-compiler is macro-assembler for PicoBlaze soft-core processors. This tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS-compiler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze soft-core processors.\\
+        Macro-assembler for PicoBlaze soft-core processors, this tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS macro-assembler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze processors.
 
     \subsection{Usage}
         \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'
@@ -298,5 +298,5 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
 
     \subsection{Examples}
         \begin{itemize}
-            \item \verb'mds-translator --type=1 --input=my_file.psm --output=final_file.asm'\\
+            \item \verb'mds-translator --type=1 --output=final_file.asm my_file.psm'\\
         \end{itemize}

@@ -116,16 +116,16 @@ bool AsmPicoBlazeTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_PORTIN:
             case ASMPICOBLAZE_DIR_PORTOUT:
             case ASMPICOBLAZE_DIR_DATA:
-                dir_EQU_etc(node);
+                HANDLE_ACTION( dir_EQU_etc(node) );
                 break;
 
             case ASMPICOBLAZE_DIR_STRING:
-                dir_STRING(node);
+                HANDLE_ACTION( dir_STRING(node) );
                 break;
 
             case ASMPICOBLAZE_DIR_AUTOREG:
             case ASMPICOBLAZE_DIR_AUTOSPR:
-                dir_AUTOxxx(node);
+                HANDLE_ACTION ( dir_AUTOxxx(node) );
                 break;
 
             case ASMPICOBLAZE_LOCAL:
@@ -482,7 +482,8 @@ inline void AsmPicoBlazeTreeDecoder::dir_IF ( CompilerStatement * rootNode )
     }
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
+inline AsmPicoBlazeTreeDecoder::CourseOfAction
+       AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -545,13 +546,25 @@ inline void AsmPicoBlazeTreeDecoder::dir_AUTOxxx ( CompilerStatement * node )
         m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_REG, addr );
     }
 
+    const CompilerValue * val;
+    for ( val = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == val->m_type;
+          val = &( val->m_data.m_expr->lVal() ) );
+    std::string name ( val->m_data.m_symbol );
+
+    if ( true == m_stringTable->find(name) )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr("attempting to override string: %1")
+                                                     .arg(name.c_str()).toStdString());
+        return CA_RETURN_FALSE;
+    }
+
     CompilerExpr value(addr);
-    m_symbolTable -> addSymbol ( node->args()->lVal().m_data.m_symbol,
-                                 &value,
-                                 &( node->location() ),
-                                 symbolType,
-                                 true );
+    m_symbolTable -> addSymbol ( name, &value, &( node->location() ), symbolType, true );
     m_codeListing->setValue(node->location(), addr);
+    return CA_NO_ACTION;
 }
 
 inline void AsmPicoBlazeTreeDecoder::dir_ORGSPR ( CompilerStatement * node )
@@ -993,8 +1006,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         m_compilerCore->semanticMessage ( node->location(),
                                           CompilerBase::MT_ERROR,
-                                          QObject::tr ( "directive `EXITM' cannot appear inside special macro (like "
-                                                        "run-time IF/ELSE, etc.), it would break its pairing rules" )
+                                          QObject::tr ( "directive `EXITM' cannot appear inside special macro" )
                                                       . toStdString(),
                                           true );
         return CA_NO_ACTION;
@@ -1270,7 +1282,8 @@ inline void AsmPicoBlazeTreeDecoder::dir_LD_RET_SX_STR ( CompilerStatement * nod
     node->insertLink(instructions);
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
+inline AsmPicoBlazeTreeDecoder::CourseOfAction
+       AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
 {
     const CompilerValue * val;
 
@@ -1284,10 +1297,21 @@ inline void AsmPicoBlazeTreeDecoder::dir_STRING ( CompilerStatement * node )
           val = &( val->m_data.m_expr->lVal() ) );
     std::string value ( (const char *) val->m_data.m_array.m_data, val->m_data.m_array.m_size );
 
+    if ( true == m_symbolTable->isDefined(name) )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr("attempting to override symbol: %1")
+                                                     .arg(name.c_str()).toStdString());
+        return CA_RETURN_FALSE;
+    }
+
     m_stringTable->add(name, value, &(node->location()));
+    return CA_NO_ACTION;
 }
 
-inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
+inline AsmPicoBlazeTreeDecoder::CourseOfAction
+       AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 {
     using namespace CompilerStatementTypes;
 
@@ -1328,6 +1352,15 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
 
     std::string name = nameVal->m_data.m_symbol;
 
+    if ( true == m_stringTable->find(name) )
+    {
+        m_compilerCore->semanticMessage ( node->location(),
+                                          CompilerBase::MT_ERROR,
+                                          QObject::tr("attempting to override string: %1")
+                                                     .arg(name.c_str()).toStdString());
+        return CA_RETURN_FALSE;
+    }
+
     int value = m_symbolTable -> addSymbol ( name,
                                              node->args()->next(),
                                              &( node->location() ),
@@ -1347,6 +1380,8 @@ inline void AsmPicoBlazeTreeDecoder::dir_EQU_etc ( CompilerStatement * node )
             m_memoryPtr -> tryReserve ( node->location(), AsmMemoryPtr::MS_DATA, (unsigned int) value );
         }
     }
+
+    return CA_NO_ACTION;
 }
 
 inline AsmPicoBlazeTreeDecoder::CourseOfAction
