@@ -44,7 +44,7 @@
 
     \subsection{Top panel}
         \index{Toolbar}
-        Top panel contains main menu and the toolbar, both can be used to invoke various actions which will described alter in this documentation.
+        Top panel contains main menu and the toolbar, both can be used to invoke various actions which are described alter in this documentation.
 
         \begin{figure}[h!]
             \centering
@@ -53,11 +53,10 @@
         \end{figure}
 
     \subsection{Bottom panel}
-        Bottom panel consists of simulator main panel, and compiler messages.
+        Bottom panel consists of simulator main panel and compiler messages.
 
         In simulator main panel you can see status of internal registers, scratch-pad ram, input and output ports, call
-        stack, program counter, elapsed time and machine cycles, processor clock, and internal flags carry and zero. All
-        these values can be edited during processor simulation.
+        stack, program counter, elapsed time, elapsed machine cycles, processor clock, and internal flags: carry, zero, interrupt, and interrupt enable. Most of these values can be edited during processor simulation.
 
         In compiler messages panel you can see textual output from the assembler, like warnings and other messages.
 
@@ -70,7 +69,7 @@
     \clearpage
     \subsection{Exit \& Restoration}
         \subsubsection{Session Restoration}
-            When the main window is closed by user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, projects (and their files) are automatically reopened as they were last time when you closed the MDS window.
+            When the main window is closed on user request, the MDS automatically saves the current session and restores it when run again. The session includes list of opened projects. When you run MDS, the projects and their files from the last session are automatically reopened as they were last time when you closed the MDS window.
 
         \subsubsection{Exit Dialog}
             \begin{wrapfigure}{r}{0pt}
@@ -156,7 +155,7 @@
                 \centering
                 \fontsize{8pt}{9pt}
                 {
-                    \begin{tabular}{|l|l|l|l|}
+                    \begin{tabular}{|ll|ll|}
                         \hline
                         \textbf{Shortcut}               & \textbf{Description}          &
                         \textbf{Shortcut}               & \textbf{Description}          \\\hline
@@ -285,15 +284,15 @@
         \subsubsection{Project - Options}
             \begin{itemize}
                 \item Project name: Name of your project.
-                \item Architecture: Processor architecture for your project.
+                \item Architecture: Processor architecture used in your project.
                 \item Family: Processor family of the selected architecture.
                 \item Info panel: Brief description of selected processor.
             \end{itemize}
 
         \subsubsection{Project - Memory}
             \begin{itemize}
-                \item Size options: Tell the compiler your processor's memory size.
-                \item Interrupt vector: Set your interrupt vector (size of program memory - 1 is maximum),
+                \item Size options: Memory size.
+                \item Interrupt vector: Interrupt vector (size of program memory - 1 is maximum),
                 \item HW build: Your HW build constant.
             \end{itemize}
             \begin{table}[h!]
@@ -313,7 +312,7 @@
             \begin{itemize}
                 \item
                     \index{Main file}
-                    Main file: If you have "Use main file" checked, you can choose which file will always chosen for compilation and simulation instead of the file current opened in the editor.
+                    Main file: If you have "Use main file" checked, you can choose which file will always chosen for compilation and simulation instead of the file currently opened in the code editor.
                 \item
                     Generate: Select which files should the assembler generate in your project's directory from the given source code.
             \end{itemize}
@@ -334,7 +333,7 @@
 
         \subsubsection{Compiler - include paths}
             Here you can add or edit path, where the compiler will try to find files included in other source code files
-            (directive INCLUDE).
+            (directive \texttt{INCLUDE}).
 
             \begin{table}[h!]
                 \begin{tabular}{cc}
@@ -348,9 +347,9 @@
 
 \clearpage
 \section{UI Configuration}
-    In interface configuration dialog, you can edit appearance and behavior of the IDE. To open the interface configuration dialog, click on [Main~Menu] -> [Interface] -> [Config].
+    In the interface configuration dialog, you can edit appearance and behavior of the IDE. To open the interface configuration dialog, click on [Main~Menu]~-> [Interface]~-> [Configure].
 
-    In the general settings, you can set if you wish the splash screen to show at start-up, etc. In the code editor settings, you can set tab width, fonts, etc. In simulator settings, you can slightly adjust simulator behavior.
+    In the general settings, you can set things like: display the splash screen at start-up, etc. In the code editor settings, you can set tab width, fonts, etc. In simulator settings, you can slightly adjust simulator behavior.
 
         \begin{table}[h!]
             \begin{tabular}{cc}
@@ -377,44 +376,42 @@
 \clearpage
 \section{Tools}
     \subsection{Delay loop generator}
-        In many cases, it is useful to have a tool for creating delay loops, it can just save you some time in the
-        development process. This tool can generate wait loops using up to six registers as iterators. All you have to do is
-        enter desired time of delay or number of cycles and clock frequency.
+        In many cases, it is useful to have a tool for creating delay loops, it can just save you some time during         development. This tool can generate wait loops using up to six registers as iterators. All you have to do is to enter the desired time of delay or the number of instruction cycles, and clock frequency.
 
         \begin{description}
-            \item[Section Input variable] Choose between time or cycles
-            \item[Section Desired waiting time] Number of executed time or cycles
-            \item[Section Frequency] Clock frequency
-            \item[Section Register names] Set register names used in the generated code (optional).
-            \item[Section Generated code] The generated code.
-            \item[Instruction] Instruction used in loop.
-            \item[Type] Type of waiting loop you want to create (blank/macro).
-            \item[Upper Case and Comments]  Turn off automatically added comments, and use upper case.
-            \item[Button Copy to clipboard] This will copy the generated code to clipboard.
-            \item[Button Generate] Generate code.
+            \item[Section Input variable] Choose between time or instruction cycles.
+            \item[Section Desired waiting time] Time or number of instruction cycles.
+            \item[Section Frequency] Clock frequency.
+            \item[Section Register names] Register names to be used in the generated code as iterators.
+            \item[Section Generated code] The resulting automatically generated code.
+            \item[Instruction] Instruction used in loops.
+            \item[Type] Form of delay loop, whether you want it as macro, or plain.
+            \item[Upper Case and Comments] Comments: turn on/off automatically added comments; Upper case: use upper case letters.
+            \item[Button Copy to clipboard] Copy the generated code into clipboard.
+            \item[Button Generate] Generate the code.
         \end{description}
 
+        \enlargethispage{6\baselineskip}
         \begin{figure}[h]
             \centering
             \includegraphics[width=.6\textwidth]{img/loop_gen.png}
-            \caption{Delay loop generator dialog}
+            \caption{Delay loop generator}
         \end{figure}
 
     \clearpage
     \subsection{Disassembler}
-        Disassembler is a tool that translates machine language into assembly language. The inverse
-        operation to that of an assembler.
+        Disassembler is a tool that translates machine language into assembly language. The inverse operation to that of an assembler.
 
         \begin{description}
-            \item[Section File] Choose which file you want to disassemble.
-            \item[Section Target] Your processor architecture
+            \item[Section File] File you want to disassemble.
+            \item[Section Target] Processor architecture
             \item[Family] Processor family of the selected architecture.
-            \item[Indentation] Choose between tabs and spaces.
-            \item[Tab size] Tab size measured in number of spaces.
-            \item[Radix] Binary, octal, decimal, or hexadecimal.
+            \item[Indentation] Whether you want to indent the generated code with tabs or spaces.
+            \item[Tab size] Tab size (measured in number of spaces).
+            \item[Radix] Radix for numeric literals in the resulting code: binary, octal, decimal, or hexadecimal.
             \item[Line break] CRLF (Windows), LF (Linux), or CR (Mac)
-            \item[Case] Use upper case or lower case characters.
-            \item[Generate symbols] Which symbols should be named.
+            \item[Case] Use uppercase or lowercase characters.
+            \item[Generate symbols] Which types of values should be defined as symbols in resulting code.
         \end{description}
 
         \begin{figure}[h]
@@ -423,21 +420,20 @@
             \caption{Disassembler}
         \end{figure}
 
+\clearpage
     \subsection{Assembler translator}
-        With this tool, you can translate your previously written assembler code in different syntax.
-        You can select one of three choices - Xilinx, Mediatronix and OpenPicIde. Input code has to be without
-        errors.
+        With this tool, you can translate your previously written assembler code in different syntax that MDS uses. You can select one of three choices for input file syntax: Xilinx, Mediatronix, and OpenPicIde. Input code has to be without errors.
+
         \begin{description}
-            \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler
-            \item[Section ASM type] Input file syntax version. Translator needs to know input file syntax. Select one of
-                three choices - Xilinx, Mediatronix and OpenPicIde.
-            \item[Symbol] Case of symbols - uppercase or lowercase
-            \item[End of line] Indentation - Choose between Tabs or Spaces
-            \item[Directive] Case of Directives - uppercase or lowercase
-            \item[Indentation] Three choices - Tabs, Spaces and Keep (indentation unchanged)
-            \item[Instruction] Case of instructions - uppercase or lowercase
-            \item[Tab size]  Define number of inserted spaces when you press Tab.
-            \item[Short instructions] Here you can allow short instructions like LD, RETI or others
+            \item[Section Input File] Here you can choose which file you want to translate into the MDS assembler compatible code.
+            \item[Section ASM type] Input file syntax.
+            \item[Symbol] Letter case for symbols.
+            \item[End of line] CRLF (Windows), LF (Linux), or CR (Mac)
+            \item[Directive] Letter case for assembler directives.
+            \item[Indentation] Whether you want to indent the translated code with tabs or spaces, or to keep previous indentation.
+            \item[Instruction] Letter case for instruction mnemonics.
+            \item[Tab size] Tab size (measured in number of spaces).
+            \item[Short instructions] Here you can allow short instructions like LD, RETI, etc.
         \end{description}
 
         \begin{figure}[h]
@@ -448,12 +444,11 @@
 
     \clearpage
     \subsection{Data file converter}
-        This tool allows you to convert selected data file to another. Mutual conversion can be made between .ihex, .bin,
-        .srec, .mem, .rawhex, .v, and .vhd.
+        This tool allows you to convert selected data file to another. Mutual conversion can be made between .mem, .rawhex, .v, and .vhd, .ihex, .bin, and .srec files.
         \begin{description}
             \item[Section Input File] Here you can select desired input data file which will be converted.
             \item[Section Input Options] In this section, you define what type of input file will be converted.
-            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog and XilVhdl.
+            \item[Input file type] Available options - Hex, Bin, SRec, XilMem, XilVerilog, and XilVhdl.
             \item[Bytes per record] Only if you want to convert XilMem file. Defines number of bytes per record.
             \item[OPCode size] Defines opcode size of selected data file. Available are 16 and 18.
             \item[Section Output File] Defines target.
@@ -477,12 +472,7 @@
             \includegraphics[width=110pt]{img/8segment.png}
             \caption{8-segment editor}
         \end{wrapfigure}
-        With this tool you can easily determine what value you have to set on a port to display a digit on a numerical LED
-        display. In the left part of the dialog window, you can find numerical values corresponding to the displayed digit
-        in the middle part. These values are represented for both common cathode and common anode and in three numerical
-        bases: hexadecimal, decimal, and octal. Buttons on left side from entry boxes copies value from the adjacent entry
-        box to clipboard. In the right part of the window you can set what port pin is connected to what LED segment, this
-        sets permutation of the resulting value(s).
+        With this tool you can easily determine what value you have to set on a port to display some digit on numerical LED display. In the left part of the dialog window, you can find numerical values corresponding to the displayed digit. These values are represented for both common cathode and common anode, and in three numerical bases: hexadecimal, decimal, and binary. Buttons on the left side from entry boxes copies value from the adjacent entry box into clipboard. In the right part of the window you can set which port bit is connected to which LED segment, this sets permutation of the resulting values.
 
     \subsection{LED panel simulator}
         \begin{wrapfigure}{r}{0pt}
@@ -491,8 +481,7 @@
             \caption{8-segment editor}
         \end{wrapfigure}
 
-        Simple LED panel simulator. You can observe output port behavior with visual representation of eight LEDs. You can
-        set BCD and Gray decoder to simulate common FPGA logic.
+        Simple LED panel simulator allows to easily observe output port behavior with visual representation of eight LEDs. You can set BCD and Gray decoder to simulate certain common FPGA logic.
 
         \begin{description}
             \item[GRAY] Converts output port value to gray code.
@@ -506,8 +495,7 @@
             \caption{7-segment simulator}
         \end{wrapfigure}
         Simulator of 7-segment display with common anode, the display is connected to an output port. Port bits can be
-        assigned to any display segment. Multiple instances of this simulator can be opened at once. You can set BCD decoder
-        to simulate commonly used FPGA logic.
+        assigned to any display segment. Multiple instances of this simulator can be opened at once. You can set BCD decoder to simulate certain commonly used FPGA logic.
 
         \begin{description}
             \item[BCDlowNibb] Low-order nibble is decoded and displayed.

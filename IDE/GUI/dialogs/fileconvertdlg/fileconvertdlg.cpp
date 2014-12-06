@@ -20,6 +20,7 @@
 #include "../../../utilities/MCUDataFiles/XilMemFile.h"
 #include "../../../utilities/MCUDataFiles/XilVerilogFile.h"
 #include "../../../utilities/MCUDataFiles/XilVHDLFile.h"
+#include "../../../utilities/MCUDataFiles/RawHexDumpFile.h"
 #include "../../../utilities/MCUDataFiles/DataFile.h"
 
 
@@ -89,133 +90,85 @@ void FileConvertDlg::setPathTemplate()
 void FileConvertDlg::create()
 {
     //bool finalResult;
-    DataFile *input;
-    DataFile *output;
+    DataFile * input;
+    DataFile * output;
 
-    switch (this->ui.cmbTypeIn->currentIndex())
-    {
-        case 0:
-        {
-            input = new HexFile();
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-        case 1:
-        {
-            input = new BinFile();
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-        case 2:
-        {
-            input = new SrecFile();
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-        case 3:
-        {
-            input = new XilMemFile(this->ui.cmbBPRIn->currentText().toInt());
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-        case 4:
-        {
-            input = new XilVerilogFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-        case 5:
-        {
-            input = new XilVHDLFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
-            try
-            {
-                input->clearAndLoad(this->ui.lePathIn->text().toStdString());
-            }
-            catch (DataFileException)
-            {
-            }
-            break;
-        }
-    }
-
-    switch (this->ui.cmbTypeOut->currentIndex())
-    {
-        case 0:
-        {
-            output = new HexFile();
-            break;
-        }
-        case 1:
-        {
-            output = new BinFile();
-            break;
-        }
-        case 2:
-        {
-            output = new SrecFile();
-            break;
-        }
-        case 3:
-        {
-            output = new XilMemFile(this->ui.cmbBPROut->currentText().toInt());
-            break;
-        }
-        case 4:
-        {
-            output = new XilVerilogFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
-                                        (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
-            break;
-        }
-        case 5:
-        {
-            output = new XilVHDLFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
-                                     (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
-            break;
-        }
-    }
-
-    output->setData(input->getData(), input->maxSize());
     try
     {
+        switch (this->ui.cmbTypeIn->currentIndex())
+        {
+            case 0:
+                input = new RawHexDumpFile((RawHexDumpFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
+                break;
+            case 1:
+                input = new XilMemFile(this->ui.cmbBPRIn->currentText().toInt());
+                break;
+            case 2:
+                input = new XilVHDLFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
+                break;
+            case 3:
+                input = new XilVerilogFile("", "", (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeIn->currentText().toInt()));
+                break;
+            case 4:
+                input = new HexFile();
+                break;
+            case 5:
+                input = new SrecFile();
+                break;
+            case 6:
+                input = new BinFile();
+                break;
+        }
+
+        input->clearAndLoad(this->ui.lePathIn->text().toStdString());
+
+        switch (this->ui.cmbTypeOut->currentIndex())
+        {
+            case 0:
+            {
+                output = new HexFile();
+                break;
+            }
+            case 1:
+            {
+                output = new BinFile();
+                break;
+            }
+            case 2:
+            {
+                output = new SrecFile();
+                break;
+            }
+            case 3:
+            {
+                output = new XilMemFile(this->ui.cmbBPROut->currentText().toInt());
+                break;
+            }
+            case 4:
+            {
+                output = new XilVerilogFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
+                                            (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
+                break;
+            }
+            case 5:
+            {
+                output = new XilVHDLFile(this->ui.leTemplateName->text().toStdString(), this->ui.leTemplate->text().toStdString(),
+                                        (XilHDLFile::OPCodeSize)(this->ui.cmbOpcodeOut->currentText().toInt()));
+                break;
+            }
+        }
+
+        output->setData(input->getData(), input->maxSize());
         output->save(this->ui.lePathOut->text().toStdString());
+
     }
-    catch (DataFileException)
+    catch ( const DataFileException & e )
     {
     }
-    
+
     delete input;
     delete output;
-    
+
     accept();
 }
 
