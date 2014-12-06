@@ -1945,9 +1945,18 @@ void MainForm::compileProject()
         }
 
         QDir prjDir;
-        mainFile = pathDir.absolutePath()
-                 + "/"
-                 +  wDockManager->getCentralName().section('.',0,-2);
+        if ("" == wDockManager->getCentralName().section('.',0,-2))
+        {
+            mainFile = pathDir.absolutePath()
+                    + "/"
+                    +  wDockManager->getCentralName();
+        }
+        else
+        {
+            mainFile = pathDir.absolutePath()
+                    + "/"
+                    +  wDockManager->getCentralName().section('.',0,-2);
+        }
 
         //qDebug() << "MainForm: file" << mainFile;
 
@@ -2101,8 +2110,14 @@ void MainForm::compileProject()
                                     CompilerBase::MessageType::MT_REMARK);
 
 
-
+        if ("" == wDockManager->getCentralName().section('.',0,-2))
+        {
+            mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName();
+        }
+        else
+        {
             mainFile = prjDir.absolutePath() + "/" + wDockManager->getCentralName().section('.',0,-2);
+        }
             //qDebug() << mainFile;
 
             options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -2289,9 +2304,18 @@ void MainForm::compileProject()
             }
 
             QDir prjDir;
-            mainFile = pathDir.absolutePath()
-                    + "/"
-                    +  wDockManager->getCentralName().section('.',0,-2);
+            if ("" == wDockManager->getCentralName().section('.',0,-2))
+            {
+                mainFile = pathDir.absolutePath()
+                        + "/"
+                        +  wDockManager->getCentralName();
+            }
+            else
+            {
+                    mainFile = pathDir.absolutePath()
+                        + "/"
+                        +  wDockManager->getCentralName().section('.',0,-2);
+            }
 
             //qDebug() << "MainForm: tempPath" << GuiCfg::getInstance().getTempPath();
             //qDebug() << "MainForm: mainfile" << mainFile;
@@ -2414,13 +2438,29 @@ void MainForm::compileProject()
         QDir fileDir(QString::fromStdString(options->m_sourceFiles.at(0)).section('/',0, -2));
         if (fileDir.relativeFilePath(prjDir.absolutePath()) == "")
         {
-            mainFile = "./" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+            if ("" == this->projectMan->getActive()->mainFileName.section('.',0,-2))
+            {
+                mainFile = "./" +  this->projectMan->getActive()->mainFileName.section('.',0,-2);
+            }
+            else
+            {
+                mainFile = "./" +  this->projectMan->getActive()->mainFileName;
+            }
         }
         else
         {
-            mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
-                     + "/"
-                     +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+            if ("" == this->projectMan->getActive()->mainFilePath.section('.',0,-2))
+            {
+                mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
+                        + "/"
+                        +  this->projectMan->getActive()->mainFilePath;
+            }
+            else
+            {
+                mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
+                        + "/"
+                        +  this->projectMan->getActive()->mainFilePath.section('.',0,-2);
+            }
         }
 
         options->m_device = this->projectMan->getActive()->family.toStdString();
@@ -3163,6 +3203,15 @@ void MainForm::setEditorReadOnly(bool readOnly)
     pasteAct->setEnabled(!readOnly);
     selectAllAct->setEnabled(!readOnly);
     deselectAct->setEnabled(!readOnly);
+    findAct->setEnabled(!readOnly);
+    findNextAct->setEnabled(!readOnly);
+    findPreviousAct->setEnabled(!readOnly);
+    replaceAct->setEnabled(!readOnly);
+    jmpToLineAct->setEnabled(!readOnly);
+    commentAct->setEnabled(!readOnly);
+    deleteCommentAct->setEnabled(!readOnly);
+    jmpToBookmarkNextAct->setEnabled(!readOnly);
+    jmpToBookmarkPrevAct->setEnabled(!readOnly);
     //qDebug() << "MainForm: return setEditorReadOnly";
 }
 

@@ -1102,7 +1102,7 @@ void WTextEdit::queryReadOnly(bool readOnly)
     this->setReadOnly(readOnly);
     shctBreakpoint->setEnabled(!readOnly);
     shctBookmark->setEnabled(!readOnly);
-    shctCopy->setEnabled(!readOnly);
+    /*shctCopy->setEnabled(!readOnly);
     shctPaste->setEnabled(!readOnly);
     shctCut->setEnabled(!readOnly);
     shctSelectAll->setEnabled(!readOnly);
@@ -1113,7 +1113,7 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctJmpToBookmarkPrev->setEnabled(!readOnly);
     shctJmpToLine->setEnabled(!readOnly);
     shctFind->setEnabled(!readOnly);
-    shctReplace->setEnabled(!readOnly);
+    shctReplace->setEnabled(!readOnly);*/
     shctMoveLineUp->setEnabled(!readOnly);
     shctMoveLineDown->setEnabled(!readOnly);
     shctMoveWordLeft->setEnabled(!readOnly);
@@ -1126,10 +1126,10 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectWordUnder->setEnabled(!readOnly);
     shctSelectWordLeft->setEnabled(!readOnly);
     shctSelectWordRight->setEnabled(!readOnly);
-    shctUndo->setEnabled(!readOnly);
+    /*shctUndo->setEnabled(!readOnly);
     shctRedo->setEnabled(!readOnly);
     shctFindNext->setEnabled(!readOnly);
-    shctFindPrevious->setEnabled(!readOnly);
+    shctFindPrevious->setEnabled(!readOnly);*/
     emit editorReadOnly(readOnly);
     if (false == this->isReadOnly())
     {
@@ -1176,12 +1176,12 @@ void WTextEdit::setShortcuts()
     shctDeleteComment = new QShortcut(this);
     shctDeleteComment->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_D);
     connect(shctDeleteComment, SIGNAL(activated()), this, SLOT(shortcutDeleteComment()));*/
-    shctJmpToBookmarkNext = new QShortcut(this);
+    /*shctJmpToBookmarkNext = new QShortcut(this);
     shctJmpToBookmarkNext->setKey(Qt::ALT + Qt::Key_PageUp);
     connect(shctJmpToBookmarkNext, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkNext()));
     shctJmpToBookmarkPrev = new QShortcut(this);
     shctJmpToBookmarkPrev->setKey(Qt::ALT + Qt::Key_PageDown);
-    connect(shctJmpToBookmarkPrev, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkPrev()));
+    connect(shctJmpToBookmarkPrev, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkPrev()));*/
     /*shctJmpToLine = new QShortcut(this);
     shctJmpToLine->setKey(Qt::CTRL + Qt::Key_G);
     connect(shctJmpToLine, SIGNAL(activated()), this, SLOT(shortcutJmpToLine()));*/
