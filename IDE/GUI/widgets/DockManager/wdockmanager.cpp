@@ -823,24 +823,24 @@ void WDockManager::hideDockWidgetArea(int area)
             {
                 case 1:
                 {
-                    if (wDockRightPrevWidth < (*i)->getQDockWidget()->width())
+                    /*if (wDockRightPrevWidth < (*i)->getQDockWidget()->width())
                     {
                         //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
                         //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
                         wDockRightPrevWidth = (*i)->getQDockWidget()->width();
-                    }
+                    }*/
                     (*i)->getQDockWidget()->setMaximumWidth(0);
                     (*i)->getQDockWidget()->setMinimumWidth(0);
                     break;
                 }
                 case 2:
                 {
-                    if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
-                    {
+                    //if (wDockBotPrevHeight < (*i)->getQDockWidget()->height())
+                    //{
                         //qDebug() << "WDockManager: old height:" << wDockBotPrevHeight;
                         //qDebug() << "WDockManager: new height:" << (*i)->getQDockWidget()->height();
-                        wDockBotPrevHeight = (*i)->getQDockWidget()->height();
-                    }
+                    //    wDockBotPrevHeight = (*i)->getQDockWidget()->height();
+                    //}
                     (*i)->getQDockWidget()->setMaximumHeight(0);
                     (*i)->getQDockWidget()->setMinimumHeight(0);
                     break;
@@ -867,9 +867,9 @@ void WDockManager::showDockWidgetArea(int area)
                 {
                     if ("Hide" != rightAreaTabs->tabText(rightAreaTabs->currentIndex()))
                     {
-                        (*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
-                        (*i)->getQDockWidget()->setMaximumWidth(999);
-                        (*i)->getQDockWidget()->setMinimumWidth(1);
+                        //(*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
+                        (*i)->getQDockWidget()->setMaximumWidth(500);
+                        (*i)->getQDockWidget()->setMinimumWidth(200);
                         wDockRightPrevWidth = 0;
                     }
                     break;
@@ -878,7 +878,7 @@ void WDockManager::showDockWidgetArea(int area)
                 {
                     if ("Hide" != bottomAreaTabs->tabText(bottomAreaTabs->currentIndex()))
                     {
-                        (*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
+                        //(*i)->getQDockWidget()->setFixedHeight(wDockBotPrevHeight);
                         (*i)->getQDockWidget()->setMaximumHeight(999);
                         (*i)->getQDockWidget()->setMinimumHeight(280);
                         //(*i)->getQDockWidget()->resize((*i)->getQDockWidget()->size().width(), wDockBotPrevHeight);
@@ -1088,7 +1088,7 @@ void WDockManager::handleShowHideBottom(int index)
         bottomVisible = true;
         QApplication::processEvents();
         activeCodeEdit->changeHeight();
-        QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+        //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
     }
 }
 
