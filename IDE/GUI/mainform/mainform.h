@@ -120,6 +120,15 @@ class MainForm : public QMainWindow
         void pasteSlot();
         void selectAllSlot();
         void deselectSlot();
+        void findSlot();
+        void findNextSlot();
+        void findPrevSlot();
+        void replaceSlot();
+        void jmpToLineSlot();
+        void commentSlot();
+        void deleteCommentSlot();
+        void jmpToBookmarkNextSlot();
+        void jmpToBookmarkPrevSlot();
         //void showPlugins();
         //void writeToWCompileInfo(QString text);
         void createDockWidgets();
@@ -184,7 +193,7 @@ class MainForm : public QMainWindow
         void shortcutCloseTab();
         void shortcutChangeTabLeft();
         void shortcutChangeTabRight();
-        void reloadTabIcons();
+        void reloadTabIcons();        
 
     signals:
         void unhighlightSim();
@@ -225,14 +234,18 @@ class MainForm : public QMainWindow
         QToolBar * m_helpToolBar;
 
         //actions
+        //file menu
         QAction *newAct;
         QAction *openAct;
-        QAction *addAct;
+        //QAction *addAct;
         QAction *saveAct;
         QAction *saveAsAct;
         QAction *saveAllAct;
+        QAction *closeFileAct;
+        //QAction *closeAllAct;
         QAction *exitAct;
 
+        //edit menu
         QAction *undoAct;
         QAction *redoAct;
         QAction *copyAct;
@@ -240,6 +253,15 @@ class MainForm : public QMainWindow
         QAction *pasteAct;
         QAction *selectAllAct;
         QAction *deselectAct;
+        QAction *findAct;
+        QAction *findNextAct;
+        QAction *findPreviousAct;
+        QAction *replaceAct;
+        QAction *jmpToLineAct;
+        QAction *commentAct;
+        QAction *deleteCommentAct;
+        QAction *jmpToBookmarkNextAct;
+        QAction *jmpToBookmarkPrevAct;
 
         QAction *interfaceConfigAct;
         QAction *pluginAct;

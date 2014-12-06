@@ -1102,7 +1102,7 @@ void WTextEdit::queryReadOnly(bool readOnly)
     this->setReadOnly(readOnly);
     shctBreakpoint->setEnabled(!readOnly);
     shctBookmark->setEnabled(!readOnly);
-    shctCopy->setEnabled(!readOnly);
+    /*shctCopy->setEnabled(!readOnly);
     shctPaste->setEnabled(!readOnly);
     shctCut->setEnabled(!readOnly);
     shctSelectAll->setEnabled(!readOnly);
@@ -1113,7 +1113,7 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctJmpToBookmarkPrev->setEnabled(!readOnly);
     shctJmpToLine->setEnabled(!readOnly);
     shctFind->setEnabled(!readOnly);
-    shctReplace->setEnabled(!readOnly);
+    shctReplace->setEnabled(!readOnly);*/
     shctMoveLineUp->setEnabled(!readOnly);
     shctMoveLineDown->setEnabled(!readOnly);
     shctMoveWordLeft->setEnabled(!readOnly);
@@ -1126,10 +1126,10 @@ void WTextEdit::queryReadOnly(bool readOnly)
     shctSelectWordUnder->setEnabled(!readOnly);
     shctSelectWordLeft->setEnabled(!readOnly);
     shctSelectWordRight->setEnabled(!readOnly);
-    shctUndo->setEnabled(!readOnly);
+    /*shctUndo->setEnabled(!readOnly);
     shctRedo->setEnabled(!readOnly);
     shctFindNext->setEnabled(!readOnly);
-    shctFindPrevious->setEnabled(!readOnly);
+    shctFindPrevious->setEnabled(!readOnly);*/
     emit editorReadOnly(readOnly);
     if (false == this->isReadOnly())
     {
@@ -1155,10 +1155,10 @@ void WTextEdit::setShortcuts()
     shctBookmark = new QShortcut(this);
     shctBookmark->setKey(Qt::CTRL + Qt::Key_B);
     connect(shctBookmark, SIGNAL(activated()), this, SLOT(shortcutBookmark()));
-    shctCopy = new QShortcut(this);
+    /*shctCopy = new QShortcut(this);
     shctCopy->setKey(Qt::CTRL + Qt::Key_C);
-    connect(shctCopy, SIGNAL(activated()), this, SLOT(shortcutCopy()));
-    shctPaste = new QShortcut(this);
+    connect(shctCopy, SIGNAL(activated()), this, SLOT(shortcutCopy()));*/
+    /*shctPaste = new QShortcut(this);
     shctPaste->setKey(Qt::CTRL + Qt::Key_V);
     connect(shctPaste, SIGNAL(activated()), this, SLOT(shortcutPaste()));
     shctCut = new QShortcut(this);
@@ -1175,22 +1175,22 @@ void WTextEdit::setShortcuts()
     connect(shctComment, SIGNAL(activated()), this, SLOT(shortcutComment()));
     shctDeleteComment = new QShortcut(this);
     shctDeleteComment->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_D);
-    connect(shctDeleteComment, SIGNAL(activated()), this, SLOT(shortcutDeleteComment()));
-    shctJmpToBookmarkNext = new QShortcut(this);
+    connect(shctDeleteComment, SIGNAL(activated()), this, SLOT(shortcutDeleteComment()));*/
+    /*shctJmpToBookmarkNext = new QShortcut(this);
     shctJmpToBookmarkNext->setKey(Qt::ALT + Qt::Key_PageUp);
     connect(shctJmpToBookmarkNext, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkNext()));
     shctJmpToBookmarkPrev = new QShortcut(this);
     shctJmpToBookmarkPrev->setKey(Qt::ALT + Qt::Key_PageDown);
-    connect(shctJmpToBookmarkPrev, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkPrev()));
-    shctJmpToLine = new QShortcut(this);
+    connect(shctJmpToBookmarkPrev, SIGNAL(activated()), this, SLOT(shortcutJmpToBookmarkPrev()));*/
+    /*shctJmpToLine = new QShortcut(this);
     shctJmpToLine->setKey(Qt::CTRL + Qt::Key_G);
-    connect(shctJmpToLine, SIGNAL(activated()), this, SLOT(shortcutJmpToLine()));
-    shctFind = new QShortcut(this);
+    connect(shctJmpToLine, SIGNAL(activated()), this, SLOT(shortcutJmpToLine()));*/
+    /*shctFind = new QShortcut(this);
     shctFind->setKey(Qt::CTRL + Qt::Key_F);
-    connect(shctFind, SIGNAL(activated()), this, SLOT(shortcutFind()));
-    shctReplace = new QShortcut(this);
+    connect(shctFind, SIGNAL(activated()), this, SLOT(shortcutFind()));*/
+    /*shctReplace = new QShortcut(this);
     shctReplace->setKey(Qt::CTRL + Qt::Key_R);
-    connect(shctReplace, SIGNAL(activated()), this, SLOT(shortcutReplace()));
+    connect(shctReplace, SIGNAL(activated()), this, SLOT(shortcutReplace()));*/
     shctMoveLineUp = new QShortcut(this);
     shctMoveLineUp->setKey(Qt::CTRL + Qt::Key_Up);
     connect(shctMoveLineUp, SIGNAL(activated()), this, SLOT(shortcutMoveLineUp()));
@@ -1227,18 +1227,18 @@ void WTextEdit::setShortcuts()
     shctSelectWordRight = new QShortcut(this);
     shctSelectWordRight->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Right);
     connect(shctSelectWordRight, SIGNAL(activated()), this, SLOT(shortcutSelectWordRight()));
-    shctUndo = new QShortcut(this);
+    /*shctUndo = new QShortcut(this);
     shctUndo->setKey(Qt::CTRL + Qt::Key_Z);
     connect(shctUndo, SIGNAL(activated()), this, SLOT(shortcutUndo()));
     shctRedo = new QShortcut(this);
     shctRedo->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
-    connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));
-    shctFindNext = new QShortcut(this);
+    connect(shctRedo, SIGNAL(activated()), this, SLOT(shortcutRedo()));*/
+    /*shctFindNext = new QShortcut(this);
     shctFindNext->setKey(Qt::Key_F3);
     connect(shctFindNext, SIGNAL(activated()), this, SLOT(shortcutFindNext()));
     shctFindPrevious = new QShortcut(this);
     shctFindPrevious->setKey(Qt::SHIFT + Qt::Key_F3);
-    connect(shctFindPrevious, SIGNAL(activated()), this, SLOT(shortcutFindPrevious()));
+    connect(shctFindPrevious, SIGNAL(activated()), this, SLOT(shortcutFindPrevious()));*/
     ////TODO: move lines up, down
 }
 
@@ -1524,8 +1524,16 @@ void WTextEdit::shortcutDeleteLine()
     QTextCursor cursor(this->textCursor());
     if (false == cursor.hasSelection())
     {
-        cursor.select(QTextCursor::LineUnderCursor);
+        cursor.select(QTextCursor::BlockUnderCursor);
         cursor.removeSelectedText();
+        if (cursor.blockNumber() != this->document()->blockCount()-1)
+        {
+            cursor.deleteChar();
+        }
+        else if (cursor.blockNumber() != 0)
+        {
+            cursor.deletePreviousChar();
+        }
         this->setTextCursor(cursor);
     }
 }
@@ -1592,9 +1600,21 @@ void WTextEdit::shortcutRedo()
 
 void WTextEdit::shortcutFindNext()
 {
+    QTextCursor cursor = this->textCursor();
+    if (false == cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::WordUnderCursor);
+    }
+    findAndMark(cursor.selectedText(), true, true);
 }
 
 
 void WTextEdit::shortcutFindPrevious()
 {
+    QTextCursor cursor = this->textCursor();
+    if (false == cursor.hasSelection())
+    {
+        cursor.select(QTextCursor::WordUnderCursor);
+    }
+    findAndMark(cursor.selectedText(), false, true);
 }
