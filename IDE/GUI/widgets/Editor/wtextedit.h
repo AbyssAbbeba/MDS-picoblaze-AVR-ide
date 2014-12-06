@@ -71,6 +71,15 @@ class WTextEdit : public QPlainTextEdit
         void cursorPositionChangedSlot();
         void setTabToSpaces(bool enabled);
         void setSpacesInTab(int spacesInTab);
+        void shortcutFindNext();
+        void shortcutFindPrevious();
+        void shortcutJmpToLine();
+        void shortcutFind();
+        void shortcutReplace();
+        void shortcutComment();
+        void shortcutDeleteComment();
+        void shortcutJmpToBookmarkNext();
+        void shortcutJmpToBookmarkPrev();
 
     private slots:
         void shortcutBreakpoint();
@@ -80,13 +89,6 @@ class WTextEdit : public QPlainTextEdit
         void shortcutCut();
         void shortcutSelectAll();
         void shortcutDeselect();
-        void shortcutComment();
-        void shortcutDeleteComment();
-        void shortcutJmpToBookmarkNext();
-        void shortcutJmpToBookmarkPrev();
-        void shortcutJmpToLine();
-        void shortcutFind();
-        void shortcutReplace();
         void shortcutMoveLineUp();
         void shortcutMoveLineDown();
         void shortcutMoveWordLeft();
@@ -101,8 +103,6 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectWordRight();
         void shortcutUndo();
         void shortcutRedo();
-        void shortcutFindNext();
-        void shortcutFindPrevious();
 //         void shortcutChangeTabLeft();
 //         void shortcutChangeTabRight();
 //         void shortcutCloseTab();

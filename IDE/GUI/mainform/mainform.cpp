@@ -394,6 +394,8 @@ void MainForm::createMenu()
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(saveAllAct);
     fileMenu->addSeparator();
+    fileMenu->addAction(closeFileAct);
+    fileMenu->addSeparator();
     fileMenu->addAction(exitAct);
 
     editMenu = menuBar()->addMenu(tr("&Edit"));
@@ -406,6 +408,19 @@ void MainForm::createMenu()
     editMenu->addSeparator();
     editMenu->addAction(selectAllAct);
     editMenu->addAction(deselectAct);
+    editMenu->addSeparator();
+    editMenu->addAction(findAct);
+    editMenu->addAction(findNextAct);
+    editMenu->addAction(findPreviousAct);
+    editMenu->addAction(replaceAct);
+    editMenu->addSeparator();
+    editMenu->addAction(jmpToLineAct);
+    editMenu->addSeparator();
+    editMenu->addAction(commentAct);
+    editMenu->addAction(deleteCommentAct);
+    editMenu->addSeparator();
+    editMenu->addAction(jmpToBookmarkNextAct);
+    editMenu->addAction(jmpToBookmarkPrevAct);
 
 
     interfaceMenu = menuBar()->addMenu(tr("&Interface"));
@@ -508,19 +523,17 @@ void MainForm::createActions()
 
 
     newAddAct = new QAction(QIcon(":resources/icons/projNewAdd.png"), tr("New File"), this);
-    connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
     newAddAct->setDisabled(true);
     newAddAct->setShortcut(QKeySequence("Ctrl+N"));
+    connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
     newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
-    newAct->setDisabled(true);
 
     openAct = new QAction(QIcon(":resources/icons/folder.png"), tr("Open File"), this);
-    connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
-    openAct->setDisabled(true);
     openAct->setShortcut(QKeySequence("Ctrl+O"));
+    connect(openAct, SIGNAL(triggered()), this, SLOT(openFile()));
 
 
     /*QPixmap *pm_projAdd = new QPixmap(":resources/icons/projAdd.png");
@@ -537,42 +550,108 @@ void MainForm::createActions()
 
 
     saveAct = new QAction(QIcon(":resources/icons/disk.png"), tr("Save File"), this);
-    connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
     saveAct->setDisabled(true);
     saveAct->setShortcut(QKeySequence("Ctrl+S"));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(saveFile()));
 
     saveAsAct = new QAction(QIcon(":resources/icons/disk2.png"), tr("Save As"), this);
-    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
     saveAsAct->setDisabled(true);
     saveAsAct->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(saveFileAs()));
 
     saveAllAct = new QAction(QIcon(":resources/icons/disk_multiple.png"), tr("Save All"), this);
-    connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
     saveAllAct->setDisabled(true);
     saveAllAct->setShortcut(QKeySequence("Ctrl+L"));
+    connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
+
+    closeFileAct = new QAction(tr("Close File"), this);
+    closeFileAct->setDisabled(true);
+    closeFileAct->setShortcut(QKeySequence("Ctrl+W"));
+    connect(closeFileAct, SIGNAL(triggered()), this, SLOT(shortcutCloseTab()));
+    
 
 
     //EDIT
     undoAct = new QAction(QIcon(":resources/icons/arrow_undo.png"), tr("Undo"), this);
-    connect(undoAct, SIGNAL(triggered()), this, SLOT(undoSlot()));
     undoAct->setShortcut(QKeySequence("Ctrl+Z"));
+    undoAct->setDisabled(true);
+    undoAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undoSlot()));
     redoAct = new QAction(QIcon(":resources/icons/arrow_redo.png"), tr("Redo"), this);
-    connect(redoAct, SIGNAL(triggered()), this, SLOT(redoSlot()));
     redoAct->setShortcut(QKeySequence("Ctrl+Shift+Z"));
+    redoAct->setDisabled(true);
+    redoAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redoSlot()));
     cutAct = new QAction(QIcon(":resources/icons/cut.png"), tr("Cut"), this);
-    connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSlot()));
     cutAct->setShortcut(QKeySequence("Ctrl+X"));
+    cutAct->setDisabled(true);
+    cutAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cutSlot()));
     copyAct = new QAction(QIcon(":resources/icons/page_copy.png"), tr("Copy"), this);
-    connect(copyAct, SIGNAL(triggered()), this, SLOT(copySlot()));
     copyAct->setShortcut(QKeySequence("Ctrl+C"));
+    copyAct->setDisabled(true);
+    copyAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copySlot()));
     pasteAct = new QAction(tr("Paste"), this);
-    connect(pasteAct, SIGNAL(triggered()), this, SLOT(pasteSlot()));
     pasteAct->setShortcut(QKeySequence("Ctrl+V"));
+    pasteAct->setDisabled(true);
+    pasteAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(pasteSlot()));
     selectAllAct = new QAction(tr("Select All"), this);
-    connect(selectAllAct, SIGNAL(triggered()), this, SLOT(selectAllSlot()));
     selectAllAct->setShortcut(QKeySequence("Ctrl+A"));
+    selectAllAct->setDisabled(true);
+    selectAllAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(selectAllAct, SIGNAL(triggered()), this, SLOT(selectAllSlot()));
     deselectAct = new QAction(tr("Deselect"), this);
+    deselectAct->setDisabled(true);
+    deselectAct->setShortcut(QKeySequence("Ctrl+Shift+A"));
+    deselectAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deselectAct, SIGNAL(triggered()), this, SLOT(deselectSlot()));
+    findAct = new QAction(tr("Find"), this);
+    findAct->setShortcut(QKeySequence("Ctrl+F"));
+    findAct->setDisabled(true);
+    findAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(findAct, SIGNAL(triggered()), this, SLOT(findSlot()));
+    findNextAct = new QAction(tr("Find Next"), this);
+    findNextAct->setShortcut(QKeySequence("F3"));
+    findNextAct->setDisabled(true);
+    findNextAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(findNextAct, SIGNAL(triggered()), this, SLOT(findNextSlot()));
+    findPreviousAct = new QAction(tr("Find Previous"), this);
+    findPreviousAct->setShortcut(QKeySequence("Shift+F3"));
+    findPreviousAct->setDisabled(true);
+    findPreviousAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(findPreviousAct, SIGNAL(triggered()), this, SLOT(findPrevSlot()));
+    replaceAct = new QAction(tr("Replace"), this);
+    replaceAct->setShortcut(QKeySequence("Ctrl+R"));
+    replaceAct->setDisabled(true);
+    replaceAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(replaceAct, SIGNAL(triggered()), this, SLOT(replaceSlot()));
+    jmpToLineAct = new QAction(tr("Go to Line"), this);
+    jmpToLineAct->setShortcut(QKeySequence("Ctrl+G"));
+    jmpToLineAct->setDisabled(true);
+    jmpToLineAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(jmpToLineAct, SIGNAL(triggered()), this, SLOT(jmpToLineSlot()));
+    commentAct = new QAction(tr("Comment"), this);
+    commentAct->setShortcut(QKeySequence("Ctrl+D"));
+    commentAct->setDisabled(true);
+    commentAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(commentAct, SIGNAL(triggered()), this, SLOT(commentSlot()));
+    deleteCommentAct = new QAction(tr("Delete Comment"), this);
+    deleteCommentAct->setShortcut(QKeySequence("Ctrl+Shift+D"));
+    deleteCommentAct->setDisabled(true);
+    deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(deleteCommentAct, SIGNAL(triggered()), this, SLOT(deleteCommentSlot()));
+    jmpToBookmarkNextAct = new QAction(tr("Jump to Next Bookmark"), this);
+    jmpToBookmarkNextAct->setShortcut(QKeySequence(Qt::Key_Alt + Qt::Key_PageDown));
+    jmpToBookmarkNextAct->setDisabled(true);
+    jmpToBookmarkNextAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(jmpToBookmarkNextAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkNextSlot()));
+    jmpToBookmarkPrevAct = new QAction(tr("Jump to Previous Bookmark"), this);
+    jmpToBookmarkPrevAct->setShortcut(QKeySequence(Qt::Key_Alt + Qt::Key_PageUp));
+    jmpToBookmarkPrevAct->setDisabled(true);
+    jmpToBookmarkPrevAct->setShortcutContext(Qt::ApplicationShortcut);
+    connect(jmpToBookmarkPrevAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkPrevSlot()));
 
 
 
@@ -731,9 +810,9 @@ void MainForm::createActions()
 
 void MainForm::createShortcuts()
 {
-    QShortcut *shctCloseTab = new QShortcut(this);
-    shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
-    connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
+    //QShortcut *shctCloseTab = new QShortcut(this);
+    //shctCloseTab->setKey(Qt::CTRL + Qt::Key_W);
+    //connect(shctCloseTab, SIGNAL(activated()), this, SLOT(shortcutCloseTab()));
     QShortcut *shctChangeTabLeft = new QShortcut(this);
     shctChangeTabLeft->setKey(Qt::ALT + Qt::Key_Left);
     connect(shctChangeTabLeft, SIGNAL(activated()), this, SLOT(shortcutChangeTabLeft()));
@@ -944,14 +1023,8 @@ void MainForm::createDockWidgets()
         //wDockManager->addDockWidget(wAnalysVar);
         //wDockManager->addDockWidget(wAnalysFunc);
         //addAct->setEnabled(true);
-        newAddAct->setEnabled(true);
-        saveProjAct->setEnabled(true);
-        saveProjConfigAct->setEnabled(true);
         //projectCompileAct->setEnabled(true);
         //simulationFlowAct->setEnabled(true);
-        saveAct->setEnabled(true);
-        saveAsAct->setEnabled(true);
-        saveAllAct->setEnabled(true);
         wDockManager->dockWidgets = true;
         if (wDockManager->getBreakpointList() != NULL)
         {
@@ -1701,8 +1774,6 @@ bool MainForm::openProject(QString path)
 void MainForm::projectOpened()
 {
     newAddAct->setEnabled(true);
-    newAct->setEnabled(true);
-    openAct->setEnabled(true);
 
     //qDebug() << "MainForm: projectOpened";
     wDockManager->deleteCentralWelcome();
@@ -1713,6 +1784,10 @@ void MainForm::projectOpened()
     if (false == closeProjectAct->isEnabled())
     {
         closeProjectAct->setEnabled(true);
+    }
+    if (false == saveProjConfigAct->isEnabled())
+    {
+        saveProjConfigAct->setEnabled(true);
     }
     if (false == projectTabConnected)
     {
@@ -3105,10 +3180,6 @@ void MainForm::addUntrackedFile(QString name, QString path)
         wDockManager->addUntrackedCentralWidget(name, path);
         wDockManager->getCentralWidget()->setParentProject(projectMan->getUntracked());
         wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
-        saveAct->setEnabled(true);
-        saveAsAct->setEnabled(true);
-        saveAllAct->setEnabled(true);
-        saveProjAct->setEnabled(true);
         //getWDockManager()->getCentralWidget()->setChanged();
         //getWDockManager()->getCentralWidget()->connectAct();
     }
@@ -3312,6 +3383,27 @@ void MainForm::enableSimActs()
     {
         simulationBreakpointAct->setEnabled(true);
     }
+    saveAct->setEnabled(true);
+    saveAsAct->setEnabled(true);
+    saveAllAct->setEnabled(true);
+    saveProjAct->setEnabled(true);
+    closeFileAct->setEnabled(true);
+    undoAct->setEnabled(true);
+    redoAct->setEnabled(true);
+    copyAct->setEnabled(true);
+    cutAct->setEnabled(true);
+    pasteAct->setEnabled(true);
+    selectAllAct->setEnabled(true);
+    deselectAct->setEnabled(true);
+    findAct->setEnabled(true);
+    findNextAct->setEnabled(true);
+    findPreviousAct->setEnabled(true);
+    replaceAct->setEnabled(true);
+    jmpToLineAct->setEnabled(true);
+    commentAct->setEnabled(true);
+    deleteCommentAct->setEnabled(true);
+    jmpToBookmarkNextAct->setEnabled(true);
+    jmpToBookmarkPrevAct->setEnabled(true);
 }
 
 
@@ -3329,6 +3421,27 @@ void MainForm::disableSimActs()
     {
         simulationBreakpointAct->setDisabled(true);
     }
+    saveAct->setEnabled(false);
+    saveAsAct->setEnabled(false);
+    saveAllAct->setEnabled(false);
+    saveProjAct->setEnabled(false);
+    closeFileAct->setEnabled(false);
+    undoAct->setEnabled(false);
+    redoAct->setEnabled(false);
+    copyAct->setEnabled(false);
+    cutAct->setEnabled(false);
+    pasteAct->setEnabled(false);
+    selectAllAct->setEnabled(false);
+    deselectAct->setEnabled(false);
+    findAct->setEnabled(false);
+    findNextAct->setEnabled(false);
+    findPreviousAct->setEnabled(false);
+    replaceAct->setEnabled(false);
+    jmpToLineAct->setEnabled(false);
+    commentAct->setEnabled(false);
+    deleteCommentAct->setEnabled(false);
+    jmpToBookmarkNextAct->setEnabled(false);
+    jmpToBookmarkPrevAct->setEnabled(false);
 }
 
 
@@ -3375,15 +3488,12 @@ void MainForm::closeProject()
         if (projectMan->getOpenProjects().count() == 0)
         {
             wDockManager->setCentralWelcome();
+            closeProjectAct->setEnabled(false);
+            newAddAct->setEnabled(false);
+            saveProjConfigAct->setEnabled(false);
+            saveProjAct->setEnabled(false);
+            projectConfigAct->setEnabled(false);
         }
-
-        saveAct->setEnabled(false);
-        saveAsAct->setEnabled(false);
-        saveAllAct->setEnabled(false);
-        saveProjAct->setEnabled(false);
-        newAct->setEnabled(false);
-        openAct->setEnabled(false);
-        newAddAct->setEnabled(false);
     }
 }
 
@@ -4065,4 +4175,59 @@ void MainForm::reloadTabIcons()
             wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
         }
     }
+}
+
+
+
+void MainForm::findSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutFind();
+}
+
+
+void MainForm::findNextSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutFindNext();
+}
+
+
+void MainForm::findPrevSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutFindPrevious();
+}
+
+
+void MainForm::replaceSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutReplace();
+}
+
+
+void MainForm::jmpToLineSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutJmpToLine();
+}
+
+
+void MainForm::commentSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutComment();
+}
+
+
+void MainForm::deleteCommentSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutDeleteComment();
+}
+
+
+void MainForm::jmpToBookmarkNextSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutJmpToBookmarkNext();
+}
+
+
+void MainForm::jmpToBookmarkPrevSlot()
+{
+    wDockManager->getCentralTextEdit()->shortcutJmpToBookmarkPrev();
 }
