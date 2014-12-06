@@ -17,6 +17,7 @@
 #define ASMMACROS_H
 
 // Forward declarations.
+class AsmStringTable;
 class AsmSymbolTable;
 class AsmCodeListing;
 
@@ -100,6 +101,7 @@ class AsmMacros
         AsmMacros ( CompilerSemanticInterface * compilerCore,
                     CompilerOptions * opts,
                     AsmSymbolTable * symbolTable,
+                    AsmStringTable * stringTable,
                     AsmCodeListing * codeListing );
 
         /**
@@ -216,6 +218,9 @@ class AsmMacros
 
         ///
         AsmSymbolTable * const m_symbolTable;
+
+        ///
+        AsmStringTable * const m_stringTable;
 
         ///
         AsmCodeListing * const m_codeListing;

@@ -489,6 +489,13 @@
             \caption{Condition syntax used for all code generation directives.}
         \end{table}
 
+    \paragraph{Availability}
+        ~\\\indent
+        \begin{tabular}{ccccc}
+            PicoBlaze 6 & PicoBlaze 3 & PicoBlaze II & PicoBlaze & PicoBlaze CPLD \\
+            \yes        & \yes        & \no          & \no       & \no
+        \end{tabular}
+
     \clearpage
     \asmdirective{IF, ELSEIF, ELSE, ENDIF}
         To implement run-time conditions you can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.

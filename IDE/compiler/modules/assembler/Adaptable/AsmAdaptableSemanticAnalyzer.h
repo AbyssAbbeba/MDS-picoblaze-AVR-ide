@@ -21,6 +21,7 @@ class AsmMacros;
 class AsmMemoryPtr;
 class AsmDgbFileGen;
 class AsmSymbolTable;
+class AsmStringTable;
 class AsmCodeListing;
 class AsmMachineCodeGen;
 class AsmAdaptableTreeDecoder;
@@ -119,6 +120,9 @@ class AsmAdaptableSemanticAnalyzer : public CompilerSemanticAnalyzer
 
         ///
         AsmAdaptableCodeGenerator * m_codeGenerator;
+
+        ///
+        AsmStringTable * m_stringTable;
 
         ///
         AdjSimProcDef m_device;
