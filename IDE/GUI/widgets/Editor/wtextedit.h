@@ -103,6 +103,8 @@ class WTextEdit : public QPlainTextEdit
         void shortcutSelectWordRight();
         void shortcutUndo();
         void shortcutRedo();
+        void shortcutSwitchLinesUp();
+        void shortcutSwitchLinesDown();
 //         void shortcutChangeTabLeft();
 //         void shortcutChangeTabRight();
 //         void shortcutCloseTab();
@@ -176,6 +178,8 @@ class WTextEdit : public QPlainTextEdit
         QShortcut *shctSelectWordUnder;
         QShortcut *shctSelectWordLeft;
         QShortcut *shctSelectWordRight;
+        QShortcut *shctSwitchLinesUp;
+        QShortcut *shctSwitchLinesDown;
         /*QShortcut *shctUndo;
         QShortcut *shctRedo;
         QShortcut *shctFindNext;
