@@ -56,111 +56,111 @@ void error(int errCode, QString detail)
         case ERR_STACK_OVERFLOW:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Stack overflow, simulation aborted");
+            msgBox.setText("Stack overflow, simulation halted");
             break;
         }
         case ERR_STACK_UNDERFLOW:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Stack underflow, simulation aborted");
+            msgBox.setText("Stack underflow, simulation halted");
             break;
         }
         //mem
         case ERR_MEM_WR_NONEXISTENT:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Write to nonexistent memory cell, simulation aborted");
+            msgBox.setText("Write to nonexistent memory location, simulation halted");
             break;
         }
         case ERR_MEM_RD_NONEXISTENT:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Read from nonexistent memory cell, simulation aborted");
+            msgBox.setText("Read from nonexistent memory location, simulation halted");
             break;
         }
         case ERR_MEM_WR_NOT_IMPLEMENTED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Write to unimplemented memory cell, simulation aborted");
+            msgBox.setText("Write to unimplemented memory location, simulation halted");
             break;
         }
         case ERR_MEM_RD_NOT_IMPLEMENTED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Read from unimplemented memory cell, simulation aborted");
+            msgBox.setText("Read from unimplemented memory location, simulation halted");
             break;
         }
         //cpu
         case ERR_CPU_PC_OVERFLOW:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Program counter overflow, simulation aborted");
+            msgBox.setText("Program counter overflow, simulation halted");
             break;
         }
         case ERR_CPU_PC_UNDERFLOW:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Program counter underflow, simulation aborted");
+            msgBox.setText("Program counter underflow, simulation halted");
             break;
         }
         case ERR_CPU_SYS_FATAL:
         {
             msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("System fatal error, simulation aborted");
+            msgBox.setText("System fatal error, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_OPCODE:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid opcode, simulation aborted");
+            msgBox.setText("Invalid opcode, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_JUMP:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid jump, simulation aborted");
+            msgBox.setText("Invalid jump, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_CALL:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid call, simulation aborted");
+            msgBox.setText("Invalid call, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_IRQ:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid IRQ, simulation aborted");
+            msgBox.setText("Invalid IRQ, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_RET:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid return, simulation aborted");
+            msgBox.setText("Invalid return, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_RETI:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid interrupt return, simulation aborted");
+            msgBox.setText("Invalid return from interrupt, simulation halted");
             break;
         }
         case ERR_CPU_INVALID_OPSET:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Invalid opset, simulation aborted");
+            msgBox.setText("Invalid opset, simulation halted");
             break;
         }
         case ERR_CPU_UNSUPPORTED_INST:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Unsupported instruction, simulation aborted");
+            msgBox.setText("Unsupported instruction, simulation halted");
             break;
         }
         case ERR_CPU_INST_IGNORED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Instruction ignored, simulation aborted");
+            msgBox.setText("Instruction ignored, simulation halted");
             break;
         }
 
