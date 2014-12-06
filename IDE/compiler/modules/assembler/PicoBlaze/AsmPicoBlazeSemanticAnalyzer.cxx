@@ -61,7 +61,7 @@ AsmPicoBlazeSemanticAnalyzer::AsmPicoBlazeSemanticAnalyzer ( CompilerSemanticInt
     m_stringTable    = new AsmStringTable ( compilerCore, opts );
     m_codeGenerator  = new AsmPicoBlazeCodeGenerator();
     m_codeListing    = new AsmCodeListing ( compilerCore, opts, m_symbolTable, m_codeGenerator );
-    m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_codeListing );
+    m_macros         = new AsmMacros ( compilerCore, opts, m_symbolTable, m_stringTable, m_codeListing );
     m_specialMacros  = new AsmPicoBlazeSpecialMacros ( compilerCore, m_symbolTable, m_codeListing );
     m_instructionSet = new AsmPicoBlazeInstructionSet ( compilerCore, opts, m_symbolTable, &m_device );
     m_treeDecoder    = new AsmPicoBlazeTreeDecoder ( m_compilerCore,    m_opts,         m_dgbFile,

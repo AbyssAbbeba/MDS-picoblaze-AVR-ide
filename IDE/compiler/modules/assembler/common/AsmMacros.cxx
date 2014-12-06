@@ -16,6 +16,7 @@
 // Assembler semantic analyzer header files.
 #include "AsmMacros.h"
 #include "AsmCommons.h"
+#include "AsmStringTable.h"
 #include "AsmSymbolTable.h"
 #include "AsmCodeListing.h"
 
@@ -36,10 +37,12 @@ AsmMacros::Macro::Macro()
 AsmMacros::AsmMacros ( CompilerSemanticInterface * compilerCore,
                        CompilerOptions * opts,
                        AsmSymbolTable * symbolTable,
+                       AsmStringTable * stringTable,
                        AsmCodeListing * codeListing )
                      : m_compilerCore ( compilerCore ),
                        m_opts ( opts ),
                        m_symbolTable ( symbolTable ),
+                       m_stringTable ( stringTable ),
                        m_codeListing ( codeListing )
 {
     clear();
@@ -94,7 +97,7 @@ void AsmMacros::define ( CompilerSourceLocation location,
           param = param->m_next )
     {
         const char * paramName = param->m_lValue.m_data.m_symbol;
-        if ( true == m_symbolTable->isDefined(paramName) )
+        if ( ( true == m_symbolTable->isDefined(paramName) ) || ( true == m_stringTable->find(paramName) ) )
         {
             const CompilerSourceLocation & symLocation = m_symbolTable->getValue(paramName)->location();
             if ( true == symLocation.isSet() )
