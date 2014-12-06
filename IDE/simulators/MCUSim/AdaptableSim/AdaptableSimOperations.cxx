@@ -589,6 +589,7 @@ inline void AdaptableSimOperations::instIsrReturn()
     {
         m_statusFlags -> setInterrupted ( 1 );
         logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
+        m_statusFlags->returni();
     }
     else
     {
@@ -598,7 +599,6 @@ inline void AdaptableSimOperations::instIsrReturn()
 
     // Return from ISR (Interrupt Service Routine).
     setProgramCounter ( m_stack->popFromStack() );
-    m_statusFlags -> returni();
 }
 
 inline void AdaptableSimOperations::instAdd ( const AdaptableSimInstruction & inst,
