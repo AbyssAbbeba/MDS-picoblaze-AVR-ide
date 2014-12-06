@@ -2570,51 +2570,6 @@ void MainForm::compileProject()
             SLOT(compilationFinished(bool))
            );
     compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options);
-    //delete options;
-    /*QThread *thread = new QThread;
-    CompileWidget *compiler = new CompileWidget(projectMan->getActive()->mainFileName, projectMan->getActive()->prjPath, projectMan->getActive()->langType);
-    compiler->moveToThread(thread);
-    connect(thread, SIGNAL(started()), compiler, SLOT(compile()));
-    connect(compiler, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(compiler, SIGNAL(finished()), compiler, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(compiler, SIGNAL(write(QString)), this, SLOT(writeToWCompileInfo(QString)));
-    thread->start();*/
-
-
-    /*projectMan->createActiveMakefile();
-
-    ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->clear();
-
-    QStringList args;
-    args << "-C" + projectMan->getActive()->prjPath.section('/',0, -2)+"/make/";
-    QProcess compiler(this);
-
-    compiler.setProcessChannelMode(QProcess::MergedChannels);
-    compiler.start("make", args);
-    if (!compiler.waitForFinished())
-        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make failed:\n" + compiler.errorString());
-    else
-    {
-        ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("Make successful:\n" + compiler.readAll() + "\n\n");
-
-        QProcess packihx(this);
-        QStringList args2;
-        QString projectMainName = projectMan->getActive()->mainFileName.section('.',0,-2);
-        QString ihxPath = projectMan->getActive()->prjPath.section('/',0, -2)+"/make/" + projectMainName + ".ihx";
-        QString hexPath = projectMan->getActive()->prjPath.section('/',0, -2)+"/make/" + projectMainName + ".hex";
-
-        args2 << ihxPath;
-        packihx.setProcessChannelMode(QProcess::MergedChannels);
-        packihx.setStandardOutputFile(hexPath);
-        packihx.start("packihx", args2);
-
-        //vyresit chybu - oba pripady vypisuji packihx successful
-        if (!packihx.waitForFinished())
-            ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx failed: " + packihx.errorString());
-        else
-            ((QPlainTextEdit*)wDockManager->getDockWidget(wCompileInfo)->widget())->appendPlainText("packihx successful: " + packihx.readAll());
-    }*/
 }
 
 
