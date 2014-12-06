@@ -34,7 +34,7 @@ class AsmStringTable
 {
     ////    Friends    ////
     friend std::ostream & operator << ( std::ostream & out,
-                                        const AsmStringTable * symbolTable );
+                                        const AsmStringTable * stringTable );
 
     ////    Public Datatypes    ////
     public:

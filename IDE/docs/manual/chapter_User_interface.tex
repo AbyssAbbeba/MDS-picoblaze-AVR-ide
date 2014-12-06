@@ -22,7 +22,7 @@
 
         \subsubsection{Left panel}
             \index{Left panel}
-            Left panel displays files in your project tree. You can perform various actions from here using context menus (right click), like configure project, close project, open file, close file, remove file from this list, or set some file as the project's main source file.
+            Left panel displays files in your project tree. Also it allows to perform various actions via context menus (right click), like: configure project, close project, open file, close file, remove file from this list, or set some file as the project's main source file, etc.
 
         \subsubsection{Right panel}
             \index{Right panel}
@@ -82,29 +82,29 @@
             When closing the main window, MDS automatically checks if all files which you have been working on have been saved on the disk; and if some of them have not, it displays a dialog (Exit Dialog) asking you which files you want to save and which not. But be aware that this function cannot possibly handle (unlikely) possibility of program crash, we recommend that you save your files regularly to prevent accidental data loss.
 
             \begin{description}
-                \item[Button Save:] Saves the selected file; if there is only one file left, exits the IDE.
+                \item[Button Save:] Saves the selected file; and if there is only one file left, exits the IDE.
                 \item[Button Save All:] Saves all files and exits the IDE.
                 \item[Button Discard:] Discards recent changes in the selected file; if there is only one file left, exits the IDE.
-                \item[Button Discard All:] Discard recent changes in all files and exits the IDE.
-                \item[Button Cancel:] Closes the dialog and return to the IDE, the main window will remain opened.
+                \item[Button Discard All:] Discards recent changes in all files and exits the IDE.
+                \item[Button Cancel:] Closes the dialog and returns to the IDE, the main window will remain opened.
             \end{description}
 
     \subsection{Main menu actions}
         \begin{description}
             \item[File / New File] Create a new file in your current project.
             \item[File / New Untracked File] Create a new file outside your current project.
-            \item[File / Open File] Open an existing file and adds it to your current project.
-            \item[File / Open Recent] Keep track of recently opened files and allow you to reopen them.
-            \item[File / Save File] Save your current file in your current project.
-            \item[File / Save As] Save your current file in your current project under a different name.
+            \item[File / Open File] Open an existing file and add it to your current project.
+            \item[File / Open Recent] Keeps track of recently opened files and allows to easily reopen them.
+            \item[File / Save File] Save the current file in the current project.
+            \item[File / Save As] Save the current file in the current project under a different name.
             \item[File / Save All] Save all opened files in all opened projects.
             \item[File / Exit] Exit the MDS environment.
 
-            \item[Edit / Undo] Undo the last edition action in code editor.
+            \item[Edit / Undo] Undo the last editing action in the code editor.
             \item[Edit / Redo] Revert the last undo action.
-            \item[Edit / Cut] Cut the selected text in the code editor and copies it into clipboard.
+            \item[Edit / Cut] Cut the selected text in the code editor and copy it into clipboard.
             \item[Edit / Copy] Copy the selected text into clipboard.
-            \item[Edit / Paste] Paste the clipboard content in the code editor.
+            \item[Edit / Paste] Paste the clipboard content into the code editor.
             \item[Edit / Select All] Select all text in the code editor.
             \item[Edit / Deselect] Deselect the selected text in the code editor.
 
@@ -112,33 +112,33 @@
 
             \item[Project / New Project] Open wizard for creating new projects.
             \item[Project / Open Project] Open and existing MDS project.
-            \item[Project / Open Recent] Keeps track of recently opened MDS projects and allow you to reopen them.
+            \item[Project / Open Recent] Keeps track of recently opened MDS projects and allows to easily reopen them.
             \item[Project / Save Project] Save all opened files in the current project.
             \item[Project / Close Project] Close the current project.
             \item[Project / Compile] Run compiler on your current file or the main file in your current project.
-            \item[Project / Save Project Config] Save the project configuration (compiler settings, etc., not the source files contained in the project).
+            \item[Project / Save Project Config] Save the project configuration (compiler settings, etc., not the source files them selfs).
             \item[Project / Configure] Open project configuration dialog.
 
-            \item[Simulation / Start Simulation] Starts processor simulator with machine code generated from your current file or the main file.
+            \item[Simulation / Start Simulation] Start processor simulator with machine code generated from the current file or the main file.
             \item[Simulation / Run] Run the program loaded in the simulator.
             \item[Simulation / Animate] Animate the program loaded in the simulator.
             \item[Simulation / Step] Execute one instruction cycle in the simulator.
-            \item[Simulation / Reset] Reset the processor simulator.
+            \item[Simulation / Reset] Reset simulator.
             \item[Simulation / Unhighlight] Remove highlight for recently changed values in the simulator GUI components.
-            \item[Simulation / Breakpoint] Set breakpoint for the current line in the current file in the current project.
+            \item[Simulation / Breakpoint] Set breakpoint for the current line in the current file.
             \item[Simulation / Disable Breakpoints] Disable simulator breakpoints generally.
             \item[Simulation / Enable Breakpoints] (Re-)Enable simulator breakpoints generally.
 
-            \item[Tools / Disassembler] Open disassembler wizard.
-            \item[Tools / Assembler translator] Open Assembler Translator wizard.
+            \item[Tools / Disassembler] Open disassembler dialog.
+            \item[Tools / Assembler translator] Open Assembler Translator dialog.
             \item[Tools / Data File Converter] Open Data File Converted utility.
-            \item[Tools / Radix Converter] Open Radix Converter window.
-            \item[Tools / 8 Segment Editor] Open editor for single digit LED displays.
+            \item[Tools / Radix Converter] Open Radix Converter utility.
+            \item[Tools / 8 Segment Editor] Open single digit LED display editor.
             \item[Tools / Loop Generator] Open Loop Generator utility.
 
             \item[Simulation Tools / LED Panel] Open simple LED panel simulator.
             \item[Simulation Tools / 7 Segment Display] Open simple LED display simulator.
-            \item[Simulation Tools / Switch Panel] Open switch panel simulator.
+            \item[Simulation Tools / Switch Panel] Open simple switch panel simulator.
 
             \item[Help / About] Displays basic information about your MDS version.
             \item[Help / User Manual] Open user manual, this document.
@@ -150,7 +150,7 @@
 
         \subsubsection{Action shortcuts}
             \index{Main window shortcuts}
-            These are key shortcuts for the main windows, code editor shortcuts will be discussed later in this manual.
+            These are the key shortcuts for the main windows, code editor shortcuts will be shown later in this manual.
 
             \begin{table}[h!]
                 \centering
@@ -179,25 +179,25 @@
 \clearpage
 \section{Code Editor}
     \index{Code editor}
-    Code editor is optimized for writing source code for your applications, it generally behaves as you would probably expect from a code editor. The editor has two different modes of operations:
+    Code editor is optimized for writing source code for your applications, it behaves as is generally expected from a code editor. The editor has two different modes of operations:
 
     \begin{enumerate}
-        \item Editing mode: for editing your files, this mode allows reading and writing.
-        \item Simulation mode: for displaying progress of the program simulation, in this mode the displayed text is for reading only.
+        \item Editing mode: for editing your files, this mode is for reading and writing/editing.
+        \item Simulation mode: for displaying progress of the program simulation, in this mode the displayed code is for reading only.
     \end{enumerate}
 
     \subsection{Main features}
         \subsubsection{Syntax highlight}
-            Syntax highlight is currently supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
+            Syntax highlight is supported only for the PicoBlaze assembly language. Syntax highlighting is automatically activated for files with extension \texttt{.asm} and \texttt{.psm}, otherwise syntax highlight stays inactive.
 
         \subsubsection{Left panel}
-            Left panel of the editor shows numbers of lines in your source code for easier navigation.
+            For easier navigation, the editor's left panel shows line numbers in your code, bookmarks, and breakpoints.
 
         \subsubsection{Editor status bar}
             Editor status bar displays information about current column and line number.
 
         \subsubsection{Context menu}
-            Context menu pops-up when you right click on the editor or when you press the Menu key (available only on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
+            Context menu pops-up when you right click in the editor or when you press the Menu key (available on some keyboards), it provides means to perform some basic operations like Cut, Copy, Paste, etc.
 
     \enlargethispage{6\baselineskip}
     \subsection{Key shortcuts}
@@ -257,17 +257,17 @@
                 \caption{Yellow - bookmark, Red - breakpoint, Yellow/Red gradient - both}
         \end{wrapfigure}
 
-        MDS simulator supports breakpoints, breakpoint is a mark associated with a location in the program code; when reached, it triggers a temporarily halt in the running simulation. You can use breakpoints to test and debug programs in a manner that the program can be examined in stages delimited by breakpoints. Please be also aware that using breakpoints slows down the simulator; if you want maximum simulation speed, you may temporarily disable (switch off) breakpoints generally in [Main~Menu]~-> [Simulation]~-> [Disable~Breakpoints].
+        For efficient debugging, our simulator supports breakpoints. Breakpoint is a mark associated with certain location in the program code; when reached, it triggers a temporarily halt in the running simulation. You can use breakpoints to test and debug programs in a manner that the program can be examined in stages delimited by breakpoints. Please be also aware that using breakpoints slows down the simulator (about by 30\% in run mode); if you want to reach the maximum simulation speed, you may temporarily disable (switch off) breakpoints generally in [Main~Menu]~-> [Simulation]~-> [Disable~Breakpoints].
 
-        Another feature is bookmarks; when editing one location in your source code more often, it may be useful to add a bookmark to it so you can quickly get back when you need. Like breakpoints bookmarks are marks in your source code but they are meant solely for quick navigation, they do not affect simulation in any way.
+        Another feature is bookmarks; when editing one location in your source code more often, it may be useful to add a bookmark to it so you can quickly get back when you need. Like breakpoints bookmarks are marks in your source code but they are meant solely for quick navigation, they do not affect simulation or compilation in any way.
 
 \section{Project management}
     \index{Project management}
-    MDS can organize your file into groups called projects, a project is also bound with its specific configuration. Project specific configuration contains:
+    MDS can organize your files into groups called projects, a project is also bound with its specific configuration which includes:
     \begin{itemize}
         \item Information about which exact processor do you use and in what exact configuration (memory size, etc.).
-        \item Compiler settings to be applied: paths to search for file inclusion, which file formats you wish to generate, what VHDL template you want to use, etc.
-        \item If your project comprises of a set of independent files, or if it has one main file and other files are included in it (using the \texttt{INCLUDE} directive).
+        \item Compiler settings to be applied: paths to search for included file, which file formats you want to be generated by the assembler, what VHDL template you want to use, etc.
+        \item Whether your project comprises of a set of independent files, or if it has one main file and other project files are only included in it using the \texttt{INCLUDE} directive.
     \end{itemize}
 
     \subsection{Untracked files}
