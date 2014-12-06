@@ -27,7 +27,7 @@
 CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
-    qDebug() << "CodeEdit: CodeEdit()";
+    //qDebug() << "CodeEdit: CodeEdit()";
     m_parentCodeEdit = parentCodeEdit;
     m_curCodeEdit = NULL;
     m_hidden = false;
@@ -251,7 +251,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
 
 
 
-CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
+/*CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName, QString wPath, CodeEdit *parentCodeEdit)
     : QWidget(parent)
 {
     qDebug() << "CodeEdit: CodeEdit()2";
@@ -433,7 +433,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, Project* parentPrj, QString wName
     this->changeHeight();
     m_textEdit->setShortcuts();
     //qDebug() << "CodeEdit: return CodeEdit()2";
-}
+}*/
 
 
 CodeEdit::~CodeEdit()

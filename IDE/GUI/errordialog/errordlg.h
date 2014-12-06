@@ -23,7 +23,8 @@
 
 
 #include "../enums/enums.h"
+#include <QString>
 
-void error(int errCode);
+void error(int errCode, QString detail = QString());
 
 #endif

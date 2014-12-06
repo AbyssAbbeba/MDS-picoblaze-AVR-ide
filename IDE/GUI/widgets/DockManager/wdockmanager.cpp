@@ -1077,13 +1077,17 @@ void WDockManager::handleShowHideBottom(int index)
         {
             hideDockWidgetArea(2);
             bottomVisible = false;
-            QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+            QApplication::processEvents();
+            activeCodeEdit->changeHeight();
+            //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
         }
     }
     else if (false == bottomVisible)
     {
         showDockWidgetArea(2);
         bottomVisible = true;
+        QApplication::processEvents();
+        activeCodeEdit->changeHeight();
         QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
     }
 }
@@ -1449,6 +1453,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Bookmarks", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBookmarkList(wDockWidget);
@@ -1460,6 +1465,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Breakpoints", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBreakpointList(wDockWidget);
@@ -1471,6 +1477,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Compiler Messages", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             //QPlainTextEdit *newWidget = new QPlainTextEdit(wDockWidget);
@@ -1525,6 +1532,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Hide", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
             QWidget *newDock = new QWidget(wDockWidget);
@@ -1540,6 +1548,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Hide", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             //ShowHideWidget *newDock = new ShowHideWidget(wDockWidget);
             QWidget *newDock = new QWidget(wDockWidget);
@@ -1555,6 +1564,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow)
         {
             wDockWidget = new QDockWidget("Macros", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
             area = 1;
@@ -1578,6 +1588,7 @@ WDock::WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path
             wDockWidget = new QDockWidget("Simulator", parentWindow);
             wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
             parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
             connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
