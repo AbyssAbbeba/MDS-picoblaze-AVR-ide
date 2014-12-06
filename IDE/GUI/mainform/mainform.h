@@ -184,6 +184,7 @@ class MainForm : public QMainWindow
         void shortcutCloseTab();
         void shortcutChangeTabLeft();
         void shortcutChangeTabRight();
+        void reloadTabIcons();
 
     signals:
         void unhighlightSim();
@@ -281,39 +282,15 @@ class MainForm : public QMainWindow
         QAction *helpAct;
         QAction *example1Act;
 
-        QPixmap *pm_projNewAdd;
-        QPixmap *pm_projNew;
-        QPixmap *pm_projOpen;
-        QPixmap *pm_projSave;
-        QPixmap *pm_projComp;
         QPixmap *pm_simFlowStart;
         QPixmap *pm_simFlowStop;
         QPixmap *pm_simRun;
         QPixmap *pm_simAnimate;
-        QPixmap *pm_simStep;
-        QPixmap *pm_simReset;
-        QPixmap *pm_simUnhighlight;
-        QPixmap *pm_toolDis;
         QPixmap *pm_cross;
-        QPixmap *pm_breakpoint;
-        QPixmap *pm_breakpointEnable;
-        QPixmap *pm_breakpointDisable;
-        QPixmap *pm_bookmark;
 
-        QIcon *icon_projNewAdd;
-        QIcon *icon_projNew;
-        QIcon *icon_projOpen;
-        QIcon *icon_projSave;
-        QIcon *icon_projComp;
         QIcon *icon_simFlow;
         QIcon *icon_simRun;
         QIcon *icon_simAnimate;
-        QIcon *icon_simStep;
-        QIcon *icon_simReset;
-        QIcon *icon_simUnhighlight;
-        QIcon *icon_toolDis;
-        QIcon *icon_breakpoint;
-        QIcon *icon_bookmark;
 
 
         // simulation status - start/stop

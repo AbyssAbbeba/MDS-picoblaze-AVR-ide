@@ -1799,10 +1799,18 @@ int Project::start(QString file, QString dumpFiles)
             if (dumpFiles != "")
             {
                 hexPath = dumpFiles.section('.',0,-2);
+                if (hexPath == "")
+                {
+                    hexPath = dumpFiles;
+                }
             }
             else
             {
                 hexPath = file.section('.',0,-2);
+                if (hexPath == "")
+                {
+                    hexPath = dumpFiles;
+                }
             }
         }
         else
@@ -1810,6 +1818,10 @@ int Project::start(QString file, QString dumpFiles)
             QDir dir(prjPath.section('/',0, -2));
             hexPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath.section('.',0,-2)));
             asmPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
+            if (hexPath == "")
+            {
+                hexPath = asmPath;
+            }
         }
         //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
         QFileInfo infoAsm(asmPath);
@@ -1817,7 +1829,11 @@ int Project::start(QString file, QString dumpFiles)
         QFileInfo infoDbg(hexPath + ".dbg");
         qDebug() << "Project: sim file" << asmPath;
         qDebug() << "Project: sim dump file" << hexPath;
-        if ( false == infoHex.exists() || false == infoDbg.exists())
+        if ( false == infoHex.exists()
+          || false == infoDbg.exists()
+          || 0 == infoHex.size()
+          || 0 == infoDbg.size()
+           )
         {
             //qDebug() << "Project: files do not exist";
             return 3;

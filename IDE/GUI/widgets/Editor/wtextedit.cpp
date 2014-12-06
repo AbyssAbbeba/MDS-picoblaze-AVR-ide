@@ -572,38 +572,12 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
     return QWidget::eventFilter(target, event);
 }
 
-void WTextEdit::highlightCurrentLine()
+/*void WTextEdit::highlightCurrentLine()
 {
     qDebug() << "WTextEdit: highlightCurrentLine(), obsolete";
-    /*QList<QTextEdit::ExtraSelection> extraSelections;
 
-    QTextEdit::ExtraSelection selection;
-
-    selection.format.setBackground(*cursorLineColor);
-    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-    selection.cursor = this->textCursor();
-    selection.cursor.clearSelection();
-    extraSelections.append(selection);
-    this->setExtraSelections(extraSelections);
-
-    //obsolete code below
-    QTextCursor cursor(this->textCursor());
-    QTextBlockFormat lineFormat = cursor.blockFormat();
-    if (lineFormat.background() == Qt::green)
-    {
-        //QPalette palette = this->palette();
-        //lineFormat.setBackground(palette.color(QPalette::Base));
-        lineFormat.clearBackground();
-    }
-    else
-    {
-        lineFormat.setBackground(Qt::green);
-    }
-    cursor.setBlockFormat(lineFormat);
-    //end of obsolete code
-    */
     qDebug() << "WTextEdit: return highlightCurrentLine()";
-}
+}*/
 
 
 bool WTextEdit::highlightLine(int line, QColor *color)
@@ -653,32 +627,11 @@ bool WTextEdit::highlightLine(int line, QColor *color)
         }
         this->setExtraSelections(extraSelections);
             
-        /*QTextBlockFormat lineFormat = lineBlock.blockFormat();
-        if (color == NULL)
-        {
-            //QPalette palette = this->palette();
-            //lineFormat.setBackground(palette.color(QPalette::Base));
-            lineFormat.clearBackground();
-            //lineFormat.setBackground(Qt::red);
-        }
-        else
-        {
-            //QColor orig = lineFormat.background().color();
-            //origColor = &orig;
-            lineFormat.setBackground(*color);
-        }*/
-        /*QTextCursor cursor(lineBlock);
-        //qDebug() << "position: " << cursor.position();
-        cursor.setBlockFormat(lineFormat);*/
         this->setTextCursor(cursor);
         this->ensureCursorVisible();
         //qDebug() << "WTextEdit: return highlightLine()";
         return true;
     }
-    /*else
-    {
-        qDebug() << "WTextEdit: highlight failed----";
-    }*/
     //qDebug() << "WTextEdit: return highlightLine()";
     return false;
 }
@@ -752,132 +705,6 @@ void WTextEdit::selectLine(int line)
 }
 
 
-/*void WTextEdit::updateUndoRedo(int position, int charsRemoved, int charsAdded)
-{
-    if (true == this->undoRequest)
-    {
-        this->undoRequest = false;
-        qDebug() << "WTextEdit: >>> undo request";
-        qDebug() << "WTextEdit: position" << position;
-        qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
-        qDebug() << "WTextEdit: charsAdded" << charsAdded;
-        qDebug() << "WTextEdit: cursor prev position" << this->textCursor().position();
-        if (charsAdded > 0)
-        {
-            QTextCursor cursor(this->textCursor());
-            if (position == cursor.position())
-            {
-                cursor.setPosition(position+charsAdded, QTextCursor::KeepAnchor);
-            }
-            else
-            {
-                cursor.setPosition(position, QTextCursor::KeepAnchor);
-            }
-            qDebug() << "WTextEdit: has selection" << cursor.hasSelection();
-            qDebug() << "WTextEdit: undo selection" << cursor.selectedText();
-            qDebug() << "WTextEdit: cursor anchor" << cursor.anchor();
-            qDebug() << "WTextEdit: cursor position" << cursor.position();
-            emit textChangedSignal(cursor.selectedText(), position);
-            if (charsRemoved > 0)
-            {
-                for (int i = 0; i < charsRemoved; i++)
-                {
-                    emit textChangedSignal("\177", cursor.position());
-                }
-            }
-        }
-        else if (charsRemoved > 0)
-        {
-            for (int i = 0; i < charsRemoved; i++)
-            {
-                emit textChangedSignal("\177", position);
-            }
-        }
-        return;
-    }
-    if (true == this->redoRequest)
-    {
-        this->redoRequest = false;
-        qDebug() << "WTextEdit: >>> redo request";
-        qDebug() << "WTextEdit: position" << position;
-        qDebug() << "WTextEdit: charsRemoved" << charsRemoved;
-        qDebug() << "WTextEdit: charsAdded" << charsAdded;
-        qDebug() << "WTextEdit: cursor prev position" << this->textCursor().position();
-        if (charsAdded > 0)
-        {
-            QTextCursor cursor(this->textCursor());
-            if (position == cursor.position())
-            {
-                cursor.setPosition(position+charsAdded, QTextCursor::KeepAnchor);
-            }
-            else
-            {
-                cursor.setPosition(position, QTextCursor::KeepAnchor);
-            }
-            qDebug() << "WTextEdit: has selection" << cursor.hasSelection();
-            qDebug() << "WTextEdit: redo selection" << cursor.selectedText();
-            qDebug() << "WTextEdit: cursor anchor" << cursor.anchor();
-            qDebug() << "WTextEdit: cursor position" << cursor.position();
-            emit textChangedSignal(cursor.selectedText(), position);
-            if (charsRemoved > 0)
-            {
-                for (int i = 0; i < charsRemoved; i++)
-                {
-                    emit textChangedSignal("\177", cursor.position());
-                }
-            }
-        }
-        else if (charsRemoved > 0)
-        {
-            for (int i = 0; i < charsRemoved; i++)
-            {
-                emit textChangedSignal("\177", position);
-            }
-        }
-        return;
-    }
-}
-
-
-void WTextEdit::editedUndo()
-{
-    this->undoRequest = true;
-    this->undo();
-    this->undoRequest = false;
-}
-
-
-void WTextEdit::editedRedo()
-{
-    this->redoRequest = true;
-    this->redo();
-    this->redoRequest = false;
-}
-
-
-void WTextEdit::editedPaste()
-{
-    if (true == this->textCursor().hasSelection())
-    {
-        emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
-        this->textCursor().removeSelectedText();
-    }
-    emit textChangedSignal(QApplication::clipboard()->text(), this->textCursor().position());
-    this->textCursor().insertText(QApplication::clipboard()->text());
-}
-
-
-void WTextEdit::editedCut()
-{
-    if (true == this->textCursor().hasSelection())
-    {
-        QApplication::clipboard()->setText(this->textCursor().selectedText());
-        emit selectionRemovedSignal(this->textCursor().selectionStart(), this->textCursor().selectionEnd());
-        this->textCursor().removeSelectedText();
-    }
-}*/
-
-
 void WTextEdit::cursorPositionChangedSlot()
 {
     if (this->textCursor().blockNumber() != this->prevBlock)
@@ -894,20 +721,6 @@ void WTextEdit::cursorPositionChangedSlot()
             selection.cursor.clearSelection();
             extraSelections.append(selection);
             this->setExtraSelections(extraSelections);
-
-            //QTextBlockFormat lineFormat;
-            //if (this->prevBlock <= this->document()->blockCount())
-            //{
-                //QTextBlock lineBlock = this->document()->findBlockByNumber(this->prevBlock);
-                //lineFormat = lineBlock.blockFormat();
-                //lineFormat.clearBackground();
-                //QTextCursor cursor(lineBlock);
-                //cursor.setBlockFormat(lineFormat);
-            //}
-            //QTextCursor curCursor(this->textCursor().block());
-            //lineFormat = curCursor.blockFormat();
-            //lineFormat.setBackground(*cursorLineColor);
-            //curCursor.setBlockFormat(lineFormat);
         }
         this->prevBlock = this->textCursor().blockNumber();
         emit updateLineCounter();
@@ -946,11 +759,15 @@ void WTextEdit::makeMenu()
 {
     //qDebug() << "CodeEdit: makeMenu()";
     editorPopup = new QMenu(this);
-    cutAct = new QAction("Cut", editorPopup);
-    copyAct = new QAction("Copy", editorPopup);
+    cutAct = new QAction(QIcon(":resources/icons/cut.png"), "Cut", editorPopup);
+    cutAct->setIconVisibleInMenu(true);
+    copyAct = new QAction(QIcon(":resources/icons/page_copy.png"), "Copy", editorPopup);
+    copyAct->setIconVisibleInMenu(true);
     QAction *pasteAct = new QAction("Paste", editorPopup);
-    QAction *undoAct = new QAction("Undo", editorPopup);
-    QAction *redoAct = new QAction("Redo", editorPopup);
+    QAction *undoAct = new QAction(QIcon(":resources/icons/arrow_undo.png"), "Undo", editorPopup);
+    undoAct->setIconVisibleInMenu(true);
+    QAction *redoAct = new QAction(QIcon(":resources/icons/arrow_redo.png"), "Redo", editorPopup);
+    redoAct->setIconVisibleInMenu(true);
     QAction *selectAllAct = new QAction("Select All", editorPopup);
     deselectAct = new QAction("Deselect", editorPopup);
     //QAction *splitHorizontalAct = new QAction("Split horizontal", editorPopup);
@@ -1716,18 +1533,23 @@ void WTextEdit::shortcutDeleteLine()
 
 void WTextEdit::shortcutSwitchChars()
 {
-    QTextCursor cursor(this->textCursor());
-    if (false == cursor.hasSelection())
+    QTextCursor cursor1(this->textCursor());
+    if (false == cursor1.movePosition(QTextCursor::PreviousCharacter))
     {
-        QString text;
-        cursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-        text = cursor.selectedText();
-        cursor.removeSelectedText();
-        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        text = cursor.selectedText() + text;
-        cursor.removeSelectedText();
-        cursor.insertText(text);
-        this->setTextCursor(cursor);
+        return;
+    }
+    QTextCursor cursor2(this->textCursor());
+    if ( false == this->textCursor().hasSelection()
+      && cursor1.position() != cursor2.position()
+      && cursor1.blockNumber() == cursor2.blockNumber()
+       )
+    {
+        QString text = QString(cursor2.block().text().at(cursor2.positionInBlock()));
+        text += QString(cursor2.block().text().at(cursor1.positionInBlock()));
+        cursor2.deletePreviousChar();
+        cursor2.deletePreviousChar();
+        cursor2.insertText(text);
+        this->setTextCursor(cursor2);
     }
 }
 
