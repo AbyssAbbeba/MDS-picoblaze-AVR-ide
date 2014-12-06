@@ -1227,6 +1227,12 @@ void WTextEdit::setShortcuts()
     shctSelectWordRight = new QShortcut(this);
     shctSelectWordRight->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Right);
     connect(shctSelectWordRight, SIGNAL(activated()), this, SLOT(shortcutSelectWordRight()));
+    shctSwitchLinesUp = new QShortcut(this);
+    shctSwitchLinesUp->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Up);
+    connect(shctSwitchLinesUp, SIGNAL(activated()), this, SLOT(shortcutSwitchLinesUp()));
+    shctSwitchLinesDown = new QShortcut(this);
+    shctSwitchLinesDown->setKey(Qt::CTRL + Qt::SHIFT + Qt::Key_Down);
+    connect(shctSwitchLinesDown, SIGNAL(activated()), this, SLOT(shortcutSwitchLinesDown()));
     /*shctUndo = new QShortcut(this);
     shctUndo->setKey(Qt::CTRL + Qt::Key_Z);
     connect(shctUndo, SIGNAL(activated()), this, SLOT(shortcutUndo()));
@@ -1524,7 +1530,7 @@ void WTextEdit::shortcutDeleteLine()
     QTextCursor cursor(this->textCursor());
     if (false == cursor.hasSelection())
     {
-        cursor.select(QTextCursor::BlockUnderCursor);
+        cursor.select(QTextCursor::LineUnderCursor);
         cursor.removeSelectedText();
         if (cursor.blockNumber() != this->document()->blockCount()-1)
         {
@@ -1617,4 +1623,131 @@ void WTextEdit::shortcutFindPrevious()
         cursor.select(QTextCursor::WordUnderCursor);
     }
     findAndMark(cursor.selectedText(), false, true);
+}
+
+
+void WTextEdit::shortcutSwitchLinesUp()
+{
+    QTextCursor cursor(this->textCursor());
+    if (false == cursor.hasSelection())
+    {
+        if (cursor.blockNumber() != 0)
+        {
+            int posInLine = cursor.positionInBlock();
+            cursor.select(QTextCursor::LineUnderCursor);
+            QString text1 = cursor.selectedText();
+            cursor.removeSelectedText();
+            cursor.movePosition(QTextCursor::PreviousBlock);
+            cursor.select(QTextCursor::LineUnderCursor);
+            QString text2 = cursor.selectedText();
+            cursor.removeSelectedText();
+            cursor.insertText(text1);
+            cursor.movePosition(QTextCursor::NextBlock);
+            cursor.insertText(text2);
+            cursor.movePosition(QTextCursor::PreviousBlock);
+            cursor.setPosition(cursor.block().position() + posInLine);
+            this->setTextCursor(cursor);
+        }
+    }
+    else
+    {
+        if (this->document()->findBlock(cursor.selectionStart()).blockNumber() != 0)
+        {
+            QTextCursor cursor2(cursor);
+            int selectOffset = 0;
+            int selStart = cursor.selectionStart();
+            int selEnd = cursor.selectionEnd();
+            QString text1;
+            QString text2;
+            cursor2.setPosition(cursor.selectionStart());
+            int lineCount = this->document()->findBlock(cursor.selectionEnd()).blockNumber();
+            lineCount -= this->document()->findBlock(cursor.selectionStart()).blockNumber();
+            lineCount++;
+            for (int i = 0; i < lineCount; i++)
+            {
+                cursor2.select(QTextCursor::LineUnderCursor);
+                text1 = cursor2.selectedText();
+                cursor2.removeSelectedText();
+                cursor2.movePosition(QTextCursor::PreviousBlock);
+                cursor2.select(QTextCursor::LineUnderCursor);
+                text2 = cursor2.selectedText();
+                if (0 == i)
+                {
+                    selectOffset = text2.length()+1;
+                }
+                cursor2.removeSelectedText();
+                cursor2.insertText(text1);
+                cursor2.movePosition(QTextCursor::NextBlock);
+                cursor2.insertText(text2);
+                cursor2.movePosition(QTextCursor::NextBlock);
+            }
+            cursor2.setPosition(selStart - selectOffset);
+            cursor2.setPosition(selEnd - selectOffset, QTextCursor::KeepAnchor);
+            this->setTextCursor(cursor2);
+        }
+    }
+}
+
+
+void WTextEdit::shortcutSwitchLinesDown()
+{
+    QTextCursor cursor(this->textCursor());
+    if (false == cursor.hasSelection())
+    {
+        if (cursor.blockNumber() != this->document()->blockCount()-1)
+        {
+            int posInLine = cursor.positionInBlock();
+            cursor.select(QTextCursor::LineUnderCursor);
+            QString text1 = cursor.selectedText();
+            cursor.removeSelectedText();
+            cursor.movePosition(QTextCursor::NextBlock);
+            cursor.select(QTextCursor::LineUnderCursor);
+            QString text2 = cursor.selectedText();
+            cursor.removeSelectedText();
+            cursor.insertText(text1);
+            cursor.movePosition(QTextCursor::PreviousBlock);
+            cursor.insertText(text2);
+            cursor.movePosition(QTextCursor::NextBlock);
+            cursor.setPosition(cursor.block().position() + posInLine);
+            this->setTextCursor(cursor);
+        }
+    }
+    else
+    {
+        if (this->document()->findBlock(cursor.selectionEnd()).blockNumber() != this->document()->blockCount()-1)
+        {
+            QTextCursor cursor2(cursor);
+            int selectOffset = 0;
+            int selStart = cursor.selectionStart();
+            int selEnd = cursor.selectionEnd();
+            QString text1;
+            QString text2;
+            cursor2.setPosition(cursor.selectionEnd());
+            int lineCount = this->document()->findBlock(cursor.selectionEnd()).blockNumber();
+            lineCount -= this->document()->findBlock(cursor.selectionStart()).blockNumber();
+            lineCount++;
+            for (int i = 0; i < lineCount; i++)
+            {
+                cursor2.select(QTextCursor::LineUnderCursor);
+                text1 = cursor2.selectedText();
+                cursor2.removeSelectedText();
+                cursor2.movePosition(QTextCursor::NextBlock);
+                cursor2.select(QTextCursor::LineUnderCursor);
+                text2 = cursor2.selectedText();
+                if (0 == i)
+                {
+                    selectOffset = text2.length()+1;
+                }
+                cursor2.removeSelectedText();
+                cursor2.insertText(text1);
+                cursor2.movePosition(QTextCursor::PreviousBlock);
+                cursor2.insertText(text2);
+                cursor2.movePosition(QTextCursor::PreviousBlock);
+            }
+            cursor2.setPosition(selStart + selectOffset);
+            cursor2.setPosition(selEnd + selectOffset, QTextCursor::KeepAnchor);
+            this->setTextCursor(cursor2);
+        }
+    }
+    
 }

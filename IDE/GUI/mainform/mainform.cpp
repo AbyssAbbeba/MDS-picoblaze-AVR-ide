@@ -361,6 +361,7 @@ MainForm::~MainForm()
         projectMan->closeProject(projectMan->getActive());
     }
     GuiCfg::getInstance().saveConfig();
+    QApplication::closeAllWindows();
 }
 
 
@@ -3702,13 +3703,11 @@ void MainForm::closeEvent(QCloseEvent *event)
         }
         else
         {
-            QApplication::closeAllWindows();
             event->accept();
         }
     }
     else
     {
-        QApplication::closeAllWindows();
         event->accept();
     }
     qDebug() << "MainForm: closeEvent done";
