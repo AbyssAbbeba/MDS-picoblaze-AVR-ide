@@ -555,7 +555,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             {
                 emit textChangedSignal(keyEvent->text(), this->textCursor().position());
             }
-            else 
+            else
             {
                 if (false == select)
                 {
@@ -582,7 +582,7 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
 
 bool WTextEdit::highlightLine(int line, QColor *color)
 {
-    
+
     //qDebug() << "WTextEdit: highlightLine()";
     //qDebug() << "WTextEdit: highlighted line is" << line;
     //origColor = NULL;
@@ -590,9 +590,9 @@ bool WTextEdit::highlightLine(int line, QColor *color)
     {
         QTextBlock lineBlock = this->document()->findBlockByNumber(line);
         QTextCursor cursor(lineBlock);
-        
+
         QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
-        
+
         if (color != NULL)
         {
             int i = 0;
@@ -626,7 +626,7 @@ bool WTextEdit::highlightLine(int line, QColor *color)
             }
         }
         this->setExtraSelections(extraSelections);
-            
+
         this->setTextCursor(cursor);
         this->ensureCursorVisible();
         //qDebug() << "WTextEdit: return highlightLine()";
@@ -878,7 +878,7 @@ bool WTextEdit::highlightLineAppend(int line, QColor *color)
         QTextCursor cursor(lineBlock);
 
         QList<QTextEdit::ExtraSelection> extraSelections = this->extraSelections();
-        
+
         QTextEdit::ExtraSelection selection;
         selection.format.setBackground(*color);
         selection.format.setProperty(QTextFormat::FullWidthSelection, true);
@@ -1055,7 +1055,7 @@ void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool ca
         {
             currCursor.setPosition(currCursor.selectionStart());
         }
-            
+
         QTextCursor cur = this->document()->find(query, currCursor, options);
         if (!cur.isNull())
         {
@@ -1358,7 +1358,7 @@ void WTextEdit::shortcutDeleteComment()
             int endPos = cursor.selectionEnd();
             cursor.setPosition(cursor.selectionStart());
             bool notOnBlockStart = (cursor.positionInBlock() > 0);
-            
+
             cursor.setPosition(cursor.position() - cursor.positionInBlock());
             if (cursor.block().text().startsWith(";"))
             {
@@ -1749,5 +1749,5 @@ void WTextEdit::shortcutSwitchLinesDown()
             this->setTextCursor(cursor2);
         }
     }
-    
+
 }

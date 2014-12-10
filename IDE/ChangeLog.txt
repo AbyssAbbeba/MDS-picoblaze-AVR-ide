@@ -1,4 +1,10 @@
-1.1
+1.2 (23.12.2014)
+    - Added full compatibility mode for Xilinx PSM syntax
+
+1.1 (7.12.2014)
+    - Added editor shortcuts
+    - A lot of bug fixes
+    - Extensive review of the User manual
 
 1.0.3 (19.11.2014)
     - Added splash screen.

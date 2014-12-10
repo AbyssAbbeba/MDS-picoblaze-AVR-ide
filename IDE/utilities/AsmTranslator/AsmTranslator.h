@@ -23,6 +23,7 @@ class AsmTranslatorBase;
 #include "AsmTranslatorConfig.h"
 
 // Standard header files.
+#include <map>
 #include <string>
 #include <vector>
 #include <utility>
@@ -90,7 +91,13 @@ class AsmTranslator
          * @brief
          * @return
          */
-        unsigned int getLineNoCorrection() const;
+        const std::map<unsigned int, unsigned int> & getLineMap() const;
+
+        /**
+         * @brief
+         * @return
+         */
+        const std::vector<std::string> & getIncludedFiles() const;
 
         /**
          * @brief
@@ -121,7 +128,10 @@ class AsmTranslator
         std::vector<std::pair<unsigned int, std::string> > m_messages;
 
         /// @brief
-        unsigned int m_lineNoCorrection;
+        std::map<unsigned int, unsigned int> m_lineMap;
+
+        /// @brief
+        std::vector<std::string> m_includedFiles;
 };
 
 #endif // ASMTRANSLATOR_H
