@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Compiler semantic analyzer for assembly language for AVR8.
+# Compiler semantic analyzer for the C language.
 #
 # (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
 #

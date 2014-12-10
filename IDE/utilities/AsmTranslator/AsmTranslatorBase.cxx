@@ -381,7 +381,6 @@ std::string AsmTranslatorBase::autoIndent ( const std::string * line,
     }
 }
 
-
 void AsmTranslatorBase::setup ( std::vector<std::pair<unsigned int, std::string> > * messages,
                                 std::map<unsigned int, unsigned int> * lineMap,
                                 std::vector<std::string> * includedFiles )
@@ -389,6 +388,18 @@ void AsmTranslatorBase::setup ( std::vector<std::pair<unsigned int, std::string>
     m_messages = messages;
     m_lineMap = lineMap;
     m_includedFiles = includedFiles;
+}
+
+void AsmTranslatorBase::shiftLineMap ( unsigned int by )
+{
+    std::map<unsigned int, unsigned int> newLineMap;
+
+    for ( const auto & i : *m_lineMap )
+    {
+        newLineMap[i.first + by] = i.second;
+    }
+
+    m_lineMap->swap(newLineMap);
 }
 
 std::ostream & operator << ( std::ostream & out,

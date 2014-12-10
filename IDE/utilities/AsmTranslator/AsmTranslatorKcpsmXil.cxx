@@ -122,6 +122,8 @@ bool AsmTranslatorKcpsmXil::process ( std::string & line,
                 m_instFlag = true;
                 if ( true == secondPass )
                 {
+                    m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+
                     begin = match[0].second;
                     boost::regex_search(begin, line.cend(), match, m_reWord);
                     if ( true == match[0].matched )
@@ -261,7 +263,39 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( LineFields & lineFields,
         return true;
     }
 
-    if ( "constant" == directive )
+    if ( "include" == directive )
+    {
+        std::string file = lineFields.getOperand(0, true);
+        if ( ( file.size() > 1 ) && ( '"' == file.front() ) && ( '"' == file.back() ) )
+        {
+            file.erase(file.begin());
+            file.pop_back();
+        }
+        m_includedFiles->push_back(file);
+
+        unsigned int size = file.size();
+        if ( size > 4 )
+        {
+            std::string ext;
+            for ( int i = 4; i > 0; i-- )
+            {
+                ext.push_back(file[size-i]);
+            }
+
+            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+            if ( ".psm" == ext )
+            {
+                file.erase(file.end() - 4, file.end());
+                file.append(".asm");
+            }
+        }
+
+        lineFields.replaceOpr( '"' + file + '"', 0);
+        lineFields.replaceInst ( changeLetterCase ( "include",
+                                                    m_config->m_letterCase[AsmTranslatorConfig::F_DIRECTIVE] ) );
+    }
+    else if ( "constant" == directive )
     {
         std::string id = newIdentifier(lineFields.getOperand(0, true));
         fixRadix(lineFields, 1);
@@ -275,6 +309,7 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( LineFields & lineFields,
             substitute += lineFields.getComment();
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
+            m_lineMap->insert({m_prologue.size(), lineNumber});
             m_messages->push_back ( { lineNumber,
                                       QObject::tr ( "Warning: directive `constant' should be used prior to "
                                                     "any instructions." )
@@ -337,6 +372,8 @@ inline bool AsmTranslatorKcpsmXil::processDirectives ( LineFields & lineFields,
 inline bool AsmTranslatorKcpsmXil::processInstructions ( LineFields & lineFields,
                                                          unsigned int lineNumber )
 {
+    m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+
     {
         std::string op0 = lineFields.getOperand(0);
         if ( ( "equ" == op0 ) || ( "reg" == op0 ) )
