@@ -187,6 +187,7 @@ void WDockManager::closeTab(int index)
 {
     //qDebug() << "WDockManager: closeTab()";
     emit saveCodeEdit(openCentralWidgets.at(index)->getCodeEdit());
+    emit tabClosed(wTab->tabText(index));
     openCentralWidgets.removeAt(index);
     wTab->removeTab(index);
     //wTab->tabRemoved(index);
