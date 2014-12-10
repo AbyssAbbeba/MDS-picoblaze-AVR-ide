@@ -582,7 +582,7 @@ void MainForm::createActions()
     closeFileAct->setDisabled(true);
     closeFileAct->setShortcut(QKeySequence("Ctrl+W"));
     connect(closeFileAct, SIGNAL(triggered()), this, SLOT(shortcutCloseTab()));
-    
+
 
 
     //EDIT

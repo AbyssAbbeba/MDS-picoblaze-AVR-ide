@@ -69,8 +69,7 @@ AsmTranslatorKcpsmMed::AsmTranslatorKcpsmMed()
     m_defaultSymbols.insert ( { "ESC", "'\\e'" } );
 }
 
-bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                      std::string & line,
+bool AsmTranslatorKcpsmMed::process ( std::string & line,
                                       unsigned int lineNumber,
                                       bool secondPass )
 {
@@ -280,25 +279,24 @@ bool AsmTranslatorKcpsmMed::process ( std::vector<std::pair<unsigned int, std::s
 
     if ( ( false == secondPass ) && ( end != begin ) )
     {
-        messages.push_back ( { lineNumber,
-                               QObject::tr ( "Error: line not understood: `%1'." )
-                                           . arg ( line.c_str() )
-                                           . toStdString() } );
+        m_messages->push_back ( { lineNumber,
+                                  QObject::tr ( "Error: line not understood: `%1'." )
+                                              . arg ( line.c_str() )
+                                              . toStdString() } );
         return false;
     }
 
     if ( true == secondPass )
     {
-        return processInstructions ( messages, lineFields, lineNumber );
+        return processInstructions ( lineFields, lineNumber );
     }
     else
     {
-        return processDirectives ( messages, lineFields, lineNumber );
+        return processDirectives ( lineFields, lineNumber );
     }
 }
 
-inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                                       LineFields & lineFields,
+inline bool AsmTranslatorKcpsmMed::processDirectives ( LineFields & lineFields,
                                                        unsigned int lineNumber )
 {
     // Fix strangely formed labels, i.e. `label   :' -> `label:'.
@@ -376,10 +374,10 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
             substitute += lineFields.getComment();
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
-            messages.push_back ( { lineNumber,
-                                   QObject::tr ( "Warning: directive `constant' should be used prior to "
-                                                 "any instructions." )
-                                               . toStdString() } );
+            m_messages->push_back ( { lineNumber,
+                                      QObject::tr ( "Warning: directive `constant' should be used prior to "
+                                                    "any instructions." )
+                                                  . toStdString() } );
         }
         else
         {
@@ -545,8 +543,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( std::vector<std::pair<uns
     return true;
 }
 
-inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                                         LineFields & lineFields,
+inline bool AsmTranslatorKcpsmMed::processInstructions ( LineFields & lineFields,
                                                          unsigned int lineNumber )
 {
     translateIdentifiers(lineFields);
@@ -757,10 +754,10 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( std::vector<std::pair<u
         }
         else
         {
-            messages.push_back ( { lineNumber,
-                                   QObject::tr ( "Error: instruction not understood, `returni enable' or"
-                                                 " `returni disable' was expeced." )
-                                               . toStdString() } );
+            m_messages->push_back ( { lineNumber,
+                                      QObject::tr ( "Error: instruction not understood, `returni enable' or"
+                                                    " `returni disable' was expeced." )
+                                                  . toStdString() } );
             lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
             return false;
         }

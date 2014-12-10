@@ -55,8 +55,7 @@ AsmTranslatorKcpsmPBIDE::AsmTranslatorKcpsmPBIDE()
     }
 }
 
-bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                        std::string & line,
+bool AsmTranslatorKcpsmPBIDE::process ( std::string & line,
                                         unsigned int lineNumber,
                                         bool secondPass )
 {
@@ -211,25 +210,24 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::vector<std::pair<unsigned int, std:
 
     if ( ( false == secondPass ) && ( line.cend() != begin ) )
     {
-        messages.push_back ( { lineNumber,
-                               QObject::tr ( "Error: line not understood: `%1'." )
-                                           . arg ( line.c_str() )
-                                           . toStdString() } );
+        m_messages->push_back ( { lineNumber,
+                                  QObject::tr ( "Error: line not understood: `%1'." )
+                                              . arg ( line.c_str() )
+                                              . toStdString() } );
         return false;
     }
 
     if ( true == secondPass )
     {
-        return processInstructions ( messages, lineFields, lineNumber );
+        return processInstructions ( lineFields, lineNumber );
     }
     else
     {
-        return processDirectives ( messages, lineFields, lineNumber );
+        return processDirectives ( lineFields, lineNumber );
     }
 }
 
-inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                                         LineFields & lineFields,
+inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( LineFields & lineFields,
                                                          unsigned int lineNumber )
 {
     // Fix strangely formed labels, i.e. `label   :' -> `label:'.
@@ -277,10 +275,10 @@ inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( std::vector<std::pair<u
             substitute += lineFields.getComment();
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
-            messages.push_back ( { lineNumber,
-                                   QObject::tr ( "Warning: directive `constant' should be used prior to "
-                                                 "any instructions." )
-                                               . toStdString() } );
+            m_messages->push_back ( { lineNumber,
+                                      QObject::tr ( "Warning: directive `constant' should be used prior to "
+                                                    "any instructions." )
+                                                  . toStdString() } );
         }
         else
         {
@@ -317,8 +315,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( std::vector<std::pair<u
     return true;
 }
 
-inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                                           LineFields & lineFields,
+inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( LineFields & lineFields,
                                                            unsigned int lineNumber )
 {
     {
@@ -531,10 +528,10 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( std::vector<std::pair
         }
         else
         {
-            messages.push_back ( { lineNumber,
-                                   QObject::tr ( "Error: instruction not understood, `reti enable' or"
-                                                 " `reti disable' was expeced." )
-                                               . toStdString() } );
+            m_messages->push_back ( { lineNumber,
+                                      QObject::tr ( "Error: instruction not understood, `reti enable' or"
+                                                    " `reti disable' was expeced." )
+                                                  . toStdString() } );
             lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
             return false;
         }
