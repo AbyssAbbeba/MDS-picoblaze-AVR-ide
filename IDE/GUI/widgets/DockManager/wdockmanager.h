@@ -177,6 +177,7 @@ class WDockManager : public QObject
         void welcomeScrManualSig();
         void welcomeScrGuideSig();
         void welcomeScrRecentSig(QString path);
+        void tabClosed(QString path);
 
     private:
         //MainForm *wMainWindow;

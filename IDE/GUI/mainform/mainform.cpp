@@ -135,6 +135,8 @@ MainForm::MainForm()
     this->simulationBreakpointsReload = true;
     this->simulationBreakpointsEnabled = true;
     this->projectTabs = NULL;
+    this->m_reloadDlg = NULL;
+    this->reloadDlgChange = false;
 
     projectMan = new ProjectMan(this);
     connect(projectMan,
@@ -267,6 +269,11 @@ MainForm::MainForm()
             this,
             SLOT(openProject(QString))
            );
+    connect(wDockManager,
+            SIGNAL(tabClosed(QString)),
+            this,
+            SLOT(fileClosed(QString))
+           );
     /*connect(wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -279,6 +286,12 @@ MainForm::MainForm()
             this,
             SLOT(sessionRestorationSlot())
            );*/
+
+    connect(&m_fileWatcher,
+            SIGNAL(fileChanged(QString)),
+            this,
+            SLOT(fileChanged(QString))
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -644,12 +657,12 @@ void MainForm::createActions()
     deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deleteCommentAct, SIGNAL(triggered()), this, SLOT(deleteCommentSlot()));
     jmpToBookmarkNextAct = new QAction(tr("Jump to Next Bookmark"), this);
-    jmpToBookmarkNextAct->setShortcut(QKeySequence(Qt::Key_Alt + Qt::Key_PageDown));
+    jmpToBookmarkNextAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageDown));
     jmpToBookmarkNextAct->setDisabled(true);
     jmpToBookmarkNextAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToBookmarkNextAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkNextSlot()));
     jmpToBookmarkPrevAct = new QAction(tr("Jump to Previous Bookmark"), this);
-    jmpToBookmarkPrevAct->setShortcut(QKeySequence(Qt::Key_Alt + Qt::Key_PageUp));
+    jmpToBookmarkPrevAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageUp));
     jmpToBookmarkPrevAct->setDisabled(true);
     jmpToBookmarkPrevAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToBookmarkPrevAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkPrevSlot()));
@@ -1221,6 +1234,7 @@ void MainForm::openFile()
                 wDockManager->getTabWidget(wDockManager->getTabCount() - 1)->setParentProject(projectMan->getUntracked());
             }
             GuiCfg::getInstance().fileOpened(path);
+            m_fileWatcher.addPath(path);
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -1298,6 +1312,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             {
                 qDebug() << "MainForm: openfilepath - some error here";
             }*/
+            m_fileWatcher.addPath(path);
             QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -4233,4 +4248,48 @@ void MainForm::jmpToBookmarkNextSlot()
 void MainForm::jmpToBookmarkPrevSlot()
 {
     wDockManager->getCentralTextEdit()->shortcutJmpToBookmarkPrev();
+}
+
+
+void MainForm::fileClosed(QString path)
+{
+    m_fileWatcher.removePath(path);
+}
+
+
+void MainForm::fileChanged(QString path)
+{
+    //qDebug() << "file changed" << path;
+    //QApplication::processEvents();
+    if (NULL == m_reloadDlg)
+    {
+        m_reloadDlg = new SaveDialog(this, QStringList(), true);
+        connect(m_reloadDlg, SIGNAL(reload(QString)), this, SLOT(reloadFile(QString)));
+        m_reloadDlg->exec();
+        delete m_reloadDlg;
+        m_reloadDlg = NULL;
+    }
+    if (NULL != m_reloadDlg)
+    {
+        m_reloadDlg->appendFile(path);
+    }
+    //m_fileWatcher.blockSignals(true);
+    //m_fileWatcher.blockSignals(false);
+}
+
+
+void MainForm::reloadFile(QString path)
+{
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        error(ERR_OPENFILE, path);
+    }
+    else
+    {
+        wDockManager->setCentralByPath(path);
+        wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+        file.close();
+        QTimer::singleShot(100, this->wDockManager->getCentralWidget(), SLOT(changeHeight()));
+    }
 }

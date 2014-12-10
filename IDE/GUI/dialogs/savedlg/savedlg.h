@@ -31,7 +31,8 @@ class SaveDialog : public QDialog
 {
     Q_OBJECT
     public:
-        SaveDialog(QWidget *parent, QStringList lst);
+        SaveDialog(QWidget *parent, QStringList lst, bool reload = false);
+        void appendFile(QString path);
 
     private slots:
         void save();
@@ -42,9 +43,24 @@ class SaveDialog : public QDialog
 
     signals:
         void save(QString path);
+        void reload(QString path);
+        void reloadFinished();
 
     private:
         Ui_SaveDlg ui;
+        
+        QPushButton *saveButton;
+        QPushButton *saveAllButton;
+        QPushButton *discardButton;
+        QPushButton *discardAllButton;
+        QPushButton *cancelButton;
+
+        QStringList m_files;
+
+        bool m_reload;
+
+    protected:
+        void closeEvent(QCloseEvent *e);
         
 };
 
