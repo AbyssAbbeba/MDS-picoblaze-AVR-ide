@@ -36,7 +36,8 @@ bool AsmTranslator::translate ( Variant variant,
                                 std::ostream & output,
                                 std::istream & input )
 {
-    m_lineNoCorrection = 0;
+    m_includedFiles.clear();
+    m_lineMap.clear();
 
     AsmTranslatorBase * translator = nullptr;
 
@@ -63,6 +64,7 @@ bool AsmTranslator::translate ( Variant variant,
         return false;
     }
 
+    translator->setup(&m_messages, &m_lineMap, &m_includedFiles);
     translator->m_config = &m_config;
     bool result = translate(translator, output, input);
     delete translator;
@@ -75,11 +77,14 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
 {
     if ( ( true == output.bad() ) || ( true == input.bad() ) )
     {
-            m_messages.push_back ( { 0, QObject::tr("Error: I/O failure.").toStdString() } );
+        m_messages.push_back ( { 0, QObject::tr("Error: I/O failure.").toStdString() } );
         return false;
     }
 
+    unsigned int lineNumber;
+
     // Read the entire input.
+    lineNumber = 0;
     std::vector<std::string> buffer;
     while ( false == input.eof() )
     {
@@ -97,16 +102,18 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         {
             buffer.back().pop_back();
         }
+
+        m_lineMap.insert( {lineNumber, lineNumber} );
     }
 
     // Process the input in two steps.
     {
         bool success = true;
-        unsigned int lineNumber = 1;
+        lineNumber = 1;
 
         for ( auto & line : buffer )
         {
-            if ( false == translator->process(m_messages, line, lineNumber) )
+            if ( false == translator->process(line, lineNumber) )
             {
                 success = false;
             }
@@ -116,7 +123,7 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         lineNumber = 1;
         for ( auto & line : buffer )
         {
-            if ( false == translator->process(m_messages, line, lineNumber, true) )
+            if ( false == translator->process(line, lineNumber, true) )
             {
                 success = false;
             }
@@ -156,8 +163,6 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         }
     }
 
-    m_lineNoCorrection = (unsigned int) translator->m_prologue.size();
-
     return true;
 }
 
@@ -188,9 +193,14 @@ const std::vector<std::pair<unsigned int, std::string> > & AsmTranslator::getMes
     return m_messages;
 }
 
-unsigned int AsmTranslator::getLineNoCorrection() const
+const std::map<unsigned int, unsigned int> & AsmTranslator::getLineMap() const
 {
-    return m_lineNoCorrection;
+    return m_lineMap;
+}
+
+const std::vector<std::string> & AsmTranslator::getIncludedFiles() const
+{
+    return m_includedFiles;
 }
 
 void AsmTranslator::clear()

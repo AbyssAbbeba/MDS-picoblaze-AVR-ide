@@ -33,6 +33,7 @@
 \clearpage
 \subsection{Register Loading}
     \instruction{LOAD, LD}
+        \index{LOAD}\index{LD}
         The \texttt{LOAD} instruction provides a method for specifying the contents of any register. The new value can be a taken from an immediate constant, or contents of any other register. \texttt{LD} is only shortcut for \texttt{LOAD}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -63,6 +64,7 @@
             \end{tabular}
 
     \instruction{STAR}
+        \index{STAR}
         Instruction \texttt{STAR} performs the same operation as the \texttt{LOAD} instruction except for that the target register is in inactive register bank while source is in active bank.
 
         \paragraph{Syntax}
@@ -92,6 +94,7 @@
 \clearpage
 \subsection{Logical}
     \instruction{OR}
+        \index{OR}
         The \texttt{OR} instruction performs bit-wise logical inclusive-OR operation.
 
         \paragraph{Syntax}
@@ -119,6 +122,7 @@
             \end{tabular}
 
     \instruction{XOR}
+        \index{XOR}
         The \texttt{XOR} instruction performs bit\-wise logical exclusive-OR operation.
 
         \paragraph{Syntax}
@@ -147,6 +151,7 @@
 
 \clearpage
     \instruction{AND}
+        \index{AND}
         The \texttt{AND} instruction performs bit\-wise logical AND operation.
 
         \paragraph{Syntax}
@@ -176,6 +181,7 @@
 \clearpage
 \subsection{Arithmetic}
     \instruction{ADD, ADDCY}
+        \index{ADD}\index{ADDCY}
         The \texttt{ADD} instruction performs an 8-bit addition of two values.
 
         \paragraph{Syntax}
@@ -196,7 +202,7 @@
             \verb'    ADDCY   S0, #5      ; S0 = S0 + 5 + Carry'
 
         \paragraph{Flags}
-            \footnote{\texttt{ADDCY} on PicoBlaze 6 behaves differently: Zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{ADDCY} instruction, otherwise it set to 0.}
+            \footnote{\texttt{ADDCY} on PicoBlaze 6 behaves differently: zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{ADDCY} instruction, otherwise it set to 0.}
             ~\\\indent
             \begin{tabular}{ll}
                 Z & 1 if result is zero, 0 otherwise \\
@@ -212,6 +218,7 @@
 
 \clearpage
     \instruction{SUB, SUBCY}
+        \index{SUB}\index{SUBCY}
         The \texttt{SUB} instruction performs an 8-bit subtraction of two values without carry, and \texttt{SUBCY} instruction does the same but with carry.
 
         \paragraph{Syntax}
@@ -232,7 +239,7 @@
             \verb'    SUBCY   S0, #5      ; S0 = S0 - 5 - Carry'
 
         \paragraph{Flags}
-            \footnote{\texttt{SUBCY} on PicoBlaze 6 behaves differently: Zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{SUBCY} instruction, otherwise it set to 0.}
+            \footnote{\texttt{SUBCY} on PicoBlaze 6 behaves differently: zero flag is set to 1 if result is zero and zero flag was set prior to the \texttt{SUBCY} instruction, otherwise it set to 0.}
             ~\\\indent
             \begin{tabular}{ll}
                 Z & 1 if result is zero, 0 otherwise \\
@@ -249,6 +256,7 @@
 \clearpage
 \subsection{Test and Compare}
     \instruction{TEST}
+        \index{TEST}
         The \texttt{TEST} instruction performs bit\-wise logical AND operation, and discards its result except for the status flags.
 
         \paragraph{Syntax}
@@ -276,6 +284,7 @@
             \end{tabular}
 
     \instruction{TESTCY}
+        \index{TESTCY}
         The \texttt{TESTCY} instruction performs bit\-wise logical AND operation, and discards its result except for the status flags.
 
         \paragraph{Syntax}
@@ -305,6 +314,7 @@
 
 \clearpage
     \instruction{COMPARE, CMP}
+        \index{COMPARE}\index{CMP}
         The \texttt{COMPARE} instruction performs an 8-bit subtraction of two values. Unlike the \texttt{SUB} instruction, result of this operation is discarded, and only status flags are affected. \texttt{CMP} is only shortcut for \texttt{COMPARE}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -334,6 +344,7 @@
             \end{tabular}
 
     \instruction{COMPARECY, CMPCY}
+        \index{COMPARECY}\index{CMPCY}
         The \texttt{COMPARECY} instruction is \texttt{COMPARE} with carry. \texttt{CMPCY} is only shortcut for \texttt{COMPARECY}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -365,6 +376,7 @@
 \clearpage
 \subsection{Shift and Rotate}
     \instruction{SL0, SL1, SLX, SLA}
+        \index{SL0}\index{SL1}\index{SLX}\index{SLA}
         Instructions \texttt{SL0}, \texttt{SL1}, \texttt{SLX}, and \texttt{SLA} all shift contents of the specified register by one bit to the left. The new lsb (least significant bit) depends on the instruction, and the msb (most significant bit) is shifted out to the C flag.
 
         \paragraph{Syntax}
@@ -398,6 +410,7 @@
 
 \clearpage
     \instruction{SR0, SR1, SRX, SRA}
+        \index{SR0}\index{SR1}\index{SRX}\index{SRA}
         Instructions \texttt{SR0}, \texttt{SR1}, \texttt{SRX}, and \texttt{SRA} all shift contents of the specified register by one bit to the right. The new msb (most significant bit) depends on the instruction, and the lsb (least significant bit) is shifted out to the C flag.
 
         \paragraph{Syntax}
@@ -431,6 +444,7 @@
 
 \clearpage
     \instruction{RR, RL}
+        \index{RR}\index{RL}
         These instructions rotate the specified register by one bit to the left or right. The bit shifted out of the register and then shifted back to the other side.
 
         \paragraph{Syntax}
@@ -462,6 +476,7 @@
 \clearpage
 \subsection{Register Bank Selection}
     \instruction{REGBANK, RB}
+        \index{REGBANK}\index{RB}
         Set active register bank. \texttt{RB} is only shortcut for \texttt{REGBANK}, these two mnemonics can be used interchangeably.
         \paragraph{Syntax}
             ~\\
@@ -495,6 +510,7 @@
 \clearpage
 \subsection{Input/Output}
     \instruction{INPUT, IN}
+        \index{INPUT}\index{IN}
         The \texttt{INPUT} instruction reads data from a port (i.e. from your hardware design) into the specified register. \texttt{IN} is only shortcut for \texttt{INPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
 
         \paragraph{Syntax}
@@ -528,6 +544,7 @@
 
 \clearpage
     \instruction{OUTPUT, OUT}
+        \index{OUTPUT}\index{OUT}
         The \texttt{OUTPUT} instruction transfers data to a port (i.e. to your hardware design) from the specified register. \texttt{OUT} is only shortcut for \texttt{OUTPUT}, these two mnemonics can be used interchangeably. Please notice the difference between direct port addressing and indirect addressing.
 
         \paragraph{Syntax}
@@ -561,6 +578,7 @@
 
 \clearpage
     \instruction{OUTPUTK, OUTK}
+        \index{OUTPUTK}\index{OUTK}
         The \texttt{OUTPUTK} instruction is basically the same as the \texttt{OUTPUT} instruction, difference between these two instructions is in write strobe (please refer to PicoBlaze manual) and addressing of the 1st operand. \texttt{OUTPUTK} copies immediate value (value being part of the instruction's opcode) from the 1st operand to the specified port address. \texttt{OUTK} is only shortcut for \texttt{OUTPUTK}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -594,6 +612,7 @@
 \clearpage
 \subsection{Storage}
     \instruction{STORE, ST}
+        \index{STORE}\index{ST}
         The \texttt{STORE} instruction copies from the specified register into the scratch pad ram memory (SPR) at the specified address. \texttt{ST} is only shortcut for \texttt{STORE}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -625,6 +644,7 @@
 
 \clearpage
     \instruction{FETCH, FT}
+        \index{FETCH}\index{FT}
         The \texttt{FETCH} instruction copies from the scratch pad ram memory (SPR) at the specified address into the specified register. \texttt{FT} is only shortcut for \texttt{FETCH}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -657,6 +677,7 @@
 \clearpage
 \subsection{Interrupt group}
     \instruction{RETURNI, RETIE, RETID}
+        \index{RETURNI}\index{RETIE}\index{RETID}
         Return from Interrupt Service Routine (ISR) while enabling or disabling further interrupts. \texttt{RETIE} stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{E}nable, RETID stands for \textbf{RET}urn from \textbf{I}nterrupt and \textbf{D}isable
 
         \paragraph{Syntax}
@@ -688,6 +709,7 @@
 
 \clearpage
     \instruction{ENABLE/DISABLE INTERRUPT, ENA, DIS}
+        \index{ENA}\index{DIS}\index{DISABLE INTERRUPT}\index{ENABLE INTERRUPT}
         Enable or disable interrupts. \texttt{ENA} is only shortcut for \texttt{ENABLE INTERRUPT}, these two mnemonics can be used interchangeably. \texttt{DIS} is only shortcut for \texttt{DISABLE INTERRUPT}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -720,6 +742,7 @@
 \clearpage
 \subsection{Program Control}
     \instruction{JUMP}
+        \index{JUMP}
         Instruction \texttt{JUMP} loads program counter with the address specified by aaa operand or by @(sX, sY).
 
         \paragraph{Syntax}
@@ -755,6 +778,7 @@
 
 \clearpage
     \instruction{CALL}
+        \index{CALL}
         Call subroutine at the address specified by aaa operand or by @(sX, sY).
 
         \paragraph{Syntax}
@@ -793,6 +817,7 @@
 
 \clearpage
     \instruction{RETURN, RET}
+        \index{RETURN}\index{RET}
         Return from subroutine. \texttt{RET} is only shortcut for \texttt{RETURN}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -829,6 +854,7 @@
 
 \clearpage
     \instruction{LOAD \& RETURN, LDRET}
+        \index{LOAD \& RETURN}\index{LDRET}
         Load the specified register with the specified immediate value and return from subroutine. \texttt{LDRET} is only shortcut for \texttt{LOAD \& RETURN}, these two mnemonics can be used interchangeably.
 
         \paragraph{Syntax}
@@ -862,6 +888,7 @@
 \clearpage
 \subsection{Version Control}
     \instruction{HWBUILD}
+        \index{HWBUILD}
         Instruction \texttt{HWBUILD} load the specified register with "hwbuild".
         \paragraph{Syntax}
             ~\\

@@ -381,6 +381,16 @@ std::string AsmTranslatorBase::autoIndent ( const std::string * line,
     }
 }
 
+
+void AsmTranslatorBase::setup ( std::vector<std::pair<unsigned int, std::string> > * messages,
+                                std::map<unsigned int, unsigned int> * lineMap,
+                                std::vector<std::string> * includedFiles )
+{
+    m_messages = messages;
+    m_lineMap = lineMap;
+    m_includedFiles = includedFiles;
+}
+
 std::ostream & operator << ( std::ostream & out,
                              const AsmTranslatorBase::LineFields & obj )
 {
