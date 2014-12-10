@@ -19,6 +19,7 @@
 #include "../../mds.h"
 
 #include <QMainWindow>
+#include <QFileSystemWatcher>
 #include "../../compiler/core/CompilerOptions.h"
 #include "../../compiler/CompilerThread.h"
 //#include <QToolBar>
@@ -40,6 +41,7 @@ class QListWidget;
 class QTreeWidget;
 class QIcon;
 class QPixmap;
+class SaveDialog;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER
@@ -193,7 +195,10 @@ class MainForm : public QMainWindow
         void shortcutCloseTab();
         void shortcutChangeTabLeft();
         void shortcutChangeTabRight();
-        void reloadTabIcons();        
+        void reloadTabIcons();
+        void fileClosed(QString path);
+        void fileChanged(QString path);
+        void reloadFile(QString path);
 
     signals:
         void unhighlightSim();
@@ -334,6 +339,12 @@ class MainForm : public QMainWindow
         QTabBar *projectTabs;
 
         CompilerOptions *options;
+
+        QFileSystemWatcher m_fileWatcher;
+
+        SaveDialog *m_reloadDlg;
+
+        bool reloadDlgChange;
 
     protected:
         void closeEvent(QCloseEvent *event);
