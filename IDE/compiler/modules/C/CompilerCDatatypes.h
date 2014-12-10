@@ -1,3 +1,22 @@
+// =============================================================================
+/**
+ * @brief
+ * C++ Interface: ...
+ *
+ * ...
+ *
+ * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ *
+ * @ingroup CompilerC
+ * @file CompilerCDatatypes.h
+ */
+// =============================================================================
+
+/**
+ * @brief
+ * @ingroup CompilerC
+ * @namespace CompilerCDatatypes
+ */
 namespace CompilerCDatatypes
 {
     enum Datatypes
@@ -24,4 +43,4 @@ namespace CompilerCDatatypes
         DT_UNION,           ///<
         DT_PTR              ///<
     };
-}
+};

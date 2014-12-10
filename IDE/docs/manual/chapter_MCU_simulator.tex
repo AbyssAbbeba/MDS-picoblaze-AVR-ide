@@ -54,38 +54,51 @@
     \end{figure}
 
 
-\section{Simulator warning messages}
+\section{Simulator messages}
     The simulator can display several warnings to handle some common mistakes in software development like program counter overflow, stack overflow, and some others; it is meant to make your debugging process less painful. To adjust settings related simulator warnings, please go to [Main~Menu]~-> [Interface]~-> [Configure]~-> [Simulator~warnings].
 
     \subsection{Memory group}
         The memory group relates to suspicious and invalid attempts to access program memory, register file, scratch-pad memory, and even ports of the simulated processor.
         \begin{description}
             \item[Write to nonexistent memory location]~\\ % ERR_MEM_WR_NONEXISTENT
+                Attempt to write at a memory location exceeding the size of that memory.
             \item[Read from nonexistent memory location]~\\ % ERR_MEM_RD_NONEXISTENT
+                Attempt to read from a memory location exceeding the size of that memory.
             \item[Write to unimplemented memory location]~\\ % ERR_MEM_WR_NOT_IMPLEMENTED
+                Attempt to write at location in memory which has been disabled. For instance you disable scratch-pad memory by setting its size to 0, and then you attempt to write in there.
             \item[Read from unimplemented memory location]~\\ % ERR_MEM_RD_NOT_IMPLEMENTED
+                Attempt to read from location in memory which has been disabled. For instance you disable scratch-pad memory by setting its size to 0, and then you attempt to read from there.
         \end{description}
 
     \subsection{Stack group}
         The stack group is related to processor call stack.
         \begin{description}
             \item[Stack overflow]~\\ % ERR_STACK_OVERFLOW
+                This happens when the program exceed the stack capacity. It might happen when the call stack capacity is insufficient to handle so many subroutine calls as your program requires, it may also easily happen when the program uses recursion, or when there are nonsense calls the program.
             \item[Stack underflow]~\\ % ERR_STACK_UNDERFLOW
+                This happens when there is a request to pop value from call stack but the stack is already empty.
         \end{description}
 
     \subsection{CPU group}
         The CPU group contains warnings related control flow and interrupt handling.
         \begin{description}
             \item[Program counter overflow]~\\ % ERR_CPU_PC_OVERFLOW
-            \item[Program counter underflow]~\\ % ERR_CPU_PC_UNDERFLOW
+                The program counter has exceeded its maximum value, this is usually a serious error in the simulated program.
+%             \item[Program counter underflow]~\\ % ERR_CPU_PC_UNDERFLOW
+%                 The program counter has exceeded its minimum value (which is zero). This happens due to invalid relative jumps, etc.
             \item[System fatal error]~\\ % ERR_CPU_SYS_FATAL
+                This indicates an error in the simulator itself, normally this never happens (the simulator is tested by vast series of automated tests); but if that happens, please report this as a bug in the MDS.
             \item[Invalid opcode]~\\ % ERR_CPU_INVALID_OPCODE
-            \item[Invalid jump]~\\ % ERR_CPU_INVALID_JUMP
-            \item[Invalid call]~\\ % ERR_CPU_INVALID_CALL
+                Indicates that the simulator encountered instruction opcode which is cannot decode and execute, this is very unlikely to happen but if you use the \texttt{DB} directive to directly write opcodes in the program memory, this might happen.
+%             \item[Invalid jump]~\\ % ERR_CPU_INVALID_JUMP
+%             \item[Invalid call]~\\ % ERR_CPU_INVALID_CALL
             \item[Invalid IRQ]~\\ % ERR_CPU_INVALID_IRQ
+                Invalid interrupt request. For instance you are trying to interrupt an interrupt service routine.
             \item[Invalid return]~\\ % ERR_CPU_INVALID_RET
+                Attempt to return from subroutine while there is no subroutine to return from.
             \item[Invalid return from interrupt]~\\ % ERR_CPU_INVALID_RETI
-            \item[Invalid opset]~\\ % ERR_CPU_INVALID_OPSET
-            \item[Unsupported instruction]~\\ % ERR_CPU_UNSUPPORTED_INST
-            \item[Instruction ignored]~\\ % ERR_CPU_INST_IGNORED
+                Attempt to return from ISR (interrupt service routine) while there is no ISR in progress.
+%             \item[Invalid opset]~\\ % ERR_CPU_INVALID_OPSET
+%             \item[Unsupported instruction]~\\ % ERR_CPU_UNSUPPORTED_INST
+%             \item[Instruction ignored]~\\ % ERR_CPU_INST_IGNORED
         \end{description}

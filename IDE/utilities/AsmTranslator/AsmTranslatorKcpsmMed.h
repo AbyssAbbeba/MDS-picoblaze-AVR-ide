@@ -45,14 +45,12 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
     public:
         /**
          * @brief
-         * @param[in,out] messages
          * @param[in,out] line
          * @param[in] lineNumber
          * @param[in] secondPass
          * @return
          */
-        virtual bool process ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                               std::string & line,
+        virtual bool process ( std::string & line,
                                unsigned int lineNumber,
                                bool secondPass = false ) override;
 
@@ -77,24 +75,20 @@ class AsmTranslatorKcpsmMed : public AsmTranslatorBase
     private:
         /**
          * @brief
-         * @param[in,out] messages
          * @param[in,out] lineFields
          * @param[in] lineNumber
          * @return
          */
-        inline bool processInstructions ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                          LineFields & lineFields,
+        inline bool processInstructions ( LineFields & lineFields,
                                           unsigned int lineNumber );
 
         /**
          * @brief
-         * @param[in,out] messages
          * @param[in,out] lineFields
          * @param[in] lineNumber
          * @return
          */
-        inline bool processDirectives ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                                        LineFields & lineFields,
+        inline bool processDirectives ( LineFields & lineFields,
                                         unsigned int lineNumber );
 
         /**

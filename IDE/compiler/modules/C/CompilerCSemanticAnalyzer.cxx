@@ -26,13 +26,12 @@ CompilerCSemanticAnalyzer::~CompilerCSemanticAnalyzer()
 {
 }
 
-void CompilerCSemanticAnalyzer::process ( CompilerStatement * codeTree )
-{
-    std::cout << "CompilerCSemanticAnalyzer::process:\n" << codeTree;
-}
-
 void CompilerCSemanticAnalyzer::setDevice ( const std::string & deviceName )
 {
     std::cout << "CompilerCSemanticAnalyzer::setDevice ( " << deviceName << ")\n";
 }
 
+void CompilerCSemanticAnalyzer::process ( CompilerStatement * codeTree )
+{
+    std::cout << "CompilerCSemanticAnalyzer::process:\n" << codeTree;
+}

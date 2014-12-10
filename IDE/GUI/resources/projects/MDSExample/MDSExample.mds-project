@@ -38,7 +38,7 @@
   <BookmarkFile path="Example2.psm"/>
  </Bookmarks>
  <Simulator>
-  <Clock clockMult="1000000" clock="10"/>
+  <Clock clockMult="1000000" clock="100"/>
  </Simulator>
  <Compiler>
   <Options>

@@ -4,6 +4,7 @@
 MDS assembler supports a number of pseudo instructions which can improve understandability of your source code. Assembler will replace these instructions with one or more PicoBlaze instructions to achieve the purpose of that pseudo-instruction.
 
 \psinstruction{NOP}
+    \index{NOP}
     No operation. This instruction does not do anything, it just consumes processor time.
 
     \paragraph{Syntax}
@@ -21,6 +22,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    NOP'
 
 \psinstruction{INC}
+    \index{INC}
     Increments the given register value by one.
 
     \paragraph{Syntax}
@@ -37,6 +39,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
 
 \clearpage
 \psinstruction{DEC}
+    \index{DEC}
     Decrements the given register value by one.
 
     \paragraph{Syntax}
@@ -52,6 +55,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    DEC   s0'
 
 \psinstruction{SETR}
+    \index{SETR}
     Sets the given register to binary ones.
 
     \paragraph{Syntax}
@@ -67,6 +71,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    SETR  s0'
 
 \psinstruction{CLRR}
+    \index{CLRR}
     Clears the given register (set it to 0).
 
     \paragraph{Syntax}
@@ -83,6 +88,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
 
 \clearpage
 \psinstruction{CPL}
+    \index{CPL}
     Performs ones' complement with the given register.
 
     \paragraph{Syntax}
@@ -98,6 +104,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    CPL   s0'
 
 \psinstruction{CPL2}
+    \index{CPL2}
     Performs two's complement with the given register.
 
     \paragraph{Syntax}
@@ -114,6 +121,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    CPL2  s0'
 
 \psinstruction{SETB}
+    \index{SETB}
     Sets one bit in the given register.
 
     \paragraph{Syntax}
@@ -130,6 +138,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
 
 \clearpage
 \psinstruction{CLRB}
+    \index{CLRB}
     Clears one bit in the given register.
 
     \paragraph{Syntax}
@@ -145,6 +154,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    CLRB  S0, 7'
 
 \psinstruction{NOTB}
+    \index{NOTB}
     Negates one bit in the given register.
 
     \paragraph{Syntax}
@@ -160,6 +170,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
         \verb'    NOTB  S0, 7'
 
 \psinstruction{DJNZ}
+    \index{DJNZ}
     Decrements the given register and jumps at the given label until the register contains zero.
 
     \paragraph{Syntax}
@@ -178,6 +189,7 @@ MDS assembler supports a number of pseudo instructions which can improve underst
 
 \clearpage
 \psinstruction{IJNZ}
+    \index{IJNZ}
     Increments the given register and jumps at the given label until the register contains zero.
 
     \paragraph{Syntax}

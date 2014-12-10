@@ -1089,6 +1089,11 @@ dir_string:
                                                                      ASMPICOBLAZE_DIR_STRING,
                                                                      $id->appendLink($string) );
                                     }
+    | D_STRING id "," string        {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_STRING,
+                                                                     $id->appendLink($string) );
+                                    }
     | id D_STRING                   {
                                         /* Syntax error */
                                         $$ = nullptr;

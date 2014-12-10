@@ -20,6 +20,7 @@
 #include "AsmTranslatorConfig.h"
 
 // Standard header files.
+#include <map>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -147,16 +148,25 @@ class AsmTranslatorBase
     public:
         /**
          * @brief
-         * @param[in,out] messages
          * @param[in,out] line
          * @param[in] lineNumber
          * @param[in] secondPass
          * @return
          */
-        virtual bool process ( std::vector<std::pair<unsigned int, std::string> > & messages,
-                               std::string & line,
+        virtual bool process ( std::string & line,
                                unsigned int lineNumber,
                                bool secondPass = false ) = 0;
+
+        /**
+         * @brief
+         * @param[in,out] messages
+         * @param[in,out] lineMap
+         * @param[in,out] includedFiles
+         * @return
+         */
+        void setup ( std::vector<std::pair<unsigned int, std::string> > * messages,
+                     std::map<unsigned int, unsigned int> * lineMap,
+                     std::vector<std::string> * includedFiles );
 
     ////    Protected Operations    ////
     protected:
@@ -187,6 +197,17 @@ class AsmTranslatorBase
 
         /// @brief
         AsmTranslatorConfig * m_config;
+
+    ////    Protected Attributes    ////
+    public:
+        /// @brief
+        std::vector<std::pair<unsigned int, std::string> > * m_messages;
+
+        /// @brief
+        std::map<unsigned int, unsigned int> * m_lineMap;
+
+        /// @brief
+        std::vector<std::string> * m_includedFiles;
 };
 
 /// @name Tracing operators
