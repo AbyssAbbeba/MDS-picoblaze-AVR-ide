@@ -36,8 +36,7 @@ bool AsmTranslator::translate ( Variant variant,
                                 std::ostream & output,
                                 std::istream & input )
 {
-    m_includedFiles.clear();
-    m_lineMap.clear();
+    clear();
 
     AsmTranslatorBase * translator = nullptr;
 
@@ -84,7 +83,6 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
     unsigned int lineNumber;
 
     // Read the entire input.
-    lineNumber = 0;
     std::vector<std::string> buffer;
     while ( false == input.eof() )
     {
@@ -102,8 +100,6 @@ inline bool AsmTranslator::translate ( AsmTranslatorBase * translator,
         {
             buffer.back().pop_back();
         }
-
-        m_lineMap.insert( {lineNumber, lineNumber} );
     }
 
     // Process the input in two steps.
@@ -205,5 +201,7 @@ const std::vector<std::string> & AsmTranslator::getIncludedFiles() const
 
 void AsmTranslator::clear()
 {
+    m_lineMap.clear();
     m_messages.clear();
+    m_includedFiles.clear();
 }

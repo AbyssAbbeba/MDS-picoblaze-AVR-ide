@@ -190,6 +190,12 @@ class AsmTranslatorBase
                                  unsigned int tabSizes,
                                  bool useLabelCol = false ) const;
 
+        /**
+         * @brief
+         * @param[in] by
+         */
+        void shiftLineMap ( unsigned int by );
+
     ////    Public Attributes    ////
     public:
         /// @brief
