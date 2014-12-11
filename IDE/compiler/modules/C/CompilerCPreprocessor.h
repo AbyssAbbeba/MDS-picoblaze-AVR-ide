@@ -30,6 +30,19 @@ class CompilerParserInterface;
  */
 class CompilerCPreprocessor
 {
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        enum InMode
+        {
+            MODE_NORMAL,
+            MODE_STRING,
+            MODE_CHAR,
+            MODE_COMMENT
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -43,7 +56,7 @@ class CompilerCPreprocessor
         /**
          * @brief
          */
-        virtual ~CompilerCPreprocessor();
+        virtual ~CompilerCPreprocessor() {}
 
     ////    Public Operations    ////
     public:
@@ -53,6 +66,18 @@ class CompilerCPreprocessor
          * @return
          */
         char * processFiles ( const std::vector<FILE *> & inputFiles );
+
+    ////    Private Operations    ////
+    private:
+        /**
+         * @brief
+         * @param[in,out] length
+         * @param[in,out] line
+         * @param[in] pos
+         */
+        void cutLine ( ssize_t & length,
+                       char * line,
+                       unsigned int pos );
 
     ////    Inline Private Operations    ////
     private:
@@ -69,15 +94,16 @@ class CompilerCPreprocessor
 
     ////    Protected Attributes    ////
     protected:
-        /**
-         * @brief
-         */
+        ///
         CompilerParserInterface * const m_compilerCore;
 
-        /**
-         * @brief
-         */
+        ///
         CompilerOptions * const m_opts;
+
+    ////    Private Attributes    ////
+    private:
+        ///
+        InMode m_inmode;
 };
 
 #endif // COMPILERCPREPROCESSOR_H
