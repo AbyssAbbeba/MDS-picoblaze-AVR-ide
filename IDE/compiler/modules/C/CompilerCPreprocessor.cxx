@@ -21,6 +21,7 @@
 // Standard headers.
 #include <cstdlib>
 #include <cstring>
+#include<iostream>//DEBUG
 
 // getline() function.
 #include "../../../utilities/os/getline.h"
@@ -30,10 +31,6 @@ CompilerCPreprocessor::CompilerCPreprocessor ( CompilerParserInterface * compile
                                              :
                                                m_compilerCore ( compilerCore ),
                                                m_opts ( opts )
-{
-}
-
-CompilerCPreprocessor::~CompilerCPreprocessor()
 {
 }
 
@@ -51,6 +48,7 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     char *  outBuffer     = (char*) malloc(outBufferSize); // Buffer pointer, used to store the entire output at once.
 
     outBuffer[outBufferCurP] = '\0';
+    m_inmode = MODE_NORMAL;
 
     // Iterate over all given input files.
     for ( auto sourceFile : inputFiles )
@@ -130,10 +128,160 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     return outBuffer;
 }
 
-inline bool CompilerCPreprocessor::processLine ( ssize_t & /*length*/,
-                                                 char * & /*line*/,
+void CompilerCPreprocessor::cutLine ( ssize_t & length,
+                                      char * line,
+                                      unsigned int pos )
+{
+    // Determinate EOL.
+    bool lf = ( '\n' == line[length-1] );
+    bool cr = !lf;
+
+    if ( ( length > 1 ) && ( '\r' == line[length-2] ) )
+    {
+        cr = true;
+    }
+
+    if ( ( true == cr ) && ( true == lf ) )
+    {
+        length = pos + 2;
+        line[pos] = '\r';
+        line[++pos] = '\n';
+    }
+    else
+    {
+        length = pos + 1;
+        line[pos] = ( true == lf ) ? '\n' : '\r';
+    }
+    line[++pos] = '\0';
+}
+
+inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
+                                                 char * & line,
                                                  size_t & /*bufferSize*/ )
 {
+    unsigned int out = 0;
+    bool copy = true;
+
+    for ( unsigned int in = 0; in < length; in++ )
+    {
+        if ( ( '\n' == line[in] ) || ( '\r' == line[in] ) )
+        {
+            if ( ( false == copy ) && ( 0 == out ) )
+            {
+                length = 0;
+                line[0] = '\0';
+            }
+            else
+            {
+                cutLine(length, line, out);
+            }
+            return true;
+        }
+
+        switch ( m_inmode )
+        {
+            case MODE_NORMAL:
+                switch ( line[in] )
+                {
+                    case '"':
+                        m_inmode = MODE_STRING;
+                        break;
+                    case '\'':
+                        m_inmode = MODE_CHAR;
+                        break;
+                    case '/':
+                        switch ( line[1+in] )
+                        {
+                            case '/':
+                                line[out++] = ' ';
+                                cutLine(length, line, out);
+                                return true;
+                            case '*':
+                                m_inmode = MODE_COMMENT;
+                                copy = false;
+                                break;
+                        }
+                        break;
+                    case '\\':
+                        for ( unsigned int i = ( in + 1 ); i < length; i++ )
+                        {
+                            if ( ( ' ' != line[i] ) && ( '\t' != line[i] ) )
+                            {
+                                // ERROR.
+                                return false;
+                            }
+                            else
+                            {
+                                // Warning.
+                            }
+                        }
+                        line[out] = '\0';
+                        length = out;
+                        return true;
+                    case '?':
+                        if ( '?' == line[1+in] )
+                        {
+                            char replacent = '\0';
+                            switch ( line[2+in] )
+                            {
+                                case '(':  replacent = '[';  break;
+                                case ')':  replacent = ']';  break;
+                                case '<':  replacent = '{';  break;
+                                case '>':  replacent = '}';  break;
+                                case '=':  replacent = '#';  break;
+                                case '/':  replacent = '\\'; break;
+                                case '\'': replacent = '^';  break;
+                                case '!':  replacent = '|';  break;
+                                case '-':  replacent = '~';  break;
+                            }
+                            if ( '\0' != replacent )
+                            {
+                                in++;
+                                line[1+in] = replacent;
+                                continue;
+                            }
+                        }
+                        break;
+                }
+                break;
+            case MODE_STRING:
+                switch ( line[in] )
+                {
+                    case '"':
+                        m_inmode = MODE_NORMAL;
+                        break;
+                }
+                break;
+            case MODE_CHAR:
+                switch ( line[in] )
+                {
+                    case '\'':
+                        m_inmode = MODE_NORMAL;
+                        break;
+                }
+                break;
+            case MODE_COMMENT:
+                if ( ( '*' == line[in] ) && ( '/' == line[1+in] ) )
+                {
+                    line[++in] = ' ';
+                    copy = true;
+                    m_inmode = MODE_NORMAL;
+                }
+                else
+                {
+                    copy = false;
+                }
+                break;
+        }
+
+        if ( true == copy )
+        {
+            line[out++] = line[in];
+        }
+    }
+
+    line[out] = '\0';
+    length = out;
     return true;
 }
 

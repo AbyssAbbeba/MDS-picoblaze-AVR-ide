@@ -2006,6 +2006,11 @@ inst_load:
                                                                      ASMPICOBLAZE_INS_LD_RET_SX_KK,
                                                                      $4->appendLink($7) );
                                     }
+    | I_LOAD "&" I_RETURN expr "," id {
+                                        $$ = new CompilerStatement ( LOC(@$),
+                                                                     ASMPICOBLAZE_DIR_LD_RET_SX_STR,
+                                                                     $expr->appendLink($id) );
+                                    }
     | I_LOAD eopr "," eopr "," eoprs{ /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@1, "LOAD", 2); }
     | I_LOAD eopr                   { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@2, "LOAD", 2); }
     | I_LOAD                        { /* Syntax Error */ $$ = nullptr; N_OPERANDS_EXPECTED(@1, "LOAD", 2); }
