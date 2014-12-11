@@ -49,6 +49,9 @@ CompilerOptions::CompilerOptions()
     m_briefMsgOutput  = false;
     m_strict = true;
 
+    m_enableDigraphs = true;
+    m_enableTrigraphs = true;
+
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }
 

@@ -59,7 +59,7 @@ namespace CompilerLexerUtils
                              const char * str,
                              unsigned int max,
                              int base );
-    
+
     /**
      * @brief
      * @param
