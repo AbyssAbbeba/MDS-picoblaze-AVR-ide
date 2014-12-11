@@ -192,7 +192,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate C preprocessor.
+                    // Initialize C preprocessor.
                     CompilerCPreprocessor preprocessor ( parserIntf, options );
                     char * buffer = preprocessor.processFiles ( sourceFiles );
                     compilerCore->closeInputFiles();
@@ -208,11 +208,11 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                         return MESC_OK;
                     }
 
-                    // Initiate lexical analyzer.
+                    // Initialize lexical analyzer.
                     CompilerCLexer_lex_init_extra ( compilerCore, &yyscanner );
                     YY_BUFFER_STATE bufferState = CompilerCLexer__scan_string ( buffer, yyscanner );
 
-                    // Initiate syntax analyzer (syntax analyzer will automatically call semantic analyzer when done).
+                    // Initialize syntax analyzer (syntax analyzer will automatically call semantic analyzer when done).
                     CompilerCParser_parse ( yyscanner, compilerCore );
 
                     // Clean up.
@@ -260,7 +260,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate language analyzers.
+                    // Initialize language analyzers.
                     AsmAvr8Lexer_lex_init_extra ( compilerCore, &yyscanner );
                     AsmAvr8Lexer_set_in ( sourceFiles[0], yyscanner );
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAvr8Lexer);
@@ -284,7 +284,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate language analyzers.
+                    // Initialize language analyzers.
                     AsmPic8Lexer_lex_init_extra ( compilerCore, &yyscanner );
                     AsmPic8Lexer_set_in ( sourceFiles[0], yyscanner );
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmPic8Lexer);
@@ -308,7 +308,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate language analyzers.
+                    // Initialize language analyzers.
                     AsmMcs51Lexer_lex_init_extra ( compilerCore, &yyscanner );
                     AsmMcs51Lexer_set_in ( sourceFiles[0], yyscanner );
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmMcs51Lexer);
@@ -332,7 +332,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate language analyzers.
+                    // Initialize language analyzers.
                     AsmPicoBlazeLexer_lex_init_extra ( compilerCore, &yyscanner );
                     AsmPicoBlazeLexer_set_in ( sourceFiles[0], yyscanner );
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmPicoBlazeLexer);
@@ -353,7 +353,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
-                    // Initiate language analyzers.
+                    // Initialize language analyzers.
                     AsmAdaptableLexer_lex_init_extra ( compilerCore, &yyscanner );
                     AsmAdaptableLexer_set_in ( sourceFiles[0], yyscanner );
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAdaptableLexer);

@@ -37,10 +37,10 @@ class CompilerCPreprocessor
          */
         enum InMode
         {
-            MODE_NORMAL,
-            MODE_STRING,
-            MODE_CHAR,
-            MODE_COMMENT
+            MODE_NORMAL, ///<
+            MODE_STRING, ///<
+            MODE_CHAR,   ///<
+            MODE_COMMENT ///<
         };
 
     ////    Constructors and Destructors    ////
@@ -91,6 +91,23 @@ class CompilerCPreprocessor
         inline bool processLine ( ssize_t & length,
                                   char * & line,
                                   size_t & bufferSize );
+
+        /**
+         * @brief
+         * @param[in,out] inBuffer
+         * @param[in,out] mergeBuffer
+         * @param[in,out] lineLen
+         * @param[in,out] inBufferSize
+         * @param[in,out] mergeBufferSize
+         * @param[in,out] mergeBufferCurP
+         * @return
+         */
+        inline bool lineMerge ( char * & inBuffer,
+                                char * & mergeBuffer,
+                                ssize_t & lineLen,
+                                size_t  & inBufferSize,
+                                size_t  & mergeBufferSize,
+                                size_t  & mergeBufferCurP );
 
     ////    Protected Attributes    ////
     protected:
