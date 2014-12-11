@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCSemanticAnalyzer.h

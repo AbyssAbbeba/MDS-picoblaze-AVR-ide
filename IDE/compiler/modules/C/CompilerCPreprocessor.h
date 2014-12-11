@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreprocessor.h
@@ -40,6 +40,7 @@ class CompilerCPreprocessor
             MODE_NORMAL, ///<
             MODE_STRING, ///<
             MODE_CHAR,   ///<
+            MODE_ANG_BR, ///<
             MODE_COMMENT ///<
         };
 
@@ -102,8 +103,8 @@ class CompilerCPreprocessor
          * @param[in,out] mergeBufferCurP
          * @return
          */
-        inline bool lineMerge ( char * & inBuffer,
-                                char * & mergeBuffer,
+        inline bool lineMerge ( char *  & inBuffer,
+                                char *  & mergeBuffer,
                                 ssize_t & lineLen,
                                 size_t  & inBufferSize,
                                 size_t  & mergeBufferSize,
