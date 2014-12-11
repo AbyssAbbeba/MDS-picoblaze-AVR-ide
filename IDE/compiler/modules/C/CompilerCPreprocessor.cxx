@@ -233,8 +233,8 @@ void CompilerCPreprocessor::cutLine ( ssize_t & length,
                                       unsigned int pos )
 {
     // Determinate EOL.
-    bool lf = ( '\n' == line[length-1] );
-    bool cr = !lf;
+    bool lf = ( '\n' == line[length-1] ); // LF (\n) is present.
+    bool cr = !lf;                        // CR (\r) is present.
 
     if ( ( length > 1 ) && ( '\r' == line[length-2] ) )
     {
@@ -403,4 +403,3 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
     length = out;
     return true;
 }
-
