@@ -22,6 +22,7 @@
 #include <QFileSystemWatcher>
 #include "../../compiler/core/CompilerOptions.h"
 #include "../../compiler/CompilerThread.h"
+#include "../compatibilitymode/compatibilitymode.h"
 //#include <QToolBar>
 //#include <QDockWidget>
 //#include <QListWidget>
@@ -212,10 +213,12 @@ class MainForm : public QMainWindow
         void createActions();
         void createShortcuts();
         void createToolbar();
+        QString translateBeforeCompilation(QString path);
+        
         //project manager
-        ProjectMan *projectMan;
+        ProjectMan *m_projectMan;
         //dock widgets manager
-        WDockManager *wDockManager;
+        WDockManager *m_wDockManager;
 
         //menus in main menu
         QMenu *fileMenu;
@@ -345,6 +348,8 @@ class MainForm : public QMainWindow
         SaveDialog *m_reloadDlg;
 
         bool reloadDlgChange;
+
+        CompatibilityMode m_compatibilityMode;
 
     protected:
         void closeEvent(QCloseEvent *event);

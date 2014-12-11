@@ -34,6 +34,7 @@ class Projectdlg_General : public QWidget
         QString getPath();
         QString getArch();
         QString getFamily();
+        int getAsmType();
 
     private slots:
         void setPath();

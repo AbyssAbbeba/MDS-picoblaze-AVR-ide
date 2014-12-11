@@ -1100,6 +1100,7 @@ void WTextEdit::findAndReplace(QString query, QString replace, bool all, bool ca
 void WTextEdit::queryReadOnly(bool readOnly)
 {
     this->setReadOnly(readOnly);
+    this->clearHighlight();
     shctBreakpoint->setEnabled(!readOnly);
     shctBookmark->setEnabled(!readOnly);
     /*shctCopy->setEnabled(!readOnly);

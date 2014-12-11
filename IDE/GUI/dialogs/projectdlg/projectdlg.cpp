@@ -156,6 +156,7 @@ void ProjectDialog::bCreate()
         projectMan->getActive()->setHWBuild(this->prjdlg_memory->getHWBuild());
         projectMan->getActive()->setScratchpad(this->prjdlg_memory->getScratchpadSize());
         projectMan->getActive()->setProgMem(this->prjdlg_memory->getProgMemSize());
+        projectMan->getActive()->setAsmType(prjdlg_general->getAsmType());
         projectMan->getActive()->saveProject();
 
         accept();

@@ -572,6 +572,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
         }
         m_curCodeEdit->setScrollValue(m_textEdit->verticalScrollBar()->value());
         m_curCodeEdit->setCursorValue(m_textEdit->textCursor());
+        m_curCodeEdit->getTextEdit()->setExtraSelections(m_textEdit->extraSelections());
     }
     
     bool prevChanged = editor->isChanged();
@@ -579,6 +580,13 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     this->setPath(editor->getPath());
     m_textEdit->deleteHighlighter();
     m_textEdit->setDocument(editor->getTextEdit()->document());
+    m_textEdit->clearHighlight();
+    //qDebug() << "CodeEdit: loading CodeEdit for path" << editor->getPath();
+    m_textEdit->setExtraSelections(editor->getTextEdit()->extraSelections());
+    /*for (int i = 0; i < m_textEdit->extraSelections().count(); i++)
+    {
+        qDebug() << "CodeEdit: extra selection" <<  m_textEdit->extraSelections().at(i).cursor.position();
+    }*/
     m_breakpointsLines = editor->getBreakpointsLines();
     m_bookmarksLines = editor->getBookmarksLines();
     if (m_breakpointsLines == NULL)
