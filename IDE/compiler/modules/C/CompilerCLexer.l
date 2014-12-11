@@ -77,8 +77,6 @@
 %option stack
 /* get rid of the warning message: 'int yy_top_state(yyscan_t)’ defined but not used */
 %option noyy_top_state
-/* To suppress the warning message "yyunput defined but not used". */
-%option nounput
 
 
 /*
@@ -89,13 +87,18 @@ WSPACE  ([ \t]|\u00A0)+
 /* New line */
 NLINE   (\r?\n)|(\n?\r)
 /* C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'. */
- //EDIT THIS! Include \t \n and so
-XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})
+XESC    (\\[0-7]{1,3})|(\\x[0-9A-F]{1,2})|(\\[uU][0-9A-F]{1,8})|(\\[abfnrtve\\"'?])
 /* Floating point number. */
 FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 /* An identifier in the language. */
 ID      [_a-zA-Z][_a-zA-Z0-9]*
 
+
+/*
+ * Exclusive start conditions
+ */
+/* Inside a string, e.g. "my string" */
+%x STR
 
 
 /* -------------------------------------------------------------------------- */
@@ -109,11 +112,6 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
     yylloc_param->first_line   = yylloc_param->last_line;
     yylloc_param->first_column = yylloc_param->last_column;
 %}
-
- // -----------------------------------------------------------------------------------------
- // >>>>>>>>>>>>>>>>>>>>>>>>>> TODO: write lexical rules here! <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- // -----------------------------------------------------------------------------------------
-
 
  /* White space: */
 {WSPACE}        { /* eat up white space */ }
@@ -192,7 +190,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "|"             { return O_BITOR;           }
 "^"             { return O_BITXOR;          }
 "=="            { return O_EQ;              }
-"!="            { return O_NE;             }
+"!="            { return O_NE;              }
 "<"             { return O_LT;              }
 "<="            { return O_LE;              }
 ">"             { return O_GT;              }
@@ -212,9 +210,22 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "--"            { return O_DECREMENT;       }
 "++"            { return O_INCREMENT;       }
 
+ /* C++ Named operators */
+"and"           { return O_AND;             }
+"and_eq"        { return O_BAND_ASSIGN;     }
+"bitand"        { return O_BITAND;          }
+"bitor"         { return O_BITOR;           }
+"compl"         { return O_BITNOT;          }
+"not"           { return O_NOT;             }
+"not_eq"        { return O_NE;              }
+"or"            { return O_OR;              }
+"or_eq"         { return O_BOR_ASSIGN;      }
+"xor"           { return O_BITXOR;          }
+"xor_eq"        { return O_XOR_ASSIGN;      }
+
  /*
-    Numbers
- */
+  *  Numbers
+  */
 
  /* Integral */
 0b[01]+         {
@@ -245,13 +256,14 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                     return REAL;
                 }
 
-
- /* Character literals */
+ /* Single character literals */
 '{XESC}'        {
                     // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
 
+                    yytext[strlen(yytext) - 1] = '\0';
+
                     int size; // Size of the binary value in bytes
-                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, yytext, &size);
+                    yylval->integer = (long long) escapeSequence(yyextra, yylloc, yytext+1, &size);
 
                     // Check whether the conversion was successful
                     if ( 0 == size )
@@ -265,24 +277,117 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 
                     return INTEGER;
                 }
-
+'.'             {
+                    yylval->integer = (int64_t) (yytext[1]);
+                    return INTEGER;
+                }
 
  /* Identifiers */
 {ID}            {
-                    // Arbitrary identifier, e.g. `MYREG_U1'.
-
-                    // Convert the string to upper case characters.
-                    //for ( int i = 0; i < yyleng; i++ )
-                    //{
-                    //    yytext[i] = yytext[i];
-                    //}
-
-                    // Return as general identifier.
+                    // Arbitrary identifier, e.g. `abc'.
                     yylval->symbol = yytext;
                     return IDENTIFIER;
                 }
 
+ /* Strings */
+<INITIAL>\"     {
+                    // Beginning of a string, i.e. --> "some string"
+                    yy_push_state(STR, yyscanner);
+                    yyextra->m_strMaxSize = 32;
+                    yylval->string.size = 0;
+                    yylval->string.data = (char*) malloc(yyextra->m_strMaxSize);
+                }
+<STR>
+{
+    \"                  {
+                            // End of the string, i.e. "my string" <--
+                            yy_pop_state(yyscanner);
+                            if ( INITIAL == YY_START )
+                            {
+                                return STRING;
+                            }
+                            else
+                            {
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("syntax not understood").toStdString(),
+                                                        true );
+                            }
+                        }
+    [^\\"\r\n]+         {
+                            // Any string content except for escape sequences.
 
+                            // Increase the string size
+                            yylval->string.size += yyleng;
+                            // Enlarge the string buffer, if necessary
+                            enlargeStringBuffer(yylval, yyextra);
+                            // Copy matched characters into our string buffer
+                            memcpy(yylval->string.data + yylval->string.size - yyleng, yytext, yyleng);
+                        }
+    {NLINE}             {
+                            yylloc->last_line++;
+                            yylloc->last_column = 1;
+
+                            // A string has to be terminated at the same line which it was started on
+                            yy_pop_state(yyscanner);
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("unterminated string or character constant")
+                                                               .toStdString(),
+                                                    true );
+
+                            // Put the EOL character sequence back onto the input stream
+                            char * eol = strdup(yytext);
+                            for ( int i = yyleng - 1; i >= 0; --i )
+                            {
+                                unput(eol[i]);
+                            }
+                            free(eol);
+
+                            if ( INITIAL == YY_START )
+                            {
+                                return STRING;
+                            }
+                        }
+    {XESC}              {
+                            // Handle C like escape sequence, such as `\x4A', `\uABCD', `\U1234abcd', and `\177'
+
+                            int size; // Size of the binary value in bytes
+                            uint32_t value = escapeSequence(yyextra, yylloc, yytext, &size);
+
+                            // Check whether the conversion was successful
+                            if ( 0 == size )
+                            {
+                                yyextra->lexerMessage ( yylloc,
+                                                        CompilerBase::MT_ERROR,
+                                                        QObject::tr("unrecognized escape sequence: ").toStdString()
+                                                        + "`" + yytext + "'" );
+                                yyterminate();
+                            }
+
+                            // Copy converted escape sequence to the string buffer
+                            enlargeStringBuffer(yylval, yyextra, size);
+                            for ( int i = 0; i < size; i++ )
+                            {
+                                yylval->string.data [ yylval->string.size++ ] = (unsigned char) (value & 0xFF);
+                                value >>= 8;
+                            }
+                        }
+    <<EOF>>             {
+                            // Handle strings terminated by EOF (End Of File) as ERROR.
+                            yy_pop_state(yyscanner);
+                            yyextra->lexerMessage ( yylloc,
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr("unterminated string or character constant")
+                                                               .toStdString(),
+                                                    true );
+
+                            // Discard the string buffer and terminate lexical analysis (this is a fatal error)
+                            free(yylval->string.data);
+                            yylval->string.size = 0;
+                            yyterminate();
+                        }
+}
 
 %%
 

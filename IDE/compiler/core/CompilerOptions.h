@@ -160,14 +160,22 @@ class CompilerOptions
             /// When this string is set to a file name, compiler will generate a precopiled code and store it the file.
             std::string m_prcTarget;
 
-            /// Write output from C preprocessor in this file.
-            std::string m_cunit;
-
             /// Secondary output (target architecture specific).
             std::string m_second;
 
             /// Table of strings.
             std::string m_stringTable;
+        //@}
+
+        /**
+         * @name C language related options.
+         */
+        //@{
+            /// Write output from C preprocessor in this file.
+            std::string m_cunit;
+
+            bool m_enableDigraphs;
+            bool m_enableTrigraphs;
         //@}
 
         /**

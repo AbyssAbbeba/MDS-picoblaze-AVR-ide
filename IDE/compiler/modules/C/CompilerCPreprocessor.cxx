@@ -47,8 +47,16 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     ssize_t outBufferCap  = ( outBufferSize - 1 );         // Number of free bytes in the buffer.
     char *  outBuffer     = (char*) malloc(outBufferSize); // Buffer pointer, used to store the entire output at once.
 
-    outBuffer[outBufferCurP] = '\0';
+    // Auxiliary buffer for merging lines.
+    size_t mergeBufferCurP = 0;                            // Current position in the buffer.
+    size_t mergeBufferSize = 0;                            // Overall size of the buffer.
+    char * mergeBuffer     = nullptr;                      // Buffer pointer, cannot contain more that one line.
+
+    // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
+
+    // Start with valid empty output buffer.
+    outBuffer[outBufferCurP] = '\0';
 
     // Iterate over all given input files.
     for ( auto sourceFile : inputFiles )
@@ -56,12 +64,19 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
         // Iterate over lines in the source file.
         while ( -1 != ( lineLen = getline(&inBuffer, &inBufferSize, sourceFile) ) )
         {
+            // Handle line merging - trailing `\' (backslash)
+            if ( true == lineMerge(inBuffer, mergeBuffer, lineLen, inBufferSize, mergeBufferSize, mergeBufferCurP) )
+            {
+                continue;
+            }
+
             // Process input and generate output.
             if ( false == processLine ( lineLen, inBuffer, inBufferSize ) )
             {
                 // Error -> terminate preprocessor.
                 free(inBuffer);
                 free(outBuffer);
+                free(mergeBuffer);
                 return nullptr;
             }
 
@@ -87,15 +102,13 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
                                                   QObject::tr ( "I/O error, cannot read the source file properly" )
                                                               . toStdString() );
 
-            // Error -> terminate preprocessor.
+            // Error -> terminate preprocessor.;
             free(inBuffer);
             free(outBuffer);
+            free(mergeBuffer);
             return nullptr;
         }
     }
-
-    // Dispose of the input buffer.
-    free(inBuffer);
 
     // Save the output from preprocessor into a file specified by CompilerOptions.
     if ( false == m_opts->m_cunit.empty() )
@@ -125,7 +138,94 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
     }
 
     // Done.
+    free(inBuffer);
+    free(mergeBuffer);
     return outBuffer;
+}
+
+inline bool CompilerCPreprocessor::lineMerge ( char * & inBuffer,
+                                               char * & mergeBuffer,
+                                               ssize_t & lineLen,
+                                               size_t  & inBufferSize,
+                                               size_t  & mergeBufferSize,
+                                               size_t  & mergeBufferCurP )
+{
+    bool abort = false;
+    int lineMerge = -1;
+    int whiteSpace = -1;
+
+    for ( ssize_t pos = ( lineLen - 1 ); pos >= 0; pos-- )
+    {
+        switch ( inBuffer[pos] )
+        {
+            case '\t': case ' ':
+                whiteSpace = (int) pos;
+            case '\r': case '\n':
+                break;
+            case '\\':
+                lineMerge = (int) pos;
+                break;
+            case '/': // Handle trigraph "? ? /"
+                if ( true == m_opts->m_enableTrigraphs )
+                {
+                    if ( ( pos >= 2 ) && ( '?' == inBuffer[pos-1] ) && ( '?' == inBuffer[pos-2] ) )
+                    {
+                        lineMerge = (int) (pos - 2);
+                        break;
+                    }
+                }
+            default:
+                abort = true;
+                break;
+        }
+
+        if ( true == abort )
+        {
+            break;
+        }
+    }
+
+    if ( -1 != whiteSpace )
+    {
+        // TODO: Warning.
+    }
+
+    if ( -1 != lineMerge )
+    {
+        const size_t requiredSize = ( lineMerge + mergeBufferCurP + 1 );
+        if ( requiredSize > mergeBufferSize )
+        {
+            mergeBufferSize = requiredSize;
+            mergeBuffer = (char*) realloc ( mergeBuffer, mergeBufferSize );
+        }
+
+        strncpy((mergeBuffer + mergeBufferCurP), inBuffer, lineMerge);
+        mergeBufferCurP += lineMerge;
+        return true;
+    }
+
+    if ( 0 != mergeBufferCurP )
+    {
+        const size_t requiredSize = ( mergeBufferCurP + lineLen + 1 );
+        if ( requiredSize > inBufferSize )
+        {
+            inBufferSize = requiredSize;
+            inBuffer = (char*) realloc ( inBuffer, inBufferSize );
+        }
+        if ( requiredSize > mergeBufferSize )
+        {
+            mergeBufferSize = requiredSize;
+            mergeBuffer = (char*) realloc ( mergeBuffer, mergeBufferSize );
+        }
+        strncpy((mergeBuffer + mergeBufferCurP), inBuffer, lineLen);
+
+        lineLen += mergeBufferCurP;
+        strncpy(inBuffer, mergeBuffer, lineLen);
+        inBuffer[lineLen] = '\0';
+        mergeBufferCurP = 0;
+    }
+
+    return false;
 }
 
 void CompilerCPreprocessor::cutLine ( ssize_t & length,
@@ -166,10 +266,10 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
     {
         if ( ( '\n' == line[in] ) || ( '\r' == line[in] ) )
         {
-            if ( ( false == copy ) && ( 0 == out ) )
+            if ( false == copy )
             {
-                length = 0;
-                line[0] = '\0';
+                length = out;
+                line[out] = '\0';
             }
             else
             {
@@ -202,24 +302,8 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                                 break;
                         }
                         break;
-                    case '\\':
-                        for ( unsigned int i = ( in + 1 ); i < length; i++ )
-                        {
-                            if ( ( ' ' != line[i] ) && ( '\t' != line[i] ) )
-                            {
-                                // ERROR.
-                                return false;
-                            }
-                            else
-                            {
-                                // Warning.
-                            }
-                        }
-                        line[out] = '\0';
-                        length = out;
-                        return true;
                     case '?':
-                        if ( '?' == line[1+in] )
+                        if ( ( true == m_opts->m_enableTrigraphs ) && ( '?' == line[1+in] ) )
                         {
                             char replacent = '\0';
                             switch ( line[2+in] )
@@ -242,6 +326,41 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                             }
                         }
                         break;
+                    case '<':
+                    case '%':
+                    case ':':
+                        if ( true == m_opts->m_enableDigraphs )
+                        {
+                            char replacent = '\0';
+                            switch ( line[in] )
+                            {
+                                case '<':
+                                    switch ( line[1+in] )
+                                    {
+                                        case '%': replacent = '{';  break;
+                                        case ':': replacent = '[';  break;
+                                    }
+                                    break;
+                                case '%':
+                                    switch ( line[1+in] )
+                                    {
+                                        case '>': replacent = '}';  break;
+                                        case ':': replacent = '#';  break;
+                                    }
+                                    break;
+                                case ':':
+                                    if ( '>' == line[1+in] )
+                                    {
+                                        replacent = ']';
+                                    }
+                                    break;
+                            }
+                            if ( '\0' != replacent )
+                            {
+                                line[1+in] = replacent;
+                                continue;
+                            }
+                        }
                 }
                 break;
             case MODE_STRING:
