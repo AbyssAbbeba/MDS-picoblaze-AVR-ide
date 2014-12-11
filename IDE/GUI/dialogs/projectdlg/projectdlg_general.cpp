@@ -125,6 +125,16 @@ QString Projectdlg_General::getFamily()
     return ui.cmbFamily->currentText();
 }
 
+
+int Projectdlg_General::getAsmType()
+{
+    if (true == ui.rbXilinx->isChecked())
+    {
+        return 1;
+    }
+    return 0;
+}
+
 void Projectdlg_General::familyChanged(const QString &text)
 {
     if ("kcpsm6" == text)

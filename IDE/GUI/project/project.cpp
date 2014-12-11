@@ -388,6 +388,9 @@ Project::Project(QFile *file, ProjectMan *parent)
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLine2Color()));
+    m_asmType = 0;
+    this->clock = 10.0;
+    this->clockMult = 1000000;
     //nacteni ze souboru
     QDomDocument domDoc("MDSProject");
     if (!domDoc.setContent(file))
@@ -444,6 +447,10 @@ Project::Project(QFile *file, ProjectMan *parent)
                             else if (xmlGeneralElement.tagName() == "ProgMemSize")
                             {
                                 progMemSize = xmlGeneralElement.attribute("value", "").toInt(NULL);
+                            }
+                            else if (xmlGeneralElement.tagName() == "AsmType")
+                            {
+                                m_asmType = xmlGeneralElement.attribute("value", "").toInt(NULL);
                             }
                             xmlGeneralNode = xmlGeneralNode.nextSibling();
                         }
@@ -871,6 +878,7 @@ Project::Project(ProjectMan *parent)
     this->templateVerilog = GuiCfg::getInstance().getProjectPathVerilog();
     this->clock = 10.0;
     this->clockMult = 1000000;
+    m_asmType = 0;
 
     prjDockWidget = new QDockWidget(prjName, (QWidget *)(parent->parent()));
     prjDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -974,6 +982,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->mainFilePath = "";
     this->clock = 10.0;
     this->clockMult = 1000000;
+    m_asmType = 0;
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
@@ -1040,9 +1049,14 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlProgMem = domDoc.createElement("ProgMemSize");
     xmlGeneral.appendChild(xmlProgMem);
     QDomElement xmlIntVector = domDoc.createElement("IntVector");
+    xmlIntVector.setAttribute("value", "0");
     xmlGeneral.appendChild(xmlIntVector);
     QDomElement xmlHWBuild = domDoc.createElement("HWBuild");
+    xmlHWBuild.setAttribute("value", "0");
     xmlGeneral.appendChild(xmlHWBuild);
+    QDomElement xmlAsmType = domDoc.createElement("AsmType");
+    xmlAsmType.setAttribute("value", "0");
+    xmlGeneral.appendChild(xmlAsmType);
     xmlRoot.appendChild(xmlGeneral);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
@@ -1222,6 +1236,9 @@ void Project::saveProject()
     QDomElement xmlHWBuild = domDoc.createElement("HWBuild");
     xmlHWBuild.setAttribute("value", this->hwBuild);
     xmlGeneral.appendChild(xmlHWBuild);
+    QDomElement xmlAsmType = domDoc.createElement("AsmType");
+    xmlAsmType.setAttribute("value", m_asmType);
+    xmlGeneral.appendChild(xmlAsmType);
     xmlRoot.appendChild(xmlGeneral);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
@@ -1827,8 +1844,8 @@ int Project::start(QString file, QString dumpFiles)
         QFileInfo infoAsm(asmPath);
         QFileInfo infoHex(hexPath + ".ihex");
         QFileInfo infoDbg(hexPath + ".dbg");
-        qDebug() << "Project: sim file" << asmPath;
-        qDebug() << "Project: sim dump file" << hexPath;
+        //qDebug() << "Project: sim file" << asmPath;
+        //qDebug() << "Project: sim dump file" << hexPath;
         if ( false == infoHex.exists()
           || false == infoDbg.exists()
           || 0 == infoHex.size()
@@ -1900,19 +1917,23 @@ int Project::start(QString file, QString dumpFiles)
     //qDebug() << "Project: getLineNumber";
     //std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
     //m_simControlUnit->setBreakPoints(breakpointsVector);
-    m_simControlUnit->getLineNumber(this->currSim);
+    m_simControlUnit->getLineNumber(m_currSim);
     //qDebug() << "Project: getLineNumber check";
-    if (this->currSim.empty() == true)
+    if (m_currSim.empty() == true)
     {
         //qDebug() << "Project: start return 2";
         //return 2;
     }
-    this->prevSim.clear();
-    this->prevSim2.clear();
+    m_prevSim.clear();
+    m_prevSim2.clear();
     //qDebug() << "Project: getLineNumber done";
+    /*for (int i = 0; i < m_currSim.size(); i++)
+    {
+        qDebug() << QString::fromStdString(*(m_currSim.at(i).first));
+    }*/
     emit setEditorReadOnly(true);
-    emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
-    this->prevSim = this->currSim;
+    emit simHighlightLines(m_currSim, m_prevSim, m_prevSim2, this->simColors);
+    m_prevSim = m_currSim;
     //qDebug() << "Project: return start()";
     return 0;
 }
@@ -1987,15 +2008,15 @@ void Project::stop()
 void Project::reset()
 {
     m_simControlUnit->resetProgram();
-    this->prevSim.clear();
-    this->prevSim2.clear();
-    m_simControlUnit->getLineNumber(this->currSim);
-    if (this->currSim.empty() == true)
+    m_prevSim.clear();
+    m_prevSim2.clear();
+    m_simControlUnit->getLineNumber(m_currSim);
+    if (m_currSim.empty() == true)
     {
         return;
     }
-    emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
-    this->prevSim = this->currSim;
+    emit simHighlightLines(m_currSim, m_prevSim, m_prevSim2, this->simColors);
+    m_prevSim = m_currSim;
 }
 
 
@@ -2009,24 +2030,24 @@ void Project::handleUpdateRequest(int mask)
     if (4 & mask)
     {
         //std::string fileName; //= new std::string();
-        m_simControlUnit->getLineNumber(this->currSim);
+        m_simControlUnit->getLineNumber(m_currSim);
 
-        this->prevSim.clear();
-        this->prevSim2.clear();
-        emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
+        m_prevSim.clear();
+        m_prevSim2.clear();
+        emit simHighlightLines(m_currSim, m_prevSim, m_prevSim2, this->simColors);
 
-        this->prevSim = this->currSim;
+        m_prevSim = m_currSim;
     }
     else if (2 & mask)
     {
-        m_simControlUnit->getLineNumber(this->currSim);
+        m_simControlUnit->getLineNumber(m_currSim);
 
 
-        emit simHighlightLines(this->currSim, this->prevSim, this->prevSim2, this->simColors);
+        emit simHighlightLines(m_currSim, m_prevSim, m_prevSim2, this->simColors);
 
 
-        this->prevSim2 = this->prevSim;
-        this->prevSim = this->currSim;
+        m_prevSim2 = m_prevSim;
+        m_prevSim = m_currSim;
     }
 }
 
@@ -2636,4 +2657,16 @@ void Project::renameFile(QString oldPath, QString newPath)
     fileNames[index] = relativePath.section('/', -1);
     filePaths[index] = relativePath;
     this->reloadProjectTree();
+}
+
+
+void Project::setAsmType(int type)
+{
+    m_asmType = type;
+}
+
+
+int Project::getAsmType()
+{
+    return m_asmType;
 }

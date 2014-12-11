@@ -67,17 +67,18 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
 
 
 
+//OBSOLETE!
 /**
  * @brief Handles change of active CodeEdit (another CodeEdit recieves focus)
  * @param editor New active editor
  */
 void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
-{
+{}
     //qDebug() << "WDockManager: changeActiveCodeEdit()";
-    if (this->activeCodeEdit != editor)
-    {
+    //if (this->activeCodeEdit != editor)
+    //{
         //qDebug() << "wdockmanager - change active Code Editor";
-        this->activeCodeEdit = editor;
+        //this->activeCodeEdit = editor;
         /*if (breakpointList != NULL && editor->getParentProject() != NULL)
         {
             connect(this->activeCodeEdit,
@@ -99,10 +100,10 @@ void WDockManager::changeActiveCodeEdit(CodeEdit *editor)
             connect(this->activeCodeEdit, SIGNAL(bookmarkListRemove(int)), bookmarkList, SLOT(bookmarkListRemoveSlot(int)));
         }*/
         //    updateAnalysersSlot(this->activeCodeEdit);
-        wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
-    }
+        //wTab->setCurrentIndex(codeEditList.indexOf(this->activeCodeEdit->getParentCodeEdit()));
+    //}
     //qDebug() << "WDockManager: return changeActiveCodeEdit()";
-}
+//}
 
 
 /**
@@ -172,7 +173,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
         {
             if (wTab->tabText(i) == "*"+name && wTab->tabToolTip(i) == path)
             {
-                qDebug() << "wdockmanager: change tab status slot";
+                //qDebug() << "wdockmanager: change tab status slot";
                 wTab->tabChanged(i, changed);
                 wTab->update();
                 break;
@@ -208,8 +209,8 @@ void WDockManager::closeTab(int index)
 void WDockManager::setTabChanged()
 {
     //qDebug() << "WDockManager: setTabChanged()";
-    //openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();
-    codeEditList.at(wTab->currentIndex())->setChanged();
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setChanged();
+    //codeEditList.at(wTab->currentIndex())->setChanged();
     activeCodeEdit->setChanged();
     //qDebug() << "WDockManager: return setTabChanged()";
 }
@@ -219,7 +220,8 @@ void WDockManager::setTabSaved()
 {
     //qDebug() << "WDockManager: setTabSaved()";
     //qDebug() << "wdockmanager: set tab saved";
-    codeEditList.at(wTab->currentIndex())->setSaved();
+    //codeEditList.at(wTab->currentIndex())->setSaved();
+    openCentralWidgets.at(wTab->currentIndex())->getCodeEdit()->setSaved();
     activeCodeEdit->setSaved();
     //qDebug() << "WDockManager: return setTabSaved()";
 }
@@ -664,7 +666,7 @@ void WDockManager::addCentralWidget(QString wName, QString wPath)
         else
         {
             newBaseEditor = new BaseEditor(NULL, this, newEditor, false);
-            activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
+            //activeCodeEdit->loadCodeEdit(newBaseEditor->getCodeEdit());
         }
         newEditor->changeHeight();
         openCentralWidgets.append(newBaseEditor);

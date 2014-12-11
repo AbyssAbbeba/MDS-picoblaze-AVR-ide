@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>351</width>
-    <height>301</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +45,18 @@
    </item>
    <item row="3" column="2">
     <widget class="QPushButton" name="btnChange">
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>30</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="text">
       <string/>
      </property>
@@ -85,6 +97,16 @@
      </item>
     </widget>
    </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QTextEdit" name="teNotes">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QLineEdit" name="leName"/>
+   </item>
    <item row="5" column="1">
     <widget class="QComboBox" name="cmbFamily">
      <item>
@@ -114,15 +136,35 @@
      </item>
     </widget>
    </item>
-   <item row="6" column="0" colspan="3">
-    <widget class="QTextEdit" name="teNotes">
-     <property name="readOnly">
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Assembly Type</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QRadioButton" name="rbMSD">
+     <property name="text">
+      <string>MDS asm</string>
+     </property>
+     <property name="checked">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QLineEdit" name="leName"/>
+   <item row="7" column="1">
+    <widget class="QRadioButton" name="rbXilinx">
+     <property name="text">
+      <string>Xilinx asm</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

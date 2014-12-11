@@ -124,6 +124,19 @@ void ProjectCfg_General::load()
 {
     ui.leName->setText(this->project->prjName);
     ui.cmbFamily->setCurrentIndex(ui.cmbFamily->findText(project->family));
+    switch (this->project->getAsmType())
+    {
+        case 0:
+        {
+            ui.rbMDS->setChecked(true);
+            break;
+        }
+        case 1:
+        {
+            ui.rbXilinx->setChecked(true);
+            break;
+        }
+    }
 }
 
 
@@ -131,6 +144,14 @@ void ProjectCfg_General::save()
 {
     this->project->setName(ui.leName->text());
     this->project->setFamily(ui.cmbFamily->currentText());
+    if (true == ui.rbMDS->isChecked())
+    {
+        project->setAsmType(0);
+    }
+    else
+    {
+        project->setAsmType(1);
+    }
 }
 
 

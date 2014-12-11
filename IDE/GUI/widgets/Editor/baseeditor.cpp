@@ -26,7 +26,7 @@ BaseEditor::BaseEditor(QWidget *parent, WDockManager *dockParent, CodeEdit *edit
     if (dockParent != NULL)
     {
         this->dockMan = dockParent;
-        connect(this, SIGNAL(focusIn(CodeEdit*)), this->dockMan, SLOT(changeActiveCodeEdit(CodeEdit*)));
+        //connect(this, SIGNAL(focusIn(CodeEdit*)), this->dockMan, SLOT(changeActiveCodeEdit(CodeEdit*)));
         //qDebug() << "BaseEditor: created and connected";
     }
     else
