@@ -144,6 +144,8 @@ class Project : public QObject
         QList<unsigned int> getBreakpointsForFileAbsolute(QString file);
         QList<unsigned int> getBookmarksForFileAbsolute(QString file);
         void renameFile(QString oldPath, QString newPath);
+        void setAsmType(int type);
+        int getAsmType();
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -226,10 +228,12 @@ class Project : public QObject
         ProjectMan *parentManager;
         QList<QPair<QString, QSet<unsigned int>>> breakPoints;
         QList<QPair<QString, QSet<unsigned int>>> bookmarks;
-        std::vector<std::pair<const std::string *, unsigned int>> currSim;
-        std::vector<std::pair<const std::string *, unsigned int>> prevSim;
-        std::vector<std::pair<const std::string *, unsigned int>> prevSim2;
+        std::vector<std::pair<const std::string *, unsigned int>> m_currSim;
+        std::vector<std::pair<const std::string *, unsigned int>> m_prevSim;
+        std::vector<std::pair<const std::string *, unsigned int>> m_prevSim2;
         QList<QColor*> simColors;
+
+        int m_asmType;
         
         QTreeWidgetItem *treeProjName;
         QTreeWidgetItem *treeProjSource;
