@@ -51,7 +51,7 @@ DisAsmDialog::DisAsmDialog(QWidget *parent)
  */
 void DisAsmDialog::setPath()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("(*.hex *.bin *.srec *.mem *.v *.vhd)"));
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("(*.hex *.bin *.srec *.mem *.v *.vhd)"));
     if (path != NULL)
     {
         this->ui.lePath->setText(path);
