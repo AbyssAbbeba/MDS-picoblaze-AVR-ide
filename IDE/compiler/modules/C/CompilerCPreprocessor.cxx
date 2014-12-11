@@ -205,7 +205,11 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                     case '\\':
                         for ( unsigned int i = ( in + 1 ); i < length; i++ )
                         {
-                            if ( ( ' ' != line[i] ) && ( '\t' != line[i] ) )
+                            if ( ( '\n' == line[i] ) || ( '\r' == line[i] ) )
+                            {
+                                break;
+                            }
+                            else if ( ( ' ' != line[i] ) && ( '\t' != line[i] ) )
                             {
                                 // ERROR.
                                 return false;
