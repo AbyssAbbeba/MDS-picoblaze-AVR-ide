@@ -19,6 +19,7 @@
 #include "CompilerParserInterface.h"
 
 // Standard headers.
+#include <cctype>
 #include <cstdlib>
 #include <cstring>
 #include<iostream>//DEBUG
@@ -26,88 +27,122 @@
 // getline() function.
 #include "../../../utilities/os/getline.h"
 
+#if ! defined ( YYSTYPE ) && ! defined ( YYSTYPE_IS_DECLARED )
+    typedef union YYSTYPE {} YYSTYPE;
+#endif
+#include "CompilerCPreProcCalcLex.h"
+int CompilerCPreProcCalcPar_parse ( yyscan_t yyscanner,
+                                    CompilerCPreprocessorIntr * preprocessor );
+
+#define IS_IDENTIFIER(str, i)                                   \
+(                                                               \
+       ( ( 0 != i ) && ( str[i] >= '0' ) && ( str[i] <= '9' ) ) \
+    || ( ( str[i] >= 'a' ) && ( str[i] <= 'z' ) )               \
+    || ( ( str[i] >= 'A' ) && ( str[i] <= 'Z' ) )               \
+    || ( '_' == str[i] )                                        \
+)
+
+#define IS_BLANK(str, i)                                                \
+(                                                                       \
+       ( ' '  == str[i] ) || ( '\t' == str[i] ) || ( '\0' == str[i] )   \
+    || ( '\n' == str[i] ) || ( '\v' == str[i] ) || ( '\r' == str[i] )   \
+    || ( '\f' == str[i] )                                               \
+)
+
+const std::map<std::string, CompilerCPreprocessor::Directive> CompilerCPreprocessor::s_directives =
+{
+    { "include", DIR_INCLUDE },    { "line",    DIR_LINE    },
+    { "pragma",  DIR_PRAGMA  },    { "define",  DIR_DEFINE  },
+    { "undef",   DIR_UNDEF   },    { "if",      DIR_IF      },
+    { "elif",    DIR_ELIF    },    { "ifdef",   DIR_IFDEF   },
+    { "ifndef",  DIR_IFNDEF  },    { "else",    DIR_ELSE    },
+    { "endif",   DIR_ENDIF   },    { "warning", DIR_WARNING },
+    { "error",   DIR_ERROR   }
+
+};
+
+const std::map<std::string, std::string> CompilerCPreprocessor::MacroTable::s_namedOperators =
+{
+    { "and",    "&&" },    { "and_eq", "&=" },    { "bitand", "&"  },
+    { "bitor",  "|"  },    { "compl",  "~"  },    { "not",    "!"  },
+    { "not_eq", "!=" },    { "or",     "||" },    { "or_eq",  "|=" },
+    { "xor",    "^"  },    { "xor_eq", "^=" }
+};
+
+const std::set<std::string> CompilerCPreprocessor::MacroTable::s_keywords =
+{
+    "defined",      "break",        "case",         "continue",     "default",
+    "do",           "else",         "for",          "goto",         "if",
+    "inline",       "return",       "restrict",     "sizeof",       "switch",
+    "while",        "auto",         "char",         "const",        "double",
+    "extern",       "float",        "enum",         "int",          "long",
+    "register",     "short",        "signed",       "static",       "struct",
+    "typedef",      "union",        "unsigned",     "void",         "volatile"
+};
+
 CompilerCPreprocessor::CompilerCPreprocessor ( CompilerParserInterface * compilerCore,
                                                CompilerOptions * opts )
                                              :
-                                               m_compilerCore ( compilerCore ),
-                                               m_opts ( opts )
+                                               CompilerCPreprocessorIntr(compilerCore, opts),
+                                               m_macroTable ( opts )
 {
 }
 
-char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFiles )
+char * CompilerCPreprocessor::processFiles ( const std::vector<FILE*> & inputFiles )
 {
-    // Input buffer for reading the sourceFile.
-    ssize_t lineLen;                // Number of characters loaded in the buffer; including EOLs, without NULL(s).
-    size_t  inBufferSize = 0;       // Overall size of the input buffer.
-    char *  inBuffer     = nullptr; // Buffer pointer, used for single line only.
-
-    // Output buffer for stroring preprocessor output.
-    size_t  outBufferCurP = 0;                             // Current position in the buffer.
-    size_t  outBufferSize = 1024;                          // Overall size of the buffer.
-    ssize_t outBufferCap  = ( outBufferSize - 1 );         // Number of free bytes in the buffer.
-    char *  outBuffer     = (char*) malloc(outBufferSize); // Buffer pointer, used to store the entire output at once.
-
-    // Auxiliary buffer for merging lines.
-    size_t mergeBufferCurP = 0;                            // Current position in the buffer.
-    size_t mergeBufferSize = 0;                            // Overall size of the buffer.
-    char * mergeBuffer     = nullptr;                      // Buffer pointer, cannot contain more that one line.
+    Buffer inBuffer;    // Input buffer for reading the source file.
+    Buffer outBuffer;   // Output buffer for storing the preprocessor output.
+    Buffer mergeBuffer; // Auxiliary buffer for merging lines using `\' (backslash) or the "backslash" trigraph.
+    Buffer mlineBuffer; // Auxiliary buffer for merging lines containing C multi-line comment: /* ... <new-line> ... */.
 
     // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
 
-    // Start with valid empty output buffer.
-    outBuffer[outBufferCurP] = '\0';
-
     // Iterate over all given input files.
+    std::vector<FILE*> fileStack;
     for ( auto sourceFile : inputFiles )
     {
-        // Iterate over lines in the source file.
-        while ( -1 != ( lineLen = getline(&inBuffer, &inBufferSize, sourceFile) ) )
+        for ( fileStack.push_back(sourceFile); false == fileStack.empty(); fileStack.pop_back() )
         {
-            // Handle line merging - trailing `\' (backslash)
-            if ( true == lineMerge(inBuffer, mergeBuffer, lineLen, inBufferSize, mergeBufferSize, mergeBufferCurP) )
+            // Iterate over the lines in the source file.
+            while ( -1 != ( inBuffer.m_pos = getline(&inBuffer.m_data, &inBuffer.m_size, fileStack.back()) ) )
             {
-                continue;
+                if ( false == inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer) )
+                {
+                    // Critical error.
+                    return nullptr;
+                }
+
+                if ( false == m_include.m_file.empty() )
+                {
+                    fileStack.push_back(m_compilerCore->fileOpen(m_include.m_file, nullptr, false, m_include.m_system));
+                    m_include.m_file.clear();
+
+                    if ( nullptr == fileStack.back() )
+                    {
+                        // Critical error.
+                        return nullptr;
+                    }
+                }
             }
 
-            // Process input and generate output.
-            if ( false == processLine ( lineLen, inBuffer, inBufferSize ) )
+            // Check for error condition on the source file.
+            if ( 0 != ferror(fileStack.back()) )
             {
-                // Error -> clean up and terminate the preprocessor.
-                free(inBuffer);
-                free(outBuffer);
-                free(mergeBuffer);
+                m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
+                                                      CompilerBase::MT_ERROR,
+                                                      QObject::tr ( "I/O error, cannot read the source file properly" )
+                                                                  . toStdString() );
+
+                // Critical error.
                 return nullptr;
             }
-
-            // Safely copy contents of the input buffer to the output buffer.
-            outBufferCap -= lineLen;
-            if ( outBufferCap < 0 )
-            {
-                size_t incr = 1024 + ( 10 * -outBufferCap );
-                outBufferSize += incr;
-                outBufferCap  += incr;
-
-                outBuffer = (char*) realloc ( outBuffer, outBufferSize );
-            }
-            strcpy((outBuffer + outBufferCurP), inBuffer);
-            outBufferCurP += lineLen;
         }
+    }
 
-        // Check for error condition on the sourceFile.
-        if ( 0 != ferror(sourceFile) )
-        {
-            m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
-                                                  CompilerBase::MT_ERROR,
-                                                  QObject::tr ( "I/O error, cannot read the source file properly" )
-                                                              . toStdString() );
-
-            // Error -> clean up and terminate the preprocessor.
-            free(inBuffer);
-            free(outBuffer);
-            free(mergeBuffer);
-            return nullptr;
-        }
+    if ( false == m_conditional.empty() )
+    {
+        // TODO: error: unterminated condition
     }
 
     // Save the output from preprocessor into a file specified by CompilerOptions.
@@ -116,7 +151,7 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
         FILE * file = fopen(m_opts->m_cunit.c_str(), "w+");
         if ( nullptr != file )
         {
-            fwrite(outBuffer, sizeof(char), outBufferCurP, file);
+            fwrite(outBuffer.m_data, sizeof(char), outBuffer.m_pos, file);
             if ( 0 != ferror(file) )
             {
                 m_compilerCore->preprocessorMessage ( CompilerSourceLocation(),
@@ -137,34 +172,80 @@ char * CompilerCPreprocessor::processFiles ( const std::vector<FILE *> & inputFi
         }
     }
 
-    // Clean up and done.
-    free(inBuffer);
-    free(mergeBuffer);
-    return outBuffer;
+    // Done.
+    outBuffer.m_persistent = true;
+    return outBuffer.m_data;
 }
 
-inline bool CompilerCPreprocessor::lineMerge ( char *  & inBuffer,
-                                               char *  & mergeBuffer,
-                                               ssize_t & lineLen,
-                                               size_t  & inBufferSize,
-                                               size_t  & mergeBufferSize,
-                                               size_t  & mergeBufferCurP )
+inline bool CompilerCPreprocessor::inputProcessing ( Buffer & inBuffer,
+                                                     Buffer & outBuffer,
+                                                     Buffer & mergeBuffer,
+                                                     Buffer & mlineBuffer )
 {
-    bool abort = false;  // When true, there is no line merge possible.
+    // Handle line merging - trailing `\' (backslash)
+    if ( true == lineMerging(inBuffer, mergeBuffer) )
+    {
+        return true;
+    }
+
+    // When true, indicates requests to merge lines containing C multi-line comment: /*...<new-line>...*/.
+    bool lineMerge = false;
+
+    // Perform the initial stage of preprocessing: comments, trigrahs, and digraphs.
+    if ( false == initialProcessing(inBuffer, lineMerge) )
+    {
+        // Critical error.
+        return false;
+    }
+
+    if ( true == lineMerge )
+    {
+        // Append contents of the input buffer to the mline buffer.
+        mlineBuffer.append(inBuffer);
+        return true;
+    }
+    else if ( 0 != mlineBuffer.m_pos )
+    {
+        // Append contents of the input buffer to the mline buffer.
+        mlineBuffer.append(inBuffer);
+
+        // Copy the entire mline buffer to the input buffer, and clear the mline buffer.
+        inBuffer.move(mlineBuffer);
+    }
+
+    if ( false == directivesProcessing(inBuffer) )
+    {
+        // Critical error.
+        return false;
+    }
+
+    // Continue only is output is not temporarily disabled by #if, #else, etc.
+    if ( true == m_conditional.get() )
+    {
+        // Append contents of the input buffer to the output buffer and expand macros in one step.
+        m_macroTable.expand(outBuffer, inBuffer);
+    }
+
+    return true;
+}
+
+inline bool CompilerCPreprocessor::lineMerging ( Buffer & inBuffer,
+                                                 Buffer & mergeBuffer )
+{
     int lineMerge = -1;  // Position of the line merge mark - "\" (backslash) or the "? ? /" trigraph.
     int whiteSpace = -1; // Position of the first white space character following the line merge mark (warning cond.).
 
     // Search the line backwards for certain characters.
-    for ( ssize_t pos = ( lineLen - 1 ); pos >= 0; pos-- )
+    for ( ssize_t pos = ( inBuffer.m_pos - 1 ); pos >= 0; pos-- )
     {
-        switch ( inBuffer[pos] )
+        switch ( inBuffer.m_data[pos] )
         {
-            // White space.
+            // Skip white space.
             case '\t': case ' ':
                 whiteSpace = (int) pos;
-            // EOL.
+            // Skip EOL characters.
             case '\r': case '\n':
-                break;
+                continue;
 
             // Backslash - line merge mark.
             case '\\':
@@ -175,22 +256,15 @@ inline bool CompilerCPreprocessor::lineMerge ( char *  & inBuffer,
                 if ( true == m_opts->m_enableTrigraphs )
                 {
                     // Check if the two preceding characters are question marks.
-                    if ( ( pos >= 2 ) && ( '?' == inBuffer[pos-1] ) && ( '?' == inBuffer[pos-2] ) )
+                    if ( ( pos >= 2 ) && ( '?' == inBuffer.m_data[pos-1] ) && ( '?' == inBuffer.m_data[pos-2] ) )
                     {
                         lineMerge = (int) (pos - 2);
-                        break;
                     }
                 }
-            // Any other character means that there cannot be line merge.
-            default:
-                abort = true;
                 break;
         }
 
-        if ( true == abort )
-        {
-            break;
-        }
+        break;
     }
 
     // Line merge found, copy the input buffer into the merge buffer.
@@ -201,59 +275,30 @@ inline bool CompilerCPreprocessor::lineMerge ( char *  & inBuffer,
             // TODO: Warning.
         }
 
-        // Check if there is enough space left in the merge buffer; and if not, enlarge the buffer.
-        const size_t requiredSize = ( lineMerge + mergeBufferCurP + 1 );
-        if ( requiredSize > mergeBufferSize )
-        {
-            mergeBufferSize = requiredSize;
-            mergeBuffer = (char*) realloc ( mergeBuffer, mergeBufferSize );
-        }
-
         // Append contents of the input buffer to the merge buffer.
-        strncpy((mergeBuffer + mergeBufferCurP), inBuffer, lineMerge);
-        mergeBufferCurP += lineMerge;
+        inBuffer.m_pos = lineMerge;
+        mergeBuffer.append(inBuffer);
 
         // The input buffer contents was appended to the merge buffer, and therefore should be ignored for further
         //+ processing until the merge is entirely complete.
         return true;
     }
-
     // Line merge not found but the merge buffer is not empty, merge the input buffer with the merge buffer.
-    if ( 0 != mergeBufferCurP )
+    else if ( 0 != mergeBuffer.m_pos )
     {
-        // Check if there is enough space left in both buffers (input and merge); and if not, enlarge them.
-        const size_t requiredSize = ( mergeBufferCurP + lineLen + 1 );
-        if ( requiredSize > inBufferSize )
-        {
-            inBufferSize = requiredSize;
-            inBuffer = (char*) realloc ( inBuffer, inBufferSize );
-        }
-        if ( requiredSize > mergeBufferSize )
-        {
-            mergeBufferSize = requiredSize;
-            mergeBuffer = (char*) realloc ( mergeBuffer, mergeBufferSize );
-        }
-
         // Append contents of the input buffer to the merge buffer.
-        strncpy((mergeBuffer + mergeBufferCurP), inBuffer, lineLen);
+        mergeBuffer.append(inBuffer);
 
-        // Copy the entire merge buffer to the input buffer, and adjust the line length accordingly.
-        lineLen += mergeBufferCurP;
-        strncpy(inBuffer, mergeBuffer, lineLen);
-
-        // Insert proper C string terminator in the input buffer.
-        inBuffer[lineLen] = '\0';
-
-        // Mark the merge buffer as empty.
-        mergeBufferCurP = 0;
+        // Copy the entire merge buffer to the input buffer, and clear the merge buffer.
+        inBuffer.move(mergeBuffer);
     }
 
     return false;
 }
 
-void CompilerCPreprocessor::cutLine ( ssize_t & length,
-                                      char * line,
-                                      unsigned int pos )
+inline void CompilerCPreprocessor::cutLine ( ssize_t & length,
+                                             char * line,
+                                             unsigned int pos )
 {
     // Determinate EOL.
     bool lf = ( '\n' == line[length-1] ); // LF (\n) is present.
@@ -284,31 +329,183 @@ void CompilerCPreprocessor::cutLine ( ssize_t & length,
     line[++pos] = '\0';
 }
 
-inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
-                                                 char * & line,
-                                                 size_t & /*bufferSize*/ )
+inline void CompilerCPreprocessor::Buffer::append ( const Buffer & sourceBuffer )
+{
+    // Check if there is enough space left in the target buffer; and if not, enlarge the buffer.
+    const size_t requiredMinSize = ( sourceBuffer.m_pos + m_pos + 1 );
+    if ( requiredMinSize > m_size )
+    {
+        m_size = requiredMinSize;
+        m_data = (char*) realloc ( m_data, m_size );
+    }
+
+    // Append contents of the source buffer to the target buffer.
+    memcpy((m_data + m_pos), sourceBuffer.m_data, sourceBuffer.m_pos);
+    m_pos += sourceBuffer.m_pos;
+    m_data[m_pos] = '\0';
+}
+
+inline void CompilerCPreprocessor::Buffer::move ( Buffer & sourceBuffer )
+{
+    char * auxBuf = m_data;
+    m_data = sourceBuffer.m_data;
+    sourceBuffer.m_data = auxBuf;
+
+    size_t auxSize = m_size;
+    m_size = sourceBuffer.m_size;
+    sourceBuffer.m_size = auxSize;
+
+    m_pos = sourceBuffer.m_pos;
+    sourceBuffer.m_pos = 0;
+}
+
+CompilerCPreprocessor::Buffer::Buffer()
+{
+    m_pos = 0;
+    m_size = 0;
+    m_data = nullptr;
+    m_persistent = false;
+}
+
+// CompilerCPreprocessor::Buffer::Buffer ( const std::string & data )
+// {
+//     m_pos = data.size();
+//     m_size = data.size() + 1;
+//     m_data = (char*) malloc(m_size);
+//     m_persistent = false;
+//
+//     memcpy(m_data, data.c_str(), m_size);
+//     m_data[m_pos] = '\0';
+// }
+
+CompilerCPreprocessor::Buffer::Buffer ( char * data,
+                                        unsigned int length )
+{
+    m_pos = length;
+    m_size = length + 1;
+    m_data = data;
+    m_persistent = true;
+}
+
+CompilerCPreprocessor::Buffer::~Buffer()
+{
+    if ( ( false == m_persistent ) && ( nullptr != m_data ) )
+    {
+        free(m_data);
+    }
+}
+
+CompilerCPreprocessor::Include::Detection::Detection()
+{
+    reset();
+}
+
+inline void CompilerCPreprocessor::Include::Detection::reset()
+{
+    m_state = STATE_WHITE_SPACE_0;
+}
+
+inline void CompilerCPreprocessor::Include::Detection::input ( char in )
+{
+    switch ( m_state )
+    {
+        case STATE_NEGATIVE:
+        case STATE_POSITIVE:
+            break;
+        case STATE_WHITE_SPACE_0:
+            switch ( in )
+            {
+                case ' ':
+                case '\t':
+                    break;
+                case '#':
+                    m_state = STATE_WHITE_SPACE_1;
+                    break;
+                default:
+                    m_state = STATE_NEGATIVE;
+            }
+            break;
+        case STATE_WHITE_SPACE_1:
+            switch ( in )
+            {
+                case ' ':
+                case '\t':
+                    break;
+                case 'i':
+                    m_state = STATE_I;
+                    break;
+                default:
+                    m_state = STATE_NEGATIVE;
+            }
+            break;
+        case STATE_I:    m_state = ( ( 'n' == in ) ? STATE_N             : STATE_NEGATIVE ); break;
+        case STATE_N:    m_state = ( ( 'c' == in ) ? STATE_C             : STATE_NEGATIVE ); break;
+        case STATE_C:    m_state = ( ( 'l' == in ) ? STATE_L             : STATE_NEGATIVE ); break;
+        case STATE_L:    m_state = ( ( 'u' == in ) ? STATE_U             : STATE_NEGATIVE ); break;
+        case STATE_U:    m_state = ( ( 'd' == in ) ? STATE_D             : STATE_NEGATIVE ); break;
+        case STATE_D:    m_state = ( ( 'e' == in ) ? STATE_POSITIVE      : STATE_NEGATIVE ); break;
+    }
+}
+
+inline bool CompilerCPreprocessor::Include::Detection::detected() const
+{
+    return ( STATE_POSITIVE == m_state );
+}
+
+inline bool CompilerCPreprocessor::initialProcessing ( Buffer & buffer,
+                                                       bool & lineMerge )
 {
     unsigned int out = 0;
     bool copy = true;
 
-    for ( unsigned int in = 0; in < length; in++ )
+    for ( unsigned int in = 0; in < buffer.m_pos; in++ )
     {
-        const char inchar   = line[in];
-        const char nextchar = line[1+in];
+        const char inchar   = buffer.m_data[in];
+        const char nextchar = buffer.m_data[1+in];
 
-        if ( ( '\n' == inchar ) || ( '\r' == inchar ) )
+        switch ( inchar )
         {
-            if ( false == copy )
-            {
-                length = out;
-                line[out] = '\0';
-            }
-            else
-            {
-                cutLine(length, line, out);
-            }
-            return true;
+            case '\n':
+            case '\r':
+                if ( false == copy )
+                {
+                    lineMerge = true;
+                    buffer.m_pos = out;
+                    buffer.m_data[out] = '\0';
+                }
+                else
+                {
+                    m_include.m_detection.reset();
+                    cutLine(buffer.m_pos, buffer.m_data, out);
+                }
+                return true;
+            case '?':
+                if ( ( true == m_opts->m_enableTrigraphs ) && ( '?' == nextchar ) )
+                {
+                    char replacent = '\0';
+                    switch ( buffer.m_data[2+in] )
+                    {
+                        case '(':  replacent = '[';  break;
+                        case ')':  replacent = ']';  break;
+                        case '<':  replacent = '{';  break;
+                        case '>':  replacent = '}';  break;
+                        case '=':  replacent = '#';  break;
+                        case '/':  replacent = '\\'; break;
+                        case '\'': replacent = '^';  break;
+                        case '!':  replacent = '|';  break;
+                        case '-':  replacent = '~';  break;
+                    }
+                    if ( '\0' != replacent )
+                    {
+                        in++;
+                        buffer.m_data[1+in] = replacent;
+                        continue;
+                    }
+                }
+                break;
         }
+
+        m_include.m_detection.input(inchar);
 
         switch ( m_inmode )
         {
@@ -325,8 +522,8 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                         switch ( nextchar )
                         {
                             case '/':
-                                line[out++] = ' ';
-                                cutLine(length, line, out);
+                                buffer.m_data[out++] = ' ';
+                                cutLine(buffer.m_pos, buffer.m_data, out);
                                 return true;
                             case '*':
                                 m_inmode = MODE_COMMENT;
@@ -334,32 +531,8 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                                 break;
                         }
                         break;
-                    case '?':
-                        if ( ( true == m_opts->m_enableTrigraphs ) && ( '?' == nextchar ) )
-                        {
-                            char replacent = '\0';
-                            switch ( line[2+in] )
-                            {
-                                case '(':  replacent = '[';  break;
-                                case ')':  replacent = ']';  break;
-                                case '<':  replacent = '{';  break;
-                                case '>':  replacent = '}';  break;
-                                case '=':  replacent = '#';  break;
-                                case '/':  replacent = '\\'; break;
-                                case '\'': replacent = '^';  break;
-                                case '!':  replacent = '|';  break;
-                                case '-':  replacent = '~';  break;
-                            }
-                            if ( '\0' != replacent )
-                            {
-                                in++;
-                                line[1+in] = replacent;
-                                continue;
-                            }
-                        }
-                        break;
                     case '<':
-                        if ( ( false == m_opts->m_enableDigraphs ) || ( ( '%' != nextchar ) && ( ':' != nextchar ) ) )
+                        if ( ( true == m_include.m_detection.detected() ) && ( ( false == m_opts->m_enableDigraphs ) || ( ( '%' != nextchar ) && ( ':' != nextchar ) ) ) )
                         {
                             m_inmode = MODE_ANG_BR;
                             break;
@@ -394,10 +567,11 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
                             }
                             if ( '\0' != replacent )
                             {
-                                line[1+in] = replacent;
+                                buffer.m_data[1+in] = replacent;
                                 continue;
                             }
                         }
+                        break;
                 }
                 break;
             case MODE_STRING:
@@ -421,7 +595,7 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
             case MODE_COMMENT:
                 if ( ( '*' == inchar ) && ( '/' == nextchar ) )
                 {
-                    line[++in] = ' ';
+                    buffer.m_data[++in] = ' ';
                     copy = true;
                     m_inmode = MODE_NORMAL;
                 }
@@ -434,11 +608,535 @@ inline bool CompilerCPreprocessor::processLine ( ssize_t & length,
 
         if ( true == copy )
         {
-            line[out++] = line[in];
+            buffer.m_data[out++] = buffer.m_data[in];
         }
     }
 
-    line[out] = '\0';
-    length = out;
+    buffer.m_data[out] = '\0';
+    buffer.m_pos = out;
     return true;
+}
+
+inline bool CompilerCPreprocessor::directivesProcessing ( Buffer & buffer )
+{
+    for ( int in = 0; in < buffer.m_pos; in++ )
+    {
+        if ( '#' == buffer.m_data[in] )
+        {
+            while ( ( ++in < buffer.m_pos ) && isblank(buffer.m_data[in]) );
+            int start = in;
+            while ( ( ++in < buffer.m_pos ) && isalpha(buffer.m_data[in]) );
+
+            char directive [ in - start + 1 ];
+            memcpy(directive, buffer.m_data + start, in - start);
+            directive[in - start] = '\0';
+            while ( isblank(buffer.m_data[in]) && ( ++in < buffer.m_pos ) );
+            char * arguments = buffer.m_data + in;
+            in = ( buffer.m_pos - in );
+            while ( ( --in >= 0 ) && isspace(arguments[in]) );
+            arguments[++in] = '\0';
+            buffer.m_pos = 0;
+            buffer.m_data[0] = '\0';
+            const auto iter = s_directives.find(directive);
+            if ( s_directives.cend() == iter )
+            {
+                // TODO: Error: "Invalid preprocessing directive"
+                return false;
+            }
+
+            return handleDirective(arguments, iter->second);
+        }
+        else if ( ( ' ' != buffer.m_data[in] ) && ( '\t' != buffer.m_data[in] ) )
+        {
+            return true;
+        }
+    }
+
+    return true;
+}
+
+inline bool CompilerCPreprocessor::handleDirective ( char * arguments,
+                                                     Directive directive )
+{
+    if ( ( false == m_conditional.get() ) &&
+         ( DIR_ELIF != directive ) && ( DIR_ELSE != directive ) && ( DIR_ENDIF != directive ) )
+    {
+        return true;
+    }
+
+    unsigned int argLength = strlen(arguments);
+
+    switch ( directive )
+    {
+        case DIR_INCLUDE:
+            handleInclude(arguments, argLength);
+            break;
+        case DIR_LINE:
+            handleLine(arguments, argLength);
+            break;
+        case DIR_PRAGMA:
+            handlePragma(arguments, argLength);
+            break;
+        case DIR_DEFINE:
+            m_macroTable.define(arguments, argLength);
+            break;
+        case DIR_UNDEF:
+            m_macroTable.undef(arguments);
+            break;
+        case DIR_IF:
+            m_conditional.dirIf(evaluateExpr(arguments, argLength));
+            break;
+        case DIR_ELIF:
+            m_conditional.dirElif(evaluateExpr(arguments, argLength));
+            break;
+        case DIR_IFDEF:
+            m_conditional.dirIf(m_macroTable.isDefined(arguments));
+            break;
+        case DIR_IFNDEF:
+            m_conditional.dirIf(!m_macroTable.isDefined(arguments));
+            break;
+        case DIR_ELSE:
+//         TODO: warning if arguments present
+            m_conditional.dirElse();
+            break;
+        case DIR_ENDIF:
+//         TODO: warning if arguments present
+            m_conditional.dirEndif();
+            break;
+        case DIR_ERROR:
+//         throw ...;
+            break;
+        case DIR_WARNING:
+//         TODO: warning
+            break;
+    }
+
+    return true;
+}
+
+inline void CompilerCPreprocessor::handleInclude ( char * arguments,
+                                                   unsigned int length )
+{
+    if ( '<' == arguments[0] )
+    {
+        if ( '>' != arguments[length-1] )
+        {
+//         throw ...;
+        }
+
+        m_include.m_system = true;
+    }
+    else if ( '"' == arguments[0] )
+    {
+        if ( '"' != arguments[length-1] )
+        {
+//         throw ...;
+        }
+
+        m_include.m_system = false;
+    }
+    else
+    {
+//         throw ...;
+    }
+
+    arguments[length-1] = '\0';
+    m_include.m_file = ( arguments + 1 );
+}
+
+bool CompilerCPreprocessor::evaluateExpr ( char * expr,
+                                           unsigned int length )
+{
+std::cout<<"evaluateExpr << '"<<expr<<"'\n";
+    // Local variables.
+    yyscan_t yyscanner;                 // Pointer to the lexer context.
+    Buffer out;                         //
+    const Buffer in(expr, length);      //
+
+    // Expand macros and operators defined() and sizeof().
+    m_macroTable.expand(out, in, true);
+std::cout<<"evaluateExpr >> '"<<out.m_data<<"'\n";
+
+    // Initialize lexical analyzer for the arithmetic expression calculator.
+    CompilerCPreProcCalcLex_lex_init_extra ( this, &yyscanner );
+    YY_BUFFER_STATE bufferState = CompilerCPreProcCalcLex__scan_string ( out.m_data, yyscanner );
+
+    // Initialize syntax analyzer for the arithmetic expression calculator.
+    CompilerCPreProcCalcPar_parse ( yyscanner, this );
+
+    // Clean up.
+    CompilerCPreProcCalcLex__delete_buffer ( bufferState, yyscanner );
+    CompilerCPreProcCalcLex_lex_destroy ( yyscanner );
+
+    // Done.
+    return m_exprResult;
+}
+
+inline void CompilerCPreprocessor::handleLine ( char * /*arguments*/,
+                                                unsigned int /*length*/ )
+{
+}
+
+inline void CompilerCPreprocessor::handlePragma ( char * /*arguments*/,
+                                                  unsigned int /*length*/ )
+{
+}
+
+inline bool CompilerCPreprocessor::Conditional::get()
+{
+    if ( true == m_stack.empty() )
+    {
+        return true;
+    }
+    return ( STATE_POSITIVE == m_stack.back() );
+}
+
+inline void CompilerCPreprocessor::Conditional::dirIf ( bool condition )
+{
+    m_stack.push_back ( condition ? STATE_POSITIVE : STATE_NEGATIVE );
+}
+
+inline void CompilerCPreprocessor::Conditional::dirElif ( bool condition )
+{
+    if ( true == m_stack.empty() )
+    {
+//         throw ...;
+    }
+
+    switch ( m_stack.back() )
+    {
+        case STATE_POSITIVE:
+            m_stack.back() = STATE_CLOSED;
+            break;
+        case STATE_NEGATIVE:
+            m_stack.back() = ( condition ? STATE_POSITIVE : STATE_NEGATIVE );
+            break;
+        case STATE_CLOSED:
+            break;
+    }
+}
+
+inline void CompilerCPreprocessor::Conditional::dirEndif()
+{
+    if ( true == m_stack.empty() )
+    {
+//         throw ...;
+    }
+    m_stack.pop_back();
+}
+
+inline void CompilerCPreprocessor::Conditional::dirElse()
+{
+    if ( true == m_stack.empty() )
+    {
+//         throw ...;
+    }
+
+    switch ( m_stack.back() )
+    {
+        case STATE_POSITIVE:
+            m_stack.back() = STATE_CLOSED;
+            break;
+        case STATE_NEGATIVE:
+            m_stack.back() = STATE_POSITIVE;
+            break;
+        case STATE_CLOSED:
+            break;
+    }
+}
+
+inline bool CompilerCPreprocessor::Conditional::empty()
+{
+    return m_stack.empty();
+}
+
+inline bool CompilerCPreprocessor::MacroTable::isDefined ( const char * name )
+{
+    return ( m_table.cend() != m_table.find(name) );
+}
+
+inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
+                                                        const int length )
+{
+    char * paramList;
+    char * body;
+
+    int i = 0;
+    while ( ( ++i < length ) && IS_IDENTIFIER(macro, i) );
+    paramList = macro + i;
+    if ( '(' == macro[i] )
+    {
+        macro[i] = '\0';
+        paramList = macro + i + 1;
+
+        while ( ( ++i < length ) && ( ')' != macro[i] ) );
+        if ( length == i )
+        {
+            std::cout<<"!!! UNMATCHED ()\n";
+            // throw ...; unmatched ()
+        }
+    }
+    else if ( ! IS_BLANK(macro, i) )
+    {
+        std::cout<<"!!! INVALID NAME OF MACRO ('"<<macro[i]<<"')\n";
+        // throw ...; invalid name of macro
+    }
+    macro[i] = '\0';
+    while ( ( ++i < length ) && isblank(macro[i]) );
+    body = macro + i;
+// std::cout<<"MACRO='"<<macro<<"', PARAM='"<<paramList<<"', DEF='"<<body<<"'\n";
+    if ( '\0' == macro[0] )
+    {
+        std::cout<<"!!! NO NAME PROVIDED\n";
+        // throw ...; no name provided
+    }
+    if ( m_table.cend() != m_table.find(macro) )
+    {
+        std::cout<<"[W] REDEFINING MACRO\n";
+    }
+
+    m_table[macro] = { body, std::vector<std::string>() };
+
+    std::vector<std::string> & parameters = m_table[macro].m_parameters;
+    int pos;
+    int size = strlen(paramList);
+    for ( i = 0; i <= size; i++ )
+    {
+        if ( ( ',' != paramList[i] ) && ( i != size ) )
+        {
+            continue;
+        }
+
+        paramList[i] = '\0';
+
+        for ( pos = ( i - 1 ); ( ' ' == paramList[pos] ) || ( '\t' == paramList[pos] ); pos-- );
+        paramList[++pos] = '\0';
+
+        while ( ( ' ' == paramList[0] ) || ( '\t' == paramList[0] ) )
+        {
+            paramList++;
+            size--;
+        }
+
+        int dots = 0;
+        for ( pos = 0; ; pos++ )
+        {
+            if ( '\0' == paramList[pos] )
+            {
+                break;
+            }
+            else if ( ! IS_IDENTIFIER(paramList, pos) )
+            {
+                if ( ( '.' == paramList[pos] ) && ( dots < 3 ) )
+                {
+                    dots++;
+                }
+                else
+                {
+                    std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER\n";
+                    // throw ...;
+                }
+            }
+        }
+
+        if ( '\0' != paramList[0] )
+        {
+            if ( true == isReserved(paramList) )
+            {
+                std::cout<<"[W] MACRO PARAMETER IS RESERVED KEYWORD\n";
+            }
+
+            parameters.push_back(paramList);
+        }
+
+        i++;
+        paramList += i;
+        size -= i;
+        i = -1;
+    }
+
+    if ( true == isReserved(macro) )
+    {
+        std::cout<<"[W] MACRO NAME IS RESERVED KEYWORD\n";
+        // throw ...;
+    }
+
+// std::cout<<"MACRO='"<<macro<<"', DEF='"<<body<<"'\n";
+// for ( auto x : parameters ) std::cout << ">>> P='"<<x<<"'\n";
+}
+
+inline void CompilerCPreprocessor::MacroTable::undef ( char * macro )
+{
+    const auto iter = m_table.find(macro);
+    if ( m_table.cend() == iter )
+    {
+        // throw ...;
+    }
+    m_table.erase(iter);
+}
+
+inline bool CompilerCPreprocessor::MacroTable::isReserved ( const char * word ) const
+{
+    if ( ( true == m_opts->m_enableNamedOperators ) && ( s_namedOperators.cend() != s_namedOperators.find(word) ) )
+    {
+        return true;
+    }
+
+    return ( s_keywords.cend() != s_keywords.find(word) );
+}
+
+void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
+                                                 const Buffer & in,
+                                                 bool inExpression )
+{
+std::cout<<"expand('"<<in.m_data<<"');\n";
+
+// out.append(in);
+std::string x(in.m_data, in.m_pos);
+//     int lastPos = 0;
+//     for ( int pos = 0; pos <= in.m_pos; pos++ )
+//     {
+//         if ( IS_BLANK(in.m_data, pos) )
+//         {
+//             if ( lastPos != pos )
+//             {
+//                 std::cout << "    SUBSTR='"<<x.substr(lastPos, pos - lastPos)<<", pos="<<pos<<", lastPos="<<lastPos<<"'\n";
+//                 lastPos = pos;
+//             }
+//             lastPos++;
+//         }
+//     }
+
+    InMode mode = MODE_NORMAL;
+
+    int outpos = 0;
+    int start = -1;
+    for ( int pos = 0; pos <= in.m_pos; pos++ )
+    {
+        if ( MODE_NORMAL == mode)
+        {
+            if ( '"' == in.m_data[pos] )
+            {
+                mode = MODE_STRING;
+            }
+            else if ( '\'' == in.m_data[pos] )
+            {
+                mode = MODE_CHAR;
+            }
+            else if ( ( isalnum(in.m_data[pos]) ) || ( '_' == in.m_data[pos] ) )
+            {
+                if ( -1 == start )
+                {
+                    start = pos;
+                }
+            }
+            else
+            {
+                if ( -1 != start )
+                {
+                    int length = pos - start;
+                    char name [ length + 1 ];
+                    memcpy(name, in.m_data + start, length);
+                    name[length] = '\0';
+    std::cout << "    > '"<<name<<"' ("<<start<<","<<pos<<")\n";
+                    const auto macro = m_table.find(name);
+                    if ( ( m_table.cend() != macro ) && ( m_status.m_macros.cend() == m_status.m_macros.find(name) ) )
+                    {
+                        std::cout << "        BODY='"<<macro->second.m_body<<"'\n";
+
+                        if ( false == macro->second.m_parameters.empty() )
+                        {
+                            if ( '(' != in.m_data[pos] )
+                            {
+                                std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
+                                start = -1;
+                                continue;
+                            }
+
+                            int i = pos;
+                            while ( ( ++i < in.m_pos ) && ( ')' != in.m_data[i] ) );
+                            if ( i == in.m_pos )
+                            {
+                                std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING `)'\n";
+                                start = -1;
+                                continue;
+                            }
+
+                            length = i - pos - 1;
+                            char arguments [ length + 1 ];
+                            memcpy(arguments, in.m_data + pos + 1, length);
+                            arguments[length] = '\0';
+
+                            std::cout<<"####>>>>>>>>>>>>>>>>>>>>>> ARGS='"<<arguments<<"'\n";
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+    std::vector<std::string> argVector;
+    for ( i = 0; i <= length; i++ )
+    {
+        if ( ( ',' != arguments[i] ) && ( i != length ) )
+        {
+            continue;
+        }
+
+        arguments[i] = '\0';
+
+        int j;
+        for ( j = ( i - 1 ); ( ' ' == arguments[j] ) || ( '\t' == arguments[j] ); j-- );
+        arguments[++j] = '\0';
+
+//         while ( ( ' ' == arguments[0] ) || ( '\t' == arguments[0] ) )
+//         {
+//             arguments++;
+//             length--;
+//         }
+
+        if ( '\0' != arguments[0] )
+        {
+            argVector.push_back(arguments);
+        }
+
+//         i++;
+//         arguments += i;
+//         length -= i;
+//         i = -1;
+    }
+for ( auto x : argVector ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> A='"<<x<<"'\n";
+// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
+                        }
+
+                        if ( ++m_status.m_depth > m_opts->m_maxMacroExp )
+                        {
+                            std::cout << "!!! EXPANSION DEPTH EXCEEDED\n";
+                            throw 0;
+                        }
+
+                        out.append(Buffer(in.m_data+outpos, start-outpos));
+                        outpos = pos;
+
+                        {
+//                             Buffer macroBody;
+//                             substitute(macroBody, macro->second);
+
+                        const Buffer macroBody(const_cast<char*>(macro->second.m_body.c_str()), macro->second.m_body.size());
+    //                     const Buffer macroBody(macro->second.m_body);
+                        m_status.m_macros.insert(name);
+                        expand(out, macroBody, inExpression);
+                        m_status.m_macros.erase(name);
+                        m_status.m_depth--;
+                        }
+                    }
+                }
+                start = -1;
+            }
+        }
+        else if ( ( MODE_STRING == mode ) && ( '"' == in.m_data[pos] ) )
+        {
+            mode = MODE_NORMAL;
+        }
+        else if ( ( MODE_CHAR == mode ) && ( '\'' == in.m_data[pos] ) )
+        {
+            mode = MODE_NORMAL;
+        }
+    }
+
+    out.append(Buffer(in.m_data + outpos, in.m_pos - outpos));
 }

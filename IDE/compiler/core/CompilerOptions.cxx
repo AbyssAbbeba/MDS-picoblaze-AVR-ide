@@ -51,6 +51,7 @@ CompilerOptions::CompilerOptions()
 
     m_enableDigraphs = true;
     m_enableTrigraphs = true;
+    m_enableNamedOperators = true;
 
     m_verbosity = (Verbosity)( V_GENERAL | V_ERRORS | V_WARNINGS | V_REMARKS );
 }

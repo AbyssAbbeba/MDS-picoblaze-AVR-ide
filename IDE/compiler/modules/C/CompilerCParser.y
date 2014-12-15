@@ -69,7 +69,7 @@
 
     #ifndef YY_TYPEDEF_YY_SCANNER_T
     #define YY_TYPEDEF_YY_SCANNER_T
-    typedef void* yyscan_t;
+        typedef void* yyscan_t;
     #endif // YY_TYPEDEF_YY_SCANNER_T
 }
 
@@ -743,7 +743,6 @@ expr:
     | expr "+" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD,         $3, LOC(@$));   }
     | expr "-" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB,         $3, LOC(@$));   }
     | expr "*" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MULT,        $3, LOC(@$));   }
-    | expr "!" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_NOT,         $3, LOC(@$));   }
     | expr "%" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MOD,         $3, LOC(@$));   }
     | expr "<<" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHL,         $3, LOC(@$));   }
     | expr ">>" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SHR,         $3, LOC(@$));   }
@@ -759,7 +758,6 @@ expr:
     | expr ">" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GT,          $3, LOC(@$));   }
     | expr ">=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_GE,          $3, LOC(@$));   }
     | expr "=" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ASSIGN,      $3, LOC(@$));   }
-    | expr "~" expr                 {  $$ = new CompilerExpr($1, CompilerExpr::OPER_CMPL,        $3, LOC(@$));   }
     | expr "+=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_ADD_ASSIGN,  $3, LOC(@$));   }
     | expr "-=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_SUB_ASSIGN,  $3, LOC(@$));   }
     | expr "*=" expr                {  $$ = new CompilerExpr($1, CompilerExpr::OPER_MUL_ASSIGN,  $3, LOC(@$));   }

@@ -837,6 +837,7 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_INS_REGBANK_B,         ///<
             ASMPICOBLAZE_INS_OUTPUTK_KK_P,      ///<
         //@}
+
         ///@name C
         //@{
             C_STMT_EXPR,                        ///<

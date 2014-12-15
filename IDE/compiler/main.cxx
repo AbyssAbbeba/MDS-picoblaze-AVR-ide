@@ -443,7 +443,7 @@ int main ( int argc, char ** argv )
                 opts.m_verbosity = CompilerOptions::Verbosity(0);
                 break;
             case 'I': // --include=<dir>
-                opts.m_includePath.push_back(optarg);
+                opts.m_includePathSystem.push_back(optarg);
                 break;
             case 'P': // --precompile=<file>
                 opts.m_prcTarget = optarg;

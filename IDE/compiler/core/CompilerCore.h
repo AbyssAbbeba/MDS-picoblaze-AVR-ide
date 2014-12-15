@@ -196,11 +196,13 @@ class CompilerCore : public CompilerBase,
              * @param[in] filename
              * @param[in,out] finalFilename
              * @param[in] acyclic
+             * @param[in] systemOnly
              * @return
              */
             virtual FILE * fileOpen ( const std::string & filename,
                                       std::string * finalFilename = nullptr,
-                                      bool acyclic = true ) override;
+                                      bool acyclic = true,
+                                      bool systemOnly = false ) override;
 
             /**
              * @brief

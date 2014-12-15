@@ -176,6 +176,7 @@ class CompilerOptions
 
             bool m_enableDigraphs;
             bool m_enableTrigraphs;
+            bool m_enableNamedOperators;
         //@}
 
         /**
@@ -187,6 +188,9 @@ class CompilerOptions
 
             ///
             std::vector<std::string> m_includePath;
+
+            ///
+            std::vector<std::string> m_includePathSystem;
 
             ///
             ProcessorLimits m_processorlimits;

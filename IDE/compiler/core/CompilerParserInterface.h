@@ -114,11 +114,13 @@ class CompilerParserInterface
          * @param[in] filename
          * @param[in,out] finalFilename
          * @param[in] acyclic
+         * @param[in] systemOnly
          * @return
          */
         virtual FILE * fileOpen ( const std::string & filename,
                                   std::string * finalFilename = nullptr,
-                                  bool acyclic = true ) = 0;
+                                  bool acyclic = true,
+                                  bool systemOnly = false ) = 0;
 
         /**
          * @brief

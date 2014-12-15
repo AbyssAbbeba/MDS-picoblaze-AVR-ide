@@ -75,22 +75,22 @@
 
 // Parser prototypes (the core uses them to initiate syntactical analysis).
 #ifdef MDS_FEATURE_C_COMPILER
-    int CompilerCParser_parse    ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int CompilerCParser_parse    ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_C_COMPILER
 #ifdef MDS_FEATURE_AVR8
-    int AsmAvr8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int AsmAvr8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_AVR8
 #ifdef MDS_FEATURE_PIC8
-    int AsmPic8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int AsmPic8Parser_parse      ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_PIC8
 #ifdef MDS_FEATURE_MCS51
-    int AsmMcs51Parser_parse     ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int AsmMcs51Parser_parse     ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_MCS51
 #ifdef MDS_FEATURE_PICOBLAZE
-    int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int AsmPicoBlazeParser_parse ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_PICOBLAZE
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
-    int AsmAdaptableParser_parse ( yyscan_t yyscanner, CompilerParserInterface * asmCore );
+    int AsmAdaptableParser_parse ( yyscan_t yyscanner, CompilerParserInterface * core );
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // Compiler header files.
