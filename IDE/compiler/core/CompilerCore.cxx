@@ -496,7 +496,8 @@ inline void CompilerCore::resetCompilerCore()
 
 FILE * CompilerCore::fileOpen ( const std::string & filename,
                                 std::string * finalFilename,
-                                bool acyclic )
+                                bool acyclic,
+                                bool systemOnly )
 {
     using namespace boost::filesystem;
 
@@ -510,47 +511,89 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
     }
     else
     {
-        if ( true == is_regular_file(basePath / filenamePath) )
+        if ( ( false == systemOnly ) && ( true == is_regular_file(basePath / filenamePath) ) )
         {
             absoluteFileName = canonical(basePath / filenamePath).string();
         }
         else
         {
-            for ( const auto & iPath : m_opts->m_includePath )
+            bool usingSystemPaths = false;
+            const std::vector<std::string> * includePaths = &(m_opts->m_includePath);
+            if ( true == systemOnly )
             {
-                // Determinate absolute include path.
-                path includePath = path(iPath).make_preferred();
-                if ( false == includePath.is_absolute() )
+                usingSystemPaths = true;
+                includePaths = &(m_opts->m_includePathSystem);
+            }
+
+            while ( true )
+            {
+                for ( const auto & iPath : *includePaths )
                 {
-                    includePath = ( basePath / includePath );
+                    // Determinate absolute include path.
+                    path includePath = path(iPath).make_preferred();
+                    if ( false == includePath.is_absolute() )
+                    {
+                        includePath = ( basePath / includePath );
+                    }
+
+                    if ( ( true == is_directory(includePath) ) && ( true == is_regular_file(includePath / filenamePath) ) )
+                    {
+                        absoluteFileName = canonical(includePath / filenamePath).string();
+                        break;
+                    }
                 }
 
-                if ( ( true == is_directory(includePath) ) && ( true == is_regular_file(includePath / filenamePath) ) )
+                if ( ( true == absoluteFileName.empty() ) && ( false == usingSystemPaths ) )
                 {
-                    absoluteFileName = canonical(includePath / filenamePath).string();
-                    break;
+                    includePaths = &(m_opts->m_includePathSystem);
+                    continue;
                 }
+
+                break;
             }
 
             if ( true == absoluteFileName.empty() )
             {
                 std::string ipats;
-                for ( const auto & iPath : m_opts->m_includePath )
+
+                if ( false == systemOnly )
+                {
+                    for ( const auto & iPath : m_opts->m_includePath )
+                    {
+                        if ( false == ipats.empty() )
+                        {
+                            ipats += ", ";
+                        }
+                        ipats += '`' + iPath + '\'';
+                    }
+                }
+
+                for ( const auto & iPath : m_opts->m_includePathSystem )
                 {
                     if ( false == ipats.empty() )
                     {
                         ipats += ", ";
                     }
-                    ipats += '`';
-                    ipats += iPath;
-                    ipats += '\'';
+                    ipats += '`' + iPath + '\'';
                 }
-                coreMessage ( MT_ERROR, QObject::tr ( "unable to locate file `%1' in base path `%2', or include "
-                                                      "path(s): %3" )
-                                                    . arg ( (char*) filenamePath.c_str() )
-                                                    . arg ( (char*) basePath.c_str() )
-                                                    . arg ( ipats.c_str() )
-                                                    . toStdString() );
+
+                if ( false == systemOnly )
+                {
+                    coreMessage ( MT_ERROR, QObject::tr ( "unable to locate file `%1' in base path `%2', or include "
+                                                          "path(s): %3" )
+                                                        . arg ( (char*) filenamePath.c_str() )
+                                                        . arg ( (char*) basePath.c_str() )
+                                                        . arg ( ipats.c_str() )
+                                                        . toStdString() );
+                }
+                else
+                {
+                    coreMessage ( MT_ERROR, QObject::tr ( "unable to locate file `%1' in include path(s): %2" )
+                                                        . arg ( (char*) filenamePath.c_str() )
+                                                        . arg ( ipats.c_str() )
+                                                        . toStdString() );
+                }
+
                 return nullptr;
             }
         }
@@ -577,7 +620,6 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
     }
     if ( false == pushFileName(absoluteFileName, &fileHandle) )
     {
-        fclose(fileHandle);
         return nullptr;
     }
 

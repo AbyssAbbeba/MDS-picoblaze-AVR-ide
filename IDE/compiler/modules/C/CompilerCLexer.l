@@ -140,7 +140,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "switch"        { return KW_SWITCH;         }
 "while"         { return KW_WHILE;          }
 
-
+ /* Data types */
 "auto"          { return DATA_AUTO;         }
 "char"          { return DATA_CHAR;         }
 "const"         { return DATA_CONST;        }
@@ -209,19 +209,6 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "^="            { return O_XOR_ASSIGN;      }
 "--"            { return O_DECREMENT;       }
 "++"            { return O_INCREMENT;       }
-
- /* C++ Named operators */
-"and"           { return O_AND;             }
-"and_eq"        { return O_BAND_ASSIGN;     }
-"bitand"        { return O_BITAND;          }
-"bitor"         { return O_BITOR;           }
-"compl"         { return O_BITNOT;          }
-"not"           { return O_NOT;             }
-"not_eq"        { return O_NE;              }
-"or"            { return O_OR;              }
-"or_eq"         { return O_BOR_ASSIGN;      }
-"xor"           { return O_BITXOR;          }
-"xor_eq"        { return O_XOR_ASSIGN;      }
 
  /*
   *  Numbers
