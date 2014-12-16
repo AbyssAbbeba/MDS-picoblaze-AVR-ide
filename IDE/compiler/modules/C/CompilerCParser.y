@@ -249,7 +249,7 @@
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
 %type<expr>     decl            decl_list   dt      dt_attr     member_access               union       union_body
-%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    expr_comma
+%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    expr_list
 // Statements - general.
 %type<stmt>     statements      stmt        cases   scope       switch_body
 
@@ -316,8 +316,8 @@ stmt:
     | scope                         {
                                         $$ = $scope;
                                     }
-    | expr ";"                      {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_EXPR, $expr);
+    | expr_list ";"                {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_EXPR, $expr_list);
                                     }
     | "break" ";"                   {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_BREAK, NULL);
@@ -344,14 +344,14 @@ stmt:
     | "typedef" datatype id ";"     {
                                          $$ = new CompilerStatement(LOC(@$), C_STMT_TYPEDEF, $datatype->appendLink($id));
                                     }
-    | "if" "(" expr_comma ")" stmt  {
+    | "if" "(" expr_list ")" stmt  {
                                         CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $3);
                                         ifBlock->createBranch($5);
 
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_CONDITION);
                                         $$->createBranch(ifBlock);
                                     }
-    | "if" "(" expr_comma ")" stmt "else" stmt
+    | "if" "(" expr_list ")" stmt "else" stmt
                                     {
                                         CompilerStatement *ifBlock = new CompilerStatement(LOC(@1), C_STMT_IF, $3);
                                         ifBlock->createBranch($5);
@@ -374,14 +374,14 @@ stmt:
                                                                    $3->appendLink($4)->appendLink($6));
                                         $$->createBranch($8);
                                     }
-    | "while" "(" expr_comma ")" stmt     {
+    | "while" "(" expr_list ")" stmt     {
                                         $$ = (new CompilerStatement(LOC(@$), C_STMT_WHILE, $3))->createBranch($5);
                                     }
-    | "do" stmt "while" "(" expr_comma ")" ";"
+    | "do" stmt "while" "(" expr_list ")" ";"
                                     {
                                         $$ = (new CompilerStatement(LOC(@$), C_STMT_DO_WHILE, $5))->createBranch($2);
                                     }
-    | "switch" "(" expr_comma ")" "{" switch_body "}"
+    | "switch" "(" expr_list ")" "{" switch_body "}"
                                     {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_SWITCH, $3);
                                         $$->createBranch($switch_body);
@@ -460,7 +460,7 @@ decl:
     | id indexes                    {
                                         $$ = new CompilerExpr($1, CompilerExpr::OPER_INDEX, $2, LOC(@$));
                                     }
-    | id indexes "=" "{" expr_comma "}"
+    | id indexes "=" "{" expr_list "}"
                                     {
                                         $$ = new CompilerExpr($1,
                                                               CompilerExpr::OPER_INDEX,
@@ -505,13 +505,13 @@ param_list:
 // Expression, possibly empty.
 e_expr:
       /* empty */                   { $$ = new CompilerExpr(LOC(@$));                               }
-    | expr_comma                    { $$ = $expr_comma;                                             }
+    | expr_list                    { $$ = $expr_list;                                             }
 ;
 
 
-expr_comma:
+expr_list:
       expr                          { $$ = $expr; }
-    | expr_comma "," expr           {
+    | expr_list "," expr           {
                                         $$ = new CompilerExpr($1, CompilerExpr::OPER_COMMA, $3, LOC(@$));
                                     }
 ;
@@ -804,7 +804,7 @@ expr:
 
     // Function call
     | id "(" ")" %prec FCALL              { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, LOC(@$));        }
-    | id "(" expr_comma ")" %prec FCALL   { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, $3, LOC(@$));    }
+    | id "(" expr_list ")" %prec FCALL   { $$ = new CompilerExpr($id, CompilerExpr::OPER_CALL, $3, LOC(@$));    }
 ;
 
 

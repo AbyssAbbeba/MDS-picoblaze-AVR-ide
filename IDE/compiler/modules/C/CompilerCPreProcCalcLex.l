@@ -91,9 +91,9 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
  /* White space: */
 {WSPACE}        { /* eat up white space */ }
 
- /* Brackets */
-"("             { return B_RND_LEFT;        }
-")"             { return B_RND_RIGHT;       }
+ /* Parenthesis */
+"("             { return P_LEFT;        }
+")"             { return P_RIGHT;       }
 
 
  /* Expression operators */
@@ -120,6 +120,19 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 ">"             { return O_GT;              }
 ">="            { return O_GE;              }
 "~"             { return O_BITNOT;          }
+"sizeof"        { return O_SIZEOF;          }
+
+ /* Data types */
+"const"         { return D_CONST;        }
+"signed"        { return D_SIGNED;       }
+"unsigned"      { return D_UNSIGNED;     }
+"void"          { return D_VOID;         }
+"char"          { return D_CHAR;         }
+"int"           { return D_INT;          }
+"long"          { return D_LONG;         }
+"short"         { return D_SHORT;        }
+"float"         { return D_FLOAT;        }
+"double"        { return D_DOUBLE;       }
 
  /* Integers */
 0b[01]+         {

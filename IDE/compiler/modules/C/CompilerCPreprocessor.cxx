@@ -747,7 +747,6 @@ inline void CompilerCPreprocessor::handleInclude ( char * arguments,
 bool CompilerCPreprocessor::evaluateExpr ( char * expr,
                                            unsigned int length )
 {
-std::cout<<"evaluateExpr << '"<<expr<<"'\n";
     // Local variables.
     yyscan_t yyscanner;                 // Pointer to the lexer context.
     Buffer out;                         //
@@ -755,7 +754,6 @@ std::cout<<"evaluateExpr << '"<<expr<<"'\n";
 
     // Expand macros and operators defined() and sizeof().
     m_macroTable.expand(out, in, true);
-std::cout<<"evaluateExpr >> '"<<out.m_data<<"'\n";
 
     // Initialize lexical analyzer for the arithmetic expression calculator.
     CompilerCPreProcCalcLex_lex_init_extra ( this, &yyscanner );
@@ -884,7 +882,7 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
     macro[i] = '\0';
     while ( ( ++i < length ) && isblank(macro[i]) );
     body = macro + i;
-// std::cout<<"MACRO='"<<macro<<"', PARAM='"<<paramList<<"', DEF='"<<body<<"'\n";
+
     if ( '\0' == macro[0] )
     {
         std::cout<<"!!! NO NAME PROVIDED\n";
@@ -949,9 +947,6 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
         std::cout<<"[W] MACRO NAME IS RESERVED KEYWORD\n";
         // throw ...;
     }
-
-// std::cout<<"MACRO='"<<macro<<"', DEF='"<<body<<"'\n";
-// for ( auto x : parameters ) std::cout << ">>> P='"<<x<<"'\n";
 }
 
 inline void CompilerCPreprocessor::MacroTable::undef ( char * macro )
@@ -1151,7 +1146,7 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
                                                             const Macro & macro,
                                                             const std::vector<std::string> & argVector ) const
 {
-    for ( auto x : macro.m_parameters ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> P='"<<x<<"'\n";
-    for ( auto x : argVector ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> A='"<<x<<"'\n";
+    for ( auto x : macro.m_parameters ) std::cout << "#### P='"<<x<<"'\n";
+    for ( auto x : argVector ) std::cout << "#### A='"<<x<<"'\n";
     out.append(Buffer(const_cast<char*>(macro.m_body.c_str()), macro.m_body.size()));
 }

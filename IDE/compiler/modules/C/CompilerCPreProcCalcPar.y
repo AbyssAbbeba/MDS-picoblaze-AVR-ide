@@ -102,14 +102,12 @@
 /*
  * DECLARATION OF THE GRAMMAR APLHABET - TERMINAL SYMBOLS
  */
-%token B_RND_LEFT       "("
-%token B_RND_RIGHT      ")"
+%token P_LEFT           "("
+%token P_RIGHT          ")"
 
 %token O_COLON          ":"
 %token O_QUESTION_MARK  "?"
 %token O_COMMA          ","
-%token O_DOT            "."
-%token O_ARROW          "->"
 %token O_SLASH          "/"
 %token O_PLUS           "+"
 %token O_MINUS          "-"
@@ -130,6 +128,18 @@
 %token O_GT             ">"
 %token O_GE             ">="
 %token O_BITNOT         "~"
+%token O_SIZEOF         "sizeof"
+
+%token D_CHAR           "char"
+%token D_CONST          "const"
+%token D_DOUBLE         "double"
+%token D_FLOAT          "float"
+%token D_INT            "int"
+%token D_LONG           "long"
+%token D_SHORT          "short"
+%token D_SIGNED         "signed"
+%token D_UNSIGNED       "unsigned"
+%token D_VOID           "void"
 
 /* Operator precedence (the one declared later has the higher precedence). */
 %left ","
@@ -155,7 +165,7 @@
 /*
  * DECLARATION OF NON-TERMINAL SYMBOLS
  */
-%type<number> expr
+%type<number> expr dt dt_ptr dt_int dt_int_basic dt_float
 
 // The start symbol.
 %start input
@@ -185,8 +195,12 @@ expr:
     // Single value expressions.
       NUMBER                        { $$ = $NUMBER; }
 
-    // Parentheses.
+    // Parentheses and comma.
     | "(" expr ")"                  { $$ = $2; }
+    | expr "," expr                 {
+                                        // TODO: warning, comma in expression
+                                        $$ = $3;
+                                    }
 
     // Binary operators.
     | expr "/" expr                 {
@@ -235,10 +249,63 @@ expr:
     | "!" expr                      { $$ = ! $2; }
     | "+" expr  %prec UPLUS         { $$ =   $2; }
     | "-" expr  %prec UMINUS        { $$ = - $2; }
+    | "sizeof" "(" dt ")"           { $$ =   $dt; }
 
 
     // Ternary operator.
     | expr "?" expr ":" expr        { $$ = $1 ? $3 : $5; }
+;
+
+// Datatypes
+dt:
+      dt_const dt_int               { $$ = $dt_int; }
+    | dt_const dt_float             { $$ = $dt_float; }
+    | dt_const dt_ptr               { $$ = $dt_ptr; }
+;
+
+dt_ptr:
+      "void" dt_const ptr ref       { $$ = 1; }
+    | dt_int dt_const ptr ref       { $$ = 1; }
+    | dt_float dt_const ptr ref     { $$ = 1; }
+;
+
+ptr:
+      "*"
+    | ptr "*"
+;
+
+ref:
+      /* empty */
+    | "&"
+;
+
+dt_const:
+      /* empty */
+    | "const"
+;
+
+dt_signed:
+      /* empty */
+    | "signed"
+    | "unsigned"
+;
+
+dt_int:
+    dt_signed dt_int_basic          { $$ = $dt_int_basic; }
+;
+
+dt_int_basic:
+      "char"                        {  $$ = 1; }
+    | "short"                       {  $$ = 1; }
+    | "int"                         {  $$ = 2; }
+    | "long"                        {  $$ = 4; }
+    | "long" "int"                  {  $$ = 4; }
+    | "long" "long" "int"           {  $$ = 8; }
+;
+
+dt_float:
+      "float"                       {  $$ = 4; }
+    | "double"                      {  $$ = 8; }
 ;
 
 %%
