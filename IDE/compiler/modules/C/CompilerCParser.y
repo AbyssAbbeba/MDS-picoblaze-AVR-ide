@@ -550,7 +550,7 @@ datatype:
 
 // Datatypes
 dt:
-     id                            {
+     id                             {
                                         $$ = new CompilerExpr($id,
                                                               CompilerExpr::OPER_CUSTOM_DATATYPE,
                                                               LOC(@$));

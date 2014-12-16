@@ -898,7 +898,7 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
     m_table[macro] = { body, std::vector<std::string>() };
 
     std::vector<std::string> & parameters = m_table[macro].m_parameters;
-    int pos;
+    char * param = paramList;
     int size = strlen(paramList);
     for ( i = 0; i <= size; i++ )
     {
@@ -909,50 +909,39 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
 
         paramList[i] = '\0';
 
-        for ( pos = ( i - 1 ); ( ' ' == paramList[pos] ) || ( '\t' == paramList[pos] ); pos-- );
-        paramList[++pos] = '\0';
-
-        while ( ( ' ' == paramList[0] ) || ( '\t' == paramList[0] ) )
+        for ( int pos = ( i - 1 ); ( ' ' == paramList[pos] ) || ( '\t' == paramList[pos] ); pos-- )
         {
-            paramList++;
-            size--;
+            paramList[pos] = '\0';
+        }
+
+        while ( ( ' ' == param[0] ) || ( '\t' == param[0] ) )
+        {
+            param++;
         }
 
         int dots = 0;
-        for ( pos = 0; ; pos++ )
+        for ( int pos = 0; '\0' != param[pos]; pos++ )
         {
-            if ( '\0' == paramList[pos] )
+            if ( ( !IS_IDENTIFIER(param, pos) || ( 0 != dots ) )
+                   &&
+                 ( ( '.' != param[pos] ) || ( ++dots > 3 ) ) )
             {
-                break;
-            }
-            else if ( ! IS_IDENTIFIER(paramList, pos) )
-            {
-                if ( ( '.' == paramList[pos] ) && ( dots < 3 ) )
-                {
-                    dots++;
-                }
-                else
-                {
-                    std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER\n";
-                    // throw ...;
-                }
+                std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER\n";
+                // throw ...;
             }
         }
 
-        if ( '\0' != paramList[0] )
+        if ( '\0' != param[0] )
         {
-            if ( true == isReserved(paramList) )
+            if ( true == isReserved(param) )
             {
                 std::cout<<"[W] MACRO PARAMETER IS RESERVED KEYWORD\n";
             }
 
-            parameters.push_back(paramList);
+            parameters.push_back(param);
         }
 
-        i++;
-        paramList += i;
-        size -= i;
-        i = -1;
+        param = paramList + i + 1;
     }
 
     if ( true == isReserved(macro) )
@@ -989,28 +978,10 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                                                  const Buffer & in,
                                                  bool inExpression )
 {
-std::cout<<"expand('"<<in.m_data<<"');\n";
-
-// out.append(in);
-std::string x(in.m_data, in.m_pos);
-//     int lastPos = 0;
-//     for ( int pos = 0; pos <= in.m_pos; pos++ )
-//     {
-//         if ( IS_BLANK(in.m_data, pos) )
-//         {
-//             if ( lastPos != pos )
-//             {
-//                 std::cout << "    SUBSTR='"<<x.substr(lastPos, pos - lastPos)<<", pos="<<pos<<", lastPos="<<lastPos<<"'\n";
-//                 lastPos = pos;
-//             }
-//             lastPos++;
-//         }
-//     }
-
-    InMode mode = MODE_NORMAL;
-
     int outpos = 0;
     int start = -1;
+    InMode mode = MODE_NORMAL;
+
     for ( int pos = 0; pos <= in.m_pos; pos++ )
     {
         if ( MODE_NORMAL == mode)
@@ -1032,99 +1003,81 @@ std::string x(in.m_data, in.m_pos);
             }
             else
             {
-                if ( -1 != start )
+                if ( -1 == start )
                 {
-                    int length = pos - start;
-                    char name [ length + 1 ];
-                    memcpy(name, in.m_data + start, length);
-                    name[length] = '\0';
-    std::cout << "    > '"<<name<<"' ("<<start<<","<<pos<<")\n";
-                    const auto macro = m_table.find(name);
-                    if ( ( m_table.cend() != macro ) && ( m_status.m_macros.cend() == m_status.m_macros.find(name) ) )
-                    {
-                        std::cout << "        BODY='"<<macro->second.m_body<<"'\n";
-
-                        if ( false == macro->second.m_parameters.empty() )
-                        {
-                            if ( '(' != in.m_data[pos] )
-                            {
-                                std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
-                                start = -1;
-                                continue;
-                            }
-
-                            int i = pos;
-                            while ( ( ++i < in.m_pos ) && ( ')' != in.m_data[i] ) );
-                            if ( i == in.m_pos )
-                            {
-                                std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING `)'\n";
-                                start = -1;
-                                continue;
-                            }
-
-                            length = i - pos - 1;
-                            char arguments [ length + 1 ];
-                            memcpy(arguments, in.m_data + pos + 1, length);
-                            arguments[length] = '\0';
-
-                            std::cout<<"####>>>>>>>>>>>>>>>>>>>>>> ARGS='"<<arguments<<"'\n";
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-    std::vector<std::string> argVector;
-    for ( i = 0; i <= length; i++ )
-    {
-        if ( ( ',' != arguments[i] ) && ( i != length ) )
-        {
-            continue;
-        }
-
-        arguments[i] = '\0';
-
-        int j;
-        for ( j = ( i - 1 ); ( ' ' == arguments[j] ) || ( '\t' == arguments[j] ); j-- );
-        arguments[++j] = '\0';
-
-//         while ( ( ' ' == arguments[0] ) || ( '\t' == arguments[0] ) )
-//         {
-//             arguments++;
-//             length--;
-//         }
-
-        if ( '\0' != arguments[0] )
-        {
-            argVector.push_back(arguments);
-        }
-
-//         i++;
-//         arguments += i;
-//         length -= i;
-//         i = -1;
-    }
-for ( auto x : argVector ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> A='"<<x<<"'\n";
-// // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // // //
-                        }
-
-                        if ( ++m_status.m_depth > m_opts->m_maxMacroExp )
-                        {
-                            std::cout << "!!! EXPANSION DEPTH EXCEEDED\n";
-                            throw 0;
-                        }
-
-                        out.append(Buffer(in.m_data+outpos, start-outpos));
-                        outpos = pos;
-
-                        {
-//                             Buffer macroBody;
-//                             substitute(macroBody, macro->second);
-
-                        const Buffer macroBody(const_cast<char*>(macro->second.m_body.c_str()), macro->second.m_body.size());
-    //                     const Buffer macroBody(macro->second.m_body);
-                        m_status.m_macros.insert(name);
-                        expand(out, macroBody, inExpression);
-                        m_status.m_macros.erase(name);
-                        m_status.m_depth--;
-                        }
-                    }
+                    continue;
                 }
+
+                int length = pos - start;
+                char name [ length + 1 ];
+                memcpy(name, in.m_data + start, length);
+                name[length] = '\0';
+
+                if ( ( true == inExpression ) && ( 0 == strcmp(name, "defined") ) )
+                {
+                    std::vector<std::string> argVector;
+                    int argLen = getArgVector(argVector, in.m_data + pos);
+                    if ( -1 == argLen )
+                    {
+                        start = -1;
+                        continue;
+                    }
+                    pos += argLen;
+
+                    if ( 1 != argVector.size() )
+                    {
+                        std::cout << "!!! INVALID NUMBER OF ARGUMENTS\n";
+                        throw 0;
+                    }
+
+                    char value[2];
+                    value[0] = ( ( true == isDefined(argVector[0].c_str()) ) ? '1' : '0' );
+                    value[1] = '\0';
+
+                    out.append(Buffer(in.m_data+outpos, start-outpos));
+                    out.append(Buffer(value, 1));
+                    outpos = pos;
+                }
+                else
+                {
+                    const auto macro = m_table.find(name);
+                    if ( ( m_table.cend() == macro ) || ( m_status.m_macros.cend() != m_status.m_macros.find(name) ) )
+                    {
+                        start = -1;
+                        continue;
+                    }
+
+                    std::vector<std::string> argVector;
+                    if ( false == macro->second.m_parameters.empty() )
+                    {
+                        int argLen = getArgVector(argVector, in.m_data + pos);
+                        if ( -1 == argLen )
+                        {
+                            start = -1;
+                            continue;
+                        }
+                        pos += argLen;
+                    }
+
+                    if ( ++m_status.m_depth > m_opts->m_maxMacroExp )
+                    {
+                        std::cout << "!!! EXPANSION DEPTH EXCEEDED\n";
+                        throw 0;
+                    }
+
+                    out.append(Buffer(in.m_data+outpos, start-outpos));
+                    outpos = pos;
+
+                    m_status.m_macros.insert(name);
+
+                    Buffer macroBody;
+                    substitute(macroBody, macro->second, argVector);
+                    expand(out, macroBody, inExpression);
+
+                    m_status.m_macros.erase(name);
+                    m_status.m_depth--;
+                }
+
                 start = -1;
             }
         }
@@ -1139,4 +1092,66 @@ for ( auto x : argVector ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> A='"<<x<<"'\
     }
 
     out.append(Buffer(in.m_data + outpos, in.m_pos - outpos));
+}
+
+int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> & argVector,
+                                                      char * string )
+{
+    if ( '(' != string[0] )
+    {
+        std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
+        return -1;
+    }
+
+    int i = 0;
+    while ( ( '\0' != string[++i] ) && ( ')' != string[i] ) );
+    if ( '\0' == string[i] )
+    {
+        std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING `)'\n";
+        return -1;
+    }
+
+    int length = i - 1;
+    char arguments [ length + 1 ];
+    memcpy(arguments, string + 1, length);
+    arguments[length] = '\0';
+
+    char * argStart = arguments;
+    for ( i = 0; i <= length; i++ )
+    {
+        if ( ( ',' != arguments[i] ) && ( i != length ) )
+        {
+            continue;
+        }
+
+        arguments[i] = '\0';
+
+        for ( int j = ( i - 1 ); ( ' ' == arguments[j] ) || ( '\t' == arguments[j] ); j-- )
+        {
+            arguments[j] = '\0';
+        }
+
+        while ( ( ' ' == argStart[0] ) || ( '\t' == argStart[0] ) )
+        {
+            argStart++;
+        }
+
+        if ( '\0' != argStart[0] )
+        {
+            argVector.push_back(argStart);
+        }
+
+        argStart = arguments + i + 1;
+    }
+
+    return ( length + 2 );
+}
+
+inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
+                                                            const Macro & macro,
+                                                            const std::vector<std::string> & argVector ) const
+{
+    for ( auto x : macro.m_parameters ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> P='"<<x<<"'\n";
+    for ( auto x : argVector ) std::cout << "####>>>>>>>>>>>>>>>>>>>>>> A='"<<x<<"'\n";
+    out.append(Buffer(const_cast<char*>(macro.m_body.c_str()), macro.m_body.size()));
 }

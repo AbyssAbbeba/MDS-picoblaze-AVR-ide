@@ -150,10 +150,10 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
         {
             ////    Private Static Constants    ////
             private:
-                /// C++ Named operators
+                /// C++ named operators
                 static const std::map<std::string, std::string> s_namedOperators;
 
-                ///
+                /// Language keywords.
                 static const std::set<std::string> s_keywords;
 
             ////    Private Datatypes    ////
@@ -192,6 +192,14 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             ////    Inline Private Operations    ////
             private:
                 inline bool isReserved ( const char * word ) const;
+                inline void substitute ( Buffer & out,
+                                         const Macro & macro,
+                                         const std::vector<std::string> & argVector ) const;
+
+            ////    Private Operations    ////
+            private:
+                int getArgVector ( std::vector<std::string> & argVector,
+                                   char * string );
 
             ////    Private Attributes    ////
             private:
