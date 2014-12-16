@@ -186,9 +186,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_PICOBLAZE
                 case CompilerBase::TA_PICOBLAZE:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new CompilerCSemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -219,6 +216,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     CompilerCLexer__delete_buffer ( bufferState, yyscanner );
                     CompilerCLexer_lex_destroy ( yyscanner );
                     free(buffer);
+
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new CompilerCSemanticAnalyzer(compilerCore, options) );
 
                     // Done.
                     return MESC_OK;
@@ -254,9 +254,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_AVR8
                 case CompilerBase::TA_AVR8:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new AsmAvr8SemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -266,6 +263,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAvr8Lexer);
                     AsmAvr8Parser_parse ( yyscanner, compilerCore );
                     AsmAvr8Lexer_lex_destroy ( yyscanner );
+
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmAvr8SemanticAnalyzer(compilerCore, options) );
 
                     // Done.
                     return MESC_OK;
@@ -278,9 +278,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_PIC8
                 case CompilerBase::TA_PIC8:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new AsmPic8SemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -290,6 +287,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmPic8Lexer);
                     AsmPic8Parser_parse ( yyscanner, compilerCore );
                     AsmPic8Lexer_lex_destroy ( yyscanner );
+
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmPic8SemanticAnalyzer(compilerCore, options) );
 
                     // Done...
                     return MESC_OK;
@@ -302,9 +302,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_MCS51
                 case CompilerBase::TA_MCS51:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new AsmMcs51SemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -314,6 +311,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmMcs51Lexer);
                     AsmMcs51Parser_parse ( yyscanner, compilerCore );
                     AsmMcs51Lexer_lex_destroy ( yyscanner );
+
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmMcs51SemanticAnalyzer(compilerCore, options) );
 
                     // Done.
                     return MESC_OK;
@@ -326,9 +326,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_PICOBLAZE
                 case CompilerBase::TA_PICOBLAZE:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new AsmPicoBlazeSemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -339,6 +336,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     AsmPicoBlazeParser_parse ( yyscanner, compilerCore );
                     AsmPicoBlazeLexer_lex_destroy ( yyscanner );
 
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmPicoBlazeSemanticAnalyzer(compilerCore, options) );
+
                     // Done.
                     return MESC_OK;
                 }
@@ -347,9 +347,6 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
                 case CompilerBase::TA_ADAPTABLE:
                 {
-                    // Setup compiler's semantic analyzer.
-                    compilerCore->setSemanticAnalyzer ( new AsmAdaptableSemanticAnalyzer(compilerCore, options) );
-
                     // Attempt to open the source files.
                     OPEN_ALL_SOURCE_FILES();
 
@@ -359,6 +356,9 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     PUSH_OTHER_FILES_ON_LEXER_STACK(AsmAdaptableLexer);
                     AsmAdaptableParser_parse ( yyscanner, compilerCore );
                     AsmAdaptableLexer_lex_destroy ( yyscanner );
+
+                    // Setup compiler's semantic analyzer.
+                    compilerCore->setSemanticAnalyzer ( new AsmAdaptableSemanticAnalyzer(compilerCore, options) );
 
                     // Done.
                     return MESC_OK;

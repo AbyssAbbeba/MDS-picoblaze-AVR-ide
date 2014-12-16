@@ -142,6 +142,11 @@ class CompilerCore : public CompilerBase,
          */
         void setSemanticAnalyzer ( CompilerSemanticAnalyzer * semanticAnalyzer );
 
+        /**
+         * @brief
+         */
+        void startSemanticAnalysis();
+
         /// @name Part of the interface for semantic analyzer exposed as public interface of the core.
         //@{
             /**

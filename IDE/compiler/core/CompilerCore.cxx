@@ -700,9 +700,19 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
         m_rootStatement = nullptr;
     }
 
+    if ( nullptr != codeTree )
+    {
+        m_rootStatement = new CompilerStatement();
+        m_rootStatement -> appendLink ( codeTree -> first() );
+    }
+}
+
+void CompilerCore::startSemanticAnalysis()
+{
     if ( true == m_opts->m_syntaxCheckOnly )
     {
-        codeTree->completeDelete();
+        m_rootStatement->completeDelete();
+        m_rootStatement = nullptr;
         return;
     }
 
@@ -710,12 +720,6 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     {
         coreMessage ( MT_ERROR, QObject::tr ( "semantic analyzer is missing" ).toStdString() );
         return;
-    }
-
-    m_rootStatement = new CompilerStatement();
-    if ( nullptr != codeTree )
-    {
-        m_rootStatement -> appendLink ( codeTree -> first() );
     }
 
     if ( false == m_opts->m_prcTarget.empty() )

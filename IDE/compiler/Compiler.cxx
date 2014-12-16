@@ -76,6 +76,7 @@ bool Compiler::compile ( CompilerBase::LangId lang,
         switch ( statusCode )
         {
             case MESC_OK:
+                m_compilerCore->startSemanticAnalysis();
                 return m_compilerCore->successful();
             case MESC_IO_ERROR:
                 m_compilerCore->coreMessage ( CompilerBase::MT_ERROR,

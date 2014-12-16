@@ -189,11 +189,33 @@ expr:
     | "(" expr ")"                  { $$ = $2; }
 
     // Binary operators.
-    | expr "/" expr                 { $$ = $1 / $3; }
+    | expr "/" expr                 {
+                                        if ( 0 == $3 )
+                                        {
+                                            $$ = 0;
+                                            // TODO: error, dicision by zero
+                                        }
+                                        else
+                                        {
+                                            $$ = $1 / $3;
+                                        }
+
+                                    }
+    | expr "%" expr                 {
+                                        if ( 0 == $3 )
+                                        {
+                                            $$ = 0;
+                                            // TODO: error, dicision by zero
+                                        }
+                                        else
+                                        {
+                                            $$ = $1 % $3;
+                                        }
+
+                                    }
     | expr "+" expr                 { $$ = $1 + $3; }
     | expr "-" expr                 { $$ = $1 - $3; }
     | expr "*" expr                 { $$ = $1 * $3; }
-    | expr "%" expr                 { $$ = $1 % $3; }
     | expr "<<" expr                { $$ = $1 << $3; }
     | expr ">>" expr                { $$ = $1 >> $3; }
     | expr "&&" expr                { $$ = $1 && $3; }
