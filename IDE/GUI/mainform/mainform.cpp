@@ -330,14 +330,14 @@ MainForm::~MainForm()
     {
         if (m_projectMan->getOpenProjects().count() > 0)
         {
-            bool fileFound;
+            //bool fileFound;
             QList<Project*> projects = m_projectMan->getOpenProjects();
             //qDebug() << "Mainform: prepare to project session restoration";
             for (int i = 0; i < projects.count(); i++)
             {
-                fileFound = false;
+                //fileFound = false;
                 //qDebug() << "Mainform: saving project" << projects.at(i)->prjName;
-                if (m_wDockManager->getTabCount() > 0)
+                /*if (m_wDockManager->getTabCount() > 0)
                 {
                     //qDebug() << "Mainform: prepare to files session restoration";
                     for (int j = 0; j < m_wDockManager->getTabCount(); j++)
@@ -355,8 +355,8 @@ MainForm::~MainForm()
                             GuiCfg::getInstance().sessionAppendFileParentProject(projects.at(i)->prjPath);
                         }
                     }
-                }
-                if ("untracked" == projects.at(i)->prjPath)
+                }*/
+                /*if ("untracked" == projects.at(i)->prjPath)
                 {
                     if (true == fileFound)
                     {
@@ -364,9 +364,12 @@ MainForm::~MainForm()
                     }
                 }
                 else
+                {*/
+                if ("untracked" != projects.at(i)->prjPath)
                 {
                     GuiCfg::getInstance().sessionAppendProject(projects.at(i)->prjPath);
                 }
+                //}
             }
         }
         GuiCfg::getInstance().saveSession();
@@ -410,6 +413,8 @@ void MainForm::createMenu()
     fileMenu->addAction(saveAct);
     fileMenu->addAction(saveAsAct);
     fileMenu->addAction(saveAllAct);
+    fileMenu->addSeparator();
+    fileMenu->addAction(reloadAct);
     fileMenu->addSeparator();
     fileMenu->addAction(closeFileAct);
     fileMenu->addSeparator();
@@ -581,6 +586,11 @@ void MainForm::createActions()
     saveAllAct->setShortcut(QKeySequence("Ctrl+L"));
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
 
+    reloadAct = new QAction(tr("Reload File"), this);
+    reloadAct->setDisabled(true);
+    reloadAct->setShortcut(QKeySequence("F5"));
+    connect(reloadAct, SIGNAL(triggered()), this, SLOT(reloadCurrentFile()));
+
     closeFileAct = new QAction(tr("Close File"), this);
     closeFileAct->setDisabled(true);
     closeFileAct->setShortcut(QKeySequence("Ctrl+W"));
@@ -704,7 +714,7 @@ void MainForm::createActions()
     projectCompileAct = new QAction(QIcon(":resources/icons/compile.png"), tr("Compile"), this);
     connect(projectCompileAct, SIGNAL(triggered()), this, SLOT(compileProject()));
     projectCompileAct->setDisabled(true);
-    projectCompileAct->setShortcut(Qt::Key_F5);
+    projectCompileAct->setShortcut(Qt::Key_F11);
 
     projectConfigAct = new QAction(QIcon(":resources/icons/page_white_wrench.png"), tr("Configure"), this);
     connect(projectConfigAct, SIGNAL(triggered()), this, SLOT(projectConfig()));
@@ -984,9 +994,9 @@ void MainForm::createDockWidgets()
                 SLOT(handleShowHideLeft(int))
                );
          */
-        m_wDockManager->addDockWidget(wCompileInfo);
-        m_wDockManager->addDockWidget(wSimulationInfo);
-        m_wDockManager->addDockWidget(wBottomHide);
+        m_wDockManager->addDockWidget(WCOMPILEINFO);
+        m_wDockManager->addDockWidget(WSIMULATIONINFO);
+        m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
@@ -1000,10 +1010,10 @@ void MainForm::createDockWidgets()
                 SLOT(handleShowHideBottom(int))
                );
 
-        m_wDockManager->addDockWidget(wBreakpointList);
-        m_wDockManager->addDockWidget(wBookmarkList);
-        m_wDockManager->addDockWidget(wAsmMacroAnalyser);
-        AsmMacroAnalyser *analys = (AsmMacroAnalyser*)(m_wDockManager->getDockWidget(wAsmMacroAnalyser)->widget());
+        m_wDockManager->addDockWidget(WBREAKPOINTLIST);
+        m_wDockManager->addDockWidget(WBOOKMARKLIST);
+        m_wDockManager->addDockWidget(WASMMACROANALYSER);
+        AsmMacroAnalyser *analys = (AsmMacroAnalyser*)(m_wDockManager->getDockWidget(WASMMACROANALYSER)->widget());
         connect(analys,
                 SIGNAL(requestCodeEdits()),
                 this,
@@ -1024,7 +1034,7 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
-        m_wDockManager->addDockWidget(wRightHide);
+        m_wDockManager->addDockWidget(WRIGHTHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
@@ -1067,7 +1077,7 @@ void MainForm::createDockWidgets()
     }
     else
     {
-        m_wDockManager->addDockWidget(wSimulationInfo);
+        m_wDockManager->addDockWidget(WSIMULATIONINFO);
     }
     //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
     //emit dockWidgetsCreated;
@@ -1178,7 +1188,11 @@ void MainForm::newAddFile()
     }
     if (path != NULL)
     {
-        m_wDockManager->addCentralWidget(path.section('/', -1), path);
+        if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+        {
+            this->reloadFile(path);
+            return;
+        }
         m_wDockManager->getCentralWidget()->setChanged();
         //m_wDockManager->getCentralWidget()->connectAct();
 
@@ -1189,6 +1203,7 @@ void MainForm::newAddFile()
         //pridani do projektu
         m_projectMan->addFile(path, path.section('/', -1));
         m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getActive());
+        m_fileWatcher.addPath(path);
     }
     //qDebug() << "MainForm: return newAddFile()";
 }
@@ -1223,16 +1238,23 @@ void MainForm::openFile()
             file.close();
             if (m_projectMan->getOpenProjects().count() > 0)
             {
+                if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+                {
+                    return;
+                }
                 m_projectMan->getActive()->addFile(path, path.section('/', -1));
-                m_wDockManager->addCentralWidget(path.section('/', -1), path);
                 m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getActive());
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
+                m_projectMan->getActive()->setFileOpened(path, true);
             }
             else
             {
                 //m_wDockManager->getCentralWidget()->connectAct();
+                if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
+                {
+                    return;
+                }
                 m_projectMan->addUntrackedFile(path, path.section('/', -1));
-                m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
                 m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
             }
@@ -1275,23 +1297,34 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             {
                 for (int i = 0; i < m_projectMan->getOpenProjects().count(); i++)
                 {
+                    //qDebug() << "MainForm: addCentralWidget - for cycle";
+                    //qDebug() << m_projectMan->getOpenProjects().at(i)->prjPath;
+                    //qDebug() << parentProjectPath;
                     if (m_projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
                     {
-                        m_wDockManager->addCentralWidget(path.section('/', -1), path);
+                        //qDebug() << "MainForm: addCentralWidget - parent project";
+                        if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+                        {
+                            return;
+                        }
                         CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
                         //centralCodeEdit->connectAct();
                         centralCodeEdit->setParentProject(m_projectMan->getOpenProjects().at(i));
                         m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getOpenProjects().at(i));
                         centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
                         centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
+                        m_projectMan->getOpenProjects().at(i)->setFileOpened(path, true);
                         //m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->updateLineCounter();
                         break;
                     }
                 }
                 if (parentProjectPath == "untracked")
                 {
+                    if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
+                    {
+                        return;
+                    }
                     m_projectMan->addUntrackedFile(path, path.section('/', -1));
-                    m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path);
                     //m_wDockManager->getCentralWidget()->connectAct();
                     m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
                     m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
@@ -1300,13 +1333,17 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             }
             else
             {
-                m_wDockManager->addCentralWidget(path.section('/', -1), path);
+                if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+                {
+                    return;
+                }
                 CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
                 //centralCodeEdit->connectAct();
                 centralCodeEdit->setParentProject(m_projectMan->getActive());
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
                 centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
                 centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
+                m_projectMan->getActive()->setFileOpened(path, true);
                 //m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->updateLineCounter();
 
             }
@@ -1862,6 +1899,19 @@ void MainForm::projectOpened()
     {
         GuiCfg::getInstance().projectOpened(m_projectMan->getActive()->prjPath);
     }
+    m_wDockManager->appendTabBar(m_projectMan->getActive()->prjPath);
+    m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
+    //QDir dir(m_projectMan->getActive()->);
+    QString absoluteFilePath;
+    for (int i = 0; i < m_projectMan->getActive()->m_fileStats.count(); i++)
+    {
+        //qDebug() << "MainForm: project opened stats search" << m_projectMan->getActive()->m_fileStats.at(i);
+        if (true == m_projectMan->getActive()->m_fileStats.at(i))
+        {
+            absoluteFilePath = QDir::cleanPath(m_projectMan->getActive()->prjPath.section('/',0, -2) + "/" + m_projectMan->getActive()->filePaths.at(i));
+            this->openFilePath(absoluteFilePath, m_projectMan->getActive()->prjPath);
+        }
+    }
     //qDebug() << "MainForm: projectOpened done";
 }
 
@@ -1972,7 +2022,7 @@ void MainForm::compileProject()
         return;
     }
 
-    ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()))->clear();
+    ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->clear();
     this->options = new CompilerOptions();
     QString mainFile;
 
@@ -2068,7 +2118,7 @@ void MainForm::compileProject()
         //qDebug() << "MainForm: file" << mainFile;
 
 
-        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()));
+        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                     CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
@@ -2180,7 +2230,7 @@ void MainForm::compileProject()
         //check if enabled, if it isnt, compile actual file
         //(but find whether it is in act project for compile settings)
         //error(ERR_NO_MAINFILE);
-        if (m_wDockManager->getCentralWidget() == NULL)
+        if (NULL == m_wDockManager->getCentralWidget())
         {
             return;
         }
@@ -2214,6 +2264,7 @@ void MainForm::compileProject()
                 QString newPath = translateBeforeCompilation(filePath);
                 if ("" == newPath)
                 {
+                    qDebug() << "MainForm: compile - translator returned empty path";
                     return;
                 }
                 options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
@@ -2224,7 +2275,7 @@ void MainForm::compileProject()
             }
 
 
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()));
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
@@ -2344,6 +2395,7 @@ void MainForm::compileProject()
         }
         else
         {
+            qDebug() << "MainForm: file not found in project" << m_wDockManager->getCentralPath();
             QMessageBox warningBox(QMessageBox::Warning,
                                    "Compilation Warning",
                                    "Note: You are going to compile with configuration of the untracked project, do you wish to continue?",
@@ -2434,7 +2486,7 @@ void MainForm::compileProject()
             }
 
 
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()));
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
             compileInfo->appendMessage("Compilation settings:",
@@ -2576,7 +2628,7 @@ void MainForm::compileProject()
 
         this->saveProject();
 
-        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()));
+        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                     CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Compilation settings:",
@@ -2767,7 +2819,8 @@ void MainForm::compilationFinished(bool success)
     m_wDockManager->setBottomAreaToCompilerInfo();
     if ( true == success )
     {
-        ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(true);
+        qDebug() << "Success";
+        ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->setFinished(true);
         if (true == this->simulationRequest)
         {
             this->simulationFlowHandle();
@@ -2776,7 +2829,8 @@ void MainForm::compilationFinished(bool success)
     }
     else
     {
-        ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()))->setFinished(false);
+        qDebug() << "Not a success";
+        ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->setFinished(false);
         if (true == this->simulationRequest)
         {
             error(ErrorCode::ERR_SIM_RECOMPILE_FAILED);
@@ -2795,7 +2849,7 @@ void MainForm::compilationFinished(bool success)
 void MainForm::reloadCompileInfo(const std::string &text, CompilerBase::MessageType type)
 {
     //qDebug() << QString::fromStdString(text);
-    ((CompileInfo*)(m_wDockManager->getDockWidget(wCompileInfo)->widget()))->appendMessage(QString::fromStdString(text), type);
+    ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->appendMessage(QString::fromStdString(text), type);
 }
 
 
@@ -3549,7 +3603,7 @@ void MainForm::activeProjectChanged(int index)
     {
         m_projectMan->setActiveByIndex(index);
         m_wDockManager->changeSimWidget(index);
-        m_wDockManager->showProjectEditors(m_projectMan->getActive());
+        m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
         if (m_wDockManager->getBreakpointList() != NULL)
         {
             m_wDockManager->getBreakpointList()->reload(m_projectMan->getActive()->getBreakpointsListRef());
@@ -3581,6 +3635,7 @@ void MainForm::enableSimActs()
     saveAsAct->setEnabled(true);
     saveAllAct->setEnabled(true);
     saveProjAct->setEnabled(true);
+    reloadAct->setEnabled(true);
     closeFileAct->setEnabled(true);
     undoAct->setEnabled(true);
     redoAct->setEnabled(true);
@@ -3619,6 +3674,7 @@ void MainForm::disableSimActs()
     saveAsAct->setEnabled(false);
     saveAllAct->setEnabled(false);
     saveProjAct->setEnabled(false);
+    reloadAct->setEnabled(false);
     closeFileAct->setEnabled(false);
     undoAct->setEnabled(false);
     redoAct->setEnabled(false);
@@ -3659,6 +3715,7 @@ void MainForm::closeProject()
         }
         //qDebug() << "MainForm: delete active sim widget";
         m_wDockManager->deleteActiveSimWidget();
+        m_wDockManager->removeTabBar(project->prjPath);
         //qDebug() << "MainForm: remove dock widget";
         this->removeDockWidget(project->prjDockWidget);
         //qDebug() << "MainForm: close project";
@@ -3805,8 +3862,8 @@ void MainForm::sessionRestorationSlot()
         return;
     }*/
     QList<QString> projectPaths = GuiCfg::getInstance().getSessionProjectPaths();
-    QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
-    QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
+    //QList<QString> filePaths = GuiCfg::getInstance().getSessionFilePaths();
+    //QList<QString> fileParentProjects = GuiCfg::getInstance().getSessionFileParentProjects();
     for (int i = 0; i < projectPaths.count(); i++)
     {
         //qDebug() << "MainForm: session open project";
@@ -3819,12 +3876,12 @@ void MainForm::sessionRestorationSlot()
             this->openProject(projectPaths.at(i));
         }
     }
-    for (int i = 0; i < filePaths.count(); i++)
-    {
+    //for (int i = 0; i < filePaths.count(); i++)
+    //{
         //qDebug() << "MainForm: session open file" << filePaths.at(i);
         //qDebug() << "MainForm: session file parent" << fileParentProjects.at(i);
-        this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
-    }
+    //    this->openFilePath(filePaths.at(i), fileParentProjects.at(i));
+    //}
     GuiCfg::getInstance().sessionClear();
     //hack for fixing the linecount height (bigger at start)
     QTimer::singleShot(50, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
@@ -3872,7 +3929,7 @@ void MainForm::pauseSimulation()
 
 void MainForm::closeEvent(QCloseEvent *event)
 {
-    qDebug() << "MainForm: closeEvent";
+    //qDebug() << "MainForm: closeEvent";
     QStringList lst;
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
@@ -3899,7 +3956,7 @@ void MainForm::closeEvent(QCloseEvent *event)
     {
         event->accept();
     }
-    qDebug() << "MainForm: closeEvent done";
+    //qDebug() << "MainForm: closeEvent done";
 }
 
 
@@ -4009,6 +4066,18 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     QString tmpFile;
     QSet<QString> files;
     int compatibility = m_projectMan->getSimulated()->getAsmType();
+    if (m_projectMan->getActive() != m_projectMan->getSimulated())
+    {
+        QList<Project*> projects = m_projectMan->getOpenProjects();
+        for (int i; i < projects.count(); i++)
+        {
+            if (projects.at(i) == m_projectMan->getSimulated())
+            {
+                projectTabs->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
     if (prev.size() > 0)
     {
         if (prev.size() > 1)
@@ -4110,7 +4179,6 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
         //qDebug() << "MainForm: simulated file path" << simulatedFilePath;
         if (NULL == m_wDockManager->getCentralByPath(simulatedFilePath))
         {
-            //qDebug() << "MainForm: simHighlightLines value" << value;
             this->openFilePath(simulatedFilePath);
             //m_wDockManager->setCentralByPath(simulatedFilePath);
         }
@@ -4131,7 +4199,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     {
         if (prev.size() > 1)
         {
-            for (unsigned int i = 0; i < prev.size(); i++)
+            for (int i = prev.size()-1; i >=0 ; i--)
             {
                 if (QString::fromStdString(*(std::get<0>(prev.at(i)))) != "")
                 {
@@ -4195,7 +4263,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     {
         if (prev2.size() > 1)
         {
-            for (unsigned int i = 0; i < prev2.size(); i++)
+            for (int i = prev2.size()-1; i >=0 ; i--)
             {
                 if (QString::fromStdString(*(std::get<0>(prev2.at(i)))) != "")
                 {
@@ -4259,7 +4327,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     {
         if (curr.size() > 1)
         {
-            for (unsigned int i = 0; i < curr.size(); i++)
+            for (int i = curr.size()-1; i >= 0; i--)
             {
                 if (QString::fromStdString(*(std::get<0>(curr.at(i)))) != "")
                 {
@@ -4315,6 +4383,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                 m_wDockManager->getCentralTextEdit()->highlightLineAppend(std::get<1>(curr.at(0)) - 1, colors.at(0));
             }
         }
+        //qDebug() << "MainForm: highlighted path" << simulatedFilePath;
     }
 }
 
@@ -4589,7 +4658,9 @@ void MainForm::jmpToBookmarkPrevSlot()
 
 void MainForm::fileClosed(QString path)
 {
+    //qDebug() << "MainForm: file closed";
     m_fileWatcher.removePath(path);
+    m_projectMan->getActive()->setFileOpened(path, false);
 }
 
 
@@ -4625,6 +4696,24 @@ void MainForm::reloadFile(QString path)
     {
         m_wDockManager->setCentralByPath(path);
         m_wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+        m_wDockManager->getCentralTextEdit()->setPositionToStart();
+        file.close();
+        QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
+    }
+}
+
+
+void MainForm::reloadCurrentFile()
+{
+    QFile file(m_wDockManager->getCentralPath());
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+    }
+    else
+    {
+        m_wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+        m_wDockManager->getCentralTextEdit()->setPositionToStart();
         file.close();
         QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
     }

@@ -29,6 +29,7 @@ JumpToLine::JumpToLine(QWidget *parent, int currLine, int maxLines)
     ui.spinLine->setValue(currLine);
     ui.spinLine->setFocus();
     ui.spinLine->installEventFilter(this);
+    //this->installEventFilter(this);
     connect(ui.btnJump, SIGNAL(clicked()), this, SLOT(emitJump()));
     connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
     //connect(ui.spinLine, SIGNAL(returnPressed()), ui.btnJump, SIGNAL(clicked()));
@@ -44,6 +45,11 @@ bool JumpToLine::eventFilter(QObject *target, QEvent *event)
             keyEvent->key() == Qt::Key_Return))
         {
             emitJump();
+            return true;
+        }
+        else if (keyEvent->key() == Qt::Key_Escape)
+        {
+            closeClicked();
             return true;
         }
     }

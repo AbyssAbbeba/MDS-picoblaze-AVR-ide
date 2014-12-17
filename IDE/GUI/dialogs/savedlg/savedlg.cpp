@@ -52,8 +52,8 @@ SaveDialog::SaveDialog(QWidget *parent, QStringList lst, bool reload)
         ui.label->setText("Some files were modified outside IDE, do you want to reload the files from disk?");
         saveButton = new QPushButton(tr("Reload"), this);
         saveAllButton = new QPushButton(tr("Reload All"), this);
-        discardButton = new QPushButton(tr("Discard"), this);
-        discardAllButton = new QPushButton(tr("Discard All"), this);
+        discardButton = new QPushButton(tr("Ignore"), this);
+        discardAllButton = new QPushButton(tr("Ignore All"), this);
     }
     
     ui.buttonBox->addButton(saveButton, QDialogButtonBox::ActionRole);

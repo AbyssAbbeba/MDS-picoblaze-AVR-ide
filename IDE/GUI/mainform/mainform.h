@@ -200,6 +200,7 @@ class MainForm : public QMainWindow
         void fileClosed(QString path);
         void fileChanged(QString path);
         void reloadFile(QString path);
+        void reloadCurrentFile();
 
     signals:
         void unhighlightSim();
@@ -249,6 +250,7 @@ class MainForm : public QMainWindow
         QAction *saveAct;
         QAction *saveAsAct;
         QAction *saveAllAct;
+        QAction *reloadAct;
         QAction *closeFileAct;
         //QAction *closeAllAct;
         QAction *exitAct;

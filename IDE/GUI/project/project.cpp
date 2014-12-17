@@ -466,6 +466,14 @@ Project::Project(QFile *file, ProjectMan *parent)
                             {
                                 fileNames.append(xmlFilesElement.attribute("name", ""));
                                 filePaths.append(xmlFilesElement.attribute("path", ""));
+                                if ("true" == xmlFilesElement.attribute("opened",""))
+                                {
+                                    m_fileStats.append(true);
+                                }
+                                else
+                                {
+                                    m_fileStats.append(false);
+                                }
                                 fileCount++;
                             }
                             xmlFilesNode = xmlFilesNode.nextSibling();
@@ -743,6 +751,8 @@ Project::Project(QFile *file, ProjectMan *parent)
             this->treeProjOther = new QTreeWidgetItem(treeProjName);
             treeProjOther->setText(0, "Other");
 
+            this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+            treeProjUntitled->setText(0, "Untitled");
 
             QDir projectDir = QFileInfo(prjPath).dir();
             QString absolutePath = projectDir.path();
@@ -765,6 +775,10 @@ Project::Project(QFile *file, ProjectMan *parent)
                     {
                         treeProjFile = new QTreeWidgetItem(treeProjOther);
                     }
+                }
+                else if ("untitled" == filePaths.at(i))
+                {
+                    treeProjFile = new QTreeWidgetItem(treeProjUntitled);
                 }
                 else
                 {
@@ -906,6 +920,10 @@ Project::Project(ProjectMan *parent)
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
 
+    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    treeProjUntitled->setText(0, "Untitled");
+
+    
     connect(prjDockWidget,
             SIGNAL(visibilityChanged(bool)),
             this,
@@ -1021,6 +1039,10 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     this->treeProjOther->setText(0, "Other");
 
+    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    this->treeProjUntitled->setText(0, "Untitled");
+
+//     
     for (int i = 0; i < 13; i++)
     {
         compileOpt.append(false);
@@ -1248,6 +1270,14 @@ void Project::saveProject()
         QDomElement xmlFile = domDoc.createElement("File");
         xmlFile.setAttribute("path", this->filePaths.at(i));
         xmlFile.setAttribute("name", this->fileNames.at(i));
+        if (true == m_fileStats.at(i))
+        {
+            xmlFile.setAttribute("opened", "true");
+        }
+        else
+        {
+            xmlFile.setAttribute("opened", "false");
+        }
         xmlFiles.appendChild(xmlFile);
     }
     xmlRoot.appendChild(xmlFiles);
@@ -1494,6 +1524,7 @@ QString Project::addFile(QString path, QString name)
             return "";
         }
         fileNames.append(name);
+        m_fileStats.append(false);
         fileCount++;
         filePaths.append(relativePath);
 
@@ -1514,6 +1545,10 @@ QString Project::addFile(QString path, QString name)
             {
                 treeProjFile = new QTreeWidgetItem(treeProjOther);
             }
+        }
+        else if ("untitled" == path)
+        {
+            treeProjFile = new QTreeWidgetItem(treeProjUntitled);
         }
         else
         {
@@ -1567,12 +1602,14 @@ QString Project::addFile(QString path, QString name)
             }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
             filePaths.append("untracked");
+            m_fileStats.append(false);
         }
         else
         {
             treeProjFile->setText(0, name);
             treeProjFile->setData(0, Qt::ToolTipRole, path);
             filePaths.append(path);
+            m_fileStats.append(false);
         }
         fileCount++;
     }
@@ -1753,6 +1790,7 @@ void Project::removeFile(QString path, QString name)
     }
     fileNames.removeAt(index);
     filePaths.removeAt(index);
+    m_fileStats.removeAt(index);
     fileCount--;
     //qDebug() << "Project: return removeFile()";
 }
@@ -2572,7 +2610,7 @@ QList<unsigned int> Project::getBookmarksForFileAbsolute(QString file)
 
 void Project::reloadProjectTree()
 {
-    qDebug() << "Project: reloadProjectTree()";
+    //qDebug() << "Project: reloadProjectTree()";
     prjTreeWidget->clear();
     //qDebug() << this->treeProjName->text(0);
     this->treeProjName = new QTreeWidgetItem(prjTreeWidget);
@@ -2590,6 +2628,9 @@ void Project::reloadProjectTree()
 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
+
+    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    treeProjUntitled->setText(0, "Untitled");
 
 
     QDir projectDir = QFileInfo(prjPath).dir();
@@ -2613,6 +2654,10 @@ void Project::reloadProjectTree()
             {
                 treeProjFile = new QTreeWidgetItem(treeProjOther);
             }
+        }
+        else if ("untitled" == filePaths.at(i))
+        {
+            treeProjFile = new QTreeWidgetItem(treeProjUntitled);
         }
         else
         {
@@ -2669,4 +2714,21 @@ void Project::setAsmType(int type)
 int Project::getAsmType()
 {
     return m_asmType;
+}
+
+
+void Project::setFileOpened(QString path, bool opened)
+{
+    QDir project(QFileInfo(prjPath).dir());
+    QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
+    for (int i = 0; i < filePaths.count(); i++)
+    {
+        //qDebug() << "Project: setFileOpened" << relativePath << filePaths.at(i);
+        if (filePaths.at(i) == relativePath)
+        {
+            //qDebug() << "Project: setFileOpened - file found and set";
+            m_fileStats[i] = opened;
+            break;
+        }
+    }
 }

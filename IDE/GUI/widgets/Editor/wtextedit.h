@@ -45,6 +45,7 @@ class WTextEdit : public QPlainTextEdit
         void scrollToLine(int line);
         void selectLine(int line);
         void setShortcuts();
+        void setPositionToStart();
 
         //only use in CodeEdit::loadCodeEdit(...)
         //SourceType getSourceType();

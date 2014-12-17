@@ -311,6 +311,7 @@ void McuMemoryView::deviceReset()
  		m_hexEdit->setVal(i, (unsigned char)value);
 	}
     m_hexEdit->fixHeight();
+    m_hexEdit->scrollToTop();
     //qDebug() << "McuMemoryView: return deviceReset()"; 
 }
 
