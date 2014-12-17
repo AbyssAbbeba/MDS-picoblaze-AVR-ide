@@ -135,6 +135,10 @@ DIS_INT_INST            "disable"{WS}"interrupt"
         yyextra->popFileName();
         *yylloc = yyextra->m_yyllocStack.back();
         yyextra->m_yyllocStack.pop_back();
+    }
+
+    if ( true == yyextra->getInsertEOL() )
+    {
         return EOL;
     }
 
@@ -616,7 +620,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yylval->string = new char [ 1 + filename.size() ];
                                 strcpy(yylval->string, filename.c_str());
 
-                                yyextra->setInsertEOF();
+                                yyextra->setInsertEOL();
                                 yyextra->m_yyllocStack.push_back(*yylloc);
 
                                 AsmPicoBlazeLexer_push_buffer_state ( AsmPicoBlazeLexer__create_buffer ( file,
