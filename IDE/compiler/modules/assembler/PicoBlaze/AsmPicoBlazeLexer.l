@@ -611,7 +611,6 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                             else
                             {
-
                                 yylval->string = new char [ 1 + filename.size() ];
                                 strcpy(yylval->string, filename.c_str());
 

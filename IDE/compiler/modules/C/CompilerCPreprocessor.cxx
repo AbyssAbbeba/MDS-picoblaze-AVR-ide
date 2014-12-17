@@ -367,16 +367,27 @@ CompilerCPreprocessor::Buffer::Buffer()
     m_persistent = false;
 }
 
-// CompilerCPreprocessor::Buffer::Buffer ( const std::string & data )
-// {
-//     m_pos = data.size();
-//     m_size = data.size() + 1;
-//     m_data = (char*) malloc(m_size);
-//     m_persistent = false;
-//
-//     memcpy(m_data, data.c_str(), m_size);
-//     m_data[m_pos] = '\0';
-// }
+CompilerCPreprocessor::Buffer::Buffer ( const std::string & data,
+                                        bool copy )
+{
+    if ( true == copy )
+    {
+        m_pos = data.size();
+        m_size = data.size() + 1;
+        m_data = (char*) malloc(m_size);
+        m_persistent = false;
+
+        memcpy(m_data, data.c_str(), m_size);
+        m_data[m_pos] = '\0';
+    }
+    else
+    {
+        m_pos = data.size();
+        m_size = data.size() + 1;
+        m_data = const_cast<char*>(data.c_str());
+        m_persistent = true;
+    }
+}
 
 CompilerCPreprocessor::Buffer::Buffer ( char * data,
                                         unsigned int length )
@@ -942,10 +953,21 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
         param = paramList + i + 1;
     }
 
+    for ( i = 0; i < (int) parameters.size(); i++ )
+    {
+        for ( int j = i + 1; j < (int) parameters.size(); j++ )
+        {
+            if ( parameters[i] == parameters[j] )
+            {
+                std::cout<<"!!! DUPLICITE PARAMETER NAME\n";
+                throw 0;
+            }
+        }
+    }
+
     if ( true == isReserved(macro) )
     {
         std::cout<<"[W] MACRO NAME IS RESERVED KEYWORD\n";
-        // throw ...;
     }
 }
 
@@ -996,13 +1018,8 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     start = pos;
                 }
             }
-            else
+            else if ( -1 != start )
             {
-                if ( -1 == start )
-                {
-                    continue;
-                }
-
                 int length = pos - start;
                 char name [ length + 1 ];
                 memcpy(name, in.m_data + start, length);
@@ -1014,14 +1031,14 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     int argLen = getArgVector(argVector, in.m_data + pos);
                     if ( -1 == argLen )
                     {
-                        start = -1;
-                        continue;
+                        std::cout << "[W] MISSING ARGUMENT FOR THE defined() operator\n";
+                        throw 0;
                     }
                     pos += argLen;
 
                     if ( 1 != argVector.size() )
                     {
-                        std::cout << "!!! INVALID NUMBER OF ARGUMENTS\n";
+                        std::cout << "!!! WRONG NUMBER OF ARGUMENTS\n";
                         throw 0;
                     }
 
@@ -1031,7 +1048,6 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
 
                     out.append(Buffer(in.m_data+outpos, start-outpos));
                     out.append(Buffer(value, 1));
-                    outpos = pos;
                 }
                 else
                 {
@@ -1046,11 +1062,31 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     if ( false == macro->second.m_parameters.empty() )
                     {
                         int argLen = getArgVector(argVector, in.m_data + pos);
+
                         if ( -1 == argLen )
                         {
                             start = -1;
                             continue;
                         }
+
+                        if ( macro->second.m_parameters.size() != argVector.size() )
+                        {
+                            const std::string & lastParam = macro->second.m_parameters.back();
+                            size_t paramSize = lastParam.size();
+                            if ( ( paramSize >= 3 ) && ( "..." == lastParam.substr(paramSize - 3, 3) ) )
+                            {
+                                if ( argVector.size() < ( macro->second.m_parameters.size() - 1) )
+                                {
+                                    std::cout << "[W] POSSIBLE VARIADIC MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
+
+                                }
+                                std::cout << "[[[VARIADIC]]]\n";
+                            }
+                            std::cout << "[W] POSSIBLE MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
+                            start = -1;
+                            continue;
+                        }
+
                         pos += argLen;
                     }
 
@@ -1061,7 +1097,6 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     }
 
                     out.append(Buffer(in.m_data+outpos, start-outpos));
-                    outpos = pos;
 
                     m_status.m_macros.insert(name);
 
@@ -1073,6 +1108,7 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     m_status.m_depth--;
                 }
 
+                outpos = pos;
                 start = -1;
             }
         }
@@ -1146,7 +1182,111 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
                                                             const Macro & macro,
                                                             const std::vector<std::string> & argVector ) const
 {
-    for ( auto x : macro.m_parameters ) std::cout << "#### P='"<<x<<"'\n";
-    for ( auto x : argVector ) std::cout << "#### A='"<<x<<"'\n";
-    out.append(Buffer(const_cast<char*>(macro.m_body.c_str()), macro.m_body.size()));
+    int outpos = 0;
+    int start = -1;
+    int stringify = -1;
+    InMode mode = MODE_NORMAL;
+// __VA_ARGS__
+    const Buffer in(macro.m_body);
+
+    for ( int pos = 0; pos <= in.m_pos; pos++ )
+    {
+        if ( MODE_NORMAL == mode)
+        {
+            if ( '"' == in.m_data[pos] )
+            {
+                stringify = -1;
+                mode = MODE_STRING;
+            }
+            else if ( '\'' == in.m_data[pos] )
+            {
+                stringify = -1;
+                mode = MODE_CHAR;
+            }
+            else if ( ( isalnum(in.m_data[pos]) ) || ( '_' == in.m_data[pos] ) )
+            {
+                if ( -1 == start )
+                {
+                    start = pos;
+                }
+            }
+            else
+            {
+                if ( -1 != start )
+                {
+                    int length = pos - start;
+                    char word [ length + 1 ];
+                    memcpy(word, in.m_data + start, length);
+                    word[length] = '\0';
+
+                    int idx = ( macro.m_parameters.size() - 1 );
+                    for ( ; ( idx >= 0 ) && ( macro.m_parameters[idx] != word ); idx-- );
+
+                    if ( -1 == idx )
+                    {
+                        out.append(Buffer(in.m_data+outpos, pos-outpos));
+                    }
+                    else
+                    {
+                        if ( -1 != stringify )
+                        {
+                            start = stringify;
+                        }
+
+                        out.append(Buffer(in.m_data+outpos, start-outpos));
+
+                        if ( -1 != stringify )
+                        {
+                            // Stringification
+                            out.m_data[out.m_pos++] = '"';
+                            out.append(argVector[idx] + '"');
+                        }
+                        else
+                        {
+                            out.append(argVector[idx]);
+                        }
+                    }
+
+                    outpos = pos;
+                    start = -1;
+                    stringify = -1;
+                }
+
+                if ( '#' == in.m_data[pos] )
+                {
+                    if ( -1 != stringify )
+                    {
+                        std::cout << "!!! INVALID USE OF PREPROCESSING OPERATOR `#'\n";
+                        throw 0;
+                    }
+                    stringify = -1;
+
+                    if ( '#' == in.m_data[ pos + 1 ] )
+                    {
+                        for ( pos += 2; ( ' ' == in.m_data[pos] ) || ( '\t' == in.m_data[pos] ); pos++ );
+                        outpos = pos;
+                        pos--;
+                    }
+                    else
+                    {
+                        stringify = pos;
+                    }
+                }
+                else if ( ( ' ' != in.m_data[pos] ) && ( '\t' != in.m_data[pos] ) )
+                {
+                    stringify = -1;
+                }
+            }
+        }
+        else if ( ( MODE_STRING == mode ) && ( '"' == in.m_data[pos] ) )
+        {
+            mode = MODE_NORMAL;
+        }
+        else if ( ( MODE_CHAR == mode ) && ( '\'' == in.m_data[pos] ) )
+        {
+            mode = MODE_NORMAL;
+        }
+    }
+
+    out.append(Buffer(in.m_data + outpos, in.m_pos - outpos));
 }
