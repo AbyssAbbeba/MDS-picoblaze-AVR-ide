@@ -95,7 +95,9 @@ typedef enum WidgetCode
     WANALYSVAR,
     WANALYSFUNC,
     WBOTTOMHIDE,
-    WRIGHTHIDE
+    WRIGHTHIDE,
+    WASMMACROANALYSER,
+    WOUTPUTWIDGET
 } WidgetCode;
 
 

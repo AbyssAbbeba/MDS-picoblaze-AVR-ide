@@ -25,6 +25,8 @@ TabBar::TabBar(QWidget *parent)
 {
     //qDebug() << "TabBar: TabBar()";
     //this->setDrawBase(false);
+    this->setTabsClosable(true);
+    this->setMovable(true);
     connect(this, SIGNAL(tabMoved(int, int)), this, SLOT(tabStatsMoved(int, int)));
     //qDebug() << "TabBar: return TabBar()";
 }

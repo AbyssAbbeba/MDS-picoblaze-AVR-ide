@@ -18,6 +18,7 @@
 
 #include <QTabBar>
 #include <QList>
+#include <QString>
 
 
 /**
@@ -34,11 +35,16 @@ class TabBar : public QTabBar
         void tabRemoved(int index);
         void tabChanged(int index, bool changed);
         bool tabStatus(int index);
+
+        //id == project path
+        QString id;
         
     private slots:
         void tabStatsMoved(int from, int to);
+
     private:
         QList<bool> tabStats;
+        
     //protected:
     //    void paintEvent(QPaintEvent *);
 };

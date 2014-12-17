@@ -673,6 +673,14 @@ int WTextEdit::getPosition()
 }
 
 
+void WTextEdit::setPositionToStart()
+{
+    //qDebug() << "WTextEdit: scroll bar value" << this->verticalScrollBar()->value();
+    this->moveCursor(QTextCursor::Start);
+    this->verticalScrollBar()->setValue(0);
+    //qDebug() << "WTextEdit: scroll bar new value" << this->verticalScrollBar()->value();
+}
+
 void WTextEdit::scrollToLine(int line)
 {
     //qDebug() << "WTextEdit: scrollToLine()";
