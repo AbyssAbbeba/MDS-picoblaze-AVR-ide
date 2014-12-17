@@ -171,10 +171,10 @@ class AsmCodeListing : public CompilerMsgObserver
 
         /**
          * @brief
-         * @param[in] location
+         * @param[in] node
          * @param[in] fileNumber
          */
-        void setInclusion ( CompilerSourceLocation location,
+        void setInclusion ( CompilerStatement * node,
                             int fileNumber );
 
         /**
@@ -291,6 +291,16 @@ class AsmCodeListing : public CompilerMsgObserver
         void rewriteRepeatLoc ( unsigned int * lineCounter,
                                 CompilerStatement * code,
                                 int origin );
+
+        /**
+         * @brief
+         * @param[in,out] codeTree
+         * @param[in] fileNumber
+         * @param[in] origin
+         */
+        void rewriteIncludeLoc ( CompilerStatement * codeTree,
+                                 const int fileNumber,
+                                 const int origin );
 
         /**
          * @brief

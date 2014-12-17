@@ -1184,7 +1184,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
 
 inline void AsmAdaptableTreeDecoder::dir_INCLUDE ( CompilerStatement * node )
 {
-    m_semanticAnalyzer->m_codeListing->setInclusion(node->location(), (int)(node->args()->m_lValue.m_data.m_integer));
+    m_semanticAnalyzer->m_codeListing->setInclusion(node, (int)(node->args()->m_lValue.m_data.m_integer));
 }
 
 inline void AsmAdaptableTreeDecoder::dir_LOCAL ( CompilerStatement * node,
