@@ -908,6 +908,7 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
 
     std::vector<std::string> & parameters = m_table[macro].m_parameters;
     char * param = paramList;
+    int dots = 0;
     int size = strlen(paramList);
     for ( i = 0; i <= size; i++ )
     {
@@ -928,7 +929,12 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
             param++;
         }
 
-        int dots = 0;
+        if ( 0 != dots )
+        {
+            std::cout<<"!!! VARIADIC SPECIFIER (`...') MUST APPEAR LAST IN THE PARAMETER LIST\n";
+            throw 0;
+        }
+
         for ( int pos = 0; '\0' != param[pos]; pos++ )
         {
             if ( ( !IS_IDENTIFIER(param, pos) || ( 0 != dots ) )
@@ -936,8 +942,14 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
                  ( ( '.' != param[pos] ) || ( ++dots > 3 ) ) )
             {
                 std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER\n";
-                // throw ...;
+                throw 0;
             }
+        }
+
+        if ( ( 0 != dots ) && ( 3 != dots ) )
+        {
+            std::cout<<"!!! MACRO PARAMETER MUST BE IDENTIFIER, MAYBE YOU FORGOT A DOT IN `...' EXPRESSION\n";
+            throw 0;
         }
 
         if ( '\0' != param[0] )
@@ -1072,19 +1084,22 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                         if ( macro->second.m_parameters.size() != argVector.size() )
                         {
                             const std::string & lastParam = macro->second.m_parameters.back();
-                            size_t paramSize = lastParam.size();
+                            const size_t paramSize = lastParam.size();
                             if ( ( paramSize >= 3 ) && ( "..." == lastParam.substr(paramSize - 3, 3) ) )
                             {
                                 if ( argVector.size() < ( macro->second.m_parameters.size() - 1) )
                                 {
-                                    std::cout << "[W] POSSIBLE VARIADIC MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
-
+                                    std::cout << "[W] POSSIBLE VARIADIC MACRO EXPANSION, TOO LITTLE ARGUMENTS PROVIDED\n";
+                                    start = -1;
+                                    continue;
                                 }
-                                std::cout << "[[[VARIADIC]]]\n";
                             }
-                            std::cout << "[W] POSSIBLE MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
-                            start = -1;
-                            continue;
+                            else
+                            {
+                                std::cout << "[W] POSSIBLE MACRO EXPANSION, INVALID NUMBER OF ARGUMENT(S)\n";
+                                start = -1;
+                                continue;
+                            }
                         }
 
                         pos += argLen;
@@ -1186,8 +1201,28 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
     int start = -1;
     int stringify = -1;
     InMode mode = MODE_NORMAL;
-// __VA_ARGS__
+
     const Buffer in(macro.m_body);
+    bool hasParameters = !macro.m_parameters.empty();
+
+    std::string vaArgsString;
+    if ( true == hasParameters )
+    {
+        const std::string & lastParam = macro.m_parameters.back();
+        const size_t paramSize = lastParam.size();
+        if ( ( paramSize >= 3 ) && ( "..." == lastParam.substr(paramSize - 3, 3) ) )
+        {
+            if ( paramSize > 3 )
+            {
+                vaArgsString = lastParam.substr(0, paramSize - 3);
+            }
+            else
+            {
+                vaArgsString = "__VA_ARGS__";
+            }
+        }
+    }
+std::cout << "vaArgsString='"<<vaArgsString<<"'\n";
 
     for ( int pos = 0; pos <= in.m_pos; pos++ )
     {
@@ -1212,15 +1247,20 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
             }
             else
             {
-                if ( -1 != start )
+                if ( ( true == hasParameters ) && ( -1 != start ) )
                 {
                     int length = pos - start;
                     char word [ length + 1 ];
                     memcpy(word, in.m_data + start, length);
                     word[length] = '\0';
 
+                    bool varArg = ( vaArgsString == word );
                     int idx = ( macro.m_parameters.size() - 1 );
-                    for ( ; ( idx >= 0 ) && ( macro.m_parameters[idx] != word ); idx-- );
+
+                    if ( false == varArg )
+                    {
+                        for ( ; ( idx >= 0 ) && ( macro.m_parameters[idx] != word ); idx-- );
+                    }
 
                     if ( -1 == idx )
                     {
@@ -1243,7 +1283,18 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
                         }
                         else
                         {
-                            out.append(argVector[idx]);
+                            if ( true == varArg )
+                            {
+                                for ( ; idx < (int) argVector.size(); idx++ )
+                                {
+                                    out.m_data[out.m_pos++] = ',';
+                                    out.append(argVector[idx]);
+                                }
+                            }
+                            else
+                            {
+                                out.append(argVector[idx]);
+                            }
                         }
                     }
 
