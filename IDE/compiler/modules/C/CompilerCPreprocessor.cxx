@@ -1222,7 +1222,6 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
             }
         }
     }
-std::cout << "vaArgsString='"<<vaArgsString<<"'\n";
 
     for ( int pos = 0; pos <= in.m_pos; pos++ )
     {
@@ -1277,24 +1276,33 @@ std::cout << "vaArgsString='"<<vaArgsString<<"'\n";
 
                         if ( -1 != stringify )
                         {
-                            // Stringification
+                            // Stringification.
                             out.m_data[out.m_pos++] = '"';
-                            out.append(argVector[idx] + '"');
+                        }
+
+                        if ( true == varArg )
+                        {
+                            // Variable argument.
+                            bool first = true;
+                            for ( ; idx < (int) argVector.size(); idx++ )
+                            {
+                                if ( false == first )
+                                {
+                                    out.m_data[out.m_pos++] = ',';
+                                }
+                                out.append(argVector[idx]);
+                                first = false;
+                            }
                         }
                         else
                         {
-                            if ( true == varArg )
-                            {
-                                for ( ; idx < (int) argVector.size(); idx++ )
-                                {
-                                    out.m_data[out.m_pos++] = ',';
-                                    out.append(argVector[idx]);
-                                }
-                            }
-                            else
-                            {
-                                out.append(argVector[idx]);
-                            }
+                            out.append(argVector[idx]);
+                        }
+
+                        if ( -1 != stringify )
+                        {
+                            // Stringification.
+                            out.m_data[out.m_pos++] = '"';
                         }
                     }
 
