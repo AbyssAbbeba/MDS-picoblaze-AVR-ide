@@ -545,6 +545,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
 
                 if ( ( true == absoluteFileName.empty() ) && ( false == usingSystemPaths ) )
                 {
+                    usingSystemPaths = true;
                     includePaths = &(m_opts->m_includePathSystem);
                     continue;
                 }

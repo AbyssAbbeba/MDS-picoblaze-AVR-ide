@@ -98,7 +98,8 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             ////    Constructors and Destructors    ////
             public:
                 Buffer();
-//                 Buffer ( const std::string & data );
+                Buffer ( const std::string & data,
+                         bool copy = false );
                 Buffer ( char * data,
                          unsigned int length );
                 ~Buffer();
