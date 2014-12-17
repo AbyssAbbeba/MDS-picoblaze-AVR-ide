@@ -130,16 +130,18 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 %%
 
 %{
+    if ( true == yyextra->getInsertEOL() )
+    {
+        return EOL;
+    }
+
     if ( true == yyextra->getInsertEOF() )
     {
         yyextra->popFileName();
         *yylloc = yyextra->m_yyllocStack.back();
         yyextra->m_yyllocStack.pop_back();
-    }
-
-    if ( true == yyextra->getInsertEOL() )
-    {
-        return EOL;
+        yylloc->last_line++;
+        yylloc->last_column = 1;
     }
 
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.

@@ -130,12 +130,18 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 %%
 
 %{
+    if ( true == yyextra->getInsertEOL() )
+    {
+        return EOL;
+    }
+
     if ( true == yyextra->getInsertEOF() )
     {
         yyextra->popFileName();
         *yylloc = yyextra->m_yyllocStack.back();
         yyextra->m_yyllocStack.pop_back();
-        return EOL;
+        yylloc->last_line++;
+        yylloc->last_column = 1;
     }
 
     // Terminate lexical analysis, in case all input files have been closed using the EXIT' directive.
@@ -515,7 +521,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yylval->string = new char [ 1 + filename.size() ];
                                 strcpy(yylval->string, filename.c_str());
 
-                                yyextra->setInsertEOF();
+                                yyextra->setInsertEOL();
                                 yyextra->m_yyllocStack.push_back(*yylloc);
 
                                 AsmAdaptableLexer_push_buffer_state ( AsmAdaptableLexer__create_buffer ( file,

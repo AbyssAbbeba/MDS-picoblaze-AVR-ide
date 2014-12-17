@@ -392,14 +392,16 @@ void AsmCodeListing::setNoList ( CompilerSourceLocation location,
     }
 }
 
-void AsmCodeListing::setInclusion ( CompilerSourceLocation location,
+void AsmCodeListing::setInclusion ( CompilerStatement * node,
                                     int fileNumber )
 {
+    const CompilerSourceLocation & location = node->location();
     if ( ( true == checkLocation ( location ) ) && ( -1 != fileNumber ) )
     {
-        location.m_lineStart--;
-        m_listing[location.m_fileNumber][location.m_lineStart].m_inclusion = fileNumber;
+        m_listing[location.m_fileNumber][location.m_lineStart - 1].m_inclusion = fileNumber;
     }
+
+    rewriteIncludeLoc(node->next(), fileNumber, m_compilerCore->locationTrack().add(location));
 }
 
 void AsmCodeListing::setCode ( CompilerSourceLocation location,
@@ -528,6 +530,29 @@ void AsmCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
         }
 
         rewriteRepeatLoc ( lineDiff, node->branch(), origin );
+    }
+}
+
+void AsmCodeListing::rewriteIncludeLoc ( CompilerStatement * codeTree,
+                                         const int fileNumber,
+                                         const int origin )
+{
+    for ( CompilerStatement * node = codeTree;
+          node != nullptr;
+          node = node->next() )
+    {
+        if ( fileNumber != node->m_location.m_fileNumber )
+        {
+            break;
+        }
+
+        if ( true == node->location().isSet() )
+        {
+            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
+            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
+        }
+
+        rewriteIncludeLoc ( node->branch(), fileNumber, origin );
     }
 }
 

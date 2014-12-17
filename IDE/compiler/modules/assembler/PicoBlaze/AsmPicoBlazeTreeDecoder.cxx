@@ -1018,7 +1018,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
 
 inline void AsmPicoBlazeTreeDecoder::dir_INCLUDE ( CompilerStatement * node )
 {
-    m_codeListing -> setInclusion ( node->location(),
+    m_codeListing -> setInclusion ( node,
                                     (int) (node->args()->m_lValue.m_data.m_integer) );
 }
 
