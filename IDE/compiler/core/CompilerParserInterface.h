@@ -62,7 +62,7 @@ class CompilerParserInterface
         CompilerParserInterface()
         {
             m_strMaxSize = 0;
-            m_insertEol = false;
+            m_insertEof = false;
         }
 
     ////    Public Operations    ////
@@ -225,28 +225,6 @@ class CompilerParserInterface
          * @brief
          * @return
          */
-        bool getInsertEOL()
-        {
-            if ( true == m_insertEol )
-            {
-                m_insertEol = false;
-                return true;
-            }
-            return false;
-        }
-
-        /**
-         * @brief
-         */
-        void setInsertEOL()
-        {
-            m_insertEol = true;
-        }
-
-        /**
-         * @brief
-         * @return
-         */
         bool getInsertEOF()
         {
             if ( true == m_insertEof )
@@ -272,7 +250,7 @@ class CompilerParserInterface
          */
         void resetCompilerParserInterface()
         {
-            m_insertEol = false;
+            m_insertEof = false;
             m_yyllocStack.clear();
         }
 
@@ -286,9 +264,6 @@ class CompilerParserInterface
 
     ////    Protected Attributes    ////
     private:
-        ///
-        bool m_insertEol;
-
         ///
         bool m_insertEof;
 };
