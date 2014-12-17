@@ -130,8 +130,11 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 %%
 
 %{
-    if ( true == yyextra->getInsertEOL() )
+    if ( true == yyextra->getInsertEOF() )
     {
+        yyextra->popFileName();
+        *yylloc = yyextra->m_yyllocStack.back();
+        yyextra->m_yyllocStack.pop_back();
         return EOL;
     }
 
@@ -512,7 +515,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                                 yylval->string = new char [ 1 + filename.size() ];
                                 strcpy(yylval->string, filename.c_str());
 
-                                yyextra->setInsertEOL();
+                                yyextra->setInsertEOF();
                                 yyextra->m_yyllocStack.push_back(*yylloc);
 
                                 AsmAdaptableLexer_push_buffer_state ( AsmAdaptableLexer__create_buffer ( file,
@@ -621,9 +624,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                             else
                             {
-                                yyextra->popFileName();
-                                *yylloc = yyextra->m_yyllocStack.back();
-                                yyextra->m_yyllocStack.pop_back();
+                                yyextra->setInsertEOF();
                             }
                         }
 .                       {
