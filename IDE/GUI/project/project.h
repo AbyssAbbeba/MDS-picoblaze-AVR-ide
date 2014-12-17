@@ -146,6 +146,7 @@ class Project : public QObject
         void renameFile(QString oldPath, QString newPath);
         void setAsmType(int type);
         int getAsmType();
+        void setFileOpened(QString path, bool opened);
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -165,6 +166,7 @@ class Project : public QObject
         bool useMainFile;
         QList<QString> fileNames;
         QList<QString> filePaths;
+        QList<bool> m_fileStats;
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
         QList<bool> compileOpt;
         QStringList compileIncPaths;
@@ -240,6 +242,7 @@ class Project : public QObject
         QTreeWidgetItem *treeProjInclude;
         QTreeWidgetItem *treeProjCompiled;
         QTreeWidgetItem *treeProjOther;
+        QTreeWidgetItem *treeProjUntitled;
         
        
 };

@@ -50,6 +50,7 @@ add_subdirectory(HelpWidget)
 add_subdirectory(AsmMacroAnalyser)
 add_subdirectory(AboutWidget)
 add_subdirectory(WelcomeWidget)
+add_subdirectory(OutputWidget)
 
 if ( MDS_FEATURE_LICENCE_CERTIFICATE )
     add_subdirectory(LicenseInitWidget)

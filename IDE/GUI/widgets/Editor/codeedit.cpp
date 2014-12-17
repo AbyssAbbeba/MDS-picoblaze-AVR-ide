@@ -114,6 +114,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
     m_tabs = tabs;
     m_parentProject = NULL;
     m_breakpointColor = new QColor(0,255,0);
+    m_curScrollValue = 0;
     //textEdit->setWordWrapMode(QTextOption::NoWrap);
     m_textEdit->setWordWrapMode(QTextOption::WordWrap);
     m_textEdit->setLineWrapMode(QPlainTextEdit::WidgetWidth);
@@ -133,6 +134,8 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         {
             m_textEdit->setPlainText(file.readAll());
             file.close();
+            //QApplication::processEvents();
+            m_textEdit->setPositionToStart();
         }
     }
     m_changed = false;
@@ -611,6 +614,7 @@ void CodeEdit::loadCodeEdit(CodeEdit* editor)
     {
         m_textEdit->setTextCursor(m_curCodeEdit->getCursorValue());
     }
+    //qDebug() << "CodeEdit: scroll value" << m_curCodeEdit->getScrollValue();
     m_textEdit->verticalScrollBar()->setValue(m_curCodeEdit->getScrollValue());
 
 }

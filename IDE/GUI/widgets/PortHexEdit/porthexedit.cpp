@@ -171,8 +171,8 @@ void PortHexEdit::deviceChanged()
     //m_hexEditOut->verticalScrollBar()->resize(0, 0);
     //m_hexEditOut->horizontalScrollBar()->hide();
     //m_hexEditOut->horizontalScrollBar()->resize(0, 0);
-    //m_hexEditIn->fixHeight();
-    //m_hexEditOut->fixHeight();
+    m_hexEditIn->fixHeight();
+    m_hexEditOut->fixHeight();
 	connect(m_hexEditIn, SIGNAL(textChanged(int)), this, SLOT(changeValueIn(int)));
     connect(m_hexEditOut, SIGNAL(textChanged(int)), this, SLOT(changeValueOut(int)));
 	//m_layout->addWidget(m_hexEditIn);

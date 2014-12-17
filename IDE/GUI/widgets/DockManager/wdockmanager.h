@@ -15,21 +15,23 @@
 #ifndef WDOCKMANAGER_H
 #define WDOCKMANAGER_H
 
-#define wBookmarkList 1000
-#define wBreakpointList 1001
-#define wCompileInfo 1002
-#define wCodeEditCode 1003
-#define wSimulationInfo 1004
-#define wAnalysVar 1005
-#define wAnalysFunc 1006
-#define wBottomHide 1007
-#define wRightHide  1008
-#define wAsmMacroAnalyser 1009
+// #define wBookmarkList 1000
+// #define wBreakpointList 1001
+// #define wCompileInfo 1002
+// #define wCodeEditCode 1003
+// #define wSimulationInfo 1004
+// #define wAnalysVar 1005
+// #define wAnalysFunc 1006
+// #define wBottomHide 1007
+// #define wRightHide  1008
+// #define wAsmMacroAnalyser 1009
+// #define wOutputWidget 1010
 
 
 //#include <QMainWindow>
 #include <QList>
 #include <QObject>
+#include <QPair>
 //#include "../Editor/wtextedit.h"
 //#include "../../mainform/mainform.h"
 //#include "../SimulationInfo/wsimulationinfo.h"
@@ -53,6 +55,7 @@ class MCUSimControl;
 class QSplitter;
 class QListWidgetItem;
 class QDockWidget;
+class QVBoxLayout;
 
 
 /**
@@ -65,17 +68,17 @@ class WDockManager : public QObject
     Q_OBJECT
     public:
         WDockManager(QWidget *parent, QWidget *centralWidget);
-        void addDockWidget(int code);
+        void addDockWidget(WidgetCode code);
         void addSimDockWidgetP1();
         void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
-        QDockWidget* getDockWidget(int code);
+        QDockWidget* getDockWidget(WidgetCode code);
         QDockWidget* getDockWidgetArea(int area);
         void hideDockWidgetArea(int area);
         void showDockWidgetArea(int area);
-        void removeDockWidget(int code);
-        void addUntrackedCentralWidget(QString wName, QString wPath);
-        void addUntrackedCentralWidget(QString wName, QString wPath, QStringList text);
-        void addCentralWidget(QString wName, QString wPath);
+        void removeDockWidget(WidgetCode code);
+        bool addUntrackedCentralWidget(QString wName, QString wPath);
+        bool addUntrackedCentralWidget(QString wName, QString wPath, QStringList text);
+        bool addCentralWidget(QString wName, QString wPath);
         WTextEdit* getCentralTextEdit();
         WTextEdit* getTabTextEdit(int index);
         CodeEdit* getCentralWidget();
@@ -103,9 +106,11 @@ class WDockManager : public QObject
         void closeFile(QString path);
         void setCentralWelcome(); //welcome screen
         void deleteCentralWelcome();
-        void showProjectEditors(Project *activeProject);
         void setBottomAreaToCompilerInfo();
         void setBottomAreaToSimulationInfo();
+        void showProjectEditors(QString projectPath);
+        void appendTabBar(QString projectPath);
+        void removeTabBar(QString projectPath);
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;
@@ -185,13 +190,18 @@ class WDockManager : public QObject
         WDock *wLeft;
         WDock *wBottom;
         WDock *wRight;
-        QList<BaseEditor*> openCentralWidgets;
+        QList<QPair<TabBar*, QList<BaseEditor*>*>> openCentralWidgets;
         BaseEditor *centralBase;
         TabBar *wTab;
+        //QList<TabBar*> m_tabBarList;
         QSplitter *splitter;
         CodeEdit *activeCodeEdit;
-        QList<CodeEdit*> codeEditList;
+        //QList<CodeEdit*> codeEditList;
         QString tmpPrjPath;
+        int m_currTabBarIndex;
+
+        QVBoxLayout *m_layout;
+        QWidget *m_centralWidget;
         
         //widgets
         BookmarkList *bookmarkList;
@@ -219,10 +229,10 @@ class WDock : public QObject
 {
     Q_OBJECT
     public:
-        WDock(WDockManager *parent, int code, QWidget *parentWindow);
-        WDock(WDockManager *parent, int code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
+        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow);
+        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
         ~WDock();
-        bool cmpCode(int code);
+        bool cmpCode(WidgetCode code);
         bool cmpArea(int area);
         int getArea();
         QDockWidget* getQDockWidget();
@@ -235,7 +245,7 @@ class WDock : public QObject
         
     private:
         QDockWidget *wDockWidget;
-        int code;
+        WidgetCode code;
         int area;
 };
 
