@@ -130,6 +130,14 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 %%
 
 %{
+
+    if ( true == yyextra->getInsertEOF() )
+    {
+        yyextra->popFileName();
+        *yylloc = yyextra->m_yyllocStack.back();
+        yyextra->m_yyllocStack.pop_back();
+    }
+
     if ( true == yyextra->getInsertEOL() )
     {
         return EOL;
@@ -211,7 +219,6 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"portout"            { return D_PORTOUT;    }
 \.?"data"               { return D_DATA;       }
 \.?"code"               { return D_CODE;       }
-\.?"string"             { return D_STRING;     }
 \.?"db"                 { return D_DB;         }
 \.?"error"              { return D_ERROR;      }
 \.?"warning"            { return D_WARNING;    }
@@ -723,9 +730,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
                             }
                             else
                             {
-                                yyextra->popFileName();
-                                *yylloc = yyextra->m_yyllocStack.back();
-                                yyextra->m_yyllocStack.pop_back();
+                                yyextra->setInsertEOF();
                             }
                         }
 .                       {

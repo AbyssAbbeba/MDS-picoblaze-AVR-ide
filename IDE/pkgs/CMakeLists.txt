@@ -165,10 +165,10 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
     endif()
 
     # Set selected files to install.
-    message ( STATUS "3rd party libraries to install as files:" )
+#     message ( STATUS "3rd party libraries to install as files:" )
     foreach ( FILE_NAME ${LIB_FILES_TO_INSTALL} )
         install ( FILES ${FILE_NAME} DESTINATION ${TARGET_DIRECTORY} )
-        message ( STATUS "    * \"${FILE_NAME}\"" )
+#         message ( STATUS "    * \"${FILE_NAME}\"" )
     endforeach()
 endmacro()
 

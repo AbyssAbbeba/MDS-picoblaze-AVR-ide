@@ -171,7 +171,7 @@ class CompilerParserInterface
              */
             CompilerSourceLocation toSourceLocation ( const YYLTYPE & yylloc ) const
             {
-                    return toSourceLocation(&yylloc);
+                return toSourceLocation(&yylloc);
             }
 
             /**
@@ -243,6 +243,28 @@ class CompilerParserInterface
             m_insertEol = true;
         }
 
+        /**
+         * @brief
+         * @return
+         */
+        bool getInsertEOF()
+        {
+            if ( true == m_insertEof )
+            {
+                m_insertEof = false;
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * @brief
+         */
+        void setInsertEOF()
+        {
+            m_insertEof = true;
+        }
+
     ////    Protected Operations    ////
     protected:
         /**
@@ -266,6 +288,9 @@ class CompilerParserInterface
     private:
         ///
         bool m_insertEol;
+
+        ///
+        bool m_insertEof;
 };
 
 #endif // COMPILERPARSERINTERFACE_H
