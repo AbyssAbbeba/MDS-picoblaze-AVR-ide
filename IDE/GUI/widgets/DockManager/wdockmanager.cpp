@@ -196,10 +196,12 @@ void WDockManager::closeTab(int index)
         if ("untracked" != wTab->id)
         {
             qDebug() << "WDockManager: closeTab() - request untitled";
+            emit requestUntitled(false);
         }
         else
         {
             qDebug() << "WDockManager: closeTab() - untracked request untitled";
+            emit requestUntitled(true);
         }
         //this->removeTabBar(wTab->id);
         //this->hideDockWidgetArea(1);

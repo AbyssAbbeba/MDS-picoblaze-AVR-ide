@@ -180,19 +180,19 @@ void error(int errCode, QString detail)
         case ERR_SIM_NOT_COMPILED:
         {
             msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, project not compiled");
+            msgBox.setText("Simulation could not start, project not compiled.");
             break;
         }
         case ERR_SIM_NOT_COMPILED_MODIFIED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Simulation could not start, source files modified");
+            msgBox.setText("Simulation could not start, source files were modified.");
             break;
         }
         case ERR_SIM_RECOMPILE_FAILED:
         {
             msgBox.setIcon(QMessageBox::Critical);
-            msgBox.setText("Simulation could not start, recompilation failed");
+            msgBox.setText("Simulation could not start, recompilation failed. See compiler output for possible errors.");
             break;
         }
         case ERR_NO_MAINFILE:
