@@ -59,7 +59,6 @@ const std::map<std::string, CompilerCPreprocessor::Directive> CompilerCPreproces
     { "ifndef",  DIR_IFNDEF  },    { "else",    DIR_ELSE    },
     { "endif",   DIR_ENDIF   },    { "warning", DIR_WARNING },
     { "error",   DIR_ERROR   },    { "",        DIR_NULL },
-
 };
 
 const std::map<std::string, std::string> CompilerCPreprocessor::MacroTable::s_namedOperators =
@@ -1241,18 +1240,18 @@ int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> &
 {
     char * string ;
 
-if (nextBuffer)
-{
-std::cout << "getArgVector from '"<<string<<"', next='"<<nextBuffer->m_data<<"'\n";
-string = new char[strlen(_string) + nextBuffer->m_pos + 1];
-strcpy(string, _string);
-strcpy(string + strlen(_string), nextBuffer->m_data);
-std::cout << "Final arg. parse input is '"<<string<<"'\n";
-}
-else
-{
+// if (nextBuffer)
+// {
+// std::cout << "getArgVector from '"<<string<<"', next='"<<nextBuffer->m_data<<"'\n";
+// string = new char[strlen(_string) + nextBuffer->m_pos + 1];
+// strcpy(string, _string);
+// strcpy(string + strlen(_string), nextBuffer->m_data);
+// std::cout << "Final arg. parse input is '"<<string<<"'\n";
+// }
+// else
+// {
 string = _string;
-}
+// }
 
 
     int end = 0;
