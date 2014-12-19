@@ -186,7 +186,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 void WDockManager::closeTab(int index)
 {
     //qDebug() << "WDockManager: closeTab()";
-    emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit());
+    emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
     emit tabClosed(wTab->tabText(index));
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
     wTab->removeTab(index);
@@ -357,7 +357,7 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
             centralBase = new BaseEditor(splitter, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
-            //activeCodeEdit->connectAct();
+            activeCodeEdit->connectAct();
             connect(activeCodeEdit,
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
@@ -430,8 +430,9 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath)
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
-        //newEditor->connectAct();
-        activeCodeEdit->connectAct();
+        newBaseEditor->getCodeEdit()->connectAct();
+        //newEditor->connectAct(true);
+        //activeCodeEdit->connectAct();
         /*connect(newEditor,
                 SIGNAL(changedTabStatus(QString, QString, bool)),
                 this,
@@ -467,8 +468,8 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
 {
     //qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
-    int tab;
-    for (int tab = 0; wTab != NULL && tab < wTab->count(); tab++)
+    int tab = 0;
+    for (int tab; wTab != NULL && tab < wTab->count(); tab++)
     {
         if (wTab->tabText(tab) == wName && wTab->tabToolTip(tab) == wPath)
         {
@@ -500,7 +501,7 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
             centralBase = new BaseEditor(splitter, this, newEditor, false);
             //qDebug() << "WDockManager: Created BaseEditor2";
             activeCodeEdit = centralBase->getCodeEdit();
-            //activeCodeEdit->connectAct();
+            activeCodeEdit->connectAct();
             connect(activeCodeEdit,
                     SIGNAL(changedTabStatus(QString, QString, bool)),
                     this,
@@ -570,8 +571,9 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
         wTab->tabAdded();
         wTab->setCurrentIndex(wTab->count()-1);
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
-        newEditor->connectAct();
-        activeCodeEdit->connectAct();
+        newBaseEditor->getCodeEdit()->connectAct();
+        //newEditor->connectAct(true);
+        //activeCodeEdit->connectAct();
         /*connect(newEditor,
                 SIGNAL(breakpointListAdd(QString, int)),
                 this,
@@ -724,7 +726,8 @@ bool WDockManager::addCentralWidget(QString wName, QString wPath)
         wTab->setCurrentIndex(wTab->count()-1);
         wTab->setTabToolTip(wTab->currentIndex(), wPath);
         wTab->show();
-        //newEditor->connectAct();
+        newBaseEditor->getCodeEdit()->connectAct();
+        //newEditor->connectAct(true);
         /*qDebug() << "WDockManager: wTab - tab added";
         if (true == wTab->isHidden())
         {

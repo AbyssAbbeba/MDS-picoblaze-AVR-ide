@@ -158,7 +158,7 @@ class WDockManager : public QObject
         //void dockWidgetsCreated();
 
     signals:
-        void saveCodeEdit(CodeEdit *editor);
+        void saveCodeEdit(CodeEdit *editor, bool ask = false);
         void createDockWidgets();
         void tabifyDockWidget(QDockWidget *widget1, QDockWidget* widget2);
         void addDockWidget(Qt::DockWidgetArea area, QDockWidget* dockWidget);
