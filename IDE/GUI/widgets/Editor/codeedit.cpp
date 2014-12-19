@@ -57,7 +57,7 @@ CodeEdit::CodeEdit(QWidget *parent, bool tabs, QString wName, QString wPath, Cod
         {
             m_textEdit = new WTextEdit(this, PLAIN);
         }
-        m_textEdit->setPlainText(" ");
+        m_textEdit->setPlainText("");
     }
     else
     {
