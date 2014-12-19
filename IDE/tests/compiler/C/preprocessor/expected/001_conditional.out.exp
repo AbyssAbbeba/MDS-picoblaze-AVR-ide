@@ -1,0 +1,16 @@
+ 
+int main ( int argc, char ** argv );
+
+ 
+
+struct S
+{
+    int i;
+} s;
+
+ 
+    1 == sizeof(char)
+    1 == sizeof(short)
+    2 == sizeof(int)
+    1 == sizeof(unsigned char *)
+    4 == sizeof(float)

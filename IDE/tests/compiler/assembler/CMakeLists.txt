@@ -27,4 +27,3 @@ endif()
 if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
     add_subdirectory ( Adaptable )
 endif()
-

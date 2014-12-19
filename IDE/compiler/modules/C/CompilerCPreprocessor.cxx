@@ -7,7 +7,7 @@
  *
  * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
  *
- * @ingroup Compiler
+ * @ingroup CompilerC
  * @file CompilerCPreprocessor.cxx
  */
 // =============================================================================
@@ -42,11 +42,12 @@ int CompilerCPreProcCalcPar_parse ( yyscan_t yyscanner,
     || ( '_' == str[i] )                                        \
 )
 
-#define IS_BLANK(str, i)                                                \
-(                                                                       \
-       ( ' '  == str[i] ) || ( '\t' == str[i] ) || ( '\0' == str[i] )   \
-    || ( '\n' == str[i] ) || ( '\v' == str[i] ) || ( '\r' == str[i] )   \
-    || ( '\f' == str[i] )                                               \
+#define IS_SPACE(i) ( ( ' '  == i ) || ( '\t' == i ) )
+
+#define IS_BLANK(i)                                      \
+(                                                        \
+         IS_SPACE(i) || ( '\0' == i ) || ( '\f' == i )   \
+    || ( '\n' == i ) || ( '\v' == i ) || ( '\r' == i )   \
 )
 
 const std::map<std::string, CompilerCPreprocessor::Directive> CompilerCPreprocessor::s_directives =
@@ -57,7 +58,7 @@ const std::map<std::string, CompilerCPreprocessor::Directive> CompilerCPreproces
     { "elif",    DIR_ELIF    },    { "ifdef",   DIR_IFDEF   },
     { "ifndef",  DIR_IFNDEF  },    { "else",    DIR_ELSE    },
     { "endif",   DIR_ENDIF   },    { "warning", DIR_WARNING },
-    { "error",   DIR_ERROR   }
+    { "error",   DIR_ERROR   },    { "",        DIR_NULL },
 
 };
 
@@ -229,22 +230,26 @@ inline bool CompilerCPreprocessor::inputProcessing ( Buffer & inBuffer,
     return true;
 }
 
-inline bool CompilerCPreprocessor::lineMerging ( Buffer & inBuffer,
+inline bool CompilerCPreprocessor::lineMerging ( Buffer & in,
                                                  Buffer & mergeBuffer )
 {
     int lineMerge = -1;  // Position of the line merge mark - "\" (backslash) or the "? ? /" trigraph.
     int whiteSpace = -1; // Position of the first white space character following the line merge mark (warning cond.).
+    bool endOfLine = false;
 
     // Search the line backwards for certain characters.
-    for ( ssize_t pos = ( inBuffer.m_pos - 1 ); pos >= 0; pos-- )
+    for ( ssize_t pos = ( in.m_pos - 1 ); pos >= 0; pos-- )
     {
-        switch ( inBuffer.m_data[pos] )
+        switch ( in.m_data[pos] )
         {
             // Skip white space.
             case '\t': case ' ':
                 whiteSpace = (int) pos;
+                continue;
+
             // Skip EOL characters.
             case '\r': case '\n':
+                endOfLine = true;
                 continue;
 
             // Backslash - line merge mark.
@@ -256,7 +261,7 @@ inline bool CompilerCPreprocessor::lineMerging ( Buffer & inBuffer,
                 if ( true == m_opts->m_enableTrigraphs )
                 {
                     // Check if the two preceding characters are question marks.
-                    if ( ( pos >= 2 ) && ( '?' == inBuffer.m_data[pos-1] ) && ( '?' == inBuffer.m_data[pos-2] ) )
+                    if ( ( pos >= 2 ) && ( '?' == in.m_data[pos-1] ) && ( '?' == in.m_data[pos-2] ) )
                     {
                         lineMerge = (int) (pos - 2);
                     }
@@ -276,8 +281,8 @@ inline bool CompilerCPreprocessor::lineMerging ( Buffer & inBuffer,
         }
 
         // Append contents of the input buffer to the merge buffer.
-        inBuffer.m_pos = lineMerge;
-        mergeBuffer.append(inBuffer);
+        in.m_pos = lineMerge;
+        mergeBuffer.append(in);
 
         // The input buffer contents was appended to the merge buffer, and therefore should be ignored for further
         //+ processing until the merge is entirely complete.
@@ -287,10 +292,16 @@ inline bool CompilerCPreprocessor::lineMerging ( Buffer & inBuffer,
     else if ( 0 != mergeBuffer.m_pos )
     {
         // Append contents of the input buffer to the merge buffer.
-        mergeBuffer.append(inBuffer);
+        mergeBuffer.append(in);
 
         // Copy the entire merge buffer to the input buffer, and clear the merge buffer.
-        inBuffer.move(mergeBuffer);
+        in.move(mergeBuffer);
+    }
+
+    if ( false == endOfLine )
+    {
+        char newLine = '\n';
+        in.append(Buffer(&newLine, 1));
     }
 
     return false;
@@ -331,11 +342,16 @@ inline void CompilerCPreprocessor::cutLine ( ssize_t & length,
 
 inline void CompilerCPreprocessor::Buffer::append ( const Buffer & sourceBuffer )
 {
+    static const unsigned int INCR_STEP = 128;
+
     // Check if there is enough space left in the target buffer; and if not, enlarge the buffer.
     const size_t requiredMinSize = ( sourceBuffer.m_pos + m_pos + 1 );
     if ( requiredMinSize > m_size )
     {
+// std::cout << "SIZE=" << m_size << ", required="<<requiredMinSize;
         m_size = requiredMinSize;
+        m_size += ( INCR_STEP - ( m_size % INCR_STEP ) );
+// std::cout<<" -- enlarging to: "<<m_size<<'\n';
         m_data = (char*) realloc ( m_data, m_size );
     }
 
@@ -367,26 +383,48 @@ CompilerCPreprocessor::Buffer::Buffer()
     m_persistent = false;
 }
 
-CompilerCPreprocessor::Buffer::Buffer ( const std::string & data,
-                                        bool copy )
+CompilerCPreprocessor::Buffer::Buffer ( const std::string & data/*,
+                                        bool copy*/ )
 {
-    if ( true == copy )
-    {
+//     if ( true == copy )
+//     {
+//         m_pos = data.size();
+//         m_size = data.size() + 1;
+//         m_data = (char*) malloc(m_size);
+//         m_persistent = false;
+//
+//         memcpy(m_data, data.c_str(), m_size);
+//         m_data[m_pos] = '\0';
+//     }
+//     else
+//     {
         m_pos = data.size();
-        m_size = data.size() + 1;
-        m_data = (char*) malloc(m_size);
-        m_persistent = false;
-
-        memcpy(m_data, data.c_str(), m_size);
-        m_data[m_pos] = '\0';
-    }
-    else
-    {
-        m_pos = data.size();
-        m_size = data.size() + 1;
+        m_size = m_pos + 1;
         m_data = const_cast<char*>(data.c_str());
         m_persistent = true;
-    }
+//     }
+}
+
+CompilerCPreprocessor::Buffer::Buffer ( const char * data/*,
+                                        bool copy = false*/ )
+{
+//     if ( true == copy )
+//     {
+//         m_pos = data.size();
+//         m_size = data.size() + 1;
+//         m_data = (char*) malloc(m_size);
+//         m_persistent = false;
+//
+//         memcpy(m_data, data.c_str(), m_size);
+//         m_data[m_pos] = '\0';
+//     }
+//     else
+//     {
+        m_pos = strlen(data);
+        m_size = m_pos + 1;
+        m_data = const_cast<char*>(data);
+        m_persistent = true;
+//     }
 }
 
 CompilerCPreprocessor::Buffer::Buffer ( char * data,
@@ -473,6 +511,7 @@ inline bool CompilerCPreprocessor::initialProcessing ( Buffer & buffer,
     {
         const char inchar   = buffer.m_data[in];
         const char nextchar = buffer.m_data[1+in];
+        bool backslash = ( ( 0 != in ) && ( '\\' == buffer.m_data[in - 1] ) );
 
         switch ( inchar )
         {
@@ -524,10 +563,16 @@ inline bool CompilerCPreprocessor::initialProcessing ( Buffer & buffer,
                 switch ( inchar )
                 {
                     case '"':
-                        m_inmode = MODE_STRING;
+                        if ( false == backslash )
+                        {
+                            m_inmode = MODE_STRING;
+                        }
                         break;
                     case '\'':
-                        m_inmode = MODE_CHAR;
+                        if ( false == backslash )
+                        {
+                            m_inmode = MODE_CHAR;
+                        }
                         break;
                     case '/':
                         switch ( nextchar )
@@ -543,7 +588,15 @@ inline bool CompilerCPreprocessor::initialProcessing ( Buffer & buffer,
                         }
                         break;
                     case '<':
-                        if ( ( true == m_include.m_detection.detected() ) && ( ( false == m_opts->m_enableDigraphs ) || ( ( '%' != nextchar ) && ( ':' != nextchar ) ) ) )
+                        if (
+                               ( true == m_include.m_detection.detected() )
+                                   &&
+                               (
+                                   ( false == m_opts->m_enableDigraphs )
+                                       ||
+                                   ( ( '%' != nextchar ) && ( ':' != nextchar ) )
+                               )
+                           )
                         {
                             m_inmode = MODE_ANG_BR;
                             break;
@@ -586,13 +639,13 @@ inline bool CompilerCPreprocessor::initialProcessing ( Buffer & buffer,
                 }
                 break;
             case MODE_STRING:
-                if ( '"' == inchar )
+                if ( ( '"' == inchar ) && ( false == backslash ) )
                 {
                     m_inmode = MODE_NORMAL;
                 }
                 break;
             case MODE_CHAR:
-                if ( '\'' == inchar )
+                if ( ( '\'' == inchar ) && ( false == backslash ) )
                 {
                     m_inmode = MODE_NORMAL;
                 }
@@ -636,28 +689,32 @@ inline bool CompilerCPreprocessor::directivesProcessing ( Buffer & buffer )
         {
             while ( ( ++in < buffer.m_pos ) && isblank(buffer.m_data[in]) );
             int start = in;
-            while ( ( ++in < buffer.m_pos ) && isalpha(buffer.m_data[in]) );
 
+            while ( isalpha(buffer.m_data[in]) && ( ++in < buffer.m_pos ) );
             char directive [ in - start + 1 ];
             memcpy(directive, buffer.m_data + start, in - start);
             directive[in - start] = '\0';
+
             while ( isblank(buffer.m_data[in]) && ( ++in < buffer.m_pos ) );
             char * arguments = buffer.m_data + in;
             in = ( buffer.m_pos - in );
+
             while ( ( --in >= 0 ) && isspace(arguments[in]) );
             arguments[++in] = '\0';
+
             buffer.m_pos = 0;
             buffer.m_data[0] = '\0';
+
             const auto iter = s_directives.find(directive);
             if ( s_directives.cend() == iter )
             {
-                // TODO: Error: "Invalid preprocessing directive"
+                std::cout << "!!! Invalid preprocessing directive: '"<<directive<<"'\n";
                 return false;
             }
 
             return handleDirective(arguments, iter->second);
         }
-        else if ( ( ' ' != buffer.m_data[in] ) && ( '\t' != buffer.m_data[in] ) )
+        else if ( !IS_SPACE(buffer.m_data[in]) )
         {
             return true;
         }
@@ -720,6 +777,8 @@ inline bool CompilerCPreprocessor::handleDirective ( char * arguments,
         case DIR_WARNING:
 //         TODO: warning
             break;
+        case DIR_NULL:
+            break;
     }
 
     return true;
@@ -728,31 +787,39 @@ inline bool CompilerCPreprocessor::handleDirective ( char * arguments,
 inline void CompilerCPreprocessor::handleInclude ( char * arguments,
                                                    unsigned int length )
 {
+
     if ( '<' == arguments[0] )
     {
         if ( '>' != arguments[length-1] )
         {
-//         throw ...;
+            std::cout<<"INCLUDE\n";
+            throw 0;
         }
 
+        arguments[length-1] = '\0';
+        m_include.m_file = ( arguments + 1 );
         m_include.m_system = true;
     }
     else if ( '"' == arguments[0] )
     {
         if ( '"' != arguments[length-1] )
         {
-//         throw ...;
+            std::cout<<"INCLUDE\n";
+            throw 0;
         }
 
+        arguments[length-1] = '\0';
+        m_include.m_file = ( arguments + 1 );
         m_include.m_system = false;
     }
     else
     {
-//         throw ...;
-    }
+        Buffer out;
+        const Buffer in(arguments, length);
 
-    arguments[length-1] = '\0';
-    m_include.m_file = ( arguments + 1 );
+        m_macroTable.expand(out, in);
+        handleInclude(out.m_data, out.m_pos);
+    }
 }
 
 bool CompilerCPreprocessor::evaluateExpr ( char * expr,
@@ -764,7 +831,7 @@ bool CompilerCPreprocessor::evaluateExpr ( char * expr,
     const Buffer in(expr, length);      //
 
     // Expand macros and operators defined() and sizeof().
-    m_macroTable.expand(out, in, true);
+    m_macroTable.expand(out, in, MacroTable::EXP_EXPRESSION);
 
     // Initialize lexical analyzer for the arithmetic expression calculator.
     CompilerCPreProcCalcLex_lex_init_extra ( this, &yyscanner );
@@ -867,12 +934,12 @@ inline bool CompilerCPreprocessor::MacroTable::isDefined ( const char * name )
 inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
                                                         const int length )
 {
-    char * paramList;
+    char * paramList = nullptr;
     char * body;
 
     int i = 0;
     while ( ( ++i < length ) && IS_IDENTIFIER(macro, i) );
-    paramList = macro + i;
+
     if ( '(' == macro[i] )
     {
         macro[i] = '\0';
@@ -885,7 +952,7 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
             // throw ...; unmatched ()
         }
     }
-    else if ( ! IS_BLANK(macro, i) )
+    else if ( ! IS_BLANK(macro[i]) )
     {
         std::cout<<"!!! INVALID NAME OF MACRO ('"<<macro[i]<<"')\n";
         // throw ...; invalid name of macro
@@ -903,13 +970,23 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
     {
         std::cout<<"[W] REDEFINING MACRO\n";
     }
+    if ( true == isReserved(macro) )
+    {
+        std::cout<<"[W] MACRO NAME IS RESERVED KEYWORD\n";
+    }
 
     m_table[macro] = { body, std::vector<std::string>() };
+
+    if ( nullptr == paramList )
+    {
+        return;
+    }
 
     std::vector<std::string> & parameters = m_table[macro].m_parameters;
     char * param = paramList;
     int dots = 0;
     int size = strlen(paramList);
+
     for ( i = 0; i <= size; i++ )
     {
         if ( ( ',' != paramList[i] ) && ( i != size ) )
@@ -919,12 +996,12 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
 
         paramList[i] = '\0';
 
-        for ( int pos = ( i - 1 ); ( ' ' == paramList[pos] ) || ( '\t' == paramList[pos] ); pos-- )
+        for ( int pos = ( i - 1 ); IS_SPACE(paramList[pos]); pos-- )
         {
             paramList[pos] = '\0';
         }
 
-        while ( ( ' ' == param[0] ) || ( '\t' == param[0] ) )
+        while ( IS_SPACE(param[0]) )
         {
             param++;
         }
@@ -952,16 +1029,12 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
             throw 0;
         }
 
-        if ( '\0' != param[0] )
+        if ( true == isReserved(param) )
         {
-            if ( true == isReserved(param) )
-            {
-                std::cout<<"[W] MACRO PARAMETER IS RESERVED KEYWORD\n";
-            }
-
-            parameters.push_back(param);
+            std::cout<<"[W] MACRO PARAMETER IS RESERVED KEYWORD\n";
         }
 
+        parameters.push_back(param);
         param = paramList + i + 1;
     }
 
@@ -975,11 +1048,6 @@ inline void CompilerCPreprocessor::MacroTable::define ( char * macro,
                 throw 0;
             }
         }
-    }
-
-    if ( true == isReserved(macro) )
-    {
-        std::cout<<"[W] MACRO NAME IS RESERVED KEYWORD\n";
     }
 }
 
@@ -1005,23 +1073,33 @@ inline bool CompilerCPreprocessor::MacroTable::isReserved ( const char * word ) 
 
 void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                                                  const Buffer & in,
-                                                 bool inExpression )
+                                                 ExpansionMode expMode )
 {
     int outpos = 0;
     int start = -1;
     InMode mode = MODE_NORMAL;
 
+    Buffer expansionBuffer;
+
     for ( int pos = 0; pos <= in.m_pos; pos++ )
     {
+        bool backslash = ( ( 0 != pos ) && ( '\\' == in.m_data[pos - 1] ) );
+
         if ( MODE_NORMAL == mode)
         {
             if ( '"' == in.m_data[pos] )
             {
-                mode = MODE_STRING;
+                if ( false == backslash )
+                {
+                    mode = MODE_STRING;
+                }
             }
             else if ( '\'' == in.m_data[pos] )
             {
-                mode = MODE_CHAR;
+                if ( false == backslash )
+                {
+                    mode = MODE_CHAR;
+                }
             }
             else if ( ( isalnum(in.m_data[pos]) ) || ( '_' == in.m_data[pos] ) )
             {
@@ -1037,13 +1115,13 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                 memcpy(name, in.m_data + start, length);
                 name[length] = '\0';
 
-                if ( ( true == inExpression ) && ( 0 == strcmp(name, "defined") ) )
+                if ( ( EXP_EXPRESSION & expMode ) && ( 0 == strcmp(name, "defined") ) )
                 {
                     std::vector<std::string> argVector;
-                    int argLen = getArgVector(argVector, in.m_data + pos);
+                    int argLen = getArgVector(argVector, in.m_data + pos, expMode);
                     if ( -1 == argLen )
                     {
-                        std::cout << "[W] MISSING ARGUMENT FOR THE defined() operator\n";
+                        std::cout << "[W] MISSING ARGUMENT FOR THE defined() OPERATOR\n";
                         throw 0;
                     }
                     pos += argLen;
@@ -1073,7 +1151,7 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     std::vector<std::string> argVector;
                     if ( false == macro->second.m_parameters.empty() )
                     {
-                        int argLen = getArgVector(argVector, in.m_data + pos);
+                        int argLen = getArgVector(argVector, in.m_data + pos, expMode);
 
                         if ( -1 == argLen )
                         {
@@ -1112,15 +1190,24 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     }
 
                     out.append(Buffer(in.m_data+outpos, start-outpos));
-
                     m_status.m_macros.insert(name);
 
-                    Buffer macroBody;
-                    substitute(macroBody, macro->second, argVector);
-                    expand(out, macroBody, inExpression);
+//                     Buffer expansionBuffer;
+                    expansionBuffer.m_pos = 0;
+                    substitute(expansionBuffer, macro->second, argVector);
 
-                    m_status.m_macros.erase(name);
+std::cout << "### >>>[IN] '"<<expansionBuffer.m_data<<"'\n";
+                    expand(out, expansionBuffer, ExpansionMode(expMode | EXP_RECURSIVE));
+std::cout << "### >>>OUT '"<<out.m_data<<"'\n\n";
+std::cout << "### >>>RMD '"<<in.m_data + pos<<"'\n\n";
                     m_status.m_depth--;
+
+//                     out.append(auxBuffer);
+                }
+
+                if ( 0 == ( EXP_RECURSIVE & expMode )  )
+                {
+                    m_status.m_macros.clear();
                 }
 
                 outpos = pos;
@@ -1129,11 +1216,17 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
         }
         else if ( ( MODE_STRING == mode ) && ( '"' == in.m_data[pos] ) )
         {
-            mode = MODE_NORMAL;
+            if ( false == backslash )
+            {
+                mode = MODE_NORMAL;
+            }
         }
         else if ( ( MODE_CHAR == mode ) && ( '\'' == in.m_data[pos] ) )
         {
-            mode = MODE_NORMAL;
+            if ( false == backslash )
+            {
+                mode = MODE_NORMAL;
+            }
         }
     }
 
@@ -1141,29 +1234,174 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
 }
 
 int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> & argVector,
-                                                      char * string )
+                                                      char * string,
+                                                      ExpansionMode expMode )
 {
-    if ( '(' != string[0] )
+    int end = 0;
+    int start = 0;
+    int endpar = 0;
+    InMode mode = MODE_NORMAL;
+// std::cout << "char * string = \""<<string<<"\";\n";
+    if ( EXP_EXPRESSION & expMode )
+    {
+        while ( ( '\0' != string[++start] ) && ( '_' != string[start] ) && ( !isalnum(string[start]) ) );
+        end = start;
+        while ( ( '\0' != string[++end] ) && ( ( '_' == string[end] ) || ( isalnum(string[end]) ) ) );
+//         std::cout << "string='"<<string<<"' end='"<<end<<"', start='"<<start<<"'\n";
+// std::cout << "DEFINED("<<std::string(string + start, end - start)<<") with size of "<<end<<"\n";
+        argVector.push_back(std::string(string + start, end - start));
+        return end;
+    }
+    else if ( '(' != string[0] )
     {
         std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
         return -1;
     }
-
-    int i = 0;
-    while ( ( '\0' != string[++i] ) && ( ')' != string[i] ) );
-    if ( '\0' == string[i] )
+    else
     {
-        std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING `)'\n";
-        return -1;
+        start = 1;
+        endpar = 1;
+
+        int par = 1;
+//         for ( par = 1; 0 != par; par -- )
+//         {
+            while ( '\0' != string[++end] && ( 0 != par ) )
+            {
+                bool backslash = ( ( 0 != end ) && ( '\\' == string[end - 1] ) );
+
+                if ( true == backslash )
+                {
+                    continue;
+                }
+
+                if ( MODE_NORMAL == mode )
+                {
+                    if ( true /*false == backslash*/ )
+                    {
+                        if ( '"' == string[end] )
+                        {
+                            mode = MODE_STRING;
+                        }
+                        else if ( '\'' == string[end] )
+                        {
+                            mode = MODE_CHAR;
+                        }
+                        else if ( '(' == string[end] )
+                        {
+                            par++;
+                        }
+                        else if ( ')' == string[end] )
+                        {
+                            par--;
+                        }
+                        else if ( ( 1 == par ) && ( ',' == string[end] ) )
+                        {
+
+                            while ( IS_SPACE(string[start]) )
+                            {
+                                start++;
+                            }
+
+                            int length = end - start;
+// std::cout<<"string[j]='" << string[end - 1]<<"'\n";
+                            for ( int j = ( end - 1 ); ( j >= 0 ) && IS_SPACE(string[j]); j-- )
+                            {
+// std::cout<<"string[j]='" << string[j]<<"'\n";
+                                length--;
+                            }
+
+                            char argument[length + 1];
+                            memcpy(argument, string + start, length);
+                            argument[length] = '\0';
+                            argVector.push_back(argument);
+//     std::cout << "argument='"<<argument<<"', length="<<length<<", start="<<start<<"\n";
+
+
+                            start = end + 1;
+                        }
+                    }
+                }
+                else if (
+//                             ( false == backslash )
+//                                 &&
+                            (
+                                ( ( MODE_STRING == mode ) && ( '"'  == string[end] ) )
+                                    ||
+                                ( ( MODE_CHAR   == mode ) && ( '\'' == string[end] ) )
+                            )
+                        )
+                {
+                    mode = MODE_NORMAL;
+                }
+            }
+
+//             if ( '\0' == string[end] )
+//             {
+//                 break;
+//             }
+//         }
+
+        if ( 0 != par )
+        {
+            std::cout << "[W] POSSIBLE MACRO EXPANSION, UNMATCHED `()'\n";
+            return -1;
+        }
+
+//         if ( '\0' == string[end] )
+//         {
+//             std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING `)'\n";
+//             return -1;
+//         }
+
+        {
+
+            end -= endpar;
+
+                            while ( IS_SPACE(string[start]) )
+                            {
+                                start++;
+                            }
+
+                            int length = end - start;
+
+                            for ( int j = ( end - 1 ); ( j >= 0 ) && IS_SPACE(string[j]); j-- )
+                            {
+                                length--;
+                            }
+
+//                         int length = end - start - endpar;
+                        char argument[length + 1];
+                        memcpy(argument, string + start, length);
+                        argument[length] = '\0';
+                        argVector.push_back(argument);
+// std::cout << "argument='"<<argument<<"', length="<<length<<"\n";
+
+        }
+
+// std::cout<<"string["<<end<<"]:"<<string<<"";
+    if ( EXP_RECURSIVE & expMode )
+    {
+
+        for ( unsigned int i = 0; i < argVector.size(); i++ )
+        {
+// std::cout << "I='"<<argVector[i]<<"'\n";
+            Buffer out;
+            expand(out, argVector[i], EXP_RECURSIVE);
+            argVector[i] = out.m_data;
+// std::cout << "O='"<<argVector[i]<<"'\n\n";
+        }
     }
 
-    int length = i - 1;
-    char arguments [ length + 1 ];
-    memcpy(arguments, string + 1, length);
+        return end + endpar;
+    }
+
+    int length = end - start;
+    char arguments[length + 1];
+    memcpy(arguments, string + start, length);
     arguments[length] = '\0';
 
     char * argStart = arguments;
-    for ( i = 0; i <= length; i++ )
+    for ( int i = 0; i <= length; i++ )
     {
         if ( ( ',' != arguments[i] ) && ( i != length ) )
         {
@@ -1172,25 +1410,33 @@ int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> &
 
         arguments[i] = '\0';
 
-        for ( int j = ( i - 1 ); ( ' ' == arguments[j] ) || ( '\t' == arguments[j] ); j-- )
+        for ( int j = ( i - 1 ); ( j >= 0 ) && IS_SPACE(arguments[j]); j-- )
         {
             arguments[j] = '\0';
         }
 
-        while ( ( ' ' == argStart[0] ) || ( '\t' == argStart[0] ) )
+        while ( IS_SPACE(argStart[0]) )
         {
             argStart++;
         }
 
-        if ( '\0' != argStart[0] )
-        {
-            argVector.push_back(argStart);
-        }
-
+        argVector.push_back(argStart);
         argStart = arguments + i + 1;
     }
+// std::cout<<"string='"<<string<<"'\n";
+    if ( EXP_EXPRESSION & expMode )
+    {
+        for ( unsigned int i = 0; i < argVector.size(); i++ )
+        {
+// std::cout << "I='"<<argVector[i]<<"'\n";
+            Buffer out;
+            expand(out, argVector[i], EXP_RECURSIVE);
+            argVector[i] = out.m_data;
+// std::cout << "O='"<<argVector[i]<<"'\n\n";
+        }
+    }
 
-    return ( length + 2 );
+    return ( length + start + endpar );
 }
 
 inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
@@ -1203,6 +1449,7 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
     InMode mode = MODE_NORMAL;
 
     const Buffer in(macro.m_body);
+    bool concat = false;
     bool hasParameters = !macro.m_parameters.empty();
 
     std::string vaArgsString;
@@ -1225,17 +1472,25 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
 
     for ( int pos = 0; pos <= in.m_pos; pos++ )
     {
+        bool backslash = ( ( 0 != pos ) && ( '\\' == in.m_data[pos - 1] ) );
+
         if ( MODE_NORMAL == mode)
         {
             if ( '"' == in.m_data[pos] )
             {
-                stringify = -1;
-                mode = MODE_STRING;
+                if ( false == backslash )
+                {
+                    stringify = -1;
+                    mode = MODE_STRING;
+                }
             }
             else if ( '\'' == in.m_data[pos] )
             {
-                stringify = -1;
-                mode = MODE_CHAR;
+                if ( false == backslash )
+                {
+                    stringify = -1;
+                    mode = MODE_CHAR;
+                }
             }
             else if ( ( isalnum(in.m_data[pos]) ) || ( '_' == in.m_data[pos] ) )
             {
@@ -1274,35 +1529,110 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
 
                         out.append(Buffer(in.m_data+outpos, start-outpos));
 
+                        Buffer aux;
+                        Buffer * result = &out;
                         if ( -1 != stringify )
                         {
                             // Stringification.
+                            result = &aux;
                             out.m_data[out.m_pos++] = '"';
                         }
 
                         if ( true == varArg )
                         {
+                            if ( ( true == concat ) && ( ',' == result->m_data[result->m_pos-1] ) )
+                            {
+                                result->m_pos--;
+                            }
+
                             // Variable argument.
                             bool first = true;
                             for ( ; idx < (int) argVector.size(); idx++ )
                             {
                                 if ( false == first )
                                 {
-                                    out.m_data[out.m_pos++] = ',';
+                                    result->append(", ");
+//                                     result->m_data[result->m_pos++] = ',';
                                 }
-                                out.append(argVector[idx]);
+                                result->append(argVector[idx]);
                                 first = false;
                             }
                         }
                         else
                         {
-                            out.append(argVector[idx]);
+                            result->append(argVector[idx]);
                         }
 
                         if ( -1 != stringify )
                         {
+// std::cout<<"<< Stringification {\n";
                             // Stringification.
+                            InMode mode0 = MODE_NORMAL;
+
+                            unsigned int i0 = 0;
+                            unsigned int i1 = 0;
+// std::cout<<"    '"<<aux.m_data<<"'\n";
+                            for ( ; i1 < aux.m_pos; i1++ )
+                            {
+                                bool backslash = ( ( 0 != pos ) && ( '\\' == in.m_data[pos - 1] ) );
+
+                                if ( MODE_NORMAL == mode0 )
+                                {
+                                    if ( false == backslash )
+                                    {
+                                        switch ( aux.m_data[i1] )
+                                        {
+                                            case '"':
+                                                mode0 = MODE_STRING;
+                                                out.append(Buffer(aux.m_data + i0, i1 - i0));
+                                                out.m_data[out.m_pos++] = '\\';
+                                                i0 = i1;
+                                                break;
+                                            case '\'':
+                                                mode0 = MODE_CHAR;
+                                                break;
+                                        }
+                                    }
+                                }
+                                else if ( MODE_STRING == mode0 )
+                                {
+                                    switch ( aux.m_data[i1] )
+                                    {
+                                        case '"':
+                                            if ( false == backslash )
+                                            {
+                                                mode0 = MODE_NORMAL;
+//                                                 break;
+                                            }
+                                        case '\\':
+                                            out.append(Buffer(aux.m_data + i0, i1 - i0));
+                                            out.m_data[out.m_pos++] = '\\';
+                                            i0 = i1;
+                                            break;
+                                    }
+                                }
+                                else if ( MODE_CHAR == mode0 )
+                                {
+                                    switch ( aux.m_data[i1] )
+                                    {
+                                        case '\'':
+                                            if ( false == backslash )
+                                            {
+                                                mode0 = MODE_NORMAL;
+                                                break;
+                                            }
+                                        case '\\':
+                                            out.append(Buffer(aux.m_data + i0, i1 - i0));
+                                            out.m_data[out.m_pos++] = '\\';
+                                            i0 = i1;
+                                            break;
+                                    }
+                                }
+                            }
+                            out.append(Buffer(aux.m_data + i0, i1 - i0));
                             out.m_data[out.m_pos++] = '"';
+// std::cout<<"    OUT:'"<<out.m_data<<"'\n";
+// std::cout<<">> Stringification }\n";
                         }
                     }
 
@@ -1311,37 +1641,52 @@ inline void CompilerCPreprocessor::MacroTable::substitute ( Buffer & out,
                     stringify = -1;
                 }
 
+                concat = false;
+
                 if ( '#' == in.m_data[pos] )
                 {
-                    if ( -1 != stringify )
-                    {
-                        std::cout << "!!! INVALID USE OF PREPROCESSING OPERATOR `#'\n";
-                        throw 0;
-                    }
-                    stringify = -1;
-
                     if ( '#' == in.m_data[ pos + 1 ] )
                     {
-                        for ( pos += 2; ( ' ' == in.m_data[pos] ) || ( '\t' == in.m_data[pos] ); pos++ );
-                        outpos = pos;
-                        pos--;
+                        if ( ( 0 == pos ) || ( ( in.m_pos - 2 ) == pos ) )
+                        {
+                            std::cout << "!!! INVALID USE OF PREPROCESSING OPERATOR `##'\n";
+                            throw 0;
+                        }
+
+                        stringify = -1;
+                        concat = true;
+// std::cout <<in.m_data<<"\n";
+// std::cout<< "OPERATOR `##' DETECTED at " << pos << ", outpos="<<outpos<<"\n";
+                        int i = pos;
+                        while ( ( --i >= outpos ) && IS_SPACE(in.m_data[i]) );
+// std::cout << "i="<<i<<"\n";
+// std::cout<<"out='"<<out.m_data<<"'\n";
+                        out.append(Buffer(in.m_data + outpos, 1 + i - outpos));
+
+                        for ( pos += 2; IS_SPACE(in.m_data[pos]); pos++ );
+                        outpos = pos--;
+// std::cout << "outpos="<<outpos<<", pos="<<pos<<", out='"<<out.m_data<<"'\n";
                     }
                     else
                     {
                         stringify = pos;
                     }
                 }
-                else if ( ( ' ' != in.m_data[pos] ) && ( '\t' != in.m_data[pos] ) )
+                else if ( !IS_SPACE(in.m_data[pos]) )
                 {
                     stringify = -1;
                 }
             }
         }
-        else if ( ( MODE_STRING == mode ) && ( '"' == in.m_data[pos] ) )
-        {
-            mode = MODE_NORMAL;
-        }
-        else if ( ( MODE_CHAR == mode ) && ( '\'' == in.m_data[pos] ) )
+        else if (
+                    ( false == backslash )
+                        &&
+                    (
+                        ( ( MODE_STRING == mode ) && ( '"'  == in.m_data[pos] ) )
+                            ||
+                        ( ( MODE_CHAR   == mode ) && ( '\'' == in.m_data[pos]) )
+                    )
+                )
         {
             mode = MODE_NORMAL;
         }
