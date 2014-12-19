@@ -277,6 +277,12 @@ MainForm::MainForm()
             this,
             SLOT(fileClosed(QString))
            );
+    connect(m_wDockManager,
+            SIGNAL(saveCodeEdit(CodeEdit*, bool)),
+            this,
+            SLOT(saveFile(CodeEdit*, bool))
+           );
+    
     /*connect(m_wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -1623,6 +1629,7 @@ void MainForm::saveFileAs()
             m_wDockManager->setCentralName(path.section('/', -1));
             m_wDockManager->getCentralWidget()->setSaved();
         }
+        QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
     }
     //qDebug() << "MainForm: return saveFileAs()";
@@ -1632,11 +1639,21 @@ void MainForm::saveFileAs()
 /**
  * @brief Saves file from selected CodeEditor.
  */
-void MainForm::saveFile(CodeEdit *editor)
+void MainForm::saveFile(CodeEdit *editor, bool ask)
 {
     //qDebug() << "MainForm: saveFile()";
-    //if (editor->isChanged() == true)
-    //{
+    if (true == editor->isChanged())
+    {
+        if (true == ask)
+        {
+            QString text = "File " + m_wDockManager->getCentralName() + " has been modified, do you want to save changes?";
+            int ret = QMessageBox::question(this, "File changed", text, QMessageBox::Save|QMessageBox::Discard, QMessageBox::Save);
+            if (QMessageBox::Save != ret)
+            {
+                //qDebug() << "MainForm: ret button" << ret;
+                return;
+            }
+        }
         QString path;
         if (editor->getPath() == NULL || editor->getPath() == "untracked")
         {
@@ -1739,9 +1756,14 @@ void MainForm::saveFile(CodeEdit *editor)
                 editor->setSaved();
                 //qDebug() << "mainform: editor saved";
             }
+            QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
         }
-    //}
+    }
+    else
+    {
+        qDebug() << "MainForm: codeedit not changed";
+    }
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -3100,6 +3122,7 @@ void MainForm::simulationFlowHandle()
         else
         {
             m_projectMan->setSimulated(NULL);
+            qDebug() << "MainForm: start returned" << start;
             switch (start)
             {
                 case 1:

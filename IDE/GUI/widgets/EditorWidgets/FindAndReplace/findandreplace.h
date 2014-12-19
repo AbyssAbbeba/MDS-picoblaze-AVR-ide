@@ -48,6 +48,9 @@ class FindAndReplace : public QWidget
     private:
         Ui_FindAndReplace ui;
 
+    protected:
+        bool eventFilter(QObject *target, QEvent *event);
+
 };
 
 #endif

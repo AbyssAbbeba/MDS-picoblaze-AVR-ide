@@ -77,7 +77,6 @@ class MainForm : public QMainWindow
         MainForm();
         ~MainForm();
 
-        void saveFile(CodeEdit *editor);
         WDockManager* getWDockManager();
         ProjectMan* getProjectMan();
         //bool dockWidgets;
@@ -99,6 +98,7 @@ class MainForm : public QMainWindow
         void newAddFile();
         //void removeProjFile();
         void saveFile();
+        void saveFile(CodeEdit *editor, bool ask = false);
         void saveFileAs();
         void saveAll();
         void newProject();
