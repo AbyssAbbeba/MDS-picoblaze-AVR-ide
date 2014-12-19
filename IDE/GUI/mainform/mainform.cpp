@@ -1744,12 +1744,16 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             }
             if (path != NULL)
             {
-                editor->setPath(path);
-                editor->setName(path.section('/', -1));
                 if ("untracked" == editor->getParentProject()->prjPath)
                 {
-                    editor->getParentProject()->addFile(path, path.section('/', -1));
+                    editor->getParentProject()->renameFile(editor->getName(), path);
                 }
+                else
+                {
+                    editor->getParentProject()->renameFile(editor->getPath(), path);
+                }
+                editor->setPath(path);
+                editor->setName(path.section('/', -1));
             }
         }
         else
@@ -1770,7 +1774,7 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
                 fout << editor->getTextEdit()->toPlainText();
                 file.close();
                 editor->setSaved();
-                //qDebug() << "mainform: editor saved";
+                qDebug() << "mainform: editor saved";
             }
             QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
