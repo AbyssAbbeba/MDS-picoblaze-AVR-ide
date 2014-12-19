@@ -1,0 +1,38 @@
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+int main ( )  
+{
+    int i = __port[0];
+    i = i | ~1;
+    __port[0]   = i; 
+
+    const char * a = "// this is not a comment";
+    const char * b = "/* this is not a comment";
+    const char * c = "# this is not a directive";
+    const char * d = "\"/*some string*/\"";
+    const char * e = "{ <% %> }"                      "{ <% %> }";
+
+    short x = 2 ^ 2 + 102011;
+
+    for ( int j = 0; j < 10; j++ )
+    {
+        x++;  
+    }
+
+    return 0;
+}

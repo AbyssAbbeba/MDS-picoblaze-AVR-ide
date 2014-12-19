@@ -110,7 +110,10 @@
  *
  * @defgroup testsCompiler Compiler
  * @ingroup tests
- * This group contains components of the KCPSM3 assembler.
+ * This group contains components of the MDS compiler.
+ *
+ * @defgroup testsCompilerC C Compiler
+ * @ingroup testsCompiler
  *
  * @defgroup testsAssembler Assembler
  * @ingroup testsCompiler

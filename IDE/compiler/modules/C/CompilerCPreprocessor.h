@@ -63,7 +63,8 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             DIR_ELSE,   ///<
             DIR_ENDIF,  ///<
             DIR_WARNING,///<
-            DIR_ERROR   ///<
+            DIR_ERROR,  ///<
+            DIR_NULL    ///<
         };
 
         struct Include
@@ -98,8 +99,10 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             ////    Constructors and Destructors    ////
             public:
                 Buffer();
-                Buffer ( const std::string & data,
-                         bool copy = false );
+                Buffer ( const std::string & data/*,
+                         bool copy = false*/ );
+                Buffer ( const char * data/*,
+                         bool copy = false */);
                 Buffer ( char * data,
                          unsigned int length );
                 ~Buffer();
@@ -157,6 +160,15 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
                 /// Language keywords.
                 static const std::set<std::string> s_keywords;
 
+            ////    Public Datatypes    ////
+            public:
+                enum ExpansionMode
+                {
+                    EXP_NORMAL = 0,
+                    EXP_RECURSIVE = 1,
+                    EXP_EXPRESSION = 2
+                };
+
             ////    Private Datatypes    ////
             private:
                 struct Macro
@@ -181,7 +193,7 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             public:
                 void expand ( Buffer & out,
                               const Buffer & in,
-                              bool inExpression = false );
+                              ExpansionMode expMode = EXP_NORMAL );
 
             ////    Inline Public Operations    ////
             public:
@@ -200,7 +212,8 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             ////    Private Operations    ////
             private:
                 int getArgVector ( std::vector<std::string> & argVector,
-                                   char * string );
+                                   char * string,
+                                   ExpansionMode expMode = EXP_NORMAL );
 
             ////    Private Attributes    ////
             private:
