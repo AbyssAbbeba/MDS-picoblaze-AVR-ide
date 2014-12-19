@@ -20,3 +20,8 @@ project ( testsCompiler )
 
 # Tests for assembler.
 add_subdirectory ( assembler )
+
+# Tests for C compiler.
+if ( MDS_FEATURE_C_COMPILER )
+    add_subdirectory ( C )
+endif()

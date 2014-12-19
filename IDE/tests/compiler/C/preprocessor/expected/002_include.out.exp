@@ -1,0 +1,14 @@
+int main ( int argc, char ** argv );
+
+struct S
+{
+    int i;
+} s;
+
+int main ( int argc, char ** argv )
+{
+    for ( int i = 0; i < 10; i++ )
+        s.i = i;
+
+    return 0;
+}
