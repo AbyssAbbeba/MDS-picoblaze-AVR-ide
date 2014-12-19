@@ -1073,7 +1073,8 @@ inline bool CompilerCPreprocessor::MacroTable::isReserved ( const char * word ) 
 
 void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                                                  const Buffer & in,
-                                                 ExpansionMode expMode )
+                                                 ExpansionMode expMode,
+                                                 const Buffer * nextBuffer )
 {
     int outpos = 0;
     int start = -1;
@@ -1151,7 +1152,7 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     std::vector<std::string> argVector;
                     if ( false == macro->second.m_parameters.empty() )
                     {
-                        int argLen = getArgVector(argVector, in.m_data + pos, expMode);
+                        int argLen = getArgVector(argVector, in.m_data + pos, expMode, nextBuffer);
 
                         if ( -1 == argLen )
                         {
@@ -1192,12 +1193,12 @@ void CompilerCPreprocessor::MacroTable::expand ( Buffer & out,
                     out.append(Buffer(in.m_data+outpos, start-outpos));
                     m_status.m_macros.insert(name);
 
-//                     Buffer expansionBuffer;
                     expansionBuffer.m_pos = 0;
                     substitute(expansionBuffer, macro->second, argVector);
 
 std::cout << "### >>>[IN] '"<<expansionBuffer.m_data<<"'\n";
-                    expand(out, expansionBuffer, ExpansionMode(expMode | EXP_RECURSIVE));
+                    Buffer next(in.m_data + pos, in.m_pos - pos);
+                    expand(out, expansionBuffer, ExpansionMode(expMode | EXP_RECURSIVE), &next);
 std::cout << "### >>>OUT '"<<out.m_data<<"'\n\n";
 std::cout << "### >>>RMD '"<<in.m_data + pos<<"'\n\n";
                     m_status.m_depth--;
@@ -1234,9 +1235,26 @@ std::cout << "### >>>RMD '"<<in.m_data + pos<<"'\n\n";
 }
 
 int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> & argVector,
-                                                      char * string,
-                                                      ExpansionMode expMode )
+                                                      char * _string,
+                                                      ExpansionMode expMode,
+                                                      const Buffer * nextBuffer )
 {
+    char * string ;
+
+if (nextBuffer)
+{
+std::cout << "getArgVector from '"<<string<<"', next='"<<nextBuffer->m_data<<"'\n";
+string = new char[strlen(_string) + nextBuffer->m_pos + 1];
+strcpy(string, _string);
+strcpy(string + strlen(_string), nextBuffer->m_data);
+std::cout << "Final arg. parse input is '"<<string<<"'\n";
+}
+else
+{
+string = _string;
+}
+
+
     int end = 0;
     int start = 0;
     int endpar = 0;
@@ -1252,20 +1270,21 @@ int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> &
         argVector.push_back(std::string(string + start, end - start));
         return end;
     }
-    else if ( '(' != string[0] )
-    {
-        std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
-        return -1;
-    }
     else
     {
+        if ( '(' != string[0] )
+        {
+            std::cout << "[W] POSSIBLE MACRO EXPANSION, MISSING ARGUMENT(S)\n";
+            return -1;
+        }
+
         start = 1;
         endpar = 1;
 
-        int par = 1;
+        int parentheses = 0;
 //         for ( par = 1; 0 != par; par -- )
 //         {
-            while ( '\0' != string[++end] && ( 0 != par ) )
+            for ( ;'\0' != string[end] && ( 0 != parentheses ); end++ )
             {
                 bool backslash = ( ( 0 != end ) && ( '\\' == string[end - 1] ) );
 
@@ -1288,13 +1307,13 @@ int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> &
                         }
                         else if ( '(' == string[end] )
                         {
-                            par++;
+                            parentheses++;
                         }
                         else if ( ')' == string[end] )
                         {
-                            par--;
+                            parentheses--;
                         }
-                        else if ( ( 1 == par ) && ( ',' == string[end] ) )
+                        else if ( ( 1 == parentheses ) && ( ',' == string[end] ) )
                         {
 
                             while ( IS_SPACE(string[start]) )
@@ -1341,7 +1360,7 @@ int CompilerCPreprocessor::MacroTable::getArgVector ( std::vector<std::string> &
 //             }
 //         }
 
-        if ( 0 != par )
+        if ( 0 != parentheses )
         {
             std::cout << "[W] POSSIBLE MACRO EXPANSION, UNMATCHED `()'\n";
             return -1;
