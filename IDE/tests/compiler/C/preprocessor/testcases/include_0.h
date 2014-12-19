@@ -1,0 +1,8 @@
+i\
+n\
+t\
+ main??/
+ ( int argc,??/
+ char *??/
+* argv??/
+ );

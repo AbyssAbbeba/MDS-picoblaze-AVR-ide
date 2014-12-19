@@ -22,8 +22,8 @@ namespace CompilerCDatatypes
     enum Datatypes
     {
         DT_EMPTY = 0,       ///<
-        DT_AUTO = 1,        ///<
-        DT_CHAR = 2,        ///<
+        DT_AUTO,            ///<
+        DT_CHAR,            ///<
         DT_CONST,           ///<
         DT_DOUBLE,          ///<
         DT_EXTERN,          ///<

@@ -1,0 +1,27 @@
+ 
+
+ 
+     
+         
+
+ 
+     
+
+
+ 
+     
+    int y = 1020 / 2;  
+    int y = 1020 / 2 + 1;  
+
+ 
+    Func_Macro;
+
+ 
+char y = 'x';  
+const char * y = "OBJMACRO";  
+
+ 
+SELF_REPEAT + 1
+
+ 
+SELF_REPEAT_LOOP + 1 + 1

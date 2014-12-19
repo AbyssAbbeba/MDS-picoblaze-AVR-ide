@@ -31,10 +31,10 @@
  *                return, provided _FATAL versions of assertions to return
  *                from test function on failure. (JDS)
  *
- *  01-Sep-2004   Modified assertions for setjmp/longjmp mechanism of 
+ *  01-Sep-2004   Modified assertions for setjmp/longjmp mechanism of
  *                aborting test runs, added CU_FAIL and CU_PASS macros. (JDS)
  *
- *  07-May-2005   Added CU_ prefix to remaining CUnit defines (BOOL, TRUE, 
+ *  07-May-2005   Added CU_ prefix to remaining CUnit defines (BOOL, TRUE,
  *                FALSE, MAX_...).  Added CU_UNREFERENCED_PARAMETER() define. (JDS)
  */
 
@@ -142,11 +142,14 @@
 
 /** Record a failure without performing a logical test. */
 #define CU_FAIL(msg) \
-  { CU_assertImplementation(CU_FALSE, __LINE__, msg /*("CU_FAIL(" #msg ")")*/, __FILE__, "", CU_FALSE); }
+  { CU_assertImplementation(CU_FALSE, /*__LINE__*/0, (std::string() + msg).c_str(), ""/*__FILE__*/, "", CU_FALSE); }
+
+#define CU_FAIL_MSG(file, line, msg) \
+  { CU_assertImplementation(CU_FALSE, line, (std::string() + msg).c_str(), std::string(file).c_str(), "", CU_FALSE); }
 
 /** Record a failure without performing a logical test, and abort test. */
 #define CU_FAIL_FATAL(msg) \
-  { CU_assertImplementation(CU_FALSE, __LINE__, msg /*("CU_FAIL_FATAL(" #msg ")")*/, __FILE__, "", CU_TRUE); }
+  { CU_assertImplementation(CU_FALSE, __LINE__, msg, __FILE__, "", CU_TRUE); }
 
 /** Asserts that value is CU_TRUE.
  *  Reports failure with no other action.
