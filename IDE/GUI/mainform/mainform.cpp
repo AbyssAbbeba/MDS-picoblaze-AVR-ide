@@ -3760,7 +3760,7 @@ void MainForm::closeProject()
         for (int i = 0; i < project->filePaths.count(); i++)
         {
             path.setPath(project->prjPath.section('/',0,-2));
-            m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))));
+            m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))), false);
         }
         //qDebug() << "MainForm: delete active sim widget";
         m_wDockManager->deleteActiveSimWidget();
