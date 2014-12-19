@@ -1601,6 +1601,7 @@ QString Project::addFile(QString path, QString name)
                 fileName = "untracked"+QString::number(fileCount);
             }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
+            fileNames.append(fileName);
             filePaths.append("untracked");
             m_fileStats.append(false);
         }
@@ -1608,6 +1609,7 @@ QString Project::addFile(QString path, QString name)
         {
             treeProjFile->setText(0, name);
             treeProjFile->setData(0, Qt::ToolTipRole, path);
+            fileNames.append(name);
             filePaths.append(path);
             m_fileStats.append(false);
         }
@@ -2688,19 +2690,36 @@ void Project::requestProjectPath()
 }
 
 
+//in case of untracked project, oldPath = oldName, because untracked files have path "untracked"
 void Project::renameFile(QString oldPath, QString newPath)
 {
     QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = QDir::cleanPath(project.relativeFilePath(oldPath));
-    int index = filePaths.indexOf(relativePath);
-    if (-1 == index)
+    QString relativePath;
+    int index = 0;
+    if ("untracked" == prjPath)
     {
-        qDebug() << "Project: File" << relativePath << "not in project";
-        relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
-        this->addFile(relativePath, relativePath.section('/', -1));
-        return;
+        index = fileNames.indexOf(oldPath);
+        if (-1 == index)
+        {
+            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(relativePath, relativePath.section('/', -1));
+            return;
+        }
+    }
+    else
+    {
+        relativePath = QDir::cleanPath(project.relativeFilePath(oldPath));
+        index = filePaths.indexOf(relativePath);
+        if (-1 == index)
+        {
+            //qDebug() << "Project: File" << relativePath << "not in project";
+            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(relativePath, relativePath.section('/', -1));
+            return;
+        }
     }
     relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+    qDebug() << "index  found" << relativePath << newPath;
     fileNames[index] = relativePath.section('/', -1);
     filePaths[index] = relativePath;
     this->reloadProjectTree();
