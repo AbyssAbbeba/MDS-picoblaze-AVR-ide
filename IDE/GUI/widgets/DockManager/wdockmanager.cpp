@@ -1444,11 +1444,16 @@ void WDockManager::showProjectEditors(QString projectPath)
         //qDebug() << openCentralWidgets.at(i).first->id;
         if (projectPath == openCentralWidgets.at(i).first->id)
         {
-            //qDebug() << "WDockManager: tabs checked";
+            if (m_currTabBarIndex == i)
+            {
+                return;
+            }
+            qDebug() << "WDockManager: tabs checked";
             if (wTab != NULL)
             {
                 wTab->hide();
             }
+            qDebug() << "WDockManager: tabs checked 2";
             wTab = openCentralWidgets.at(i).first;
             wTab->show();
             m_currTabBarIndex = i;
@@ -1457,7 +1462,7 @@ void WDockManager::showProjectEditors(QString projectPath)
                 changeCodeEditor(wTab->currentIndex());
                 //qDebug() << "WDockManager: checking tabs - return";
             }
-            return;
+            break;
         }
     }
 }
@@ -1496,6 +1501,7 @@ void WDockManager::removeTabBar(QString projectPath)
             TabBar *tab = openCentralWidgets.at(i).first;
             openCentralWidgets.removeAt(i);
             delete tab;
+            wTab = NULL;
             break;
         }
     }

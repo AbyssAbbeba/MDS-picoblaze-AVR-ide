@@ -3794,6 +3794,13 @@ void MainForm::closeProject()
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
         }
+        else
+        {
+            if (NULL != m_projectMan->getActive())
+            {
+                m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
+            }
+        }
     }
 }
 
