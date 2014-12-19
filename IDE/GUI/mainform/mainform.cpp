@@ -277,6 +277,16 @@ MainForm::MainForm()
             this,
             SLOT(fileClosed(QString))
            );
+    connect(m_wDockManager,
+            SIGNAL(saveCodeEdit(CodeEdit*, bool)),
+            this,
+            SLOT(saveFile(CodeEdit*, bool))
+           );
+    connect(m_wDockManager,
+            SIGNAL(requestUntitled(bool)),
+            this,
+            SLOT(setCentralUntitled(bool))
+           );
     /*connect(m_wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -1295,29 +1305,6 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             //qDebug() << "MainForm: set parent";
             if (parentProjectPath != "")
             {
-                for (int i = 0; i < m_projectMan->getOpenProjects().count(); i++)
-                {
-                    //qDebug() << "MainForm: addCentralWidget - for cycle";
-                    //qDebug() << m_projectMan->getOpenProjects().at(i)->prjPath;
-                    //qDebug() << parentProjectPath;
-                    if (m_projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
-                    {
-                        //qDebug() << "MainForm: addCentralWidget - parent project";
-                        if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
-                        {
-                            return;
-                        }
-                        CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
-                        //centralCodeEdit->connectAct();
-                        centralCodeEdit->setParentProject(m_projectMan->getOpenProjects().at(i));
-                        m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getOpenProjects().at(i));
-                        centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
-                        centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
-                        m_projectMan->getOpenProjects().at(i)->setFileOpened(path, true);
-                        //m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->updateLineCounter();
-                        break;
-                    }
-                }
                 if (parentProjectPath == "untracked")
                 {
                     if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
@@ -1329,6 +1316,32 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
                     m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
                     m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
                     GuiCfg::getInstance().fileOpened(path);
+                }
+                else
+                {
+                //for (int i = 0; i < m_projectMan->getOpenProjects().count(); i++)
+                //{
+                    //qDebug() << "MainForm: addCentralWidget - for cycle";
+                    //qDebug() << m_projectMan->getOpenProjects().at(i)->prjPath;
+                    //qDebug() << parentProjectPath;
+                    //if (m_projectMan->getOpenProjects().at(i)->prjPath == parentProjectPath)
+                    //{
+                        //qDebug() << "MainForm: addCentralWidget - parent project";
+                    if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+                    {
+                        return;
+                    }
+                    CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
+                    //centralCodeEdit->connectAct();
+                    centralCodeEdit->setParentProject(m_projectMan->getActive());
+                    m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
+                    centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+                    centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
+                    m_projectMan->getActive()->setFileOpened(path, true);
+                    //m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->updateLineCounter();
+                    //break;
+                   //}
+                //}
                 }
             }
             else
@@ -1405,122 +1418,127 @@ void MainForm::addFile()
 void MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
-    if (m_wDockManager->getCentralWidget()->isChanged() == true || m_wDockManager->getCentralPath() == "untracked")
+    if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
+    {
+        saveFileAs();
+        return;
+    }
+    if (m_wDockManager->getCentralWidget()->isChanged() == true)
     {
         /*if (m_wDockManager->getCentralWidget()->isChanged() == true )
         {
             qDebug() << "MainForm: central is changed";
         }
         qDebug() << "Mainform: saving file";*/
-        QString path;
-        if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
+//         QString path;
+//         
+//         {
+//             //path = QFileDialog::getSaveFileName(this, tr("Source File");
+//             bool done = false;
+//             while (false == done)
+//             {
+//                 if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+//                 {
+//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+//                 }
+//                 else
+//                 {
+//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+//                 }
+//                 if (path == NULL)
+//                 {
+//                     break;
+//                 }
+//                 else
+//                 {
+//                     int index = path.lastIndexOf(".");
+//                     if (index > 0)
+//                     {
+//                         QString text(path.right(path.size() - index));
+//                         if (text == ".asm" || text == ".psm")
+//                         {
+//                             done = true;
+//                         }
+//                         else
+//                         {
+//                             QMessageBox dialog(this);
+//                             dialog.setWindowTitle("Highlight note");
+//                             dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+//                             dialog.setIcon(QMessageBox::Warning);
+//                             dialog.setModal(true);
+//                             dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+//                             int result = dialog.exec();
+//                             if (QMessageBox::Yes == result)
+//                             {
+//                                 done = true;
+//                             }
+//                             else
+//                             {
+//                                 if (QMessageBox::Cancel == result)
+//                                 {
+//                                     path = "";
+//                                     break;
+//                                 }
+//                             }
+//                         }
+//                     }
+//                     else
+//                     {
+//                         QMessageBox dialog(this);
+//                         dialog.setWindowTitle("Highlight note");
+//                         dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
+//                         dialog.setIcon(QMessageBox::Warning);
+//                         dialog.setModal(true);
+//                         dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+//                         int result = dialog.exec();
+//                         if (QMessageBox::Yes == result)
+//                         {
+//                             done = true;
+//                         }
+//                         else
+//                         {
+//                             if (QMessageBox::Cancel == result)
+//                             {
+//                                 path = "";
+//                                 break;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//             if (path != NULL)
+//             {
+//                 m_wDockManager->setCentralPath(path);
+//                 m_wDockManager->setCentralName(path.section('/', -1));
+//             }
+//         }
+//         else
+//         {
+//             path = ;
+//         }
+
+        //if (path != NULL)
+        //{
+            //qDebug() << "mainform: block signal true";
+            //QApplication::processEvents();
+        m_fileWatcher.blockSignals(true);
+        QFile file(m_wDockManager->getCentralPath());
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            //path = QFileDialog::getSaveFileName(this, tr("Source File");
-            bool done = false;
-            while (false == done)
-            {
-                if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
-                {
-                    path = QFileDialog::getSaveFileName (this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
-                }
-                else
-                {
-                    path = QFileDialog::getSaveFileName (this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-                }
-                if (path == NULL)
-                {
-                    break;
-                }
-                else
-                {
-                    int index = path.lastIndexOf(".");
-                    if (index > 0)
-                    {
-                        QString text(path.right(path.size() - index));
-                        if (text == ".asm" || text == ".psm")
-                        {
-                            done = true;
-                        }
-                        else
-                        {
-                            QMessageBox dialog(this);
-                            dialog.setWindowTitle("Highlight note");
-                            dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                            dialog.setIcon(QMessageBox::Warning);
-                            dialog.setModal(true);
-                            dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
-                            int result = dialog.exec();
-                            if (QMessageBox::Yes == result)
-                            {
-                                done = true;
-                            }
-                            else
-                            {
-                                if (QMessageBox::Cancel == result)
-                                {
-                                    path = "";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        QMessageBox dialog(this);
-                        dialog.setWindowTitle("Highlight note");
-                        dialog.setText("Note: Only with .asm or .psm file extension will source code be highlighted. Do you wish to continue?");
-                        dialog.setIcon(QMessageBox::Warning);
-                        dialog.setModal(true);
-                        dialog.setStandardButtons(QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
-                        int result = dialog.exec();
-                        if (QMessageBox::Yes == result)
-                        {
-                            done = true;
-                        }
-                        else
-                        {
-                            if (QMessageBox::Cancel == result)
-                            {
-                                path = "";
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if (path != NULL)
-            {
-                m_wDockManager->setCentralPath(path);
-                m_wDockManager->setCentralName(path.section('/', -1));
-            }
+            error(ERR_OPENFILE, m_wDockManager->getCentralPath());
         }
         else
         {
-            path = m_wDockManager->getCentralPath();
+            QTextStream fout(&file);
+            fout << m_wDockManager->getCentralTextEdit()->toPlainText();
+            file.close();
+            m_wDockManager->setTabSaved();
+            m_wDockManager->getCentralWidget()->setSaved();
         }
-
-        if (path != NULL)
-        {
-            //qDebug() << "mainform: block signal true";
-            //QApplication::processEvents();
-            m_fileWatcher.blockSignals(true);
-            QFile file(path);
-            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-            {
-                error(ERR_OPENFILE, path);
-            }
-            else
-            {
-                QTextStream fout(&file);
-                fout << m_wDockManager->getCentralTextEdit()->toPlainText();
-                file.close();
-                m_wDockManager->setTabSaved();
-                m_wDockManager->getCentralWidget()->setSaved();
-            }
-            QApplication::processEvents();
-            m_fileWatcher.blockSignals(false);
+        QApplication::processEvents();
+        m_fileWatcher.blockSignals(false);
             //qDebug() << "mainform: block signal false";
-        }
+        //}
     }
     //qDebug() << "MainForm: return saveFile()";
 }
@@ -1623,6 +1641,7 @@ void MainForm::saveFileAs()
             m_wDockManager->setCentralName(path.section('/', -1));
             m_wDockManager->getCentralWidget()->setSaved();
         }
+        QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
     }
     //qDebug() << "MainForm: return saveFileAs()";
@@ -1632,11 +1651,21 @@ void MainForm::saveFileAs()
 /**
  * @brief Saves file from selected CodeEditor.
  */
-void MainForm::saveFile(CodeEdit *editor)
+void MainForm::saveFile(CodeEdit *editor, bool ask)
 {
     //qDebug() << "MainForm: saveFile()";
-    //if (editor->isChanged() == true)
-    //{
+    if (true == editor->isChanged())
+    {
+        if (true == ask)
+        {
+            QString text = "File " + m_wDockManager->getCentralName() + " has been modified, do you want to save changes?";
+            int ret = QMessageBox::question(this, "File changed", text, QMessageBox::Save|QMessageBox::Discard, QMessageBox::Save);
+            if (QMessageBox::Save != ret)
+            {
+                //qDebug() << "MainForm: ret button" << ret;
+                return;
+            }
+        }
         QString path;
         if (editor->getPath() == NULL || editor->getPath() == "untracked")
         {
@@ -1715,6 +1744,14 @@ void MainForm::saveFile(CodeEdit *editor)
             }
             if (path != NULL)
             {
+                if ("untracked" == editor->getParentProject()->prjPath)
+                {
+                    editor->getParentProject()->renameFile(editor->getName(), path);
+                }
+                else
+                {
+                    editor->getParentProject()->renameFile(editor->getPath(), path);
+                }
                 editor->setPath(path);
                 editor->setName(path.section('/', -1));
             }
@@ -1737,11 +1774,16 @@ void MainForm::saveFile(CodeEdit *editor)
                 fout << editor->getTextEdit()->toPlainText();
                 file.close();
                 editor->setSaved();
-                //qDebug() << "mainform: editor saved";
+                qDebug() << "mainform: editor saved";
             }
+            QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
         }
-    //}
+    }
+    else
+    {
+        qDebug() << "MainForm: codeedit not changed";
+    }
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -1903,6 +1945,7 @@ void MainForm::projectOpened()
     m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
     //QDir dir(m_projectMan->getActive()->);
     QString absoluteFilePath;
+    bool open = false;
     for (int i = 0; i < m_projectMan->getActive()->m_fileStats.count(); i++)
     {
         //qDebug() << "MainForm: project opened stats search" << m_projectMan->getActive()->m_fileStats.at(i);
@@ -1910,7 +1953,12 @@ void MainForm::projectOpened()
         {
             absoluteFilePath = QDir::cleanPath(m_projectMan->getActive()->prjPath.section('/',0, -2) + "/" + m_projectMan->getActive()->filePaths.at(i));
             this->openFilePath(absoluteFilePath, m_projectMan->getActive()->prjPath);
+            open = true;
         }
+    }
+    if (false == open)
+    {
+        this->setCentralUntitled(false);
     }
     //qDebug() << "MainForm: projectOpened done";
 }
@@ -3100,6 +3148,7 @@ void MainForm::simulationFlowHandle()
         else
         {
             m_projectMan->setSimulated(NULL);
+            qDebug() << "MainForm: start returned" << start;
             switch (start)
             {
                 case 1:
@@ -3744,6 +3793,13 @@ void MainForm::closeProject()
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
+        }
+        else
+        {
+            if (NULL != m_projectMan->getActive())
+            {
+                m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
+            }
         }
     }
 }
@@ -4658,7 +4714,7 @@ void MainForm::jmpToBookmarkPrevSlot()
 
 void MainForm::fileClosed(QString path)
 {
-    //qDebug() << "MainForm: file closed";
+    qDebug() << "MainForm: file closed";
     m_fileWatcher.removePath(path);
     m_projectMan->getActive()->setFileOpened(path, false);
 }
@@ -4717,4 +4773,19 @@ void MainForm::reloadCurrentFile()
         file.close();
         QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
     }
+}
+
+
+void MainForm::setCentralUntitled(bool untracked)
+{
+    if (false == m_wDockManager->addCentralWidget("untitled", "untracked"))
+    {
+        return;
+    }
+    CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
+    //centralCodeEdit->connectAct();
+    centralCodeEdit->setParentProject(m_projectMan->getActive());
+    m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
+    centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
+    centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
 }

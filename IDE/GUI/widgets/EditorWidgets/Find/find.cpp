@@ -26,10 +26,27 @@ Find::Find(QWidget *parent, QString query)
 {
     ui.setupUi(this);
     ui.leQuery->setText(query);
+    ui.leQuery->installEventFilter(this);
     connect(ui.btnNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(ui.btnPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
     connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
     connect(ui.leQuery, SIGNAL(returnPressed()), ui.btnNext, SIGNAL(clicked()));
+}
+
+
+bool Find::eventFilter(QObject *target, QEvent *event)
+{
+    if (target == ui.leQuery && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        //overit, jestli je vse v poradku (0-9, A-F, sipky)
+        if (keyEvent->key() == Qt::Key_Escape)
+        {
+            closeClicked();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(target, event);
 }
 
 

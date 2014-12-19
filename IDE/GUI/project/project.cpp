@@ -751,8 +751,8 @@ Project::Project(QFile *file, ProjectMan *parent)
             this->treeProjOther = new QTreeWidgetItem(treeProjName);
             treeProjOther->setText(0, "Other");
 
-            this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
-            treeProjUntitled->setText(0, "Untitled");
+            //this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+            //treeProjUntitled->setText(0, "Untitled");
 
             QDir projectDir = QFileInfo(prjPath).dir();
             QString absolutePath = projectDir.path();
@@ -776,10 +776,10 @@ Project::Project(QFile *file, ProjectMan *parent)
                         treeProjFile = new QTreeWidgetItem(treeProjOther);
                     }
                 }
-                else if ("untitled" == filePaths.at(i))
+                /*else if ("untitled" == filePaths.at(i))
                 {
                     treeProjFile = new QTreeWidgetItem(treeProjUntitled);
-                }
+                }*/
                 else
                 {
                     treeProjFile = new QTreeWidgetItem(treeProjOther);
@@ -920,8 +920,8 @@ Project::Project(ProjectMan *parent)
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
 
-    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
-    treeProjUntitled->setText(0, "Untitled");
+    //this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    //treeProjUntitled->setText(0, "Untitled");
 
     
     connect(prjDockWidget,
@@ -1039,8 +1039,8 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     this->treeProjOther->setText(0, "Other");
 
-    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
-    this->treeProjUntitled->setText(0, "Untitled");
+    //this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    //this->treeProjUntitled->setText(0, "Untitled");
 
 //     
     for (int i = 0; i < 13; i++)
@@ -1509,13 +1509,13 @@ QString Project::addFile(QString path, QString name)
     QString fileName = name;
     if (this->prjName != "untracked" && this->prjPath != "untracked")
     {
-        for (int i = 0; i < this->fileCount; i++)
+        /*for (int i = 0; i < this->fileCount; i++)
         {
             if (path == prjPath.section('/', 0, -2) + "/" + filePaths.at(i))
             {
                 return "";
             }
-        }
+        }*/
         QDir project(QFileInfo(this->prjPath).dir());
         QString relativePath = QDir::cleanPath(project.relativeFilePath(path));
         if (true == filePaths.contains(relativePath))
@@ -1546,10 +1546,10 @@ QString Project::addFile(QString path, QString name)
                 treeProjFile = new QTreeWidgetItem(treeProjOther);
             }
         }
-        else if ("untitled" == path)
+        /*else if ("untitled" == path)
         {
             treeProjFile = new QTreeWidgetItem(treeProjUntitled);
-        }
+        }*/
         else
         {
             treeProjFile = new QTreeWidgetItem(treeProjOther);
@@ -1601,6 +1601,7 @@ QString Project::addFile(QString path, QString name)
                 fileName = "untracked"+QString::number(fileCount);
             }
             treeProjFile->setData(0, Qt::ToolTipRole, "untracked");
+            fileNames.append(fileName);
             filePaths.append("untracked");
             m_fileStats.append(false);
         }
@@ -1608,6 +1609,7 @@ QString Project::addFile(QString path, QString name)
         {
             treeProjFile->setText(0, name);
             treeProjFile->setData(0, Qt::ToolTipRole, path);
+            fileNames.append(name);
             filePaths.append(path);
             m_fileStats.append(false);
         }
@@ -1909,7 +1911,7 @@ int Project::start(QString file, QString dumpFiles)
                                                         m_simControlUnit->DBGFILEID_HEX)
            )
         {
-            //qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
+            qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
             std::vector<std::string> messages = m_simControlUnit->getMessages();
             for (unsigned int i = 0; i < messages.size(); i++)
             {
@@ -2629,8 +2631,8 @@ void Project::reloadProjectTree()
     this->treeProjOther = new QTreeWidgetItem(treeProjName);
     treeProjOther->setText(0, "Other");
 
-    this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
-    treeProjUntitled->setText(0, "Untitled");
+    //this->treeProjUntitled = new QTreeWidgetItem(treeProjName);
+    //treeProjUntitled->setText(0, "Untitled");
 
 
     QDir projectDir = QFileInfo(prjPath).dir();
@@ -2655,10 +2657,10 @@ void Project::reloadProjectTree()
                 treeProjFile = new QTreeWidgetItem(treeProjOther);
             }
         }
-        else if ("untitled" == filePaths.at(i))
+        /*else if ("untitled" == filePaths.at(i))
         {
             treeProjFile = new QTreeWidgetItem(treeProjUntitled);
-        }
+        }*/
         else
         {
             treeProjFile = new QTreeWidgetItem(treeProjOther);
@@ -2688,17 +2690,36 @@ void Project::requestProjectPath()
 }
 
 
+//in case of untracked project, oldPath = oldName, because untracked files have path "untracked"
 void Project::renameFile(QString oldPath, QString newPath)
 {
     QDir project(QFileInfo(prjPath).dir());
-    QString relativePath = QDir::cleanPath(project.relativeFilePath(oldPath));
-    int index = filePaths.indexOf(relativePath);
-    if (-1 == index)
+    QString relativePath;
+    int index = 0;
+    if ("untracked" == prjPath)
     {
-        qDebug() << "Project: File" << relativePath << "not in project";
-        return;
+        index = fileNames.indexOf(oldPath);
+        if (-1 == index)
+        {
+            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(relativePath, relativePath.section('/', -1));
+            return;
+        }
+    }
+    else
+    {
+        relativePath = QDir::cleanPath(project.relativeFilePath(oldPath));
+        index = filePaths.indexOf(relativePath);
+        if (-1 == index)
+        {
+            //qDebug() << "Project: File" << relativePath << "not in project";
+            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(relativePath, relativePath.section('/', -1));
+            return;
+        }
     }
     relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+    qDebug() << "index  found" << relativePath << newPath;
     fileNames[index] = relativePath.section('/', -1);
     filePaths[index] = relativePath;
     this->reloadProjectTree();
