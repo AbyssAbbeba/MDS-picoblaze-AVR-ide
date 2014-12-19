@@ -201,6 +201,7 @@ class MainForm : public QMainWindow
         void fileChanged(QString path);
         void reloadFile(QString path);
         void reloadCurrentFile();
+        void setCentralUntitled(bool untracked);
 
     signals:
         void unhighlightSim();
