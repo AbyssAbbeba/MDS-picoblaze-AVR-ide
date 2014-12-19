@@ -461,6 +461,7 @@ void CodeEdit::connectAct()
 
 void CodeEdit::textEditChanged(bool modified)
 {
+    qDebug() << "modification";
     if (true == modified)
     {
         this->setChanged();

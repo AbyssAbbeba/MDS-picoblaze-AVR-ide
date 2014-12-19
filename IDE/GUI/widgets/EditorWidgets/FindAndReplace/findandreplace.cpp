@@ -27,6 +27,8 @@ FindAndReplace::FindAndReplace(QWidget *parent, QString query)
     ui.setupUi(this);
     ui.leFind->setText(query);
     ui.leFind->setFocus();
+    ui.leFind->installEventFilter(this);
+    ui.leReplace->installEventFilter(this);
     connect(ui.btnFindNext, SIGNAL(clicked()), this, SLOT(findNext()));
     connect(ui.btnFindPrev, SIGNAL(clicked()), this, SLOT(findPrevious()));
     connect(ui.btnReplace, SIGNAL(clicked()), this, SLOT(replace()));
@@ -34,6 +36,22 @@ FindAndReplace::FindAndReplace(QWidget *parent, QString query)
     connect(ui.btnClose, SIGNAL(clicked()), this, SLOT(closeClicked()));
     connect(ui.leFind, SIGNAL(returnPressed()), ui.btnFindNext, SIGNAL(clicked()));
     connect(ui.leReplace, SIGNAL(returnPressed()), ui.btnReplace, SIGNAL(clicked()));
+}
+
+
+bool FindAndReplace::eventFilter(QObject *target, QEvent *event)
+{
+    if ((target == ui.leFind || target == ui.leReplace) && event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        //overit, jestli je vse v poradku (0-9, A-F, sipky)
+        if (keyEvent->key() == Qt::Key_Escape)
+        {
+            closeClicked();
+            return true;
+        }
+    }
+    return QWidget::eventFilter(target, event);
 }
 
 

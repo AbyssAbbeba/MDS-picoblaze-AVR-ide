@@ -242,7 +242,7 @@ class Project : public QObject
         QTreeWidgetItem *treeProjInclude;
         QTreeWidgetItem *treeProjCompiled;
         QTreeWidgetItem *treeProjOther;
-        QTreeWidgetItem *treeProjUntitled;
+        //QTreeWidgetItem *treeProjUntitled;
         
        
 };

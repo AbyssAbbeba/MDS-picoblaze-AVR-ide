@@ -28,6 +28,7 @@ JumpToLine::JumpToLine(QWidget *parent, int currLine, int maxLines)
     ui.spinLine->setMaximum(maxLines);
     ui.spinLine->setValue(currLine);
     ui.spinLine->setFocus();
+    ui.spinLine->selectAll();
     ui.spinLine->installEventFilter(this);
     //this->installEventFilter(this);
     connect(ui.btnJump, SIGNAL(clicked()), this, SLOT(emitJump()));

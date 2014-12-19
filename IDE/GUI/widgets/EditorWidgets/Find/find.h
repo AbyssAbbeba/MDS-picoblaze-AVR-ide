@@ -45,6 +45,9 @@ class Find : public QWidget
 
     private:
         Ui_Find ui;
+
+    protected:
+        bool eventFilter(QObject *target, QEvent *event);
 };
 
 #endif
