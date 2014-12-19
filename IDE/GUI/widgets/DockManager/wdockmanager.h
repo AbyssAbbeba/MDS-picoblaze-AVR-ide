@@ -103,7 +103,7 @@ class WDockManager : public QObject
         void setEditorsReadOnly(bool readonly);
         void changeSimWidget(int index);
         void deleteActiveSimWidget();
-        void closeFile(QString path);
+        void closeFile(QString path, bool openUntitled = true);
         void setCentralWelcome(); //welcome screen
         void deleteCentralWelcome();
         void setBottomAreaToCompilerInfo();
@@ -151,7 +151,7 @@ class WDockManager : public QObject
         void welcomeScrManual();
         void welcomeScrGuide();
         void welcomeScrRecent(QString path);
-        void closeTab(int index);
+        void closeTab(int index, bool openUntitled = true);
         //void breakpointListRemoveSlot(QString file, int line);
         //void hideBottomArea(bool show);
         //void showBottomArea(bool show);

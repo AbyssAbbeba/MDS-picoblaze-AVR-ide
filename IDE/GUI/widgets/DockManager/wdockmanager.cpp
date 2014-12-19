@@ -183,7 +183,7 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 }
 
 
-void WDockManager::closeTab(int index)
+void WDockManager::closeTab(int index, bool openUntitled)
 {
     //qDebug() << "WDockManager: closeTab()";
     emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
@@ -191,7 +191,7 @@ void WDockManager::closeTab(int index)
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
     wTab->removeTab(index);
     //wTab->tabRemoved(index);
-    if (wTab->currentIndex() < 0)
+    if (wTab->currentIndex() < 0 && true == openUntitled)
     {
         if ("untracked" != wTab->id)
         {
@@ -207,15 +207,6 @@ void WDockManager::closeTab(int index)
         //this->hideDockWidgetArea(1);
         //this->hideDockWidgetArea(2);
     }
-    /*if (openCentralWidgets.count() == 0)
-    {
-        delete centralBase;
-        centralBase = NULL;
-        activeCodeEdit = NULL;
-        this->hideDockWidgetArea(1);
-        this->hideDockWidgetArea(2);
-        emit centralClosed();
-    }*/
     //qDebug() << "WDockManager: return closeTab()";
 }
 
@@ -1275,7 +1266,7 @@ void WDockManager::deleteActiveSimWidget()
 }
 
 
-void WDockManager::closeFile(QString path)
+void WDockManager::closeFile(QString path, bool openUntitled)
 {
     //qDebug() << "WDockManager: path " << path;
     for (int i = 0; i < this->wTab->count(); i++)
@@ -1283,7 +1274,7 @@ void WDockManager::closeFile(QString path)
         //qDebug() << "WDockManager: tooltip (" << i << ") " << this->wTab->tabToolTip(i);
         if (path == this->wTab->tabToolTip(i))
         {
-            this->closeTab(i);
+            this->closeTab(i, openUntitled);
             break;
         }
     }
@@ -1337,6 +1328,16 @@ void WDockManager::bookmarksRemoveLinesSlot(QString file, int line, int linesRem
 void WDockManager::setCentralWelcome()
 {
     //qDebug() << "WDockManager: setCentralWelcome()";
+    /*if (openCentralWidgets.count() == 0)
+    {
+        delete centralBase;
+        centralBase = NULL;
+        activeCodeEdit = NULL;
+        this->hideDockWidgetArea(1);
+        this->hideDockWidgetArea(2);
+        emit centralClosed();
+    }*/
+    //qDebug() << this->splitter->count();
     if (this->splitter->count() == 0)
     {
         this->welcomeScr = new WelcomeScr(this->splitter);
@@ -1504,6 +1505,15 @@ void WDockManager::removeTabBar(QString projectPath)
             wTab = NULL;
             break;
         }
+    }
+    if (openCentralWidgets.count() == 0)
+    {
+        delete centralBase;
+        centralBase = NULL;
+        activeCodeEdit = NULL;
+        this->hideDockWidgetArea(1);
+        this->hideDockWidgetArea(2);
+        emit centralClosed();
     }
     /*if (openCentralWidgets.count() > 0)
     {
