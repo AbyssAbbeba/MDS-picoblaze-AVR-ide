@@ -193,7 +193,8 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             public:
                 void expand ( Buffer & out,
                               const Buffer & in,
-                              ExpansionMode expMode = EXP_NORMAL );
+                              ExpansionMode expMode = EXP_NORMAL,
+                              const Buffer * nextBuffer = nullptr );
 
             ////    Inline Public Operations    ////
             public:
@@ -213,7 +214,8 @@ class CompilerCPreprocessor : private CompilerCPreprocessorIntr
             private:
                 int getArgVector ( std::vector<std::string> & argVector,
                                    char * string,
-                                   ExpansionMode expMode = EXP_NORMAL );
+                                   ExpansionMode expMode,
+                                   const Buffer * nextBuffer = nullptr );
 
             ////    Private Attributes    ////
             private:
