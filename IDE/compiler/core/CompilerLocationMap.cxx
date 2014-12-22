@@ -15,9 +15,10 @@
 
 #include "CompilerLocationMap.h"
 
-void CompilerLocationMap::recordMark ( CompilerSourceLocation & /*from*/,
-                                       CompilerSourceLocation & /*to*/ )
+void CompilerLocationMap::recordMark ( const CompilerSourceLocation & from,
+                                       const CompilerSourceLocation & to )
 {
+//     m_records.push_back({from, to});
 }
 
 void CompilerLocationMap::processRecords()
