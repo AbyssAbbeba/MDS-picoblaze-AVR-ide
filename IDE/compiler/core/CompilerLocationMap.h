@@ -21,6 +21,8 @@
 
 // Standard header files
 #include <map>
+#include <vector>
+#include <utility>
 
 /**
  * @brief
@@ -31,44 +33,44 @@ class CompilerLocationMap
 {
     ////    Public Datatypes    ////
     public:
-        struct Location
+        struct Difference
         {
-//             Location ( unsigned int line )
-//                      :
-//                        m_file(0),
-//                        m_line(line),
-//                        m_column(0) {}
-//
-//             Location ( unsigned int file,
-//                        unsigned int line )
-//                      :
-//                        m_file(file),
-//                        m_line(line),
-//                        m_column(0) {}
-//
-//             Location ( unsigned int file,
-//                        unsigned int line,
-//                        unsigned int column )
-//                      :
-//                        m_file(file),
-//                        m_line(line),
-//                        m_column(column) {}
-
-            unsigned int m_file;
-            unsigned int m_line;
-            unsigned int m_column;
+            int m_file;
+            int m_line;
+            int m_column;
         };
+
+        struct ColumnMark
+        {
+            int m_org;
+
+            Difference m_diff;
+        };
+
+        struct LineMark
+        {
+            int m_org;
+
+            std::vector<ColumnMark> m_columnMap;
+        };
+
+        typedef std::vector<LineMark> LineMap;
+        typedef std::vector<LineMap> FileMap;
 
     ////    Public Operations    ////
     public:
-        void recordMark ( CompilerSourceLocation & from,
-                          CompilerSourceLocation & to );
+        void recordMark ( const CompilerSourceLocation & from,
+                          const CompilerSourceLocation & to );
 
         void processRecords();
 
+        CompilerSourceLocation translate ( const CompilerSourceLocation & from );
+
     ////    Private Attributes    ////
     private:
-//         std::map<int, Marks> m_locationMap;
+        std::vector<std::pair<CompilerSourceLocation,CompilerSourceLocation>> m_rawRecords;
+
+        FileMap m_fileMap;
 };
 
 #endif // COMPILERLOCATIONMAP_H
