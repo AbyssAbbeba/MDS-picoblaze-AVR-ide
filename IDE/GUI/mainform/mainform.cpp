@@ -4927,11 +4927,12 @@ void MainForm::startExtApp(int processNumber)
                 this,
                 SLOT(stdoutExtApp(int))
                );
-        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->cleanOutput(processNumber);
+        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        output->cleanOutput(processNumber);
 
         QString args =  externalApp.args;
-        args.replace("%filename%", externalApp.path.section('/', -1));
-        args.replace("%filedir%", externalApp.path.section('/', 0, -2));
+        args.replace("%appname%", externalApp.path.section('/', -1));
+        args.replace("%appdir%", externalApp.path.section('/', 0, -2));
         args.replace("%homedir%", QDir::homePath());
         args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
         args.replace("%curfilename%", m_wDockManager->getCentralName());
@@ -4939,7 +4940,13 @@ void MainForm::startExtApp(int processNumber)
         args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
         m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
         m_wDockManager->setBottomAreaToExtAppOutput();
-        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setActiveTab(processNumber);
+        output->setActiveTab(processNumber);
+        output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
+        output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
+        output->getTextEdit(processNumber)->insertPlainText("\n");
+        output->getTextEdit(processNumber)->insertPlainText("Arguments:\t\t");
+        output->getTextEdit(processNumber)->insertPlainText(args);
+        output->getTextEdit(processNumber)->insertPlainText("\n\n");
     }
 }
 
