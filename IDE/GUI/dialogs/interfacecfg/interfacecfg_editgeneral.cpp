@@ -56,6 +56,7 @@ void InterfaceCfg_EditGeneral::checkBoxChanged(int state)
     this->ui.spinSpaces->setEnabled(state);
 }
 
+
 void InterfaceCfg_EditGeneral::save()
 {
     GuiCfg::getInstance().setTabWidth(this->ui.spinTabWidth->value());

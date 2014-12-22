@@ -41,7 +41,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser ExtAppOutput)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
