@@ -16,7 +16,7 @@
 #ifndef COMPILERSOURCELOCATION_H
 #define COMPILERSOURCELOCATION_H
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerSerializable.h"
 
 // Standard header files.

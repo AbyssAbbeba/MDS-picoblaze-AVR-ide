@@ -27,7 +27,7 @@ include "vers2.h"
 "hello" ", world"
 */
 
-// Explanation for glue and xglue:
+// Explanation for macros glue and xglue:
 /*
 glue(HIGH, LOW);
 --> HIGH ## LOW

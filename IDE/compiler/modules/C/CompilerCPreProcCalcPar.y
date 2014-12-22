@@ -50,7 +50,7 @@
 %code requires
 {
     // Compiler preprocessor interface.
-    #include "CompilerCPreprocessorIntr.h"
+    #include "CompilerCPreProcInterface.h"
 
     #ifndef YY_TYPEDEF_YY_SCANNER_T
     #define YY_TYPEDEF_YY_SCANNER_T
@@ -81,13 +81,13 @@
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCPreProcCalcPar_error ( YYLTYPE * yylloc,
                                                yyscan_t yyscanner,
-                                               CompilerCPreprocessorIntr * preprocessor,
+                                               CompilerCPreProcInterface * preprocessor,
                                                const char * errorInfo );
 %}
 
 // Declare an additional yyparse parameters.
 %parse-param { yyscan_t yyscanner }
-%parse-param { CompilerCPreprocessorIntr * preprocessor }
+%parse-param { CompilerCPreProcInterface * preprocessor }
 
 // Declare an additional yylex parameters.
 %lex-param   { yyscan_t yyscanner }
@@ -106,7 +106,7 @@
 %token P_RIGHT          ")"
 
 %token O_COLON          ":"
-%token O_QUESTION_MARK  "?"
+%token O_QMARK          "?"
 %token O_COMMA          ","
 %token O_SLASH          "/"
 %token O_PLUS           "+"
@@ -207,7 +207,7 @@ expr:
                                         if ( 0 == $3 )
                                         {
                                             $$ = 0;
-                                            // TODO: error, dicision by zero
+                                            // TODO: error, division by zero
                                         }
                                         else
                                         {
@@ -219,29 +219,28 @@ expr:
                                         if ( 0 == $3 )
                                         {
                                             $$ = 0;
-                                            // TODO: error, dicision by zero
+                                            // TODO: error, division by zero
                                         }
                                         else
                                         {
                                             $$ = $1 % $3;
                                         }
-
                                     }
-    | expr "+" expr                 { $$ = $1 + $3; }
-    | expr "-" expr                 { $$ = $1 - $3; }
-    | expr "*" expr                 { $$ = $1 * $3; }
+    | expr "+" expr                 { $$ = $1 +  $3; }
+    | expr "-" expr                 { $$ = $1 -  $3; }
+    | expr "*" expr                 { $$ = $1 *  $3; }
     | expr "<<" expr                { $$ = $1 << $3; }
     | expr ">>" expr                { $$ = $1 >> $3; }
     | expr "&&" expr                { $$ = $1 && $3; }
     | expr "||" expr                { $$ = $1 || $3; }
-    | expr "&" expr                 { $$ = $1 & $3; }
-    | expr "|" expr                 { $$ = $1 | $3; }
-    | expr "^" expr                 { $$ = $1 ^ $3; }
+    | expr "&" expr                 { $$ = $1 &  $3; }
+    | expr "|" expr                 { $$ = $1 |  $3; }
+    | expr "^" expr                 { $$ = $1 ^  $3; }
     | expr "==" expr                { $$ = $1 == $3; }
     | expr "!=" expr                { $$ = $1 != $3; }
-    | expr "<" expr                 { $$ = $1 < $3; }
+    | expr "<" expr                 { $$ = $1 <  $3; }
     | expr "<=" expr                { $$ = $1 <= $3; }
-    | expr ">" expr                 { $$ = $1 > $3; }
+    | expr ">" expr                 { $$ = $1 >  $3; }
     | expr ">=" expr                { $$ = $1 >= $3; }
 
     // Unary operators.
@@ -249,8 +248,7 @@ expr:
     | "!" expr                      { $$ = ! $2; }
     | "+" expr  %prec UPLUS         { $$ =   $2; }
     | "-" expr  %prec UMINUS        { $$ = - $2; }
-    | "sizeof" "(" dt ")"           { $$ =   $dt; }
-
+    | "sizeof" "(" dt ")"           { $$ =   $3; }
 
     // Ternary operator.
     | expr "?" expr ":" expr        { $$ = $1 ? $3 : $5; }
@@ -258,9 +256,9 @@ expr:
 
 // Datatypes
 dt:
-      dt_const dt_int               { $$ = $dt_int; }
+      dt_const dt_int               { $$ = $dt_int;   }
     | dt_const dt_float             { $$ = $dt_float; }
-    | dt_const dt_ptr               { $$ = $dt_ptr; }
+    | dt_const dt_ptr               { $$ = $dt_ptr;   }
 ;
 
 dt_ptr:
@@ -317,7 +315,7 @@ dt_float:
 // Definition of the error reporting function used by Bison.
 inline int CompilerCPreProcCalcPar_error ( YYLTYPE * yylloc,
                                            yyscan_t,
-                                           CompilerCPreprocessorIntr * preprocessor,
+                                           CompilerCPreProcInterface * preprocessor,
                                            const char * errorInfo )
 {
     preprocessor->m_compilerCore->parserMessage ( preprocessor->m_compilerCore->toSourceLocation(yylloc),

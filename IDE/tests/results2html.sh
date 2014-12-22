@@ -453,7 +453,7 @@ wait
 if (( ${COMPRESS_HTML} )); then
     for i in *.html index.html.0; do
         mv "${i}" "${i}.org"
-        gawk -f '../compressHtml.awk' "${i}.org" > "${i}" &
+        gawk -f '../htmlCompress.awk' "${i}.org" > "${i}" &
     done
     wait
     rm *.org

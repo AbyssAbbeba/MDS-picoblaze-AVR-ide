@@ -8,12 +8,12 @@
  * (C) copyright 2014 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
- * @file CompilerCPreprocessorIntr.h
+ * @file CompilerCPreProcInterface.h
  */
 // =============================================================================
 
-#ifndef COMPILERCPREPROCESSORINTR_H
-#define COMPILERCPREPROCESSORINTR_H
+#ifndef COMPILERCPREPROCINTERFACE_H
+#define COMPILERCPREPROCINTERFACE_H
 
 // Common compiler header files.
 #include "CompilerOptions.h"
@@ -22,28 +22,38 @@
 /**
  * @brief
  * @ingroup CompilerC
- * @class CompilerCPreprocessorIntr
+ * @class CompilerCPreProcInterface
  */
-class CompilerCPreprocessorIntr
+class CompilerCPreProcInterface
 {
     ////    Constructors and Destructors    ////
     protected:
-        CompilerCPreprocessorIntr ( CompilerParserInterface * compilerCore,
-                                    CompilerOptions * opts )
+        /**
+         * @brief
+         * @param[in,out] compilerCore
+         * @param[in] opts
+         */
+        CompilerCPreProcInterface ( CompilerParserInterface * compilerCore,
+                                    const CompilerOptions * opts )
                                   :
                                     m_compilerCore ( compilerCore ),
                                     m_opts ( opts ) {}
 
+        /**
+         * @brief
+         */
+        virtual ~CompilerCPreProcInterface() {}
+
     ////    Public Attributes    ////
     public:
         ///
-        CompilerParserInterface * m_compilerCore;
+        CompilerParserInterface * const m_compilerCore;
 
         ///
-        CompilerOptions * m_opts;
+        const CompilerOptions * const m_opts;
 
         ///
         bool m_exprResult;
 };
 
-#endif // COMPILERCPREPROCESSORINTR_H
+#endif // COMPILERCPREPROCINTERFACE_H

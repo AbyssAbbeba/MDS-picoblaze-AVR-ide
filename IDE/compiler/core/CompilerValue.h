@@ -19,7 +19,7 @@
 // Forward declarations.
 class CompilerExpr;
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerBase.h"
 #include "CompilerSerializable.h"
 

@@ -31,6 +31,7 @@ add_library ( ${PROJECT_NAME}
               CompilerLexerUtils.cxx
               CompilerSerializer.cxx
               CompilerMsgIntfFile.cxx
+              CompilerLocationMap.cxx
               CompilerSerializable.cxx
               CompilerMessageStack.cxx
               CompilerMsgIntfStdout.cxx

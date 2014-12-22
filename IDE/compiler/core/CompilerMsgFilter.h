@@ -19,7 +19,7 @@
 // Forward declarations.
 class CompilerCore;
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerBase.h"
 #include "CompilerMsgInterface.h"
 

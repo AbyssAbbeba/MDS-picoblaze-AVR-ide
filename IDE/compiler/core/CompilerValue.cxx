@@ -15,7 +15,7 @@
 
 #include "CompilerValue.h"
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerExpr.h"
 
 // Standard header files.

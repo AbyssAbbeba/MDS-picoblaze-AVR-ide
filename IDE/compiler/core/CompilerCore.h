@@ -35,6 +35,7 @@ class CompilerSemanticAnalyzer;
 #include "CompilerSemanticInterface.h"
 
 // Additional compiler components.
+#include "CompilerLocationMap.h"
 #include "CompilerLocationTracker.h"
 
 // Boost Filesystem library.
@@ -421,6 +422,9 @@ class CompilerCore : public CompilerBase,
 
         /// @brief
         CompilerLocationTracker m_locationTracker;
+
+        /// @brief
+        CompilerLocationMap m_locationMap;
 
         /// @brief
         std::string m_filename;
