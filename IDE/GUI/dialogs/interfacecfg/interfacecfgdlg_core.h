@@ -27,6 +27,7 @@ class InterfaceCfg_EditSyntax;
 class InterfaceCfg_IDEGeneral;
 class InterfaceCfg_SimOthers;
 class InterfaceCfg_SimWarnings;
+class InterfaceCfg_ExternalApps;
 
 
 class InterfaceCfgDlg_Core : public QDialog
@@ -45,6 +46,7 @@ class InterfaceCfgDlg_Core : public QDialog
         InterfaceCfg_IDEGeneral *ideGeneral;
         InterfaceCfg_SimOthers *simOthers;
         InterfaceCfg_SimWarnings *simWarnings;
+        InterfaceCfg_ExternalApps *externalApps;
 
     private slots:
         void ok();

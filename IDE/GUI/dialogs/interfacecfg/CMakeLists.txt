@@ -25,6 +25,7 @@ SET( SAMPLE_SRCS
         ./interfacecfg_simothers.cpp
         ./interfacecfg_simwarnings.cpp
         ./interfacecfg_syntaxasm.cpp
+        ./interfacecfg_externalapps.cpp
 )
   
 # another list, this time it includes all header files that should be treated with moc
@@ -37,6 +38,7 @@ SET( SAMPLE_MOC_HDRS
         ./interfacecfg_simothers.h
         ./interfacecfg_simwarnings.h
         ./interfacecfg_syntaxasm.h
+        ./interfacecfg_externalapps.h
 )
 
 # some .ui files
@@ -48,6 +50,7 @@ SET( SAMPLE_UIS
         ./interfacecfg_simothers.ui
         ./interfacecfg_simwarnings.ui
         ./interfacecfg_syntaxasm.ui
+        ./interfacecfg_externalapps.ui
 )
 
 

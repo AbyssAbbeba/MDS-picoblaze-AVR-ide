@@ -97,7 +97,7 @@ typedef enum WidgetCode
     WBOTTOMHIDE,
     WRIGHTHIDE,
     WASMMACROANALYSER,
-    WOUTPUTWIDGET
+    WEXTAPPOUTPUT
 } WidgetCode;
 
 

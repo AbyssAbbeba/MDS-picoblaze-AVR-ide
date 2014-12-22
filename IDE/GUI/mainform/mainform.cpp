@@ -55,6 +55,7 @@
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
+#include "../widgets/ExtAppOutput/extappoutput.h"
 
 #ifdef Q_OS_WIN
     #include <windows.h> // for Sleep
@@ -140,6 +141,14 @@ MainForm::MainForm()
     this->projectTabs = NULL;
     this->m_reloadDlg = NULL;
     this->reloadDlgChange = false;
+    m_procExtApps[0] = NULL;
+    m_procExtApps[1] = NULL;
+    m_procExtApps[2] = NULL;
+    m_lastDir = QDir::homePath();
+    m_finishedSignalMapper = new QSignalMapper(this);
+    m_errorSignalMapper = new QSignalMapper(this);
+    m_stderrSignalMapper = new QSignalMapper(this);
+    m_stdoutSignalMapper = new QSignalMapper(this);
 
     m_projectMan = new ProjectMan(this);
     connect(m_projectMan,
@@ -305,6 +314,11 @@ MainForm::MainForm()
             this,
             SLOT(fileChanged(QString))
            );
+    connect(&GuiCfg::getInstance(),
+            SIGNAL(externalAppsChanged()),
+            this,
+            SLOT(reloadExternalApps())
+           );
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -402,8 +416,8 @@ void MainForm::createMenu()
 {
     //qDebug() << "MainForm: createMenu()";
     fileMenu = menuBar()->addMenu(tr("&File"));
-    fileMenu->addAction(newAddAct);
     fileMenu->addAction(newAct);
+    fileMenu->addAction(newAddAct);
     fileMenu->addSeparator();
     fileMenu->addAction(openAct);
     recentFilesMenu = fileMenu->addMenu(tr("Open Recent"));
@@ -556,11 +570,12 @@ void MainForm::createActions()
 
     newAddAct = new QAction(QIcon(":resources/icons/projNewAdd.png"), tr("New File"), this);
     newAddAct->setDisabled(true);
-    newAddAct->setShortcut(QKeySequence("Ctrl+N"));
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
     newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untracked File"), this);
     newAct->setStatusTip("Create a new file");
+    newAct->setShortcut(QKeySequence("Ctrl+N"));
+    newAct->setDisabled(true);
     connect(newAct, SIGNAL(triggered()), this, SLOT(newFile()));
 
     openAct = new QAction(QIcon(":resources/icons/folder.png"), tr("Open File"), this);
@@ -824,6 +839,14 @@ void MainForm::createActions()
         //connect(toolSimLoggerAct, SIGNAL(triggered()), this, SLOT(simPortLogger()));
     #endif
 
+
+    extAppAct[0] = new QAction(tr("External App 1"), this);
+    connect(extAppAct[0], SIGNAL(triggered()), this, SLOT(startExtApp1()));
+    extAppAct[1] = new QAction(tr("External App 2"), this);
+    connect(extAppAct[1], SIGNAL(triggered()), this, SLOT(startExtApp2()));
+    extAppAct[2] = new QAction(tr("External App 3"), this);
+    connect(extAppAct[2], SIGNAL(triggered()), this, SLOT(startExtApp3()));
+
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
         licenseAct = new QAction(tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
@@ -871,6 +894,7 @@ void MainForm::createToolbar()
     simulationToolBar = addToolBar(tr("Simulation Toolbar"));
     m_toolToolBar = addToolBar(tr("Tools Toolbar"));
     m_simtoolToolBar = addToolBar(tr("Simulation Tools Toolbar"));
+    m_externalAppsToolBar = addToolBar(tr("External Apps"));
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
     #ifdef MDS_FEATURE_DISASSEMBLER
@@ -937,8 +961,8 @@ void MainForm::createToolbar()
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_toolToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_simtoolToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    m_externalAppsToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_helpToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    fileToolBar->setAllowedAreas(Qt::TopToolBarArea);
 //     addToolBar(Qt::TopToolBarArea, projectToolBar);
 //     addToolBar(Qt::TopToolBarArea, simulationToolBar);
     #ifdef MDS_VARIANT_NONCOMMERCIAL
@@ -1006,20 +1030,21 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO);
-        m_wDockManager->addDockWidget(WBOTTOMHIDE);
-        /*#ifdef Q_OS_WIN
-            Sleep(50);
-        #else
-            usleep(50000);
-        #endif*/
-        tabList= this->findChildren<QTabBar*>();
+        //QApplication::processEvents();
+        tabList = this->findChildren<QTabBar*>();
         m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
         connect(tabList.at(tabList.size()-1),
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideBottom(int))
                );
-
+        m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
+        m_wDockManager->addDockWidget(WBOTTOMHIDE);
+        /*#ifdef Q_OS_WIN
+            Sleep(50);
+        #else
+            usleep(50000);
+        #endif*/
         m_wDockManager->addDockWidget(WBREAKPOINTLIST);
         m_wDockManager->addDockWidget(WBOOKMARKLIST);
         m_wDockManager->addDockWidget(WASMMACROANALYSER);
@@ -1084,6 +1109,7 @@ void MainForm::createDockWidgets()
         m_wDockManager->hideDockWidgetArea(2);
         QApplication::processEvents();
         reloadTabIcons();
+        reloadExternalApps();
     }
     else
     {
@@ -1114,7 +1140,8 @@ void MainForm::newFile()
     //qDebug() << "MainForm: newFile()";
     //jen se vytvori novy tab na code editoru
     //prepta se dialogem, zda pridat do aktivniho projektu
-    m_projectMan->addUntrackedFile(NULL, NULL);
+    //m_projectMan->addUntrackedFile("", "");
+    setCentralUntitled(false);
     //qDebug() << "MainForm: return newFile()";
 }
 
@@ -1130,18 +1157,19 @@ void MainForm::newAddFile()
     bool done = false;
     while (false == done)
     {
-        if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
             path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
-        {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-        }
+        {*/
+            path = QFileDialog::getSaveFileName(this, tr("New File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+        //}
         if (path == NULL)
         {
             break;
         }
+        m_lastDir = QFileInfo(path).path();
         int index = path.lastIndexOf(".");
         if (index > 0)
         {
@@ -1226,16 +1254,17 @@ void MainForm::openFile()
 {
 //     qDebug() << "MainForm: openFile()";
     QString path;
-    if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+    /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
         path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
     }
     else
-    {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-    }
+    {*/
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+    //}
     if (path != NULL)
     {
+        m_lastDir = QFileInfo(path).path();
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -1384,14 +1413,19 @@ void MainForm::addFile()
         QString path;
         if (m_wDockManager->getCentralPath() == NULL)
         {
-            if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+            /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
             {
                 path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
             }
             else
+            {*/
+                path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+            //}
+            if (NULL == path)
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                return;
             }
+            m_lastDir = QFileInfo(path).path();
             m_wDockManager->setCentralPath(path);
             m_wDockManager->setCentralName(path.section('/', -1));
         }
@@ -1555,20 +1589,21 @@ void MainForm::saveFileAs()
     bool done = false;
     while (false == done)
     {
-        if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
             path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
-        {
-            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-        }
+        {*/
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+        //}
         if (path == NULL)
         {
             break;
         }
         else
         {
+            m_lastDir = QFileInfo(path).path();
             int index = path.lastIndexOf(".");
             if (index > 0)
             {
@@ -1673,14 +1708,14 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             bool done = false;
             while (false == done)
             {
-                if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+                /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
                 {
                     path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 else
-                {
-                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-                }
+                {*/
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+                //}
                 if (path == NULL)
                 {
                     break;
@@ -1826,13 +1861,13 @@ void MainForm::openProject()
 {
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
-    QFileDialog dialog;
-    QString path = QFileDialog::getOpenFileName (this, tr("Open Project"), QDir::homePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString path = QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
 
     if (path.isEmpty() == false && m_projectMan->isOpened(path) == false)
     {
     //nacteni projektu
         //qDebug() << path;
+        m_lastDir = QFileInfo(path).path();
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
@@ -1880,6 +1915,7 @@ bool MainForm::openProject(QString path)
 
 void MainForm::projectOpened()
 {
+    newAct->setEnabled(true);
     newAddAct->setEnabled(true);
 
     //qDebug() << "MainForm: projectOpened";
@@ -3789,6 +3825,7 @@ void MainForm::closeProject()
         {
             m_wDockManager->setCentralWelcome();
             closeProjectAct->setEnabled(false);
+            newAct->setEnabled(false);
             newAddAct->setEnabled(false);
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
@@ -4778,14 +4815,177 @@ void MainForm::reloadCurrentFile()
 
 void MainForm::setCentralUntitled(bool untracked)
 {
-    if (false == m_wDockManager->addCentralWidget("untitled", "untracked"))
+    QString fileName = "untitled" + QString::number(m_projectMan->getActive()->m_untitledCounter);
+    if (false == m_wDockManager->addCentralWidget(fileName, "untracked"))
     {
         return;
     }
+    m_projectMan->getActive()->m_untitledCounter++;
     CodeEdit *centralCodeEdit = m_wDockManager->getCentralWidget();
     //centralCodeEdit->connectAct();
     centralCodeEdit->setParentProject(m_projectMan->getActive());
     m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
     centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
     centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
+    //m_projectMan->getActive()->addFile("untracked", fileName);
+    
+}
+
+
+void MainForm::reloadExternalApps()
+{
+    m_externalAppsToolBar->clear();
+    QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
+    for (int i = 0; i < apps.count(); i++)
+    {
+        if (true == apps.at(i).toolBar)
+        {
+            extAppAct[i]->setText(apps.at(i).path.section('/', -1));
+            m_externalAppsToolBar->addAction(extAppAct[i]);
+        }
+        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+    }
+}
+
+
+void MainForm::startExtApp1()
+{
+    startExtApp(0);
+}
+
+
+void MainForm::startExtApp2()
+{
+    startExtApp(1);
+}
+
+
+void MainForm::startExtApp3()
+{
+    startExtApp(2);
+}
+
+
+void MainForm::startExtApp(int processNumber)
+{
+    /*if (NULL != m_procExtApps[processNumber])
+    {
+        m_procExtApps[processNumber]->kill();
+        QApplication::processEvents();
+        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        delete m_procExtApps[processNumber];
+        m_procExtApps[processNumber] = NULL;
+    }
+    else*/
+    {
+        GuiCfg_Items::ExternalApp externalApp = GuiCfg::getInstance().getExternalApps().at(processNumber);
+        m_procExtApps[processNumber] = new QProcess(this);
+        m_finishedSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+        connect(m_procExtApps[processNumber],
+                SIGNAL(finished(int, QProcess::ExitStatus)),
+                m_finishedSignalMapper,
+                SLOT(map())
+            );
+        connect(m_finishedSignalMapper,
+                SIGNAL(mapped(int)),
+                this,
+                SLOT(finishedExtApp(int))
+               );
+        m_errorSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+        connect(m_procExtApps[processNumber],
+                SIGNAL(error(QProcess::ProcessError)),
+                m_errorSignalMapper,
+                SLOT(map())
+            );
+        connect(m_errorSignalMapper,
+                SIGNAL(mapped(int)),
+                this,
+                SLOT(errorExtApp(int))
+               );
+        m_stderrSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+        connect(m_procExtApps[processNumber],
+                SIGNAL(readyReadStandardError()),
+                m_stderrSignalMapper,
+                SLOT(map())
+            );
+        connect(m_stderrSignalMapper,
+                SIGNAL(mapped(int)),
+                this,
+                SLOT(stderrExtApp(int))
+               );
+        m_stdoutSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+        connect(m_procExtApps[processNumber],
+                SIGNAL(readyReadStandardOutput()),
+                m_stdoutSignalMapper,
+                SLOT(map())
+            );
+        connect(m_stdoutSignalMapper,
+                SIGNAL(mapped(int)),
+                this,
+                SLOT(stdoutExtApp(int))
+               );
+        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->cleanOutput(processNumber);
+
+        QString args =  externalApp.args;
+        args.replace("%filename%", externalApp.path.section('/', -1));
+        args.replace("%filedir%", externalApp.path.section('/', 0, -2));
+        args.replace("%homedir%", QDir::homePath());
+        args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
+        args.replace("%curfilename%", m_wDockManager->getCentralName());
+        args.replace("%curfilepath%", m_wDockManager->getCentralPath());
+        args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
+        m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
+        m_wDockManager->setBottomAreaToExtAppOutput();
+        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setActiveTab(processNumber);
+    }
+}
+
+
+void MainForm::errorExtApp(int processNumber)
+{
+    QApplication::processEvents();
+    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_procExtApps[processNumber]->deleteLater();
+    //m_procExtApps[processNumber] = NULL;
+}
+
+
+void MainForm::finishedExtApp(int processNumber)
+{
+    QApplication::processEvents();
+    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+    QApplication::processEvents();
+    m_procExtApps[processNumber]->deleteLater();
+    //m_procExtApps[processNumber] = NULL;
+}
+
+
+void MainForm::stderrExtApp(int processNumber)
+{
+    if (NULL == m_procExtApps[processNumber])
+    {
+        return;
+    }
+    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
+}
+
+
+void MainForm::stdoutExtApp(int processNumber)
+{
+    if (NULL == m_procExtApps[processNumber])
+    {
+        return;
+    }
+    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
 }

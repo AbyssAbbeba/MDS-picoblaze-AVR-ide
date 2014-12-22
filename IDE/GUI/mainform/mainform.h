@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 #include <QFileSystemWatcher>
+#include <QProcess>
 #include "../../compiler/core/CompilerOptions.h"
 #include "../../compiler/CompilerThread.h"
 #include "../compatibilitymode/compatibilitymode.h"
@@ -43,6 +44,7 @@ class QTreeWidget;
 class QIcon;
 class QPixmap;
 class SaveDialog;
+class QSignalMapper;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER
@@ -202,6 +204,15 @@ class MainForm : public QMainWindow
         void reloadFile(QString path);
         void reloadCurrentFile();
         void setCentralUntitled(bool untracked);
+        void reloadExternalApps();
+        void startExtApp1();
+        void startExtApp2();
+        void startExtApp3();
+        void startExtApp(int processNumber);
+        void errorExtApp(int processNumber);
+        void finishedExtApp(int processNumber);
+        void stderrExtApp(int processNumber);
+        void stdoutExtApp(int processNumber);
 
     signals:
         void unhighlightSim();
@@ -238,10 +249,11 @@ class MainForm : public QMainWindow
         //toolbars
         QToolBar *fileToolBar;
         QToolBar *projectToolBar;
-        QToolBar * simulationToolBar;
-        QToolBar * m_toolToolBar;
-        QToolBar * m_simtoolToolBar;
-        QToolBar * m_helpToolBar;
+        QToolBar *simulationToolBar;
+        QToolBar *m_toolToolBar;
+        QToolBar *m_simtoolToolBar;
+        QToolBar *m_externalAppsToolBar;
+        QToolBar *m_helpToolBar;
 
         //actions
         //file menu
@@ -308,6 +320,8 @@ class MainForm : public QMainWindow
         QAction *toolSimSwitchAct;
         QAction *toolSimLoggerAct;
 
+        QAction *extAppAct[3];
+
         QAction *licenseAct;
         QAction *aboutAct;
         QAction *aboutQTAct;
@@ -353,6 +367,15 @@ class MainForm : public QMainWindow
         bool reloadDlgChange;
 
         CompatibilityMode m_compatibilityMode;
+
+        QString m_lastDir;
+
+        QProcess *m_procExtApps[3];
+
+        QSignalMapper *m_finishedSignalMapper;
+        QSignalMapper *m_errorSignalMapper;
+        QSignalMapper *m_stderrSignalMapper;
+        QSignalMapper *m_stdoutSignalMapper;
 
     protected:
         void closeEvent(QCloseEvent *event);

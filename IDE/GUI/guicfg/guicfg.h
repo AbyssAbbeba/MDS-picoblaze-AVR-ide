@@ -31,6 +31,7 @@ class GuiCfg : public QObject, public GuiCfg_Items
         void tabWidthChanged(int width);
         void tabToSpacesChanged(bool enabled);
         void spacesInTabChanged(int width);
+        void externalAppsChanged();
         
 
     public:
@@ -89,6 +90,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
 
         void setSplash(bool enabled);
 
+        void setExternalApps(QList<GuiCfg::ExternalApp> apps);
+
         void setSessionRestoration(bool enabled);
 
         void sessionAppendProject(QString path);
@@ -120,6 +123,8 @@ class GuiCfg : public QObject, public GuiCfg_Items
         GuiCfg::HighlightOpt getHighlightOpts(GuiCfg::HighlightLang lang, GuiCfg::HighlightRole role);
 
         bool getSplash();
+        
+        QList<GuiCfg::ExternalApp> getExternalApps();
         
         bool getTipsOnStart();
 
