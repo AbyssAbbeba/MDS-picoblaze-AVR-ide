@@ -186,6 +186,8 @@ class Project : public QObject
         double clock;
         int clockMult;
 
+        int m_untitledCounter;
+
     public slots:
         void setMainFile(QString path, QString name);
         void removeFile(QString path, QString name);

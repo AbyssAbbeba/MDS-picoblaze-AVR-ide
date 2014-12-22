@@ -193,6 +193,13 @@ void GuiCfg::setDefaultEditGeneral()
 }
 
 
+void GuiCfg::setExternalApps(QList<GuiCfg::ExternalApp> apps)
+{
+    externalApps = apps;
+    emit externalAppsChanged();
+}
+
+
 void GuiCfg::setDefaultEditSyntax()
 {
     this->highlightEnabled = true;
@@ -542,6 +549,13 @@ bool GuiCfg::getSplash()
 {
     return this->splash;
 }
+
+
+QList<GuiCfg::ExternalApp> GuiCfg::getExternalApps()
+{
+    return externalApps;
+}
+
 
 bool GuiCfg::getTipsOnStart()
 {
@@ -1115,6 +1129,24 @@ bool GuiCfg::loadConfig()
                                 }
                             }
                             xmlSimOthersNode = xmlSimOthersNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "ExternalApps")
+                    {
+                        GuiCfg::ExternalApp tempApp;
+                        QDomNode xmlExternalNode = xmlElement.firstChild();
+                        QDomElement xmlExternalElement;
+                        while (!xmlExternalNode.isNull())
+                        {
+                            xmlExternalElement = xmlExternalNode.toElement();
+                            if (true == xmlExternalElement.tagName().startsWith("ExternalApp"))
+                            {
+                                tempApp.path = xmlExternalElement.attribute("path", "");
+                                tempApp.args = xmlExternalElement.attribute("args", "");
+                                tempApp.toolBar = (xmlExternalElement.attribute("inToolBar", "") == "true");
+                                externalApps.append(tempApp);
+                            }
+                            xmlExternalNode = xmlExternalNode.nextSibling();
                         }
                     }
                     else if (xmlElement.tagName() == "RecentFiles")
@@ -1823,6 +1855,24 @@ void GuiCfg::saveConfig()
     xmlUpdate.setAttribute("color", this->simColorWidgetChanged.name());
     xmlSimOthers.appendChild(xmlUpdate);
     xmlRoot.appendChild(xmlSimOthers);
+
+    QDomElement xmlExternalApps = domDoc.createElement("ExternalApps");
+    for (int i = 0; i < externalApps.count(); i++)
+    {
+        QDomElement xmlExternalApp = domDoc.createElement("ExternalApp"+QString::number(i-1));
+        xmlExternalApp.setAttribute("path", externalApps.at(i).path);
+        xmlExternalApp.setAttribute("args", externalApps.at(i).args);
+        if (true == externalApps.at(i).toolBar)
+        {
+            xmlExternalApp.setAttribute("inToolBar", "true");
+        }
+        else
+        {
+            xmlExternalApp.setAttribute("inToolBar", "false");
+        }
+        xmlExternalApps.appendChild(xmlExternalApp);
+    }
+    xmlRoot.appendChild(xmlExternalApps);
 
     QDomElement xmlRecentFiles = domDoc.createElement("RecentFiles");
     for (int i = 0; i < this->recentFiles.count(); i++)

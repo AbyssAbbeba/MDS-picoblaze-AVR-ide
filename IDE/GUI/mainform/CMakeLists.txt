@@ -72,7 +72,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
                         Simulator       compiler        Project         Editor          GuiCfg
                         WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode
-                        AsmTranslator )
+                        AsmTranslator   ExtAppOutput )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
