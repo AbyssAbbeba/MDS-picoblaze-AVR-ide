@@ -376,6 +376,7 @@ Project::Project(QFile *file, ProjectMan *parent)
     mainFileName = "";
     mainFilePath = "";
     useMainFile = false;
+    m_untitledCounter = 0;
     for (int i = 0; i < 13; i++)
     {
         compileOpt.append(false);
@@ -871,6 +872,7 @@ Project::Project(ProjectMan *parent)
     this->m_simControlUnit = NULL;
     this->prjName = "untracked";
     this->prjPath = "untracked";
+    m_untitledCounter = 0;
 
     this->simColors.append(new QColor(GuiCfg::getInstance().getCurrLineColor()));
     this->simColors.append(new QColor(GuiCfg::getInstance().getPrevLineColor()));
@@ -1001,6 +1003,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     this->clock = 10.0;
     this->clockMult = 1000000;
     m_asmType = 0;
+    m_untitledCounter = 0;
     //currLineColor = new QColor(102,204,255,255);
     //prevLineColor = new QColor(102,204,255,125);
     //prevLine2Color = new QColor(102,204,255,50);
@@ -1267,6 +1270,10 @@ void Project::saveProject()
     //qDebug() << "Project: saving" << this->fileCount << "files";
     for (int i = 0; i < this->fileCount; i++)
     {
+        if ( "untracked" == this->filePaths.at(i))
+        {
+            continue;
+        }
         QDomElement xmlFile = domDoc.createElement("File");
         xmlFile.setAttribute("path", this->filePaths.at(i));
         xmlFile.setAttribute("name", this->fileNames.at(i));

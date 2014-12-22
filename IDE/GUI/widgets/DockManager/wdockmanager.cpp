@@ -23,6 +23,7 @@
 #include "../Editor/baseeditor.h"
 #include "../PicoBlazeGrid/picoblazegrid.h"
 #include "../TabBar/tabbar.h"
+#include "../ExtAppOutput/extappoutput.h"
 #include "../widgets/CompileInfo/compileinfo.h"
 
 
@@ -1549,6 +1550,23 @@ void WDockManager::setBottomAreaToCompilerInfo()
 }
 
 
+void WDockManager::setBottomAreaToExtAppOutput()
+{
+    if (false == bottomVisible)
+    {
+        showDockWidgetArea(2);
+    }
+    for (int i = 0; i < bottomAreaTabs->count(); i++)
+    {
+        if ("External Applications" == bottomAreaTabs->tabText(i))
+        {
+            bottomAreaTabs->setCurrentIndex(i);
+            break;
+        }
+    }
+}
+
+
 void WDockManager::setBottomAreaToSimulationInfo()
 {
     if (false == bottomVisible)
@@ -1726,6 +1744,17 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
             area = 1;
             wDockWidget->setWidget(newDock); 
+            break;
+        }
+        case WEXTAPPOUTPUT:
+        {
+            wDockWidget = new QDockWidget("External Applications", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            parent->addDockW(Qt::BottomDockWidgetArea, wDockWidget);
+            ExtAppOutput *newDock = new ExtAppOutput(wDockWidget);
+            area = 2;
+            wDockWidget->setWidget(newDock);
             break;
         }
         default:

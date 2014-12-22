@@ -112,6 +112,15 @@ class GuiCfg_Items
             QUOTE
         } HighlightRole;
 
+        typedef struct
+        {
+            QString path;
+            QString args;
+            bool toolBar;
+        } ExternalApp;
+
+        QList<ExternalApp> externalApps;
+
         
         //recent files
         QList<QString> recentFiles;

@@ -122,7 +122,11 @@
     </rect>
    </property>
    <property name="text">
-    <string>Change</string>
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset resource="../../icons.qrc">
+     <normaloff>:/resources/icons/projOpen.png</normaloff>:/resources/icons/projOpen.png</iconset>
    </property>
   </widget>
   <widget class="QLabel" name="label_5">

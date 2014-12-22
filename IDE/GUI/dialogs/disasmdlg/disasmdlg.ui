@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>438</width>
-    <height>331</height>
+    <width>487</width>
+    <height>357</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -205,7 +205,11 @@
       <item row="0" column="1">
        <widget class="QPushButton" name="btnChange">
         <property name="text">
-         <string>Change</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../icons.qrc">
+          <normaloff>:/resources/icons/projOpen.png</normaloff>:/resources/icons/projOpen.png</iconset>
         </property>
        </widget>
       </item>
