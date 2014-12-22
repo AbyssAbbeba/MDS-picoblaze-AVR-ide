@@ -13,7 +13,7 @@
  */
 // =============================================================================
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerMsgFilter.h"
 #include "CompilerOptions.h"
 #include "CompilerCore.h"

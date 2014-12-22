@@ -23,7 +23,7 @@
     #include <iostream>
 
     // Compiler preprocessor interface.
-    #include "CompilerCPreprocessorIntr.h"
+    #include "CompilerCPreProcInterface.h"
 
     // Functions for handling escape sequences in strings, etc.
     #include "CompilerLexerUtils.h"
@@ -40,7 +40,7 @@
 %}
 
 /* data type of the user-specific data to be stored in compiler */
-%option extra-type="CompilerCPreprocessorIntr *"
+%option extra-type="CompilerCPreProcInterface *"
 /* instructs flex to write a C header to FILE */
 %option header-file="CompilerCPreProcCalcLex.h"
 /* changes the default `yy' prefix used by flex for all globally-visible variable and function names */
@@ -92,47 +92,47 @@ FLOAT   [0-9]+\.[0-9]+(e[+-][0-9]+)?
 {WSPACE}        { /* eat up white space */ }
 
  /* Parenthesis */
-"("             { return P_LEFT;        }
-")"             { return P_RIGHT;       }
+"("             { return P_LEFT;  }
+")"             { return P_RIGHT; }
 
 
  /* Expression operators */
-":"             { return O_COLON;           }
-"?"             { return O_QUESTION_MARK;   }
-","             { return O_COMMA;           }
-"/"             { return O_SLASH;           }
-"+"             { return O_PLUS;            }
-"-"             { return O_MINUS;           }
-"*"             { return O_ASTERISK;        }
-"!"             { return O_NOT;             }
-"%"             { return O_MOD;             }
-"<<"            { return O_SHL;             }
-">>"            { return O_SHR;             }
-"&&"            { return O_AND;             }
-"||"            { return O_OR;              }
-"&"             { return O_BITAND;          }
-"|"             { return O_BITOR;           }
-"^"             { return O_BITXOR;          }
-"=="            { return O_EQ;              }
-"!="            { return O_NE;              }
-"<"             { return O_LT;              }
-"<="            { return O_LE;              }
-">"             { return O_GT;              }
-">="            { return O_GE;              }
-"~"             { return O_BITNOT;          }
-"sizeof"        { return O_SIZEOF;          }
+":"             { return O_COLON;    }
+"?"             { return O_QMARK;    }
+","             { return O_COMMA;    }
+"/"             { return O_SLASH;    }
+"+"             { return O_PLUS;     }
+"-"             { return O_MINUS;    }
+"*"             { return O_ASTERISK; }
+"!"             { return O_NOT;      }
+"%"             { return O_MOD;      }
+"<<"            { return O_SHL;      }
+">>"            { return O_SHR;      }
+"&&"            { return O_AND;      }
+"||"            { return O_OR;       }
+"&"             { return O_BITAND;   }
+"|"             { return O_BITOR;    }
+"^"             { return O_BITXOR;   }
+"=="            { return O_EQ;       }
+"!="            { return O_NE;       }
+"<"             { return O_LT;       }
+"<="            { return O_LE;       }
+">"             { return O_GT;       }
+">="            { return O_GE;       }
+"~"             { return O_BITNOT;   }
+"sizeof"        { return O_SIZEOF;   }
 
  /* Data types */
-"const"         { return D_CONST;        }
-"signed"        { return D_SIGNED;       }
-"unsigned"      { return D_UNSIGNED;     }
-"void"          { return D_VOID;         }
-"char"          { return D_CHAR;         }
-"int"           { return D_INT;          }
-"long"          { return D_LONG;         }
-"short"         { return D_SHORT;        }
-"float"         { return D_FLOAT;        }
-"double"        { return D_DOUBLE;       }
+"const"         { return D_CONST;    }
+"signed"        { return D_SIGNED;   }
+"unsigned"      { return D_UNSIGNED; }
+"void"          { return D_VOID;     }
+"char"          { return D_CHAR;     }
+"int"           { return D_INT;      }
+"long"          { return D_LONG;     }
+"short"         { return D_SHORT;    }
+"float"         { return D_FLOAT;    }
+"double"        { return D_DOUBLE;   }
 
  /* Integers */
 0b[01]+         {

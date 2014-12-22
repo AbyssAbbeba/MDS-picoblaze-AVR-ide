@@ -19,7 +19,7 @@
 // Forward declarations.
 class CompilerLocationTracker;
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerBase.h"
 
 // Standard header files.
@@ -272,7 +272,7 @@ class CompilerSerializer
 
             /**
              * @brief Read a string of arbitrary length.
-             * @note This method automatically allocates storage for the string. 
+             * @note This method automatically allocates storage for the string.
              * @warning The return value has to be deallocated elsewhere (using delete[] operator);
              * @return nullptr terminated (C language style) string read from the serialized object.
              */

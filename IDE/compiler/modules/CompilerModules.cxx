@@ -70,7 +70,7 @@
 
 // Include additional compiler specific header files.
 #ifdef MDS_FEATURE_C_COMPILER
-#   include "C/CompilerCPreprocessor.h"
+#   include "C/CompilerCPreProc.h"
 #endif // MDS_FEATURE_C_COMPILER
 
 // Parser prototypes (the core uses them to initiate syntactical analysis).
@@ -190,7 +190,7 @@ CompilerModules::ModEmplStatCode CompilerModules::employModule ( CompilerBase::L
                     OPEN_ALL_SOURCE_FILES();
 
                     // Initialize C preprocessor.
-                    CompilerCPreprocessor preprocessor ( parserIntf, options );
+                    CompilerCPreProc preprocessor ( parserIntf, options );
                     char * buffer = preprocessor.processFiles ( sourceFiles );
                     compilerCore->closeInputFiles();
 

@@ -16,7 +16,7 @@
 #ifndef COMPILERMESSAGESTACK_H
 #define COMPILERMESSAGESTACK_H
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerBase.h"
 #include "CompilerSourceLocation.h"
 

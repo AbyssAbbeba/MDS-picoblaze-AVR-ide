@@ -29,7 +29,9 @@ include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}
-              CompilerCPreprocessor.cxx
+              CompilerCPreProc.cxx
+              CompilerCPreProcMacros.cxx
+              CompilerCPreProcSupport.cxx
               CompilerCSemanticAnalyzer.cxx )
 
 # Link a target to given libraries

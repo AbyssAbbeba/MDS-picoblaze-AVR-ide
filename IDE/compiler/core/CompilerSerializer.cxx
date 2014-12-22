@@ -15,7 +15,7 @@
 
 #include "CompilerSerializer.h"
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerLocationTracker.h"
 
 // Standard header files.

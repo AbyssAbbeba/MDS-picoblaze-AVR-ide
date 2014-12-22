@@ -48,7 +48,7 @@ MACRO   10??/
 #endif
 
 // Check macro expansion with string and character constants.
-char x = 'x'; // --> "char y = 'x';"
+char x xor_eq 'x' bitor 0x14; // --> "char y ^= 'x' | 0x14;"
 const char * x = "OBJMACRO"; // --> "const char * y = "OBJMACRO";"
 
 // Check direct macro expansion loop.

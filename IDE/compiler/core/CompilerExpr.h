@@ -16,7 +16,7 @@
 #ifndef COMPILEREXPR_H
 #define COMPILEREXPR_H
 
-// Compiler compiler header files.
+// Compiler header files.
 #include "CompilerBase.h"
 #include "CompilerValue.h"
 #include "CompilerSerializable.h"
