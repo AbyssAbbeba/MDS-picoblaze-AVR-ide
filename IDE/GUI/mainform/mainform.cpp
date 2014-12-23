@@ -1954,7 +1954,7 @@ void MainForm::saveAll()
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
         if (m_wDockManager->getTabStatusChanged(i) == true
-            || m_wDockManager->getTabWidget(i)->getPath() == "untracked")
+            || (NULL != m_wDockManager->getTabWidget(i) && m_wDockManager->getTabWidget(i)->getPath() == "untracked"))
         {
             //qDebug() << "MainForm: saveFile codeedit";
             saveFile(m_wDockManager->getTabWidget(i));
@@ -2156,6 +2156,10 @@ bool MainForm::saveProject()
     //qDebug() << "MainForm: saveProject()";
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
+        if (NULL == m_wDockManager->getTabWidget(i))
+        {
+            continue;
+        }
         if (m_wDockManager->getTabWidget(i)->isChild(m_projectMan->getActive()) == true
             && true == m_wDockManager->getTabWidget(i)->isChanged())
         {
