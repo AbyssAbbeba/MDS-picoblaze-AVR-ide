@@ -1405,8 +1405,9 @@ void WDockManager::setCentralWelcome()
         emit centralClosed();
     }*/
     //qDebug() << this->splitter->count();
-    if (this->splitter->count() == 0)
+    if (this->splitter->count() == 1)
     {
+        this->activeHelpBrowser->hide();
         this->welcomeScr = new WelcomeScr(this->splitter);
         this->splitter->addWidget(this->welcomeScr);
         connect(this->welcomeScr,
