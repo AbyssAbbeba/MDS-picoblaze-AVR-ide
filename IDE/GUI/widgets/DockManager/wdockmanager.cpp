@@ -26,6 +26,7 @@
 #include "../ExtAppOutput/extappoutput.h"
 #include "../CompileInfo/compileinfo.h"
 #include "../HelpDockWidget/helpdockwidget.h"
+#include "../HelpWidget/helpbrowser.h"
 
 
 
@@ -44,6 +45,8 @@ WDockManager::WDockManager(QWidget *parent, QWidget *centralWidget)
     wTab = NULL;
     splitter = new QSplitter(centralWidget);
     splitter->show();
+    activeHelpBrowser = new HelpBrowser(splitter);
+    activeHelpBrowser->hide();
     //wTab->setTabsClosable(true);
     //wTab->setMovable(true);
     wRight = NULL;
@@ -113,14 +116,30 @@ void WDockManager::changeActiveCodeEdit(CodeEdit */*editor*/)
  */
 void WDockManager::changeCodeEditor(int index)
 {
-    //qDebug() << "WDockManager: changeCodeEditor()";
-    if (activeCodeEdit != NULL && index >= 0)
+    qDebug() << "WDockManager: changeCodeEditor()";
+    if ("Help Browser" == wTab->tabToolTip(index))
     {
+        if (activeCodeEdit != NULL)
+        {
+            activeCodeEdit->hide();
+        }
+        activeHelpBrowser->show();
+        activeHelpBrowser->setSource(m_helpBrowserUrl);
+    }
+    else if (activeCodeEdit != NULL && index >= 0)
+    {
+        if (true == activeHelpBrowser->isVisible())
+        {
+            activeHelpBrowser->hide();
+        }
+        activeCodeEdit->show();
         //qDebug() << "wdockmanager - change Code Editor";
         //qDebug() << "index: " << index;
         //qDebug() << "size: " << openCentralWidgets.count();
         //CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
+        QApplication::processEvents();
         activeCodeEdit->loadCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit());
+        activeCodeEdit->changeHeight();
         /*if (breakpointList != NULL)
         {
             connect(this->activeCodeEdit,
@@ -188,6 +207,13 @@ void WDockManager::changeTabStatusSlot(QString name, QString path, bool changed)
 void WDockManager::closeTab(int index, bool openUntitled)
 {
     //qDebug() << "WDockManager: closeTab()";
+    if ("Help Browser" == wTab->tabText(index))
+    {
+        activeHelpBrowser->hide();
+        openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
+        wTab->removeTab(index);
+        return;
+    }
     emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
     emit tabClosed(wTab->tabText(index));
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
@@ -1623,6 +1649,40 @@ void WDockManager::closeCurrentTab()
 }
 
 
+void WDockManager::setHelpBrowserPath(const QUrl &url)
+{
+    m_helpBrowserUrl = url;
+    activeHelpBrowser->setSource(url);
+    if (NULL != activeCodeEdit)
+    {
+        activeCodeEdit->hide();
+    }
+    activeHelpBrowser->show();
+    bool found = false;
+    int i;
+    for (i = 0; i < wTab->count(); i++)
+    {
+        if ("Help Browser" == wTab->tabText(i))
+        {
+            found = true;
+            break;
+        }
+    }
+    if (false == found)
+    {
+        wTab->addTab("Help Browser");
+        wTab->tabAdded();
+        wTab->setTabToolTip(wTab->count()-1, "Help Browser");
+        wTab->setCurrentIndex(wTab->count()-1);
+        openCentralWidgets.at(m_currTabBarIndex).second->append(NULL);
+    }
+    else
+    {
+        wTab->setCurrentIndex(i);
+    }
+}
+
+
 
 
 /////
@@ -1776,7 +1836,8 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             HelpDockWidget *newDock = new HelpDockWidget(wDockWidget);
             area = 1;
-            wDockWidget->setWidget(newDock); 
+            wDockWidget->setWidget(newDock);
+            connect(newDock, SIGNAL(showHelpContent(const QUrl &)), parent, SLOT(setHelpBrowserPath(const QUrl &)));
             break;
         }
         default:
