@@ -386,6 +386,14 @@ bool WTextEdit::eventFilter(QObject *target, QEvent *event)
             }
             return true;
         }
+        if (keyEvent->key() == Qt::Key_Escape)
+        {
+            if (true == this->textCursor().hasSelection())
+            {
+                deselect();
+                return true;
+            }
+        }
         if (keyEvent->key() == Qt::Key_Tab)
         {
             if (true == this->tabToSpaces)

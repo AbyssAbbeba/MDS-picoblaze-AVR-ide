@@ -24,7 +24,8 @@
 #include "../PicoBlazeGrid/picoblazegrid.h"
 #include "../TabBar/tabbar.h"
 #include "../ExtAppOutput/extappoutput.h"
-#include "../widgets/CompileInfo/compileinfo.h"
+#include "../CompileInfo/compileinfo.h"
+#include "../HelpDockWidget/helpdockwidget.h"
 
 
 
@@ -1755,6 +1756,17 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             ExtAppOutput *newDock = new ExtAppOutput(wDockWidget);
             area = 2;
             wDockWidget->setWidget(newDock);
+            break;
+        }
+        case WHELPDOCKWIDGET:
+        {
+            wDockWidget = new QDockWidget("Help", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            HelpDockWidget *newDock = new HelpDockWidget(wDockWidget);
+            area = 1;
+            wDockWidget->setWidget(newDock); 
             break;
         }
         default:
