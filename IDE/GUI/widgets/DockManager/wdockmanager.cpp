@@ -271,7 +271,14 @@ WTextEdit* WDockManager::getCentralTextEdit()
 
 WTextEdit* WDockManager::getTabTextEdit(int index)
 {
-    return openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit()->getTextEdit();
+    if (NULL != openCentralWidgets.at(m_currTabBarIndex).second->at(index))
+    {
+        return openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit()->getTextEdit();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 
