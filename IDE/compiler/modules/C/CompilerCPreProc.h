@@ -154,10 +154,12 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
          * @brief
          * @param[in,out] arguments
          * @param[in] argLength
+         * @param[in] recursion
          * @return
          */
         inline void handleInclude ( char * arguments,
-                                    unsigned int argLength );
+                                    unsigned int argLength,
+                                    bool recursion = false );
 
         /**
          * @brief

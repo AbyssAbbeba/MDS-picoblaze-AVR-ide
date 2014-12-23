@@ -699,12 +699,12 @@ void CompilerCore::processCodeTree ( CompilerStatement * codeTree )
     if ( nullptr != m_rootStatement )
     {
         m_rootStatement->completeDelete();
-        m_rootStatement = nullptr;
     }
+
+    m_rootStatement = new CompilerStatement();
 
     if ( nullptr != codeTree )
     {
-        m_rootStatement = new CompilerStatement();
         m_rootStatement -> appendLink ( codeTree -> first() );
     }
 }
@@ -783,7 +783,7 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
     }
     else
     {
-        return m_openedFiles[fileNumber].first;
+        return m_openedFiles.at(fileNumber).first;
     }
 }
 
