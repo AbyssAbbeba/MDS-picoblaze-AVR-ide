@@ -4541,7 +4541,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     }
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
-        m_wDockManager->getTabTextEdit(i)->clearHighlight();
+        if (NULL != m_wDockManager->getTabTextEdit(i))
+        {
+            m_wDockManager->getTabTextEdit(i)->clearHighlight();
+        }
     }
     m_wDockManager->getCentralTextEdit()->clearHighlight();
 
