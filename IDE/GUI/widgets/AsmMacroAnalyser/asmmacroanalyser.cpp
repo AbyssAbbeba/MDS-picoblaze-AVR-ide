@@ -30,7 +30,7 @@ AsmMacroAnalyser::AsmMacroAnalyser(QWidget *parent)
     
     this->setSortingEnabled(false);
     //macroEditRegExp.setPattern("[\\s]*([\\w]+)[\\s]+MACRO([\\s]+[\\w]+([,][\\s]*[\\w]+)*)?((\\r\\n)|(\\n)).*((\\r\\n)|(\\n))ENDM");
-    macroEditRegExp.setPattern("(\\w+)\\s+MACRO(\\s+\\w+(?:,\\s*\\w+)*)?(?:\\s;.*)?\\r?\\n.*\\r?\\nENDM");
+    macroEditRegExp.setPattern("(\\w+)[ \\t]+MACRO([ \\t]+\\w+([ \\t]*,[ \\t]*\\w+)*)?[ \\t]*\\r?\\n.*ENDM");
     macroEditRegExp.setCaseSensitivity(Qt::CaseInsensitive);
     macroEditRegExp.setMinimal(true);
 
@@ -64,6 +64,7 @@ void AsmMacroAnalyser::reload(QList<CodeEdit*> editList)
             while ((position = macroEditRegExp.indexIn(source, position)) != -1)
             {
                 matchedList = macroEditRegExp.capturedTexts();
+                qDebug() << matchedList;
                 cur.setPosition(position);
                 //qDebug() << "AsmMacroAnalyser: captured strings" << matchedList.at(0);
                 /*for (int j = 0; j < matchedList.count(); j++)
