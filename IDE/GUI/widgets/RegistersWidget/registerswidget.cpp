@@ -40,7 +40,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setColumnWidth(5, 30);
     this->setColumnWidth(6, 25);
     this->setColumnWidth(7, 65);
-    
+
     //QFont font = this->font();
     QFont font("Ubuntu Mono");
     font.setPixelSize(13);
@@ -82,7 +82,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
                 MCUSimMemory::EVENT_MEM_WRN_WR_PAR_READ_ONLY,
                 MCUSimMemory::EVENT_MEM_WRN_RD_RESERVED_READ,
                 MCUSimMemory::EVENT_MEM_WRN_WR_RESERVED_WRITTEN,
-                
+
                 MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN,
             };
     controlUnit->registerObserver(this, subsys, mask);
@@ -149,7 +149,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 {
                     this->item(locationOrReason-8, 5)->setText("00" + QString::number(value, 10));
                 }
-                
+
                 if (value > 15)
                 {
                     this->item(locationOrReason-8, 6)->setText(QString::number(value, 16).toUpper());
@@ -165,7 +165,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 }
                 this->item(locationOrReason-8, 7)->setText(bin);
 
-                
+
                 this->item(locationOrReason-8, 5)->setBackground(Qt::yellow);
                 this->item(locationOrReason-8, 6)->setBackground(Qt::yellow);
                 this->item(locationOrReason-8, 7)->setBackground(Qt::yellow);
@@ -199,7 +199,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                     bin.prepend("0");
                 }
                 this->item(locationOrReason, 3)->setText(bin);
-                
+
                 this->item(locationOrReason, 1)->setBackground(Qt::yellow);
                 this->item(locationOrReason, 2)->setBackground(Qt::yellow);
                 this->item(locationOrReason, 3)->setBackground(Qt::yellow);
@@ -282,7 +282,7 @@ void RegistersWidget::deviceReset()
         bin1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         bin1->setBackground(this->palette().base().color());
         this->setItem(i, 3, bin1);
-        
+
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
         reg2->setFlags(Qt::NoItemFlags);
         setItem(i, 4, reg2);
@@ -296,7 +296,7 @@ void RegistersWidget::deviceReset()
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         hex2->setBackground(this->palette().base().color());
         this->setItem(i, 6, hex2);
-        
+
         QTableWidgetItem *bin2 = new QTableWidgetItem("0000000" + QString::number(0, 2));
         bin2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         bin2->setBackground(this->palette().base().color());
@@ -553,7 +553,7 @@ void RegistersWidget::updateWidget()
             this->item(i, 5)->setBackground(Qt::yellow);
             this->item(i, 6)->setBackground(Qt::yellow);
             this->item(i, 7)->setBackground(Qt::yellow);
-            
+
             if (value < 10)
             {
                 this->item(i, 5)->setText("00" + QString::number(value, 10));
@@ -575,7 +575,7 @@ void RegistersWidget::updateWidget()
             {
                 this->item(i, 6)->setText(QString::number(value, 16).toUpper());
             }
-            
+
             bin = QString::number(value, 2);
             for (int i = bin.size(); i < 8 ; i++)
             {

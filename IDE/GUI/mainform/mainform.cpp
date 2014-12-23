@@ -626,12 +626,12 @@ void MainForm::createActions()
     saveAllAct->setShortcut(QKeySequence("Ctrl+L"));
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
 
-    reloadAct = new QAction(tr("Reload File"), this);
+    reloadAct = new QAction(QIcon(":resources/icons/arrow_refresh.png"), tr("Reload File"), this);
     reloadAct->setDisabled(true);
     reloadAct->setShortcut(QKeySequence("F5"));
     connect(reloadAct, SIGNAL(triggered()), this, SLOT(reloadCurrentFile()));
 
-    closeFileAct = new QAction(tr("Close File"), this);
+    closeFileAct = new QAction(QIcon(":resources/icons/breakpoint_disable.png"), tr("Close File"), this);
     closeFileAct->setDisabled(true);
     closeFileAct->setShortcut(QKeySequence("Ctrl+W"));
     connect(closeFileAct, SIGNAL(triggered()), this, SLOT(shortcutCloseTab()));
@@ -674,17 +674,17 @@ void MainForm::createActions()
     deselectAct->setShortcut(QKeySequence("Ctrl+Shift+A"));
     deselectAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deselectAct, SIGNAL(triggered()), this, SLOT(deselectSlot()));
-    findAct = new QAction(tr("Find"), this);
+    findAct = new QAction(QIcon(":resources/icons/find.png"), tr("Find"), this);
     findAct->setShortcut(QKeySequence("Ctrl+F"));
     findAct->setDisabled(true);
     findAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(findAct, SIGNAL(triggered()), this, SLOT(findSlot()));
-    findNextAct = new QAction(tr("Find Next"), this);
+    findNextAct = new QAction(QIcon(":resources/icons/find_next.png"), tr("Find Next"), this);
     findNextAct->setShortcut(QKeySequence("F3"));
     findNextAct->setDisabled(true);
     findNextAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(findNextAct, SIGNAL(triggered()), this, SLOT(findNextSlot()));
-    findPreviousAct = new QAction(tr("Find Previous"), this);
+    findPreviousAct = new QAction(QIcon(":resources/icons/find_prev.png"), tr("Find Previous"), this);
     findPreviousAct->setShortcut(QKeySequence("Shift+F3"));
     findPreviousAct->setDisabled(true);
     findPreviousAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -694,7 +694,7 @@ void MainForm::createActions()
     replaceAct->setDisabled(true);
     replaceAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(replaceAct, SIGNAL(triggered()), this, SLOT(replaceSlot()));
-    jmpToLineAct = new QAction(tr("Go to Line"), this);
+    jmpToLineAct = new QAction(QIcon(":resources/icons/goto_line.png"), tr("Go to Line"), this);
     jmpToLineAct->setShortcut(QKeySequence("Ctrl+G"));
     jmpToLineAct->setDisabled(true);
     jmpToLineAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -709,12 +709,12 @@ void MainForm::createActions()
     deleteCommentAct->setDisabled(true);
     deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deleteCommentAct, SIGNAL(triggered()), this, SLOT(deleteCommentSlot()));
-    jmpToBookmarkNextAct = new QAction(tr("Jump to Next Bookmark"), this);
+    jmpToBookmarkNextAct = new QAction(QIcon(":resources/icons/bookmark_next.png"), tr("Jump to Next Bookmark"), this);
     jmpToBookmarkNextAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageDown));
     jmpToBookmarkNextAct->setDisabled(true);
     jmpToBookmarkNextAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToBookmarkNextAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkNextSlot()));
-    jmpToBookmarkPrevAct = new QAction(tr("Jump to Previous Bookmark"), this);
+    jmpToBookmarkPrevAct = new QAction(QIcon(":resources/icons/bookmark_prev.png"), tr("Jump to Previous Bookmark"), this);
     jmpToBookmarkPrevAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageUp));
     jmpToBookmarkPrevAct->setDisabled(true);
     jmpToBookmarkPrevAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -822,7 +822,7 @@ void MainForm::createActions()
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
-        toolConvertorAct = new QAction(tr("Radix Converter"), this);
+        toolConvertorAct = new QAction(QIcon(":resources/icons/calculator.png"), tr("Radix Converter"), this);
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
@@ -837,7 +837,7 @@ void MainForm::createActions()
         toolVHDLWizardAct = new QAction(tr("VHDL Wizard"), this);
         connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
     #endif
-        
+
     #ifdef MDS_FEATURE_SIM_LED_PANEL
         toolSimLedsAct = new QAction(QIcon(":resources/icons/ledpanel.png"), tr("LED Panel"), this);
         toolSimLedsAct->setDisabled(true);
@@ -876,7 +876,7 @@ void MainForm::createActions()
 
     aboutAct = new QAction(QIcon(":resources/icons/mainIcon.png"), tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-    aboutQTAct = new QAction(tr("About QT"), this);
+    aboutQTAct = new QAction(QIcon(":resources/icons/qt-logo.png"), tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
     welcomeAct = new QAction(tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
@@ -1516,7 +1516,7 @@ void MainForm::saveFile()
         }
         qDebug() << "Mainform: saving file";*/
 //         QString path;
-//         
+//
 //         {
 //             //path = QFileDialog::getSaveFileName(this, tr("Source File");
 //             bool done = false;
@@ -2095,10 +2095,10 @@ QString MainForm::translateBeforeCompilation(QString path)
     m_compatibilityMode.clearFileMaps();
     QList<QString> filesToTranslate;
     filesToTranslate.append(path);
-    
+
     QString newPath = path.section('.', 0, -2) + ".asm";
     QString sourceDir = path.section('/', 0, -2) + "/";
-    
+
     AsmTranslator translator;
     translator.m_config.m_letterCase[0] = (AsmTranslatorConfig::LetterCase) 0;
     translator.m_config.m_letterCase[1] = (AsmTranslatorConfig::LetterCase) 0;
@@ -2115,7 +2115,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         {
             return "";
         }
-        
+
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
@@ -2158,7 +2158,7 @@ QString MainForm::translateBeforeCompilation(QString path)
             return "";
         }
 
-        
+
 
         inputStream.close();
         outputStream.close();
@@ -2239,7 +2239,7 @@ void MainForm::compileProject()
             compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
                                         CompilerBase::MessageType::MT_REMARK);
         }
-        
+
         if (0 != m_projectMan->getActive()->getAsmType())
         {
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
@@ -2611,7 +2611,7 @@ void MainForm::compileProject()
                 m_projectMan->setActive(m_projectMan->getUntracked());
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
-            
+
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
@@ -2635,7 +2635,7 @@ void MainForm::compileProject()
                 compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
                                             CompilerBase::MessageType::MT_REMARK);
             }
-            
+
             if (0 != m_projectMan->getActive()->getAsmType())
             {
                 QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
@@ -5047,7 +5047,7 @@ void MainForm::setCentralUntitled(bool untracked)
     centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
     centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
     //m_projectMan->getActive()->addFile("untracked", fileName);
-    
+
 }
 
 
