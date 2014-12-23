@@ -587,7 +587,7 @@ void MainForm::createActions()
     newAddAct->setDisabled(true);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
-    newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untracked File"), this);
+    newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untitled File"), this);
     newAct->setStatusTip("Create a new file");
     newAct->setShortcut(QKeySequence("Ctrl+N"));
     newAct->setDisabled(true);
@@ -1335,6 +1335,7 @@ void MainForm::openFile()
             else
             {
                 //m_wDockManager->getCentralWidget()->connectAct();
+                m_projectMan->addUntrackedProject();
                 if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
                 {
                     return;
@@ -2263,7 +2264,7 @@ void MainForm::compileProject()
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
             if ("" == newPath)
             {
-                compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                compileInfo->appendMessage("Asm translation could not be completed (.psm extension required)." ,
                                             CompilerBase::MessageType::MT_ERROR);
                 return;
             }
@@ -5095,7 +5096,10 @@ void MainForm::reloadExternalApps()
                 extAppAct[i]->setText(apps.at(i).path.section('/', -1));
                 m_externalPopupMenu->addAction(extAppAct[i]);
             }
-            ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+            if (true == m_wDockManager->dockWidgets)
+            {
+                ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+            }
         }
         if (true == showToolButton)
         {
