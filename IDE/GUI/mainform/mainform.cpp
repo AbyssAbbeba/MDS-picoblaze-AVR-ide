@@ -3601,6 +3601,22 @@ void MainForm::addUntrackedFile(QString name, QString path)
     //qDebug() << "MainForm: addUntrackedFile";
     if (name != NULL && path != NULL)
     {
+        if (NULL == m_projectMan->getUntracked())
+        {
+            m_projectMan->addUntrackedProject();
+        }
+        if (m_projectMan->getActive()->prjPath != "untracked")
+        {
+            QList<Project*> projects = m_projectMan->getOpenProjects();
+            for (int i; i < projects.count(); i++)
+            {
+                if (projects.at(i)->prjPath != "untracked")
+                {
+                    projectTabs->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
         m_wDockManager->addUntrackedCentralWidget(name, path);
         m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
         m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
@@ -3638,6 +3654,18 @@ void MainForm::toolDisassemble()
 {
     #ifdef MDS_FEATURE_DISASSEMBLER
         DisAsmDialog *dlg = new DisAsmDialog(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
         connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(disassembleOutput(std::vector<std::string>)));
     #endif
 }
@@ -3656,6 +3684,10 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
         }
 
         //QString name = m_projectMan->addUntrackedFile(NULL, "disasm");
+        if (NULL == m_projectMan->getActive())
+        {
+            m_projectMan->addUntrackedProject();
+        }
         this->m_wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
         getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
@@ -3670,6 +3702,18 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
         connect(dlg,
                 SIGNAL(output(std::vector<std::string> &)),
                 this,
@@ -3728,7 +3772,19 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
 void MainForm::toolFileConvert()
 {
     #ifdef MDS_FEATURE_FILECONVERTER
-        /*FileConvertDlg *dlg = */new FileConvertDlg(this);
+        FileConvertDlg *dlg = new FileConvertDlg(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
     #endif
 }
 
@@ -3753,6 +3809,18 @@ void MainForm::projectConfig()
 void MainForm::interfaceConfig()
 {
     InterfaceCfgDlg_Core *cfgdlg = new InterfaceCfgDlg_Core(this);
+    if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+    {
+        cfgdlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+    }
+    else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+    {
+        cfgdlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+    }
+    else
+    {
+        cfgdlg->setPath(m_lastDir);
+    }
     cfgdlg->exec();
 }
 

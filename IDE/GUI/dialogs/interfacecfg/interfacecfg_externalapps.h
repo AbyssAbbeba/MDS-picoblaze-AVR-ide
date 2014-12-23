@@ -25,6 +25,7 @@ class InterfaceCfg_ExternalApps : public QWidget
     public:
         InterfaceCfg_ExternalApps(QWidget *parent);
         void save();
+        void setDialogPath(QString path);
 
     private slots:
         void setPath1();
@@ -33,6 +34,7 @@ class InterfaceCfg_ExternalApps : public QWidget
 
     private:
         Ui_InterfaceCfg_ExternalApps ui;
+        QString m_path;
 
 };
 

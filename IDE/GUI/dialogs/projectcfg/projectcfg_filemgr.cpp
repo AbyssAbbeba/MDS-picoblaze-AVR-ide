@@ -97,7 +97,11 @@ void ProjectCfg_FileMgr::newFile()
     bool done = false;
     while (false == done)
     {
-        if (this->project->prjPath != "untracked")
+        if (NULL == this->project)
+        {
+            path = QFileDialog::getSaveFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else if (this->project->prjPath != "untracked")
         {
             path = QFileDialog::getSaveFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
@@ -202,7 +206,19 @@ void ProjectCfg_FileMgr::newFile()
 void ProjectCfg_FileMgr::addFile()
 {
     //dialog window (file search)
-    QString path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    QString path;
+    if (NULL == this->project)
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else if (this->project->prjPath != "untracked")
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
     if (path != NULL)
     {
         if (this->project != NULL)

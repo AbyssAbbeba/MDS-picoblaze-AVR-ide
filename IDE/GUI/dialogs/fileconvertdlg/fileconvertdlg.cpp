@@ -42,7 +42,7 @@ FileConvertDlg::FileConvertDlg(QWidget *parent)
 
 void FileConvertDlg::setPathIn()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), m_path, "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
     if (path != NULL)
     {
         this->ui.lePathIn->setText(path);
@@ -51,7 +51,7 @@ void FileConvertDlg::setPathIn()
 
 void FileConvertDlg::setPathOut()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), m_path, "(*.hex *.ihex *.bin *.srec *.mem *.v *.vhd *.rawhex)");
     if (path != NULL)
     {
         this->ui.lePathOut->setText(path);
@@ -60,7 +60,7 @@ void FileConvertDlg::setPathOut()
 
 void FileConvertDlg::setPathTemplate()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), "(*.v *.vhd)");
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), m_path, "(*.v *.vhd)");
     if (path != NULL)
     {
         this->ui.leTemplate->setText(path);
@@ -232,4 +232,10 @@ void FileConvertDlg::setOptOut(int index)
             qDebug() << "FileConvertDlg: out type error occured";
             break;
     }
+}
+
+
+void FileConvertDlg::setPath(QString path)
+{
+    m_path = path;
 }
