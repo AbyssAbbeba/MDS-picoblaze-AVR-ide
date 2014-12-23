@@ -699,12 +699,12 @@ void MainForm::createActions()
     jmpToLineAct->setDisabled(true);
     jmpToLineAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToLineAct, SIGNAL(triggered()), this, SLOT(jmpToLineSlot()));
-    commentAct = new QAction(tr("Comment"), this);
+    commentAct = new QAction(QIcon(":resources/icons/price-tag--plus.png"), tr("Comment"), this);
     commentAct->setShortcut(QKeySequence("Ctrl+D"));
     commentAct->setDisabled(true);
     commentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(commentAct, SIGNAL(triggered()), this, SLOT(commentSlot()));
-    deleteCommentAct = new QAction(tr("Uncomment"), this);
+    deleteCommentAct = new QAction(QIcon(":resources/icons/price-tag--minus.png"), tr("Uncomment"), this);
     deleteCommentAct->setShortcut(QKeySequence("Ctrl+Shift+D"));
     deleteCommentAct->setDisabled(true);
     deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -745,7 +745,7 @@ void MainForm::createActions()
     connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
     closeProjectAct->setDisabled(true);
 
-    saveProjConfigAct = new QAction(tr("Save Project Config"), this);
+    saveProjConfigAct = new QAction(QIcon(":resources/icons/save_proj_cfg.png"), tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);
 
     exitAct = new QAction(QIcon(":resources/icons/cancel.png"), tr("Exit"), this);
@@ -814,7 +814,7 @@ void MainForm::createActions()
         connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     #endif
     #ifdef MDS_FEATURE_TRANSLATOR
-        toolTranslatorAct = new QAction(QIcon(":resources/icons/arrow_switch.png"), tr("Assembler Translator"), this);
+        toolTranslatorAct = new QAction(QIcon(":resources/icons/receipt-import.png"), tr("Assembler Translator"), this);
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
@@ -822,7 +822,7 @@ void MainForm::createActions()
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
-        toolConvertorAct = new QAction(QIcon(":resources/icons/calculator.png"), tr("Radix Converter"), this);
+        toolConvertorAct = new QAction(QIcon(":resources/icons/arrow_switch.png"), tr("Radix Converter"), this);
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
@@ -870,7 +870,7 @@ void MainForm::createActions()
     #endif
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
-        licenseAct = new QAction(tr("License"), this);
+        licenseAct = new QAction(QIcon(":resources/icons/application-share.png"), tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
 
@@ -878,11 +878,11 @@ void MainForm::createActions()
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
     aboutQTAct = new QAction(QIcon(":resources/icons/qt-logo.png"), tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    welcomeAct = new QAction(tr("Welcome Dialog"), this);
+    welcomeAct = new QAction(QIcon(":resources/icons/zone-label.png"), tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
     helpAct = new QAction(QIcon(":resources/icons/help.png"), tr("User Manual"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("Open Tutorial Project"), this);
+    example1Act = new QAction(QIcon(":resources/icons/sticky-notes-pin.png"), tr("Open Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":resources/icons/pause.png");
@@ -4876,7 +4876,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Simulator" == text)
         {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/cog.png"));
+            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/processor.png"));
         }
         #ifdef MDS_FEATURE_EXTERNAL_APPS
             else if ("External Applications" == text)
