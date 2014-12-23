@@ -90,6 +90,12 @@ void error(int errCode, QString detail)
             msgBox.setText("Read from unimplemented memory location, simulation halted");
             break;
         }
+        case ERR_MEM_RD_UNDEFINED:
+        {
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText("Read from undefined memory location, simulation halted");
+            break;
+        }
         //cpu
         case ERR_CPU_PC_OVERFLOW:
         {
