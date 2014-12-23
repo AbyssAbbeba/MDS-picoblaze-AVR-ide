@@ -1268,6 +1268,8 @@ void WDockManager::deleteActiveSimWidget()
         }
         this->breakpointList = NULL;
         this->bookmarkList = NULL;
+        this->bottomAreaTabs = NULL;
+        this->rightAreaTabs = NULL;
         this->dockWidgets = false;
         //delete tempGrid;
         //tempGrid = NULL;

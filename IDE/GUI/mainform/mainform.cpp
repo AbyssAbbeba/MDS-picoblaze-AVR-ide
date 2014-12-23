@@ -922,6 +922,7 @@ void MainForm::createToolbar()
         m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
         m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
         m_externalToolButton->setToolTip("External Applications");
+        m_externalToolButton->setEnabled(false);
         m_externalAppsToolBar->addWidget(m_externalToolButton);
     #endif
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
@@ -1043,6 +1044,7 @@ void MainForm::createDockWidgets()
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     if (false == m_wDockManager->dockWidgets)
     {
+        //QApplication::processEvents();
         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
         setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
@@ -1064,10 +1066,24 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO);
-        //QApplication::processEvents();
+        QApplication::processEvents();
         tabList = this->findChildren<QTabBar*>();
-        m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
+        for (int i = 0; i < tabList.count(); i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Compiler Messages" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->bottomAreaTabs)
+        {
+            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        }
+        connect(m_wDockManager->bottomAreaTabs,
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideBottom(int))
@@ -1103,9 +1119,24 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
-        tabList= this->findChildren<QTabBar*>();
-        m_wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
+        QApplication::processEvents();
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count(); i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Breakpoints" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->rightAreaTabs = tabList.at(i);
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->rightAreaTabs)
+        {
+            m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
+        }
+        connect(m_wDockManager->rightAreaTabs,
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideRight(int))
@@ -1359,7 +1390,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -2016,22 +2047,40 @@ void MainForm::projectOpened()
     {
         saveProjConfigAct->setEnabled(true);
     }
-    if (false == projectTabConnected)
+    if (false == m_externalToolButton->isEnabled())
     {
+        m_externalToolButton->setEnabled(true);
+    }
+    if (false == projectTabConnected && m_projectMan->getOpenProjects().count() > 1)
+    {
+        QApplication::processEvents();
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-        if (tabList.size() > 1)
+        //qDebug() << "MainForm: tab connected";
+        projectTabConnected = true;
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count(); i++)
         {
-            //qDebug() << "MainForm: tab connected";
-            projectTabConnected = true;
-            connect(tabList.at(tabList.size()-1),
-                    SIGNAL(currentChanged(int)),
-                    this,
-                    SLOT(activeProjectChanged(int))
-                   );
-            //qDebug() << "projectTabs = ";
-            projectTabs = tabList.at(tabList.size()-1);
-            //qDebug() << "projectTabs = done";
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                //qDebug() << tabList.at(i)->tabText(j);
+                if (m_projectMan->getActive()->prjName == tabList.at(i)->tabText(j))
+                {
+                    projectTabs = tabList.at(i);
+                    break;
+                }
+            }
         }
+        if (NULL == projectTabs)
+        {
+            projectTabs = tabList.at(tabList.size()-1);
+        }
+        connect(projectTabs,
+                SIGNAL(currentChanged(int)),
+                this,
+                SLOT(activeProjectChanged(int))
+                );
+        //qDebug() << "projectTabs = ";
+        //qDebug() << "projectTabs = done";
     }
     this->createDockWidgets();
     if (m_wDockManager->getBreakpointList() != NULL)
@@ -3978,11 +4027,11 @@ void MainForm::closeProject()
     {
         Project *project = m_projectMan->getActive();
         QDir path;
-        for (int i = 0; i < project->filePaths.count(); i++)
+        /*for (int i = 0; i < project->filePaths.count(); i++)
         {
             path.setPath(project->prjPath.section('/',0,-2));
             m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))), false);
-        }
+        }*/
         //qDebug() << "MainForm: delete active sim widget";
         m_wDockManager->deleteActiveSimWidget();
         m_wDockManager->removeTabBar(project->prjPath);
@@ -4015,9 +4064,15 @@ void MainForm::closeProject()
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
+            m_externalToolButton->setEnabled(false);
         }
         else
         {
+            if (m_projectMan->getOpenProjects().count() == 1)
+            {
+                projectTabConnected = false;
+                projectTabs = NULL;
+            }
             if (NULL != m_projectMan->getActive())
             {
                 m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
