@@ -306,6 +306,11 @@ MainForm::MainForm()
             this,
             SLOT(setCentralUntitled(bool))
            );
+    connect(m_wDockManager,
+            SIGNAL(tabChangedToDisabled(bool)),
+            this,
+            SLOT(disableHelpActions(bool))
+           );
     /*connect(m_wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -922,6 +927,7 @@ void MainForm::createToolbar()
         m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
         m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
         m_externalToolButton->setToolTip("External Applications");
+        m_externalToolButton->setEnabled(false);
         m_externalAppsToolBar->addWidget(m_externalToolButton);
     #endif
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
@@ -1043,6 +1049,7 @@ void MainForm::createDockWidgets()
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     if (false == m_wDockManager->dockWidgets)
     {
+        //QApplication::processEvents();
         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
         setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
@@ -1064,10 +1071,24 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO);
-        //QApplication::processEvents();
+        QApplication::processEvents();
         tabList = this->findChildren<QTabBar*>();
-        m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
+        for (int i = 0; i < tabList.count(); i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Compiler Messages" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->bottomAreaTabs)
+        {
+            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        }
+        connect(m_wDockManager->bottomAreaTabs,
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideBottom(int))
@@ -1103,9 +1124,24 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
-        tabList= this->findChildren<QTabBar*>();
-        m_wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
+        QApplication::processEvents();
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count(); i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Breakpoints" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->rightAreaTabs = tabList.at(i);
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->rightAreaTabs)
+        {
+            m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
+        }
+        connect(m_wDockManager->rightAreaTabs,
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideRight(int))
@@ -1359,7 +1395,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -1504,6 +1540,10 @@ void MainForm::addFile()
 bool MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
     {
         return saveFileAs();
@@ -1639,6 +1679,10 @@ bool MainForm::saveFileAs()
 {
     //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     QString path;
     bool done = false;
     while (false == done)
@@ -1751,6 +1795,10 @@ bool MainForm::saveFileAs()
  */
 bool MainForm::saveFile(CodeEdit *editor, bool ask)
 {
+    if (editor->getPath() == "Help Browser")
+    {
+        return false;
+    }
     //qDebug() << "MainForm: saveFile()";
     if (true == editor->isChanged())
     {
@@ -2016,22 +2064,40 @@ void MainForm::projectOpened()
     {
         saveProjConfigAct->setEnabled(true);
     }
-    if (false == projectTabConnected)
+    if (false == m_externalToolButton->isEnabled())
     {
+        m_externalToolButton->setEnabled(true);
+    }
+    if (false == projectTabConnected && m_projectMan->getOpenProjects().count() > 1)
+    {
+        QApplication::processEvents();
         QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-        if (tabList.size() > 1)
+        //qDebug() << "MainForm: tab connected";
+        projectTabConnected = true;
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count(); i++)
         {
-            //qDebug() << "MainForm: tab connected";
-            projectTabConnected = true;
-            connect(tabList.at(tabList.size()-1),
-                    SIGNAL(currentChanged(int)),
-                    this,
-                    SLOT(activeProjectChanged(int))
-                   );
-            //qDebug() << "projectTabs = ";
-            projectTabs = tabList.at(tabList.size()-1);
-            //qDebug() << "projectTabs = done";
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                //qDebug() << tabList.at(i)->tabText(j);
+                if (m_projectMan->getActive()->prjName == tabList.at(i)->tabText(j))
+                {
+                    projectTabs = tabList.at(i);
+                    break;
+                }
+            }
         }
+        if (NULL == projectTabs)
+        {
+            projectTabs = tabList.at(tabList.size()-1);
+        }
+        connect(projectTabs,
+                SIGNAL(currentChanged(int)),
+                this,
+                SLOT(activeProjectChanged(int))
+                );
+        //qDebug() << "projectTabs = ";
+        //qDebug() << "projectTabs = done";
     }
     this->createDockWidgets();
     if (m_wDockManager->getBreakpointList() != NULL)
@@ -3680,7 +3746,7 @@ void MainForm::toolDisassemble()
 {
     #ifdef MDS_FEATURE_DISASSEMBLER
         DisAsmDialog *dlg = new DisAsmDialog(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3728,7 +3794,7 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3799,7 +3865,7 @@ void MainForm::toolFileConvert()
 {
     #ifdef MDS_FEATURE_FILECONVERTER
         FileConvertDlg *dlg = new FileConvertDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3978,11 +4044,11 @@ void MainForm::closeProject()
     {
         Project *project = m_projectMan->getActive();
         QDir path;
-        for (int i = 0; i < project->filePaths.count(); i++)
+        /*for (int i = 0; i < project->filePaths.count(); i++)
         {
             path.setPath(project->prjPath.section('/',0,-2));
             m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))), false);
-        }
+        }*/
         //qDebug() << "MainForm: delete active sim widget";
         m_wDockManager->deleteActiveSimWidget();
         m_wDockManager->removeTabBar(project->prjPath);
@@ -4015,9 +4081,15 @@ void MainForm::closeProject()
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
+            m_externalToolButton->setEnabled(false);
         }
         else
         {
+            if (m_projectMan->getOpenProjects().count() == 1)
+            {
+                projectTabConnected = false;
+                projectTabs = NULL;
+            }
             if (NULL != m_projectMan->getActive())
             {
                 m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
@@ -4951,9 +5023,16 @@ void MainForm::jmpToBookmarkPrevSlot()
 void MainForm::fileClosed(QString path)
 {
     qDebug() << "MainForm: file closed";
-    m_fileWatcher.removePath(path);
-    qDebug() << m_fileWatcher.files();
-    m_projectMan->getActive()->setFileOpened(path, false);
+    if ("Help Browser" != path)
+    {
+        m_fileWatcher.removePath(path);
+        qDebug() << m_fileWatcher.files();
+        m_projectMan->getActive()->setFileOpened(path, false);
+    }
+    else
+    {
+        disableHelpActions(false);
+    }
 }
 
 
@@ -5293,4 +5372,38 @@ void MainForm::toolVHDLWizard()
         VhdlMain *vhdlmain = new VhdlMain(0);
         vhdlmain->show();
     #endif
+}
+
+
+void MainForm::disableHelpActions(bool disable)
+{
+    //qDebug() << "MainForm: disable help actions" << disable;
+    undoAct->setDisabled(disable);
+    redoAct->setDisabled(disable);
+    copyAct->setDisabled(disable);
+    cutAct->setDisabled(disable);
+    pasteAct->setDisabled(disable);
+    selectAllAct->setDisabled(disable);
+    deselectAct->setDisabled(disable);
+    findAct->setDisabled(disable);
+    findNextAct->setDisabled(disable);
+    findPreviousAct->setDisabled(disable);
+    replaceAct->setDisabled(disable);
+    jmpToLineAct->setDisabled(disable);
+    commentAct->setDisabled(disable);
+    deleteCommentAct->setDisabled(disable);
+    jmpToBookmarkNextAct->setDisabled(disable);
+    jmpToBookmarkPrevAct->setDisabled(disable);
+    saveAct->setDisabled(disable);
+    saveAsAct->setDisabled(disable);
+    reloadAct->setDisabled(disable);
+    simulationFlowAct->setDisabled(disable);
+    simulationStepAct->setDisabled(disable);
+    simulationRunAct->setDisabled(disable);
+    simulationAnimateAct->setDisabled(disable);
+    simulationResetAct->setDisabled(disable);
+    simulationUnhighlightAct->setDisabled(disable);
+    simulationBreakpointAct->setDisabled(disable);
+    simulationDisableBreakpointsAct->setDisabled(disable);
+    projectCompileAct->setDisabled(disable);
 }

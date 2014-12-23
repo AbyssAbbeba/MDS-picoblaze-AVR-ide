@@ -215,6 +215,7 @@ class MainForm : public QMainWindow
         void finishedExtApp(int processNumber);
         void stderrExtApp(int processNumber);
         void stdoutExtApp(int processNumber);
+        void disableHelpActions(bool disable);
 
     signals:
         void unhighlightSim();
