@@ -66,7 +66,7 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 //         m_locationStack.push_back(CompilerSourceLocation(i, 0, 0, 0, 0))
 //     }
 
-//     m_compilerCore->listSourceFiles()
+//     m_compilerCore->listSourceFiles().size()
 
     // Iterate over all given input files.
     std::vector<FILE*> fileStack;
@@ -593,7 +593,8 @@ inline bool CompilerCPreProc::handleDirective ( char * arguments,
 }
 
 inline void CompilerCPreProc::handleInclude ( char * arguments,
-                                              unsigned int length )
+                                              unsigned int length,
+                                              bool recursion )
 {
     if ( '<' == arguments[0] )
     {
@@ -619,13 +620,16 @@ inline void CompilerCPreProc::handleInclude ( char * arguments,
         m_include.m_file = ( arguments + 1 );
         m_include.m_system = false;
     }
-    else
+    else if ( false == recursion )
     {
         Buffer out;
-        const Buffer in(arguments, length);
-
-        m_macroTable.expand(out, in);
-        handleInclude(out.m_data, out.m_pos);
+        m_macroTable.expand(out, Buffer(arguments, length));
+        handleInclude(out.m_data, out.m_pos, true);
+    }
+    else
+    {
+        m_include.m_file = arguments;
+        m_include.m_system = false;
     }
 }
 
