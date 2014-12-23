@@ -139,7 +139,7 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "size: " << openCentralWidgets.count();
         //CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
         activeCodeEdit->loadCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit());
-        QTimer::singleShot(100, activeCodeEdit, SLOT(changeHeight()));
+        QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
         emit tabChangedToDisabled(false);
         /*if (breakpointList != NULL)
         {
@@ -1516,12 +1516,12 @@ void WDockManager::showProjectEditors(QString projectPath)
             {
                 return;
             }
-            qDebug() << "WDockManager: tabs checked";
+            //qDebug() << "WDockManager: tabs checked";
             if (wTab != NULL)
             {
                 wTab->hide();
             }
-            qDebug() << "WDockManager: tabs checked 2";
+            //qDebug() << "WDockManager: tabs checked 2";
             wTab = openCentralWidgets.at(i).first;
             wTab->show();
             m_currTabBarIndex = i;
