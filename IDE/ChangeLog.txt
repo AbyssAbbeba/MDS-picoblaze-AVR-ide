@@ -3,6 +3,7 @@
     - Added help browser
     - Added support for running external programs
     - Added support for automated VHDL entity generation
+    - Added file watcher
     - GUI polishing
 
 1.1 (7.12.2014)

@@ -253,7 +253,7 @@
                         \texttt{Ctrl + Shift + Down}        & Move line down                \\
                         \texttt{Alt + PageUp}               & Go to previous bookmark       &
                         \texttt{Alt + PageDown}             & Go to next bookmark           \\
-                        \texttt{F5}                         & Reload                        &
+                        \texttt{F5}                         & Reload file                   &
                                                             &                               \\
                         \hline
                 \end{tabular}
@@ -387,6 +387,32 @@
 
 \clearpage
 \section{Tools}
+    \subsection{External Applications}
+        Purpose of this function is to ease usage of 3rd party JTAG loaders and similar software tools in the MDS. With External Applications the user can specify a set commands or scripts to run when the corresponding external application is invoked from the MDS's main tool bar. Textual output from the external application is shown in the bottom panel in tab External Applications.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=.6\textwidth]{img/externalApps.png}
+            \caption{External Apps Config. Dialog}
+        \end{figure}
+
+        ~\\Any command can be invoked with a specific set of command line arguments in which the user can use the following strings which are automatically substituted with their corresponding values when the command is executed.
+
+        \begin{description}
+            \item[\texttt{\%curfilename\%}]~\\
+                Name of file currently opened in the code editor (without directory, without extension).
+
+            \item[\texttt{\%curfilepath\%}]~\\
+                Name of file currently opened in the code editor (with directory, without extension).
+
+            \item[\texttt{\%curfiledir\%}]~\\
+                Directory where the file currently opened in the code editor is located.
+
+            \item[\texttt{\%projectdir\%}]~\\
+                Directory where your current project is located.
+        \end{description}
+
+    \clearpage
     \subsection{Delay loop generator}
         In many cases, it is useful to have a tool for creating delay loops, it can just save you some time during         development. This tool can generate wait loops using up to six registers as iterators. All you have to do is to enter the desired time of delay or the number of instruction cycles, and clock frequency.
 
@@ -432,7 +458,7 @@
             \caption{Disassembler}
         \end{figure}
 
-\clearpage
+    \clearpage
     \subsection{Assembler translator}
         With this tool, you can translate your previously written assembler code in different syntax that MDS uses. You can select one of three choices for input file syntax: Xilinx, Mediatronix, and OpenPicIde. Input code has to be without errors.
 
@@ -523,7 +549,3 @@
             \caption{Converter}
         \end{wrapfigure}
         This tool might be useful when you want to quickly convert some number to another radix.
-
-    \clearpage
-    \subsection{External Applications}
-        
