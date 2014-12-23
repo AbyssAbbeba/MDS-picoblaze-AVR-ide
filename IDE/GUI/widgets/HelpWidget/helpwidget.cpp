@@ -25,6 +25,7 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     : QWidget(parent)
 {
     this->setWindowTitle("Help");
+    QVBoxLayout *layout = new QVBoxLayout(this);
     QHelpEngine *helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     qDebug() << "HelpWidget: " << GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc";
     if (!helpEngine->setupData())
@@ -67,9 +68,11 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     helpPanel->insertWidget(1, this->textBrowser);
     helpPanel->setStretchFactor(1, 1);
     this->textBrowser->show();
-    helpPanel->setFixedHeight(height);
-    helpPanel->setFixedWidth(width);
+    //helpPanel->setFixedHeight(height);
+    //helpPanel->setFixedWidth(width);
     this->showMaximized();
+    layout->addWidget(helpPanel);
+    this->setLayout(layout);
     //this->resize(width, height);
     //(QWidget*)(helpEngine->contentWidget())->setFixedWidth(width);
     //(QWidget*)(helpEngine->contentWidget())->setFixedHeight(height);
