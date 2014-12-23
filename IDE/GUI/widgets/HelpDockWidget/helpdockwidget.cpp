@@ -24,6 +24,8 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     : QWidget(parent)
 {
     this->setWindowTitle("Help");
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    
     QHelpEngine *helpEngine = new QHelpEngine(GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc", this);
     qDebug() << "HelpDockWidget: " << GuiCfg::getInstance().getHelpPath() + "/MDS_manual.qhc";
     if (!helpEngine->setupData())
@@ -31,7 +33,7 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
         qDebug() << "HelpDockWidget: setupData sucks ass";
     }
 
-    QTabWidget *tabs = new QTabWidget(this);
+    //QTabWidget *tabs = new QTabWidget(this);
 
     QWidget *wCnt = new QWidget(this);
     QVBoxLayout *layoutCnt = new QVBoxLayout(wCnt);
@@ -40,6 +42,9 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     layoutCnt->addWidget((QWidget*)(helpEngine->contentWidget()));
     wCnt->setLayout(layoutCnt);
 
+    layout->addWidget(wCnt);
+    this->setLayout(layout);
+    this->show();
     /*QWidget *wIndex = new QWidget(this);
     QVBoxLayout *layoutIndex = new QVBoxLayout(wIndex);
     QLabel *lblIndex = new QLabel("Index", wIndex);
@@ -55,7 +60,7 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
     wSearch->setLayout(layoutSearch);*/
 
-    tabs->addTab(wCnt, "Content");
+    //tabs->addTab(wCnt, "Content");
     //tabs->addTab(wIndex, "Index");
     //tabs->addTab(wSearch, "Search");
 
