@@ -220,10 +220,10 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
         CompilerCPreProcMacros m_macroTable;
 
         ///
-        CompilerSourceLocation m_preProcLocation;
+        CompilerSourceLocation m_location;
 
         ///
-        CompilerSourceLocation m_parserLocation;
+        std::vector<CompilerSourceLocation> m_locationStack;
 };
 
 #endif // COMPILERCPREPROC_H
