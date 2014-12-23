@@ -45,6 +45,7 @@ class QIcon;
 class QPixmap;
 class SaveDialog;
 class QSignalMapper;
+class QToolButton;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER
@@ -242,6 +243,7 @@ class MainForm : public QMainWindow
         QMenu *toolsMenu;
         QMenu *simToolsMenu;
         QMenu *helpMenu;
+        QMenu *m_externalPopupMenu;
 
         QMenu *recentFilesMenu;
         QMenu *recentProjectsMenu;
@@ -254,6 +256,8 @@ class MainForm : public QMainWindow
         QToolBar *m_simtoolToolBar;
         QToolBar *m_externalAppsToolBar;
         QToolBar *m_helpToolBar;
+
+        QToolButton *m_externalToolButton;
 
         //actions
         //file menu
