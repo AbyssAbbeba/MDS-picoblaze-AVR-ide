@@ -55,8 +55,14 @@
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
-#include "../widgets/ExtAppOutput/extappoutput.h"
-#include "../widgets/VHDLGen/vhdlmain.h"
+
+#ifdef MDS_FEATURE_EXTERNAL_APPS
+    #include "../widgets/ExtAppOutput/extappoutput.h"
+#endif
+
+#ifdef MDS_FEATURE_VHDL_WIZARD
+    #include "../widgets/VHDLGen/vhdlmain.h"
+#endif
 
 #ifdef Q_OS_WIN
     #include <windows.h> // for Sleep
@@ -145,7 +151,9 @@ MainForm::MainForm()
     m_procExtApps[0] = NULL;
     m_procExtApps[1] = NULL;
     m_procExtApps[2] = NULL;
-    m_externalPopupMenu = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalPopupMenu = NULL;
+    #endif
     m_lastDir = QDir::homePath();
     m_finishedSignalMapper = new QSignalMapper(this);
     m_errorSignalMapper = new QSignalMapper(this);
@@ -316,11 +324,13 @@ MainForm::MainForm()
             this,
             SLOT(fileChanged(QString))
            );
-    connect(&GuiCfg::getInstance(),
-            SIGNAL(externalAppsChanged()),
-            this,
-            SLOT(reloadExternalApps())
-           );
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        connect(&GuiCfg::getInstance(),
+                SIGNAL(externalAppsChanged()),
+                this,
+                SLOT(reloadExternalApps())
+            );
+    #endif
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -850,12 +860,14 @@ void MainForm::createActions()
     #endif
 
 
-    extAppAct[0] = new QAction(tr("External App 1"), this);
-    connect(extAppAct[0], SIGNAL(triggered()), this, SLOT(startExtApp1()));
-    extAppAct[1] = new QAction(tr("External App 2"), this);
-    connect(extAppAct[1], SIGNAL(triggered()), this, SLOT(startExtApp2()));
-    extAppAct[2] = new QAction(tr("External App 3"), this);
-    connect(extAppAct[2], SIGNAL(triggered()), this, SLOT(startExtApp3()));
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        extAppAct[0] = new QAction(tr("External App 1"), this);
+        connect(extAppAct[0], SIGNAL(triggered()), this, SLOT(startExtApp1()));
+        extAppAct[1] = new QAction(tr("External App 2"), this);
+        connect(extAppAct[1], SIGNAL(triggered()), this, SLOT(startExtApp2()));
+        extAppAct[2] = new QAction(tr("External App 3"), this);
+        connect(extAppAct[2], SIGNAL(triggered()), this, SLOT(startExtApp3()));
+    #endif
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
         licenseAct = new QAction(tr("License"), this);
@@ -904,12 +916,14 @@ void MainForm::createToolbar()
     simulationToolBar = addToolBar(tr("Simulation Toolbar"));
     m_toolToolBar = addToolBar(tr("Tools Toolbar"));
     m_simtoolToolBar = addToolBar(tr("Simulation Tools Toolbar"));
-    m_externalAppsToolBar = addToolBar(tr("External Apps"));
-    m_externalToolButton = new QToolButton(m_externalAppsToolBar);
-    m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
-    m_externalToolButton->setToolTip("External Applications");
-    m_externalAppsToolBar->addWidget(m_externalToolButton);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalAppsToolBar = addToolBar(tr("External Apps"));
+        m_externalToolButton = new QToolButton(m_externalAppsToolBar);
+        m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+        m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
+        m_externalToolButton->setToolTip("External Applications");
+        m_externalAppsToolBar->addWidget(m_externalToolButton);
+    #endif
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
     #ifdef MDS_FEATURE_DISASSEMBLER
@@ -979,7 +993,9 @@ void MainForm::createToolbar()
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_toolToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_simtoolToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    m_externalAppsToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalAppsToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    #endif
     m_helpToolBar->setAllowedAreas(Qt::TopToolBarArea);
 //     addToolBar(Qt::TopToolBarArea, projectToolBar);
 //     addToolBar(Qt::TopToolBarArea, simulationToolBar);
@@ -1128,7 +1144,9 @@ void MainForm::createDockWidgets()
         m_wDockManager->hideDockWidgetArea(2);
         QApplication::processEvents();
         reloadTabIcons();
-        reloadExternalApps();
+        #ifdef MDS_FEATURE_EXTERNAL_APPS
+            reloadExternalApps();
+        #endif
     }
     else
     {
@@ -4767,10 +4785,12 @@ void MainForm::reloadTabIcons()
         {
             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/cog.png"));
         }
-        else if ("External Applications" == text)
-        {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
-        }
+        #ifdef MDS_FEATURE_EXTERNAL_APPS
+            else if ("External Applications" == text)
+            {
+                m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
+            }
+        #endif
         else if ("Hide" == text)
         {
             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
@@ -4965,190 +4985,208 @@ void MainForm::setCentralUntitled(bool untracked)
 
 void MainForm::reloadExternalApps()
 {
-    if (NULL == m_externalPopupMenu)
-    {
-        m_externalPopupMenu = new QMenu(m_externalToolButton);
-        m_externalToolButton->setMenu(m_externalPopupMenu);
-    }
-    m_externalPopupMenu->clear();
-    QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
-    bool showToolButton = false;
-    for (int i = 0; i < apps.count(); i++)
-    {
-        if (true == apps.at(i).toolBar)
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_externalPopupMenu)
         {
-            showToolButton = true;
-            extAppAct[i]->setText(apps.at(i).path.section('/', -1));
-            m_externalPopupMenu->addAction(extAppAct[i]);
+            m_externalPopupMenu = new QMenu(m_externalToolButton);
+            m_externalToolButton->setMenu(m_externalPopupMenu);
         }
-        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
-    }
-    if (true == showToolButton)
-    {
-        m_externalAppsToolBar->show();
-    }
-    else
-    {
-        m_externalAppsToolBar->hide();
-        //TODO: disable extappoutput tab
-    }
+        m_externalPopupMenu->clear();
+        QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
+        bool showToolButton = false;
+        for (int i = 0; i < apps.count(); i++)
+        {
+            if (true == apps.at(i).toolBar)
+            {
+                showToolButton = true;
+                extAppAct[i]->setText(apps.at(i).path.section('/', -1));
+                m_externalPopupMenu->addAction(extAppAct[i]);
+            }
+            ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+        }
+        if (true == showToolButton)
+        {
+            m_externalAppsToolBar->show();
+        }
+        else
+        {
+            m_externalAppsToolBar->hide();
+            //TODO: disable extappoutput tab
+        }
+    #endif
 }
 
 
 void MainForm::startExtApp1()
 {
-    startExtApp(0);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(0);
+    #endif
 }
 
 
 void MainForm::startExtApp2()
 {
-    startExtApp(1);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(1);
+    #endif
 }
 
 
 void MainForm::startExtApp3()
 {
-    startExtApp(2);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(2);
+    #endif
 }
 
 
 void MainForm::startExtApp(int processNumber)
 {
-    /*if (NULL != m_procExtApps[processNumber])
-    {
-        m_procExtApps[processNumber]->kill();
-        QApplication::processEvents();
-        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        delete m_procExtApps[processNumber];
-        m_procExtApps[processNumber] = NULL;
-    }
-    else*/
-    {
-        GuiCfg_Items::ExternalApp externalApp = GuiCfg::getInstance().getExternalApps().at(processNumber);
-        m_procExtApps[processNumber] = new QProcess(this);
-        m_finishedSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(finished(int, QProcess::ExitStatus)),
-                m_finishedSignalMapper,
-                SLOT(map())
-            );
-        connect(m_finishedSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(finishedExtApp(int))
-               );
-        m_errorSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(error(QProcess::ProcessError)),
-                m_errorSignalMapper,
-                SLOT(map())
-            );
-        connect(m_errorSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(errorExtApp(int))
-               );
-        m_stderrSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(readyReadStandardError()),
-                m_stderrSignalMapper,
-                SLOT(map())
-            );
-        connect(m_stderrSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(stderrExtApp(int))
-               );
-        m_stdoutSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(readyReadStandardOutput()),
-                m_stdoutSignalMapper,
-                SLOT(map())
-            );
-        connect(m_stdoutSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(stdoutExtApp(int))
-               );
-        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-        output->cleanOutput(processNumber);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        /*if (NULL != m_procExtApps[processNumber])
+        {
+            m_procExtApps[processNumber]->kill();
+            QApplication::processEvents();
+            m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            delete m_procExtApps[processNumber];
+            m_procExtApps[processNumber] = NULL;
+        }
+        else*/
+        {
+            GuiCfg_Items::ExternalApp externalApp = GuiCfg::getInstance().getExternalApps().at(processNumber);
+            m_procExtApps[processNumber] = new QProcess(this);
+            m_finishedSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(finished(int, QProcess::ExitStatus)),
+                    m_finishedSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_finishedSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(finishedExtApp(int))
+                );
+            m_errorSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(error(QProcess::ProcessError)),
+                    m_errorSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_errorSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(errorExtApp(int))
+                );
+            m_stderrSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(readyReadStandardError()),
+                    m_stderrSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_stderrSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(stderrExtApp(int))
+                );
+            m_stdoutSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(readyReadStandardOutput()),
+                    m_stdoutSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_stdoutSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(stdoutExtApp(int))
+                );
+            ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+            output->cleanOutput(processNumber);
 
-        QString args =  externalApp.args;
-        args.replace("%appname%", externalApp.path.section('/', -1));
-        args.replace("%appdir%", externalApp.path.section('/', 0, -2));
-        args.replace("%homedir%", QDir::homePath());
-        args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
-        if ("" == m_wDockManager->getCentralName().section('.',0,-2))
-        {
-            args.replace("%curfilename%", m_wDockManager->getCentralName());
+            QString args =  externalApp.args;
+            args.replace("%appname%", externalApp.path.section('/', -1));
+            args.replace("%appdir%", externalApp.path.section('/', 0, -2));
+            args.replace("%homedir%", QDir::homePath());
+            args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
+            if ("" == m_wDockManager->getCentralName().section('.',0,-2))
+            {
+                args.replace("%curfilename%", m_wDockManager->getCentralName());
+            }
+            else
+            {
+                args.replace("%curfilename%", m_wDockManager->getCentralName().section('.',0,-2));
+            }
+            args.replace("%curfilepath%", m_wDockManager->getCentralPath());
+            args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
+            m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
+            m_wDockManager->setBottomAreaToExtAppOutput();
+            output->setActiveTab(processNumber);
+            output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
+            output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
+            output->getTextEdit(processNumber)->insertPlainText("\n");
+            output->getTextEdit(processNumber)->insertPlainText("Arguments:\t\t");
+            output->getTextEdit(processNumber)->insertPlainText(args);
+            output->getTextEdit(processNumber)->insertPlainText("\n\n");
         }
-        else
-        {
-            args.replace("%curfilename%", m_wDockManager->getCentralName().section('.',0,-2));
-        }
-        args.replace("%curfilepath%", m_wDockManager->getCentralPath());
-        args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
-        m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
-        m_wDockManager->setBottomAreaToExtAppOutput();
-        output->setActiveTab(processNumber);
-        output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
-        output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
-        output->getTextEdit(processNumber)->insertPlainText("\n");
-        output->getTextEdit(processNumber)->insertPlainText("Arguments:\t\t");
-        output->getTextEdit(processNumber)->insertPlainText(args);
-        output->getTextEdit(processNumber)->insertPlainText("\n\n");
-    }
+    #endif
 }
 
 
 void MainForm::errorExtApp(int processNumber)
 {
-    QApplication::processEvents();
-    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_procExtApps[processNumber]->deleteLater();
-    //m_procExtApps[processNumber] = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        QApplication::processEvents();
+        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_procExtApps[processNumber]->deleteLater();
+        //m_procExtApps[processNumber] = NULL;
+    #endif
 }
 
 
 void MainForm::finishedExtApp(int processNumber)
 {
-    QApplication::processEvents();
-    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    QApplication::processEvents();
-    m_procExtApps[processNumber]->deleteLater();
-    //m_procExtApps[processNumber] = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        QApplication::processEvents();
+        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        QApplication::processEvents();
+        m_procExtApps[processNumber]->deleteLater();
+        //m_procExtApps[processNumber] = NULL;
+    #endif
 }
 
 
 void MainForm::stderrExtApp(int processNumber)
 {
-    if (NULL == m_procExtApps[processNumber])
-    {
-        return;
-    }
-    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_procExtApps[processNumber])
+        {
+            return;
+        }
+        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
+    #endif
 }
 
 
 void MainForm::stdoutExtApp(int processNumber)
 {
-    if (NULL == m_procExtApps[processNumber])
-    {
-        return;
-    }
-    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_procExtApps[processNumber])
+        {
+            return;
+        }
+        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
+    #endif
 }
 
 
