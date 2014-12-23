@@ -27,6 +27,7 @@
 // Include compiler components used by parsers and/or lexers
 #include "CompilerExpr.h"
 #include "CompilerStatement.h"
+#include "CompilerLocationMap.h"
 #include "CompilerStatementTypes.h"
 #include "CompilerSourceLocation.h"
 #include "CompilerLocationTracker.h"
@@ -109,6 +110,12 @@ class CompilerParserInterface
          * @return
          */
         virtual CompilerLocationTracker & locationTrack() = 0;
+
+        /**
+         * @brief
+         * @return
+         */
+        virtual CompilerLocationMap & locationMap() = 0;
 
         /**
          * @brief

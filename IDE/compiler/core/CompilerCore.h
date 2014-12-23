@@ -250,6 +250,12 @@ class CompilerCore : public CompilerBase,
              * @return
              */
             virtual void processCodeTree ( CompilerStatement * codeTree ) override;
+
+            /**
+             * @brief
+             * @return
+             */
+            virtual CompilerLocationMap & locationMap() override;
         //@}
 
         /// @name Interface common for syntax analyzer, lexical analyzer, preprocessor, and for semantic analyzer.

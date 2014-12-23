@@ -24,6 +24,9 @@ class CompilerParserInterface;
 #include <string>
 #include <vector>
 
+// Compiler header files.
+#include "CompilerSourceLocation.h"
+
 // C compiler preprocessor header files.
 #include "CompilerCPreProcMacros.h"
 #include "CompilerCPreProcSupport.h"
@@ -215,6 +218,12 @@ class CompilerCPreProc : private CompilerCPreProcSupport,
 
         ///
         CompilerCPreProcMacros m_macroTable;
+
+        ///
+        CompilerSourceLocation m_preProcLocation;
+
+        ///
+        CompilerSourceLocation m_parserLocation;
 };
 
 #endif // COMPILERCPREPROC_H

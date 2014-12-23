@@ -55,6 +55,21 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
     // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
 
+    m_parserLocation.m_fileNumber = 0;
+    m_parserLocation.m_lineStart = 0;
+    m_parserLocation.m_lineEnd = 0;
+    m_parserLocation.m_colStart = 0;
+    m_parserLocation.m_colEnd = 0;
+    m_parserLocation.m_origin = 0;
+
+    m_preProcLocation.m_fileNumber = 0;
+    m_preProcLocation.m_lineStart = 0;
+    m_preProcLocation.m_lineEnd = 0;
+    m_preProcLocation.m_colStart = 0;
+    m_preProcLocation.m_colEnd = 0;
+    m_preProcLocation.m_origin = 0;
+
+
     // Iterate over all given input files.
     std::vector<FILE*> fileStack;
     for ( auto sourceFile : inputFiles )

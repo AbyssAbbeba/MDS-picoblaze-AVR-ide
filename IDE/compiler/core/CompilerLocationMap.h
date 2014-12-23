@@ -22,7 +22,6 @@
 // Standard header files
 #include <map>
 #include <vector>
-#include <utility>
 
 /**
  * @brief
@@ -33,44 +32,82 @@ class CompilerLocationMap
 {
     ////    Public Datatypes    ////
     public:
+        /**
+         * @brief
+         */
         struct Difference
         {
             int m_file;
             int m_line;
             int m_column;
+            int m_origin;
         };
 
+        /**
+         * @brief
+         */
         struct ColumnMark
         {
             int m_org;
-
             Difference m_diff;
         };
 
+        /**
+         * @brief
+         */
+        typedef std::vector<ColumnMark> ColumnMap;
+
+        /**
+         * @brief
+         */
         struct LineMark
         {
             int m_org;
-
-            std::vector<ColumnMark> m_columnMap;
+            ColumnMap m_columnMap;
         };
 
+        /**
+         * @brief
+         */
         typedef std::vector<LineMark> LineMap;
+
+        /**
+         * @brief
+         */
         typedef std::vector<LineMap> FileMap;
 
     ////    Public Operations    ////
     public:
-        void recordMark ( const CompilerSourceLocation & from,
-                          const CompilerSourceLocation & to );
+        /**
+         * @brief
+         * @param[in] to
+         * @param[in] from
+         */
+        void addMark ( const CompilerSourceLocation & to,
+                       const CompilerSourceLocation & from );
 
-        void processRecords();
+        /**
+         * @brief
+         * @param[in,out] to
+         * @param[in] from
+         */
+        void translate ( CompilerSourceLocation & to,
+                         const CompilerSourceLocation & from ) const;
 
-        CompilerSourceLocation translate ( const CompilerSourceLocation & from );
+        /**
+         * @brief The location map cannot be used for translating locations before it is sorted.
+         */
+        void sortMap();
+
+        /**
+         * @brief
+         */
+        void clear();
 
     ////    Private Attributes    ////
     private:
-        std::vector<std::pair<CompilerSourceLocation,CompilerSourceLocation>> m_rawRecords;
-
-        FileMap m_fileMap;
+        ///
+        FileMap m_map;
 };
 
 #endif // COMPILERLOCATIONMAP_H
