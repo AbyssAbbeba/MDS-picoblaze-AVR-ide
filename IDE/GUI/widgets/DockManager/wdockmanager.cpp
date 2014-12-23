@@ -292,7 +292,14 @@ CodeEdit* WDockManager::getCentralWidget()
 
 CodeEdit* WDockManager::getTabWidget(int index)
 {
-    return openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit();
+    if (NULL != openCentralWidgets.at(m_currTabBarIndex).second->at(index))
+    {
+        return openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 
@@ -316,7 +323,14 @@ QString WDockManager::getCentralName()
     {
         return QString();
     }
-    return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getName();
+    if (NULL == openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex()))
+    {
+        return QString();
+    }
+    else
+    {
+        return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getName();
+    }
 }
 
 
@@ -329,7 +343,14 @@ QString WDockManager::getCentralPath()
     {
         return QString();
     }
-    return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getPath();
+    if (NULL == openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex()))
+    {
+        return QString();
+    }
+    else
+    {
+        return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getPath();
+    }
 }
 
 
