@@ -47,7 +47,19 @@ ProjectCfg_CompPaths::ProjectCfg_CompPaths(QWidget *parentWidget, Project *currP
  */
 void ProjectCfg_CompPaths::newPath()
 {
-    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    QString path;
+    if (NULL == this->project)
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString());
+    }
+    else if (this->project->prjPath != "untracked")
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath());
+    }
+    else
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString());
+    }
     if (NULL != path)
     {
         /*QListWidgetItem *item = */new QListWidgetItem(path, ui.lstPaths);
@@ -60,7 +72,19 @@ void ProjectCfg_CompPaths::newPath()
  */
 void ProjectCfg_CompPaths::editPath()
 {
-    QString path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), "");
+    QString path;
+    if (NULL == this->project)
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString());
+    }
+    else if (this->project->prjPath != "untracked")
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath());
+    }
+    else
+    {
+        path = QFileDialog::getExistingDirectory(this, tr("Open Directory"), QString());
+    }
     if (NULL != path)
     {
         this->ui.lstPaths->currentItem()->setText(path);

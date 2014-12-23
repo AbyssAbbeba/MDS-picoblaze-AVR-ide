@@ -103,6 +103,13 @@ void InterfaceCfgDlg_Core::cancel()
 }
 
 
+void InterfaceCfgDlg_Core::setPath(QString path)
+{
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        this->externalApps->setDialogPath(path);
+    #endif
+}
+
 /*void InterfaceCfgDlg_Core::load()
 {
     //GuiCfg::getInstance();

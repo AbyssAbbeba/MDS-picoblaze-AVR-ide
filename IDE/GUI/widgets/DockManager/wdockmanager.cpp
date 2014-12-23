@@ -278,6 +278,10 @@ int WDockManager::getTabCount()
  */
 QString WDockManager::getCentralName()
 {
+    if (NULL == wTab)
+    {
+        return QString();
+    }
     return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getName();
 }
 
@@ -287,6 +291,10 @@ QString WDockManager::getCentralName()
  */
 QString WDockManager::getCentralPath()
 {
+    if (NULL == wTab)
+    {
+        return QString();
+    }
     return openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit()->getPath();
 }
 
