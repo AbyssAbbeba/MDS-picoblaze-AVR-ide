@@ -125,6 +125,7 @@ void WDockManager::changeCodeEditor(int index)
         }
         activeHelpBrowser->show();
         activeHelpBrowser->setSource(m_helpBrowserUrl);
+        emit tabChangedToDisabled(true);
     }
     else if (activeCodeEdit != NULL && index >= 0)
     {
@@ -137,9 +138,9 @@ void WDockManager::changeCodeEditor(int index)
         //qDebug() << "index: " << index;
         //qDebug() << "size: " << openCentralWidgets.count();
         //CodeEdit *editor = openCentralWidgets.at(index)->getCodeEdit();
-        QApplication::processEvents();
         activeCodeEdit->loadCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(index)->getCodeEdit());
-        activeCodeEdit->changeHeight();
+        QTimer::singleShot(100, activeCodeEdit, SLOT(changeHeight()));
+        emit tabChangedToDisabled(false);
         /*if (breakpointList != NULL)
         {
             connect(this->activeCodeEdit,
@@ -210,11 +211,11 @@ void WDockManager::closeTab(int index, bool openUntitled)
     if ("Help Browser" == wTab->tabText(index))
     {
         activeHelpBrowser->hide();
-        openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
-        wTab->removeTab(index);
-        return;
     }
-    emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
+    else
+    {
+        emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
+    }
     emit tabClosed(wTab->tabText(index));
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
     wTab->removeTab(index);
