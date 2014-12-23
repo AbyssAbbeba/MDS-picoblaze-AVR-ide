@@ -31,8 +31,8 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setDesktopSettingsAware(false);
-    QApplication::setStyle("Plastique");
+    //QApplication::setDesktopSettingsAware(false);
+    //QApplication::setStyle("Plastique");
     QApplication app(argc, argv);
     //qDebug() << QStyleFactory::keys();
     Q_INIT_RESOURCE(icons);

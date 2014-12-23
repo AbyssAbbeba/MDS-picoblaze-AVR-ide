@@ -2351,22 +2351,6 @@ void MainForm::compileProject()
         if (found == true)
         {
             //qDebug() << "MainForm: compiled actual project, actual file" << filePath;
-            if (0 != m_projectMan->getActive()->getAsmType())
-            {
-                QString newPath = translateBeforeCompilation(filePath);
-                if ("" == newPath)
-                {
-                    qDebug() << "MainForm: compile - translator returned empty path";
-                    return;
-                }
-                options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
-            }
-            else
-            {
-                options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
-            }
-
-
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
@@ -2390,6 +2374,24 @@ void MainForm::compileProject()
                 compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
                                             CompilerBase::MessageType::MT_REMARK);
             }
+            if (0 != m_projectMan->getActive()->getAsmType())
+            {
+                QString newPath = translateBeforeCompilation(filePath);
+                if ("" == newPath)
+                {
+                    qDebug() << "MainForm: compile - translator returned empty path";
+                    compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                                                CompilerBase::MessageType::MT_ERROR);
+                    return;
+                }
+                options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
+            }
+            else
+            {
+                options->m_sourceFiles.push_back(filePath.toLocal8Bit().constData());
+            }
+
+
 
 
         if ("" == m_wDockManager->getCentralName().section('.',0,-2))
@@ -2533,11 +2535,38 @@ void MainForm::compileProject()
                 m_projectMan->setActive(m_projectMan->getUntracked());
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
+            
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                        CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Compilation settings:",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Project:      untracked",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("File:         " + m_wDockManager->getCentralName(),
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Architecture: Picoblaze",
+                                    CompilerBase::MessageType::MT_REMARK);
+            compileInfo->appendMessage("Family:       " + m_projectMan->getUntracked()->family + "\n\n",
+                                    CompilerBase::MessageType::MT_REMARK);
+            if (0 == m_projectMan->getActive()->getAsmType())
+            {
+                compileInfo->appendMessage("Asm syntax:   MDS assembler" ,
+                                            CompilerBase::MessageType::MT_REMARK);
+            }
+            else
+            {
+                compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
+                                            CompilerBase::MessageType::MT_REMARK);
+            }
+            
             if (0 != m_projectMan->getActive()->getAsmType())
             {
                 QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
                 if ("" == newPath)
                 {
+                    compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                                                CompilerBase::MessageType::MT_ERROR);
                     return;
                 }
                 options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
@@ -2578,29 +2607,6 @@ void MainForm::compileProject()
             }
 
 
-            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
-            compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
-                                        CompilerBase::MessageType::MT_REMARK);
-            compileInfo->appendMessage("Compilation settings:",
-                                    CompilerBase::MessageType::MT_REMARK);
-            compileInfo->appendMessage("Project:      untracked",
-                                    CompilerBase::MessageType::MT_REMARK);
-            compileInfo->appendMessage("File:         " + m_wDockManager->getCentralName(),
-                                    CompilerBase::MessageType::MT_REMARK);
-            compileInfo->appendMessage("Architecture: Picoblaze",
-                                    CompilerBase::MessageType::MT_REMARK);
-            compileInfo->appendMessage("Family:       " + m_projectMan->getUntracked()->family + "\n\n",
-                                    CompilerBase::MessageType::MT_REMARK);
-            if (0 == m_projectMan->getActive()->getAsmType())
-            {
-                compileInfo->appendMessage("Asm syntax:   MDS assembler" ,
-                                            CompilerBase::MessageType::MT_REMARK);
-            }
-            else
-            {
-                compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
-                                            CompilerBase::MessageType::MT_REMARK);
-            }
 
             QDir pathDir(GuiCfg::getInstance().getTempPath());
             if (false == pathDir.exists())
@@ -2750,6 +2756,8 @@ void MainForm::compileProject()
                                                          + "/"  +  m_projectMan->getActive()->mainFilePath);
             if ("" == newPath)
             {
+                compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                                            CompilerBase::MessageType::MT_ERROR);
                 return;
             }
             options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
