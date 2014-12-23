@@ -17,6 +17,7 @@
 // Standard headers.
 #include <cstdlib>
 #include <cstring>
+#include<iostream>//DEBUG
 
 void CompilerCPreProcSupport::Buffer::append ( const Buffer & sourceBuffer )
 {
@@ -167,7 +168,8 @@ void CompilerCPreProcSupport::Conditional::dirElif ( bool condition )
 {
     if ( true == m_stack.empty() )
     {
-//         throw ...;
+        std::cout << "!!! #elif without an #if...\n";
+        throw 0;
     }
 
     switch ( m_stack.back() )
@@ -187,7 +189,8 @@ void CompilerCPreProcSupport::Conditional::dirEndif()
 {
     if ( true == m_stack.empty() )
     {
-//         throw ...;
+        std::cout << "!!! #endif without an #if...\n";
+        throw 0;
     }
     m_stack.pop_back();
 }
@@ -196,7 +199,8 @@ void CompilerCPreProcSupport::Conditional::dirElse()
 {
     if ( true == m_stack.empty() )
     {
-//         throw ...;
+        std::cout << "!!! #else without an #if...\n";
+        throw 0;
     }
 
     switch ( m_stack.back() )

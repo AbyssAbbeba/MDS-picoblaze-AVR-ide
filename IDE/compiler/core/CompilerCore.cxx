@@ -490,6 +490,7 @@ inline void CompilerCore::resetCompilerCore()
     m_openedFiles.clear();
     m_fileNameStack.clear();
     m_locationTracker.clear();
+    m_locationMap.clear();
 
     resetCompilerParserInterface();
 }
@@ -789,6 +790,11 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
 CompilerLocationTracker & CompilerCore::locationTrack()
 {
     return m_locationTracker;
+}
+
+CompilerLocationMap & CompilerCore::locationMap()
+{
+    return m_locationMap;
 }
 
 void CompilerCore::setSemanticAnalyzer ( CompilerSemanticAnalyzer * semanticAnalyzer )
