@@ -306,6 +306,11 @@ MainForm::MainForm()
             this,
             SLOT(setCentralUntitled(bool))
            );
+    connect(m_wDockManager,
+            SIGNAL(tabChangedToDisabled(bool)),
+            this,
+            SLOT(disableHelpActions(bool))
+           );
     /*connect(m_wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -1535,6 +1540,10 @@ void MainForm::addFile()
 bool MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
     {
         return saveFileAs();
@@ -1670,6 +1679,10 @@ bool MainForm::saveFileAs()
 {
     //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     QString path;
     bool done = false;
     while (false == done)
@@ -1782,6 +1795,10 @@ bool MainForm::saveFileAs()
  */
 bool MainForm::saveFile(CodeEdit *editor, bool ask)
 {
+    if (editor->getPath() == "Help Browser")
+    {
+        return false;
+    }
     //qDebug() << "MainForm: saveFile()";
     if (true == editor->isChanged())
     {
@@ -3729,7 +3746,7 @@ void MainForm::toolDisassemble()
 {
     #ifdef MDS_FEATURE_DISASSEMBLER
         DisAsmDialog *dlg = new DisAsmDialog(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3777,7 +3794,7 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3848,7 +3865,7 @@ void MainForm::toolFileConvert()
 {
     #ifdef MDS_FEATURE_FILECONVERTER
         FileConvertDlg *dlg = new FileConvertDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -5006,9 +5023,16 @@ void MainForm::jmpToBookmarkPrevSlot()
 void MainForm::fileClosed(QString path)
 {
     qDebug() << "MainForm: file closed";
-    m_fileWatcher.removePath(path);
-    qDebug() << m_fileWatcher.files();
-    m_projectMan->getActive()->setFileOpened(path, false);
+    if ("Help Browser" != path)
+    {
+        m_fileWatcher.removePath(path);
+        qDebug() << m_fileWatcher.files();
+        m_projectMan->getActive()->setFileOpened(path, false);
+    }
+    else
+    {
+        disableHelpActions(false);
+    }
 }
 
 
@@ -5348,4 +5372,38 @@ void MainForm::toolVHDLWizard()
         VhdlMain *vhdlmain = new VhdlMain(0);
         vhdlmain->show();
     #endif
+}
+
+
+void MainForm::disableHelpActions(bool disable)
+{
+    //qDebug() << "MainForm: disable help actions" << disable;
+    undoAct->setDisabled(disable);
+    redoAct->setDisabled(disable);
+    copyAct->setDisabled(disable);
+    cutAct->setDisabled(disable);
+    pasteAct->setDisabled(disable);
+    selectAllAct->setDisabled(disable);
+    deselectAct->setDisabled(disable);
+    findAct->setDisabled(disable);
+    findNextAct->setDisabled(disable);
+    findPreviousAct->setDisabled(disable);
+    replaceAct->setDisabled(disable);
+    jmpToLineAct->setDisabled(disable);
+    commentAct->setDisabled(disable);
+    deleteCommentAct->setDisabled(disable);
+    jmpToBookmarkNextAct->setDisabled(disable);
+    jmpToBookmarkPrevAct->setDisabled(disable);
+    saveAct->setDisabled(disable);
+    saveAsAct->setDisabled(disable);
+    reloadAct->setDisabled(disable);
+    simulationFlowAct->setDisabled(disable);
+    simulationStepAct->setDisabled(disable);
+    simulationRunAct->setDisabled(disable);
+    simulationAnimateAct->setDisabled(disable);
+    simulationResetAct->setDisabled(disable);
+    simulationUnhighlightAct->setDisabled(disable);
+    simulationBreakpointAct->setDisabled(disable);
+    simulationDisableBreakpointsAct->setDisabled(disable);
+    projectCompileAct->setDisabled(disable);
 }

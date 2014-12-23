@@ -188,6 +188,7 @@ class WDockManager : public QObject
         void welcomeScrRecentSig(QString path);
         void tabClosed(QString path);
         void requestUntitled(bool untracked);
+        void tabChangedToDisabled(bool disable);
 
     private:
         //MainForm *wMainWindow;
