@@ -144,6 +144,7 @@ MainForm::MainForm()
     m_procExtApps[0] = NULL;
     m_procExtApps[1] = NULL;
     m_procExtApps[2] = NULL;
+    m_externalPopupMenu = NULL;
     m_lastDir = QDir::homePath();
     m_finishedSignalMapper = new QSignalMapper(this);
     m_errorSignalMapper = new QSignalMapper(this);
@@ -895,6 +896,11 @@ void MainForm::createToolbar()
     m_toolToolBar = addToolBar(tr("Tools Toolbar"));
     m_simtoolToolBar = addToolBar(tr("Simulation Tools Toolbar"));
     m_externalAppsToolBar = addToolBar(tr("External Apps"));
+    m_externalToolButton = new QToolButton(m_externalAppsToolBar);
+    m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    //TODO: set icon
+    //m_externalToolButton->setIcon(QIcon(":resources/icons/help.png"));
+    m_externalAppsToolBar->addWidget(m_externalToolButton);
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
     #ifdef MDS_FEATURE_DISASSEMBLER
@@ -1069,12 +1075,6 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
-        m_wDockManager->addDockWidget(WRIGHTHIDE);
-        /*#ifdef Q_OS_WIN
-            Sleep(50);
-        #else
-            usleep(50000);
-        #endif*/
         tabList= this->findChildren<QTabBar*>();
         m_wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
         connect(tabList.at(tabList.size()-1),
@@ -1082,6 +1082,13 @@ void MainForm::createDockWidgets()
                 m_wDockManager,
                 SLOT(handleShowHideRight(int))
                );
+        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
+        m_wDockManager->addDockWidget(WRIGHTHIDE);
+        /*#ifdef Q_OS_WIN
+            Sleep(50);
+        #else
+            usleep(50000);
+        #endif*/
         //m_wDockManager->addDockWidget(wAnalysVar);
         //m_wDockManager->addDockWidget(wAnalysFunc);
         //addAct->setEnabled(true);
@@ -1228,7 +1235,8 @@ void MainForm::newAddFile()
     {
         if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
         {
-            this->reloadFile(path);
+            //this->reloadFile(path);
+            m_wDockManager->setCentralByPath(path);
             return;
         }
         m_wDockManager->getCentralWidget()->setChanged();
@@ -4764,6 +4772,7 @@ void MainForm::fileChanged(QString path)
     if (NULL == m_reloadDlg)
     {
         m_reloadDlg = new SaveDialog(this, QStringList(), true);
+        m_reloadDlg->appendFile(path);
         connect(m_reloadDlg, SIGNAL(reload(QString)), this, SLOT(reloadFile(QString)));
         m_reloadDlg->exec();
         delete m_reloadDlg;
@@ -4798,17 +4807,48 @@ void MainForm::reloadFile(QString path)
 
 void MainForm::reloadCurrentFile()
 {
-    QFile file(m_wDockManager->getCentralPath());
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (false == m_wDockManager->getCentralWidget()->isChanged())
     {
-        error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+        QFile file(m_wDockManager->getCentralPath());
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+        }
+        else
+        {
+            m_wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+            m_wDockManager->getCentralTextEdit()->setPositionToStart();
+            file.close();
+            QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
+        }
     }
     else
     {
-        m_wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
-        m_wDockManager->getCentralTextEdit()->setPositionToStart();
-        file.close();
-        QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
+        QString text = "File " + m_wDockManager->getCentralName() + " has been modified, do you want to save changes?";
+        int ret = QMessageBox::question(this, "File changed", text, QMessageBox::Cancel|QMessageBox::Save|QMessageBox::Discard, QMessageBox::Save);
+        if (QMessageBox::Save == ret)
+        {
+            saveFile();
+        }
+        else if (QMessageBox::Discard == ret)
+        {
+            QFile file(m_wDockManager->getCentralPath());
+            if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+            }
+            else
+            {
+                m_wDockManager->getCentralTextEdit()->setPlainText(file.readAll());
+                m_wDockManager->getCentralTextEdit()->setPositionToStart();
+                file.close();
+                QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }
 
@@ -4834,16 +4874,32 @@ void MainForm::setCentralUntitled(bool untracked)
 
 void MainForm::reloadExternalApps()
 {
-    m_externalAppsToolBar->clear();
+    if (NULL == m_externalPopupMenu)
+    {
+        m_externalPopupMenu = new QMenu(m_externalToolButton);
+        m_externalToolButton->setMenu(m_externalPopupMenu);
+    }
+    m_externalPopupMenu->clear();
     QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
+    bool showToolButton = false;
     for (int i = 0; i < apps.count(); i++)
     {
         if (true == apps.at(i).toolBar)
         {
+            showToolButton = true;
             extAppAct[i]->setText(apps.at(i).path.section('/', -1));
-            m_externalAppsToolBar->addAction(extAppAct[i]);
+            m_externalPopupMenu->addAction(extAppAct[i]);
         }
         ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+    }
+    if (true == showToolButton)
+    {
+        m_externalAppsToolBar->show();
+    }
+    else
+    {
+        m_externalAppsToolBar->hide();
+        //TODO: disable extappoutput tab
     }
 }
 
