@@ -783,7 +783,7 @@ const std::string & CompilerCore::getFileName ( int fileNumber ) const
     }
     else
     {
-        return m_openedFiles.at(fileNumber).first;
+        return m_openedFiles[fileNumber].first;
     }
 }
 
