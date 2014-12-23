@@ -1500,13 +1500,12 @@ void MainForm::addFile()
 /**
  * @brief Slot. Saves the active file.
  */
-void MainForm::saveFile()
+bool MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
     if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
     {
-        saveFileAs();
-        return;
+        return saveFileAs();
     }
     if (m_wDockManager->getCentralWidget()->isChanged() == true)
     {
@@ -1611,6 +1610,7 @@ void MainForm::saveFile()
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+            return false;
         }
         else
         {
@@ -1626,6 +1626,7 @@ void MainForm::saveFile()
             //qDebug() << "mainform: block signal false";
         //}
     }
+    return true;
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -1633,7 +1634,7 @@ void MainForm::saveFile()
 /**
  * @brief Slot. Saves the active file by the name selected by user.
  */
-void MainForm::saveFileAs()
+bool MainForm::saveFileAs()
 {
     //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
@@ -1735,6 +1736,11 @@ void MainForm::saveFileAs()
         QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
     }
+    else
+    {
+        return false;
+    }
+    return true;
     //qDebug() << "MainForm: return saveFileAs()";
 }
 
@@ -1742,7 +1748,7 @@ void MainForm::saveFileAs()
 /**
  * @brief Saves file from selected CodeEditor.
  */
-void MainForm::saveFile(CodeEdit *editor, bool ask)
+bool MainForm::saveFile(CodeEdit *editor, bool ask)
 {
     //qDebug() << "MainForm: saveFile()";
     if (true == editor->isChanged())
@@ -1754,7 +1760,7 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             if (QMessageBox::Save != ret)
             {
                 //qDebug() << "MainForm: ret button" << ret;
-                return;
+                return false;
             }
         }
         QString path;
@@ -1874,11 +1880,16 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
         }
+        else
+        {
+            return false;
+        }
     }
     else
     {
         qDebug() << "MainForm: codeedit not changed";
     }
+    return true;
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -2073,7 +2084,7 @@ void MainForm::projectOpened()
 /**
  * @brief Slot. Saves all changed files in active project.
  */
-void MainForm::saveProject()
+bool MainForm::saveProject()
 {
     //qDebug() << "MainForm: saveProject()";
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
@@ -2081,9 +2092,13 @@ void MainForm::saveProject()
         if (m_wDockManager->getTabWidget(i)->isChild(m_projectMan->getActive()) == true
             && true == m_wDockManager->getTabWidget(i)->isChanged())
         {
-            saveFile(m_wDockManager->getTabWidget(i));
+            if (false == saveFile(m_wDockManager->getTabWidget(i)))
+            {
+                return false;
+            }
         }
     }
+    return true;
     //qDebug() << "MainForm: return saveProject()";
 }
 
@@ -2213,7 +2228,10 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveFile();
+        if (false == this->saveFile())
+        {
+            return;
+        }
         m_projectMan->getUntracked()->addFile(m_wDockManager->getCentralPath(),m_wDockManager->getCentralName());
 
         CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
@@ -2403,7 +2421,10 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveFile();
+        if (false == this->saveFile())
+        {
+            return;
+        }
 
         QDir prjDir(m_projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir;
@@ -2800,7 +2821,11 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveProject();
+
+        if (false == this->saveProject())
+        {
+            return;
+        }
 
         CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
