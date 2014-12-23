@@ -55,12 +55,16 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
     // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
 
-    m_location.m_fileNumber = 0;
-    m_location.m_lineStart = 0;
-    m_location.m_lineEnd = 0;
-    m_location.m_colStart = 0;
-    m_location.m_colEnd = 0;
-    m_location.m_origin = 0;
+//     m_location = (CompilerSourceLocation(i, 0, 0, 0, 0);
+//
+//     m_location.m_fileNumber++;
+//     m_location.m_lineStart++;
+//     m_location.m_lineEnd++;
+//
+//     for ( int i = (int) inputFiles.size() - 1; i >= 0; i-- )
+//     {
+//         m_locationStack.push_back(CompilerSourceLocation(i, 0, 0, 0, 0))
+//     }
 
 //     m_locationStack.m_fileNumber = 0;
 //     m_locationStack.m_lineStart = 0;
