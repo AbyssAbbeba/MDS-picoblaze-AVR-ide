@@ -73,5 +73,13 @@
                 ``\texttt{LOAD~S0,~\#(2~+~3~*~8)}'', etc. please refer to the Tutorial Project, and the Quick User Guide for brief introduction, or to later pages in this manual for detailed description.
         \end{description}
 
+\clearpage
 \section{Don't want to learn a new assembler?}
-    Since version 1.2 MDS supports compatibility mode with the Xilinx assembler for PicoBlaze, you can enable this mode in project configuration dialog: [Main~Menu]~-> [Project]~-> [Configure]~-> [Options]. With compatibility mode enabled you can simply use the syntax you are already used to, and possibly try the macro-assembler later, if you wish.
+    There is a solution for that, since version 1.2 MDS supports compatibility mode with the Xilinx assembler for PicoBlaze, you can enable this mode in the project configuration dialog: [Main~Menu]~-> [Project]~-> [Configure]~-> [Options]. With compatibility mode enabled you can simply use the syntax you are already used to; and possibly try the macro-assembler later, if you wish.
+
+    ~\\However, there is a couple of things you should probably know about before you start using this feature:
+    \begin{enumerate}
+        \item MDS is not equipped with an assembler that can accept the Xilinx syntax. the compatibility mode uses the Assembler Translator\footnote{Assembler Translator will be discussed later in this manual.} to translate your code from Xilinx syntax to MDS syntax, there is generally no problem with that but you will get much less useful error messages, compilation warnings, etc.
+        \item The MDS syntax offers considerably wider options for writing code, this cannot be explained in one sentence but there are two main ideas of innovation behind MDS: 1) very high simulation speed (almost real-time), and 2) a reasonably advanced assembler well suitable for developing moderately complex applications. When you choose not to use the MDS assembler, you are putting away one the main advantages of this IDE.
+        \item This manual does not take into account that the user chooses to use the Xilinx syntax, this option is meant primarily for users who just what a ``quick start''.
+    \end{enumerate}
