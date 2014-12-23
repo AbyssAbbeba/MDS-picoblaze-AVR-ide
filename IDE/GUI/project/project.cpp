@@ -559,6 +559,14 @@ Project::Project(QFile *file, ProjectMan *parent)
                             {
                                     clock = xmlSimulatorElement.attribute("clock", "").toDouble();
                                     clockMult = xmlSimulatorElement.attribute("clockMult", "").toInt();
+                                    if (0.0 >= clock)
+                                    {
+                                        this->clock = 10.0;
+                                    }
+                                    if (0 >= clockMult)
+                                    {
+                                        this->clockMult = 1000000;
+                                    }
                             }
                             xmlSimulatorNode = xmlSimulatorNode.nextSibling();
                         }

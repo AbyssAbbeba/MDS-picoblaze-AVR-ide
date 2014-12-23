@@ -66,7 +66,13 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->update = false;
     this->subsys = subsys;
     std::vector<int> mask;
-    mask.push_back(MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN);
+    mask =  {
+                MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN,
+                MCUSimPureLogicIO::EVENT_PLIO_READ,
+                MCUSimPureLogicIO::EVENT_PLIO_WRITE_END,
+                MCUSimPureLogicIO::EVENT_PLIO_READ_END,
+                PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK
+            };
     controlUnit->registerObserver(this, subsys, mask);
 
 
