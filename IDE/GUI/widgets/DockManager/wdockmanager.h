@@ -32,6 +32,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QUrl>
 //#include "../Editor/wtextedit.h"
 //#include "../../mainform/mainform.h"
 //#include "../SimulationInfo/wsimulationinfo.h"
@@ -56,6 +57,7 @@ class QSplitter;
 class QListWidgetItem;
 class QDockWidget;
 class QVBoxLayout;
+class HelpBrowser;
 
 
 /**
@@ -130,6 +132,7 @@ class WDockManager : public QObject
         void compilationFinishedSlot(bool success);
         void changeTab(bool next);
         void closeCurrentTab();
+        void setHelpBrowserPath(const QUrl &);
         
 
     private slots:
@@ -198,6 +201,8 @@ class WDockManager : public QObject
         //QList<TabBar*> m_tabBarList;
         QSplitter *splitter;
         CodeEdit *activeCodeEdit;
+        HelpBrowser *activeHelpBrowser;
+        QUrl m_helpBrowserUrl;
         //QList<CodeEdit*> codeEditList;
         QString tmpPrjPath;
         int m_currTabBarIndex;

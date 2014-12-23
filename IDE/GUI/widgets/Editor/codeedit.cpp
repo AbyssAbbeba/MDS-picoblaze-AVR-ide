@@ -693,6 +693,7 @@ void CodeEdit::setParentCodeEdit(CodeEdit *parentCodeEdit)
 
 void CodeEdit::changeHeight()
 {
+    qDebug() << "CodeEdit height" << this->height();
     m_lineCount->getWidget()->changeHeight();
 }
 
