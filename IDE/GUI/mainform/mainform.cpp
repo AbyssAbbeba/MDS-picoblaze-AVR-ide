@@ -1571,6 +1571,7 @@ void MainForm::saveFile()
         }
         else
         {
+            qDebug() << m_fileWatcher.files();
             QTextStream fout(&file);
             fout << m_wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
@@ -4761,26 +4762,31 @@ void MainForm::fileClosed(QString path)
 {
     qDebug() << "MainForm: file closed";
     m_fileWatcher.removePath(path);
+    qDebug() << m_fileWatcher.files();
     m_projectMan->getActive()->setFileOpened(path, false);
 }
 
 
 void MainForm::fileChanged(QString path)
 {
-    //qDebug() << "file changed" << path;
+    qDebug() << "file changed" << path;
     //QApplication::processEvents();
     if (NULL == m_reloadDlg)
     {
         m_reloadDlg = new SaveDialog(this, QStringList(), true);
-        m_reloadDlg->appendFile(path);
         connect(m_reloadDlg, SIGNAL(reload(QString)), this, SLOT(reloadFile(QString)));
+        m_reloadDlg->appendFile(path);
         m_reloadDlg->exec();
         delete m_reloadDlg;
         m_reloadDlg = NULL;
     }
-    if (NULL != m_reloadDlg)
+    else// (NULL != m_reloadDlg)
     {
         m_reloadDlg->appendFile(path);
+    }
+    if (false == m_fileWatcher.files().contains(path))
+    {
+        m_fileWatcher.addPath(path);
     }
     //m_fileWatcher.blockSignals(true);
     //m_fileWatcher.blockSignals(false);
