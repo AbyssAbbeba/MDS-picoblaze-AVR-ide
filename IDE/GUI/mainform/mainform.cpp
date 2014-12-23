@@ -898,8 +898,7 @@ void MainForm::createToolbar()
     m_externalAppsToolBar = addToolBar(tr("External Apps"));
     m_externalToolButton = new QToolButton(m_externalAppsToolBar);
     m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    //TODO: set icon
-    //m_externalToolButton->setIcon(QIcon(":resources/icons/help.png"));
+    m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
     m_externalAppsToolBar->addWidget(m_externalToolButton);
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
@@ -4861,7 +4860,16 @@ void MainForm::reloadCurrentFile()
 
 void MainForm::setCentralUntitled(bool untracked)
 {
-    QString fileName = "untitled" + QString::number(m_projectMan->getActive()->m_untitledCounter);
+    QString fileName;
+    if (m_wDockManager->getTabCount() == 0)
+    {
+        fileName = "untitled";
+        m_projectMan->getActive()->m_untitledCounter = 0;
+    }
+    else
+    {
+        fileName = "untitled" + QString::number(m_projectMan->getActive()->m_untitledCounter);
+    }
     if (false == m_wDockManager->addCentralWidget(fileName, "untracked"))
     {
         return;

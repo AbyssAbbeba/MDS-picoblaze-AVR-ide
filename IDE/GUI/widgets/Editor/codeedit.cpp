@@ -1185,6 +1185,7 @@ void CodeEdit::closeBottomWidget(CodeEditBottomWidget widget)
             break;
         }
     }
+    QApplication::processEvents();
     this->changeHeight();
 }
 
