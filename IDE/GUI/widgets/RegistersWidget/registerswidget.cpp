@@ -40,7 +40,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->setColumnWidth(5, 30);
     this->setColumnWidth(6, 25);
     this->setColumnWidth(7, 65);
-    
+
     //QFont font = this->font();
     QFont font("Ubuntu Mono");
     font.setPixelSize(13);
@@ -67,11 +67,23 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->subsys = subsys;
     std::vector<int> mask;
     mask =  {
+                MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT,
+                MCUSimMemory::EVENT_MEM_ERR_WR_NONEXISTENT,
+                MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED,
+                MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED,
+                MCUSimMemory::EVENT_MEM_ERR_RD_ACCESS_DENIED,
+                MCUSimMemory::EVENT_MEM_ERR_WR_ACCESS_DENIED,
+
+                MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED,
+                //MCUSimMemory::EVENT_MEM_WRN_RD_DEFAULT,
+                MCUSimMemory::EVENT_MEM_WRN_RD_WRITE_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_WR_READ_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_RD_PAR_WRITE_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_WR_PAR_READ_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_RD_RESERVED_READ,
+                MCUSimMemory::EVENT_MEM_WRN_WR_RESERVED_WRITTEN,
+
                 MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN,
-                MCUSimPureLogicIO::EVENT_PLIO_READ,
-                MCUSimPureLogicIO::EVENT_PLIO_WRITE_END,
-                MCUSimPureLogicIO::EVENT_PLIO_READ_END,
-                PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK
             };
     controlUnit->registerObserver(this, subsys, mask);
 
@@ -108,6 +120,15 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
 
     switch ( eventId )
     {
+        case MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED:
+        {
+            if (true == m_warningOptions.memReadUndef)
+            {
+                qDebug() << "read undef";
+                emit stopSimSig();
+            }
+            break;
+        }
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
             this->update = true;
@@ -128,7 +149,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 {
                     this->item(locationOrReason-8, 5)->setText("00" + QString::number(value, 10));
                 }
-                
+
                 if (value > 15)
                 {
                     this->item(locationOrReason-8, 6)->setText(QString::number(value, 16).toUpper());
@@ -144,7 +165,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                 }
                 this->item(locationOrReason-8, 7)->setText(bin);
 
-                
+
                 this->item(locationOrReason-8, 5)->setBackground(Qt::yellow);
                 this->item(locationOrReason-8, 6)->setBackground(Qt::yellow);
                 this->item(locationOrReason-8, 7)->setBackground(Qt::yellow);
@@ -178,7 +199,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
                     bin.prepend("0");
                 }
                 this->item(locationOrReason, 3)->setText(bin);
-                
+
                 this->item(locationOrReason, 1)->setBackground(Qt::yellow);
                 this->item(locationOrReason, 2)->setBackground(Qt::yellow);
                 this->item(locationOrReason, 3)->setBackground(Qt::yellow);
@@ -189,7 +210,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             break;
         }
         default:
-            qDebug("Invalid event received, event ignored.");
+            qDebug() << "RegistersWidget: Invalid event received, event ignored. Event id:" << eventId;
             break;
     }
     //qDebug() << "RegistersWidget: return handleEvent()";
@@ -261,7 +282,7 @@ void RegistersWidget::deviceReset()
         bin1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         bin1->setBackground(this->palette().base().color());
         this->setItem(i, 3, bin1);
-        
+
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
         reg2->setFlags(Qt::NoItemFlags);
         setItem(i, 4, reg2);
@@ -275,7 +296,7 @@ void RegistersWidget::deviceReset()
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         hex2->setBackground(this->palette().base().color());
         this->setItem(i, 6, hex2);
-        
+
         QTableWidgetItem *bin2 = new QTableWidgetItem("0000000" + QString::number(0, 2));
         bin2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
         bin2->setBackground(this->palette().base().color());
@@ -532,7 +553,7 @@ void RegistersWidget::updateWidget()
             this->item(i, 5)->setBackground(Qt::yellow);
             this->item(i, 6)->setBackground(Qt::yellow);
             this->item(i, 7)->setBackground(Qt::yellow);
-            
+
             if (value < 10)
             {
                 this->item(i, 5)->setText("00" + QString::number(value, 10));
@@ -554,7 +575,7 @@ void RegistersWidget::updateWidget()
             {
                 this->item(i, 6)->setText(QString::number(value, 16).toUpper());
             }
-            
+
             bin = QString::number(value, 2);
             for (int i = bin.size(); i < 8 ; i++)
             {
@@ -587,4 +608,10 @@ void RegistersWidget::unhighlightCell(int row, int column)
         this->item(row, 6)->setBackground(this->palette().base().color());
         this->item(row, 7)->setBackground(this->palette().base().color());
     }
+}
+
+
+void RegistersWidget::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    m_warningOptions = options;
 }
