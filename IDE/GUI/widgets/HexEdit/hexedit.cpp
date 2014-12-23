@@ -108,6 +108,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     font.setStyleStrategy(QFont::ForceIntegerMetrics);
     this->columns=columns;
     this->ascii = AsciiPanel;
+    hexAsciiEdit = NULL;
     this->prevBlock = 0;
     hexLayout = new QGridLayout(this);
     hexTextEdit = new QPlainTextEdit(this);
