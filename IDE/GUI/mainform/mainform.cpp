@@ -56,6 +56,7 @@
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
 #include "../widgets/ExtAppOutput/extappoutput.h"
+#include "../widgets/VHDLGen/vhdlmain.h"
 
 #ifdef Q_OS_WIN
     #include <windows.h> // for Sleep
@@ -528,6 +529,9 @@ void MainForm::createMenu()
     #ifdef MDS_FEATURE_LOOP_GENERATOR
         toolsMenu->addAction(toolLoopGenAct);
     #endif
+    #ifdef MDS_FEATURE_VHDL_WIZARD
+        toolsMenu->addAction(toolVHDLWizardAct);
+    #endif
 
     #if defined(MDS_SIM_FEATURES)
         simToolsMenu = menuBar()->addMenu(tr("Simulation tools"));
@@ -819,6 +823,11 @@ void MainForm::createActions()
         toolLoopGenAct = new QAction(QIcon(":resources/icons/page_white_lightning.png"), tr("Loop Generator"), this);
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
+    #ifdef MDS_FEATURE_VHDL_WIZARD
+        toolVHDLWizardAct = new QAction(tr("VHDL Wizard"), this);
+        connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
+    #endif
+        
     #ifdef MDS_FEATURE_SIM_LED_PANEL
         toolSimLedsAct = new QAction(QIcon(":resources/icons/ledpanel.png"), tr("LED Panel"), this);
         toolSimLedsAct->setDisabled(true);
@@ -899,6 +908,7 @@ void MainForm::createToolbar()
     m_externalToolButton = new QToolButton(m_externalAppsToolBar);
     m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
     m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
+    m_externalToolButton->setToolTip("External Applications");
     m_externalAppsToolBar->addWidget(m_externalToolButton);
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
@@ -916,6 +926,9 @@ void MainForm::createToolbar()
     #endif
     #ifdef MDS_FEATURE_LOOP_GENERATOR
         m_toolToolBar->addAction(toolLoopGenAct);
+    #endif
+    #ifdef MDS_FEATURE_VHDL_WIZARD
+        m_toolToolBar->addAction(toolVHDLWizardAct);
     #endif
     #ifdef MDS_FEATURE_SIM_LED_PANEL
         m_simtoolToolBar->addAction(toolSimLedsAct);
@@ -1163,14 +1176,18 @@ void MainForm::newAddFile()
     bool done = false;
     while (false == done)
     {
-        /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        {
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
             path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
-        {*/
+        {
             path = QFileDialog::getSaveFileName(this, tr("New File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
-        //}
+        }
         if (path == NULL)
         {
             break;
@@ -1261,14 +1278,18 @@ void MainForm::openFile()
 {
 //     qDebug() << "MainForm: openFile()";
     QString path;
-    /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+    if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+    {
+        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
         path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
     }
     else
-    {*/
+    {
         path = QFileDialog::getOpenFileName(this, tr("Open File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
-    //}
+    }
     if (path != NULL)
     {
         m_lastDir = QFileInfo(path).path();
@@ -1420,14 +1441,19 @@ void MainForm::addFile()
         QString path;
         if (m_wDockManager->getCentralPath() == NULL)
         {
-            /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+
+            if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+            {
+                path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            }
+            else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
             {
                 path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
             }
             else
-            {*/
+            {
                 path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
-            //}
+            }
             if (NULL == path)
             {
                 return;
@@ -1597,14 +1623,18 @@ void MainForm::saveFileAs()
     bool done = false;
     while (false == done)
     {
-        /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+        {
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
             path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
         }
         else
-        {*/
+        {
             path = QFileDialog::getSaveFileName(this, tr("Save File As"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
-        //}
+        }
         if (path == NULL)
         {
             break;
@@ -1716,14 +1746,18 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             bool done = false;
             while (false == done)
             {
-                /*if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+                if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+                {
+                    path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                }
+                else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
                 {
                     path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
                 }
                 else
-                {*/
+                {
                     path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
-                //}
+                }
                 if (path == NULL)
                 {
                     break;
@@ -1869,7 +1903,19 @@ void MainForm::openProject()
 {
     //qDebug() << "MainForm: openProject()";
     //nalezeni projektu
-    QString path = QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString path;
+    if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+    {
+        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+    {
+        path= QFileDialog::getOpenFileName (this, tr("Open Project"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+    }
+    else
+    {
+        path= QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+    }
 
     if (path.isEmpty() == false && m_projectMan->isOpened(path) == false)
     {
@@ -2081,10 +2127,20 @@ QString MainForm::translateBeforeCompilation(QString path)
         }
         else
         {
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            std::vector<std::pair<unsigned int, std::string> > messages =  translator.getMessages();
+            QString text;
+            for (unsigned int i = 0; i < messages.size(); i++)
+            {
+                text = QString::fromStdString(messages.at(i).second) + ":" + QString::number(messages.at(i).first);
+                compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
+            }
             inputStream.close();
             outputStream.close();
             return "";
         }
+
+        
 
         inputStream.close();
         outputStream.close();
@@ -2113,6 +2169,7 @@ void MainForm::compileProject()
     }
 
     ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->clear();
+    m_wDockManager->setBottomAreaToCompilerInfo();
     this->options = new CompilerOptions();
     QString mainFile;
 
@@ -2141,11 +2198,37 @@ void MainForm::compileProject()
         this->saveFile();
         m_projectMan->getUntracked()->addFile(m_wDockManager->getCentralPath(),m_wDockManager->getCentralName());
 
+        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+        compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Compilation settings:",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Project:      untracked",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("File:         " + m_wDockManager->getCentralName(),
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Architecture: Picoblaze",
+                                    CompilerBase::MessageType::MT_REMARK);
+        compileInfo->appendMessage("Family:       " + m_projectMan->getUntracked()->family,
+                                    CompilerBase::MessageType::MT_REMARK);
+        if (0 == m_projectMan->getActive()->getAsmType())
+        {
+            compileInfo->appendMessage("Asm syntax:   MDS assembler" ,
+                                        CompilerBase::MessageType::MT_REMARK);
+        }
+        else
+        {
+            compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
+                                        CompilerBase::MessageType::MT_REMARK);
+        }
+        
         if (0 != m_projectMan->getActive()->getAsmType())
         {
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
             if ("" == newPath)
             {
+                compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                                            CompilerBase::MessageType::MT_ERROR);
                 return;
             }
             options->m_sourceFiles.push_back(newPath.toLocal8Bit().constData());
@@ -2208,29 +2291,6 @@ void MainForm::compileProject()
         //qDebug() << "MainForm: file" << mainFile;
 
 
-        CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
-        compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
-                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("Compilation settings:",
-                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("Project:      untracked",
-                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("File:         " + m_wDockManager->getCentralName(),
-                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("Architecture: Picoblaze",
-                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("Family:       " + m_projectMan->getUntracked()->family,
-                                    CompilerBase::MessageType::MT_REMARK);
-        if (0 == m_projectMan->getActive()->getAsmType())
-        {
-            compileInfo->appendMessage("Asm syntax:   MDS assembler" ,
-                                        CompilerBase::MessageType::MT_REMARK);
-        }
-        else
-        {
-            compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
-                                        CompilerBase::MessageType::MT_REMARK);
-        }
 
 
         if (m_projectMan->getActive()->compileOpt.at(0))
@@ -2914,7 +2974,6 @@ void MainForm::compileProject()
  */
 void MainForm::compilationFinished(bool success)
 {
-    m_wDockManager->setBottomAreaToCompilerInfo();
     if ( true == success )
     {
         qDebug() << "Success";
@@ -5023,7 +5082,14 @@ void MainForm::startExtApp(int processNumber)
         args.replace("%appdir%", externalApp.path.section('/', 0, -2));
         args.replace("%homedir%", QDir::homePath());
         args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
-        args.replace("%curfilename%", m_wDockManager->getCentralName());
+        if ("" == m_wDockManager->getCentralName().section('.',0,-2))
+        {
+            args.replace("%curfilename%", m_wDockManager->getCentralName());
+        }
+        else
+        {
+            args.replace("%curfilename%", m_wDockManager->getCentralName().section('.',0,-2));
+        }
         args.replace("%curfilepath%", m_wDockManager->getCentralPath());
         args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
         m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
@@ -5083,4 +5149,13 @@ void MainForm::stdoutExtApp(int processNumber)
     }
     ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
     output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
+}
+
+
+void MainForm::toolVHDLWizard()
+{
+    #ifdef MDS_FEATURE_VHDL_WIZARD
+        VhdlMain *vhdlmain = new VhdlMain(0);
+        vhdlmain->show();
+    #endif
 }

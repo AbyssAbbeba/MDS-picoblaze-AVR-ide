@@ -67,11 +67,23 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     this->subsys = subsys;
     std::vector<int> mask;
     mask =  {
+                MCUSimMemory::EVENT_MEM_ERR_RD_NONEXISTENT,
+                MCUSimMemory::EVENT_MEM_ERR_WR_NONEXISTENT,
+                MCUSimMemory::EVENT_MEM_ERR_RD_NOT_IMPLEMENTED,
+                MCUSimMemory::EVENT_MEM_ERR_WR_NOT_IMPLEMENTED,
+                MCUSimMemory::EVENT_MEM_ERR_RD_ACCESS_DENIED,
+                MCUSimMemory::EVENT_MEM_ERR_WR_ACCESS_DENIED,
+
+                MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED,
+                //MCUSimMemory::EVENT_MEM_WRN_RD_DEFAULT,
+                MCUSimMemory::EVENT_MEM_WRN_RD_WRITE_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_WR_READ_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_RD_PAR_WRITE_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_WR_PAR_READ_ONLY,
+                MCUSimMemory::EVENT_MEM_WRN_RD_RESERVED_READ,
+                MCUSimMemory::EVENT_MEM_WRN_WR_RESERVED_WRITTEN,
+                
                 MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN,
-                MCUSimPureLogicIO::EVENT_PLIO_READ,
-                MCUSimPureLogicIO::EVENT_PLIO_WRITE_END,
-                MCUSimPureLogicIO::EVENT_PLIO_READ_END,
-                PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK
             };
     controlUnit->registerObserver(this, subsys, mask);
 
@@ -108,6 +120,15 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
 
     switch ( eventId )
     {
+        case MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED:
+        {
+            if (true == m_warningOptions.memReadUndef)
+            {
+                qDebug() << "read undef";
+                emit stopSimSig();
+            }
+            break;
+        }
         case MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN:
         {
             this->update = true;
@@ -189,7 +210,7 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             break;
         }
         default:
-            qDebug("Invalid event received, event ignored.");
+            qDebug() << "RegistersWidget: Invalid event received, event ignored. Event id:" << eventId;
             break;
     }
     //qDebug() << "RegistersWidget: return handleEvent()";
@@ -587,4 +608,10 @@ void RegistersWidget::unhighlightCell(int row, int column)
         this->item(row, 6)->setBackground(this->palette().base().color());
         this->item(row, 7)->setBackground(this->palette().base().color());
     }
+}
+
+
+void RegistersWidget::setWarningOpt(GuiCfg::WarningsOpt options)
+{
+    m_warningOptions = options;
 }

@@ -82,6 +82,11 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
             };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
 
+    mask = {
+                MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED
+           };
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_MEM_CODE, mask);
+
     int offsetMove = 0;
     this->lblWRK = NULL;
     
@@ -618,6 +623,24 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
         }
     }
+    else if (MCUSimSubsys::ID_MEM_CODE == subsysId)
+    {
+        switch (eventId)
+        {
+            case MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED:
+            {
+                error(ERR_MEM_RD_UNDEFINED);
+                emit stopSimSig();
+                break;
+            }
+            default:
+            {
+                qDebug("PicoBlazeGrid: Invalid event (stack) received, event ignored.");
+                qDebug() << "PicoBlazeGrid: stack event: " << eventId;
+                break;
+            }
+        }
+    }
     else
     {
         qDebug("PicoBlazeGrid: Invalid event received, event ignored.");
@@ -962,6 +985,7 @@ void PicoBlazeGrid::setClock(double clock, int clockMult)
 void PicoBlazeGrid::setWarningOpt(GuiCfg::WarningsOpt options)
 {
     this->warningOptions = options;
+    this->memRegs->setWarningOpt(options);
 }
 
 

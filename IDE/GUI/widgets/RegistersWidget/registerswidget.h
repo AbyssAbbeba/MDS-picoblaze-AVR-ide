@@ -19,6 +19,7 @@
 #include <QTableWidget>
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
+#include "../../guicfg/guicfg.h"
 
 class MCUSimControl;
 class MCUSimMemory;
@@ -37,6 +38,7 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         //void fixHeight();
         void unhighlight();
         void updateWidget();
+        void setWarningOpt(GuiCfg::WarningsOpt options);
 
     signals:
         void stopSimSig();
@@ -51,6 +53,7 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         int m_startingAddress;
         int m_size;
         bool update;
+        GuiCfg::WarningsOpt m_warningOptions;
 };
 
 

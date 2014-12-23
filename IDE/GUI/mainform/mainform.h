@@ -118,6 +118,7 @@ class MainForm : public QMainWindow
         void toolFileConvert();
         void toolConvertor();
         void toolDisplay();
+        void toolVHDLWizard();
         void exampleOpen();
         void undoSlot();
         void redoSlot();
@@ -318,6 +319,7 @@ class MainForm : public QMainWindow
         QAction *toolConvertorAct;
         QAction *toolDisplayAct;
         QAction *toolLoopGenAct;
+        QAction *toolVHDLWizardAct;
 
         QAction *toolSimLedsAct;
         QAction *toolSim7SegAct;
