@@ -506,6 +506,31 @@ void CodeEdit::setName(QString wName)
 void CodeEdit::setPath(QString wPath)
 {
     //qDebug() << "CodeEdit: setPath()";
+    if (m_path.section('.',-1) != wPath.section('.',-1))
+    {
+        QString text = wPath.section('.',-1);
+        if (text.toLower() == "h")
+        {
+            m_textEdit->reloadHighlighter(PLAIN);
+        }
+        else if (text.toLower() == "cpp" || text.toLower() == "cxx" || text.toLower() == "cc")
+        {
+            m_textEdit->reloadHighlighter(PLAIN);
+        }
+        else if (text.toLower() == "c")
+        {
+            m_textEdit->reloadHighlighter(PLAIN);
+        }
+        else if (text.toLower() == "asm" || text.toLower() == "psm")
+        {
+            //!!!DO NOT FORGET TO CHECK IF ASM IS AVR OR PIC TYPE!!!
+            m_textEdit->reloadHighlighter(PICOBLAZEASM);
+        }
+        else
+        {
+            m_textEdit->reloadHighlighter(PLAIN);
+        }
+    }
     m_path = wPath;
     //qDebug() << "CodeEdit: return setPath()";
 }

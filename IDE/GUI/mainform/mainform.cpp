@@ -5096,7 +5096,10 @@ void MainForm::reloadExternalApps()
                 extAppAct[i]->setText(apps.at(i).path.section('/', -1));
                 m_externalPopupMenu->addAction(extAppAct[i]);
             }
-            ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+            if (true == m_wDockManager->dockWidgets)
+            {
+                ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+            }
         }
         if (true == showToolButton)
         {

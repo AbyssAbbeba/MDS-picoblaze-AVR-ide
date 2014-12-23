@@ -2716,8 +2716,8 @@ void Project::renameFile(QString oldPath, QString newPath)
         index = fileNames.indexOf(oldPath);
         if (-1 == index)
         {
-            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
-            this->addFile(relativePath, relativePath.section('/', -1));
+            //relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(newPath, newPath.section('/', -1));
             return;
         }
     }
@@ -2728,8 +2728,8 @@ void Project::renameFile(QString oldPath, QString newPath)
         if (-1 == index)
         {
             //qDebug() << "Project: File" << relativePath << "not in project";
-            relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
-            this->addFile(relativePath, relativePath.section('/', -1));
+            //relativePath = QDir::cleanPath(project.relativeFilePath(newPath));
+            this->addFile(newPath, newPath.section('/', -1));
             return;
         }
     }
