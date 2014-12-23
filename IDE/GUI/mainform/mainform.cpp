@@ -1989,7 +1989,6 @@ void MainForm::projectOpened()
     m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
     //QDir dir(m_projectMan->getActive()->);
     QString absoluteFilePath;
-    bool open = false;
     for (int i = 0; i < m_projectMan->getActive()->m_fileStats.count(); i++)
     {
         //qDebug() << "MainForm: project opened stats search" << m_projectMan->getActive()->m_fileStats.at(i);
@@ -1997,10 +1996,9 @@ void MainForm::projectOpened()
         {
             absoluteFilePath = QDir::cleanPath(m_projectMan->getActive()->prjPath.section('/',0, -2) + "/" + m_projectMan->getActive()->filePaths.at(i));
             this->openFilePath(absoluteFilePath, m_projectMan->getActive()->prjPath);
-            open = true;
         }
     }
-    if (false == open)
+    if (0 == m_wDockManager->getTabCount())
     {
         this->setCentralUntitled(false);
     }
@@ -4682,6 +4680,14 @@ void MainForm::reloadTabIcons()
             pixmap = pixmap.transformed(rm);
             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
         }
+        else if ("Help" == text)
+        {
+            QPixmap pixmap(":resources/icons/help.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
         else if ("Hide" == text)
         {
             QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
@@ -4701,6 +4707,10 @@ void MainForm::reloadTabIcons()
         else if ("Simulator" == text)
         {
             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/cog.png"));
+        }
+        else if ("External Applications" == text)
+        {
+            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
         }
         else if ("Hide" == text)
         {
