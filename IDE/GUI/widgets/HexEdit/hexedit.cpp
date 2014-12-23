@@ -36,7 +36,7 @@ bool HexEdit::eventFilter(QObject *target, QEvent *event)
             return true;
         }
         //else if (keyEvent->key() == Qt::Key_Right)
-        //    txtCursor.setPosition(position-2); 
+        //    txtCursor.setPosition(position-2);
         else if ((keyEvent->key() >= Qt::Key_0 &&
             keyEvent->key() <= Qt::Key_9)
             || (keyEvent->key() >= Qt::Key_A &&
@@ -175,14 +175,14 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     }
 
     hexLayout->setSpacing(0);
-    
-    
+
+
     //hexLayout->addWidget(nullWidget, 0, 0);
     hexLayout->addWidget(hexLineCount, 1, 0);
     hexLayout->addWidget(hexColumnCount, 0, 1);
     hexLayout->addWidget(hexTextEdit, 1, 1);
     hexLayout->addWidget(hexStatusLabel, 2, 1);
-    
+
     if (AsciiPanel == true)
     {
         hexLayout->addWidget(hexAsciiEdit, 1, 2);
@@ -293,7 +293,7 @@ void HexEdit::moveCursor()
                position -= 1;
                txtCursor.setPosition(position);
             }
-            
+
             hexTextEdit->setTextCursor(txtCursor);
         }
         else if (hexTextEdit->textCursor().hasSelection() == true)
@@ -307,7 +307,7 @@ void HexEdit::moveCursor()
         format = txtCursor.charFormat();
         format.setBackground(Qt::green);
         txtCursor.setCharFormat(format);
-        
+
         if (ascii == true)
         {
             QTextCursor asciiCursor = hexAsciiEdit->textCursor();
@@ -487,7 +487,7 @@ void HexEdit::changeAscii(int position)
         {
             asciiPosition += 1;
         }
-        
+
         asciiCursor.setPosition(asciiPosition);
         asciiCursor.deleteChar();
         if ((unsigned char)(hexByteArray->at(position)) >= 32 && (unsigned char)(hexByteArray->at(position)) < 127)
