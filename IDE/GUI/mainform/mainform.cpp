@@ -3709,7 +3709,7 @@ void MainForm::addUntrackedFile(QString name, QString path)
         if (m_projectMan->getActive()->prjPath != "untracked")
         {
             QList<Project*> projects = m_projectMan->getOpenProjects();
-            for (int i; i < projects.count(); i++)
+            for (int i = 0; i < projects.count(); i++)
             {
                 if (projects.at(i)->prjPath != "untracked")
                 {
@@ -4430,7 +4430,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     if (m_projectMan->getActive() != m_projectMan->getSimulated())
     {
         QList<Project*> projects = m_projectMan->getOpenProjects();
-        for (int i; i < projects.count(); i++)
+        for (int i = 0; i < projects.count(); i++)
         {
             if (projects.at(i) == m_projectMan->getSimulated())
             {
