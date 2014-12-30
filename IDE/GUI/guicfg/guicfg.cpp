@@ -768,6 +768,8 @@ bool GuiCfg::loadConfig()
     if (!cfgFile.open(QIODevice::ReadOnly))
     {
         qDebug() << "GuiCfg: config file not found";
+        this->sessionClear();
+        this->saveSession();
         this->setDefaultAll();
         this->saveConfig();
         return true;
@@ -797,6 +799,8 @@ bool GuiCfg::loadConfig()
                         if (xmlElement.attribute("version", "") != QString::fromStdString(MDS_VERSION))
                         {
                             qDebug() << "GuiCfg: wrong app version";
+                            this->sessionClear();
+                            this->saveSession();
                             this->setDefaultAll();
                             this->saveConfig();
                             cfgFile.close();
@@ -1186,6 +1190,8 @@ bool GuiCfg::loadConfig()
     if (false == version)
     {
         qDebug() << "GuiCfg: no app version";
+        this->sessionClear();
+        this->saveSession();
         this->setDefaultAll();
         this->saveConfig();
         return true;
