@@ -28,7 +28,7 @@ foreach ( PSM_FILE ${PSM_FILES} )
     if ( "${FILE_BASE}.psm" IS_NEWER_THAN "${FILE_BASE}.dbg" )
         add_custom_target ( "${PROJECT_NAME}_${FILE_BASE}_psm" ALL
                             SOURCES "${FILE_BASE}.psm"
-                            DEPENDS ${COMPILER_EXEC_TARGET}
+                            DEPENDS PicoBlazeAsmIncludeFiles_prc_file_kcpsm6
                             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                             COMMENT "Building Tutorial Project file ${FILE_BASE}.psm."
                             COMMAND bash "${CMAKE_SOURCE_DIR}/runMdsCompiler.sh" ${COLOR_GCC}

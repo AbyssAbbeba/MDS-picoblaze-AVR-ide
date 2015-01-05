@@ -37,7 +37,7 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
 
     auto & diff = columnMark.m_diff;
     diff.m_file = to.m_fileNumber - from.m_fileNumber;
-    diff.m_line = to.m_lineStart - from.m_lineStart;
+    diff.m_line = to.m_lineStart  - from.m_lineStart;
     diff.m_column = to.m_colStart - from.m_colStart;
     diff.m_origin = -1;
 
@@ -117,6 +117,7 @@ void CompilerLocationMap::sortMap()
             {
                 for ( int k = ( j - 1 ); k >= 0; k-- )
                 {
+std::cout << ">>>columnMap[j].m_org="<<columnMap[j].m_org<<'\n';
                     if ( columnMap[j].m_org > columnMap[k].m_org )
                     {
                         auto tmp = lineMap[j];
