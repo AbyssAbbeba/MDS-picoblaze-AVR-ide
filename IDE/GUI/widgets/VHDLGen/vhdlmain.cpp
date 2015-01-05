@@ -1113,15 +1113,15 @@ void VhdlMain::saveAdd()
 
 void VhdlMain::pushOk()
 {   
-    if ( true == createWidget)
-    {
-        if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
-             || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
-        {
-            QMessageBox::warning ( this,"Name","Component with this name already exist");
-            return;
-        }
-    }
+//     if ( true == createWidget)
+//     {
+//         if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
+//              || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
+//         {
+//             QMessageBox::warning ( this,"Name","Component with this name already exist");
+//             return;
+//         }
+//     }
     componentCnt++;
     if ( componentCnt == 21)
     {
