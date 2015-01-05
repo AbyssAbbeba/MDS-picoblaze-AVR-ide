@@ -415,7 +415,7 @@ directive:
 dir_cond_asm:
       if_block ifelse_blocks
       else_block dir_endif          {
-                                        $$ = new CompilerStatement ( CompilerSourceLocation(),
+                                        $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_COND_ASM );
                                         $$->createBranch ( $if_block -> appendLink($ifelse_blocks)
                                                                      -> appendLink($else_block)
@@ -423,7 +423,7 @@ dir_cond_asm:
                                     }
     | label if_block ifelse_blocks
       else_block dir_endif          {
-                                        $$ = $label->appendLink(new CompilerStatement(CompilerSourceLocation(),
+                                        $$ = $label->appendLink(new CompilerStatement(LOC(@$),
                                                                                       ASMPICOBLAZE_COND_ASM));
                                         $$->createBranch ( $if_block -> appendLink($ifelse_blocks)
                                                                      -> appendLink($else_block)
@@ -977,8 +977,7 @@ dir_endm_a:
 ;
 dir_include:
       INCLUDE                       {
-                                        CompilerSourceLocation location = compiler->toSourceLocation
-                                                                            ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = LOC( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
                                         CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
@@ -988,8 +987,7 @@ dir_include:
                                                                      arg );
                                     }
     | label INCLUDE                 {
-                                        CompilerSourceLocation location = compiler->toSourceLocation
-                                                                              ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = LOC( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
 
@@ -1149,7 +1147,7 @@ dir_limit:
                                              ( 0 != strcmp("C", limSel) ) )
                                         {
                                             $$ = nullptr;
-                                            compiler->parserMessage ( compiler->toSourceLocation(@id),
+                                            compiler->parserMessage ( LOC(@id),
                                                                       CompilerBase::MT_ERROR,
                                                                       QObject::tr("limit selector `%1' not understood")
                                                                                  .arg(limSel).toStdString() );
@@ -1612,6 +1610,6 @@ inline int AsmAdaptableParser_error ( YYLTYPE * yylloc,
         errorInfo = QObject::tr("syntax not understood").toStdString().c_str();
     }
 
-    compiler->parserMessage(compiler->toSourceLocation(yylloc), CompilerBase::MT_ERROR, errorInfo);
+    compiler->parserMessage(LOC(yylloc), CompilerBase::MT_ERROR, errorInfo);
     return 0;
 }

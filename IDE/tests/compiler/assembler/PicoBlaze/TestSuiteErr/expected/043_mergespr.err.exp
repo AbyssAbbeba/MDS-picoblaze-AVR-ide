@@ -1,3 +1,3 @@
 MT_ERROR: 043_mergespr.asm:16.3-16.4: Error: unrecognized token: `Å'.
 MT_ERROR: 043_mergespr.asm:16.3-16.5: Error: unrecognized token: `¡'.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

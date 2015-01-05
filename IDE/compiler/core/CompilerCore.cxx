@@ -114,44 +114,38 @@ std::string CompilerCore::locationToStr ( const CompilerSourceLocation & locatio
                                           bool main ) const
 {
     std::string result;
+    const CompilerSourceLocation * loc = &location;
 
-    if ( ( false == main ) && ( -1 != location.m_origin ) )
+    while ( true )
     {
-        bool first = true;
-        std::string prefix;
-        std::vector<CompilerSourceLocation> locationBackTr;
-        m_locationTracker.traverse(location, &locationBackTr);
-        for ( const auto & i : locationBackTr )
+        bool prefix = false;
+        if ( ( -1 != loc->m_fileNumber ) && ( loc->m_fileNumber < (int) m_openedFiles.size() ) )
         {
-            if ( false == first )
-            {
-                prefix += " ==> ";
-            }
-            first = false;
-            result += locationToStr ( i, main );
+            result += boost::filesystem::make_relative ( m_basePath, getFileName(loc->m_fileNumber) ).string();
+
+            char tmp [ 32 ];
+            sprintf ( tmp,
+                    ":%d.%d-%d.%d",
+                    loc->m_lineStart,
+                    loc->m_colStart,
+                    loc->m_lineEnd,
+                    loc->m_colEnd );
+
+            result += tmp;
+            prefix = true;
         }
-        return result;
-    }
 
-    if ( -1 == location.m_fileNumber || location.m_fileNumber >= (int)m_openedFiles.size() )
-    {
-        return "";
-    }
+        if ( ( false == main ) && ( -1 != loc->m_origin ) )
+        {
+            if ( true == prefix )
+            {
+                result += " ==> ";
+            }
+            loc = &( m_locationTracker.getLocation(loc->m_origin) );
+            continue;
+        }
 
-    result += boost::filesystem::make_relative ( m_basePath, getFileName(location.m_fileNumber) ).string();
-
-    char tmp[100];
-    sprintf ( tmp,
-              ":%d.%d-%d.%d",
-              location.m_lineStart,
-              location.m_colStart,
-              location.m_lineEnd,
-              location.m_colEnd );
-
-    result.append(tmp);
-    if ( true == main )
-    {
-        result.append(": ");
+        break;
     }
 
     return result;
@@ -169,40 +163,6 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
                                  bool forceAsUnique,
                                  bool noObserver )
 {
-    if ( -1 != location.m_origin )
-    {
-        size_t size;
-        std::string prefix;
-        std::vector<CompilerSourceLocation> locationBackTr;
-
-        m_locationTracker.traverse(location, &locationBackTr, true);
-        size = locationBackTr.size();
-
-        if ( 0 != size )
-        {
-            m_msgObserver->message(locationBackTr[0], type, text, true );
-        }
-
-        for ( size_t i = 0; i < size; i++ )
-        {
-            if ( -1 == locationBackTr[i].m_origin )
-            {
-                coreMessage ( locationBackTr[i], type, prefix + text, forceAsUnique, true );
-                prefix += "==> ";
-            }
-            else if ( 0 != i )
-            {
-                if ( nullptr != m_msgObserver )
-                {
-                    bool subsequent = ( ( i + 1 ) != size );
-                    m_msgObserver->message(locationBackTr[i], type, text, subsequent );
-                }
-            }
-        }
-
-        return;
-    }
-
     {
         bool ignoreLocation = m_opts->m_briefMsgOutput;
         if ( true == forceAsUnique )
@@ -215,15 +175,32 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
         }
     }
 
-    if ( false == noObserver )
     {
-        if ( nullptr != m_msgObserver )
+        std::string prefix;
+        const CompilerSourceLocation * loc = &location;
+
+        if ( ( false == noObserver ) && ( nullptr != m_msgObserver ) )
         {
-            m_msgObserver->message(location, type, text);
+            while ( true )
+            {
+                m_msgObserver->message(*loc, type, prefix + text);
+
+                if ( -1 != loc->m_origin )
+                {
+                    prefix += "==> ";
+                    loc = &( m_locationTracker.getLocation(loc->m_origin) );
+                    continue;
+                }
+
+                break;
+            }
         }
     }
 
-    m_msgInterface->message ( ( locationToStr(location, true) + msgType2str(type) + text + "." ), type );
+    if ( ( -1 != location.m_fileNumber ) && ( location.m_fileNumber < (int) m_openedFiles.size() ) )
+    {
+        m_msgInterface->message ( ( locationToStr(location) + ": " + msgType2str(type) + text + "." ), type );
+    }
 }
 
 void CompilerCore::preprocessorMessage ( const CompilerSourceLocation & location,

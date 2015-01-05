@@ -12,153 +12,85 @@
   00000           12     START:
                   13          ; Arithmetics
 000 11401         14             ADD        s1,#01h
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 001 11405         15             ADD        s1,#5
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 002 11401         16             ADD        s1,#O5
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `O5'.
 003 11405         17             ADD        s1,#0x05
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 004 11405         18             ADD        s1,#0b101
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 005 11405         19             ADD        s1,#0b00000101
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 006 11405         20             ADD        s1,#5D
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 007 11405         21             ADD        s1,#5O
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 008 11405         22             ADD        s1,#5Q
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 009 11405         23             ADD        s1,#5h
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00A 11405         24             ADD        s1,#101b
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00B 11405         25             ADD        s1,#00000101b
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   26
                   27
 00C 13401         28             ADDCY      s1,#01h
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00D 13405         29             ADDCY      s1,#5
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 00E 13401         30             ADDCY      s1,#O5
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `O5'.
 00F 13405         31             ADDCY      s1,#0x05
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 010 13405         32             ADDCY      s1,#0b101
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 011 13405         33             ADDCY      s1,#0b00000101
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 012 13405         34             ADDCY      s1,#5D
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 013 13405         35             ADDCY      s1,#5O
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 014 13405         36             ADDCY      s1,#5Q
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 015 13405         37             ADDCY      s1,#5h
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 016 13405         38             ADDCY      s1,#101b
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 017 13405         39             ADDCY      s1,#00000101b
-W: instruction `ADDCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   40
                   41
 018 19401         42             SUB        s1,#01h
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 019 19405         43             SUB        s1,#5
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 01A 19401         44             SUB        s1,#O5
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `O5'.
 01B 19405         45             SUB        s1,#0x05
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 01C 19405         46             SUB        s1,#0b101
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 01D 19405         47             SUB        s1,#0b00000101
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 01E 19405         48             SUB        s1,#5D
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 01F 19405         49             SUB        s1,#5O
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 020 19405         50             SUB        s1,#5Q
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 021 19405         51             SUB        s1,#5h
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 022 19405         52             SUB        s1,#101b
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 023 19405         53             SUB        s1,#00000101b
-W: instruction `ADD sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   54
                   55
 024 1B401         56             SUBCY      s1,#01h
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 025 1B405         57             SUBCY      s1,#5
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 026 1B401         58             SUBCY      s1,#O5
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `O5'.
 027 1B405         59             SUBCY      s1,#0x05
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 028 1B405         60             SUBCY      s1,#0b101
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 029 1B405         61             SUBCY      s1,#0b00000101
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02A 1B405         62             SUBCY      s1,#5D
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02B 1B405         63             SUBCY      s1,#5O
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02C 1B405         64             SUBCY      s1,#5Q
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02D 1B405         65             SUBCY      s1,#5h
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02E 1B405         66             SUBCY      s1,#101b
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 02F 1B405         67             SUBCY      s1,#00000101b
-W: instruction `SUBCY sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   68
                   69
 030 1D401         70             COMPARE    s1,#01h
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 031 1D405         71             COMPARE    s1,#5
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 032 1D401         72             COMPARE    s1,#O5
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `O5'.
 033 1D405         73             COMPARE    s1,#0x05
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 034 1D405         74             COMPARE    s1,#0b101
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 035 1D405         75             COMPARE    s1,#0b00000101
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 036 1D405         76             COMPARE    s1,#5D
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 037 1D405         77             COMPARE    s1,#5O
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 038 1D405         78             COMPARE    s1,#5Q
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 039 1D405         79             COMPARE    s1,#5h
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 03A 1D405         80             COMPARE    s1,#101b
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 03B 1D405         81             COMPARE    s1,#00000101b
-W: instruction `COMPARE sX, kk' requires operand #1 to be of type(s): register; while the given operand is of type: number.
                   82
 03C 10440         83             ADD         s2,s2
-W: instruction `ADD sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `ADD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 03D 12440         84             ADDCY       s2,s2
-W: instruction `ADDCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `ADDCY sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 03E 18440         85             SUB         s2,s2
-W: instruction `SUB sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
-W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 03F 1A410         86             SUBCY       s2,testsymb10
-W: instruction `SUBCY sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB10'.
 040 1C410         87             COMPARE     s2,testsymb11
-W: instruction `COMPARE sX, sY' requires operand #1 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB11'.
                   88
                   89     END

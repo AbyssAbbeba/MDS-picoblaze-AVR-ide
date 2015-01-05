@@ -442,7 +442,7 @@ bool AsmSymbolTable::substArg ( CompilerExpr * expr,
                         {
                             delete [] symbol;
                             CompilerExpr * substCopy = subst->copyChainLink();
-                            rewriteExprLoc(substCopy, expr->location());
+                            rewriteExprLoc(substCopy, m_compilerCore->locationTrack().add(expr->location()));
 
                             if ( ( 0 == valIdx ) && ( CompilerExpr::OPER_NONE == expr->oper() ) )
                             {
@@ -498,7 +498,7 @@ unsigned int AsmSymbolTable::substitute ( const std::string & origSymbol,
                     {
                         delete [] value->m_data.m_symbol;
                         CompilerExpr * newSymbolCopy = newSymbol->copyChainLink();
-                        rewriteExprLoc(newSymbolCopy, expr->location());
+                        rewriteExprLoc(newSymbolCopy, m_compilerCore->locationTrack().add(expr->location()));
                         *value = CompilerValue(newSymbolCopy);
                         if ( CompilerExpr::OPER_NONE == expr->oper() )
                         {
@@ -674,40 +674,19 @@ unsigned int AsmSymbolTable::resolveExpr ( const CompilerExpr * expr,
 }
 
 void AsmSymbolTable::rewriteExprLoc ( CompilerExpr * expr,
-                                      const CompilerSourceLocation & newLocation,
-                                      int origin,
-                                      bool keepColumns ) const
+                                      int origin ) const
 {
-    if ( -1 == origin )
-    {
-        origin = newLocation.m_origin;
-        if ( -1 == origin )
-        {
-            origin = m_compilerCore->locationTrack().add(newLocation, origin);
-        }
-    }
-
     for ( ; nullptr != expr; expr = expr->next() )
     {
-        expr->m_location.m_origin     = m_compilerCore->locationTrack().add(expr->location(), origin);
-
-        expr->m_location.m_fileNumber = newLocation.m_fileNumber;
-        expr->m_location.m_lineStart  = newLocation.m_lineStart;
-        expr->m_location.m_lineEnd    = newLocation.m_lineEnd;
-
-        if ( false == keepColumns )
-        {
-            expr->m_location.m_colStart = newLocation.m_colStart;
-            expr->m_location.m_colEnd   = newLocation.m_colEnd;
-        }
+        expr->m_location.m_origin = origin;
 
         if ( CompilerValue::TYPE_EXPR == expr->lVal().m_type )
         {
-            rewriteExprLoc(expr->lVal().m_data.m_expr, newLocation, origin, keepColumns);
+            rewriteExprLoc(expr->lVal().m_data.m_expr, origin);
         }
         if ( CompilerValue::TYPE_EXPR == expr->rVal().m_type )
         {
-            rewriteExprLoc(expr->rVal().m_data.m_expr, newLocation, origin, keepColumns);
+            rewriteExprLoc(expr->rVal().m_data.m_expr, origin);
         }
     }
 }

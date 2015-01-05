@@ -86,4 +86,4 @@ MT_ERROR: 032_example_5.asm:1486.32-1486.34: Error: identifier cannot start with
 MT_ERROR: 032_example_5.asm:1486.102-1487.1: Error: unexpected end of line.
 MT_ERROR: 032_example_5.asm:1524.32-1524.35: Error: identifier cannot start with a digit: `3FF'.
 MT_ERROR: 032_example_5.asm:1524.24-1524.31: Error: directive ADDRESS requires a single argument.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

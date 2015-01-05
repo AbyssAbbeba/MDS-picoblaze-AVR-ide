@@ -759,7 +759,7 @@ dir_rt_cond:
 dir_rt_cond_a:
       rtif_block rtelseif_blocks
       rtelse_block dir_rtendif      {
-                                        $$ = new CompilerStatement ( CompilerSourceLocation(), ASMPICOBLAZE_RT_COND );
+                                        $$ = new CompilerStatement ( LOC(@$), ASMPICOBLAZE_RT_COND );
                                         $$->createBranch ( $rtif_block -> appendLink($rtelseif_blocks)
                                                                        -> appendLink($rtelse_block)
                                                                        -> appendLink($dir_rtendif) );
@@ -1244,8 +1244,7 @@ dir_endm_a:
 ;
 dir_include:
       INCLUDE                       {
-                                        CompilerSourceLocation location = compiler->toSourceLocation
-                                                                            ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = LOC( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
                                         CompilerExpr * arg = new CompilerExpr(compiler->getFileNumber($INCLUDE));
@@ -1255,8 +1254,7 @@ dir_include:
                                                                      arg );
                                     }
     | label INCLUDE                 {
-                                        CompilerSourceLocation location = compiler->toSourceLocation
-                                                                              ( compiler -> m_yyllocStack.back() );
+                                        CompilerSourceLocation location = LOC( compiler -> m_yyllocStack.back() );
                                         location.m_fileNumber = compiler -> getFileNumber(1);
 
 
@@ -1416,7 +1414,7 @@ dir_limit:
                                              ( 0 != strcmp("C", limSel) ) )
                                         {
                                             $$ = nullptr;
-                                            compiler->parserMessage ( compiler->toSourceLocation(@id),
+                                            compiler->parserMessage ( LOC(@id),
                                                                       CompilerBase::MT_ERROR,
                                                                       QObject::tr("limit selector `%1' not understood")
                                                                                  .arg(limSel).toStdString() );
@@ -1444,7 +1442,7 @@ dir_device:
                                         $$ = new CompilerStatement ( LOC(@$),
                                                                      ASMPICOBLAZE_DIR_DEVICE,
                                                                      new CompilerExpr ( procType, LOC(@string) ) );
-                                        compiler->parserMessage ( compiler->toSourceLocation(@string),
+                                        compiler->parserMessage ( LOC(@string),
                                                                   CompilerBase::MT_WARNING,
                                                                   QObject::tr ( "processor type (`%1') should be "
                                                                                 "specified without double quotes "
@@ -2408,6 +2406,6 @@ inline int AsmPicoBlazeParser_error ( YYLTYPE * yylloc,
         errorInfo = QObject::tr("syntax not understood").toStdString().c_str();
     }
 
-    compiler->parserMessage(compiler->toSourceLocation(yylloc), CompilerBase::MT_ERROR, errorInfo);
+    compiler->parserMessage(LOC(yylloc), CompilerBase::MT_ERROR, errorInfo);
     return 0;
 }

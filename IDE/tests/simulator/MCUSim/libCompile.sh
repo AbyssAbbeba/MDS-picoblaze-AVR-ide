@@ -5,7 +5,7 @@ declare COMPILER_EXEC="${PWD}"
 declare -r OS="$(uname -o)"
 
 if [ ! -z "${DEV}" ]; then
-    declare -r DEVICE_OPTION="--dev=${DEV}"
+    declare -r DEVICE_OPTION="--device=${DEV}"
 else
     declare -r DEVICE_OPTION=""
 fi
@@ -56,8 +56,8 @@ function runBuild()
 
         if ! output="$( LC_ALL="C" ${COMPILER_EXEC}                 \
                                    ${DEVICE_OPTION}                 \
-                                   --arch="${ARCH}"                 \
-                                   --plang="${LANG}"                \
+                                   --architecture="${ARCH}"         \
+                                   --language="${LANG}"             \
                                    --hex="${1}/${i%%.asm}.hex"      \
                                    --lst="${1}/${i%%.asm}.lst"      \
                                    --base-inc-dir="${BASE_INC_DIR}" \

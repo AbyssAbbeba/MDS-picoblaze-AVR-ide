@@ -29,6 +29,7 @@ class AsmSymbolTable;
 
 // Standard headers.
 #include <set>
+#include <map>
 #include <string>
 #include <vector>
 #include <ostream>
@@ -183,7 +184,7 @@ class AsmCodeListing : public CompilerMsgObserver
          * @param[in] code
          * @param[in] address
          */
-        void setCode ( CompilerSourceLocation location,
+        void setCode ( const CompilerSourceLocation & location,
                        int code,
                        int address );
 
@@ -198,11 +199,9 @@ class AsmCodeListing : public CompilerMsgObserver
         /**
          * @brief
          * @param[in] location
-         * @param[in] definition
          * @param[in,out] expansion
          */
-        void expandMacro ( CompilerSourceLocation location,
-                           const CompilerStatement * definition,
+        void expandMacro ( const CompilerSourceLocation & location,
                            CompilerStatement * expansion );
 
         /**
@@ -266,31 +265,13 @@ class AsmCodeListing : public CompilerMsgObserver
 
         /**
          * @brief
-         * @param[in,out] lastLine
-         * @param[in] definition
-         */
-        void copyMacroBody ( unsigned int * lastLine,
-                             const CompilerStatement * definition );
-
-        /**
-         * @brief
-         * @param[in,out] lineDiff
          * @param[in,out] macro
          * @param[in] origin
+         * @param[in] lastLine
          */
-        void rewriteMacroLoc ( unsigned int * lineDiff,
-                               CompilerStatement * macro,
-                               int origin );
-
-        /**
-         * @brief
-         * @param[in,out] lineCounter
-         * @param[in,out] code
-         * @param[in] origin
-         */
-        void rewriteRepeatLoc ( unsigned int * lineCounter,
-                                CompilerStatement * code,
-                                int origin );
+        void copyMacroBody ( CompilerStatement * macro,
+                             int origin,
+                             int * lastLine = nullptr );
 
         /**
          * @brief
@@ -301,15 +282,6 @@ class AsmCodeListing : public CompilerMsgObserver
         void rewriteIncludeLoc ( CompilerStatement * codeTree,
                                  const int fileNumber,
                                  const int origin );
-
-        /**
-         * @brief
-         * @param[in] location
-         * @param[in] silent
-         * @return
-         */
-        bool checkLocation ( const CompilerSourceLocation & location,
-                             bool silent = false );
 
     ////    Inline Private Operations    ////
     private:
@@ -328,6 +300,36 @@ class AsmCodeListing : public CompilerMsgObserver
         inline void insertMessage ( const CompilerSourceLocation & location,
                                     CompilerBase::MessageType type,
                                     const std::string & text );
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[out] file
+         * @param[out] line
+         */
+        inline bool translateLocation ( const CompilerSourceLocation & location,
+                                        int & file,
+                                        int & line);
+
+        /**
+         * @brief
+         * @param[in] location
+         * @param[in] silent
+         * @return
+         */
+        inline bool checkLocation ( const CompilerSourceLocation & location,
+                                    bool silent = false );
+
+        /**
+         * @brief
+         * @param[in] file
+         * @param[in] line
+         * @param[in] silent
+         * @return
+         */
+        inline bool checkLocation ( int file,
+                                    int line,
+                                    bool silent = false );
 
     ////    Private Attributes    ////
     private:
@@ -368,16 +370,13 @@ class AsmCodeListing : public CompilerMsgObserver
         std::vector<std::vector<Message>> m_messages;
 
         ///
+        std::map<int,std::pair<int,int>> m_locationTransMap;
+
+        ///
         std::vector<std::pair<CompilerSourceLocation,Message>> m_messageQueue;
 
         ///
         std::string m_lastMsgPrefix;
-
-        ///
-        bool m_lastMsgSubsequent;
-
-        ///
-        CompilerSourceLocation m_lastMsgLocation;
 };
 
 /// @name Tracing operators

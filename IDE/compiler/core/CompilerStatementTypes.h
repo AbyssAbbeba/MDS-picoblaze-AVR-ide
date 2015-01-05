@@ -859,7 +859,6 @@ namespace CompilerStatementTypes
             C_STMT_INLINE_FUNC,                 ///<
             C_STMT_TYPEDEF,                     ///<
             C_STMT_GOTO,                        ///<
-
         //@}
 
         STATEMENTTYPE__MAX__                    ///<

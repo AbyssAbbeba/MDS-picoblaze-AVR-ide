@@ -12,15 +12,11 @@
  </General>
  <Files>
   <File path="Example1.psm" opened="true" name="Example1.psm"/>
-  <File path="Example2.psm" opened="false" name="Example2.psm"/>
-  <File path="Example3.psm" opened="false" name="Example3.psm"/>
-  <File path="Example4.psm" opened="false" name="Example4.psm"/>
-  <File path="Example5.psm" opened="false" name="Example5.psm"/>
-  <File path="Example6.psm" opened="false" name="Example6.psm"/>
-  <File path="Example1.mem" opened="false" name="Example1.mem"/>
-  <File path="Example1.rawhex" opened="false" name="Example1.rawhex"/>
-  <File path="Example1.ihex" opened="false" name="Example1.ihex"/>
-  <File path="Example1.vhd" opened="false" name="Example1.vhd"/>
+  <File path="Example2.psm" opened="true" name="Example2.psm"/>
+  <File path="Example3.psm" opened="true" name="Example3.psm"/>
+  <File path="Example4.psm" opened="true" name="Example4.psm"/>
+  <File path="Example5.psm" opened="true" name="Example5.psm"/>
+  <File path="Example6.psm" opened="true" name="Example6.psm"/>
  </Files>
  <Mainfile enabled="false" path="" name=""/>
  <Breakpoints>

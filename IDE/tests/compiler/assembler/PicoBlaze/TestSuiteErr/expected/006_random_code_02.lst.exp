@@ -6,13 +6,9 @@
                    6
   00000            7     Start:
 000 32000          8             JUMP        Z, 0x000
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 001 36000          9             JUMP        NZ,0x000
-W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 002 3A000         10             JUMP        C, 0x000
-W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 003 3E000         11             JUMP        NC,0x000
-W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
                   12
                   13
 004 14102         14             RL        TESTsymb10

@@ -8,9 +8,6 @@ MT_ERROR: 009_asm_SPI.asm:5.24-5.30: Error: symbol not defined: `_PIGGY'.
 MT_ERROR: 009_asm_SPI.asm:5.33-5.38: Error: symbol not defined: `_I2C2'.
 MT_ERROR: 009_asm_SPI.asm:6.24-6.30: Error: symbol not defined: `_PIGGY'.
 MT_ERROR: 009_asm_SPI.asm:6.33-6.38: Error: symbol not defined: `_I2C3'.
-MT_WARNING: 009_asm_SPI.asm:185.29-185.30: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: 009_asm_SPI.asm:208.29-208.30: Warning: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 009_asm_SPI.asm:16.28-16.30: Error: symbol not defined: `SF'.
 MT_ERROR: 009_asm_SPI.asm:17.28-17.30: Error: symbol not defined: `SF'.
 MT_ERROR: 009_asm_SPI.asm:18.25-18.30: Error: symbol not defined: `DELAY'.

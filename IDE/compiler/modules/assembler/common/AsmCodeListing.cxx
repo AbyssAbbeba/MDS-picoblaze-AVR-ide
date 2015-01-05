@@ -91,9 +91,7 @@ void AsmCodeListing::clear()
     m_files2skip.clear();
     m_messageQueue.clear();
     m_lastMsgPrefix.clear();
-
-    m_lastMsgSubsequent = false;
-    m_lastMsgLocation = CompilerSourceLocation();
+    m_locationTransMap.clear();
 }
 
 AsmCodeListing::~AsmCodeListing()
@@ -178,7 +176,7 @@ void AsmCodeListing::printCodeListing ( std::ostream & out,
         {
             output.clear();
 
-            if ( ( -1 != lstLine.m_address ) || ( 0 != lstLine.m_code.size() ) )
+            if ( ( -1 != lstLine.m_address ) || ( false == lstLine.m_code.empty() ) )
             {
                 if ( -1 != lstLine.m_address )
                 {
@@ -190,7 +188,7 @@ void AsmCodeListing::printCodeListing ( std::ostream & out,
                     output += std::string(4, ' ');
                 }
 
-                if ( 0 != lstLine.m_code.size() )
+                if ( false == lstLine.m_code.empty() )
                 {
                     sprintf ( buffer, "%05X ", lstLine.m_code[0] );
                     output += buffer;
@@ -300,21 +298,25 @@ void AsmCodeListing::printCodeListing ( std::ostream & out,
             outputEnabled = false;
         }
 
-        for ( const auto macro : lstLine.m_macro )
+        for ( int i = 0; i < (int) lstLine.m_macro.size(); i++ )
         {
-            if ( 0 < macro )
+            int macro = lstLine.m_macro[i];
+
+            if ( macro > 0 )
             {
-                printCodeListing ( out, outputEnabled, lineNumber, ( macro - 1 ), inclusionLevel, ( 1 + macroLevel ) );
+                macro--;
             }
-            else if ( 0 > macro )
+            else if ( macro < 0 )
             {
-                printCodeListing ( out, outputEnabled, lineNumber, -( macro + 1 ), inclusionLevel, macroLevel );
+                macro = -( macro + 1 );
             }
+
+            printCodeListing ( out, outputEnabled, lineNumber, macro, inclusionLevel, ( 1 + macroLevel ) );
         }
 
         if ( -1 != lstLine.m_inclusion )
         {
-            printCodeListing ( out, outputEnabled, lineNumber, lstLine.m_inclusion, ( 1 + inclusionLevel ), macroLevel );
+            printCodeListing(out, outputEnabled, lineNumber, lstLine.m_inclusion, ( 1 + inclusionLevel ), macroLevel);
         }
     }
 }
@@ -349,32 +351,69 @@ void AsmCodeListing::output()
     }
 }
 
-bool AsmCodeListing::checkLocation ( const CompilerSourceLocation & location,
-                                     bool silent )
+inline bool AsmCodeListing::checkLocation ( const CompilerSourceLocation & location,
+                                            bool silent )
 {
-    if ( m_files2skip.end() != m_files2skip.find(location.m_fileNumber) )
+    return checkLocation(location.m_fileNumber, location.m_lineStart, silent);
+}
+
+inline bool AsmCodeListing::checkLocation ( int file,
+                                            int line,
+                                            bool silent )
+{
+    if ( m_files2skip.cend() != m_files2skip.find(file) )
     {
         return false;
     }
 
-    if ( -1 != location.m_fileNumber && (size_t)location.m_fileNumber < (m_numberOfFiles + m_numberOfMacros) )
+    if (
+           ( -1 != file )
+               &&
+           ( line >= 0 )
+               &&
+           ( file <= (int) ( m_numberOfFiles + m_numberOfMacros - 1 ) )
+               &&
+           ( line <= int( m_listing[file].size() ) )
+       )
     {
-        if ( 0 < location.m_lineStart && (size_t)location.m_lineStart <= m_listing[location.m_fileNumber].size() )
-        {
-            // Location is valid.
-            return true;
-        }
+        // Location is valid.
+        return true;
     }
 
     // Location is NOT valid.
-    if ( ( false == silent ) && ( -1 != location.m_fileNumber ) )
+    if ( ( false == silent ) && ( -1 != file ) )
     {
         m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
                                             CompilerBase::MT_ERROR,
                                             QObject::tr ( "some of the source code files were aparently changed"
                                                           " during compilation" ).toStdString() );
     }
+
     return false;
+}
+
+inline bool AsmCodeListing::translateLocation ( const CompilerSourceLocation & location,
+                                                int & file,
+                                                int & line)
+{
+    if ( false == checkLocation(location) )
+    {
+        return false;
+    }
+
+    const auto translation = m_locationTransMap.find(location.m_origin);
+    if ( m_locationTransMap.cend() != translation )
+    {
+        file = translation->second.first;
+        line = location.m_lineStart - translation->second.second;
+        return checkLocation(file, line);
+    }
+    else
+    {
+        file = location.m_fileNumber;
+        line = location.m_lineStart - 1;
+        return true;
+    }
 }
 
 void AsmCodeListing::setTitle ( const std::string & title )
@@ -385,151 +424,29 @@ void AsmCodeListing::setTitle ( const std::string & title )
 void AsmCodeListing::setNoList ( CompilerSourceLocation location,
                                  bool flag )
 {
-    if ( true == checkLocation ( location ) )
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
     {
-        location.m_lineStart--;
-        m_listing[location.m_fileNumber][location.m_lineStart].m_noList = ( ( true == flag ) ? -1 : 1 );
+        m_listing[file][line].m_noList = ( ( true == flag ) ? -1 : 1 );
     }
 }
 
 void AsmCodeListing::setInclusion ( CompilerStatement * node,
                                     int fileNumber )
 {
-    const CompilerSourceLocation & location = node->location();
-    if ( ( true == checkLocation ( location ) ) && ( -1 != fileNumber ) )
+    if ( -1 != fileNumber )
     {
-        m_listing[location.m_fileNumber][location.m_lineStart - 1].m_inclusion = fileNumber;
-    }
+        int file, line;
+        const CompilerSourceLocation & location = node->location();
 
-    rewriteIncludeLoc(node->next(), fileNumber, m_compilerCore->locationTrack().add(location));
-}
-
-void AsmCodeListing::setCode ( CompilerSourceLocation location,
-                               int code,
-                               int address )
-{
-    if ( true == checkLocation ( location ) )
-    {
-        location.m_lineStart--;
-        std::vector<int> & codeVector = m_listing[location.m_fileNumber][location.m_lineStart].m_code;
-        if ( 0 == codeVector.size() )
+        if ( true == translateLocation(location, file, line) )
         {
-            m_listing[location.m_fileNumber][location.m_lineStart].m_address = address;
+            m_listing[file][line].m_inclusion = fileNumber;
+
+            int origin = m_compilerCore->locationTrack().add(location);
+            m_locationTransMap[origin] = {fileNumber, 1};
+            rewriteIncludeLoc(node->next(), fileNumber, origin);
         }
-        codeVector.push_back(code);
-    }
-}
-
-void AsmCodeListing::setValue ( CompilerSourceLocation location,
-                                int value )
-{
-    if ( true == checkLocation ( location ) )
-    {
-        location.m_lineStart--;
-        m_listing[location.m_fileNumber][location.m_lineStart].m_value = value;
-    }
-}
-
-void AsmCodeListing::expandMacro ( CompilerSourceLocation location,
-                                   const CompilerStatement * definition,
-                                   CompilerStatement * expansion )
-{
-    if ( false == checkLocation ( location ) )
-    {
-        return;
-    }
-
-    unsigned int lineCounter = 0;
-    int formerOrigin = m_compilerCore->locationTrack().add(location);
-
-    m_numberOfMacros++;
-
-    location.m_lineStart--;
-    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back( m_numberOfFiles + m_numberOfMacros );
-
-    m_listing.resize(m_numberOfFiles + m_numberOfMacros);
-    copyMacroBody(&lineCounter, definition);
-    lineCounter = 0;
-    rewriteMacroLoc(&lineCounter, expansion, formerOrigin);
-}
-
-void AsmCodeListing::copyMacroBody ( unsigned int * lastLine,
-                                     const CompilerStatement * macro )
-{
-    for ( const CompilerStatement * node = macro;
-          nullptr != node;
-          node = node->next() )
-    {
-        if ( true == node->location().isSet() )
-        {
-            // Copy empty lines between the last LstLine and the one which is about to be inserted now.
-            if ( 0 != *lastLine )
-            {
-                for ( int i = ( node->location().m_lineStart - *lastLine ); i > 1 ; i-- )
-                {
-                    m_listing[m_numberOfFiles + m_numberOfMacros - 1].push_back(LstLine());
-                }
-            }
-            *lastLine = node->location().m_lineStart;
-
-            LstLine line = m_listing[node->location().m_fileNumber][node->location().m_lineStart - 1];
-            line.m_message = -1;
-            m_listing[m_numberOfFiles + m_numberOfMacros - 1].push_back(line);
-        }
-
-        copyMacroBody ( lastLine, node->branch() );
-    }
-}
-
-void AsmCodeListing::rewriteMacroLoc ( unsigned int * lineDiff,
-                                       CompilerStatement * macro,
-                                       int origin )
-{
-    for ( CompilerStatement * node = macro;
-          node != nullptr;
-          node = node->next() )
-    {
-        if ( true == node->location().isSet() )
-        {
-            if ( 0 == *lineDiff )
-            {
-                *lineDiff = node->m_location.m_lineStart - 1;
-            }
-            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
-            node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
-            node->m_location.m_lineStart -= *lineDiff;
-            node->m_location.m_lineEnd   -= *lineDiff;
-
-            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
-        }
-
-        rewriteMacroLoc ( lineDiff, node->branch(), origin );
-    }
-}
-
-void AsmCodeListing::rewriteRepeatLoc ( unsigned int * lineDiff,
-                                        CompilerStatement * code,
-                                        int origin )
-{
-    for ( CompilerStatement * node = code;
-          node != nullptr;
-          node = node->next() )
-    {
-        if ( true == node->location().isSet() )
-        {
-            if ( 0 == *lineDiff )
-            {
-                *lineDiff = node->m_location.m_lineStart - 1;
-            }
-            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
-            node->m_location.m_fileNumber = ( m_numberOfFiles + m_numberOfMacros - 1 );
-            node->m_location.m_lineStart -= *lineDiff;
-            node->m_location.m_lineEnd   -= *lineDiff;
-
-            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
-        }
-
-        rewriteRepeatLoc ( lineDiff, node->branch(), origin );
     }
 }
 
@@ -548,11 +465,53 @@ void AsmCodeListing::rewriteIncludeLoc ( CompilerStatement * codeTree,
 
         if ( true == node->location().isSet() )
         {
-            node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
-            m_symbolTable->rewriteExprLoc ( node->args(), node->location(), origin, true );
+            node->m_location.m_origin = origin;
+            m_symbolTable->rewriteExprLoc ( node->args(), origin );
         }
 
         rewriteIncludeLoc ( node->branch(), fileNumber, origin );
+    }
+}
+
+void AsmCodeListing::setCode ( const CompilerSourceLocation & location,
+                               int code,
+                               int address )
+{
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
+    {
+        std::vector<int> & codeVector = m_listing[file][line].m_code;
+        if ( true == codeVector.empty() )
+        {
+            m_listing[file][line].m_address = address;
+        }
+        codeVector.push_back(code);
+    }
+}
+
+void AsmCodeListing::setValue ( CompilerSourceLocation location,
+                                int value )
+{
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
+    {
+        m_listing[file][line].m_value = value;
+    }
+}
+
+void AsmCodeListing::expandMacro ( const CompilerSourceLocation & location,
+                                   CompilerStatement * expansion )
+{
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
+    {
+        m_numberOfMacros++;
+        m_listing.resize(m_numberOfFiles + m_numberOfMacros);
+
+        int origin = m_compilerCore->locationTrack().add(location);
+        m_locationTransMap[origin] = {m_numberOfFiles + m_numberOfMacros - 1, expansion->location().m_lineStart};
+        copyMacroBody(expansion, origin);
+        m_listing[file][line].m_macro.push_back(m_numberOfFiles+m_numberOfMacros);
     }
 }
 
@@ -560,49 +519,91 @@ void AsmCodeListing::repeatCode ( CompilerSourceLocation location,
                                   CompilerStatement * code,
                                   bool first )
 {
-    if ( false == checkLocation ( location ) )
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
     {
-        return;
+        m_numberOfMacros++;
+        int macroMark = ( m_numberOfFiles + m_numberOfMacros );
+        if ( false == first )
+        {
+            macroMark = -macroMark;
+        }
+
+        int origin = m_compilerCore->locationTrack().add(location);
+        m_listing.resize(m_numberOfFiles + m_numberOfMacros);
+        m_locationTransMap[origin] = {m_numberOfFiles + m_numberOfMacros - 1, code->location().m_lineStart};
+        copyMacroBody(code, origin);
+        m_listing[file][line].m_macro.push_back(macroMark);
+    }
+}
+
+void AsmCodeListing::copyMacroBody ( CompilerStatement * macro,
+                                     int origin,
+                                     int * lastLine )
+{
+    int ll = -1;
+    if ( nullptr == lastLine )
+    {
+        lastLine = &ll;
     }
 
-    m_numberOfMacros++;
+    const unsigned int fileNo = m_numberOfFiles + m_numberOfMacros - 1;
 
-    int macroMark = ( m_numberOfFiles + m_numberOfMacros );
-    if ( false == first )
+    for ( CompilerStatement * node = macro;
+          nullptr != node;
+          node = node->next() )
     {
-        macroMark = -macroMark;
+        if ( true == node->location().isSet() )
+        {
+            if ( node->location().m_lineStart > (*lastLine) )
+            {
+                if ( -1 == (*lastLine) )
+                {
+                    (*lastLine) = node->location().m_lineStart;
+                }
+                else
+                {
+                    // Copy empty lines between the last LstLine and the one which is about to be inserted now.
+                    while ( ++(*lastLine) < node->location().m_lineStart )
+                    {
+                        m_listing[fileNo].push_back(LstLine());
+                    }
+                }
+
+                m_listing[fileNo].push_back(LstLine());
+                LstLine & lstLine = m_listing[fileNo].back();
+
+                lstLine = m_listing[node->location().m_fileNumber][(*lastLine) - 1];
+                lstLine.m_message = -1;
+            }
+
+            node->m_location.m_origin = origin;
+            m_symbolTable->rewriteExprLoc(node->args(), origin);
+        }
+
+        copyMacroBody(node->branch(), origin, lastLine);
     }
-
-    unsigned int lineCounter = 0;
-    int formerOrigin = m_compilerCore->locationTrack().add(location);
-
-    location.m_lineStart--;
-    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back(macroMark);
-
-    m_listing.resize(m_numberOfFiles + m_numberOfMacros);
-    copyMacroBody(&lineCounter, code);
-    lineCounter = 0;
-    rewriteRepeatLoc(&lineCounter, code, formerOrigin);
 }
 
 void AsmCodeListing::generatedCode ( CompilerSourceLocation location,
                                      CompilerStatement * code )
 {
-    if ( false == checkLocation ( location ) )
+    int file, line;
+    if ( false == translateLocation(location, file, line) )
     {
         return;
     }
 
     m_numberOfMacros++;
-
-    int origin = m_compilerCore->locationTrack().add(location);
-
-    location.m_lineStart--;
-    m_listing[location.m_fileNumber][location.m_lineStart].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
     m_listing.resize(m_numberOfFiles + m_numberOfMacros);
+    m_listing[file][line].m_macro.push_back ( m_numberOfFiles + m_numberOfMacros );
 
-    int lineNumber = 1;
+    int lineNumber = 0;
+    int origin = m_compilerCore->locationTrack().add(location);
     const unsigned int index = ( m_numberOfFiles + m_numberOfMacros - 1 );
+
+    m_locationTransMap[origin] = {index, 0};
+
     for ( CompilerStatement * node = code;
           node != nullptr;
           node = node->next() )
@@ -617,7 +618,7 @@ void AsmCodeListing::generatedCode ( CompilerSourceLocation location,
         node->m_location.m_fileNumber = index;
         node->m_location.m_lineStart  = lineNumber;
         node->m_location.m_lineEnd    = lineNumber;
-        node->m_location.m_origin     = m_compilerCore->locationTrack().add(node->m_location, origin);
+        node->m_location.m_origin     = origin;
         lineNumber++;
     }
 }
@@ -669,51 +670,34 @@ void AsmCodeListing::message ( const CompilerSourceLocation & location,
 
     if ( true == subsequent )
     {
-        if ( ( false == m_lastMsgSubsequent ) || ( location.m_fileNumber >= (int) m_numberOfFiles ) )
-        {
-            if ( location.m_fileNumber > m_lastMsgLocation.m_fileNumber )
-            {
-                m_lastMsgLocation = location;
-                m_lastMsgSubsequent = true;
-            }
-            return;
-        }
-        else
-        {
-            m_lastMsgPrefix += "==> ";
-        }
-    }
-    else if ( true == m_lastMsgSubsequent )
-    {
-        insertMessage(m_lastMsgLocation, type, text);
-
         m_lastMsgPrefix += "==> ";
-        m_lastMsgSubsequent = false;
-        m_lastMsgLocation = CompilerSourceLocation();
     }
-
-    insertMessage(location, type, m_lastMsgPrefix + text);
-
-    if ( false == subsequent )
+    else
     {
         m_lastMsgPrefix.clear();
     }
+
+    insertMessage(location, type, m_lastMsgPrefix + text);
 }
 
 inline void AsmCodeListing::insertMessage ( const CompilerSourceLocation & location,
                                             CompilerBase::MessageType type,
                                             const std::string & text )
 {
-    LstLine & lstLine = m_listing[location.m_fileNumber][location.m_lineStart - 1];
-
-    int msgIdx = lstLine.m_message;
-    if ( -1 == msgIdx )
+    int file, line;
+    if ( true == translateLocation(location, file, line) )
     {
-        msgIdx = m_messages.size();
-        lstLine.m_message = msgIdx;
-        m_messages.push_back(std::vector<Message>());
+        LstLine & lstLine = m_listing[file][line];
+
+        int msgIdx = lstLine.m_message;
+        if ( -1 == msgIdx )
+        {
+            msgIdx = m_messages.size();
+            lstLine.m_message = msgIdx;
+            m_messages.push_back(std::vector<Message>());
+        }
+        m_messages[msgIdx].push_back(Message(type, text));
     }
-    m_messages[msgIdx].push_back(Message(type, text));
 }
 
 void AsmCodeListing::setMaxNumberOfMessages ( unsigned int limit )

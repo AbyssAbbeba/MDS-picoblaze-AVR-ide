@@ -20,8 +20,8 @@ cd "$(dirname "$(readlink -n -f "${0}")" )"
 
 ./tool.sh -c || exit $?
 
-for variant in Commercial Noncommercial Trial; do # <-- {Commercial, Noncommercial, Trial}
-    for grade in Basic Premium; do # <-- {Basic, Premium, Professional, Ultimate}
+for grade in Basic Premium; do # <-- {Basic, Premium, Professional, Ultimate}
+    for variant in Trial Commercial Noncommercial; do # <-- {Commercial, Noncommercial, Trial}
         for target in PicoBlaze; do # <-- {PicoBlaze, AVR8, All}
             btest=off bt=Release grade=${grade} target=${target} variant=${variant} ./tool.sh -b ${CPU_CORES} && \
             cpack . || exit $?

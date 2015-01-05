@@ -102,377 +102,333 @@
                  102 +2                      LOCAL     wait_100ms_i
                  103 +2
 011 005FA        104 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-012 006F9        105 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-013 00714        106 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-014 06501        107 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-015 09514        108 +2  wait_100ms_i:       SUB       Temp1, #1
-016 06601        109 +2  wait_100ms_i:       SUB       Temp1, #1
+012 006F9        105 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+013 00714        106 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+014 06501        107 +2  wait_100ms_i:       SUB       Temp1, #1
+015 09514        108 +2                      JUMP      NZ, wait_100ms_i
+016 06601        109 +2                      SUB       Temp2, #1
 017 09514        110 +2                      JUMP      NZ, wait_100ms_i
-018 06701        111 +2                      SUB       Temp2, #1
+018 06701        111 +2                      SUB       Temp3, #1
 019 09514        112 +2                      JUMP      NZ, wait_100ms_i
-                 113 +2                      SUB       Temp3, #1
-                 114 +2                      JUMP      NZ, wait_100ms_i
-01A 0E201        115 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 116 +1                  wait_for_100ms
-                 117 +2                      LOCAL     wait_100ms
-                 118 +2                      LOCAL     wait_100ms_i
-                 119 +2
-01B 005FA        120 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-01C 006F9        121 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-01D 00714        122 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-01E 06501        123 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-01F 0951E        124 +2  wait_100ms_i:       SUB       Temp1, #1
-020 06601        125 +2  wait_100ms_i:       SUB       Temp1, #1
-021 0951E        126 +2                      JUMP      NZ, wait_100ms_i
-022 06701        127 +2                      SUB       Temp2, #1
-023 0951E        128 +2                      JUMP      NZ, wait_100ms_i
-                 129 +2                      SUB       Temp3, #1
-                 130 +2                      JUMP      NZ, wait_100ms_i
-  00008          131 +1                  N       SET     N - 1           ; Blinks defined by N
-                 132 +1
-024 0E301        133 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 134 +1                  wait_for_100ms
-                 135 +2                      LOCAL     wait_100ms
-                 136 +2                      LOCAL     wait_100ms_i
-                 137 +2
-025 005FA        138 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-026 006F9        139 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-027 00714        140 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-028 06501        141 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-029 09528        142 +2  wait_100ms_i:       SUB       Temp1, #1
-02A 06601        143 +2  wait_100ms_i:       SUB       Temp1, #1
-02B 09528        144 +2                      JUMP      NZ, wait_100ms_i
-02C 06701        145 +2                      SUB       Temp2, #1
-02D 09528        146 +2                      JUMP      NZ, wait_100ms_i
-                 147 +2                      SUB       Temp3, #1
-                 148 +2                      JUMP      NZ, wait_100ms_i
-02E 0E201        149 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 150 +1                  wait_for_100ms
-                 151 +2                      LOCAL     wait_100ms
-                 152 +2                      LOCAL     wait_100ms_i
-                 153 +2
-02F 005FA        154 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-030 006F9        155 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-031 00714        156 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-032 06501        157 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-033 09532        158 +2  wait_100ms_i:       SUB       Temp1, #1
-034 06601        159 +2  wait_100ms_i:       SUB       Temp1, #1
-035 09532        160 +2                      JUMP      NZ, wait_100ms_i
-036 06701        161 +2                      SUB       Temp2, #1
-037 09532        162 +2                      JUMP      NZ, wait_100ms_i
-                 163 +2                      SUB       Temp3, #1
-                 164 +2                      JUMP      NZ, wait_100ms_i
-  00007          165 +1                  N       SET     N - 1           ; Blinks defined by N
-                 166 +1
-038 0E301        167 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 168 +1                  wait_for_100ms
-                 169 +2                      LOCAL     wait_100ms
-                 170 +2                      LOCAL     wait_100ms_i
-                 171 +2
-039 005FA        172 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-03A 006F9        173 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-03B 00714        174 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-03C 06501        175 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-03D 0953C        176 +2  wait_100ms_i:       SUB       Temp1, #1
-03E 06601        177 +2  wait_100ms_i:       SUB       Temp1, #1
-03F 0953C        178 +2                      JUMP      NZ, wait_100ms_i
-040 06701        179 +2                      SUB       Temp2, #1
-041 0953C        180 +2                      JUMP      NZ, wait_100ms_i
-                 181 +2                      SUB       Temp3, #1
-                 182 +2                      JUMP      NZ, wait_100ms_i
-042 0E201        183 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 184 +1                  wait_for_100ms
-                 185 +2                      LOCAL     wait_100ms
-                 186 +2                      LOCAL     wait_100ms_i
-                 187 +2
-043 005FA        188 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-044 006F9        189 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-045 00714        190 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-046 06501        191 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-047 09546        192 +2  wait_100ms_i:       SUB       Temp1, #1
-048 06601        193 +2  wait_100ms_i:       SUB       Temp1, #1
-049 09546        194 +2                      JUMP      NZ, wait_100ms_i
-04A 06701        195 +2                      SUB       Temp2, #1
-04B 09546        196 +2                      JUMP      NZ, wait_100ms_i
-                 197 +2                      SUB       Temp3, #1
-                 198 +2                      JUMP      NZ, wait_100ms_i
-  00006          199 +1                  N       SET     N - 1           ; Blinks defined by N
-                 200 +1
-04C 0E301        201 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 202 +1                  wait_for_100ms
-                 203 +2                      LOCAL     wait_100ms
-                 204 +2                      LOCAL     wait_100ms_i
-                 205 +2
-04D 005FA        206 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-04E 006F9        207 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-04F 00714        208 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-050 06501        209 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-051 09550        210 +2  wait_100ms_i:       SUB       Temp1, #1
-052 06601        211 +2  wait_100ms_i:       SUB       Temp1, #1
-053 09550        212 +2                      JUMP      NZ, wait_100ms_i
-054 06701        213 +2                      SUB       Temp2, #1
-055 09550        214 +2                      JUMP      NZ, wait_100ms_i
-                 215 +2                      SUB       Temp3, #1
-                 216 +2                      JUMP      NZ, wait_100ms_i
-056 0E201        217 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 218 +1                  wait_for_100ms
-                 219 +2                      LOCAL     wait_100ms
-                 220 +2                      LOCAL     wait_100ms_i
-                 221 +2
-057 005FA        222 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-058 006F9        223 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-059 00714        224 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-05A 06501        225 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-05B 0955A        226 +2  wait_100ms_i:       SUB       Temp1, #1
-05C 06601        227 +2  wait_100ms_i:       SUB       Temp1, #1
-05D 0955A        228 +2                      JUMP      NZ, wait_100ms_i
-05E 06701        229 +2                      SUB       Temp2, #1
-05F 0955A        230 +2                      JUMP      NZ, wait_100ms_i
-                 231 +2                      SUB       Temp3, #1
-                 232 +2                      JUMP      NZ, wait_100ms_i
-  00005          233 +1                  N       SET     N - 1           ; Blinks defined by N
-                 234 +1
-060 0E301        235 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 236 +1                  wait_for_100ms
-                 237 +2                      LOCAL     wait_100ms
-                 238 +2                      LOCAL     wait_100ms_i
-                 239 +2
-061 005FA        240 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-062 006F9        241 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-063 00714        242 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-064 06501        243 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-065 09564        244 +2  wait_100ms_i:       SUB       Temp1, #1
-066 06601        245 +2  wait_100ms_i:       SUB       Temp1, #1
-067 09564        246 +2                      JUMP      NZ, wait_100ms_i
-068 06701        247 +2                      SUB       Temp2, #1
-069 09564        248 +2                      JUMP      NZ, wait_100ms_i
-                 249 +2                      SUB       Temp3, #1
-                 250 +2                      JUMP      NZ, wait_100ms_i
-06A 0E201        251 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 252 +1                  wait_for_100ms
-                 253 +2                      LOCAL     wait_100ms
-                 254 +2                      LOCAL     wait_100ms_i
-                 255 +2
-06B 005FA        256 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-06C 006F9        257 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-06D 00714        258 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-06E 06501        259 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-06F 0956E        260 +2  wait_100ms_i:       SUB       Temp1, #1
-070 06601        261 +2  wait_100ms_i:       SUB       Temp1, #1
-071 0956E        262 +2                      JUMP      NZ, wait_100ms_i
-072 06701        263 +2                      SUB       Temp2, #1
-073 0956E        264 +2                      JUMP      NZ, wait_100ms_i
-                 265 +2                      SUB       Temp3, #1
-                 266 +2                      JUMP      NZ, wait_100ms_i
-  00004          267 +1                  N       SET     N - 1           ; Blinks defined by N
-                 268 +1
-074 0E301        269 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 270 +1                  wait_for_100ms
-                 271 +2                      LOCAL     wait_100ms
-                 272 +2                      LOCAL     wait_100ms_i
-                 273 +2
-075 005FA        274 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-076 006F9        275 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-077 00714        276 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-078 06501        277 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-079 09578        278 +2  wait_100ms_i:       SUB       Temp1, #1
-07A 06601        279 +2  wait_100ms_i:       SUB       Temp1, #1
-07B 09578        280 +2                      JUMP      NZ, wait_100ms_i
-07C 06701        281 +2                      SUB       Temp2, #1
-07D 09578        282 +2                      JUMP      NZ, wait_100ms_i
-                 283 +2                      SUB       Temp3, #1
-                 284 +2                      JUMP      NZ, wait_100ms_i
-07E 0E201        285 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 286 +1                  wait_for_100ms
-                 287 +2                      LOCAL     wait_100ms
-                 288 +2                      LOCAL     wait_100ms_i
-                 289 +2
-07F 005FA        290 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-080 006F9        291 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-081 00714        292 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-082 06501        293 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-083 09582        294 +2  wait_100ms_i:       SUB       Temp1, #1
-084 06601        295 +2  wait_100ms_i:       SUB       Temp1, #1
-085 09582        296 +2                      JUMP      NZ, wait_100ms_i
-086 06701        297 +2                      SUB       Temp2, #1
-087 09582        298 +2                      JUMP      NZ, wait_100ms_i
-                 299 +2                      SUB       Temp3, #1
-                 300 +2                      JUMP      NZ, wait_100ms_i
-  00003          301 +1                  N       SET     N - 1           ; Blinks defined by N
-                 302 +1
-088 0E301        303 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 304 +1                  wait_for_100ms
-                 305 +2                      LOCAL     wait_100ms
-                 306 +2                      LOCAL     wait_100ms_i
-                 307 +2
-089 005FA        308 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-08A 006F9        309 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-08B 00714        310 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-08C 06501        311 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-08D 0958C        312 +2  wait_100ms_i:       SUB       Temp1, #1
-08E 06601        313 +2  wait_100ms_i:       SUB       Temp1, #1
-08F 0958C        314 +2                      JUMP      NZ, wait_100ms_i
-090 06701        315 +2                      SUB       Temp2, #1
-091 0958C        316 +2                      JUMP      NZ, wait_100ms_i
-                 317 +2                      SUB       Temp3, #1
-                 318 +2                      JUMP      NZ, wait_100ms_i
-092 0E201        319 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 320 +1                  wait_for_100ms
-                 321 +2                      LOCAL     wait_100ms
-                 322 +2                      LOCAL     wait_100ms_i
-                 323 +2
-093 005FA        324 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-094 006F9        325 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-095 00714        326 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-096 06501        327 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-097 09596        328 +2  wait_100ms_i:       SUB       Temp1, #1
-098 06601        329 +2  wait_100ms_i:       SUB       Temp1, #1
-099 09596        330 +2                      JUMP      NZ, wait_100ms_i
-09A 06701        331 +2                      SUB       Temp2, #1
-09B 09596        332 +2                      JUMP      NZ, wait_100ms_i
-                 333 +2                      SUB       Temp3, #1
-                 334 +2                      JUMP      NZ, wait_100ms_i
-  00002          335 +1                  N       SET     N - 1           ; Blinks defined by N
-                 336 +1
-09C 0E301        337 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 338 +1                  wait_for_100ms
-                 339 +2                      LOCAL     wait_100ms
-                 340 +2                      LOCAL     wait_100ms_i
-                 341 +2
-09D 005FA        342 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-09E 006F9        343 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-09F 00714        344 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0A0 06501        345 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0A1 095A0        346 +2  wait_100ms_i:       SUB       Temp1, #1
-0A2 06601        347 +2  wait_100ms_i:       SUB       Temp1, #1
-0A3 095A0        348 +2                      JUMP      NZ, wait_100ms_i
-0A4 06701        349 +2                      SUB       Temp2, #1
-0A5 095A0        350 +2                      JUMP      NZ, wait_100ms_i
-                 351 +2                      SUB       Temp3, #1
-                 352 +2                      JUMP      NZ, wait_100ms_i
-0A6 0E201        353 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+01A 0E201        113 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 114 +1                  wait_for_100ms
+                 115 +2                      LOCAL     wait_100ms
+                 116 +2                      LOCAL     wait_100ms_i
+                 117 +2
+01B 005FA        118 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+01C 006F9        119 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+01D 00714        120 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+01E 06501        121 +2  wait_100ms_i:       SUB       Temp1, #1
+01F 0951E        122 +2                      JUMP      NZ, wait_100ms_i
+020 06601        123 +2                      SUB       Temp2, #1
+021 0951E        124 +2                      JUMP      NZ, wait_100ms_i
+022 06701        125 +2                      SUB       Temp3, #1
+023 0951E        126 +2                      JUMP      NZ, wait_100ms_i
+  00008          127 +1                  N       SET     N - 1           ; Blinks defined by N
+                 128 +1
+024 0E301        129 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 130 +1                  wait_for_100ms
+                 131 +2                      LOCAL     wait_100ms
+                 132 +2                      LOCAL     wait_100ms_i
+                 133 +2
+025 005FA        134 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+026 006F9        135 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+027 00714        136 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+028 06501        137 +2  wait_100ms_i:       SUB       Temp1, #1
+029 09528        138 +2                      JUMP      NZ, wait_100ms_i
+02A 06601        139 +2                      SUB       Temp2, #1
+02B 09528        140 +2                      JUMP      NZ, wait_100ms_i
+02C 06701        141 +2                      SUB       Temp3, #1
+02D 09528        142 +2                      JUMP      NZ, wait_100ms_i
+02E 0E201        143 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 144 +1                  wait_for_100ms
+                 145 +2                      LOCAL     wait_100ms
+                 146 +2                      LOCAL     wait_100ms_i
+                 147 +2
+02F 005FA        148 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+030 006F9        149 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+031 00714        150 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+032 06501        151 +2  wait_100ms_i:       SUB       Temp1, #1
+033 09532        152 +2                      JUMP      NZ, wait_100ms_i
+034 06601        153 +2                      SUB       Temp2, #1
+035 09532        154 +2                      JUMP      NZ, wait_100ms_i
+036 06701        155 +2                      SUB       Temp3, #1
+037 09532        156 +2                      JUMP      NZ, wait_100ms_i
+  00007          157 +1                  N       SET     N - 1           ; Blinks defined by N
+                 158 +1
+038 0E301        159 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 160 +1                  wait_for_100ms
+                 161 +2                      LOCAL     wait_100ms
+                 162 +2                      LOCAL     wait_100ms_i
+                 163 +2
+039 005FA        164 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+03A 006F9        165 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+03B 00714        166 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+03C 06501        167 +2  wait_100ms_i:       SUB       Temp1, #1
+03D 0953C        168 +2                      JUMP      NZ, wait_100ms_i
+03E 06601        169 +2                      SUB       Temp2, #1
+03F 0953C        170 +2                      JUMP      NZ, wait_100ms_i
+040 06701        171 +2                      SUB       Temp3, #1
+041 0953C        172 +2                      JUMP      NZ, wait_100ms_i
+042 0E201        173 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 174 +1                  wait_for_100ms
+                 175 +2                      LOCAL     wait_100ms
+                 176 +2                      LOCAL     wait_100ms_i
+                 177 +2
+043 005FA        178 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+044 006F9        179 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+045 00714        180 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+046 06501        181 +2  wait_100ms_i:       SUB       Temp1, #1
+047 09546        182 +2                      JUMP      NZ, wait_100ms_i
+048 06601        183 +2                      SUB       Temp2, #1
+049 09546        184 +2                      JUMP      NZ, wait_100ms_i
+04A 06701        185 +2                      SUB       Temp3, #1
+04B 09546        186 +2                      JUMP      NZ, wait_100ms_i
+  00006          187 +1                  N       SET     N - 1           ; Blinks defined by N
+                 188 +1
+04C 0E301        189 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 190 +1                  wait_for_100ms
+                 191 +2                      LOCAL     wait_100ms
+                 192 +2                      LOCAL     wait_100ms_i
+                 193 +2
+04D 005FA        194 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+04E 006F9        195 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+04F 00714        196 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+050 06501        197 +2  wait_100ms_i:       SUB       Temp1, #1
+051 09550        198 +2                      JUMP      NZ, wait_100ms_i
+052 06601        199 +2                      SUB       Temp2, #1
+053 09550        200 +2                      JUMP      NZ, wait_100ms_i
+054 06701        201 +2                      SUB       Temp3, #1
+055 09550        202 +2                      JUMP      NZ, wait_100ms_i
+056 0E201        203 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 204 +1                  wait_for_100ms
+                 205 +2                      LOCAL     wait_100ms
+                 206 +2                      LOCAL     wait_100ms_i
+                 207 +2
+057 005FA        208 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+058 006F9        209 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+059 00714        210 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+05A 06501        211 +2  wait_100ms_i:       SUB       Temp1, #1
+05B 0955A        212 +2                      JUMP      NZ, wait_100ms_i
+05C 06601        213 +2                      SUB       Temp2, #1
+05D 0955A        214 +2                      JUMP      NZ, wait_100ms_i
+05E 06701        215 +2                      SUB       Temp3, #1
+05F 0955A        216 +2                      JUMP      NZ, wait_100ms_i
+  00005          217 +1                  N       SET     N - 1           ; Blinks defined by N
+                 218 +1
+060 0E301        219 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 220 +1                  wait_for_100ms
+                 221 +2                      LOCAL     wait_100ms
+                 222 +2                      LOCAL     wait_100ms_i
+                 223 +2
+061 005FA        224 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+062 006F9        225 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+063 00714        226 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+064 06501        227 +2  wait_100ms_i:       SUB       Temp1, #1
+065 09564        228 +2                      JUMP      NZ, wait_100ms_i
+066 06601        229 +2                      SUB       Temp2, #1
+067 09564        230 +2                      JUMP      NZ, wait_100ms_i
+068 06701        231 +2                      SUB       Temp3, #1
+069 09564        232 +2                      JUMP      NZ, wait_100ms_i
+06A 0E201        233 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 234 +1                  wait_for_100ms
+                 235 +2                      LOCAL     wait_100ms
+                 236 +2                      LOCAL     wait_100ms_i
+                 237 +2
+06B 005FA        238 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+06C 006F9        239 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+06D 00714        240 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+06E 06501        241 +2  wait_100ms_i:       SUB       Temp1, #1
+06F 0956E        242 +2                      JUMP      NZ, wait_100ms_i
+070 06601        243 +2                      SUB       Temp2, #1
+071 0956E        244 +2                      JUMP      NZ, wait_100ms_i
+072 06701        245 +2                      SUB       Temp3, #1
+073 0956E        246 +2                      JUMP      NZ, wait_100ms_i
+  00004          247 +1                  N       SET     N - 1           ; Blinks defined by N
+                 248 +1
+074 0E301        249 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 250 +1                  wait_for_100ms
+                 251 +2                      LOCAL     wait_100ms
+                 252 +2                      LOCAL     wait_100ms_i
+                 253 +2
+075 005FA        254 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+076 006F9        255 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+077 00714        256 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+078 06501        257 +2  wait_100ms_i:       SUB       Temp1, #1
+079 09578        258 +2                      JUMP      NZ, wait_100ms_i
+07A 06601        259 +2                      SUB       Temp2, #1
+07B 09578        260 +2                      JUMP      NZ, wait_100ms_i
+07C 06701        261 +2                      SUB       Temp3, #1
+07D 09578        262 +2                      JUMP      NZ, wait_100ms_i
+07E 0E201        263 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 264 +1                  wait_for_100ms
+                 265 +2                      LOCAL     wait_100ms
+                 266 +2                      LOCAL     wait_100ms_i
+                 267 +2
+07F 005FA        268 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+080 006F9        269 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+081 00714        270 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+082 06501        271 +2  wait_100ms_i:       SUB       Temp1, #1
+083 09582        272 +2                      JUMP      NZ, wait_100ms_i
+084 06601        273 +2                      SUB       Temp2, #1
+085 09582        274 +2                      JUMP      NZ, wait_100ms_i
+086 06701        275 +2                      SUB       Temp3, #1
+087 09582        276 +2                      JUMP      NZ, wait_100ms_i
+  00003          277 +1                  N       SET     N - 1           ; Blinks defined by N
+                 278 +1
+088 0E301        279 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 280 +1                  wait_for_100ms
+                 281 +2                      LOCAL     wait_100ms
+                 282 +2                      LOCAL     wait_100ms_i
+                 283 +2
+089 005FA        284 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+08A 006F9        285 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+08B 00714        286 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+08C 06501        287 +2  wait_100ms_i:       SUB       Temp1, #1
+08D 0958C        288 +2                      JUMP      NZ, wait_100ms_i
+08E 06601        289 +2                      SUB       Temp2, #1
+08F 0958C        290 +2                      JUMP      NZ, wait_100ms_i
+090 06701        291 +2                      SUB       Temp3, #1
+091 0958C        292 +2                      JUMP      NZ, wait_100ms_i
+092 0E201        293 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 294 +1                  wait_for_100ms
+                 295 +2                      LOCAL     wait_100ms
+                 296 +2                      LOCAL     wait_100ms_i
+                 297 +2
+093 005FA        298 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+094 006F9        299 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+095 00714        300 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+096 06501        301 +2  wait_100ms_i:       SUB       Temp1, #1
+097 09596        302 +2                      JUMP      NZ, wait_100ms_i
+098 06601        303 +2                      SUB       Temp2, #1
+099 09596        304 +2                      JUMP      NZ, wait_100ms_i
+09A 06701        305 +2                      SUB       Temp3, #1
+09B 09596        306 +2                      JUMP      NZ, wait_100ms_i
+  00002          307 +1                  N       SET     N - 1           ; Blinks defined by N
+                 308 +1
+09C 0E301        309 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 310 +1                  wait_for_100ms
+                 311 +2                      LOCAL     wait_100ms
+                 312 +2                      LOCAL     wait_100ms_i
+                 313 +2
+09D 005FA        314 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+09E 006F9        315 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+09F 00714        316 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0A0 06501        317 +2  wait_100ms_i:       SUB       Temp1, #1
+0A1 095A0        318 +2                      JUMP      NZ, wait_100ms_i
+0A2 06601        319 +2                      SUB       Temp2, #1
+0A3 095A0        320 +2                      JUMP      NZ, wait_100ms_i
+0A4 06701        321 +2                      SUB       Temp3, #1
+0A5 095A0        322 +2                      JUMP      NZ, wait_100ms_i
+0A6 0E201        323 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 324 +1                  wait_for_100ms
+                 325 +2                      LOCAL     wait_100ms
+                 326 +2                      LOCAL     wait_100ms_i
+                 327 +2
+0A7 005FA        328 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0A8 006F9        329 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0A9 00714        330 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0AA 06501        331 +2  wait_100ms_i:       SUB       Temp1, #1
+0AB 095AA        332 +2                      JUMP      NZ, wait_100ms_i
+0AC 06601        333 +2                      SUB       Temp2, #1
+0AD 095AA        334 +2                      JUMP      NZ, wait_100ms_i
+0AE 06701        335 +2                      SUB       Temp3, #1
+0AF 095AA        336 +2                      JUMP      NZ, wait_100ms_i
+  00001          337 +1                  N       SET     N - 1           ; Blinks defined by N
+                 338 +1
+0B0 0E301        339 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 340 +1                  wait_for_100ms
+                 341 +2                      LOCAL     wait_100ms
+                 342 +2                      LOCAL     wait_100ms_i
+                 343 +2
+0B1 005FA        344 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0B2 006F9        345 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0B3 00714        346 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0B4 06501        347 +2  wait_100ms_i:       SUB       Temp1, #1
+0B5 095B4        348 +2                      JUMP      NZ, wait_100ms_i
+0B6 06601        349 +2                      SUB       Temp2, #1
+0B7 095B4        350 +2                      JUMP      NZ, wait_100ms_i
+0B8 06701        351 +2                      SUB       Temp3, #1
+0B9 095B4        352 +2                      JUMP      NZ, wait_100ms_i
+0BA 0E201        353 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
                  354 +1                  wait_for_100ms
                  355 +2                      LOCAL     wait_100ms
                  356 +2                      LOCAL     wait_100ms_i
                  357 +2
-0A7 005FA        358 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0A8 006F9        359 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0A9 00714        360 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0AA 06501        361 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0AB 095AA        362 +2  wait_100ms_i:       SUB       Temp1, #1
-0AC 06601        363 +2  wait_100ms_i:       SUB       Temp1, #1
-0AD 095AA        364 +2                      JUMP      NZ, wait_100ms_i
-0AE 06701        365 +2                      SUB       Temp2, #1
-0AF 095AA        366 +2                      JUMP      NZ, wait_100ms_i
-                 367 +2                      SUB       Temp3, #1
-                 368 +2                      JUMP      NZ, wait_100ms_i
-  00001          369 +1                  N       SET     N - 1           ; Blinks defined by N
-                 370 +1
-0B0 0E301        371 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 372 +1                  wait_for_100ms
-                 373 +2                      LOCAL     wait_100ms
-                 374 +2                      LOCAL     wait_100ms_i
-                 375 +2
-0B1 005FA        376 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0B2 006F9        377 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0B3 00714        378 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0B4 06501        379 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0B5 095B4        380 +2  wait_100ms_i:       SUB       Temp1, #1
-0B6 06601        381 +2  wait_100ms_i:       SUB       Temp1, #1
-0B7 095B4        382 +2                      JUMP      NZ, wait_100ms_i
-0B8 06701        383 +2                      SUB       Temp2, #1
-0B9 095B4        384 +2                      JUMP      NZ, wait_100ms_i
-                 385 +2                      SUB       Temp3, #1
-                 386 +2                      JUMP      NZ, wait_100ms_i
-0BA 0E201        387 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 388 +1                  wait_for_100ms
-                 389 +2                      LOCAL     wait_100ms
-                 390 +2                      LOCAL     wait_100ms_i
-                 391 +2
-0BB 005FA        392 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0BC 006F9        393 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0BD 00714        394 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0BE 06501        395 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0BF 095BE        396 +2  wait_100ms_i:       SUB       Temp1, #1
-0C0 06601        397 +2  wait_100ms_i:       SUB       Temp1, #1
-0C1 095BE        398 +2                      JUMP      NZ, wait_100ms_i
-0C2 06701        399 +2                      SUB       Temp2, #1
-0C3 095BE        400 +2                      JUMP      NZ, wait_100ms_i
-                 401 +2                      SUB       Temp3, #1
-                 402 +2                      JUMP      NZ, wait_100ms_i
-  00000          403 +1                  N       SET     N - 1           ; Blinks defined by N
-                 404 +1
-0C4 0E301        405 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
-                 406 +1                  wait_for_100ms
-                 407 +2                      LOCAL     wait_100ms
-                 408 +2                      LOCAL     wait_100ms_i
-                 409 +2
-0C5 005FA        410 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0C6 006F9        411 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0C7 00714        412 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0C8 06501        413 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0C9 095C8        414 +2  wait_100ms_i:       SUB       Temp1, #1
-0CA 06601        415 +2  wait_100ms_i:       SUB       Temp1, #1
-0CB 095C8        416 +2                      JUMP      NZ, wait_100ms_i
-0CC 06701        417 +2                      SUB       Temp2, #1
-0CD 095C8        418 +2                      JUMP      NZ, wait_100ms_i
-                 419 +2                      SUB       Temp3, #1
-                 420 +2                      JUMP      NZ, wait_100ms_i
-0CE 0E201        421 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
-                 422 +1                  wait_for_100ms
-                 423 +2                      LOCAL     wait_100ms
-                 424 +2                      LOCAL     wait_100ms_i
-                 425 +2
-0CF 005FA        426 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0D0 006F9        427 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0D1 00714        428 +2                      LOAD      Temp2, #249          ; Load Temp2 register
-0D2 06501        429 +2                      LOAD      Temp3, #20           ; Load Temp3 register
-0D3 095D2        430 +2  wait_100ms_i:       SUB       Temp1, #1
-0D4 06601        431 +2  wait_100ms_i:       SUB       Temp1, #1
-0D5 095D2        432 +2                      JUMP      NZ, wait_100ms_i
-0D6 06701        433 +2                      SUB       Temp2, #1
-0D7 095D2        434 +2                      JUMP      NZ, wait_100ms_i
-                 435 +2                      SUB       Temp3, #1
-                 436 +2                      JUMP      NZ, wait_100ms_i
-0D8 08080        437                     RETURN
-                 438
-                 439
-                 440     ; Program start
-                 441     ; --------------------
-  000D9          442     start:
-                 443             wait_for_100ms                  ; FPGA circuits startup time
-                 444 +1                      LOCAL     wait_100ms
-                 445 +1                      LOCAL     wait_100ms_i
-                 446 +1
-0D9 005FA        447 +1  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0DA 006F9        448 +1  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
-0DB 00714        449 +1                      LOAD      Temp2, #249          ; Load Temp2 register
-0DC 06501        450 +1                      LOAD      Temp3, #20           ; Load Temp3 register
-0DD 095DC        451 +1  wait_100ms_i:       SUB       Temp1, #1
-0DE 06601        452 +1  wait_100ms_i:       SUB       Temp1, #1
-0DF 095DC        453 +1                      JUMP      NZ, wait_100ms_i
-0E0 06701        454 +1                      SUB       Temp2, #1
-0E1 095DC        455 +1                      JUMP      NZ, wait_100ms_i
-                 456 +1                      SUB       Temp3, #1
-                 457 +1                      JUMP      NZ, wait_100ms_i
-0E2 003FF        458             LOAD    ON,  #0xFF              ; Declare ON, snake and OFF
-0E3 00200        459             LOAD    OFF, #0x00              ;
-0E4 00401        460             LOAD    Snake, #0x01            ;
-0E5 081E6        461             JUMP    main                    ; Execute main program loop
-                 462
-                 463     ; Main loop
-                 464     ; --------------------
-0E6 0A102        465     main:   INPUT   BTN_i,Btn               ; Save buttons status
-0E7 0C110        466             load    BTN_i,1                 ; Button one pressed
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-0E8 09901        467             JUMP    C,Snake_i               ; JUMP to snake subroutine
-0E9 0C120        468             load    BTN_i,2                 ; Button two pressed
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-0EA 09910        469             JUMP    C,Blink_i               ; JUMP to Blink subroutine
-0EB 081E6        470             JUMP    main
-                 471     ; Program end
-                 472     ; --------------------
-                 473             END
-                 474
-                 475     ; <-- Bookmark   (ctrl + shiload + M)
-                 476     ; <-- Breakpoint (ctrl + shiload + B)
+0BB 005FA        358 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0BC 006F9        359 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0BD 00714        360 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0BE 06501        361 +2  wait_100ms_i:       SUB       Temp1, #1
+0BF 095BE        362 +2                      JUMP      NZ, wait_100ms_i
+0C0 06601        363 +2                      SUB       Temp2, #1
+0C1 095BE        364 +2                      JUMP      NZ, wait_100ms_i
+0C2 06701        365 +2                      SUB       Temp3, #1
+0C3 095BE        366 +2                      JUMP      NZ, wait_100ms_i
+  00000          367 +1                  N       SET     N - 1           ; Blinks defined by N
+                 368 +1
+0C4 0E301        369 +1                  OUTPUT          ON,LEDs         ; Turn LEDs ON
+                 370 +1                  wait_for_100ms
+                 371 +2                      LOCAL     wait_100ms
+                 372 +2                      LOCAL     wait_100ms_i
+                 373 +2
+0C5 005FA        374 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0C6 006F9        375 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0C7 00714        376 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0C8 06501        377 +2  wait_100ms_i:       SUB       Temp1, #1
+0C9 095C8        378 +2                      JUMP      NZ, wait_100ms_i
+0CA 06601        379 +2                      SUB       Temp2, #1
+0CB 095C8        380 +2                      JUMP      NZ, wait_100ms_i
+0CC 06701        381 +2                      SUB       Temp3, #1
+0CD 095C8        382 +2                      JUMP      NZ, wait_100ms_i
+0CE 0E201        383 +1                  OUTPUT          OFF,LEDs        ; Turn LEDs OFF
+                 384 +1                  wait_for_100ms
+                 385 +2                      LOCAL     wait_100ms
+                 386 +2                      LOCAL     wait_100ms_i
+                 387 +2
+0CF 005FA        388 +2  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0D0 006F9        389 +2                      LOAD      Temp2, #249          ; Load Temp2 register
+0D1 00714        390 +2                      LOAD      Temp3, #20           ; Load Temp3 register
+0D2 06501        391 +2  wait_100ms_i:       SUB       Temp1, #1
+0D3 095D2        392 +2                      JUMP      NZ, wait_100ms_i
+0D4 06601        393 +2                      SUB       Temp2, #1
+0D5 095D2        394 +2                      JUMP      NZ, wait_100ms_i
+0D6 06701        395 +2                      SUB       Temp3, #1
+0D7 095D2        396 +2                      JUMP      NZ, wait_100ms_i
+0D8 08080        397                     RETURN
+                 398
+                 399
+                 400     ; Program start
+                 401     ; --------------------
+  000D9          402     start:
+                 403             wait_for_100ms                  ; FPGA circuits startup time
+                 404 +1                      LOCAL     wait_100ms
+                 405 +1                      LOCAL     wait_100ms_i
+                 406 +1
+0D9 005FA        407 +1  wait_100ms:         LOAD      Temp1, #250          ; Load Temp1 register
+0DA 006F9        408 +1                      LOAD      Temp2, #249          ; Load Temp2 register
+0DB 00714        409 +1                      LOAD      Temp3, #20           ; Load Temp3 register
+0DC 06501        410 +1  wait_100ms_i:       SUB       Temp1, #1
+0DD 095DC        411 +1                      JUMP      NZ, wait_100ms_i
+0DE 06601        412 +1                      SUB       Temp2, #1
+0DF 095DC        413 +1                      JUMP      NZ, wait_100ms_i
+0E0 06701        414 +1                      SUB       Temp3, #1
+0E1 095DC        415 +1                      JUMP      NZ, wait_100ms_i
+0E2 003FF        416             LOAD    ON,  #0xFF              ; Declare ON, snake and OFF
+0E3 00200        417             LOAD    OFF, #0x00              ;
+0E4 00401        418             LOAD    Snake, #0x01            ;
+0E5 081E6        419             JUMP    main                    ; Execute main program loop
+                 420
+                 421     ; Main loop
+                 422     ; --------------------
+0E6 0A102        423     main:   INPUT   BTN_i,Btn               ; Save buttons status
+0E7 0C110        424             load    BTN_i,1                 ; Button one pressed
+0E8 09901        425             JUMP    C,Snake_i               ; JUMP to snake subroutine
+0E9 0C120        426             load    BTN_i,2                 ; Button two pressed
+0EA 09910        427             JUMP    C,Blink_i               ; JUMP to Blink subroutine
+0EB 081E6        428             JUMP    main
+                 429     ; Program end
+                 430     ; --------------------
+                 431             END
+                 432
+                 433     ; <-- Bookmark   (ctrl + shiload + M)
+                 434     ; <-- Breakpoint (ctrl + shiload + B)

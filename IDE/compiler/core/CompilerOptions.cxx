@@ -47,7 +47,7 @@ CompilerOptions::CompilerOptions()
     m_syntaxCheckOnly = false;
     m_makeBackupFiles = true;
     m_briefMsgOutput  = false;
-    m_strict = true;
+    m_strict = false;
 
     m_enableDigraphs = true;
     m_enableTrigraphs = true;

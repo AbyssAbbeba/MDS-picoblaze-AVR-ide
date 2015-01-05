@@ -37,8 +37,8 @@ foreach ( PROCESSOR "kcpsm1" "kcpsm1cpld" "kcpsm2" "kcpsm3" "kcpsm6" )
                             COMMAND bash "${CMAKE_SOURCE_DIR}/runMdsCompiler.sh" ${COLOR_GCC}
                                     $<TARGET_FILE:${COMPILER_EXEC_TARGET}>
                                         --silent
-                                        --plang=asm
-                                        --arch=PicoBlaze
+                                        --language=asm
+                                        --architecture=PicoBlaze
                                         --lst=${FILE_BASE}.lst
                                         --precompile=${FILE_BASE}.prc
                                         --base-inc-dir=${CMAKE_SOURCE_DIR}/compiler/include

@@ -1,6 +1,1 @@
-MT_WARNING: 006_random_code_03.asm:8.24-8.29: Warning: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
-MT_WARNING: 006_random_code_03.asm:9.24-9.29: Warning: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
-MT_WARNING: 006_random_code_03.asm:10.24-10.29: Warning: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
-MT_WARNING: 006_random_code_03.asm:11.24-11.29: Warning: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
-MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 006_random_code_03.asm:14.19-14.29: Error: symbol not defined: `TESTSYMB10'.

@@ -25,7 +25,8 @@ flex_bison_pair ( CompilerCLexer CompilerCParser CompilerCLexerParser )
 flex_bison_pair ( CompilerCPreProcCalcLex CompilerCPreProcCalcPar CompilerCPreProcCalc )
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_CURRENT_SOURCE_DIR}/../../core/" )
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/compiler/core/" )
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME}

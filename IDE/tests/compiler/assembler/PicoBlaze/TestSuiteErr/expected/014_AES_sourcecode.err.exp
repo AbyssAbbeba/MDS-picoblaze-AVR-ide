@@ -40,4 +40,4 @@ MT_ERROR: 014_AES_sourcecode.asm:59.31-59.34: Error: invalid token: `$1B'.
 MT_ERROR: 014_AES_sourcecode.asm:59.21-59.24: Error: directive EQU requires a single argument.
 MT_ERROR: 014_AES_sourcecode.asm:242.35-242.38: Error: invalid token: `$63'.
 MT_ERROR: 014_AES_sourcecode.asm:242.64-243.1: Error: unexpected end of line.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

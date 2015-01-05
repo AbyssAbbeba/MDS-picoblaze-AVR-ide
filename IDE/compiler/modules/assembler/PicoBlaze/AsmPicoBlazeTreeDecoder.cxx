@@ -772,13 +772,12 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
                                             true );
     }
 
-    CompilerSourceLocation lastLocation = node->branch()->last()->location();
+    const CompilerSourceLocation location = node->branch()->last()->location();
     delete node->branch()->last(); // remove `ENDR' directive
 
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(node->branch()->copyEntireChain());
-    m_codeListing->repeatCode(lastLocation, body, true);
-    lastLocation = body->lastLeaf()->location();
+    m_codeListing->repeatCode(location, body->next(), true);
     if ( false == phase1(body) )
     {
         body->completeDelete();
@@ -789,8 +788,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
     {
         CompilerStatement * exp = new CompilerStatement();
         exp->appendLink(node->branch()->copyEntireChain());
-        m_codeListing->repeatCode(lastLocation, exp, false);
-        lastLocation = exp->lastLeaf()->location();
+        m_codeListing->repeatCode(location, exp->next(), false);
         if ( false == phase1(exp) )
         {
             body->completeDelete();
@@ -816,7 +814,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         return CA_NO_ACTION;
     }
 
-    CompilerSourceLocation lastLocation = node->branch()->last()->location();
+    const CompilerSourceLocation location = node->branch()->last()->location();
     delete node->branch()->last(); // remove `ENDW' directive
 
     unsigned int i;
@@ -831,8 +829,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         if ( nullptr == body )
         {
             body = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
-            m_codeListing->repeatCode(lastLocation, body, true);
-            lastLocation = body->lastLeaf()->location();
+            m_codeListing->repeatCode(location, body->next(), true);
             if ( false == phase1(body) )
             {
                 body->completeDelete();
@@ -842,8 +839,7 @@ inline AsmPicoBlazeTreeDecoder::CourseOfAction
         else
         {
             CompilerStatement * exp = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
-            m_codeListing->repeatCode(lastLocation, exp, false);
-            lastLocation = exp->lastLeaf()->location();
+            m_codeListing->repeatCode(location, exp->next(), false);
             if ( false == phase1(exp) )
             {
                 body->completeDelete();

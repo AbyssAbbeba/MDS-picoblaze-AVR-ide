@@ -76,6 +76,7 @@ int PicoBlazeInstructionSet3::execInstruction()
         if ( true == m_config.m_ignoreUndefinedOpCodes )
         {
             incrPc();
+            logEvent ( EVENT_CPU_PC_CHANGED, m_pc );
             return -1;
         }
         else

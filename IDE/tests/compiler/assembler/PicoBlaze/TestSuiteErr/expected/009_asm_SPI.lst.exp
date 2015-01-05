@@ -257,7 +257,6 @@ E: symbol not defined: `DELAY'.
 E: symbol not defined: `SF'.
                  184
 065 18110        185                     SUB     sD, 1                   ; Decrement I2C bit counter
-W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
 066 36058        186                     JUMP    NZ, I2C_TX              ; Loop until 8 bits are sent
 067 22001        187                     JUMP    Delay
@@ -296,7 +295,6 @@ E: symbol not defined: `SF'.
 074 20001        207                     CALL    Delay
 E: symbol not defined: `DELAY'.
 075 18110        208                     SUB     sD, 1                   ; Decrement I2C bit counter
-W: instruction `SUB sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `SD'.
 076 3606B        209                     JUMP    NZ, I2C_RX              ; Loop until 8 bits are read
 077 25000        210                     RETURN
