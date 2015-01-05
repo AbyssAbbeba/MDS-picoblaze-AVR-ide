@@ -14,7 +14,7 @@
 
 #include "vhdlmain.h"
 #include "ui_vhdlmain.h"
-#include "createcomponent.h"
+//#include "createcomponent.h"
 #include "ui_createcomponent.h"
 #include <QtGui>
 //#include "xmlparser.h"
