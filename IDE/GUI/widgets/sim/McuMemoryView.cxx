@@ -357,10 +357,10 @@ void McuMemoryView::updateWidget()
             m_hexEdit->setVal(i, (unsigned char)value);
             m_hexEdit->setHighlighted(i, true);
         }
-        else
+        /*else
         {
             m_hexEdit->setHighlighted(i, false);
-        }
+        }*/
     }
 }
 
