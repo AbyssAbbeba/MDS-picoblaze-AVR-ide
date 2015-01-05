@@ -82,6 +82,9 @@ VhdlMain::VhdlMain(QWidget *parent) :
             SLOT(customMenuRequested(QPoint))
             );
 
+
+    ui->Output->setReadOnly(true);
+    ui->Input->setReadOnly(true);
     //QStringList attributes;
    // picoBlaze.name = "MPU_SYS_core";
    // portName << "clk" << "port_id" << "write_strobe" << "k_write_strobe" << "out_port" << "read_strobe"
@@ -1756,8 +1759,9 @@ void VhdlMain::saveFile()
 void VhdlMain::loadFile()
 {
     // get path
+
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.sym");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.stbl");
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
