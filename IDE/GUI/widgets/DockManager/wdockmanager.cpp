@@ -527,7 +527,7 @@ bool WDockManager::addUntrackedCentralWidget(QString wName, QString wPath, QStri
     //qDebug() << "WDockManager: addUntrackedCentralWidget(text)";
     bool found = false;
     int tab = 0;
-    for (int tab; wTab != NULL && tab < wTab->count(); tab++)
+    for (; wTab != NULL && tab < wTab->count(); tab++)
     {
         if (wTab->tabText(tab) == wName && wTab->tabToolTip(tab) == wPath)
         {

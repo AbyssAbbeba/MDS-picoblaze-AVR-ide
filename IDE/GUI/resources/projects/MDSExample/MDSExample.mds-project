@@ -17,6 +17,10 @@
   <File path="Example4.psm" opened="true" name="Example4.psm"/>
   <File path="Example5.psm" opened="true" name="Example5.psm"/>
   <File path="Example6.psm" opened="true" name="Example6.psm"/>
+  <File path="Example1.mem" opened="true" name="Example1.mem"/>
+  <File path="Example1.rawhex" opened="true" name="Example1.rawhex"/>
+  <File path="Example1.ihex" opened="true" name="Example1.ihex"/>
+  <File path="Example1.vhd" opened="true" name="Example1.vhd"/>
  </Files>
  <Mainfile enabled="false" path="" name=""/>
  <Breakpoints>
