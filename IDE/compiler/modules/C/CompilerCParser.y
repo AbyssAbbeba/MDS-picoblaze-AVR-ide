@@ -247,8 +247,8 @@
  */
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
-%type<expr>     decl            decl_list   dt      dt_attr     member_access               union       union_body
-%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    expr_list
+%type<expr>     decl            decl_list   dt      dt_attr     union       union_body      expr_list   member_access
+%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations
 // Statements - general.
 %type<stmt>     statements      stmt        cases   scope       switch_body
 
@@ -398,7 +398,7 @@ id:
 ;
 
 ptr_attr:
-      /* Empty */                   { $$ = nullptr; }
+      /* empty */                   { $$ = nullptr; }
     | "*" ptr_attr                  {
                                         $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_PTR),
                                                               CompilerExpr::OPER_PTRATTR,
@@ -437,7 +437,14 @@ decl_list:
 ;
 
 declarations:
-    dt_attr datatype decl_list ";"  { $$ = $1->appendLink($2)->appendLink($3); }
+    dt_attr datatype decl_list ";"  {
+/*                                         if ( nullptr == $dt_attr ) */
+/*                                         { */
+/*                                             @$.first_line = @datatype.first_line; */
+/*                                             @$.first_column = @datatype.first_column; */
+/*                                         } */
+                                        $$ = $dt_attr->appendLink($datatype)->appendLink($decl_list);
+                                    }
 ;
 
 param:

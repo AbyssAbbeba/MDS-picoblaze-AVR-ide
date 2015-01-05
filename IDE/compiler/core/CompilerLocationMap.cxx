@@ -71,6 +71,7 @@ std::cout<<"[from.m_lineStart == lineMark.m_org]";
             {
                 if ( from.m_colStart >= columnMark.m_org )
                 {
+std::cout<<"[#from.m_colStart >= columnMark.m_org ("<<from.m_colStart<<","<<columnMark.m_org<<")#]";
                     diff = &columnMark.m_diff;
                     break;
                 }
