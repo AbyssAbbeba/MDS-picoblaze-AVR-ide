@@ -22,8 +22,7 @@ project ( CompilerModuleAsmCommon )
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
                       "${CMAKE_SOURCE_DIR}/utilities/" )
 
-## Add a library to the project using the specified source files,
- # in this case it will procude static C++ library.
+## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} AsmMacros.cxx
                               AsmMemoryPtr.cxx
                               AsmDgbFileGen.cxx

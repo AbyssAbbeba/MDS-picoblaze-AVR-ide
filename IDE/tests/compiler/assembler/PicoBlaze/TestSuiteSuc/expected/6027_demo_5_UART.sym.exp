@@ -16,9 +16,9 @@
 :WAIT_FOR_100MS.WAIT_100MS_I.8 . . . LABEL  0x00093 USED     CONSTANT    LOCAL
 :WAIT_FOR_1S.WAIT_1S.1 . . . . . . . LABEL  0x00039 NOT USED CONSTANT    LOCAL
 :WAIT_FOR_1S.WAIT_1S_I.1 . . . . . . LABEL  0x0003C USED     CONSTANT    LOCAL
-IF-0 . . . . . . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    6027_demo_5_UART.asm:141.21-141.486027_demo_5_UART.asm:188.21-188.40
-IF-0-END . . . . . . . . . . . . . . LABEL  0x000D3 USED     CONSTANT    6027_demo_5_UART.asm:153.21-153.266027_demo_5_UART.asm:188.21-188.40
-IF-1 . . . . . . . . . . . . . . . . LABEL  0x000D3 USED     CONSTANT    6027_demo_5_UART.asm:153.21-153.266027_demo_5_UART.asm:188.21-188.40
+IF-0 . . . . . . . . . . . . . . . . LABEL  0x0009A USED     CONSTANT    6027_demo_5_UART.asm:141.21-141.48 ==> 6027_demo_5_UART.asm:188.21-188.40
+IF-0-END . . . . . . . . . . . . . . LABEL  0x000D3 USED     CONSTANT    6027_demo_5_UART.asm:153.21-153.26 ==> 6027_demo_5_UART.asm:188.21-188.40
+IF-1 . . . . . . . . . . . . . . . . LABEL  0x000D3 USED     CONSTANT    6027_demo_5_UART.asm:153.21-153.26 ==> 6027_demo_5_UART.asm:188.21-188.40
 INTERRUPT  . . . . . . . . . . . . . LABEL  0x00001 USED     CONSTANT    6027_demo_5_UART.asm:170.1-170.11
 LED_ID . . . . . . . . . . . . . . . PORT   0x00008 NOT USED CONSTANT    6027_demo_5_UART.asm:33.9-33.37
 LED_REG  . . . . . . . . . . . . . . REG.   0x00005 USED     CONSTANT    6027_demo_5_UART.asm:27.9-27.30

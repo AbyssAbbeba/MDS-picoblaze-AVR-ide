@@ -13,7 +13,7 @@
 .\"
 .\" ====================================================================================================================
 
-.TH "mds-compiler" "1" "July 2014" "User Commands"
+.TH "mds-compiler" "1" "December 2014" "User Commands"
 .SH NAME
 mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia
 Microsystems, s.r.o.
@@ -37,12 +37,12 @@ For more information please consult the MDS handbook.
 
 .SH OPTIONS
 .TP
-\fB\-\-arch\fR, \fB\-a\fI <architecture>\fR
+\fB\-\-architecture\fR, \fB\-a\fI <architecture>\fR
 Specify target architecture, supported architectures are:
 .IP 1.
 \fBPicoBlaze\fR: (K)constant Coded Programmable State Machine.
 .TP
-\fB\-\-plang\fR, \fB\-p\fI <programming\-language>\fR
+\fB\-\-language\fR, \fB\-l\fI <programming\-language>\fR
 Specify programming language, supported languages are:
 .IP 1.
 \fBasm\fR: assembly language.
@@ -50,7 +50,7 @@ Specify programming language, supported languages are:
 \fB\-\-hex\fR, \fB\-x\fI <Intel\-HEX\-file>\fR
 Specify output file with machine code generated as a result of compilation, data will be stored in Intel 8 Hex format.
 .TP
-\fB\-\-dbg\fR, \fB\-d\fI <MDS\-native\-debug\-file>\fR
+\fB\-\-debug\fR, \fB\-g\fI <MDS\-native\-debug\-file>\fR
 Specify output file with code for MCU simulator and other debugging tools.
 .TP
 \fB\-\-srec\fI <Motorola\-S\-REC\-file>\fR
@@ -60,7 +60,7 @@ format.
 \fB\-\-binary\fI <binary\-file>\fR
 Specify output file with machine code generated as a result of compilation, data will be stored in raw binary format.
 .TP
-\fB\-\-lst\fR, \fB\-l\fI <code\-listing>\fR
+\fB\-\-lst\fR <code\-listing>\fR
 Specify output file where code listing generated during compilation will be stored.
 .TP
 \fB\-\-mtable\fR, \fB\-m\fI <table\-of\-macros>\fR
@@ -102,7 +102,7 @@ Do not print any warnings, errors, or any other messages, stay completely silent
 \fB\-\-include\fR, \fB\-I\fI <directory>\fR
 Add directory where the compiler will search for include files.
 .TP
-\fB\-\-dev\fR, \fB\-D\fI <device>\fR
+\fB\-\-device\fR, \fB\-d\fI <device>\fR
 Specify exact target device, options are:
 .IP 1.
 For PicoBlaze: \fBkcpsm1\fR, \fBkcpsm1cpld\fR, \fBkcpsm2\fR, \fBkcpsm3\fR, and \fBkcpsm6\fR

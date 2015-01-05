@@ -1,3 +1,2 @@
-MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 004_shift_and_rotate.asm:48.17-48.19: Error: symbol not defined: `SX'.
 MT_ERROR: 004_shift_and_rotate.asm:50.17-50.19: Error: symbol not defined: `SX'.

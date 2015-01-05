@@ -228,19 +228,28 @@ void TestSuiteErr::compareLst ( const std::string & expected,
 
         if ( lstLineNumber >= expFileNoOfLines )
         {
-            CU_FAIL("lstLineNumber < expFileNoOfLines");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "Output is longer than expected." );
             return;
         }
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
-            CU_FAIL("Result and expectation inconsistence found in code listing.");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "\nexpected: '" + lstExpFileVec[lstLineNumber] + "'"
+                          "\n" "actual:   '" + lstFileLine + "'" );
             break;
         }
 
         lstLineNumber++;
     }
 
-    size_t lstFileNoOfLines = lstLineNumber;
-    CU_ASSERT_EQUAL(lstFileNoOfLines, expFileNoOfLines);
+    if ( lstLineNumber < expFileNoOfLines )
+    {
+        CU_FAIL_MSG ( actual,
+                      lstLineNumber + 1,
+                      "Output is shorter than expected." );
+    }
 }

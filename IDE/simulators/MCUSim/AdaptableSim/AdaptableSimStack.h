@@ -40,8 +40,8 @@ class AdaptableSimStack : public MCUSimMemory
          */
         enum Event
         {
-            EVENT_STACK_OVERFLOW = EVENT_MEM__MAX__,  ///< Stack capacity was already exhausted by the previous push.
-            EVENT_STACK_UNDERFLOW,                    ///< A value was been popped from the stack while the stack was already empty.
+            EVENT_STACK_OVERFLOW = EVENT_MEM__MAX__,  ///< Stack capacity has already been exhausted by the previous push.
+            EVENT_STACK_UNDERFLOW,                    ///< A value has been popped from the stack while the stack was already empty.
             EVENT_STACK_SP_CHANGED,                   ///<
         };
 

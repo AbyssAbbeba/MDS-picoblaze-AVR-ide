@@ -44,28 +44,26 @@
                   44 +1
 001 00EFA         45 +1                  LOAD      Temp1, #250
 002 1CE01         46 +1  waiting:        SUB       Temp1, #1
-003 35402         47 +1  waiting:        SUB       Temp1, #1
-                  48 +1                  JUMP      NZ, waiting
-004 34005         49             JUMP    main                    ; Execute main program loop
-                  50
-                  51     ; Main loop
-                  52     ; BTN           000 1 2 3 4 5
-                  53     ; LED_i         000 1 2 3 4 5
-                  54     ; --------------------
-005 04102         55     main:   INPUT   BTN_i,Btn
-006 01010         56             LOAD    LED_i,BTN_i             ; Save buttons status                 ; Button one pressed
-007 2C001         57             OUTPUT  LED_i,LEDs                          ; JUMP to snake subroutine
-                  58             wait_for
-                  59 +1                  local     waiting
-                  60 +1
-008 00EFA         61 +1                  LOAD      Temp1, #250
-009 1CE01         62 +1  waiting:        SUB       Temp1, #1
-00A 35409         63 +1  waiting:        SUB       Temp1, #1
-                  64 +1                  JUMP      NZ, waiting
-00B 34005         65             JUMP    main
-                  66     ; Program end
-                  67     ; --------------------
-                  68             END
-                  69
-                  70     ; <-- Bookmark   (ctrl + shift + M)
-                  71     ; <-- Breakpoint (ctrl + shift + B)
+003 35402         47 +1                  JUMP      NZ, waiting
+004 34005         48             JUMP    main                    ; Execute main program loop
+                  49
+                  50     ; Main loop
+                  51     ; BTN           000 1 2 3 4 5
+                  52     ; LED_i         000 1 2 3 4 5
+                  53     ; --------------------
+005 04102         54     main:   INPUT   BTN_i,Btn
+006 01010         55             LOAD    LED_i,BTN_i             ; Save buttons status                 ; Button one pressed
+007 2C001         56             OUTPUT  LED_i,LEDs                          ; JUMP to snake subroutine
+                  57             wait_for
+                  58 +1                  local     waiting
+                  59 +1
+008 00EFA         60 +1                  LOAD      Temp1, #250
+009 1CE01         61 +1  waiting:        SUB       Temp1, #1
+00A 35409         62 +1                  JUMP      NZ, waiting
+00B 34005         63             JUMP    main
+                  64     ; Program end
+                  65     ; --------------------
+                  66             END
+                  67
+                  68     ; <-- Bookmark   (ctrl + shift + M)
+                  69     ; <-- Breakpoint (ctrl + shift + B)

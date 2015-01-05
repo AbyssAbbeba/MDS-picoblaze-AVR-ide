@@ -24,4 +24,4 @@ MT_ERROR: 016_Source_code_ukol_1.asm:118.38-118.41: Error: invalid token: `$0D'.
 MT_ERROR: 016_Source_code_ukol_1.asm:118.65-119.1: Error: unexpected end of line.
 MT_ERROR: 016_Source_code_ukol_1.asm:120.38-120.41: Error: invalid token: `$0A'.
 MT_ERROR: 016_Source_code_ukol_1.asm:120.70-121.1: Error: unexpected end of line.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

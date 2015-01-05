@@ -84,6 +84,7 @@ AsmPicoBlazeSemanticAnalyzer::~AsmPicoBlazeSemanticAnalyzer()
     delete m_memoryPtr;
     delete m_treeDecoder;
     delete m_symbolTable;
+    delete m_stringTable;
     delete m_machineCode;
     delete m_codeListing;
     delete m_specialMacros;

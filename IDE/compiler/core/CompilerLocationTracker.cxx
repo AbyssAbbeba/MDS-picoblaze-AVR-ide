@@ -15,67 +15,15 @@
 
 #include "CompilerLocationTracker.h"
 
-int CompilerLocationTracker::add ( const CompilerSourceLocation & location,
-                                   int next )
+int CompilerLocationTracker::add ( const CompilerSourceLocation & location )
 {
-    m_locations.push_back({location, next});
+    m_locations.push_back(location);
     return (int) (m_locations.size() - 1);
 }
 
 const CompilerSourceLocation & CompilerLocationTracker::getLocation ( int origin ) const
 {
-    return m_locations[origin].first;
-}
-
-int CompilerLocationTracker::getNext ( int origin ) const
-{
-    return m_locations[origin].second;
-}
-
-bool CompilerLocationTracker::differs ( const CompilerSourceLocation & a,
-                                        const CompilerSourceLocation & b ) const
-{
-    size_t size;
-    std::vector<CompilerSourceLocation> foundLocations;
-
-    traverse(a, &foundLocations);
-    size = foundLocations.size();
-    traverse(b, &foundLocations);
-
-    return ( foundLocations.size() != size );
-}
-
-void CompilerLocationTracker::traverse ( const CompilerSourceLocation & source,
-                                         std::vector<CompilerSourceLocation> * target,
-                                         bool includeRedirected ) const
-{
-    if ( -1 == source.m_origin )
-    {
-        for ( const auto & i : *target )
-        {
-            if ( i.equal(source) )
-            {
-                return;
-            }
-        }
-
-        target->push_back(source);
-    }
-    else
-    {
-        int next = getNext(source.m_origin);
-        traverse(getLocation(source.m_origin), target, includeRedirected);
-
-        if ( -1 != next )
-        {
-            traverse(getLocation(next), target, includeRedirected);
-        }
-
-        if ( true == includeRedirected )
-        {
-            target->push_back(source);
-        }
-    }
+    return m_locations[origin];
 }
 
 void CompilerLocationTracker::clear()
@@ -93,8 +41,7 @@ void CompilerLocationTracker::serialize ( CompilerSerializer & output ) const
     output.write ( (uint32_t) m_locations.size() );
     for ( size_t i = 0; i < m_locations.size(); i++ )
     {
-        output << m_locations[i].first;
-        output.write ( (uint32_t) m_locations[i].second );
+        output << m_locations[i];
     }
 }
 
@@ -106,7 +53,7 @@ void CompilerLocationTracker::deserialize ( CompilerSerializer & input )
     for ( size_t i = 0; i < size; i++ )
     {
         input >> location;
-        m_locations.push_back ( { location, input.translateLOrigin(input.read_ui32()) } );
+        m_locations.push_back(location);
     }
 }
 
@@ -116,8 +63,9 @@ std::ostream & operator << ( std::ostream & out,
     int i = 0;
     for ( const auto & location : tracker.m_locations )
     {
-        out << i << ": " << location.first << " --> " << location.second << std::endl;
+        out << i << ": " << location << std::endl;
         i++;
     }
+
     return out;
 }

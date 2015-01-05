@@ -4,4 +4,4 @@ MT_ERROR: 007_SCRATCHPAD_ram.asm:55.37-55.39: Error: identifier cannot start wit
 MT_ERROR: 007_SCRATCHPAD_ram.asm:55.37-56.1: Error: unexpected end of line.
 MT_ERROR: 007_SCRATCHPAD_ram.asm:61.39-61.41: Error: identifier cannot start with a digit: `0F'.
 MT_ERROR: 007_SCRATCHPAD_ram.asm:61.39-62.1: Error: unexpected end of line.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

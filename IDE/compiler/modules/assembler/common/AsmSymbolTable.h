@@ -238,14 +238,10 @@ class AsmSymbolTable
         /**
          * @brief
          * @param[in,out] expr
-         * @param[in] newLocation
          * @param[in] origin
-         * @param[in] keepColumns
          */
         void rewriteExprLoc ( CompilerExpr * expr,
-                              const CompilerSourceLocation & newLocation,
-                              int origin = -1,
-                              bool keepColumns = false ) const;
+                              int origin ) const;
 
         /**
          * @brief

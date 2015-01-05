@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @ingroup CompilerC
  * @file CompilerCPreProc.cxx
@@ -25,7 +25,7 @@
 #include<iostream>//DEBUG
 
 // getline() function.
-#include "../../../utilities/os/getline.h"
+#include "utilities/os/getline.h"
 
 #if ! defined ( YYSTYPE ) && ! defined ( YYSTYPE_IS_DECLARED )
     typedef union YYSTYPE {} YYSTYPE;
@@ -57,26 +57,20 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
 
     m_location = CompilerSourceLocation(0, 0, 0, 0, 0);
 
-//     m_location.m_fileNumber++;
-//     m_location.m_lineStart++;
-//     m_location.m_lineEnd++;
-//
-//     for ( int i = (int) inputFiles.size() - 1; i >= 0; i-- )
-//     {
-//         m_locationStack.push_back(CompilerSourceLocation(i, 0, 0, 0, 0))
-//     }
-
-//     m_compilerCore->listSourceFiles().size()
-
     // Iterate over all given input files.
     std::vector<FILE*> fileStack;
-    for ( auto sourceFile : inputFiles )
+    for ( unsigned int fileNumber = 0; fileNumber < inputFiles.size(); fileNumber++ )
     {
-        for ( fileStack.push_back(sourceFile); false == fileStack.empty(); fileStack.pop_back() )
+        m_locationStack.push_back(CompilerSourceLocation(fileNumber, -1, 0, 0, 0));
+
+        for ( fileStack.push_back(inputFiles[fileNumber]); false == fileStack.empty(); fileStack.pop_back() )
         {
             // Iterate over the lines in the source file.
             while ( -1 != ( inBuffer.m_pos = getline(&inBuffer.m_data, &inBuffer.m_size, fileStack.back()) ) )
             {
+                m_locationStack.back().m_lineStart++;
+                m_locationStack.back().m_colStart = 0;
+
                 if ( false == inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer) )
                 {
                     // Critical error.
@@ -86,6 +80,7 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
                 if ( false == m_include.m_file.empty() )
                 {
                     fileStack.push_back(m_compilerCore->fileOpen(m_include.m_file, nullptr, false, m_include.m_system));
+                    m_locationStack.push_back(CompilerSourceLocation(m_compilerCore->getFileNumber(), -1, 0, 0, 0));
                     m_include.m_file.clear();
 
                     if ( nullptr == fileStack.back() )
@@ -93,8 +88,12 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
                         // Critical error.
                         return nullptr;
                     }
+
+                    continue;
                 }
             }
+
+            m_locationStack.pop_back();
 
             // Check for error condition on the source file.
             if ( 0 != ferror(fileStack.back()) )
@@ -195,6 +194,9 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
         // Append contents of the input buffer to the output buffer and expand macros in one step.
         m_macroTable.expand(outBuffer, inBuffer);
     }
+
+    m_location.m_colStart = 0;
+    m_location.m_lineStart++;
 
     return true;
 }

@@ -85,7 +85,9 @@
 #ifdef MDS_FEATURE_LOOP_GENERATOR
     #include "../widgets/LoopGen/loop_gen.h"
 #endif
+
 #include "../widgets/AboutWidget/aboutwidget.h"
+
 #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
     #include "../widgets/Tools/Display/displaytool.h"
 #endif
@@ -2064,10 +2066,12 @@ void MainForm::projectOpened()
     {
         saveProjConfigAct->setEnabled(true);
     }
-    if (false == m_externalToolButton->isEnabled())
-    {
-        m_externalToolButton->setEnabled(true);
-    }
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (false == m_externalToolButton->isEnabled())
+        {
+            m_externalToolButton->setEnabled(true);
+        }
+    #endif
     if (false == projectTabConnected && m_projectMan->getOpenProjects().count() > 1)
     {
         QApplication::processEvents();
@@ -3522,7 +3526,8 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project"))
+    QString path = QDir(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project").absolutePath();
+    if (false == this->openProject(path))
     {
         return;
     }
@@ -3532,7 +3537,7 @@ void MainForm::exampleOpen()
     for (int i = 0; i < count; i++)
     {
         //qDebug() << "MainForm: loading";
-        this->openFilePath(QDir(absolutePath + "/" + m_projectMan->getActive()->filePaths.at(i)).canonicalPath());
+        this->openFilePath(QDir::cleanPath(absolutePath + "/" + m_projectMan->getActive()->filePaths.at(i)));
     }
     if (m_wDockManager->getTabCount() > 0)
     {
@@ -4085,7 +4090,9 @@ void MainForm::closeProject()
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
-            m_externalToolButton->setEnabled(false);
+            #ifdef MDS_FEATURE_EXTERNAL_APPS
+                m_externalToolButton->setEnabled(false);
+            #endif
         }
         else
         {
