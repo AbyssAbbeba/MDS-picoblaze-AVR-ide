@@ -37,9 +37,9 @@
         yylloc->last_column += yyleng;
 
     // At each yylex invocation, mark the current position as the start of the next token.
-    #define advanceLocation()                                   \
-        yylloc_param->first_line   = yylloc_param->last_line;   \
-        yylloc_param->first_column = yylloc_param->last_column;
+    #define advanceLocation()                       \
+        yylloc->first_line   = yylloc->last_line;   \
+        yylloc->first_column = yylloc->last_column;
 
     /**
      * @brief
@@ -119,8 +119,9 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
  /* White space: */
 {WSPACE}        { advanceLocation(); }
 {NLINE}         {
-                    yylloc_param->last_line++;
-                    yylloc_param->last_column = 1;
+                    yylloc->last_line++;
+                    yylloc->last_column = 1;
+                    advanceLocation();
                 }
 
  /* Special tokens */
