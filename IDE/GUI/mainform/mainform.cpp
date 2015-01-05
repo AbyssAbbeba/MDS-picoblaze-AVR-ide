@@ -1347,7 +1347,7 @@ void MainForm::openFile()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
@@ -1512,15 +1512,15 @@ void MainForm::addFile()
 
             if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
             {
-                path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), m_lastDir, QString(), 0);
             }
             if (NULL == path)
             {
@@ -1702,7 +1702,7 @@ bool MainForm::saveFileAs()
     {
         if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
@@ -1834,7 +1834,7 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
             {
                 if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
                 }
                 else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
                 {
@@ -1997,7 +1997,7 @@ void MainForm::openProject()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)", 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
