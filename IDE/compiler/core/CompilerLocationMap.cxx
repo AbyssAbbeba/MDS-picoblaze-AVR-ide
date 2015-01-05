@@ -26,13 +26,25 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
     }
 
     auto & lineMap = m_map[from.m_fileNumber];
-    lineMap.push_back(LineMark());
 
-    auto & lineMark = lineMap.back();
-    lineMark.m_org = from.m_lineStart;
-    lineMark.m_columnMap.push_back(ColumnMark());
+    LineMark * lineMark = nullptr;
+    for ( auto & i : lineMap )
+    {
+        if ( from.m_lineStart == i.m_org )
+        {
+            lineMark = &i;
+        }
+    }
+    if ( nullptr == lineMark )
+    {
+        lineMap.push_back(LineMark());
+        lineMark = &( lineMap.back() );
+        lineMark->m_org = from.m_lineStart;
+    }
 
-    auto & columnMark = lineMark.m_columnMap.back();
+    lineMark->m_columnMap.push_back(ColumnMark());
+
+    auto & columnMark = lineMark->m_columnMap.back();
     columnMark.m_org = from.m_colStart;
 
     auto & diff = columnMark.m_diff;
@@ -49,7 +61,7 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
 CompilerSourceLocation CompilerLocationMap::translate ( const CompilerSourceLocation & from ) const
 {
     CompilerSourceLocation result = from;
-std::cout<<"CompilerLocationMap::translate("<<from<<"): ";
+
     if ( from.m_fileNumber >= (int) m_map.size() )
     {
         return result;
@@ -58,7 +70,6 @@ std::cout<<"CompilerLocationMap::translate("<<from<<"): ";
     const Difference * diff = nullptr;
     for ( const auto & lineMark : m_map[from.m_fileNumber] )
     {
-std::cout<<"[lineMark.m_org="<<lineMark.m_org<<"]";
         if ( from.m_lineStart > lineMark.m_org )
         {
             diff = &lineMark.m_columnMap.back().m_diff;
@@ -66,12 +77,10 @@ std::cout<<"[lineMark.m_org="<<lineMark.m_org<<"]";
         }
         else if ( from.m_lineStart == lineMark.m_org )
         {
-std::cout<<"[from.m_lineStart == lineMark.m_org]";
             for ( const auto & columnMark : lineMark.m_columnMap )
             {
                 if ( from.m_colStart >= columnMark.m_org )
                 {
-std::cout<<"[#from.m_colStart >= columnMark.m_org ("<<from.m_colStart<<","<<columnMark.m_org<<")#]";
                     diff = &columnMark.m_diff;
                     break;
                 }
@@ -92,7 +101,7 @@ std::cout<<"[#from.m_colStart >= columnMark.m_org ("<<from.m_colStart<<","<<colu
         result.m_colEnd     += diff->m_column;
         result.m_origin      = diff->m_origin;
     }
-std::cout << result << '\n';
+
     return result;
 }
 
@@ -117,12 +126,11 @@ void CompilerLocationMap::sortMap()
             {
                 for ( int k = ( j - 1 ); k >= 0; k-- )
                 {
-std::cout << ">>>columnMap[j].m_org="<<columnMap[j].m_org<<'\n';
                     if ( columnMap[j].m_org > columnMap[k].m_org )
                     {
-                        auto tmp = lineMap[j];
-                        lineMap[j] = lineMap[k];
-                        lineMap[k] = tmp;
+                        auto tmp = columnMap[j];
+                        columnMap[j] = columnMap[k];
+                        columnMap[k] = tmp;
                     }
                 }
             }
