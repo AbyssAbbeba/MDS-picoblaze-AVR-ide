@@ -3905,6 +3905,7 @@ void MainForm::toolFileConvert()
  */
 void MainForm::unhighlight()
 {
+    qDebug() << "MainForm: unhighlight";
     emit unhighlightSim();
 }
 
