@@ -288,7 +288,7 @@ void PortHexEdit::unhighlight()
 
 void PortHexEdit::updateWidget()
 {
-    qDebug() << "PortHexEdit: update";
+    //qDebug() << "PortHexEdit: update";
     uint value;
     for ( int i = 0; i < m_size; i++ )
     {
@@ -304,10 +304,10 @@ void PortHexEdit::updateWidget()
             m_hexEditIn->setVal(i, (unsigned char)value);
             m_hexEditIn->setHighlighted(i, true);
         }
-        else
+        /*else
         {
             m_hexEditIn->setHighlighted(i, false);
-        }
+        }*/
         //qDebug() << "PortHexEdit: in value is" << (unsigned char)value;
 
         value = m_plio->getOutputArray()[i];
@@ -320,10 +320,10 @@ void PortHexEdit::updateWidget()
             m_hexEditOut->setVal(i, (unsigned char)value);
             m_hexEditOut->setHighlighted(i, true);
         }
-        else
+        /*else
         {
             m_hexEditOut->setHighlighted(i, false);
-        }
+        }*/
         //qDebug() << "PortHexEdit: out value is" << (unsigned char)value;
     }
 }
