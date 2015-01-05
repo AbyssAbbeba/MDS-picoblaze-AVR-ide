@@ -88,11 +88,10 @@ class CompilerLocationMap
 
         /**
          * @brief
-         * @param[in,out] to
          * @param[in] from
+         * @return
          */
-        void translate ( CompilerSourceLocation & to,
-                         const CompilerSourceLocation & from ) const;
+        CompilerSourceLocation translate ( const CompilerSourceLocation & from ) const;
 
         /**
          * @brief The location map cannot be used for translating locations before it is sorted.

@@ -35,7 +35,6 @@
     #define YY_USER_ACTION \
         yylloc->last_column += yyleng;
 
-
     // At each yylex invocation, mark the current position as the start of the next token.
     #define advanceLocation()                                   \
         yylloc_param->first_line   = yylloc_param->last_line;   \
@@ -87,7 +86,7 @@
  * Named regular expressions used in the lexer
  */
 /* White space character */
-WSCHAR  ([ \t]|\u00A0)*
+WSCHAR  ([ \t]|\u00A0)
 /* White space */
 WS      {WSCHAR}+
 /* Empty or white space */
