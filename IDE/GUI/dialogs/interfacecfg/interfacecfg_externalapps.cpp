@@ -48,7 +48,7 @@ InterfaceCfg_ExternalApps::InterfaceCfg_ExternalApps(QWidget *parent)
 
 void InterfaceCfg_ExternalApps::setPath1()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Application path");
+    QString path = QFileDialog::getOpenFileName(this, "Application path", m_path);
     if (NULL != path)
     {
         ui.lePath1->setText(path);
@@ -58,7 +58,7 @@ void InterfaceCfg_ExternalApps::setPath1()
 
 void InterfaceCfg_ExternalApps::setPath2()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Application path");
+    QString path = QFileDialog::getOpenFileName(this, "Application path", m_path);
     if (NULL != path)
     {
         ui.lePath2->setText(path);
@@ -68,7 +68,7 @@ void InterfaceCfg_ExternalApps::setPath2()
 
 void InterfaceCfg_ExternalApps::setPath3()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Application path");
+    QString path = QFileDialog::getOpenFileName(this, "Application path", m_path);
     if (NULL != path)
     {
         ui.lePath3->setText(path);
@@ -97,4 +97,10 @@ void InterfaceCfg_ExternalApps::save()
     apps.append(tempApp);
     
     GuiCfg::getInstance().setExternalApps(apps);
+}
+
+
+void InterfaceCfg_ExternalApps::setDialogPath(QString path)
+{
+    m_path = path;
 }

@@ -40,4 +40,4 @@ MT_ERROR: 012_REPT_and_WHILE.asm:221.13-221.19: Error: unexpected directive ENDI
 MT_ERROR: 012_REPT_and_WHILE.asm:225.25-225.26: Error: unrecognized token: `='.
 MT_ERROR: 012_REPT_and_WHILE.asm:225.27-225.29: Error: unexpected IDENTIFIER.
 MT_ERROR: 012_REPT_and_WHILE.asm:227.13-227.19: Error: unexpected directive ENDIF.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

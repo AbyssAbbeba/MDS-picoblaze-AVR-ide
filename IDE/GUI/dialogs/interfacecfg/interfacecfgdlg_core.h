@@ -17,7 +17,7 @@
 
 
 #include <QDialog>
-
+#include <QString>
 
 
 class CfgInterface;
@@ -35,6 +35,7 @@ class InterfaceCfgDlg_Core : public QDialog
     Q_OBJECT
     public:
         InterfaceCfgDlg_Core(QWidget *parent);
+        void setPath(QString path);
         
     private:
         //void save();

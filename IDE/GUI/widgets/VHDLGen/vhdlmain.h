@@ -45,7 +45,7 @@ class VhdlMain : public QWidget
     * @brief Variable list
     */
 
-     QStringList printedComponents;
+     QStringList printedComponents, printedComponentsDeclaration;
      QStringList longerList, splitList2, splitList1;
      QStringList portList, portInList, portOutList;
      QStringList rectList;
@@ -62,6 +62,7 @@ class VhdlMain : public QWidget
      bool m_saveAddFlag;
      bool m_xmlNumberFlag;
      bool m_xmlEditFlag;
+     bool createWidget;
      unsigned int m_xmlNumber,m_editNumber;
 
      enum genericType {
@@ -122,12 +123,12 @@ class VhdlMain : public QWidget
      void addExistingComponent(unsigned int);
      void validateName(unsigned int);
      genericType getEnum(QString & inString);
-     int getNumberOfInstances(QString & componentToInstantiate);
+     int getNumberOfInstances(QString & componentToInstantiate, bool Declaration);
      void editSelectedComponent(unsigned int position);
 
-
-
 private slots:
+   void customMenuRequested(QPoint pos);
+   void RemoveXml();
    void pushEditSlot();
    void saveAdd();
    void busChecked();

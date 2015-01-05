@@ -133,7 +133,6 @@ void TestSuiteSuc::testFunction()
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
     bool result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
 
-
     if ( false == result )
     {
         CU_FAIL("Compilation failed.");
@@ -251,6 +250,7 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
     symExpFile.close();
 
     numberOfTable = 0;
+    unsigned int lineNumber = 0;
     std::ifstream symFile(actual);
     while ( false == symFile.eof() )
     {
@@ -260,6 +260,7 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
             return;
         }
 
+        lineNumber++;
         std::string line;
         std::getline(symFile, line);
 
@@ -288,7 +289,9 @@ void TestSuiteSuc::compareSym ( const std::string & expected,
 
         if ( false == entryFoundInSymExpFile )
         {
-            CU_FAIL("Table of symbols is different than expected.");
+            CU_FAIL_MSG ( actual,
+                          lineNumber,
+                          "unexpected entry: '" + line + '\'' );
             break;
         }
     }
@@ -320,6 +323,7 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
     }
     macExpFile.close();
 
+    unsigned int lineNumber = 0;
     std::ifstream macFile(actual);
     while ( false == macFile.eof() )
     {
@@ -329,6 +333,7 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
             return;
         }
 
+        lineNumber++;
         std::string line;
         std::getline(macFile, line);
 
@@ -347,7 +352,9 @@ void TestSuiteSuc::compareMac ( const std::string & expected,
 
         if ( false == entryFoundInMacExpFile )
         {
-            CU_FAIL("Table of macros is different than expected.");
+            CU_FAIL_MSG ( actual,
+                          lineNumber,
+                          "unexpected entry: '" + line + '\'' );
             break;
         }
     }
@@ -406,19 +413,28 @@ void TestSuiteSuc::compareLst ( const std::string & expected,
 
         if ( lstLineNumber >= expFileNoOfLines )
         {
-            CU_FAIL("lstLineNumber < expFileNoOfLines");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "Output is longer than expected." );
             return;
         }
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
-            CU_FAIL("Result and expectation inconsistence found in code listing.");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "\nexpected: '" + lstExpFileVec[lstLineNumber] + "'"
+                          "\n" "actual:   '" + lstFileLine + "'" );
             break;
         }
 
         lstLineNumber++;
     }
 
-    size_t lstFileNoOfLines = lstLineNumber;
-    CU_ASSERT_EQUAL(lstFileNoOfLines, expFileNoOfLines);
+    if ( lstLineNumber < expFileNoOfLines )
+    {
+        CU_FAIL_MSG ( actual,
+                      lstLineNumber + 1,
+                      "Output is shorter than expected." );
+    }
 }

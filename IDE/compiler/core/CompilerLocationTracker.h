@@ -22,7 +22,6 @@
 
 // Standard header files.
 #include <vector>
-#include <utility>
 #include <ostream>
 
 /**
@@ -41,11 +40,9 @@ class CompilerLocationTracker : public CompilerSerializable
         /**
          * @brief
          * @param[in] location
-         * @param[in] next
          * @return
          */
-        int add ( const CompilerSourceLocation & location,
-                  int next = -1 );
+        int add ( const CompilerSourceLocation & location );
 
         /**
          * @brief
@@ -53,32 +50,6 @@ class CompilerLocationTracker : public CompilerSerializable
          * @return
          */
         const CompilerSourceLocation & getLocation ( int origin ) const;
-
-        /**
-         * @brief
-         * @param[in] origin
-         * @return
-         */
-        int getNext ( int origin ) const;
-
-        /**
-         * @brief
-         * @param[in] a
-         * @param[in] b
-         * @return
-         */
-        bool differs ( const CompilerSourceLocation & a,
-                       const CompilerSourceLocation & b ) const;
-
-        /**
-         * @brief
-         * @param[in] source
-         * @param[out] target
-         * @param[in] includeRedirected
-         */
-        void traverse ( const CompilerSourceLocation & source,
-                        std::vector<CompilerSourceLocation> * target,
-                        bool includeRedirected = false ) const;
 
         /**
          * @brief
@@ -106,7 +77,7 @@ class CompilerLocationTracker : public CompilerSerializable
     ////    Private Attributes    ////
     private:
         /// @brief
-        std::vector<std::pair<CompilerSourceLocation,int> > m_locations;
+        std::vector<CompilerSourceLocation> m_locations;
 };
 
 /// @name Tracing operators

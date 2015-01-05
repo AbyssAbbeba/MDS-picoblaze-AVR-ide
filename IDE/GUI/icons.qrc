@@ -57,9 +57,27 @@
     <file>resources/icons/page_white_lightning.png</file>
     <file>resources/icons/simplekeypad.png</file>
     <file>resources/icons/bullet_star.png</file>
+    <file>resources/icons/goto_line.png</file>
+    <file>resources/icons/sticky-notes-pin.png</file>
+    <file>resources/icons/application-share.png</file>
+    <file>resources/icons/zone-label.png</file>
+    <file>resources/icons/save_proj_cfg.png</file>
+    <file>resources/icons/receipt-import.png</file>
     <file>resources/icons/application_xp_terminal.png</file>
     <file>resources/icons/brick.png</file>
     <file>resources/icons/cog.png</file>
+    <file>resources/icons/qt-logo.png</file>
+    <file>resources/icons/processor.png</file>
+    <file>resources/icons/bookmark_prev.png</file>
+    <file>resources/icons/bookmark_next.png</file>
+    <file>resources/icons/find_prev.png</file>
+    <file>resources/icons/find_next.png</file>
+    <file>resources/icons/folder_page.png</file>
+    <file>resources/icons/calculator.png</file>
+    <file>resources/icons/price-tag--minus.png</file>
+    <file>resources/icons/price-tag--plus.png</file>
+    <file>resources/icons/find.png</file>
+    <file>resources/icons/arrow_refresh.png</file>
     <file>resources/icons/messages.png</file>
     <file>resources/icons/bullet_arrow_down.png</file>
     <file>resources/icons/bullet_arrow_right.png</file>

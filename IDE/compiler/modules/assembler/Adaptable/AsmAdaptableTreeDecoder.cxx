@@ -919,13 +919,12 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
                                                                 true );
     }
 
-    CompilerSourceLocation lastLocation = node->branch()->last()->location();
+    const CompilerSourceLocation lastLocation = node->branch()->last()->location();
     delete node->branch()->last(); // remove `ENDR' directive
 
     CompilerStatement * body = new CompilerStatement();
     body->appendLink(node->branch()->copyEntireChain());
-    m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, body, true);
-    lastLocation = body->lastLeaf()->location();
+    m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, body->next(), true);
     if ( false == phase1(body) )
     {
         body->completeDelete();
@@ -936,8 +935,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
     {
         CompilerStatement * exp = new CompilerStatement();
         exp->appendLink(node->branch()->copyEntireChain());
-        m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, exp, false);
-        lastLocation = exp->lastLeaf()->location();
+        m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, exp->next(), false);
         if ( false == phase1(exp) )
         {
             body->completeDelete();
@@ -963,7 +961,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
         return CA_NO_ACTION;
     }
 
-    CompilerSourceLocation lastLocation = node->branch()->last()->location();
+    const CompilerSourceLocation lastLocation = node->branch()->last()->location();
     delete node->branch()->last(); // remove `ENDW' directive
 
     unsigned int i;
@@ -978,8 +976,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
         if ( nullptr == body )
         {
             body = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
-            m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, body, true);
-            lastLocation = body->lastLeaf()->location();
+            m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, body->next(), true);
             if ( false == phase1(body) )
             {
                 body->completeDelete();
@@ -989,8 +986,7 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
         else
         {
             CompilerStatement * exp = (new CompilerStatement())->appendLink(node->branch()->copyEntireChain())->first();
-            m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, exp, false);
-            lastLocation = exp->lastLeaf()->location();
+            m_semanticAnalyzer->m_codeListing->repeatCode(lastLocation, exp->next(), false);
             if ( false == phase1(exp) )
             {
                 body->completeDelete();

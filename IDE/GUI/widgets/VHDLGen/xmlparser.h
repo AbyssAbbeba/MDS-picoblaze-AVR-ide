@@ -50,6 +50,7 @@ public:
     void readXml();
     void getDirFiles();
     unsigned int insertExistingComponent(QString & componentToAdd);
+    QString removeExistingComponent(QString & componentToRemove);
     void refreshDirFiles();
     void xmlReadDevice(QIODevice*,unsigned int);
     unsigned int getFreeRoom();

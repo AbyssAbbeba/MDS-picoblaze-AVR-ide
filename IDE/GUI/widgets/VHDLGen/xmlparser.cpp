@@ -37,6 +37,18 @@ void XmlParser::getDirFiles()
     qDebug() << Devices;
 }
 
+QString XmlParser::removeExistingComponent(QString & componentToRemove)
+{
+    for ( unsigned int i = 0; i < xmlComponentCnt;  i++)
+    {
+        if ( componentToRemove == xmlDefinedComponent[i].xmlName )
+        {
+            qDebug() << componentToRemove << "component To be removed > "<< xmlDefinedComponent[i].xmlName;
+            return xmlDefinedComponent[i].xmlName;
+        }
+    }
+}
+
 unsigned int XmlParser::insertExistingComponent(QString & componentToAdd)
 {
     for ( unsigned int i = 0; i < xmlComponentCnt;  i++)

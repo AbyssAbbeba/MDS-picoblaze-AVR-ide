@@ -44,7 +44,7 @@ void PicoBlazeIO::reset ( MCUSimBase::ResetMode mode )
             for ( unsigned int i = 0; i < NUMBER_OF_PORTS; i++ )
             {
                 m_inputBitArray[i] = 0;
-                m_inputBitArray[i] = 0;
+                m_outputBitArray[i] = 0;
             }
             break;
         case MCUSim::RSTMD_MCU_RESET:

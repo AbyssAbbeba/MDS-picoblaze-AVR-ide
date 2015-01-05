@@ -144,166 +144,109 @@
                  144     ;-------------------------------------------------------------------------
                  145     ; Interrupt routine
   00000          146     INTERRUPT:          SendChar  'I'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x49, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x9.
+W: ==> ==> value out of range: 0x49, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x9.
                  147 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 000 20004        148 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 001 10020        149 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 002 35000        150 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 003 10448        151 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x49, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x9.
 004 22401        152 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  153                         SendChar  'N'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x4e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xe.
+W: ==> ==> value out of range: 0x4e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xe.
                  154 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 005 20004        155 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 006 10020        156 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 007 35005        157 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 008 10470        158 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x4e, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0xe.
 009 22401        159 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  160                         SendChar  'T'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
+W: ==> ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
                  161 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 00A 20004        162 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 00B 10020        163 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 00C 3500A        164 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 00D 104A0        165 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
 00E 22401        166 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  167                         SendChar  'E'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x45, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x5.
+W: ==> ==> value out of range: 0x45, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x5.
                  168 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 00F 20004        169 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 010 10020        170 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 011 3500F        171 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 012 10428        172 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x45, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x5.
 013 22401        173 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  174                         SendChar  'R'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
+W: ==> ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
                  175 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 014 20004        176 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 015 10020        177 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 016 35014        178 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 017 10490        179 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
 018 22401        180 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  181                         SendChar  'R'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
+W: ==> ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
                  182 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 019 20004        183 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 01A 10020        184 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 01B 35019        185 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 01C 10490        186 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x52, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x12.
 01D 22401        187 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  188                         SendChar  'U'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x55, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
+W: ==> ==> value out of range: 0x55, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
                  189 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 01E 20004        190 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 01F 10020        191 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 020 3501E        192 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 021 104A8        193 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x55, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x15.
 022 22401        194 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  195                         SendChar  'P'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
+W: ==> ==> value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
                  196 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 023 20004        197 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 024 10020        198 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 025 35023        199 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 026 10480        200 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x50, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x10.
 027 22401        201 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  202                         SendChar  'T'
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
+W: ==> ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
                  203 +1                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 028 20004        204 +2                      INPUT       Temp1, UART_stat    ; checking UART status
 029 10020        205 +2                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02A 35028        206 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 02B 104A0        207 +1                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 W: ==> value out of range: 0x54, allowed range is [0x0,0x1f] (trimmed to 5 bits) which makes it 0x14.
 02C 22401        208 +1                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  209                         SendCRLF
                  210 +1                      SendChar  0x0D          ; CR character
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  211 +2                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 02D 20004        212 +3                      INPUT       Temp1, UART_stat    ; checking UART status
 02E 10020        213 +3                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 02F 3502D        214 +3                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 030 10468        215 +2                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 031 22401        216 +2                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
                  217 +1                      SendChar  0x0A          ; CR character
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
                  218 +2                      UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 032 20004        219 +3                      INPUT       Temp1, UART_stat    ; checking UART status
 033 10020        220 +3                      load        Temp1, 4            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 034 35032        221 +3                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
 035 10450        222 +2                      LOAD        TXEQU, char
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 036 22401        223 +2                      OUTPUT      TXEQU, TX_id       ; TX PORT_ID, sending char parameter
 037 2C001        224                         RETURNI ENABLE
                  225     ; Start of main program
@@ -313,32 +256,26 @@ W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register;
                  229 +1                      LOCAL     wait_1s_i
                  230 +1
 038 000FA        231 +1  wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
-039 001F9        232 +1  wait_1s:            LOAD      Temp1, #250          ; Load Temp1 register
-03A 002C8        233 +1                      LOAD      Temp2, #249          ; Load Temp2 register
-03B 0C001        234 +1                      LOAD      Temp3, #200          ; Load Temp3 register
-03C 3543B        235 +1  wait_1s_i:          SUB       Temp1, #1
-03D 0C101        236 +1  wait_1s_i:          SUB       Temp1, #1
+039 001F9        232 +1                      LOAD      Temp2, #249          ; Load Temp2 register
+03A 002C8        233 +1                      LOAD      Temp3, #200          ; Load Temp3 register
+03B 0C001        234 +1  wait_1s_i:          SUB       Temp1, #1
+03C 3543B        235 +1                      JUMP      NZ, wait_1s_i
+03D 0C101        236 +1                      SUB       Temp2, #1
 03E 3543B        237 +1                      JUMP      NZ, wait_1s_i
-03F 0C201        238 +1                      SUB       Temp2, #1
+03F 0C201        238 +1                      SUB       Temp3, #1
 040 3543B        239 +1                      JUMP      NZ, wait_1s_i
-                 240 +1                      SUB       Temp3, #1
-                 241 +1                      JUMP      NZ, wait_1s_i
-041 3C001        242                         ENABLE INTERRUPT
-                 243     ; ---------------------------------------- Main loop
-                 244
-  00042          245     main_loop:          GetChar                       ; Receive via UART, get status of switches for example
-                 246 +1                      UART_new_EQU_wait              ; Wait for new EQU
-W: instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-042 20004        247 +2                      INPUT       Temp1, UART_stat    ; checking UART status
-043 10040        248 +2                      load        Temp1, 8            ; load bit 2 (is Tx ready?)
-W: ==> instruction `LOAD sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
-044 35042        249 +2                      JUMP        Z, ($ - 2)
-W: ==> instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: expression.
-045 20302        250 +1                      INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
-046 34042        251                         JUMP        main_loop
-                 252
-                 253
-                 254     ; AND NOW YOU ARE READY !
-                 255     ; We hope this example can help you use this IDE at his maximum potential
-                 256     ; Click on [Main menu] -> [Project] -> [New] and create your own PicoBlaze project ...
+041 3C001        240                         ENABLE INTERRUPT
+                 241     ; ---------------------------------------- Main loop
+                 242
+  00042          243     main_loop:          GetChar                       ; Receive via UART, get status of switches for example
+                 244 +1                      UART_new_EQU_wait              ; Wait for new EQU
+042 20004        245 +2                      INPUT       Temp1, UART_stat    ; checking UART status
+043 10040        246 +2                      load        Temp1, 8            ; load bit 2 (is Tx ready?)
+044 35042        247 +2                      JUMP        Z, ($ - 2)
+045 20302        248 +1                      INPUT       RX_EQU, RX_id       ; TX PORT_ID, sending char parameter
+046 34042        249                         JUMP        main_loop
+                 250
+                 251
+                 252     ; AND NOW YOU ARE READY !
+                 253     ; We hope this example can help you use this IDE at his maximum potential
+                 254     ; Click on [Main menu] -> [Project] -> [New] and create your own PicoBlaze project ...

@@ -72,4 +72,4 @@ MT_ERROR: 037_example_10.asm:1595.33-1595.36: Error: identifier cannot start wit
 MT_ERROR: 037_example_10.asm:1595.25-1595.32: Error: directive ADDRESS requires a single argument.
 MT_ERROR: 037_example_10.asm:1612.33-1612.36: Error: identifier cannot start with a digit: `3FF'.
 MT_ERROR: 037_example_10.asm:1612.25-1612.32: Error: directive ADDRESS requires a single argument.
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

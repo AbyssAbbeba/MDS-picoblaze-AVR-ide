@@ -86,12 +86,10 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
     bool first = true;
     for ( const auto & dbgRecord : m_data )
     {
-        std::vector<CompilerSourceLocation> locationTrace;
-        compilerCore->locationTrack().traverse ( dbgRecord.m_location, &locationTrace );
-
-        for ( const auto & location : locationTrace )
+        const CompilerSourceLocation * location = &( dbgRecord.m_location );
+        while ( true )
         {
-            if ( location.m_fileNumber < (int) sourceFiles.size() )
+            if ( location->m_fileNumber < (int) sourceFiles.size() )
             {
                 if ( true == first )
                 {
@@ -99,10 +97,19 @@ inline void AsmDgbFileGen::outputToFile ( CompilerSemanticInterface * compilerCo
                     file << BREAK_TO_4_CHARS(dbgRecord.m_address);
                 }
                 file << '\1'
-                     << BREAK_TO_2_CHARS(location.m_fileNumber)
-                     << BREAK_TO_4_CHARS(location.m_lineStart);
+                     << BREAK_TO_2_CHARS(location->m_fileNumber)
+                     << BREAK_TO_4_CHARS(location->m_lineStart);
             }
+
+            if ( -1 != location->m_origin )
+            {
+                location = &( compilerCore->locationTrack().getLocation(location->m_origin) );
+                continue;
+            }
+
+            break;
         }
+
         if ( false == first )
         {
             file << '\0';
@@ -129,23 +136,29 @@ inline void AsmDgbFileGen::outputToContainer ( CompilerSemanticInterface * compi
 
     for ( const auto & dbgRecord : m_data )
     {
-        std::vector<CompilerSourceLocation> locationTrace;
-        std::vector<std::pair<unsigned int, unsigned int>> locationTrace2;
+        std::vector<std::pair<unsigned int, unsigned int>> locationTrace;
 
-        compilerCore->locationTrack().traverse ( dbgRecord.m_location, &locationTrace );
-
-        for ( const auto & location : locationTrace )
+        const CompilerSourceLocation * location = &( dbgRecord.m_location );
+        while ( true )
         {
-            if ( location.m_fileNumber < numberOfFiles )
+            if ( location->m_fileNumber < numberOfFiles )
             {
-                locationTrace2.push_back ( { (unsigned int) location.m_fileNumber,
-                                             (unsigned int) location.m_lineStart } );
+                locationTrace.push_back ( { (unsigned int) location->m_fileNumber,
+                                            (unsigned int) location->m_lineStart } );
             }
+
+            if ( -1 != location->m_origin )
+            {
+                location = &( compilerCore->locationTrack().getLocation(location->m_origin) );
+                continue;
+            }
+
+            break;
         }
 
-        if ( false == locationTrace2.empty() )
+        if ( false == locationTrace.empty() )
         {
-            target->directSetupRelation ( (unsigned int) dbgRecord.m_address, locationTrace2 );
+            target->directSetupRelation ( (unsigned int) dbgRecord.m_address, locationTrace );
         }
     }
 

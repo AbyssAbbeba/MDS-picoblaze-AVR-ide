@@ -30,7 +30,7 @@ if ( "${CMAKE_CURRENT_SOURCE_DIR}/LicenseKey.pem" IS_NEWER_THAN "${CMAKE_CURRENT
                         SOURCES LicenseKey.pem )
 else()
     add_custom_target ( ${PROJECT_NAME}-key ALL
-                        COMMENT "RSA public key in form of C++ code was already generated ... skipping." )
+                        COMMENT "RSA public key in form of C++ code has already been generated ... skipping." )
 endif()
 
 # ------------------------------------------------------------------------------

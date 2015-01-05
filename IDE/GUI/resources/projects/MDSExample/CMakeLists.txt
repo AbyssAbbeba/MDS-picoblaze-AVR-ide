@@ -34,12 +34,12 @@ foreach ( PSM_FILE ${PSM_FILES} )
                             COMMAND bash "${CMAKE_SOURCE_DIR}/runMdsCompiler.sh" ${COLOR_GCC}
                                     $<TARGET_FILE:${COMPILER_EXEC_TARGET}>
                                         --silent
-                                        --plang=asm
-                                        --arch=PicoBlaze
-                                        --dev=kcpsm6
+                                        --language=asm
+                                        --architecture=PicoBlaze
+                                        --device=kcpsm6
                                         --lst=${FILE_BASE}.lst
                                         --hex=${FILE_BASE}.ihex
-                                        --dbg=${FILE_BASE}.dbg
+                                        --debug=${FILE_BASE}.dbg
                                         --srec=${FILE_BASE}.srec
                                         --binary=${FILE_BASE}.bin
                                         --mtable=${FILE_BASE}.mtbl
