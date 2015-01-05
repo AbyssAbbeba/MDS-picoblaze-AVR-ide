@@ -1175,6 +1175,7 @@ void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
 
 void WDockManager::unhighlightSimWidget()
 {
+    qDebug() << "WDockManager: unhighlight";
     emit unhighlightSim();
 }
 

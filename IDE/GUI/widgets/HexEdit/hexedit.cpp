@@ -666,8 +666,9 @@ void HexEdit::setHighlighted(int pos, bool highlight)
         txtCursor.setPosition(position);
         txtCursor.select(QTextCursor::WordUnderCursor);
         QTextCharFormat format = txtCursor.charFormat();
-        if (highlight == true)
+        if (true == highlight)
         {
+            //qDebug() << "HexEdit: setHighlighted";
             format.setBackground(Qt::yellow);
         }
         else
@@ -683,6 +684,7 @@ void HexEdit::setHighlighted(int pos, bool highlight)
         }
         txtCursor.setCharFormat(format);
         txtCursor.setPosition(prevPosition);
+        hexTextEdit->setTextCursor(txtCursor);
         changable = true;
     }
 }
