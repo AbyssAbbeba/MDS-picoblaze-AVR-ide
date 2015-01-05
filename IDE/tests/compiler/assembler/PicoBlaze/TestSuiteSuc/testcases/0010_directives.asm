@@ -14,7 +14,7 @@ Start:
         LOAD    s1,s2
         LOAD    s1,s2
         LOAD    s1,s2
-                
+
         #WHILE   B
                 SR0     s0
                 B       SET     B - 1

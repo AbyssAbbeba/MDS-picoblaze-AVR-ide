@@ -16,6 +16,7 @@
 #define FILECONVERTDLG_H
 
 #include <QDialog>
+#include <QString>
 #include "ui_fileconvertdlg.h"
 
 
@@ -31,6 +32,7 @@ class FileConvertDlg : public QDialog
     Q_OBJECT
     public:
         FileConvertDlg(QWidget *parent);
+        void setPath(QString path);
 
     private slots:
         void setPathIn();
@@ -42,6 +44,7 @@ class FileConvertDlg : public QDialog
         
     private:
         Ui_FileConvertDlg ui;
+        QString m_path;
         
 };
 

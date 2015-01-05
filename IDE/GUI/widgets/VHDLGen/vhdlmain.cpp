@@ -14,7 +14,7 @@
 
 #include "vhdlmain.h"
 #include "ui_vhdlmain.h"
-//#include "createcomponent.h"
+#include "createcomponent.h"
 #include "ui_createcomponent.h"
 #include <QtGui>
 //#include "xmlparser.h"
@@ -67,12 +67,20 @@ VhdlMain::VhdlMain(QWidget *parent) :
     m_xmlEditFlag = false;
     m_xmlNumber = 0;
     m_xmlEditSpaceNum = 0;
+    createWidget = false;
 
     bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave";
 
     entityName = "MPU_SYS";
 
-    ui->infoLabel->setText("Select .sym file generated after compilation to read PORT directives names");
+    //ui->infoLabel->setText("Select .sym file generated after compilation to read PORT directives names");
+
+    // set custom menu
+    ui->listVystup->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->listVystup,
+            SIGNAL(customContextMenuRequested(QPoint)),
+            SLOT(customMenuRequested(QPoint))
+            );
 
     //QStringList attributes;
    // picoBlaze.name = "MPU_SYS_core";
@@ -109,11 +117,6 @@ VhdlMain::VhdlMain(QWidget *parent) :
             SIGNAL(itemDoubleClicked(QListWidgetItem*)),
             this,
             SLOT(insertItem(QListWidgetItem*))
-           );
-    connect(ui->pushEdit,
-            SIGNAL(clicked()),
-            this,
-            SLOT(pushEditSlot())
            );
 
     //ui->listVystup->addItems(Devices);
@@ -170,7 +173,6 @@ VhdlMain::genericType VhdlMain::getEnum(QString & inString)
    // if ( inString == "real")        return REAL;
    // if ( inString == "string")      return STRING;
 }
-
 
 void VhdlMain::paintEvent(QPaintEvent *e)
 {
@@ -295,6 +297,65 @@ void VhdlMain::paintEvent(QPaintEvent *e)
     painter.end();
 }
 
+void VhdlMain::customMenuRequested(QPoint pos)
+{
+   // QModelIndex index=table->indexAt(pos);
+
+    QMenu *menu = new QMenu(this);
+    //menu->addAction(new QAction("Remove", this));
+    menu->addAction("Remove", this, SLOT(RemoveXml()));
+    menu->addAction("Edit", this, SLOT(pushEditSlot()));
+    menu->popup(ui->listVystup->viewport()->mapToGlobal(pos));
+}
+
+void VhdlMain::RemoveXml()
+{
+    qDebug() << "sutu REMOVE";
+    QString componentToRemove = ui->listVystup->currentItem()->text();
+    if ( componentToRemove == "UART")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "Buttons")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "Leds")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "I2C_interface")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "LCD_interface")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "SPI_slave")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    QFile FileToRemove;
+    FileToRemove.setFileName(QDir::homePath() + "/.mds/" + componentToRemove + ".xml");
+
+    if ( false == FileToRemove.remove())
+    {
+        QMessageBox::warning ( this, "Remove", "File cannot be removed");
+        return;
+    }
+    xmlParser.Devices.removeOne(componentToRemove);
+    ui->listVystup->clear();
+    ui->listVystup->addItems(bootDeviceList);
+    ui->listVystup->addItems(xmlParser.Devices);
+    //xmlParser.removeExistingComponent(componentToRemove);// TODO > vymazat
+}
 
 void VhdlMain::pushEditSlot()
 {
@@ -586,6 +647,11 @@ void VhdlMain::editSelectedComponent(unsigned int position)
 
 void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 {
+    if(pressEvent->button() == Qt::RightButton)
+    {
+        qDebug() << "right click";
+    }
+
     if ( rectList.contains("componentRect") == true)
     {
         if ( this->componentRect->contains( pressEvent->pos() ) == true)
@@ -594,8 +660,6 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
              return;
         }
     }
-
-
 
     if ( this->KCPSM->contains( pressEvent->pos() ) == true)
     {
@@ -930,6 +994,7 @@ void VhdlMain::createComponent1()
     componentWizardInitialization();
     componentWizard->show();
     componentWizardConstruct();
+    createWidget = true;
 }
 
 void VhdlMain::pushDelete()
@@ -1048,16 +1113,23 @@ void VhdlMain::saveAdd()
 
 void VhdlMain::pushOk()
 {   
-    //if ( m_xmlEditFlag == false)
-    //{
-        componentCnt++;
-   // }
+    if ( true == createWidget)
+    {
+        if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
+             || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
+        {
+            QMessageBox::warning ( this,"Name","Component with this name already exist");
+            return;
+        }
+    }
+    componentCnt++;
     if ( componentCnt == 21)
     {
         componentCnt--;
         if ( m_xmlNumberFlag == false)
         {
             this->componentWizard->close();
+            createWidget = false;
         }
         QMessageBox::warning ( this, "Components", "Maximum number of components reached");
         return;
@@ -1664,19 +1736,21 @@ void VhdlMain::pushOk()
 
         update();
         this->componentWizard->close();
+        createWidget = false;
     }
     update();
 }
 void VhdlMain::pushCancel()
 {
     this->componentWizard->close();
+    createWidget = false;
 }
 
 void VhdlMain::saveFile()
 {
     savePath = QFileDialog::getSaveFileName(this,"Output file",".");
     ui->Output->setText(savePath);
-    ui->infoLabel->setText("");
+    //ui->infoLabel->setText("");
 }
 
 void VhdlMain::loadFile()
@@ -1729,7 +1803,7 @@ void VhdlMain::loadFile()
     splitList(portInCount,PORTIN);
     splitList(portCount,PORT);
 
-    ui->infoLabel->setText("Select Output file");
+    //ui->infoLabel->setText("Select Output file");
 }
 
 void VhdlMain::splitList(unsigned int count, unsigned int portType)
@@ -2162,8 +2236,17 @@ void VhdlMain::printToFile()
     {
         for ( unsigned int i = 0; i < componentCnt; i++)
         {
+            int countNumber = 0;
             out << "-------------------------------------------------" <<"\n";
-            out << " COMPONENT " << definedComponent[i].name <<"\n";
+            countNumber = getNumberOfInstances( definedComponent[i].name, true);
+            if ( countNumber > 1)
+            {
+                out << " COMPONENT " << definedComponent[i].name << countNumber << endl;
+            }
+            else
+            {
+                out << " COMPONENT " << definedComponent[i].name <<"\n";
+            }
             if ( false == genericComponent[i].genericName[0].isEmpty() )
             {
                 unsigned int p;
@@ -2586,15 +2669,15 @@ void VhdlMain::printToFile()
         {
             int countNumber = 0;
             out << "-------------------------------------------------" <<"\n";
-            countNumber = getNumberOfInstances(definedComponent[i].name );
+            countNumber = getNumberOfInstances(definedComponent[i].name, false );
             if ( countNumber > 1)
             {
                 out << definedComponent[i].name << countNumber;
-                out << "_i : " << definedComponent[i].name << "_" << countNumber <<"\n";
+                out << " : " << definedComponent[i].name << "_" << countNumber <<"\n";
             }
             else
             {
-                out << definedComponent[i].name << "_i : " << definedComponent[i].name <<"\n";
+                out << definedComponent[i].name << " : " << definedComponent[i].name<< "_i " <<"\n";
             }
             if ( false == genericComponent[i].genericName[0].isEmpty() )
             {
@@ -2650,25 +2733,38 @@ void VhdlMain::printToFile()
     out << "END Behavioral;" << endl;
     out << "-------------------------------------------------" <<"\n";
     outFile.close();
-    ui->infoLabel->setText("Generation completed");
+    //ui->infoLabel->setText("Generation completed");
     printedComponents.clear();
     return;
 }
 
-int VhdlMain::getNumberOfInstances(QString & componentToInstantiate)
+int VhdlMain::getNumberOfInstances(QString & componentToInstantiate, bool Declaration)
 {
     int instanceCounter = 0;
-    printedComponents << componentToInstantiate;
-
-    for ( int i = 0; i < printedComponents.size(); i++)
+    if ( Declaration == true)
     {
-        if ( componentToInstantiate == printedComponents[i] )
+        printedComponentsDeclaration << componentToInstantiate;
+        for ( int i = 0; i < printedComponentsDeclaration.size(); i++)
         {
-            instanceCounter++;
+            if ( componentToInstantiate == printedComponentsDeclaration[i] )
+            {
+                instanceCounter++;
+            }
         }
+        return instanceCounter;
     }
-    return instanceCounter;
-
+    else
+    {
+        printedComponents << componentToInstantiate;
+        for ( int i = 0; i < printedComponents.size(); i++)
+        {
+            if ( componentToInstantiate == printedComponents[i] )
+            {
+                instanceCounter++;
+            }
+        }
+        return instanceCounter;
+    }
 }
 
 unsigned int VhdlMain::tabsNumber(QString inputString)

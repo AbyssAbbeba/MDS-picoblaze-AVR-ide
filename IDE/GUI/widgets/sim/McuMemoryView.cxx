@@ -75,6 +75,7 @@ inline void McuMemoryView::deleteHexEdit()
 	}
 }
 
+
 void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason, int /*detail*/)
 {
 	if ( this->subsys != subsysId )
@@ -353,13 +354,13 @@ void McuMemoryView::updateWidget()
 
         if (value != m_hexEdit->getVal(i))
         {
-            m_hexEdit->setHighlighted(i, true);
             m_hexEdit->setVal(i, (unsigned char)value);
+            m_hexEdit->setHighlighted(i, true);
         }
-        else
+        /*else
         {
             m_hexEdit->setHighlighted(i, false);
-        }
+        }*/
     }
 }
 

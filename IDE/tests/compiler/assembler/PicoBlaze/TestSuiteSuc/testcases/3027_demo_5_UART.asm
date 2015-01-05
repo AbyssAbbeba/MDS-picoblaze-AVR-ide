@@ -17,15 +17,15 @@
 ;
 ; Tell compiler type of procesor (KCPSM2, KCPSM3, KCPSM6 available)
         DEVICE          KCPSM3
-        
+
 ; Asign names to registers
         NAMEREG         s0,temp1              ; temporary data register
         NAMEREG         s1,temp2              ; temporary data register
         NAMEREG         s2,temp3              ; temporary data register
         ; OR
-        RX_data        AUTOREG   AT 3          ; RX data
-        TXdata        AUTOREG               ; TX data
-        LED_reg       AUTOREG           ; Leds data register
+        RX_data       AUTOREG   AT 3           ; RX data
+        TXdata        AUTOREG                  ; TX data
+        LED_reg       AUTOREG                  ; Leds data register
 
 ; PORT_IDs
         TX_id       PORT        0x01          ;  data register port ID
@@ -36,30 +36,30 @@
 ;  [2] Tx ready
 ;  [3] new Rx data
 ;  [4] Rx buffer overflow
-        
+
 ;  Macro definition
 ;==============================================================================;
 ; UART status checking MACRO (IF TX can be done)
 UART_ready_wait     MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 4            ; test bit 2 (is Tx ready?)
+                    TEST        Temp1, #0x4            ; test bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
-                    ENDM
+ENDM
 ; UART status checking MACRO (NEW RX data?)
 UART_new_data_wait  MACRO
                     INPUT       Temp1, UART_stat    ; checking UART status
-                    TEST        Temp1, 8            ; test bit 2 (is Tx ready?)
+                    TEST        Temp1, #0x4            ; test bit 2 (is Tx ready?)
                     JUMP        Z, ($ - 2)
-                    ENDM                    
+ENDM
 ;==============================================================================;
 ; Macro for sending character via UART
 ; Parameters: 1
 ;==============================================================================;
-Sendchar            MACRO       char                 ; One parameter
+SendChar            MACRO       char                 ; One parameter
                     UART_ready_wait                  ; Expand UART_ready_wait MACRO here
-                    LOAD        TXdata, char
+                    LOAD        TXdata, #char
                     OUTPUT      TXdata, TX_id       ; TX PORT_ID, sending char parameter
-                    ENDM
+ENDM
 ;==============================================================================;
 ; Reads a single character from UART (waits on receive when none is prepared)
 ; Registers used: Temp1, chreg
@@ -67,15 +67,15 @@ Sendchar            MACRO       char                 ; One parameter
 GetChar             MACRO
                     UART_new_data_wait              ; Wait for new data
                     INPUT       RX_data, RX_id       ; TX PORT_ID, sending char parameter
-                    ENDM
+ENDM
 ;==============================================================================;
 ; Send 0D and 0A character pair via UART
 ; Macros used: SendChar
 ;==============================================================================;
-SendCRLF            MACRO       
+SendCRLF            MACRO
                     SendChar  0x0D          ; CR character
                     SendChar  0x0A          ; CR character
-                    ENDM                           ; Return from procedure                   
+ENDM
 ;==============================================================================;
 
 ;==============================================================================;
@@ -108,7 +108,7 @@ wait_1s_i:          SUB       Temp1, #1
                     JUMP      NZ, wait_1s_i
                     SUB       Temp3, #1
                     JUMP      NZ, wait_1s_i
-                    ENDM
+ENDM
 ;--------------------------------------------------------------------------
 wait_for_100ms      MACRO
 
@@ -124,21 +124,18 @@ wait_100ms_i:       SUB       Temp1, #1
                     JUMP      NZ, wait_100ms_i
                     SUB       Temp3, #1
                     JUMP      NZ, wait_100ms_i
-                    ENDM
+ENDM
 ;==============================================================================;
 ; UART RX register:
 ;  [1] Rotate leds 8x
 ;  [2] Send "Hello world" via UART
 ;-------------------------------------------------------------------------------------
 RX_resolve          MACRO     uart_byte
-
                     IF  uart_byte == #1
-                            REPT    8
-                        RR      LED_reg
-                        wait_for_100ms
+                        REPT    8
+                            RR      LED_reg
+                            wait_for_100ms
                         ENDR
-                            
-
                     ELSEIF      uart_byte == #2
                         SendChar  'I'
                         SendChar  'N'
@@ -150,16 +147,14 @@ RX_resolve          MACRO     uart_byte
                         SendChar  'P'
                         SendChar  'T'
                         SendCRLF
-                          
                     ENDIF
-
-                    ENDM
+ENDM
 
 ;=======================================================================
 ; END OF MACRO DEFINITIONS ;;
 ;=======================================================================
 ; Main program >>>
-                   
+
 ; Vectors
         ADDRESS 0x3FF                             ; interrupt vector
         JUMP    INTERRUPT
@@ -189,7 +184,3 @@ main_loop:          GetChar                       ; Receive via UART, get status
                     RX_resolve  RX_data           ; Resolve received byte
                     JUMP        main_loop
 
-
-; AND NOW YOU ARE READY !
-; We hope this example can help you use this IDE at his maximum potential
-; Click on [Main menu] -> [Project] -> [New] and create your own PicoBlaze project ...

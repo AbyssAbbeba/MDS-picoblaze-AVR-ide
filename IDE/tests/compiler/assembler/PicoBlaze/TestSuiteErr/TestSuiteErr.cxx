@@ -163,21 +163,30 @@ void TestSuiteErr::compareErr ( const std::string & expected,
 
         if ( errLineNumber >= expFileNoOfLines )
         {
-            CU_FAIL("errLineNumber < expFileNoOfLines");
+            CU_FAIL_MSG ( actual,
+                          errLineNumber + 1,
+                          "Output is longer than expected." );
             return;
         }
 
         if ( errFileLine != errExpFileVec[errLineNumber] )
         {
-            CU_FAIL("Result and expectation inconsistence found in compilation error log.");
+            CU_FAIL_MSG ( actual,
+                          errLineNumber + 1,
+                          "\nexpected: '" + errExpFileVec[errLineNumber] + "'"
+                          "\n" "actual:   '" + errFileLine + "'" );
             break;
         }
 
         errLineNumber++;
     }
 
-    size_t errFileNoOfLines = errLineNumber;
-    CU_ASSERT_EQUAL(errFileNoOfLines, expFileNoOfLines);
+    if ( errLineNumber < expFileNoOfLines )
+    {
+        CU_FAIL_MSG ( actual,
+                      errLineNumber + 1,
+                      "Output is shorter than expected." );
+    }
 }
 
 void TestSuiteErr::compareLst ( const std::string & expected,
@@ -228,19 +237,28 @@ void TestSuiteErr::compareLst ( const std::string & expected,
 
         if ( lstLineNumber >= expFileNoOfLines )
         {
-            CU_FAIL("lstLineNumber < expFileNoOfLines");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "Output is longer than expected." );
             return;
         }
 
         if ( lstFileLine != lstExpFileVec[lstLineNumber] )
         {
-            CU_FAIL("Result and expectation inconsistence found in code listing.");
+            CU_FAIL_MSG ( actual,
+                          lstLineNumber + 1,
+                          "\nexpected: '" + lstExpFileVec[lstLineNumber] + "'"
+                          "\n" "actual:   '" + lstFileLine + "'" );
             break;
         }
 
         lstLineNumber++;
     }
 
-    size_t lstFileNoOfLines = lstLineNumber;
-    CU_ASSERT_EQUAL(lstFileNoOfLines, expFileNoOfLines);
+    if ( lstLineNumber < expFileNoOfLines )
+    {
+        CU_FAIL_MSG ( actual,
+                      lstLineNumber + 1,
+                      "Output is shorter than expected." );
+    }
 }

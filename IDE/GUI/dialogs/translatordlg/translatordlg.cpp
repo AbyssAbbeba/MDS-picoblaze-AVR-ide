@@ -50,7 +50,7 @@ TranslatorDlg::TranslatorDlg(QWidget *parent)
  */
 void TranslatorDlg::setPath()
 {
-    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir::homePath(), tr("(*.psm *.asm)"));
+    QString path = QFileDialog::getOpenFileName(this, tr("Open File"), m_path, tr("(*.psm *.asm)"));
     if (path != NULL)
     {
         this->ui.lePath->setText(path);
@@ -112,4 +112,10 @@ void TranslatorDlg::tabsChanged(const QString &text)
         this->ui.spinTabs->setEnabled(false);
         this->ui.lblTabs->setEnabled(false);
     }
+}
+
+
+void TranslatorDlg::setPath(QString path)
+{
+    m_path = path;
 }

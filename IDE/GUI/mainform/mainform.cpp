@@ -55,8 +55,14 @@
 #include "../widgets/Editor/codeedit.h"
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
-#include "../widgets/ExtAppOutput/extappoutput.h"
-#include "../widgets/VHDLGen/vhdlmain.h"
+
+#ifdef MDS_FEATURE_EXTERNAL_APPS
+    #include "../widgets/ExtAppOutput/extappoutput.h"
+#endif
+
+#ifdef MDS_FEATURE_VHDL_WIZARD
+    #include "../widgets/VHDLGen/vhdlmain.h"
+#endif
 
 #ifdef Q_OS_WIN
     #include <windows.h> // for Sleep
@@ -79,7 +85,9 @@
 #ifdef MDS_FEATURE_LOOP_GENERATOR
     #include "../widgets/LoopGen/loop_gen.h"
 #endif
+
 #include "../widgets/AboutWidget/aboutwidget.h"
+
 #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
     #include "../widgets/Tools/Display/displaytool.h"
 #endif
@@ -145,7 +153,9 @@ MainForm::MainForm()
     m_procExtApps[0] = NULL;
     m_procExtApps[1] = NULL;
     m_procExtApps[2] = NULL;
-    m_externalPopupMenu = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalPopupMenu = NULL;
+    #endif
     m_lastDir = QDir::homePath();
     m_finishedSignalMapper = new QSignalMapper(this);
     m_errorSignalMapper = new QSignalMapper(this);
@@ -298,6 +308,11 @@ MainForm::MainForm()
             this,
             SLOT(setCentralUntitled(bool))
            );
+    connect(m_wDockManager,
+            SIGNAL(tabChangedToDisabled(bool)),
+            this,
+            SLOT(disableHelpActions(bool))
+           );
     /*connect(m_wDockManager,
             SIGNAL(breakpointListRemove(QString, int)),
             this,
@@ -316,11 +331,13 @@ MainForm::MainForm()
             this,
             SLOT(fileChanged(QString))
            );
-    connect(&GuiCfg::getInstance(),
-            SIGNAL(externalAppsChanged()),
-            this,
-            SLOT(reloadExternalApps())
-           );
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        connect(&GuiCfg::getInstance(),
+                SIGNAL(externalAppsChanged()),
+                this,
+                SLOT(reloadExternalApps())
+            );
+    #endif
     //this->dockWidgets = false;
     createActions();
     createMenu();
@@ -577,7 +594,7 @@ void MainForm::createActions()
     newAddAct->setDisabled(true);
     connect(newAddAct, SIGNAL(triggered()), this, SLOT(newAddFile()));
 
-    newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untracked File"), this);
+    newAct = new QAction(QIcon(":resources/icons/page.png"), tr("New Untitled File"), this);
     newAct->setStatusTip("Create a new file");
     newAct->setShortcut(QKeySequence("Ctrl+N"));
     newAct->setDisabled(true);
@@ -616,12 +633,12 @@ void MainForm::createActions()
     saveAllAct->setShortcut(QKeySequence("Ctrl+L"));
     connect(saveAllAct, SIGNAL(triggered()), this, SLOT(saveAll()));
 
-    reloadAct = new QAction(tr("Reload File"), this);
+    reloadAct = new QAction(QIcon(":resources/icons/arrow_refresh.png"), tr("Reload File"), this);
     reloadAct->setDisabled(true);
     reloadAct->setShortcut(QKeySequence("F5"));
     connect(reloadAct, SIGNAL(triggered()), this, SLOT(reloadCurrentFile()));
 
-    closeFileAct = new QAction(tr("Close File"), this);
+    closeFileAct = new QAction(QIcon(":resources/icons/breakpoint_disable.png"), tr("Close File"), this);
     closeFileAct->setDisabled(true);
     closeFileAct->setShortcut(QKeySequence("Ctrl+W"));
     connect(closeFileAct, SIGNAL(triggered()), this, SLOT(shortcutCloseTab()));
@@ -664,17 +681,17 @@ void MainForm::createActions()
     deselectAct->setShortcut(QKeySequence("Ctrl+Shift+A"));
     deselectAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deselectAct, SIGNAL(triggered()), this, SLOT(deselectSlot()));
-    findAct = new QAction(tr("Find"), this);
+    findAct = new QAction(QIcon(":resources/icons/find.png"), tr("Find"), this);
     findAct->setShortcut(QKeySequence("Ctrl+F"));
     findAct->setDisabled(true);
     findAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(findAct, SIGNAL(triggered()), this, SLOT(findSlot()));
-    findNextAct = new QAction(tr("Find Next"), this);
+    findNextAct = new QAction(QIcon(":resources/icons/find_next.png"), tr("Find Next"), this);
     findNextAct->setShortcut(QKeySequence("F3"));
     findNextAct->setDisabled(true);
     findNextAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(findNextAct, SIGNAL(triggered()), this, SLOT(findNextSlot()));
-    findPreviousAct = new QAction(tr("Find Previous"), this);
+    findPreviousAct = new QAction(QIcon(":resources/icons/find_prev.png"), tr("Find Previous"), this);
     findPreviousAct->setShortcut(QKeySequence("Shift+F3"));
     findPreviousAct->setDisabled(true);
     findPreviousAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -684,27 +701,27 @@ void MainForm::createActions()
     replaceAct->setDisabled(true);
     replaceAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(replaceAct, SIGNAL(triggered()), this, SLOT(replaceSlot()));
-    jmpToLineAct = new QAction(tr("Go to Line"), this);
+    jmpToLineAct = new QAction(QIcon(":resources/icons/goto_line.png"), tr("Go to Line"), this);
     jmpToLineAct->setShortcut(QKeySequence("Ctrl+G"));
     jmpToLineAct->setDisabled(true);
     jmpToLineAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToLineAct, SIGNAL(triggered()), this, SLOT(jmpToLineSlot()));
-    commentAct = new QAction(tr("Comment"), this);
+    commentAct = new QAction(QIcon(":resources/icons/price-tag--plus.png"), tr("Comment"), this);
     commentAct->setShortcut(QKeySequence("Ctrl+D"));
     commentAct->setDisabled(true);
     commentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(commentAct, SIGNAL(triggered()), this, SLOT(commentSlot()));
-    deleteCommentAct = new QAction(tr("Uncomment"), this);
+    deleteCommentAct = new QAction(QIcon(":resources/icons/price-tag--minus.png"), tr("Uncomment"), this);
     deleteCommentAct->setShortcut(QKeySequence("Ctrl+Shift+D"));
     deleteCommentAct->setDisabled(true);
     deleteCommentAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(deleteCommentAct, SIGNAL(triggered()), this, SLOT(deleteCommentSlot()));
-    jmpToBookmarkNextAct = new QAction(tr("Jump to Next Bookmark"), this);
+    jmpToBookmarkNextAct = new QAction(QIcon(":resources/icons/bookmark_next.png"), tr("Jump to Next Bookmark"), this);
     jmpToBookmarkNextAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageDown));
     jmpToBookmarkNextAct->setDisabled(true);
     jmpToBookmarkNextAct->setShortcutContext(Qt::ApplicationShortcut);
     connect(jmpToBookmarkNextAct, SIGNAL(triggered()), this, SLOT(jmpToBookmarkNextSlot()));
-    jmpToBookmarkPrevAct = new QAction(tr("Jump to Previous Bookmark"), this);
+    jmpToBookmarkPrevAct = new QAction(QIcon(":resources/icons/bookmark_prev.png"), tr("Jump to Previous Bookmark"), this);
     jmpToBookmarkPrevAct->setShortcut(QKeySequence(Qt::ALT + Qt::Key_PageUp));
     jmpToBookmarkPrevAct->setDisabled(true);
     jmpToBookmarkPrevAct->setShortcutContext(Qt::ApplicationShortcut);
@@ -735,7 +752,7 @@ void MainForm::createActions()
     connect(closeProjectAct, SIGNAL(triggered()), this, SLOT(closeProject()));
     closeProjectAct->setDisabled(true);
 
-    saveProjConfigAct = new QAction(tr("Save Project Config"), this);
+    saveProjConfigAct = new QAction(QIcon(":resources/icons/save_proj_cfg.png"), tr("Save Project Config"), this);
     saveProjConfigAct->setDisabled(true);
 
     exitAct = new QAction(QIcon(":resources/icons/cancel.png"), tr("Exit"), this);
@@ -804,7 +821,7 @@ void MainForm::createActions()
         connect(toolDisassemblerAct, SIGNAL(triggered()), this, SLOT(toolDisassemble()));
     #endif
     #ifdef MDS_FEATURE_TRANSLATOR
-        toolTranslatorAct = new QAction(QIcon(":resources/icons/arrow_switch.png"), tr("Assembler Translator"), this);
+        toolTranslatorAct = new QAction(QIcon(":resources/icons/receipt-import.png"), tr("Assembler Translator"), this);
         connect(toolTranslatorAct, SIGNAL(triggered()), this, SLOT(toolTranslate()));
     #endif
     #ifdef MDS_FEATURE_FILECONVERTER
@@ -812,7 +829,7 @@ void MainForm::createActions()
         connect(toolFileConvertAct, SIGNAL(triggered()), this, SLOT(toolFileConvert()));
     #endif
     #ifdef MDS_FEATURE_CONVERTER_TOOL
-        toolConvertorAct = new QAction(tr("Radix Converter"), this);
+        toolConvertorAct = new QAction(QIcon(":resources/icons/arrow_switch.png"), tr("Radix Converter"), this);
         connect(toolConvertorAct, SIGNAL(triggered()), this, SLOT(toolConvertor()));
     #endif
     #ifdef MDS_FEATURE_8_SEGMENT_EDITOR
@@ -827,7 +844,7 @@ void MainForm::createActions()
         toolVHDLWizardAct = new QAction(tr("VHDL Wizard"), this);
         connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
     #endif
-        
+
     #ifdef MDS_FEATURE_SIM_LED_PANEL
         toolSimLedsAct = new QAction(QIcon(":resources/icons/ledpanel.png"), tr("LED Panel"), this);
         toolSimLedsAct->setDisabled(true);
@@ -850,27 +867,29 @@ void MainForm::createActions()
     #endif
 
 
-    extAppAct[0] = new QAction(tr("External App 1"), this);
-    connect(extAppAct[0], SIGNAL(triggered()), this, SLOT(startExtApp1()));
-    extAppAct[1] = new QAction(tr("External App 2"), this);
-    connect(extAppAct[1], SIGNAL(triggered()), this, SLOT(startExtApp2()));
-    extAppAct[2] = new QAction(tr("External App 3"), this);
-    connect(extAppAct[2], SIGNAL(triggered()), this, SLOT(startExtApp3()));
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        extAppAct[0] = new QAction(tr("External App 1"), this);
+        connect(extAppAct[0], SIGNAL(triggered()), this, SLOT(startExtApp1()));
+        extAppAct[1] = new QAction(tr("External App 2"), this);
+        connect(extAppAct[1], SIGNAL(triggered()), this, SLOT(startExtApp2()));
+        extAppAct[2] = new QAction(tr("External App 3"), this);
+        connect(extAppAct[2], SIGNAL(triggered()), this, SLOT(startExtApp3()));
+    #endif
 
     #ifdef MDS_FEATURE_LICENCE_CERTIFICATE
-        licenseAct = new QAction(tr("License"), this);
+        licenseAct = new QAction(QIcon(":resources/icons/application-share.png"), tr("License"), this);
         connect(licenseAct, SIGNAL(triggered()), this, SLOT(manageLicense()));
     #endif
 
     aboutAct = new QAction(QIcon(":resources/icons/mainIcon.png"), tr("About"), this);
     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-    aboutQTAct = new QAction(tr("About QT"), this);
+    aboutQTAct = new QAction(QIcon(":resources/icons/qt-logo.png"), tr("About QT"), this);
     connect(aboutQTAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-    welcomeAct = new QAction(tr("Welcome Dialog"), this);
+    welcomeAct = new QAction(QIcon(":resources/icons/zone-label.png"), tr("Welcome Dialog"), this);
     connect(welcomeAct, SIGNAL(triggered()), this, SLOT(welcomeDialog()));
     helpAct = new QAction(QIcon(":resources/icons/help.png"), tr("User Manual"), this);
     connect(helpAct, SIGNAL(triggered()), this, SLOT(help()));
-    example1Act = new QAction(tr("Open Tutorial Project"), this);
+    example1Act = new QAction(QIcon(":resources/icons/sticky-notes-pin.png"), tr("Open Tutorial Project"), this);
     connect(example1Act, SIGNAL(triggered()), this, SLOT(exampleOpen()));
 
     this->pm_cross = new QPixmap(":resources/icons/pause.png");
@@ -904,12 +923,15 @@ void MainForm::createToolbar()
     simulationToolBar = addToolBar(tr("Simulation Toolbar"));
     m_toolToolBar = addToolBar(tr("Tools Toolbar"));
     m_simtoolToolBar = addToolBar(tr("Simulation Tools Toolbar"));
-    m_externalAppsToolBar = addToolBar(tr("External Apps"));
-    m_externalToolButton = new QToolButton(m_externalAppsToolBar);
-    m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
-    m_externalToolButton->setToolTip("External Applications");
-    m_externalAppsToolBar->addWidget(m_externalToolButton);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalAppsToolBar = addToolBar(tr("External Apps"));
+        m_externalToolButton = new QToolButton(m_externalAppsToolBar);
+        m_externalToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+        m_externalToolButton->setIcon(QIcon(":resources/icons/application_xp_terminal.png"));
+        m_externalToolButton->setToolTip("External Applications");
+        m_externalToolButton->setEnabled(false);
+        m_externalAppsToolBar->addWidget(m_externalToolButton);
+    #endif
     m_helpToolBar = addToolBar(tr("Help Toolbar"));
 
     #ifdef MDS_FEATURE_DISASSEMBLER
@@ -979,7 +1001,9 @@ void MainForm::createToolbar()
     simulationToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_toolToolBar->setAllowedAreas(Qt::TopToolBarArea);
     m_simtoolToolBar->setAllowedAreas(Qt::TopToolBarArea);
-    m_externalAppsToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        m_externalAppsToolBar->setAllowedAreas(Qt::TopToolBarArea);
+    #endif
     m_helpToolBar->setAllowedAreas(Qt::TopToolBarArea);
 //     addToolBar(Qt::TopToolBarArea, projectToolBar);
 //     addToolBar(Qt::TopToolBarArea, simulationToolBar);
@@ -1027,6 +1051,7 @@ void MainForm::createDockWidgets()
     //setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
     if (false == m_wDockManager->dockWidgets)
     {
+        //QApplication::processEvents();
         setCorner(Qt::BottomLeftCorner, Qt::BottomDockWidgetArea);
         setCorner(Qt::BottomRightCorner, Qt::BottomDockWidgetArea);
         setTabPosition(Qt::RightDockWidgetArea, QTabWidget::East);
@@ -1048,14 +1073,6 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO);
-        //QApplication::processEvents();
-        tabList = this->findChildren<QTabBar*>();
-        m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
-                SIGNAL(currentChanged(int)),
-                m_wDockManager,
-                SLOT(handleShowHideBottom(int))
-               );
         m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
         m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
@@ -1087,15 +1104,63 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
-        tabList= this->findChildren<QTabBar*>();
-        m_wDockManager->rightAreaTabs = tabList.at(tabList.size()-1);
-        connect(tabList.at(tabList.size()-1),
+        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
+        m_wDockManager->addDockWidget(WRIGHTHIDE);
+
+        
+        QApplication::processEvents();
+
+        bool done = false;
+        
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count() && false == done; i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Compiler Messages" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    done = true;
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->bottomAreaTabs)
+        {
+            qDebug() << "MainForm: error, bottomAreaTabs == null";
+            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        }
+        connect(m_wDockManager->bottomAreaTabs,
+                SIGNAL(currentChanged(int)),
+                m_wDockManager,
+                SLOT(handleShowHideBottom(int))
+               );
+
+        done = false;
+        
+        for (int i = 0; i < tabList.count() && false == done; i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Help" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->rightAreaTabs = tabList.at(i);
+                    done = true;
+                    m_wDockManager->rightAreaTabs->setCurrentIndex(j);
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->rightAreaTabs)
+        {
+            qDebug() << "MainForm: error, rightAreaTabs == null";
+            m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
+        }
+        connect(m_wDockManager->rightAreaTabs,
                 SIGNAL(currentChanged(int)),
                 m_wDockManager,
                 SLOT(handleShowHideRight(int))
                );
-        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
-        m_wDockManager->addDockWidget(WRIGHTHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
@@ -1128,7 +1193,9 @@ void MainForm::createDockWidgets()
         m_wDockManager->hideDockWidgetArea(2);
         QApplication::processEvents();
         reloadTabIcons();
-        reloadExternalApps();
+        #ifdef MDS_FEATURE_EXTERNAL_APPS
+            reloadExternalApps();
+        #endif
     }
     else
     {
@@ -1178,15 +1245,15 @@ void MainForm::newAddFile()
     {
         if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("New File"), m_lastDir, QString(), 0);
         }
         if (path == NULL)
         {
@@ -1280,15 +1347,15 @@ void MainForm::openFile()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), m_lastDir, QString(), 0);
     }
     if (path != NULL)
     {
@@ -1317,6 +1384,7 @@ void MainForm::openFile()
             else
             {
                 //m_wDockManager->getCentralWidget()->connectAct();
+                m_projectMan->addUntrackedProject();
                 if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
                 {
                     return;
@@ -1340,7 +1408,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    //qDebug() << "MainForm: openFilePath()";
+    qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -1444,15 +1512,15 @@ void MainForm::addFile()
 
             if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
             {
-                path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), m_lastDir, QString(), 0);
             }
             if (NULL == path)
             {
@@ -1482,13 +1550,16 @@ void MainForm::addFile()
 /**
  * @brief Slot. Saves the active file.
  */
-void MainForm::saveFile()
+bool MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
     {
-        saveFileAs();
-        return;
+        return saveFileAs();
     }
     if (m_wDockManager->getCentralWidget()->isChanged() == true)
     {
@@ -1498,7 +1569,7 @@ void MainForm::saveFile()
         }
         qDebug() << "Mainform: saving file";*/
 //         QString path;
-//         
+//
 //         {
 //             //path = QFileDialog::getSaveFileName(this, tr("Source File");
 //             bool done = false;
@@ -1506,11 +1577,11 @@ void MainForm::saveFile()
 //             {
 //                 if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
 //                 {
-//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
 //                 }
 //                 else
 //                 {
-//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+//                     path = QFileDialog::getSaveFileName (this, tr("Save File"), QString(), QString(), 0);
 //                 }
 //                 if (path == NULL)
 //                 {
@@ -1593,6 +1664,7 @@ void MainForm::saveFile()
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             error(ERR_OPENFILE, m_wDockManager->getCentralPath());
+            return false;
         }
         else
         {
@@ -1608,6 +1680,7 @@ void MainForm::saveFile()
             //qDebug() << "mainform: block signal false";
         //}
     }
+    return true;
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -1615,25 +1688,29 @@ void MainForm::saveFile()
 /**
  * @brief Slot. Saves the active file by the name selected by user.
  */
-void MainForm::saveFileAs()
+bool MainForm::saveFileAs()
 {
     //qDebug() << "MainForm: saveFileAs()";
     //QString path = QFileDialog::getSaveFileName(this, tr("Source File");
+    if (m_wDockManager->getCentralPath() == "Help Browser")
+    {
+        return false;
+    }
     QString path;
     bool done = false;
     while (false == done)
     {
         if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
-            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else
         {
-            path = QFileDialog::getSaveFileName(this, tr("Save File As"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), m_lastDir, QString(), 0);
         }
         if (path == NULL)
         {
@@ -1717,6 +1794,11 @@ void MainForm::saveFileAs()
         QApplication::processEvents();
         m_fileWatcher.blockSignals(false);
     }
+    else
+    {
+        return false;
+    }
+    return true;
     //qDebug() << "MainForm: return saveFileAs()";
 }
 
@@ -1724,8 +1806,12 @@ void MainForm::saveFileAs()
 /**
  * @brief Saves file from selected CodeEditor.
  */
-void MainForm::saveFile(CodeEdit *editor, bool ask)
+bool MainForm::saveFile(CodeEdit *editor, bool ask)
 {
+    if (editor->getPath() == "Help Browser")
+    {
+        return false;
+    }
     //qDebug() << "MainForm: saveFile()";
     if (true == editor->isChanged())
     {
@@ -1736,7 +1822,7 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             if (QMessageBox::Save != ret)
             {
                 //qDebug() << "MainForm: ret button" << ret;
-                return;
+                return false;
             }
         }
         QString path;
@@ -1748,15 +1834,15 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             {
                 if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
                 }
                 else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
                 }
                 else
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0, QFileDialog::DontUseNativeDialog);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0);
                 }
                 if (path == NULL)
                 {
@@ -1856,11 +1942,16 @@ void MainForm::saveFile(CodeEdit *editor, bool ask)
             QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
         }
+        else
+        {
+            return false;
+        }
     }
     else
     {
         qDebug() << "MainForm: codeedit not changed";
     }
+    return true;
     //qDebug() << "MainForm: return saveFile()";
 }
 
@@ -1876,7 +1967,7 @@ void MainForm::saveAll()
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
         if (m_wDockManager->getTabStatusChanged(i) == true
-            || m_wDockManager->getTabWidget(i)->getPath() == "untracked")
+            || (NULL != m_wDockManager->getTabWidget(i) && m_wDockManager->getTabWidget(i)->getPath() == "untracked"))
         {
             //qDebug() << "MainForm: saveFile codeedit";
             saveFile(m_wDockManager->getTabWidget(i));
@@ -1906,15 +1997,15 @@ void MainForm::openProject()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
-        path= QFileDialog::getOpenFileName (this, tr("Open Project"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+        path= QFileDialog::getOpenFileName (this, tr("Open Project"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0);
     }
     else
     {
-        path= QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0, QFileDialog::DontUseNativeDialog);
+        path= QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0);
     }
 
     if (path.isEmpty() == false && m_projectMan->isOpened(path) == false)
@@ -1986,22 +2077,42 @@ void MainForm::projectOpened()
     {
         saveProjConfigAct->setEnabled(true);
     }
-    if (false == projectTabConnected)
-    {
-        QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
-        if (tabList.size() > 1)
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (false == m_externalToolButton->isEnabled())
         {
-            //qDebug() << "MainForm: tab connected";
-            projectTabConnected = true;
-            connect(tabList.at(tabList.size()-1),
-                    SIGNAL(currentChanged(int)),
-                    this,
-                    SLOT(activeProjectChanged(int))
-                   );
-            //qDebug() << "projectTabs = ";
-            projectTabs = tabList.at(tabList.size()-1);
-            //qDebug() << "projectTabs = done";
+            m_externalToolButton->setEnabled(true);
         }
+    #endif
+    if (false == projectTabConnected && m_projectMan->getOpenProjects().count() > 1)
+    {
+        QApplication::processEvents();
+        QList<QTabBar*> tabList = this->findChildren<QTabBar*>();
+        //qDebug() << "MainForm: tab connected";
+        projectTabConnected = true;
+        tabList = this->findChildren<QTabBar*>();
+        for (int i = 0; i < tabList.count(); i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                //qDebug() << tabList.at(i)->tabText(j);
+                if (m_projectMan->getActive()->prjName == tabList.at(i)->tabText(j))
+                {
+                    projectTabs = tabList.at(i);
+                    break;
+                }
+            }
+        }
+        if (NULL == projectTabs)
+        {
+            projectTabs = tabList.at(tabList.size()-1);
+        }
+        connect(projectTabs,
+                SIGNAL(currentChanged(int)),
+                this,
+                SLOT(activeProjectChanged(int))
+                );
+        //qDebug() << "projectTabs = ";
+        //qDebug() << "projectTabs = done";
     }
     this->createDockWidgets();
     if (m_wDockManager->getBreakpointList() != NULL)
@@ -2055,17 +2166,25 @@ void MainForm::projectOpened()
 /**
  * @brief Slot. Saves all changed files in active project.
  */
-void MainForm::saveProject()
+bool MainForm::saveProject()
 {
     //qDebug() << "MainForm: saveProject()";
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
+        if (NULL == m_wDockManager->getTabWidget(i))
+        {
+            continue;
+        }
         if (m_wDockManager->getTabWidget(i)->isChild(m_projectMan->getActive()) == true
             && true == m_wDockManager->getTabWidget(i)->isChanged())
         {
-            saveFile(m_wDockManager->getTabWidget(i));
+            if (false == saveFile(m_wDockManager->getTabWidget(i)))
+            {
+                return false;
+            }
         }
     }
+    return true;
     //qDebug() << "MainForm: return saveProject()";
 }
 
@@ -2077,10 +2196,10 @@ QString MainForm::translateBeforeCompilation(QString path)
     m_compatibilityMode.clearFileMaps();
     QList<QString> filesToTranslate;
     filesToTranslate.append(path);
-    
+
     QString newPath = path.section('.', 0, -2) + ".asm";
     QString sourceDir = path.section('/', 0, -2) + "/";
-    
+
     AsmTranslator translator;
     translator.m_config.m_letterCase[0] = (AsmTranslatorConfig::LetterCase) 0;
     translator.m_config.m_letterCase[1] = (AsmTranslatorConfig::LetterCase) 0;
@@ -2097,7 +2216,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         {
             return "";
         }
-        
+
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
@@ -2140,7 +2259,7 @@ QString MainForm::translateBeforeCompilation(QString path)
             return "";
         }
 
-        
+
 
         inputStream.close();
         outputStream.close();
@@ -2195,7 +2314,10 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveFile();
+        if (false == this->saveFile())
+        {
+            return;
+        }
         m_projectMan->getUntracked()->addFile(m_wDockManager->getCentralPath(),m_wDockManager->getCentralName());
 
         CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
@@ -2221,13 +2343,13 @@ void MainForm::compileProject()
             compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
                                         CompilerBase::MessageType::MT_REMARK);
         }
-        
+
         if (0 != m_projectMan->getActive()->getAsmType())
         {
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
             if ("" == newPath)
             {
-                compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                compileInfo->appendMessage("Asm translation could not be completed (.psm extension required)." ,
                                             CompilerBase::MessageType::MT_ERROR);
                 return;
             }
@@ -2385,7 +2507,10 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveFile();
+        if (false == this->saveFile())
+        {
+            return;
+        }
 
         QDir prjDir(m_projectMan->getActive()->prjPath.section('/',0, -2));
         QDir fileDir;
@@ -2593,7 +2718,7 @@ void MainForm::compileProject()
                 m_projectMan->setActive(m_projectMan->getUntracked());
                 QTimer::singleShot(50, this, SLOT(refreshProjectTree()));
             }
-            
+
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
                                         CompilerBase::MessageType::MT_REMARK);
@@ -2617,7 +2742,7 @@ void MainForm::compileProject()
                 compileInfo->appendMessage("Asm syntax:   Xilinx assembler" ,
                                             CompilerBase::MessageType::MT_REMARK);
             }
-            
+
             if (0 != m_projectMan->getActive()->getAsmType())
             {
                 QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
@@ -2782,7 +2907,11 @@ void MainForm::compileProject()
             return;
         }
 
-        this->saveProject();
+
+        if (false == this->saveProject())
+        {
+            return;
+        }
 
         CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
         compileInfo->appendMessage("Compilation started at: " + QDateTime::currentDateTime().toString(),
@@ -3408,7 +3537,8 @@ ProjectMan* MainForm::getProjectMan()
 void MainForm::exampleOpen()
 {
     //qDebug() << "MainForm: exampleOpen";
-    if (false == this->openProject(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project"))
+    QString path = QDir(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project").absolutePath();
+    if (false == this->openProject(path))
     {
         return;
     }
@@ -3418,7 +3548,7 @@ void MainForm::exampleOpen()
     for (int i = 0; i < count; i++)
     {
         //qDebug() << "MainForm: loading";
-        this->openFilePath(QDir(absolutePath + "/" + m_projectMan->getActive()->filePaths.at(i)).canonicalPath());
+        this->openFilePath(QDir::cleanPath(absolutePath + "/" + m_projectMan->getActive()->filePaths.at(i)));
     }
     if (m_wDockManager->getTabCount() > 0)
     {
@@ -3583,6 +3713,22 @@ void MainForm::addUntrackedFile(QString name, QString path)
     //qDebug() << "MainForm: addUntrackedFile";
     if (name != NULL && path != NULL)
     {
+        if (NULL == m_projectMan->getUntracked())
+        {
+            m_projectMan->addUntrackedProject();
+        }
+        if (m_projectMan->getActive()->prjPath != "untracked")
+        {
+            QList<Project*> projects = m_projectMan->getOpenProjects();
+            for (int i = 0; i < projects.count(); i++)
+            {
+                if (projects.at(i)->prjPath != "untracked")
+                {
+                    projectTabs->setCurrentIndex(i);
+                    break;
+                }
+            }
+        }
         m_wDockManager->addUntrackedCentralWidget(name, path);
         m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
         m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
@@ -3620,6 +3766,18 @@ void MainForm::toolDisassemble()
 {
     #ifdef MDS_FEATURE_DISASSEMBLER
         DisAsmDialog *dlg = new DisAsmDialog(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
         connect(dlg, SIGNAL(output(std::vector<std::string>)), this, SLOT(disassembleOutput(std::vector<std::string>)));
     #endif
 }
@@ -3638,6 +3796,10 @@ void MainForm::disassembleOutput(std::vector<std::string> text)
         }
 
         //QString name = m_projectMan->addUntrackedFile(NULL, "disasm");
+        if (NULL == m_projectMan->getActive())
+        {
+            m_projectMan->addUntrackedProject();
+        }
         this->m_wDockManager->addUntrackedCentralWidget("disasm","untracked",qText);
         getWDockManager()->getCentralTextEdit()->reloadHighlighter(PICOBLAZEASM);
         //getWDockManager()->getCentralWidget()->connectAct();
@@ -3652,6 +3814,18 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
         connect(dlg,
                 SIGNAL(output(std::vector<std::string> &)),
                 this,
@@ -3710,7 +3884,19 @@ void MainForm::translatorOutput(const std::vector<std::pair<unsigned int, std::s
 void MainForm::toolFileConvert()
 {
     #ifdef MDS_FEATURE_FILECONVERTER
-        /*FileConvertDlg *dlg = */new FileConvertDlg(this);
+        FileConvertDlg *dlg = new FileConvertDlg(this);
+        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
+        {
+            dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            dlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            dlg->setPath(m_lastDir);
+        }
     #endif
 }
 
@@ -3719,6 +3905,7 @@ void MainForm::toolFileConvert()
  */
 void MainForm::unhighlight()
 {
+    qDebug() << "MainForm: unhighlight";
     emit unhighlightSim();
 }
 
@@ -3735,6 +3922,18 @@ void MainForm::projectConfig()
 void MainForm::interfaceConfig()
 {
     InterfaceCfgDlg_Core *cfgdlg = new InterfaceCfgDlg_Core(this);
+    if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
+    {
+        cfgdlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+    }
+    else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+    {
+        cfgdlg->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+    }
+    else
+    {
+        cfgdlg->setPath(m_lastDir);
+    }
     cfgdlg->exec();
 }
 
@@ -3866,11 +4065,11 @@ void MainForm::closeProject()
     {
         Project *project = m_projectMan->getActive();
         QDir path;
-        for (int i = 0; i < project->filePaths.count(); i++)
+        /*for (int i = 0; i < project->filePaths.count(); i++)
         {
             path.setPath(project->prjPath.section('/',0,-2));
             m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))), false);
-        }
+        }*/
         //qDebug() << "MainForm: delete active sim widget";
         m_wDockManager->deleteActiveSimWidget();
         m_wDockManager->removeTabBar(project->prjPath);
@@ -3903,9 +4102,17 @@ void MainForm::closeProject()
             saveProjConfigAct->setEnabled(false);
             saveProjAct->setEnabled(false);
             projectConfigAct->setEnabled(false);
+            #ifdef MDS_FEATURE_EXTERNAL_APPS
+                m_externalToolButton->setEnabled(false);
+            #endif
         }
         else
         {
+            if (m_projectMan->getOpenProjects().count() == 1)
+            {
+                projectTabConnected = false;
+                projectTabs = NULL;
+            }
             if (NULL != m_projectMan->getActive())
             {
                 m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
@@ -4235,7 +4442,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     if (m_projectMan->getActive() != m_projectMan->getSimulated())
     {
         QList<Project*> projects = m_projectMan->getOpenProjects();
-        for (int i; i < projects.count(); i++)
+        for (int i = 0; i < projects.count(); i++)
         {
             if (projects.at(i) == m_projectMan->getSimulated())
             {
@@ -4357,7 +4564,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
     }
     for (int i = 0; i < m_wDockManager->getTabCount(); i++)
     {
-        m_wDockManager->getTabTextEdit(i)->clearHighlight();
+        if (NULL != m_wDockManager->getTabTextEdit(i))
+        {
+            m_wDockManager->getTabTextEdit(i)->clearHighlight();
+        }
     }
     m_wDockManager->getCentralTextEdit()->clearHighlight();
 
@@ -4765,12 +4975,14 @@ void MainForm::reloadTabIcons()
         }
         else if ("Simulator" == text)
         {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/cog.png"));
+            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/processor.png"));
         }
-        else if ("External Applications" == text)
-        {
-            m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
-        }
+        #ifdef MDS_FEATURE_EXTERNAL_APPS
+            else if ("External Applications" == text)
+            {
+                m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/application_xp_terminal.png"));
+            }
+        #endif
         else if ("Hide" == text)
         {
             m_wDockManager->bottomAreaTabs->setTabIcon(i, QIcon(":resources/icons/bullet_arrow_down.png"));
@@ -4837,9 +5049,16 @@ void MainForm::jmpToBookmarkPrevSlot()
 void MainForm::fileClosed(QString path)
 {
     qDebug() << "MainForm: file closed";
-    m_fileWatcher.removePath(path);
-    qDebug() << m_fileWatcher.files();
-    m_projectMan->getActive()->setFileOpened(path, false);
+    if ("Help Browser" != path)
+    {
+        m_fileWatcher.removePath(path);
+        qDebug() << m_fileWatcher.files();
+        m_projectMan->getActive()->setFileOpened(path, false);
+    }
+    else
+    {
+        disableHelpActions(false);
+    }
 }
 
 
@@ -4959,196 +5178,217 @@ void MainForm::setCentralUntitled(bool untracked)
     centralCodeEdit->setBreakpointsLines(m_projectMan->getActive()->getBreakpointsForFileAbsolute(centralCodeEdit->getPath()));
     centralCodeEdit->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(centralCodeEdit->getPath()));
     //m_projectMan->getActive()->addFile("untracked", fileName);
-    
+
 }
 
 
 void MainForm::reloadExternalApps()
 {
-    if (NULL == m_externalPopupMenu)
-    {
-        m_externalPopupMenu = new QMenu(m_externalToolButton);
-        m_externalToolButton->setMenu(m_externalPopupMenu);
-    }
-    m_externalPopupMenu->clear();
-    QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
-    bool showToolButton = false;
-    for (int i = 0; i < apps.count(); i++)
-    {
-        if (true == apps.at(i).toolBar)
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_externalPopupMenu)
         {
-            showToolButton = true;
-            extAppAct[i]->setText(apps.at(i).path.section('/', -1));
-            m_externalPopupMenu->addAction(extAppAct[i]);
+            m_externalPopupMenu = new QMenu(m_externalToolButton);
+            m_externalToolButton->setMenu(m_externalPopupMenu);
         }
-        ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
-    }
-    if (true == showToolButton)
-    {
-        m_externalAppsToolBar->show();
-    }
-    else
-    {
-        m_externalAppsToolBar->hide();
-        //TODO: disable extappoutput tab
-    }
+        m_externalPopupMenu->clear();
+        QList<GuiCfg_Items::ExternalApp> apps = GuiCfg::getInstance().getExternalApps();
+        bool showToolButton = false;
+        for (int i = 0; i < apps.count(); i++)
+        {
+            if (true == apps.at(i).toolBar)
+            {
+                showToolButton = true;
+                extAppAct[i]->setText(apps.at(i).path.section('/', -1));
+                m_externalPopupMenu->addAction(extAppAct[i]);
+            }
+            if (true == m_wDockManager->dockWidgets)
+            {
+                ((ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget()))->setTabStats(i, apps.at(i).toolBar, apps.at(i).path.section('/', -1));
+            }
+        }
+        if (true == showToolButton)
+        {
+            m_externalAppsToolBar->show();
+        }
+        else
+        {
+            m_externalAppsToolBar->hide();
+            //TODO: disable extappoutput tab
+        }
+    #endif
 }
 
 
 void MainForm::startExtApp1()
 {
-    startExtApp(0);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(0);
+    #endif
 }
 
 
 void MainForm::startExtApp2()
 {
-    startExtApp(1);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(1);
+    #endif
 }
 
 
 void MainForm::startExtApp3()
 {
-    startExtApp(2);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        startExtApp(2);
+    #endif
 }
 
 
 void MainForm::startExtApp(int processNumber)
 {
-    /*if (NULL != m_procExtApps[processNumber])
-    {
-        m_procExtApps[processNumber]->kill();
-        QApplication::processEvents();
-        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-        delete m_procExtApps[processNumber];
-        m_procExtApps[processNumber] = NULL;
-    }
-    else*/
-    {
-        GuiCfg_Items::ExternalApp externalApp = GuiCfg::getInstance().getExternalApps().at(processNumber);
-        m_procExtApps[processNumber] = new QProcess(this);
-        m_finishedSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(finished(int, QProcess::ExitStatus)),
-                m_finishedSignalMapper,
-                SLOT(map())
-            );
-        connect(m_finishedSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(finishedExtApp(int))
-               );
-        m_errorSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(error(QProcess::ProcessError)),
-                m_errorSignalMapper,
-                SLOT(map())
-            );
-        connect(m_errorSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(errorExtApp(int))
-               );
-        m_stderrSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(readyReadStandardError()),
-                m_stderrSignalMapper,
-                SLOT(map())
-            );
-        connect(m_stderrSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(stderrExtApp(int))
-               );
-        m_stdoutSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
-        connect(m_procExtApps[processNumber],
-                SIGNAL(readyReadStandardOutput()),
-                m_stdoutSignalMapper,
-                SLOT(map())
-            );
-        connect(m_stdoutSignalMapper,
-                SIGNAL(mapped(int)),
-                this,
-                SLOT(stdoutExtApp(int))
-               );
-        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-        output->cleanOutput(processNumber);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        /*if (NULL != m_procExtApps[processNumber])
+        {
+            m_procExtApps[processNumber]->kill();
+            QApplication::processEvents();
+            m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+            delete m_procExtApps[processNumber];
+            m_procExtApps[processNumber] = NULL;
+        }
+        else*/
+        {
+            GuiCfg_Items::ExternalApp externalApp = GuiCfg::getInstance().getExternalApps().at(processNumber);
+            m_procExtApps[processNumber] = new QProcess(this);
+            m_finishedSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(finished(int, QProcess::ExitStatus)),
+                    m_finishedSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_finishedSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(finishedExtApp(int))
+                );
+            m_errorSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(error(QProcess::ProcessError)),
+                    m_errorSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_errorSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(errorExtApp(int))
+                );
+            m_stderrSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(readyReadStandardError()),
+                    m_stderrSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_stderrSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(stderrExtApp(int))
+                );
+            m_stdoutSignalMapper->setMapping(m_procExtApps[processNumber], processNumber);
+            connect(m_procExtApps[processNumber],
+                    SIGNAL(readyReadStandardOutput()),
+                    m_stdoutSignalMapper,
+                    SLOT(map())
+                );
+            connect(m_stdoutSignalMapper,
+                    SIGNAL(mapped(int)),
+                    this,
+                    SLOT(stdoutExtApp(int))
+                );
+            ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+            output->cleanOutput(processNumber);
 
-        QString args =  externalApp.args;
-        args.replace("%appname%", externalApp.path.section('/', -1));
-        args.replace("%appdir%", externalApp.path.section('/', 0, -2));
-        args.replace("%homedir%", QDir::homePath());
-        args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
-        if ("" == m_wDockManager->getCentralName().section('.',0,-2))
-        {
-            args.replace("%curfilename%", m_wDockManager->getCentralName());
+            QString args =  externalApp.args;
+            args.replace("%appname%", externalApp.path.section('/', -1));
+            args.replace("%appdir%", externalApp.path.section('/', 0, -2));
+            args.replace("%homedir%", QDir::homePath());
+            args.replace("%projectdir%", m_projectMan->getActive()->prjPath.section('/', 0, -2));
+            if ("" == m_wDockManager->getCentralName().section('.',0,-2))
+            {
+                args.replace("%curfilename%", m_wDockManager->getCentralName());
+            }
+            else
+            {
+                args.replace("%curfilename%", m_wDockManager->getCentralName().section('.',0,-2));
+            }
+            args.replace("%curfilepath%", m_wDockManager->getCentralPath());
+            args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
+            m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
+            m_wDockManager->setBottomAreaToExtAppOutput();
+            output->setActiveTab(processNumber);
+            output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
+            output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
+            output->getTextEdit(processNumber)->insertPlainText("\n");
+            output->getTextEdit(processNumber)->insertPlainText("Arguments:\t\t");
+            output->getTextEdit(processNumber)->insertPlainText(args);
+            output->getTextEdit(processNumber)->insertPlainText("\n\n");
         }
-        else
-        {
-            args.replace("%curfilename%", m_wDockManager->getCentralName().section('.',0,-2));
-        }
-        args.replace("%curfilepath%", m_wDockManager->getCentralPath());
-        args.replace("%curfiledir%", m_wDockManager->getCentralPath().section('/', 0, -2));
-        m_procExtApps[processNumber]->start(externalApp.path, QStringList() << args);
-        m_wDockManager->setBottomAreaToExtAppOutput();
-        output->setActiveTab(processNumber);
-        output->getTextEdit(processNumber)->insertPlainText("Application name:\t");
-        output->getTextEdit(processNumber)->insertPlainText(externalApp.path.section('/', -1));
-        output->getTextEdit(processNumber)->insertPlainText("\n");
-        output->getTextEdit(processNumber)->insertPlainText("Arguments:\t\t");
-        output->getTextEdit(processNumber)->insertPlainText(args);
-        output->getTextEdit(processNumber)->insertPlainText("\n\n");
-    }
+    #endif
 }
 
 
 void MainForm::errorExtApp(int processNumber)
 {
-    QApplication::processEvents();
-    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_procExtApps[processNumber]->deleteLater();
-    //m_procExtApps[processNumber] = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        QApplication::processEvents();
+        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_procExtApps[processNumber]->deleteLater();
+        //m_procExtApps[processNumber] = NULL;
+    #endif
 }
 
 
 void MainForm::finishedExtApp(int processNumber)
 {
-    QApplication::processEvents();
-    m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
-    QApplication::processEvents();
-    m_procExtApps[processNumber]->deleteLater();
-    //m_procExtApps[processNumber] = NULL;
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        QApplication::processEvents();
+        m_finishedSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_errorSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stderrSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        m_stdoutSignalMapper->removeMappings(m_procExtApps[processNumber]);
+        QApplication::processEvents();
+        m_procExtApps[processNumber]->deleteLater();
+        //m_procExtApps[processNumber] = NULL;
+    #endif
 }
 
 
 void MainForm::stderrExtApp(int processNumber)
 {
-    if (NULL == m_procExtApps[processNumber])
-    {
-        return;
-    }
-    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_procExtApps[processNumber])
+        {
+            return;
+        }
+        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardError());
+    #endif
 }
 
 
 void MainForm::stdoutExtApp(int processNumber)
 {
-    if (NULL == m_procExtApps[processNumber])
-    {
-        return;
-    }
-    ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
-    output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        if (NULL == m_procExtApps[processNumber])
+        {
+            return;
+        }
+        ExtAppOutput* output = (ExtAppOutput*)(m_wDockManager->getDockWidget(WEXTAPPOUTPUT)->widget());
+        output->getTextEdit(processNumber)->insertPlainText(m_procExtApps[processNumber]->readAllStandardOutput());
+    #endif
 }
 
 
@@ -5158,4 +5398,41 @@ void MainForm::toolVHDLWizard()
         VhdlMain *vhdlmain = new VhdlMain(0);
         vhdlmain->show();
     #endif
+}
+
+
+void MainForm::disableHelpActions(bool disable)
+{
+    //qDebug() << "MainForm: disable help actions" << disable;
+    undoAct->setDisabled(disable);
+    redoAct->setDisabled(disable);
+    copyAct->setDisabled(disable);
+    cutAct->setDisabled(disable);
+    pasteAct->setDisabled(disable);
+    selectAllAct->setDisabled(disable);
+    deselectAct->setDisabled(disable);
+    findAct->setDisabled(disable);
+    findNextAct->setDisabled(disable);
+    findPreviousAct->setDisabled(disable);
+    replaceAct->setDisabled(disable);
+    jmpToLineAct->setDisabled(disable);
+    commentAct->setDisabled(disable);
+    deleteCommentAct->setDisabled(disable);
+    jmpToBookmarkNextAct->setDisabled(disable);
+    jmpToBookmarkPrevAct->setDisabled(disable);
+    saveAct->setDisabled(disable);
+    saveAsAct->setDisabled(disable);
+    reloadAct->setDisabled(disable);
+    simulationFlowAct->setDisabled(disable);
+    if (true == simulationStatus)
+    {
+        simulationStepAct->setDisabled(disable);
+        simulationRunAct->setDisabled(disable);
+        simulationAnimateAct->setDisabled(disable);
+        simulationResetAct->setDisabled(disable);
+        simulationUnhighlightAct->setDisabled(disable);
+    }
+    simulationBreakpointAct->setDisabled(disable);
+    simulationDisableBreakpointsAct->setDisabled(disable);
+    projectCompileAct->setDisabled(disable);
 }

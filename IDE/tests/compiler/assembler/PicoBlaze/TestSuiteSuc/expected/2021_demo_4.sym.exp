@@ -44,5 +44,5 @@ TEMP3  . . . . . . . . . . . . . . . REG.   0x00002 USED     CONSTANT    2021_de
 TXEQU  . . . . . . . . . . . . . . . REG.   0x00004 USED     CONSTANT    2021_demo_4.asm:26.9-26.36
 TX_ID  . . . . . . . . . . . . . . . PORT   0x00001 USED     CONSTANT    2021_demo_4.asm:29.9-29.37
 UART_STAT  . . . . . . . . . . . . . PORT   0x00004 USED     CONSTANT    2021_demo_4.asm:31.9-31.37
-WAIT_1S  . . . . . . . . . . . . . . LABEL  0x00038 NOT USED CONSTANT    2021_demo_4.asm:96.1-96.92021_demo_4.asm:169.21-169.32
-WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    2021_demo_4.asm:99.1-99.112021_demo_4.asm:169.21-169.32
+WAIT_1S  . . . . . . . . . . . . . . LABEL  0x00038 NOT USED CONSTANT    2021_demo_4.asm:96.1-96.9 ==> 2021_demo_4.asm:169.21-169.32
+WAIT_1S_I  . . . . . . . . . . . . . LABEL  0x0003B USED     CONSTANT    2021_demo_4.asm:99.1-99.11 ==> 2021_demo_4.asm:169.21-169.32

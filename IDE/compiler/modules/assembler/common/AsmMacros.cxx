@@ -176,9 +176,7 @@ CompilerStatement * AsmMacros::expand ( const CompilerSourceLocation & location,
     macro.m_usageCounter++;
 
     m_expCounter++;
-    m_codeListing->expandMacro ( location,
-                                 macro.m_definition,
-                                 result );
+    m_codeListing->expandMacro ( location, result );
 
     // Substitute macro parameters with expansion arguments.
     int numberOfParams = (int) macro.m_parameters.size();

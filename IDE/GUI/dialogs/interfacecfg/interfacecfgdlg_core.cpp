@@ -12,6 +12,7 @@
  */
 
 
+#include "../../../mds.h"
 #include <QtGui>
 #include "interfacecfgdlg_core.h"
 #include "../../guicfg/guicfg.h"
@@ -22,7 +23,11 @@
 #include "interfacecfg_idegeneral.h"
 #include "interfacecfg_simothers.h"
 #include "interfacecfg_simwarnings.h"
-#include "interfacecfg_externalapps.h"
+
+#ifdef MDS_FEATURE_EXTERNAL_APPS
+    #include "interfacecfg_externalapps.h"
+#endif
+
 
 
 InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
@@ -38,12 +43,17 @@ InterfaceCfgDlg_Core::InterfaceCfgDlg_Core(QWidget *parent)
     //this->editSyntax = new InterfaceCfg_EditSyntax(this->cfgInterface);
     this->editFonts = new InterfaceCfg_EditFonts(this->cfgInterface);
     this->simWarnings = new InterfaceCfg_SimWarnings(this->cfgInterface);
-    this->externalApps = new InterfaceCfg_ExternalApps(this->cfgInterface);
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        this->externalApps = new InterfaceCfg_ExternalApps(this->cfgInterface);
+    #endif
     //this->simOthers = new InterfaceCfg_SimOthers(this->cfgInterface);
 
     this->cfgInterface->addWidget(NULL, "IDE", "IDE Config");
     this->cfgInterface->addWidget(this->ideGeneral, "General", "IDE General Options", true);
-    this->cfgInterface->addWidget(this->externalApps, "External Apps", "IDE External Applications", true);
+
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        this->cfgInterface->addWidget(this->externalApps, "External Apps", "IDE External Applications", true);
+    #endif
     //this->cfgInterface->addWidget(NULL, "Shortcuts", "IDE Shortcuts", true);
     this->cfgInterface->addWidget(NULL, "Editor", "Editor Config");
     this->cfgInterface->addWidget(this->editGeneral, "General", "Editor General Options", true);
@@ -72,7 +82,9 @@ void InterfaceCfgDlg_Core::ok()
 {
     this->editFonts->save();
     this->editGeneral->save();
-    this->externalApps->save();
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        this->externalApps->save();
+    #endif
     //this->editSyntax->save();
     this->ideGeneral->save();
     this->simWarnings->save();
@@ -90,6 +102,13 @@ void InterfaceCfgDlg_Core::cancel()
     this->done(0);
 }
 
+
+void InterfaceCfgDlg_Core::setPath(QString path)
+{
+    #ifdef MDS_FEATURE_EXTERNAL_APPS
+        this->externalApps->setDialogPath(path);
+    #endif
+}
 
 /*void InterfaceCfgDlg_Core::load()
 {

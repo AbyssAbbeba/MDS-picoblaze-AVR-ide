@@ -4,13 +4,9 @@
                    4
   00000            5     Start:
 000 32000          6             JUMP        Z, 0x000
-W: instruction `JUMP Z, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 001 36000          7             JUMP        NZ,0x000
-W: instruction `JUMP NZ, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 002 3A000          8             JUMP        C, 0x000
-W: instruction `JUMP C, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
 003 3E000          9             JUMP        NC,0x000
-W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while the given operand is of type: number.
                   10
                   11         ; Others
 004 2000D         12             CALl      Podprog
@@ -23,13 +19,11 @@ W: instruction `JUMP NC, aaa' requires operand #2 to be of type(s): label; while
 E: symbol not defined: `TESTSYMB9'.
 E: symbol not defined: `TESTSYMB13'.
 00A 2E1A0         19             STORE     TESTsymb10,@10
-W: instruction `STORE sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB10'.
 00B 0B101         20             FETCH     TESTsymb11,TESTsymb13
 E: symbol not defined: `TESTSYMB11'.
 E: symbol not defined: `TESTSYMB13'.
 00C 0A150         21             FETCH     TESTsymb12,@5
-W: instruction `FETCH sX, sY' requires operand #2 to be of type(s): register; while the given operand is of type: number.
 E: symbol not defined: `TESTSYMB12'.
                   22
   0000D           23     Podprog:

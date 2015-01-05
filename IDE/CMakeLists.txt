@@ -11,7 +11,7 @@
 #
 # The entire Multitarget Development System.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # ======================================================================================================================
 
@@ -52,7 +52,7 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 set ( PRODUCT_VERSION    "1.2" )
 set ( PRODUCT_NAME_SHORT "MDS" )
 set ( COMPANY_REG_NO     "01435655" )
-set ( COPYRIGHT_YEARS    "2013, 2014" )
+set ( COPYRIGHT_YEARS    "2013, 2014, 2015" )
 set ( COMPANY_NAME       "Moravia Microsystems, s.r.o." )
 set ( PRODUCT_NAME       "Multitarget Development System" )
 set ( COMPANY_ADDRESS    "trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union" )

@@ -62,7 +62,7 @@
    <item row="2" column="0" colspan="5">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -93,7 +93,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-259</y>
+            <y>0</y>
             <width>674</width>
             <height>485</height>
            </rect>
@@ -1380,7 +1380,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="0" colspan="8">
+       <item row="11" column="0" colspan="8">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -1399,6 +1399,32 @@
           <string>Constant</string>
          </property>
         </widget>
+       </item>
+       <item row="10" column="2">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="9" column="2">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

@@ -93,7 +93,7 @@ void error(int errCode, QString detail)
         case ERR_MEM_RD_UNDEFINED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Read from undefined memory location, simulation halted");
+            msgBox.setText("Uninitialized value read from program memory, simulation halted");
             break;
         }
         //cpu

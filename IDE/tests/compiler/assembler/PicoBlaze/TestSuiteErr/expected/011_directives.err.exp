@@ -12,4 +12,4 @@ MT_ERROR: 011_directives.asm:86.21-86.24: Error: unexpected NUMBER, expecting ID
 MT_ERROR: 011_directives.asm:87.21-87.25: Error: unexpected NUMBER, expecting IDENTIFIER.
 MT_ERROR: 011_directives.asm:172.20-172.21: Error: unexpected #.
 MT_ERROR: 011_directives.asm:173.9-173.15: Error: invalid number of operands, instruction OUTPUT takes 2 operand(s).
-MT_WARNING: Warning: semantic analysis was not executed due to syntax error(s).
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

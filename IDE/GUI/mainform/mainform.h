@@ -100,13 +100,13 @@ class MainForm : public QMainWindow
         void addFile();
         void newAddFile();
         //void removeProjFile();
-        void saveFile();
-        void saveFile(CodeEdit *editor, bool ask = false);
-        void saveFileAs();
+        bool saveFile();
+        bool saveFile(CodeEdit *editor, bool ask = false);
+        bool saveFileAs();
         void saveAll();
         void newProject();
         void openProject();
-        void saveProject();
+        bool saveProject();
         void compileProject();
         void simulationStep();
         void simulationRunHandle();
@@ -215,6 +215,7 @@ class MainForm : public QMainWindow
         void finishedExtApp(int processNumber);
         void stderrExtApp(int processNumber);
         void stdoutExtApp(int processNumber);
+        void disableHelpActions(bool disable);
 
     signals:
         void unhighlightSim();

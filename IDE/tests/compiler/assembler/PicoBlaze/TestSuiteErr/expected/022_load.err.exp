@@ -4,3 +4,4 @@ MT_ERROR: 022_load.asm:456.44-456.45: Error: unexpected IDENTIFIER.
 MT_ERROR: 022_load.asm:460.38-460.41: Error: identifier cannot start with a digit: `1bb'.
 MT_ERROR: 022_load.asm:460.38-461.1: Error: unexpected end of line.
 MT_ERROR: 022_load.asm:3596.25-3596.25: Error: unexpected end of file.
+MT_WARNING: Warning: semantic analysis was not executed due to error(s).

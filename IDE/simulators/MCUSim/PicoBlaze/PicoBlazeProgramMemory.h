@@ -223,7 +223,7 @@ inline unsigned int PicoBlazeProgramMemory::readRaw ( unsigned int addr )
     int result = m_memory[addr];
     if ( result & MFLAG_UNDEFINED )
     {
-        logEvent(EVENT_MEM_WRN_RD_UNDEFINED, addr);
+        logEvent(MCUSimEventLogger::FLAG_HI_PRIO, EVENT_MEM_WRN_RD_UNDEFINED, addr);
     }
 
     return result;

@@ -826,6 +826,7 @@ void PicoBlazeGrid::fixHeight()
 
 void PicoBlazeGrid::unhighlight()
 {
+    //qDebug() << "PicoBlazeGrid: unhighlight";
     this->lePC->setStyleSheet("background-color: none");
     this->leSP->setStyleSheet("background-color: none");
     this->leCycles->setStyleSheet("background-color: none");

@@ -14,10 +14,12 @@
 // =============================================================================
 
 #include "CompilerLocationMap.h"
+#include<iostream>//DEBUG
 
 void CompilerLocationMap::addMark ( const CompilerSourceLocation & to,
                                     const CompilerSourceLocation & from )
 {
+std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
     if ( ( from.m_fileNumber + 1 ) > (int) m_map.size() )
     {
         m_map.resize(from.m_fileNumber + 1);
@@ -39,20 +41,24 @@ void CompilerLocationMap::addMark ( const CompilerSourceLocation & to,
     diff.m_column = to.m_colStart - from.m_colStart;
     diff.m_origin = -1;
 
+    std::cout << "diff.m_file=" << diff.m_file << ", diff.m_line=" << diff.m_line << ", diff.m_column=" << diff.m_column << '\n';
+
     // TODO: handle location origin
 }
 
-void CompilerLocationMap::translate ( CompilerSourceLocation & to,
-                                      const CompilerSourceLocation & from ) const
+CompilerSourceLocation CompilerLocationMap::translate ( const CompilerSourceLocation & from ) const
 {
+    CompilerSourceLocation result = from;
+std::cout<<"CompilerLocationMap::translate("<<from<<"): ";
     if ( from.m_fileNumber >= (int) m_map.size() )
     {
-        return;
+        return result;
     }
 
     const Difference * diff = nullptr;
     for ( const auto & lineMark : m_map[from.m_fileNumber] )
     {
+std::cout<<"[lineMark.m_org="<<lineMark.m_org<<"]";
         if ( from.m_lineStart > lineMark.m_org )
         {
             diff = &lineMark.m_columnMap.back().m_diff;
@@ -60,10 +66,12 @@ void CompilerLocationMap::translate ( CompilerSourceLocation & to,
         }
         else if ( from.m_lineStart == lineMark.m_org )
         {
+std::cout<<"[from.m_lineStart == lineMark.m_org]";
             for ( const auto & columnMark : lineMark.m_columnMap )
             {
                 if ( from.m_colStart >= columnMark.m_org )
                 {
+std::cout<<"[#from.m_colStart >= columnMark.m_org ("<<from.m_colStart<<","<<columnMark.m_org<<")#]";
                     diff = &columnMark.m_diff;
                     break;
                 }
@@ -77,13 +85,15 @@ void CompilerLocationMap::translate ( CompilerSourceLocation & to,
 
     if ( nullptr != diff )
     {
-        to.m_fileNumber += diff->m_file;
-        to.m_lineStart  += diff->m_line;
-        to.m_lineEnd    += diff->m_line;
-        to.m_colStart   += diff->m_column;
-        to.m_colEnd     += diff->m_column;
-        to.m_origin      = diff->m_origin;
+        result.m_fileNumber += diff->m_file;
+        result.m_lineStart  += diff->m_line;
+        result.m_lineEnd    += diff->m_line;
+        result.m_colStart   += diff->m_column;
+        result.m_colEnd     += diff->m_column;
+        result.m_origin      = diff->m_origin;
     }
+std::cout << result << '\n';
+    return result;
 }
 
 void CompilerLocationMap::sortMap()
@@ -94,7 +104,7 @@ void CompilerLocationMap::sortMap()
         {
             for ( int j = ( i - 1 ); j >= 0; j-- )
             {
-                if ( lineMap[i].m_org < lineMap[j].m_org )
+                if ( lineMap[i].m_org > lineMap[j].m_org )
                 {
                     auto tmp = lineMap[j];
                     lineMap[j] = lineMap[i];
@@ -107,7 +117,7 @@ void CompilerLocationMap::sortMap()
             {
                 for ( int k = ( j - 1 ); k >= 0; k-- )
                 {
-                    if ( columnMap[j].m_org < columnMap[k].m_org )
+                    if ( columnMap[j].m_org > columnMap[k].m_org )
                     {
                         auto tmp = lineMap[j];
                         lineMap[j] = lineMap[k];

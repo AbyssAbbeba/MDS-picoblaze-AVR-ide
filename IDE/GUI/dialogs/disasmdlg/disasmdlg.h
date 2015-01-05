@@ -16,6 +16,7 @@
 #define DISASMDLG_H
 
 #include <QDialog>
+#include <QString>
 #include "ui_disasmdlg.h"
 
 
@@ -31,6 +32,7 @@ class DisAsmDialog : public QDialog
     Q_OBJECT
     public:
         DisAsmDialog(QWidget *parent);
+        void setPath(QString path);
 
     private slots:
         void setPath();
@@ -41,6 +43,7 @@ class DisAsmDialog : public QDialog
         
     private:
         Ui_Dialog ui;
+        QString m_path;
         //void freeDialog();
         //QGridLayout *layout;
         /*QComboBox *cmbArchitecture;

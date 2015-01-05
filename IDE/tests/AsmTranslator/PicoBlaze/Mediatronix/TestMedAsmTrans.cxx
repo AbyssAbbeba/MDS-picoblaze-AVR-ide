@@ -47,6 +47,7 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
     }
 
     bool comparisonMade = false;
+    int lineNumber = 0;
     std::string line1, line2;
     while ( false == file1.eof() && false == file2.eof() )
     {
@@ -58,6 +59,7 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
         do
         {
+            lineNumber++;
             std::getline(file1, line1);
             if ( ( line1.size() > 0 ) && ( '\r' == line1.back() ) )
             {
@@ -102,7 +104,10 @@ void TestMedAsmTrans::fileCompare ( const std::string & fileName1,
 
         if ( line1 != line2 )
         {
-            CU_FAIL((std::string("VHD files (")+fileName1+", "+fileName2+") differs!").c_str());
+            CU_FAIL_MSG ( fileName1,
+                          lineNumber + 1,
+                          "\nexpected: '" + line1 + "'"
+                          "\n" "actual:   '" + line2 + "'" );
             return;
         }
     }
@@ -218,6 +223,7 @@ void TestMedAsmTrans::test ( const std::string & suffix )
                                             true );
 
     {
+        std::string errorLog;
         std::ofstream logFile( ( path("Mediatronix") / "results" / (testName + suffix + ".log") ).string() );
         for ( const auto & i : m_translator->getMessages() )
         {
@@ -229,19 +235,22 @@ void TestMedAsmTrans::test ( const std::string & suffix )
             {
                 logFile << (testName + ".psm") << ":" << i.first << ": " << i.second << std::endl;
             }
-        }
-    }
 
-    if ( false == result )
-    {
-        CU_FAIL("Translation failed!");
-        return;
+            errorLog += i.second;
+            errorLog += '\n';
+        }
+
+        if ( false == result )
+        {
+            CU_FAIL("Translation failed:\n" + errorLog);
+            return;
+        }
     }
 
     m_options->m_sourceFiles.clear();
     m_options->m_sourceFiles.push_back ( ( path("Mediatronix") / "results" / (testName + suffix + ".asm") ).string() );
-    m_options->m_vhdlFile   = testName + suffix + ".vhd";
-    m_options->m_lstFile    = testName + suffix + ".lst";
+    m_options->m_vhdlFile = testName + suffix + ".vhd";
+    m_options->m_lstFile  = testName + suffix + ".lst";
 
     switch ( testName.front() )
     {
@@ -281,7 +290,20 @@ void TestMedAsmTrans::test ( const std::string & suffix )
 
     if ( false == result )
     {
-        CU_FAIL("Compilation failed!");
+        std::string errorLog;
+        std::ifstream errLogFile(errFile);
+        while ( ( false == errLogFile.eof() ) && ( false == errLogFile.bad() ) )
+        {
+            std::string line;
+            std::getline(errLogFile, line);
+            size_t pos = line.find("Error: ");
+            if ( std::string::npos != pos )
+            {
+                line = line.substr(pos);
+                errorLog += line;
+            }
+        }
+        CU_FAIL("Compilation failed:\n" + errorLog);
         return;
     }
 

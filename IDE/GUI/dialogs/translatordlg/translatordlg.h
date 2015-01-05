@@ -16,6 +16,7 @@
 #define TRANSLATORDLG_H
 
 #include <QDialog>
+#include <QString>
 #include "ui_translatordlg.h"
 
 
@@ -31,6 +32,7 @@ class TranslatorDlg : public QDialog
     Q_OBJECT
     public:
         TranslatorDlg(QWidget *parent);
+        void setPath(QString path);
 
     private slots:
         void setPath();
@@ -43,6 +45,7 @@ class TranslatorDlg : public QDialog
         
     private:
         Ui_TranslatorDlg ui;
+        QString m_path;
         
 };
 
