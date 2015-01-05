@@ -671,7 +671,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         RectInfo->show();
 
         const int tabStop = 4; // 4 characters
-
+        ui3.textInfo->setReadOnly(true);
         // get names and values of port directives, put them into global structures
         // IN OUT ports
         QTextCursor cursor_textinfo(ui3.textInfo->textCursor());
@@ -956,7 +956,7 @@ void VhdlMain::mouseMoveEvent ( QMouseEvent * moveEvent )
    }
 
    unsigned int p = 0;
-   while ( true == componentObject[p]->isValid())
+   while ( ( p < 21 ) && ( true == componentObject[p]->isValid() ) )
    {
         if ( this->componentObject[p]->contains( moveEvent->pos() ) == true)
         {
