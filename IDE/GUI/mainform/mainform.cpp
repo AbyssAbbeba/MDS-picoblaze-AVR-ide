@@ -1997,7 +1997,7 @@ void MainForm::openProject()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)", 0);
+        path = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
