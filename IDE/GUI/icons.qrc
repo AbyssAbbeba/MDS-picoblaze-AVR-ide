@@ -89,5 +89,11 @@
     <file>resources/html/about-general.html</file>
     <file>resources/html/about-3rd.html</file>
     <file>resources/html/license.html</file>
+    <file>resources/xml/VHDLgen/UART.txt</file>
+    <file>resources/xml/VHDLgen/Leds.txt</file>
+    <file>resources/xml/VHDLgen/Buttons.txt</file>
+    <file>resources/xml/VHDLgen/I2C_interface.txt</file>
+    <file>resources/xml/VHDLgen/LCD_interface.txt</file>
+    <file>resources/xml/VHDLgen/SPI_slave.txt</file>
   </qresource>
 </RCC>
