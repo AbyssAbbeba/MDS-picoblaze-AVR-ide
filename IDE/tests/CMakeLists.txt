@@ -33,13 +33,13 @@ add_custom_target ( test_analysis
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
 
-# Tests for compiler
-add_subdirectory ( compiler )
-
 # Unit tests for Assembly language support library.
 if ( MDS_FEATURE_TRANSLATOR )
     add_subdirectory ( AsmTranslator )
 endif()
+
+# Tests for compiler
+add_subdirectory ( compiler )
 
 # Tests for disassembler
 if ( MDS_FEATURE_DISASSEMBLER )
