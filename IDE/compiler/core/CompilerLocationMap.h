@@ -88,6 +88,12 @@ class CompilerLocationMap
 
         /**
          * @brief
+         * @param[in] line
+         */
+        void removeMarks ( const CompilerSourceLocation & line );
+
+        /**
+         * @brief
          * @param[in] from
          * @return
          */

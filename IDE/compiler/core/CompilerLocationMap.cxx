@@ -58,50 +58,93 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
     // TODO: handle location origin
 }
 
+void CompilerLocationMap::removeMarks ( const CompilerSourceLocation & line )
+{
+std::cout << "CompilerLocationMap::removeMarks("<<line<<"): \n";
+    if ( line.m_fileNumber >= (int) m_map.size() )
+    {
+        return;
+    }
+
+    std::vector<int> erase;
+    for ( int i = ( (int) m_map[line.m_fileNumber].size() - 1 ); i >= 0; i-- )
+    {
+        if ( line.m_lineStart == m_map[line.m_fileNumber][i].m_org )
+        {
+            erase.push_back(i);
+        }
+    }
+
+    auto begin = m_map[line.m_fileNumber].begin();
+    for ( auto i : erase )
+    {
+        m_map[line.m_fileNumber].erase(begin + i);
+    }
+}
+
 CompilerSourceLocation CompilerLocationMap::translate ( const CompilerSourceLocation & from ) const
 {
-    CompilerSourceLocation result = from;
-
+    std::cout<<"CompilerLocationMap::translate ( "<<from<<" ): ";
     if ( from.m_fileNumber >= (int) m_map.size() )
     {
-        return result;
+        std::cout<<"( "<<from.m_fileNumber<<" >= "<<m_map.size()<<" )\n";
+        return from;
     }
 
-    const Difference * diff = nullptr;
-    for ( const auto & lineMark : m_map[from.m_fileNumber] )
+    const Difference * diff[2] = { nullptr, nullptr };
+
     {
-        if ( from.m_lineStart > lineMark.m_org )
+        int line = from.m_lineStart;
+        int column = from.m_colStart;
+
+        for ( int i = 0; i < 2; i++ )
         {
-            diff = &lineMark.m_columnMap.back().m_diff;
-            break;
-        }
-        else if ( from.m_lineStart == lineMark.m_org )
-        {
-            for ( const auto & columnMark : lineMark.m_columnMap )
+            for ( const auto & lineMark : m_map[from.m_fileNumber] )
             {
-                if ( from.m_colStart >= columnMark.m_org )
+                if ( line > lineMark.m_org )
                 {
-                    diff = &columnMark.m_diff;
+                    diff[i] = &lineMark.m_columnMap.back().m_diff;
                     break;
                 }
+                else if ( line == lineMark.m_org )
+                {
+                    for ( const auto & columnMark : lineMark.m_columnMap )
+                    {
+                        if ( column >= columnMark.m_org )
+                        {
+                            diff[i] = &columnMark.m_diff;
+                            break;
+                        }
+                    }
+
+                    if ( nullptr != diff[i] )
+                    {
+                        break;
+                    }
+                }
             }
-            if ( nullptr != diff )
-            {
-                break;
-            }
+
+            line = from.m_lineEnd;
+            column = from.m_colEnd;
         }
     }
 
-    if ( nullptr != diff )
+    CompilerSourceLocation result = from;
+
+    if ( nullptr != diff[0] )
     {
-        result.m_fileNumber += diff->m_file;
-        result.m_lineStart  += diff->m_line;
-        result.m_lineEnd    += diff->m_line;
-        result.m_colStart   += diff->m_column;
-        result.m_colEnd     += diff->m_column;
-        result.m_origin      = diff->m_origin;
+        result.m_fileNumber += diff[0]->m_file;
+        result.m_lineStart  += diff[0]->m_line;
+        result.m_colStart   += diff[0]->m_column;
+        result.m_origin      = diff[0]->m_origin;
     }
 
+    if ( nullptr != diff[1] )
+    {
+        result.m_lineEnd    += diff[1]->m_line;
+        result.m_colEnd     += diff[1]->m_column;
+    }
+std::cout<<result<<'\n';
     return result;
 }
 
@@ -109,7 +152,7 @@ void CompilerLocationMap::sortMap()
 {
     for ( LineMap & lineMap : m_map )
     {
-        for ( int i = ( lineMap.size() - 1 ); i >= 0; i-- )
+        for ( int i = ( (int) lineMap.size() - 1 ); i >= 0; i-- )
         {
             for ( int j = ( i - 1 ); j >= 0; j-- )
             {
@@ -122,7 +165,7 @@ void CompilerLocationMap::sortMap()
             }
 
             ColumnMap & columnMap = lineMap[i].m_columnMap;
-            for ( int j = ( columnMap.size() - 1 ); j >= 0; j-- )
+            for ( int j = ( (int) columnMap.size() - 1 ); j >= 0; j-- )
             {
                 for ( int k = ( j - 1 ); k >= 0; k-- )
                 {

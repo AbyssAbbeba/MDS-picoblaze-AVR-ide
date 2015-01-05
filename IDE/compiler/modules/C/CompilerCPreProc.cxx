@@ -177,7 +177,7 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     {
         // Append contents of the input buffer to the mline buffer.
         mlineBuffer.append(inBuffer);
-        m_location.m_colStart = mlineBuffer.m_pos;
+        m_location.m_colStart = mlineBuffer.m_pos + 2;
         return true;
     }
     else if ( 0 != mlineBuffer.m_pos )
@@ -200,9 +200,12 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     {
         // Append contents of the input buffer to the output buffer and expand macros in one step.
         m_macroTable.expand(outBuffer, inBuffer);
-        m_location.m_lineStart++;
+
+        m_compilerCore->locationMap().removeMarks(m_location);
+        m_location.m_lineStart--;
     }
 
+    m_location.m_lineStart++;
     m_location.m_colStart = 1;
     return true;
 }
@@ -521,6 +524,7 @@ inline bool CompilerCPreProc::directivesProcessing ( Buffer & buffer )
             buffer.m_pos = 0;
             buffer.m_data[0] = '\0';
 
+            m_compilerCore->locationMap().removeMarks(m_location);
             m_location.m_lineStart--;
 
             const auto iter = s_directives.find(directive);

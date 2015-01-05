@@ -94,8 +94,12 @@
     #define CompilerCParser_lex CompilerCLexer_lex
 
     // Make a few things a little easier...
-    #define LOC(location) \
-        ( compiler->locationMap().translate(compiler->toSourceLocation(location)) )
+    #define LOC(location)                                                                       \
+        ( compiler->locationMap().translate ( CompilerSourceLocation ( 0,                       \
+                                                                       location.first_line,     \
+                                                                       location.last_line,      \
+                                                                       location.first_column,   \
+                                                                       location.last_column ) ) )
 
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCParser_error ( YYLTYPE * yylloc,

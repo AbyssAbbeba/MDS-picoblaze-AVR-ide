@@ -37,7 +37,7 @@
         yylloc->last_column += yyleng;
 
     // At each yylex invocation, mark the current position as the start of the next token.
-    #define advanceLocation()                       \
+    #define advanceLocation()                                   \
         yylloc_param->first_line   = yylloc_param->last_line;   \
         yylloc_param->first_column = yylloc_param->last_column;
 
