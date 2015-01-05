@@ -55,32 +55,31 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
     // Start in the Normal mode.
     m_inmode = MODE_NORMAL;
 
-    m_location = CompilerSourceLocation(0, 0, 0, 0, 0);
+    m_location = CompilerSourceLocation(0, 1, 0, 1, 0);
 
     // Iterate over all given input files.
     std::vector<FILE*> fileStack;
     for ( unsigned int fileNumber = 0; fileNumber < inputFiles.size(); fileNumber++ )
     {
-        m_locationStack.push_back(CompilerSourceLocation(fileNumber, -1, 0, 0, 0));
+        m_locationStack.push_back(CompilerSourceLocation(fileNumber, 1, 0, 1, 0));
 
         for ( fileStack.push_back(inputFiles[fileNumber]); false == fileStack.empty(); fileStack.pop_back() )
         {
             // Iterate over the lines in the source file.
             while ( -1 != ( inBuffer.m_pos = getline(&inBuffer.m_data, &inBuffer.m_size, fileStack.back()) ) )
             {
-                m_locationStack.back().m_lineStart++;
-                m_locationStack.back().m_colStart = 0;
-
                 if ( false == inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer) )
                 {
                     // Critical error.
                     return nullptr;
                 }
 
+                m_compilerCore->locationMap().addMark(m_locationStack.back(), m_location);
+
                 if ( false == m_include.m_file.empty() )
                 {
                     fileStack.push_back(m_compilerCore->fileOpen(m_include.m_file, nullptr, false, m_include.m_system));
-                    m_locationStack.push_back(CompilerSourceLocation(m_compilerCore->getFileNumber(), -1, 0, 0, 0));
+                    m_locationStack.push_back(CompilerSourceLocation(m_compilerCore->getFileNumber(), 1, 0, 1, 0));
                     m_include.m_file.clear();
 
                     if ( nullptr == fileStack.back() )
@@ -141,6 +140,9 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
         }
     }
 
+    //
+    m_compilerCore->locationMap().sortMap();
+
     // Done.
     outBuffer.m_persistent = true;
     return outBuffer.m_data;
@@ -151,9 +153,13 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
                                                 Buffer & mergeBuffer,
                                                 Buffer & mlineBuffer )
 {
+    m_locationStack.back().m_lineStart++;
+    m_locationStack.back().m_colStart = 1;
+
     // Handle line merging - trailing `\' (backslash)
     if ( true == lineMerging(inBuffer, mergeBuffer) )
     {
+        m_location.m_colStart += inBuffer.m_pos;
         return true;
     }
 
@@ -171,6 +177,7 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     {
         // Append contents of the input buffer to the mline buffer.
         mlineBuffer.append(inBuffer);
+        m_location.m_colStart = mlineBuffer.m_pos;
         return true;
     }
     else if ( 0 != mlineBuffer.m_pos )
@@ -193,11 +200,10 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     {
         // Append contents of the input buffer to the output buffer and expand macros in one step.
         m_macroTable.expand(outBuffer, inBuffer);
+        m_location.m_lineStart++;
     }
 
-    m_location.m_colStart = 0;
-    m_location.m_lineStart++;
-
+    m_location.m_colStart = 1;
     return true;
 }
 
@@ -514,6 +520,8 @@ inline bool CompilerCPreProc::directivesProcessing ( Buffer & buffer )
 
             buffer.m_pos = 0;
             buffer.m_data[0] = '\0';
+
+            m_location.m_lineStart--;
 
             const auto iter = s_directives.find(directive);
             if ( s_directives.cend() == iter )

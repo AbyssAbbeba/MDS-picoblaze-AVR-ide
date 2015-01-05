@@ -95,7 +95,7 @@
 
     // Make a few things a little easier...
     #define LOC(location) \
-        ( compiler->toSourceLocation(location) )
+        ( compiler->locationMap().translate(compiler->toSourceLocation(location)) )
 
     // Declaration of the error reporting function used by Bison.
     inline int CompilerCParser_error ( YYLTYPE * yylloc,
@@ -309,7 +309,7 @@ stmt:
     | "break" ";"                   { $$ = new CompilerStatement(LOC(@$), C_STMT_BREAK); }
     | "continue" ";"                { $$ = new CompilerStatement(LOC(@$), C_STMT_CONTINUE); }
     | "return" e_expr ";"           { $$ = new CompilerStatement(LOC(@$), C_STMT_RETURN, $e_expr); }
-    | declarations                  { $$ = new CompilerStatement(LOC(@$), C_STMT_VAR, $declarations); }
+    | declarations                  { $$ = new CompilerStatement(LOC(@1), C_STMT_VAR, $declarations); }
     | dt_attr datatype id "(" param_list ")" stmt
                                     {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
