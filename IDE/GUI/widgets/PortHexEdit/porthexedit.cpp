@@ -288,6 +288,7 @@ void PortHexEdit::unhighlight()
 
 void PortHexEdit::updateWidget()
 {
+    qDebug() << "PortHexEdit: update";
     uint value;
     for ( int i = 0; i < m_size; i++ )
     {
@@ -300,8 +301,8 @@ void PortHexEdit::updateWidget()
         }
         if (value != m_hexEditIn->getVal(i))
         {
-            m_hexEditIn->setHighlighted(i, true);
             m_hexEditIn->setVal(i, (unsigned char)value);
+            m_hexEditIn->setHighlighted(i, true);
         }
         else
         {
@@ -316,8 +317,8 @@ void PortHexEdit::updateWidget()
         }
         if (value != m_hexEditOut->getVal(i))
         {
-            m_hexEditOut->setHighlighted(i, true);
             m_hexEditOut->setVal(i, (unsigned char)value);
+            m_hexEditOut->setHighlighted(i, true);
         }
         else
         {
