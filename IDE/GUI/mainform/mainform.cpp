@@ -1073,28 +1073,6 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO);
-        QApplication::processEvents();
-        tabList = this->findChildren<QTabBar*>();
-        for (int i = 0; i < tabList.count(); i++)
-        {
-            for (int j = 0; j < tabList.at(i)->count(); j++)
-            {
-                if ("Compiler Messages" == tabList.at(i)->tabText(j))
-                {
-                    m_wDockManager->bottomAreaTabs = tabList.at(i);
-                    break;
-                }
-            }
-        }
-        if (NULL == m_wDockManager->bottomAreaTabs)
-        {
-            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
-        }
-        connect(m_wDockManager->bottomAreaTabs,
-                SIGNAL(currentChanged(int)),
-                m_wDockManager,
-                SLOT(handleShowHideBottom(int))
-               );
         m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
         m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
@@ -1126,21 +1104,56 @@ void MainForm::createDockWidgets()
                 analys,
                 SLOT(reload(QString))
             );
+        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
+        m_wDockManager->addDockWidget(WRIGHTHIDE);
+
+        
         QApplication::processEvents();
+
+        bool done = false;
+        
         tabList = this->findChildren<QTabBar*>();
-        for (int i = 0; i < tabList.count(); i++)
+        for (int i = 0; i < tabList.count() && false == done; i++)
         {
             for (int j = 0; j < tabList.at(i)->count(); j++)
             {
-                if ("Breakpoints" == tabList.at(i)->tabText(j))
+                if ("Compiler Messages" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    done = true;
+                    break;
+                }
+            }
+        }
+        if (NULL == m_wDockManager->bottomAreaTabs)
+        {
+            qDebug() << "MainForm: error, bottomAreaTabs == null";
+            m_wDockManager->bottomAreaTabs = tabList.at(tabList.size()-1);
+        }
+        connect(m_wDockManager->bottomAreaTabs,
+                SIGNAL(currentChanged(int)),
+                m_wDockManager,
+                SLOT(handleShowHideBottom(int))
+               );
+
+        done = false;
+        
+        for (int i = 0; i < tabList.count() && false == done; i++)
+        {
+            for (int j = 0; j < tabList.at(i)->count(); j++)
+            {
+                if ("Help" == tabList.at(i)->tabText(j))
                 {
                     m_wDockManager->rightAreaTabs = tabList.at(i);
+                    done = true;
+                    m_wDockManager->rightAreaTabs->setCurrentIndex(j);
                     break;
                 }
             }
         }
         if (NULL == m_wDockManager->rightAreaTabs)
         {
+            qDebug() << "MainForm: error, rightAreaTabs == null";
             m_wDockManager->rightAreaTabs = tabList.at(tabList.count() - 1);
         }
         connect(m_wDockManager->rightAreaTabs,
@@ -1148,8 +1161,6 @@ void MainForm::createDockWidgets()
                 m_wDockManager,
                 SLOT(handleShowHideRight(int))
                );
-        m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
-        m_wDockManager->addDockWidget(WRIGHTHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
         #else
@@ -1336,7 +1347,7 @@ void MainForm::openFile()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
@@ -1501,15 +1512,15 @@ void MainForm::addFile()
 
             if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
             {
-                path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
             }
             else
             {
-                path = QFileDialog::getSaveFileName(this, tr("Save File"), m_lastDir, QString(), 0);
+                path = QFileDialog::getSaveFileName(this, tr("Add File"), m_lastDir, QString(), 0);
             }
             if (NULL == path)
             {
@@ -1691,7 +1702,7 @@ bool MainForm::saveFileAs()
     {
         if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
         {
-            path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
         }
         else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
@@ -1823,7 +1834,7 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
             {
                 if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
                 {
-                    path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+                    path = QFileDialog::getSaveFileName(this, tr("Save File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
                 }
                 else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
                 {
@@ -1986,7 +1997,7 @@ void MainForm::openProject()
     QString path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getSaveFileName(this, tr("New File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileName(this, tr("Open Project"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), tr("Project (*.mds-project)"), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
@@ -5412,11 +5423,14 @@ void MainForm::disableHelpActions(bool disable)
     saveAsAct->setDisabled(disable);
     reloadAct->setDisabled(disable);
     simulationFlowAct->setDisabled(disable);
-    simulationStepAct->setDisabled(disable);
-    simulationRunAct->setDisabled(disable);
-    simulationAnimateAct->setDisabled(disable);
-    simulationResetAct->setDisabled(disable);
-    simulationUnhighlightAct->setDisabled(disable);
+    if (true == simulationStatus)
+    {
+        simulationStepAct->setDisabled(disable);
+        simulationRunAct->setDisabled(disable);
+        simulationAnimateAct->setDisabled(disable);
+        simulationResetAct->setDisabled(disable);
+        simulationUnhighlightAct->setDisabled(disable);
+    }
     simulationBreakpointAct->setDisabled(disable);
     simulationDisableBreakpointsAct->setDisabled(disable);
     projectCompileAct->setDisabled(disable);
