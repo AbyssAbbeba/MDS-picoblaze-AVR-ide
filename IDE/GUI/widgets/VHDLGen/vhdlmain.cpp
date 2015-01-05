@@ -82,6 +82,9 @@ VhdlMain::VhdlMain(QWidget *parent) :
             SLOT(customMenuRequested(QPoint))
             );
 
+
+    ui->Output->setReadOnly(true);
+    ui->Input->setReadOnly(true);
     //QStringList attributes;
    // picoBlaze.name = "MPU_SYS_core";
    // portName << "clk" << "port_id" << "write_strobe" << "k_write_strobe" << "out_port" << "read_strobe"
@@ -671,7 +674,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         RectInfo->show();
 
         const int tabStop = 4; // 4 characters
-
+        ui3.textInfo->setReadOnly(true);
         // get names and values of port directives, put them into global structures
         // IN OUT ports
         QTextCursor cursor_textinfo(ui3.textInfo->textCursor());
@@ -956,7 +959,7 @@ void VhdlMain::mouseMoveEvent ( QMouseEvent * moveEvent )
    }
 
    unsigned int p = 0;
-   while ( true == componentObject[p]->isValid())
+   while ( p < 20 && true == componentObject[p]->isValid() )
    {
         if ( this->componentObject[p]->contains( moveEvent->pos() ) == true)
         {
@@ -1113,15 +1116,15 @@ void VhdlMain::saveAdd()
 
 void VhdlMain::pushOk()
 {   
-    if ( true == createWidget)
-    {
-        if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
-             || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
-        {
-            QMessageBox::warning ( this,"Name","Component with this name already exist");
-            return;
-        }
-    }
+//     if ( true == createWidget)
+//     {
+//         if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
+//              || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
+//         {
+//             QMessageBox::warning ( this,"Name","Component with this name already exist");
+//             return;
+//         }
+//     }
     componentCnt++;
     if ( componentCnt == 21)
     {
@@ -1756,8 +1759,9 @@ void VhdlMain::saveFile()
 void VhdlMain::loadFile()
 {
     // get path
+
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.sym");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.stbl");
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
