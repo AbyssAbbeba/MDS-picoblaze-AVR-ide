@@ -956,7 +956,7 @@ void VhdlMain::mouseMoveEvent ( QMouseEvent * moveEvent )
    }
 
    unsigned int p = 0;
-   while ( true == componentObject[p]->isValid() )
+   while ( p < 20 && true == componentObject[p]->isValid() )
    {
         if ( this->componentObject[p]->contains( moveEvent->pos() ) == true)
         {
@@ -967,8 +967,6 @@ void VhdlMain::mouseMoveEvent ( QMouseEvent * moveEvent )
             componentHighlight[p] = false;
         }
         p++;
-        if ( p > 20)
-            p--;
    }
 
    if ( rectList.contains("componentRect") == true)
