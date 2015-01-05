@@ -37,6 +37,18 @@ void XmlParser::getDirFiles()
     qDebug() << Devices;
 }
 
+QString XmlParser::removeExistingComponent(QString & componentToRemove)
+{
+    for ( unsigned int i = 0; i < xmlComponentCnt;  i++)
+    {
+        if ( componentToRemove == xmlDefinedComponent[i].xmlName )
+        {
+            qDebug() << componentToRemove << "component To be removed > "<< xmlDefinedComponent[i].xmlName;
+            return xmlDefinedComponent[i].xmlName;
+        }
+    }
+}
+
 unsigned int XmlParser::insertExistingComponent(QString & componentToAdd)
 {
     for ( unsigned int i = 0; i < xmlComponentCnt;  i++)
@@ -211,27 +223,27 @@ void XmlParser::readXml()
     //file[1].setFileName("../share/mds/components/Leds.txt");
     //file[2].setFileName("../share/mds/components/Buttons.txt");
 
-    file[0].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/UART.txt");
+    file[0].setFileName(":resources/xml/VHDLgen/UART.txt");
     file[0].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[0],getFreeRoom() - 1);
 
-    file[1].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/Leds.txt");
+    file[1].setFileName(":resources/xml/VHDLgen/Leds.txt");
     file[1].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[1],getFreeRoom() - 1);
 
-    file[2].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/Buttons.txt");
+    file[2].setFileName(":resources/xml/VHDLgen/Buttons.txt");
     file[2].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[2],getFreeRoom() - 1);
 
-    file[3].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/I2C_interface.txt");
+    file[3].setFileName(":resources/xml/VHDLgen/I2C_interface.txt");
     file[3].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[3],getFreeRoom() - 1);
 
-    file[4].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/LCD_interface.txt");
+    file[4].setFileName(":resources/xml/VHDLgen/LCD_interface.txt");
     file[4].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[4],getFreeRoom() - 1);
 
-    file[5].setFileName("C:/hratky_s_qt/VHDLgen/testsoubory/SPI_slave.txt");
+    file[5].setFileName(":resources/xml/VHDLgen/SPI_slave.txt");
     file[5].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[5],getFreeRoom() - 1);
 
