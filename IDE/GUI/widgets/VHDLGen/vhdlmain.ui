@@ -88,6 +88,13 @@
      <item>
       <widget class="QComboBox" name="comboKcpsm"/>
      </item>
+     <item>
+      <widget class="QLabel" name="InfoLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="3" column="0" colspan="2">
