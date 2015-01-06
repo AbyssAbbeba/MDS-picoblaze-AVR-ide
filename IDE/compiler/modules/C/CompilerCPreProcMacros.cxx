@@ -51,7 +51,8 @@ const std::set<std::string> CompilerCPreProcMacros::KEYWORDS =
     "while",        "auto",         "char",         "const",        "double",
     "extern",       "float",        "enum",         "int",          "long",
     "register",     "short",        "signed",       "static",       "struct",
-    "typedef",      "union",        "unsigned",     "void",         "volatile"
+    "typedef",      "union",        "unsigned",     "void",         "volatile",
+    "_Bool",        "_Complex",     "_Imaginary"
 };
 
 const std::map<std::string, std::string> CompilerCPreProcMacros::NAMED_OPERATORS =

@@ -236,7 +236,7 @@ int main ( int argc, char ** argv )
     bool inTypeGuessed = false;
 
     std::cout << QObject::tr("MDS mutitarget disassembler v%1").arg(VERSION).toStdString() << std::endl
-              << QObject::tr("(C) copyright 2013, 2014 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
+              << QObject::tr("(C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o., Brno, CZ, European Union.")
                             .toStdString() << std::endl
               << "All rights reserved." << std::endl
               << std::endl;

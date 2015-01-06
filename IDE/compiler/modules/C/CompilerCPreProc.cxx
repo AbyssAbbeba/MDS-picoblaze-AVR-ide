@@ -14,6 +14,16 @@
 
 #include "CompilerCPreProc.h"
 
+/*
+ * MISSING FEATURES:
+ * - warning and error reporting
+ * - location map involvement for trigraphs and macros
+ * - digraphs are not supposed to be translated in the preprocessor but in the lexer instead
+ * - _Pragma(...) operator support (if applicable)
+ * - #line directive support
+ * - everything marked with "TODO:"
+ */
+
 // Common compiler header files.
 #include "CompilerOptions.h"
 #include "CompilerParserInterface.h"
@@ -68,13 +78,12 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
             // Iterate over the lines in the source file.
             while ( -1 != ( inBuffer.m_pos = getline(&inBuffer.m_data, &inBuffer.m_size, fileStack.back()) ) )
             {
+                m_compilerCore->locationMap().addMark(m_locationStack.back(), m_location);
                 if ( false == inputProcessing(inBuffer, outBuffer, mergeBuffer, mlineBuffer) )
                 {
                     // Critical error.
                     return nullptr;
                 }
-
-                m_compilerCore->locationMap().addMark(m_locationStack.back(), m_location);
 
                 if ( false == m_include.m_file.empty() )
                 {
@@ -92,6 +101,7 @@ char * CompilerCPreProc::processFiles ( const std::vector<FILE*> & inputFiles )
                 }
             }
 
+            m_compilerCore->locationMap().addMark(m_locationStack.back(), m_location);
             m_locationStack.pop_back();
 
             // Check for error condition on the source file.
@@ -200,7 +210,9 @@ inline bool CompilerCPreProc::inputProcessing ( Buffer & inBuffer,
     {
         // Append contents of the input buffer to the output buffer and expand macros in one step.
         m_macroTable.expand(outBuffer, inBuffer);
-
+    }
+    else
+    {
         m_compilerCore->locationMap().removeMarks(m_location);
         m_location.m_lineStart--;
     }
