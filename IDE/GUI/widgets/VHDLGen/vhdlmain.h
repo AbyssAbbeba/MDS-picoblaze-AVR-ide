@@ -118,7 +118,6 @@ class VhdlMain : public QWidget
      void componentWizardInitialization();
      void componentWizardConstruct();
      void clearStructures();
-     void rectClicked(int pos);
      unsigned int tabsNumber(QString inputString);
      void addExistingComponent(unsigned int);
      void validateName(unsigned int);

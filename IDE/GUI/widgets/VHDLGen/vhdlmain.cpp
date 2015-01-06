@@ -163,6 +163,7 @@ void VhdlMain::addExistingComponent(unsigned int xmlNumber)
     }
     m_xmlNumberFlag = true;
     m_xmlNumber = xmlNumber;
+    createWidget = false;
     pushOk();
 }
 
@@ -173,18 +174,16 @@ VhdlMain::genericType VhdlMain::getEnum(QString & inString)
     if ( inString == "integer")     return INTEGER;
     if ( inString == "positive")    return POSITIVE;
     if ( inString == "natural")     return NATURAL;
-   // if ( inString == "real")        return REAL;
-   // if ( inString == "string")      return STRING;
 }
 
 void VhdlMain::paintEvent(QPaintEvent *e)
 {
     // initial definitions (pens, points, rect)
     QPainter painter;
-    QPen graypen    (Qt::gray);
-    QPen blackpen   (Qt::black);
-    QPen blackpenRect   (Qt::black);
-    QPen blackpenSwitch   (Qt::black);
+    QPen graypen(Qt::gray);
+    QPen blackpen(Qt::black);
+    QPen blackpenRect(Qt::black);
+    QPen blackpenSwitch(Qt::black);
     QPen DotRect(Qt::black);
     DotRect.setWidth(1);
     DotRect.setStyle(Qt::DashLine);
@@ -313,7 +312,6 @@ void VhdlMain::customMenuRequested(QPoint pos)
 
 void VhdlMain::RemoveXml()
 {
-    qDebug() << "sutu REMOVE";
     QString componentToRemove = ui->listVystup->currentItem()->text();
     if ( componentToRemove == "UART")
     {
@@ -357,7 +355,6 @@ void VhdlMain::RemoveXml()
     ui->listVystup->clear();
     ui->listVystup->addItems(bootDeviceList);
     ui->listVystup->addItems(xmlParser.Devices);
-    //xmlParser.removeExistingComponent(componentToRemove);// TODO > vymazat
 }
 
 void VhdlMain::pushEditSlot()
@@ -650,16 +647,16 @@ void VhdlMain::editSelectedComponent(unsigned int position)
 
 void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 {
-    if(pressEvent->button() == Qt::RightButton)
-    {
-        qDebug() << "right click";
-    }
+//     if(pressEvent->button() == Qt::RightButton)
+//     {
+//         qDebug() << "right click";
+//     }
 
     if ( rectList.contains("componentRect") == true)
     {
         if ( this->componentRect->contains( pressEvent->pos() ) == true)
         {
-             emit createComponent1();
+             createComponent1();
              return;
         }
     }
@@ -691,6 +688,8 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         port.clear();
         QTextStream out(&port);
 
+        // KCPSM ver 
+
         out << " COMPONENT NAME:"  << "\n";
         out << ui->comboKcpsm->currentText() << "\n" << "\n";
         if ( ui->comboKcpsm->currentText() == "KCPSM6")
@@ -699,17 +698,66 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
             out << " HWbuild" << endl << endl;
         }
         out << "PORTS:" << endl;
-        out << " port_id" << endl;
-        out << " write_strobe" << endl;
-        if ( ui->comboKcpsm->currentText() == "KCPSM6")
-        {
-            out << " k_write_strobe" << endl;
-        }
-        out << " read_strobe" <<endl;
-        out << " interrupt" <<  endl;
-        out << " out_port" <<   endl;
-        out << " in_port" <<    endl;
-        out << " interrupt_ack" << endl;
+        
+    switch ( ui->comboKcpsm->currentIndex() )
+    {
+        // kcpsmcpld
+        case 0:
+            out << " Pico_Data_in" <<"\n";
+            out << " Pico_Data_out" <<"\n";
+            out << " Pico_Port_ID" <<"\n";
+            out << " Pico_rd" <<"\n";
+            out << " Pico_wr" <<"\n";
+            out << " Pico_int" <<"\n";
+            out << " Pico_clk" <<"\n";
+            break;
+        // kcpsm1
+        case 1:
+            out << " Pico_Data_in" <<"\n";
+            out << " Pico_Data_out" <<"\n";
+            out << " Pico_Port_ID" <<"\n";
+            out << " Pico_rd" <<"\n";
+            out << " Pico_wr" <<"\n";
+            out << " Pico_int" <<"\n";
+            out << " Pico_clk" <<"\n";
+            break;
+        // kcpsm2
+        case 2:
+            out << " Pico_Data_in" <<"\n";
+            out << " Pico_Data_out" <<"\n";
+            out << " Pico_Port_ID" <<"\n";
+            out << " Pico_rd" <<"\n";
+            out << " Pico_wr" <<"\n";
+            out << " Pico_int" <<"\n";
+            out << " Pico_clk" <<"\n";
+            break;
+        // kcpsm3
+        case 3:
+            out << " Pico_Data_in" <<"\n";
+            out << " Pico_Data_out" <<"\n";
+            out << " Pico_Port_ID" <<"\n";
+            out << " Pico_rd" <<"\n";
+            out << " Pico_wr" <<"\n";
+            out << " Pico_int" <<"\n";
+            out << " Pico_int_ack" <<"\n";
+            out << " Pico_clk" <<"\n";
+            break;
+        // kcpsm6
+        case 4:
+            out << " Pico_Data_in" <<"\n";
+            out << " Pico_Data_out" <<"\n";
+            out << " Pico_Port_ID" <<"\n";
+            out << " Pico_rd" <<"\n";
+            out << " Pico_wr" <<"\n";
+            out << " Pico_k_wr" <<"\n";
+            out << " Pico_int" <<"\n";
+            out << " Pico_int_ack" <<"\n";
+            out << " Pico_clk" <<"\n";
+            out << " Pico_sleep" <<"\n";
+            break;
+        default: qDebug() << "wrong kcpsm selected";
+            break;
+    }
 
         cursor_textinfo.insertText(port);
         ui3.textInfo->setTextCursor(cursor_textinfo);
@@ -926,11 +974,6 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
     update();
 }
 
-void VhdlMain::rectClicked(int pos)
-{
-    return;
-}
-
 void VhdlMain::mouseMoveEvent ( QMouseEvent * moveEvent )
 {
    if ( this->KCPSM->contains( moveEvent->pos() ) == true)
@@ -1116,15 +1159,15 @@ void VhdlMain::saveAdd()
 
 void VhdlMain::pushOk()
 {   
-//     if ( true == createWidget)
-//     {
-//         if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
-//              || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
-//         {
-//             QMessageBox::warning ( this,"Name","Component with this name already exist");
-//             return;
-//         }
-//     }
+    if ( true == createWidget)
+    {
+        if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))
+             || ( true == bootDeviceList.contains(ui2.editName->text())  )  )
+        {
+            QMessageBox::warning ( this,"Name","Component with this name already exist");
+            return;
+        }
+    }
     componentCnt++;
     if ( componentCnt == 21)
     {
@@ -1872,7 +1915,7 @@ void VhdlMain::printToFile()
     if ( NULL == savePath || NULL == loadPath)
     {
         qDebug()<< "no files selected";
-        QMessageBox::warning ( this, "Select files", "Please select Input ( .sym ) and Output file");
+        QMessageBox::warning ( this, "Select files", "Please select Input ( .stbl ) and Output file");
         return;
     }
     QDate Date = QDate::currentDate();
@@ -2737,7 +2780,8 @@ void VhdlMain::printToFile()
     out << "END Behavioral;" << endl;
     out << "-------------------------------------------------" <<"\n";
     outFile.close();
-    //ui->infoLabel->setText("Generation completed");
+    ui->InfoLabel->setText("Done");
+    
     printedComponents.clear();
     return;
 }
