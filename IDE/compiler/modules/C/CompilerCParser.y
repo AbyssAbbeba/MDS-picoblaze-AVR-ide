@@ -28,9 +28,9 @@
 // Write an extra output file containing verbose descriptions of the parser states.
 %verbose
 // Expect exactly <n> shift/reduce conflicts in this grammar.
-%expect 39
+/* %expect 39 */
 // Expect exactly <n> reduce/reduce conflicts in this grammar.
-%expect-rr 0
+/* %expect-rr 0 */
 // Type of parser tables within the LR family, in this case we use LALR (Look-Ahead LR parser).
 %define lr.type lalr
 // Bison declaration to request verbose, specific error message strings when yyerror is called.
@@ -126,6 +126,8 @@
  * DECLARATION OF THE GRAMMAR APLHABET - TERMINAL SYMBOLS
  */
 %token EOS              ";"
+%token LOCATION_SPEC    "__at__"
+%token INLINE_ASSEMBLY  "__asm__"
 
 %token KW_BREAK         "break"
 %token KW_CASE          "case"
@@ -252,9 +254,9 @@
 // Expressions.
 %type<expr>     expr            e_expr      id      string      param       param_list      indexes     datatype
 %type<expr>     decl            decl_list   dt      dt_attr     union       union_body      expr_list   member_access
-%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations
+%type<expr>     struct          struct_body enum    enum_body   ptr_attr    declarations    at
 // Statements - general.
-%type<stmt>     statements      stmt        cases   scope       switch_body
+%type<stmt>     statements      stmt        cases   scope       switch_body function
 
 // Each time the parser discards symbol with certain semantic types, their memory have to bee freed.
 %destructor
@@ -307,23 +309,14 @@ statements:
 
 // Single statement.
 stmt:
-      ";"                           { $$ = nullptr; }
+      ";"                           { $$ = nullptr; /* the null statement */ }
     | scope                         { $$ = $scope; }
     | expr_list ";"                 { $$ = new CompilerStatement(LOC(@$), C_STMT_EXPR, $expr_list); }
     | "break" ";"                   { $$ = new CompilerStatement(LOC(@$), C_STMT_BREAK); }
     | "continue" ";"                { $$ = new CompilerStatement(LOC(@$), C_STMT_CONTINUE); }
     | "return" e_expr ";"           { $$ = new CompilerStatement(LOC(@$), C_STMT_RETURN, $e_expr); }
-    | declarations                  { $$ = new CompilerStatement(LOC(@1), C_STMT_VAR, $declarations); }
-    | dt_attr datatype id "(" param_list ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
-                                        $$->createBranch($7);
-                                    }
-    | "inline" dt_attr datatype id "(" param_list ")" stmt
-                                    {
-                                        $$ = new CompilerStatement(LOC(@$), C_STMT_INLINE_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
-                                        $$->createBranch($8);
-                                    }
+    | declarations                  { $$ = new CompilerStatement(LOC(@$), C_STMT_VAR, $declarations); }
+    | function                      { $$ = $function; }
     | "typedef" datatype id ";"     {
                                          $$ = new CompilerStatement(LOC(@$), C_STMT_TYPEDEF, $datatype->appendLink($id));
                                     }
@@ -393,6 +386,24 @@ scope:
     | "{" statements "}"            {
                                         $$ = new CompilerStatement(LOC(@$), C_STMT_SCOPE);
                                         $$->createBranch($statements);
+                                    }
+;
+
+function:
+      dt_attr datatype id "(" param_list ")" stmt
+                                    {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
+                                        $$->createBranch($stmt);
+                                    }
+    | dt_attr datatype id "(" param_list ")" at stmt
+                                    {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list)->appendLink($at));
+                                        $$->createBranch($stmt);
+                                    }
+    | "inline" dt_attr datatype id "(" param_list ")" stmt
+                                    {
+                                        $$ = new CompilerStatement(LOC(@$), C_STMT_INLINE_FUNC, $dt_attr->appendLink($datatype)->appendLink($id)->appendLink($param_list));
+                                        $$->createBranch($stmt);
                                     }
 ;
 
@@ -480,7 +491,7 @@ string:
 ;
 
 datatype:
-     dt                             { $$ = $dt;                          }
+      dt                            { $$ = $dt;                          }
     | datatype dt                   { $$ = $1->appendLink($dt);          }
     | enum                          {
                                         $$ = new CompilerExpr(CompilerValue(CompilerCDatatypes::DT_ENUM),
@@ -560,6 +571,12 @@ dt:
                                                               CompilerExpr::OPER_DATATYPE,
                                                               LOC(@$));
                                     }
+    | at                            { $$ = $at; }
+;
+
+at:
+      "__at__" "(" string "," expr ")"
+                                    { $$ = new CompilerExpr($string, CompilerExpr::OPER_AT, $expr, LOC(@$)); }
 ;
 
 dt_attr:

@@ -14,12 +14,10 @@
 // =============================================================================
 
 #include "CompilerLocationMap.h"
-#include<iostream>//DEBUG
 
 void CompilerLocationMap::addMark ( const CompilerSourceLocation & to,
                                     const CompilerSourceLocation & from )
 {
-std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
     if ( ( from.m_fileNumber + 1 ) > (int) m_map.size() )
     {
         m_map.resize(from.m_fileNumber + 1);
@@ -33,6 +31,7 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
         if ( from.m_lineStart == i.m_org )
         {
             lineMark = &i;
+            break;
         }
     }
     if ( nullptr == lineMark )
@@ -42,25 +41,31 @@ std::cout << "CompilerLocationMap::addMark("<<to<<" <-- "<<from<<"): ";
         lineMark->m_org = from.m_lineStart;
     }
 
-    lineMark->m_columnMap.push_back(ColumnMark());
+    ColumnMark * columnMark = nullptr;
+    for ( auto & i : lineMark->m_columnMap )
+    {
+        if ( from.m_colStart == i.m_org )
+        {
+            columnMark = &i;
+            break;
+        }
+    }
+    if ( nullptr == columnMark )
+    {
+        lineMark->m_columnMap.push_back(ColumnMark());
+        columnMark = &( lineMark->m_columnMap.back() );
+        columnMark->m_org = from.m_colStart;
+    }
 
-    auto & columnMark = lineMark->m_columnMap.back();
-    columnMark.m_org = from.m_colStart;
-
-    auto & diff = columnMark.m_diff;
+    auto & diff = columnMark->m_diff;
     diff.m_file = to.m_fileNumber - from.m_fileNumber;
     diff.m_line = to.m_lineStart  - from.m_lineStart;
     diff.m_column = to.m_colStart - from.m_colStart;
     diff.m_origin = -1;
-
-    std::cout << "diff.m_file=" << diff.m_file << ", diff.m_line=" << diff.m_line << ", diff.m_column=" << diff.m_column << '\n';
-
-    // TODO: handle location origin
 }
 
 void CompilerLocationMap::removeMarks ( const CompilerSourceLocation & line )
 {
-std::cout << "CompilerLocationMap::removeMarks("<<line<<"): \n";
     if ( line.m_fileNumber >= (int) m_map.size() )
     {
         return;
@@ -84,10 +89,8 @@ std::cout << "CompilerLocationMap::removeMarks("<<line<<"): \n";
 
 CompilerSourceLocation CompilerLocationMap::translate ( const CompilerSourceLocation & from ) const
 {
-    std::cout<<"CompilerLocationMap::translate ( "<<from<<" ): ";
     if ( from.m_fileNumber >= (int) m_map.size() )
     {
-        std::cout<<"( "<<from.m_fileNumber<<" >= "<<m_map.size()<<" )\n";
         return from;
     }
 
@@ -144,7 +147,7 @@ CompilerSourceLocation CompilerLocationMap::translate ( const CompilerSourceLoca
         result.m_lineEnd    += diff[1]->m_line;
         result.m_colEnd     += diff[1]->m_column;
     }
-std::cout<<result<<'\n';
+
     return result;
 }
 

@@ -126,6 +126,8 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 
  /* Special tokens */
 ";"             { return EOS;               }
+"__at__"        { return LOCATION_SPEC;     }
+"__asm__"       { return INLINE_ASSEMBLY;   }
 
  /* Keywords */
 "break"         { return KW_BREAK;          }
@@ -172,7 +174,6 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
 "]"             { return B_SQR_RIGHT;       }
 "{"             { return B_CRL_LEFT;        }
 "}"             { return B_CRL_RIGHT;       }
-
 
  /* Expression operators */
 ":"             { return O_COLON;           }
@@ -224,7 +225,7 @@ ID      [_a-zA-Z][_a-zA-Z0-9]*
                     yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 64, 2);
                     return INTEGER;
                 }
-0x[0-9A-F]+     {
+0x[0-9a-fA-F]+  {
                     // Hexadecimal number.
                     yylval->integer = convertStrToNumber(yyextra, yylloc, (yytext + 2), 16, 16);
                     return INTEGER;
