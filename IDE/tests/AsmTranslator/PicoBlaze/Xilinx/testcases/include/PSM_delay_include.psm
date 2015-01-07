@@ -1,0 +1,72 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;   CCCC     AAA    L        L        SSSS           DDDDD   EEEEEEE  L          AAA    Y     Y
+;  C    C   A   A   L        L       S    S          D    D  E        L         A   A   Y     Y
+;  C       A     A  L        L       S               D    D  E        L        A     A   Y   Y
+;  C       AAAAAAA  L        L        SSSS           D    D  EEEE     L        AAAAAAA    YYY
+;  C       A     A  L        L            S          D    D  E        L        A     A     Y
+;  C    C  A     A  L        L       S    S          D    D  E        L        A     A     Y
+;   CCCC   A     A  LLLLLLL  LLLLLLL  SSSS           DDDDD   EEEEEEE  LLLLLLL  A     A     Y
+;
+;==============================================================================;
+; Procedures for waiting for specified time
+; Duration is set in registers s0, s1 and s2
+;
+;   clock           instruction execution time
+;   10.00 MHz              200.00 ns
+;   19.44 MHz              102.88 ns
+;   38.88 MHz               51.44 ns
+;   50.00 MHz               40.00 ns
+;  100.00 MHz               20.00 ns
+;  112.00 MHz               17,86 ns
+;
+; wait_time = (6+4*(1+MOD((s2-1);256)*256*256+256*s1+s0)) * 2/f
+;==============================================================================;
+; stated delays valid for clk freq = 125 MHz
+
+wait_1s:            LOAD        s0,  37'd           ; Load s0 register
+                    LOAD        s1, 107'd           ; Load s1 register
+                    LOAD        s2, 239'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_100ms:         LOAD        s0, 129'd           ; Load s0 register
+                    LOAD        s1, 215'd           ; Load s1 register
+                    LOAD        s2,  24'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_10ms:          LOAD        s0,  87'd           ; Load s0 register
+                    LOAD        s1,  98'd           ; Load s1 register
+                    LOAD        s2,   3'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_5ms:           LOAD        s0,  42'd           ; Load s0 register
+                    LOAD        s1,  49'd           ; Load s1 register
+                    LOAD        s2,   2'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_1ms:           LOAD        s0,   6'd           ; Load s0 register
+                    LOAD        s1,  61'd           ; Load s1 register
+                    LOAD        s2,   1'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_100us:         LOAD        s0,  24'd           ; Load s0 register
+                    LOAD        s1,   6'd           ; Load s1 register
+                    LOAD        s2,   1'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_10us:          LOAD        s0, 153'd           ; Load s0 register
+                    LOAD        s1,   0'd           ; Load s1 register
+                    LOAD        s2,   1'd           ; Load s2 register
+                    JUMP        wait_common
+;------------------------------------------------------------------------------;
+wait_common:        SUB         s0, 01
+                    SUBCY       s1, 00
+                    SUBCY       s2, 00
+                    JUMP        NZ, wait_common
+                    RETURN
+;==============================================================================;

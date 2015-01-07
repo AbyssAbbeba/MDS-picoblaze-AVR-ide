@@ -1,0 +1,168 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+; PicoBlaze peripheral addresses (port IDs)
+; Device bus addresses
+;
+;==============================================================================;
+;
+; TWI (SFP)
+CONSTANT ID_SFP_control                 , 00                ; SFP status / control register
+CONSTANT ID_SFP_data                    , 01                ; TWI data (read/write)
+CONSTANT ID_SFP_addr                    , 02                ; TWI register address
+CONSTANT ID_SFP_status                  , 03                ; TWI status / control register
+CONSTANT ID_SFP_TW_addr                 , 04                ; TWI device address
+;   
+; SMI (PHY) 
+CONSTANT ID_SMI_datL                    , 08                ; SMI MAC interface lowe data byte
+CONSTANT ID_SMI_datH                    , 09                ; SMI MAC interface upper data byte
+CONSTANT ID_SMI_addr                    , 0A                ; SMI MAC interface address/control byte
+CONSTANT ID_PHY_SMI_addr                , 0B                ; PHY address on SMI bus
+CONSTANT ID_PHY_reset                   , 0C                ; PHY reset register; SOFT(1) and HARD(0) reset of PHY
+;   
+; UART  
+CONSTANT ID_UART_data                   , 10                ; UART data register port ID
+CONSTANT ID_UART_status                 , 11                ; UART control register port ID
+CONSTANT ID_K_UART_reset                , 00                ; UART reset (K oputput)
+;   
+; Interrupt controler   
+CONSTANT ID_INT_EN                      , 20                ; interrupt enable/disable control register
+CONSTANT ID_INT_SENSE                   , 21                ; interrupt level(L) / edge(H) sensitivity
+CONSTANT ID_INT_STATUS                  , 22                ; number of active interrupt
+;
+;  int_in(1) <= UART_Status_reg(3);          -- UART RX_data_present (new data); level sensitive
+;  int_in(2) <= PHY_MDINT(0);                -- level sensitive
+;  int_in(3) <= PHY_MDINT(1);                -- level sensitive
+;  int_in(4) <= PHY_MDINT(2);                -- level sensitive
+;  int_in(5) <= PHY_MDINT(3);                -- level sensitive
+;  int_in(6) <= SFP_present;                 -- shold be edge sensitive!
+;  int_in(7) <= '0';
+;  int_in(8) <= '0';
+;
+;
+;   
+; Agregator status/control  
+;
+CONSTANT ID_MAC_0_link_status           , 30
+CONSTANT ID_MAC_1_link_status           , 31
+CONSTANT ID_MAC_2_link_status           , 32
+CONSTANT ID_MAC_3_link_status           , 33
+;
+CONSTANT ID_AGR_Switch_Limit_RAD_L      , 40
+CONSTANT ID_AGR_Switch_Limit_RAD_H      , 41
+CONSTANT ID_AGR_Switch_Limit_LAG_L      , 42
+CONSTANT ID_AGR_Switch_Limit_LAG_H      , 43
+CONSTANT ID_AGR_mode_req                , 44
+CONSTANT ID_AGR_mode_status             , 45
+CONSTANT ID_AGR_FIFO_status             , 46
+;
+CONSTANT ID_MAC_port_MUX_control        , 50
+;
+CONSTANT ID_GTP_PLL_status              , 60
+CONSTANT ID_GTP_TX_BUF_Status           , 61
+CONSTANT ID_GTP_RX_BUF_Status           , 62
+CONSTANT ID_GTP_BUF_Status_ACK          , 63
+;
+;
+CONSTANT ID_GPIO_LED                    , 70
+CONSTANT ID_GPIO_DIP                    , 71
+;
+;
+CONSTANT ID_I2C_Dev_addr                , 80
+CONSTANT ID_RAM_addr_REG                , 81
+CONSTANT ID_RAM_data_out_REG            , 82
+CONSTANT ID_RAM_data_in_REG             , 83
+;
+CONSTANT ID_I2C_radio_Dev_Addr_REG      , 84
+CONSTANT ID_I2C_radio_Reg_Addr_REG      , 85
+CONSTANT ID_I2C_radio_Data_In_REG       , 86
+CONSTANT ID_I2C_radio_Data_Out_REG      , 87
+CONSTANT ID_I2C_radio_St_Ctrl_REG       , 88
+;
+;
+CONSTANT ID_HOST_select                 , 90
+CONSTANT ID_HOST_stat_ctrl              , 91
+CONSTANT ID_HOST_data_0                 , 92
+CONSTANT ID_HOST_data_1                 , 93
+CONSTANT ID_HOST_data_2                 , 94
+CONSTANT ID_HOST_data_3                 , 95
+CONSTANT ID_HOST_addr_L                 , 96
+CONSTANT ID_HOST_addr_H                 , 97
+;
+;
+CONSTANT ID_AGR_REG_Status_Local_H      , A0        ; reg 0x9F
+CONSTANT ID_AGR_REG_Status_Local_L      , A1        ; reg 0x00
+CONSTANT ID_AGR_REG_Status_RAD_H        , A2        ; reg 0x9F
+CONSTANT ID_AGR_REG_Status_RAD_L        , A3        ; reg 0x00
+CONSTANT ID_AGR_REG_Status_RAD_valid    , A4
+CONSTANT ID_AGR_REG_Status_LAG_H        , A5        ; reg 0x9F
+CONSTANT ID_AGR_REG_Status_LAG_L        , A6        ; reg 0x00
+CONSTANT ID_AGR_REG_Status_LAG_valid    , A7
+;
+;
+CONSTANT ID_SYS_reset                   , FF
+;
+;==============================================================================;
+;
+; device addresses on TWI (SFP EEPROM and PHY)
+CONSTANT ID_SFP_EEPROM_ADDR         , 10                ; SFP EEPROM addres on TWI (basic SFP info)
+CONSTANT ID_SFP_PHY_ADDR            , 16                ; 88E1111 PHY address on TWI (in SFP module)
+;
+;==============================================================================;
+;
+CONSTANT Mode_Isolate           , 00000000'b
+CONSTANT Mode_Loopback          , 00000001'b
+CONSTANT Mode_Direct            , 00000010'b
+CONSTANT Mode_AGR_Slave         , 00000011'b
+CONSTANT Mode_AGR_Master        , 00000100'b
+CONSTANT Mode_Autodetect        , 00000111'b
+
+CONSTANT I2C_busy               , 10000000'b
+CONSTANT I2C_ACK_error          , 01000000'b
+CONSTANT I2C_read               , 00000010'b
+CONSTANT I2C_write              , 00000001'b
+;
+;
+;==============================================================================;
+;
+; Switch limit values for particular modes
+;
+CONSTANT C_SwLim_4k0_H          , 10
+CONSTANT C_SwLim_3k5_H          , 0E
+CONSTANT C_SwLim_3k0_H          , 0C
+CONSTANT C_SwLim_2k5_H          , 0A
+CONSTANT C_SwLim_2k0_H          , 08
+CONSTANT C_SwLim_1k5_H          , 06
+CONSTANT C_SwLim_1k0_H          , 04
+CONSTANT C_SwLim_0k0_H          , 00
+;
+CONSTANT C_SwLim_xkx_L          , 00
+;
+;
+; Speed info
+;
+CONSTANT C_Radio_Speed_1k0      , 00
+CONSTANT C_Radio_Speed_1k5      , 01
+CONSTANT C_Radio_Speed_2k0      , 02
+CONSTANT C_Radio_Speed_2k5      , 03
+CONSTANT C_Radio_Speed_3k0      , 04
+CONSTANT C_Radio_Speed_3k5      , 05
+CONSTANT C_Radio_Speed_4k0      , 06
+;
+;
+; Maximum difference in speed indication between the two channels to allow agregation
+CONSTANT C_max_difference       , 01
+;
+;
+;==============================================================================;
+;
+; Constants for MAC port MUX
+;                              - L R P
+;                              0 2 3 1
+CONSTANT C_MAC_0x_2L_3R_1P  , 00101101'b
+;
+;==============================================================================;

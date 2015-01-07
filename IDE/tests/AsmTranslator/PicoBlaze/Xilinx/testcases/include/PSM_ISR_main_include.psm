@@ -1,0 +1,61 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;   I  N     N  TTTTTTTTT  EEEEEEE  RRRRRR   RRRRRR   U      U  PPPPPP   TTTTTTTTT
+;   I  NN    N      T      E        R     R  R     R  U      U  P     P      T
+;   I  N N   N      T      E        R     R  R     R  U      U  P     P      T
+;   I  N  N  N      T      EEEE     RRRRRR   RRRRRR   U      U  PPPPPP       T
+;   I  N   N N      T      E        R   R    R   R    U      U  P            T
+;   I  N    NN      T      E        R    R   R    R    U    U   P            T
+;   I  N     N      T      EEEEEEE  R     R  R     R    UUUU    P            T
+;
+;==============================================================================;
+;
+;  1 = UART_Status_reg(3);          -- level sensitive; UART RX_data_present (new data)
+;  2 = PHY_MDINT(0);                -- level sensitive
+;  3 = PHY_MDINT(1);                -- level sensitive
+;  4 = PHY_MDINT(2);                -- level sensitive
+;  5 = PHY_MDINT(3);                -- level sensitive
+;  6 = SFP_present;                 -- edge sensitive
+;  7 = -- unused --
+;  8 = -- unused --
+;
+;==============================================================================;
+; received character detection
+IntService:         STORE       s0, 00
+                    STORE       s1, 01
+                    STORE       s2, 02
+                    STORE       sC, 0C
+                    STORE       sD, 0D
+
+                    INPUT       s5, ID_INT_STATUS   ; read IRQ vector
+                    COMPARE     s5, 01
+                    JUMP        Z, ISR_UART
+                    COMPARE     s5, 02
+                    JUMP        Z, ISR_PHY_0
+                    COMPARE     s5, 03
+                    JUMP        Z, ISR_PHY_1
+                    COMPARE     s5, 04
+                    JUMP        Z, ISR_PHY_2
+                    COMPARE     s5, 05
+                    JUMP        Z, ISR_PHY_3
+                    COMPARE     s5, 06
+                    JUMP        Z, ISR_SFP
+                    COMPARE     s5, 07
+                    JUMP        Z, FIFO_over_ISR
+                    JUMP        Int_End             ; unsupported vector
+
+;==============================================================================;
+Int_End:            
+                    FETCH       s0, 00
+                    FETCH       s1, 01
+                    FETCH       s2, 02
+                    FETCH       sC, 0C
+                    FETCH       sD, 0D
+                    RETURNI     ENABLE              ; Return from interrupt subroutine, eanble interrupt
+
+;==============================================================================;

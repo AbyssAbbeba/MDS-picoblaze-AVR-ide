@@ -1,0 +1,104 @@
+;==============================================================================;
+;==============================================================================;
+
+; CONSTANT ID_I2C_radio_Dev_Addr_REG  , 84
+; CONSTANT ID_I2C_radio_Reg_Addr_REG  , 85
+; CONSTANT ID_I2C_radio_Data_In_REG   , 86
+; CONSTANT ID_I2C_radio_Data_Out_REG  , 87
+; CONSTANT ID_I2C_radio_St_Ctrl_REG   , 88
+;        -- (0) write, (1) read, (6) I2C_radio_Last_Err, (7) I2C_radio_Busy
+; CONSTANT I2C_busy               , 10000000'b
+; CONSTANT I2C_ACK_error          , 01000000'b
+; CONSTANT I2C_read               , 00000010'b
+; CONSTANT I2C_write              , 00000001'b
+
+;==============================================================================;
+
+I2C_radio_read:     INPUT       s0, ID_I2C_radio_St_Ctrl_REG    ; check I2C interface status
+                    TEST        s0, I2C_busy                    ; Busy?
+                    JUMP        NZ, I2C_radio_read              ; if busy, wait
+
+                    OUTPUT      s3, ID_I2C_radio_Dev_Addr_REG   ; set accessed I2C device physical address
+                    OUTPUT      s4, ID_I2C_radio_Reg_Addr_REG   ; set accessed register address
+                    LOAD        s0, I2C_read                    ; read operation
+                    OUTPUT      s0, ID_I2C_radio_St_Ctrl_REG    ; initiate read operation
+                    TEST        s0, 00                          ; dummy wait (it takes some time for I2C_BUSY signal to go high)
+
+I2C_radio_rd_0:     INPUT       s0, ID_I2C_radio_St_Ctrl_REG    ; check I2C interface status
+                    TEST        s0, I2C_busy                    ; Busy?
+                    JUMP        NZ, I2C_radio_rd_0              ; if busy, wait
+
+                    INPUT       s5, ID_I2C_radio_Data_Out_REG   ; read data I2C Rx data (from controler output)
+                    TEST        s0, I2C_ACK_error               ; ACK error?
+                    JUMP         Z, I2C_radio_rd_1              ; if not, return from subroutine
+                    LOAD        s3, FF                          ; s3 = FF signalizes I2C ACK error
+
+I2C_radio_rd_1:     RETURN
+
+;==============================================================================;
+
+I2C_radio_write:    INPUT       s0, ID_I2C_radio_St_Ctrl_REG    ; check I2C interface status
+                    TEST        s0, I2C_busy                    ; Busy?
+                    JUMP        NZ, I2C_radio_write             ; if busy, wait
+
+                    OUTPUT      s3, ID_I2C_radio_Dev_Addr_REG   ; set accessed I2C device physical address
+                    OUTPUT      s4, ID_I2C_radio_Reg_Addr_REG   ; set accessed register address
+                    OUTPUT      s5, ID_I2C_radio_Data_In_REG    ; set data (input to I2C controler)
+                    LOAD        s0, I2C_write                   ; write operation
+                    OUTPUT      s0, ID_I2C_radio_St_Ctrl_REG    ; initiate write operation
+
+                    RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+
+
+
+I2C_radio_emul_rd:  CALL        send_CRLF
+                    LOAD        s3, 53                  ; I2C device address
+                    LOAD        s4, 80                  ; register address (first read-only byte)
+Test_radio_RD_ch:   CALL        I2C_radio_read
+                    LOAD        s9, s5
+                    CALL        send_CHAR
+                    ADD         s4, 01
+                    COMPARE     s4, 9F                  ; last character byte?
+                    JUMP        NZ, Test_radio_RD_ch
+                    CALL        send_CRLF
+
+                    LOAD        s4, 00
+                    CALL        I2C_radio_read
+                    CALL        send_TAB
+                    LOAD        s9, s4
+                    CALL        send_BYTE
+                    CALL        send_SPACE
+                    LOAD        s9, s5
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+
+                    LOAD        s4, 9F
+                    CALL        I2C_radio_read
+                    CALL        send_TAB
+                    LOAD        s9, s4
+                    CALL        send_BYTE
+                    CALL        send_SPACE
+                    LOAD        s9, s5
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+
+;                    LOAD        s4, 00                  ; first byte
+;Test_radio_RD_hex:  CALL        I2C_radio_read
+;                    CALL        send_TAB
+;                    LOAD        s9, s4
+;                    CALL        send_BYTE
+;                    CALL        send_SPACE
+;                    LOAD        s9, s5
+;                    CALL        send_BYTE
+;                    CALL        send_CRLF
+;                    ADD         s4, 01
+;                    COMPARE     s4, 00
+;                    JUMP        NZ, Test_radio_RD_hex   ; last character byte?
+
+                    CALL        send_CRLF
+                    RETURN
+

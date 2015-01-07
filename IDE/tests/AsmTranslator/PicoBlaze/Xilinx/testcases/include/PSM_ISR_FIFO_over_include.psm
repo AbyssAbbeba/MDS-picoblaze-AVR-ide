@@ -1,0 +1,35 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;  ID_AGR_FIFO_status           overflow; 5:3 Rx (PRI, RAD, LAG); 2:0 Tx (PRI, RAD, LAG)
+;
+;   Interrupt register: (6) is FIFO overflow IRQ
+;                    LOAD        s0, 01011111'b
+;                    OUTPUT      s0, ID_INT_EN
+;
+;==============================================================================;
+
+
+
+FIFO_over_ISR:      CALL        send_CRLF
+                    CALL        mess_FIFO
+                    CALL        mess_Error
+                    CALL        send_CRLF
+
+                    CALL        send_TAB
+                    CALL        mess_AGR
+                    INPUT       s9, ID_AGR_FIFO_status          ; read operation clears overflow status
+                    CALL        send_BYTE
+                    CALL        send_CRLF
+                    CALL        wait_1s
+
+;                   JUMP        ISR_FIFO_over_end
+
+
+;==============================================================================;
+ISR_FIFO_over_end:  JUMP        Int_End
+;==============================================================================;

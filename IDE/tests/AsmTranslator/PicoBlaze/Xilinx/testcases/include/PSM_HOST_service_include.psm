@@ -1,0 +1,275 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;     rd_HOST_MAC   register address = (s4+s3)
+;                               data = (s8+s7+s6+s5)
+;
+;     wr_HOST_MAC   retister address = (s4+s3)
+;                               data = (s8+s7+s6+s5)
+;
+;     rd_HOST_MDIO    device address = s3
+;                   register address = s4
+;                               data = (s6+s5)
+;
+;     wr_HOST_MDIO    device address = s3
+;                   register address = s4
+;                               data = (s6+s5)
+;
+; hostaddr maps to the two address fields of the MDIO frame; PHYAD is
+; hostaddr[9:5], and REGAD is host_addr[4:0];
+;
+;==============================================================================;
+; Set MDIO_0 clock speed via HOST_0 interface (write 0x0000007F to address 0x340)
+;
+;                    LOAD      s3, 40                    ; ID_HOST_addr_L
+;                    LOAD      s4, 03                    ; ID_HOST_addr_H
+;                    LOAD      s5, 7F                    ; ID_HOST_data_0       -- Fclk MDIO ~ 1 MHz
+;                    LOAD      s6, 00                    ; ID_HOST_data_1
+;                    LOAD      s7, 00                    ; ID_HOST_data_2
+;                    LOAD      s8, 00                    ; ID_HOST_data_3
+;                    CALL      wr_HOST_MAC
+;
+;==============================================================================;
+;
+;   CONSTANT ID_HOST_select             , 90
+;   CONSTANT ID_HOST_stat_ctrl          , 91
+;   CONSTANT ID_HOST_data_0             , 92
+;   CONSTANT ID_HOST_data_1             , 93
+;   CONSTANT ID_HOST_data_2             , 94
+;   CONSTANT ID_HOST_data_3             , 95
+;   CONSTANT ID_HOST_addr_L             , 96
+;   CONSTANT ID_HOST_addr_H             , 97
+;
+;==============================================================================;
+;
+;   host_stat_ctrl_in/out register:
+;   [0] HOSTMIIMSEL  wr/rd       '0' to access MAC registers, '1' to access MDIO registers
+;   [1] nWrite/Read  wr/rd       '0' = write, '1' = read
+;   [2] -- Unused --
+;   [3] -- Unused --
+;   [4] -- Unused --
+;   [5] -- Unused --
+;   [6] -- Unused --
+;   [7] Start/Busy   wr/rd       '1' = Start/Busy (self-clearing)
+;
+;==============================================================================;
+ 
+ 
+ 
+ 
+ 
+;==============================================================================;
+; Procedures for reading TEMAC register via HOST interface
+;
+;  CALL         rd_HOST_MAC
+;
+; Inputs:
+;     s3 = address byte L
+;     s4 = address byte H; only bits 1:0 are valid, bit 1 must be H for MAC access
+; Outputs:
+;     s3 = address byte L
+;     s4 = address byte H
+;     s5 = data (LSB)
+;     s6 = data
+;     s7 = data
+;     s8 = data (MSB)
+;
+; Modified:
+;     sC
+;
+; Procedures used: NONE
+;
+;==============================================================================;
+; procedure for reading one 32b TEMAC register via HOST interface
+;==============================================================================;
+
+rd_HOST_MAC:        INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, rd_HOST_MAC
+
+                    OUTPUT      s3, ID_HOST_addr_L          ; set address
+                    OUTPUT      s4, ID_HOST_addr_H
+                    LOAD        sC, 10000010'b              ; MAC read access
+                    OUTPUT      sC, ID_HOST_stat_ctrl       ; initiate read operation
+
+rd_HOST_MAC_1:      INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, rd_HOST_MAC_1
+
+                    INPUT       s5, ID_HOST_data_0          ; laod data to registers
+                    INPUT       s6, ID_HOST_data_1
+                    INPUT       s7, ID_HOST_data_2
+                    INPUT       s8, ID_HOST_data_3
+
+                    RETURN
+
+;==============================================================================;
+; Procedures for writing TEMAC register via HOST interface
+;
+;  CALL         wr_HOST_MAC
+;
+; Inputs:
+;     s3 = address byte L
+;     s4 = address byte H; only bits 1:0 are valid, bit 1 must be H for MAC access
+;     s5 = data (LSB)
+;     s6 = data
+;     s7 = data
+;     s8 = data (MSB)
+;
+; Outputs:
+;     s3 = address byte L
+;     s4 = address byte H
+;     s5 = data (LSB)
+;     s6 = data
+;     s7 = data
+;     s8 = data (MSB)
+;
+; Modified:
+;     sC
+;
+; Procedures used: NONE
+;
+;==============================================================================;
+; procedure for writing to one 32b EMACx register via HOST0 interface
+;==============================================================================;
+
+
+wr_HOST_MAC:        INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, wr_HOST_MAC
+
+                    OUTPUT      s5, ID_HOST_data_0          ; set data
+                    OUTPUT      s6, ID_HOST_data_1
+                    OUTPUT      s7, ID_HOST_data_2
+                    OUTPUT      s8, ID_HOST_data_3
+
+                    OUTPUT      s3, ID_HOST_addr_L          ; set address
+                    OUTPUT      s4, ID_HOST_addr_H
+                    LOAD        sC, 10000000'b              ; MAC write access
+                    OUTPUT      sC, ID_HOST_stat_ctrl       ; initiate write operation
+
+                    RETURN
+; procedure is not waiting for write to complete => processor can perform other tasks
+
+
+;==============================================================================;
+; Procedures for reading MDIO register of TEMAC via HOST interface
+;
+;  CALL         rd_HOST_MDIO
+;
+; Inputs:
+;     s3 = device address; only bits 4:0 are valid
+;     s4 = register address byte; only bits 4:0 are valid
+; Outputs:
+;     s3 = register address byte; only bits 4:0 are valid
+;     s4 = device address; only bits 4:0 are valid
+;     s5 = data LSB
+;     s6 = data MSB
+;
+; Modified:
+;     s7, s8, sC
+;
+; Procedures used: NONE
+;
+;       hostaddr maps to the two address fields of the MDIO frame; PHYAD is
+;       hostaddr[9:5], and REGAD is host_addr[4:0];
+;
+;==============================================================================;
+; procedure for reading one 16b MDIO register on TEMAC via HOST interface
+;==============================================================================;
+
+rd_HOST_MDIO:       INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, rd_HOST_MDIO
+
+                    ; prepare address (merge s3 and s4)
+                    LOAD        s7, s4
+                    AND         s7, 00011111'b              ; mask-out upper bits of register address
+                    LOAD        s8, s3
+                    AND         s8, 00011111'b              ; mask-out upper bits of device (PHY) address
+                    LOAD        sC, 00                      ; sC = 00000000
+                    SR0         s8                          ; s8 = 0000PPPP P
+                    SRA         sC                          ; sC = P0000000
+                    SR0         s8                          ; s8 = 00000PPP P
+                    SRA         sC                          ; sC = PP000000
+                    SR0         s8                          ; s8 = 000000PP P
+                    SRA         sC                          ; sC = PPP00000
+                    OR          s7, sC                      ; merge [PHYAD(2:0) & REGAD(4:0)]
+                                                            ; s7 = PPPRRRRR
+
+                    OUTPUT      s7, ID_HOST_addr_L          ; set address
+                    OUTPUT      s8, ID_HOST_addr_H
+                    LOAD        sC, 10000011'b              ; MDIO read access
+                    OUTPUT      sC, ID_HOST_stat_ctrl       ; initiate read operation
+
+rd_HOST_MDIO_1:     INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, rd_HOST_MDIO_1
+
+                    INPUT       s5, ID_HOST_data_0          ; laod data to registers
+                    INPUT       s6, ID_HOST_data_1
+
+                    RETURN
+
+;==============================================================================;
+; Procedures for writing data into MDIO register of TEMAC via HOST interface
+;
+;  CALL         wr_HOST_MDIO
+;
+; Inputs:
+;     s3 = device address; only bits 4:0 are valid
+;     s4 = register address byte; only bits 4:0 are valid
+;     s5 = data LSB
+;     s6 = data MSB
+; Outputs:
+;     s3 = register address byte; only bits 4:0 are valid
+;     s4 = device address; only bits 4:0 are valid
+;     s5 = data LSB
+;     s6 = data MSB
+;
+; Modified:
+;     s7, s8, sC
+;
+; Procedures used: NONE
+;
+;       hostaddr maps to the two address fields of the MDIO frame; PHYAD is
+;       hostaddr[9:5], and REGAD is host_addr[4:0];
+;
+;==============================================================================;
+; procedure for writing into one 16b MDIO register on TEMAC via HOST interface
+;==============================================================================;
+
+wr_HOST_MDIO:       INPUT       sC, ID_HOST_stat_ctrl       ; read status
+                    TEST        sC, 10000000'b              ; bit 7 (Busy) set?
+                    JUMP        NZ, wr_HOST_MDIO
+
+                    ; prepare address (merge s3 and s4)
+                    LOAD        s7, s4
+                    AND         s7, 00011111'b              ; mask-out upper bits of register address
+                    LOAD        s8, s3
+                    AND         s8, 00011111'b              ; mask-out upper bits of device (PHY) address
+                    LOAD        sC, 00                      ; sC = 00000000
+                    SR0         s8                          ; s8 = 0000PPPP P
+                    SRA         sC                          ; sC = P0000000
+                    SR0         s8                          ; s8 = 00000PPP P
+                    SRA         sC                          ; sC = PP000000
+                    SR0         s8                          ; s8 = 000000PP P
+                    SRA         sC                          ; sC = PPP00000
+                    OR          s7, sC                      ; merge [PHYAD(2:0) & REGAD(4:0)]
+                                                            ; s7 = PPPRRRRR
+
+                    OUTPUT      s5, ID_HOST_data_0          ; set data
+                    OUTPUT      s6, ID_HOST_data_1
+                    OUTPUT      s7, ID_HOST_addr_L          ; set address
+                    OUTPUT      s8, ID_HOST_addr_H
+                    LOAD        sC, 10000001'b              ; MDIO write access
+                    OUTPUT      sC, ID_HOST_stat_ctrl       ; initiate write operation
+
+                    RETURN
+; procedure is not waiting for write to complete => processor can perform other tasks
+
+;==============================================================================;
