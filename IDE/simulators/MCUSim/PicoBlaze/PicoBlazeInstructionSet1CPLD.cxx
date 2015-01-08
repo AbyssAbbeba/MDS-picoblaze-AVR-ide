@@ -230,7 +230,7 @@ void PicoBlazeInstructionSet1CPLD::inst_CALL ( const unsigned int opCode )
     }
 
     // Execute call.
-    logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
@@ -286,7 +286,7 @@ void PicoBlazeInstructionSet1CPLD::inst_RETURN ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -529,7 +529,7 @@ void PicoBlazeInstructionSet1CPLD::inst_RETURNI ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN_FROM_ISR, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN_FROM_ISR, m_pc );
         m_interruptController->returni();
     }
 

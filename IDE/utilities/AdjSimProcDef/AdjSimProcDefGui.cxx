@@ -968,7 +968,7 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[1].m_OPCodePermutation.clear();
         inst->m_operands[1].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
         inst->m_operands[1].m_type = (AdjSimProcDef::Instruction::Operand::Type)
-                                     (comboBoxInstOpr0Addressing->currentIndex());
+                                     (comboBoxInstOpr1Addressing->currentIndex());
         inst->m_operands[1].m_fixedValue = lineEditInstOpr1FixedValue->text().toInt();
     }
 
@@ -1003,7 +1003,7 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[2].m_OPCodePermutation.clear();
         inst->m_operands[2].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
         inst->m_operands[2].m_type = (AdjSimProcDef::Instruction::Operand::Type)
-                                     (comboBoxInstOpr0Addressing->currentIndex());
+                                     (comboBoxInstOpr2Addressing->currentIndex());
         inst->m_operands[2].m_fixedValue = lineEditInstOpr2FixedValue->text().toInt();
     }
 
@@ -1047,7 +1047,7 @@ void AdjSimProcDefGui::instModified()
     }
 
     QString opCode = "0b";
-    for ( int i = ( inst->m_opCode.size() - 1); i >= 0; i-- )
+    for ( int i = ( spinBoxProgramSize->value() - 1); i >= 0; i-- )
     {
         switch ( inst->m_opCode[i] )
         {
