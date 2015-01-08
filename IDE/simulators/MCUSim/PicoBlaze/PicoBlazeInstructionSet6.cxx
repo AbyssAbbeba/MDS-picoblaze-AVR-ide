@@ -1209,7 +1209,7 @@ inline void PicoBlazeInstructionSet6::returni()
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN_FROM_ISR, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN_FROM_ISR, m_pc );
         m_interruptController->returni();
     }
 
@@ -1306,7 +1306,7 @@ void PicoBlazeInstructionSet6::inst_CALL_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Execute call.
-    logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
@@ -1322,7 +1322,7 @@ void PicoBlazeInstructionSet6::inst_CALL_Z_aaa ( const unsigned int opCode )
     // Call, if ZERO.
     if ( true == m_statusFlags -> getZero() )
     {
-        logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1339,7 +1339,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NZ_aaa ( const unsigned int opCode )
     // Call, if NOT ZERO.
     if ( false == m_statusFlags -> getZero() )
     {
-        logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1356,7 +1356,7 @@ void PicoBlazeInstructionSet6::inst_CALL_C_aaa ( const unsigned int opCode )
     // Call, if CARRY.
     if ( true == m_statusFlags -> getCarry() )
     {
-        logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1373,7 +1373,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NC_aaa ( const unsigned int opCode )
     // Call, if NOT CARRY.
     if ( false == m_statusFlags -> getCarry() )
     {
-        logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1391,7 +1391,7 @@ void PicoBlazeInstructionSet6::inst_CALL_sX_sY ( const unsigned int opCode )
     unsigned int addr = ( ( m_registers->read(sX) & 0x0f ) << 8 ) | m_registers->read(sY);
 
     // Execute call.
-    logEvent ( EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
@@ -1415,7 +1415,7 @@ void PicoBlazeInstructionSet6::inst_RETURN ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -1445,7 +1445,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -1475,7 +1475,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NZ ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -1505,7 +1505,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_C ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -1535,7 +1535,7 @@ void PicoBlazeInstructionSet6::inst_RETURN_NC ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
@@ -1559,7 +1559,7 @@ void PicoBlazeInstructionSet6::inst_LD_RET_sX_sY ( const unsigned int opCode )
     }
     else
     {
-        logEvent ( EVENT_CPU_RETURN, m_pc );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
         m_actSubprogCounter--;
     }
     setProgramCounter ( m_stack->popFromStack() );
