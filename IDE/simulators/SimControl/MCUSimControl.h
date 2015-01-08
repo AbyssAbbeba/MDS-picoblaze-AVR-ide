@@ -49,6 +49,16 @@ class MCUSimControl : public QThread
         /**
           * @brief
           */
+        enum UpdateRequest
+        {
+            UR_TIME_AND_PC = 0x01,
+            UR_SIM_CURSOR  = 0x02,
+            UR_FULL_UPDATE = 0x04
+        };
+
+        /**
+          * @brief
+          */
         enum CompilerID
         {
             COMPILER_NATIVE,    ///< Native compiler, i.e. our own compiler - Moravia Microsystems Compiler

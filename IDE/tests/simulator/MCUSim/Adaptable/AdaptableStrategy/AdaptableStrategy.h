@@ -18,6 +18,9 @@
 
 #include "../../MCUSimTestScriptStrategy.h"
 
+// Standard headers.
+#include <map>
+
 /**
  * @brief
  * @class MCUSimTestScriptStrategy
@@ -44,13 +47,27 @@ class AdaptableStrategy : public MCUSimTestScriptStrategy
          */
         enum FlagID
         {
-            FID_Z,  ///<
-            FID_C,  ///<
-            FID_PZ, ///<
-            FID_PC, ///<
-            FID_IE, ///<
-            FID_I   ///<
+            FID_Z,      ///< Zero
+            FID_C,      ///< Carry
+            FID_PZ,     ///< Previous Zero
+            FID_PC,     ///< Previous Carry
+            FID_IE,     ///< Interrupt Enable
+            FID_I,      ///< Interrupted
+            FID_OV,     ///< Overflow
+            FID_N,      ///< Negative
+            FID_HC,     ///< Half Carry
+            FID_P,      ///< Parity
+            FID_F,      ///< Flag
+            FID_POV,    ///< Previous Overflow
+            FID_PN,     ///< Previous Negative
+            FID_PHC,    ///< Previous Half Carry
+            FID_PP      ///< Previous Parity
         };
+
+    ////    Private Static Constants    ////
+    private:
+        /// @brief
+        static const std::map<std::string, FlagID> PROCESSOR_FLAGS;
 
     ////    Public Operations    ////
     public:

@@ -19,6 +19,14 @@
 #include "../../../../../simulators/MCUSim/AdaptableSim/AdaptableSimStatusFlagsBase.h"
 #include "../../../../../simulators/MCUSim/AdaptableSim/AdaptableSimInterruptController.h"
 
+const std::map<std::string, AdaptableStrategy::FlagID> AdaptableStrategy::PROCESSOR_FLAGS =
+{
+    { "Z",   FID_Z   }, { "C",   FID_C   }, { "PZ",  FID_PZ  }, { "PC",  FID_PC  },
+    { "IE",  FID_IE  }, { "I",   FID_I   }, { "OV",  FID_OV  }, { "N",   FID_N   },
+    { "HC",  FID_HC  }, { "P",   FID_P   }, { "F",   FID_F   }, { "POV", FID_POV },
+    { "PN",  FID_PN  }, { "PHC", FID_PHC }, { "PP",  FID_PP  }
+};
+
 bool AdaptableStrategy::processLine ( std::vector<std::string> * tokens,
                                       bool /*useAsmFile*/,
                                       MCUSimTestScript::Command * cmd )
@@ -65,35 +73,16 @@ bool AdaptableStrategy::processLine ( std::vector<std::string> * tokens,
                 std::transform(tokens->at(2).begin(), tokens->at(2).end(), tokens->at(2).begin(), ::toupper);
 
                 int flagID;
-                if ( 0 == strcmp("Z", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_Z;
-                }
-                else if ( 0 == strcmp("C", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_C;
-                }
-                else if ( 0 == strcmp("PZ", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_PZ;
-                }
-                else if ( 0 == strcmp("PC", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_PC;
-                }
-                else if ( 0 == strcmp("IE", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_IE;
-                }
-                else if ( 0 == strcmp("I", tokens->at(2).c_str()) )
-                {
-                    flagID = FID_I;
-                }
-                else
+                const auto iter = PROCESSOR_FLAGS.find(tokens->at(2).c_str());
+                if ( PROCESSOR_FLAGS.cend() == iter )
                 {
                     *m_execMessage = "flag not recognized";
                     cmd->m_type = MCUSimTestScript::CT_ABORT;
                     break;
+                }
+                else
+                {
+                    flagID = iter->second;
                 }
 
                 cmd->m_args.push_back(flagID);
@@ -129,12 +118,21 @@ bool AdaptableStrategy::executeCommand ( const MCUSimTestScript::Command & cmd,
 
             switch ( cmd.m_args[0] )
             {
-                case FID_Z:  flagValue = ( ( true == flags->m_zero     ) ? 1 : 0 ); break;
-                case FID_C:  flagValue = ( ( true == flags->m_carry    ) ? 1 : 0 ); break;
-                case FID_PZ: flagValue = ( ( true == flags->m_preZero  ) ? 1 : 0 ); break;
-                case FID_PC: flagValue = ( ( true == flags->m_preCarry ) ? 1 : 0 ); break;
-                case FID_IE: flagValue = ( ( true == flags->m_inte     ) ? 1 : 0 ); break;
-                case FID_I:  flagValue = ( ( flags->m_interrupted > 0  ) ? 1 : 0 ); break;
+                case FID_Z:   flagValue = ( ( true == flags->m_zero         ) ? 1 : 0 ); break;
+                case FID_C:   flagValue = ( ( true == flags->m_carry        ) ? 1 : 0 ); break;
+                case FID_PZ:  flagValue = ( ( true == flags->m_preZero      ) ? 1 : 0 ); break;
+                case FID_PC:  flagValue = ( ( true == flags->m_preCarry     ) ? 1 : 0 ); break;
+                case FID_IE:  flagValue = ( ( true == flags->m_inte         ) ? 1 : 0 ); break;
+                case FID_I:   flagValue = ( ( flags->m_interrupted > 0      ) ? 1 : 0 ); break;
+                case FID_OV:  flagValue = ( ( true == flags->m_overflow     ) ? 1 : 0 ); break;
+                case FID_N:   flagValue = ( ( true == flags->m_negative     ) ? 1 : 0 ); break;
+                case FID_HC:  flagValue = ( ( true == flags->m_halfCarry    ) ? 1 : 0 ); break;
+                case FID_P:   flagValue = ( ( true == flags->m_parity       ) ? 1 : 0 ); break;
+                case FID_F:   flagValue = ( ( true == flags->m_flag         ) ? 1 : 0 ); break;
+                case FID_POV: flagValue = ( ( true == flags->m_preOverflow  ) ? 1 : 0 ); break;
+                case FID_PN:  flagValue = ( ( true == flags->m_preNegative  ) ? 1 : 0 ); break;
+                case FID_PHC: flagValue = ( ( true == flags->m_preHalfCarry ) ? 1 : 0 ); break;
+                case FID_PP:  flagValue = ( ( true == flags->m_preParity    ) ? 1 : 0 ); break;
 
                 default:
                     return false;
