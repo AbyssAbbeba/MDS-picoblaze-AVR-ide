@@ -1,0 +1,562 @@
+;==============================================================================;
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;  PPPPPP   A     A  Y     Y
+;  P     P  A     A  Y     Y
+;  P     P  A     A   Y   Y
+;  PPPPPP   AAAAAAA    YYY
+;  P        A     A     Y
+;  P        A     A     Y
+;  P        A     A     Y
+;
+;==============================================================================;
+;
+;       PHY_hard_reset
+;       PHY_soft_reset
+;       PHY_init
+;       report_PHY_link
+;       report_all
+;       AGR_Autodetect
+;
+;
+; pocatecni nastaveni
+; pri preruseni zjistit stav a aktualizovat informaci ve stavovem registru
+;       informace v registru: offline/10/100/1000
+;
+;==============================================================================;
+
+
+
+;==============================================================================;
+;==============================================================================;
+; PHY reset
+;==============================================================================;
+;==============================================================================;
+; Soft Reset acts as a Power Down
+
+PHY_hard_reset:     LOAD        s0, 01              ; min 100 ns pulse
+                    JUMP        PHY_reset
+PHY_soft_reset:     LOAD        s0, 02
+PHY_reset:          OUTPUT      s0, ID_PHY_reset    ; min 10 ms pulse
+                    CALL        wait_10ms
+                    LOAD        s0, 00              ; release reset of PHY
+                    OUTPUT      s0, ID_PHY_reset
+                    CALL        wait_100ms          ; min 20 ms / 4(300) us pause for HARD / SOFT reset
+                    RETURN
+
+;==============================================================================;
+;==============================================================================;
+; Report speed of all PHY ports and update registry information
+;==============================================================================;
+;==============================================================================;
+; Inputs:   none
+; Outputs:  none
+; Modified registers: s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, sA, sB, sC, sD
+;==============================================================================;
+
+report_all:         CALL        send_TAB
+                    LOAD        s3, 00
+                    CALL        report_PHY_link
+                    OUTPUT      sC, ID_MAC_0_link_status
+
+                    CALL        send_TAB
+                    LOAD        s3, 01
+                    CALL        report_PHY_link
+                    OUTPUT      sC, ID_MAC_1_link_status
+
+                    CALL        send_TAB
+                    LOAD        s3, 02
+                    CALL        report_PHY_link
+                    OUTPUT      sC, ID_MAC_2_link_status
+
+                    CALL        send_TAB
+                    LOAD        s3, 03
+                    CALL        report_PHY_link
+                    OUTPUT      sC, ID_MAC_3_link_status
+
+                    CALL        AGR_Autodetect
+
+                    RETURN
+
+;==============================================================================;
+;==============================================================================;
+; VITESSE PHY setup
+;==============================================================================;
+;==============================================================================;
+; s3 = SMI   device address (4:0)
+; s4 = SMI register address (4:0)
+; s5 = SMI register data L; data( 7:0)
+; s6 = SMI register data H; data(15:8)
+
+
+; reset PHY (Hard);
+PHY_init:           CALL        PHY_hard_reset
+                    CALL        wait_100ms
+
+; Basic configuration that must be followed by soft reset
+
+                    LOAD        s3, 00          ; channel ID
+
+; REG_0x17 --------------------------------------------------------------------;
+; Set operating mode of PHY
+; MAC interface ANEG
+; (13)      MAC interface autonegotiation; 1 = enable
+; (12)      MAC interface mode: 1 = 1000Base-X
+;                               0 = SGMII
+; ( 3)      Far-end loopback mode: 1 = Enable
+
+PHY_basic_setup:    LOAD        s4, 17          ; register 0x17
+                    LOAD        s6, 00100000'b  ; Enable MAC interface ANEG, set SGMII mode
+                    LOAD        s5, 00000000'b  ; Disable Far-end loopback
+                    CALL        SMI_WR
+
+; REG_0x19 --------------------------------------------------------------------;
+; Interrupt mask
+                    LOAD        s4, 19          ; register 19
+                    LOAD        s6, 11111100'b
+                    LOAD        s5, 01100011'b  ; LED0, combine enable
+                    CALL        SMI_WR
+
+; REG_0x1D --------------------------------------------------------------------;
+; LED mode; all LEDs OFF by default (Mode 14)
+                    LOAD        s4, 1D          ; register 1D
+                    LOAD        s6, EE          ; mode 14/14
+                    LOAD        s5, EE          ; mode 14/14
+                    CALL        SMI_WR
+
+; REG_0x1E --------------------------------------------------------------------;
+; LED behavior: disable combine activity (all LEDs)
+                    LOAD        s4, 1E          ; register 1E
+                    LOAD        s6, 00
+                    LOAD        s5, 0F          ; LED0, combine disable
+                    CALL        SMI_WR
+
+; REG_0x13, PAGE 1 ------------------------------------------------------------;
+; Enable LED blink after reset on all ports
+                    ; LED setup (through extended registers)
+
+                    LOAD        s4, 1F          ; register 0x1F (select next page)
+                    LOAD        s5, 01          ; LSB
+                    LOAD        s6, 00          ; MSB
+                    CALL        SMI_WR
+                    LOAD        s4, 13          ; extended register 0x13 = 19
+                    CALL        SMI_RD
+                    OR          s6, 00001000'b  ; set bit 11 (enable LED blink after reset)
+                    CALL        SMI_WR
+                    LOAD        s4, 1F          ; register 0x1F (select base page)
+                    LOAD        s5, 00          ; LSB
+                    LOAD        s6, 00          ; MSB
+                    CALL        SMI_WR
+                    ADD         s3, 01
+                    COMPARE     s3, 04
+
+; Next channel ----------------------------------------------------------------;
+
+                    JUMP        NZ, PHY_basic_setup
+
+; Soft reset PHY to apply changes ---------------------------------------------;
+
+                    CALL        PHY_soft_reset  ; delay included in the procedure
+
+
+
+
+
+
+;==============================================================================;
+;==============================================================================;
+
+; PHY channel 0: disable (no connection to RJ-45 and SGMII)
+
+                    LOAD        s3, 00          ; select PHY channel 0
+                    LOAD        s4, 00          ; read data from address 00
+                    CALL        SMI_RD
+                    OR          s6, 00001000'b  ; set bit 11 to 1 (power-down)
+                    CALL        SMI_WR
+
+
+;==============================================================================;
+; PHY channel 1-3: enable ANEG and full-duplex operation
+
+PHY_init_i:         ADD         s3, 01          ; select next PHY channel
+
+
+; REG_0x00 --------------------------------------------------------------------;
+; No soft reset;                (15) = 0
+; Disable loopback;             (14) = 0
+; Speed select LSB;             (13) = 0
+; Enable autonegotiation;       (12) = 1
+; Power-down;                   (11) = 0
+; Isolate;                      (10) = 0
+; ANEG reset (self-clearing);   ( 9) = 0
+; Set full duplex operation;    ( 8) = 1
+; Collision test enable;        ( 7) = 0
+; Speed select MSB;             ( 6) = 1
+; -- reserved --               (5:0) = 000000
+
+                    LOAD        s4, 00          ; register 0x00
+                    CALL        SMI_RD
+                    LOAD        s6, 00010001'b  ; set bit 12 and 8 to 1 (enable ANEG and full duplex)
+                    LOAD        s5, 01000000'b  ; set bit  6 (forced speed 1000 Mbps)
+                    CALL        SMI_WR
+
+; REG_0x01 --------------------------------------------------------------------;
+; ANEG complete                 (5) = 1     ANEG done
+; ANEG complete                 (4) = 1     Remote fault
+; Link Status (not real-time)   (2) = 1     link is up
+
+
+; REG_0x02 --------------------------------------------------------------------;
+; PHY identifier, part 1
+
+; REG_0x03 --------------------------------------------------------------------;
+; PHY identifier, part 2
+
+; REG_0x04 --------------------------------------------------------------------;
+; ANEG advertisement register; 0000_0001 0000_0001
+
+                    LOAD        s4, 04          ; register 0x04
+                    LOAD        s6, 00000001'b  ; advertise 100 Mbps, full duplex
+                    LOAD        s5, 00000001'b  ;
+                    CALL        SMI_WR
+
+; REG_0x05 --------------------------------------------------------------------;
+; Link partner ability
+
+; REG_0x09 --------------------------------------------------------------------;
+; 1000Base-T control
+
+                    LOAD        s4, 09          ; register 0x09
+                    LOAD        s6, 00000010'b  ; not a multiport device, enable 1000Base-T full duplex
+                    LOAD        s5, 00000000'b  ;
+                    CALL        SMI_WR
+
+; REG_0x12 --------------------------------------------------------------------;
+; Bypass control
+
+                    LOAD        s4, 12          ; register 0x09
+                    LOAD        s6, 00000000'b  ;
+                    LOAD        s5, 10001000'b  ; disable clock output pin
+                    CALL        SMI_WR
+
+; REG_0x17 --------------------------------------------------------------------;
+; (13)      MAC ANEG Enable
+
+                    LOAD        s4, 17          ; register 17
+                    LOAD        s6, 00100000'b
+                    LOAD        s5, 00000000'b
+                    CALL        SMI_WR
+
+; REG_0x18 --------------------------------------------------------------------;
+; (5:4)     Jumbo packet mode:  00 =  1,5 kB
+;                               01 =  9 kB
+;                               10 = 12 kB
+
+                    LOAD        s4, 18          ; register 18
+                    LOAD        s6, 11000000'b
+                    LOAD        s5, 00000000'b
+                    CALL        SMI_WR
+
+; REG_0x1A --------------------------------------------------------------------;
+; Interrupt status
+
+
+; REG_0x1B --------------------------------------------------------------------;
+; MAC ANEG control and status
+
+                    LOAD        s4, 1B          ; register 1B
+                    LOAD        s6, 01000000'b
+                    LOAD        s5, 00000000'b
+                    CALL        SMI_WR
+
+
+; REG_0x1C --------------------------------------------------------------------;
+; AUX control and status
+
+
+; Next channel ----------------------------------------------------------------;
+                    COMPARE     s3, 03          ; last channel?
+                    JUMP        NZ, PHY_init_i
+                    RETURN
+
+
+
+
+
+
+
+
+
+;==============================================================================;
+;==============================================================================;
+; Read and report link status of all 3 active PHY interfaces
+;==============================================================================;
+;==============================================================================;
+;
+; Inputs:   s3 - PHY address (port); value maintained
+;
+; Outputs:  sC - link status:       0x00      offline
+;                                   0x02      online  100 Mb/s
+;                                   0x03      online 1000 Mb/s
+;
+;
+; Modified registers: (s0, s1, s2), s4, s5, s6, s7, s8, s9, sA, sB, sC, sD
+;
+;==============================================================================;
+
+report_PHY_link:    LOAD        sC, 00                  ; clear link status info
+                    CALL        mess_Port
+                    LOAD        s9, s3                  ; report PHY channel number
+                    CALL        send_BYTE
+                    CALL        send_SPACE
+                    CALL        mess_Status
+                    CALL        mess_TriSpace
+
+; read link status ------------------------------------------------------------;
+
+                    CALL        port_refresh
+
+; report speed on terminal screen ---------------------------------------------;
+
+                    TEST        sC, 00000011'b          ; link is up?
+                    JUMP        NZ, rep_PHY_online
+
+rep_PHY_offline:    CALL        mess_Offline
+                    JUMP        rep_PHY_port_end
+
+rep_PHY_online:     CALL        mess_Online
+                    CALL        mess_TriSpace
+
+rep_PHY_speed:      COMPARE     sC, 00000001'b          ;   10 Mb/s? (4:3) = 01
+                    JUMP        Z, rep_PHY_10
+                    COMPARE     sC, 00000010'b          ;  100 Mb/s? (4:3) = 10
+                    JUMP        Z, rep_PHY_100
+                    COMPARE     sC, 00000011'b          ; 1000 Mb/s? (4:3) = 11
+                    JUMP        Z, rep_PHY_1000
+                    JUMP        rep_PHY_err             ; Error
+
+rep_PHY_10:         CALL        mess_10M
+                    JUMP        rep_PHY_duplex
+rep_PHY_100:        CALL        mess_100M
+                    JUMP        rep_PHY_duplex
+rep_PHY_1000:       CALL        mess_1000M
+                   ;JUMP        rep_PHY_duplex
+
+
+; check fo duplex and MID/MDI-X -----------------------------------------------;
+rep_PHY_duplex:     CALL        mess_TriSpace
+                    LOAD        s4, 28'd                ; register 28 (0x1C)
+                    CALL        SMI_RD
+                    TEST        s5, 00100000'b          ; Full duplex?
+                    JUMP        Z, rep_HDX
+rep_FDX:            CALL        mess_FDX
+                    JUMP        rep_PHY_MDIX
+rep_HDX:            CALL        mess_HDX
+
+rep_PHY_MDIX:       CALL        mess_TriSpace
+                    TEST        s6, 00100000'b          ; MDI/MDI-X?
+                    JUMP        Z, rep_PHY_port_end     ; MDI
+                    CALL        mess_MDIX               ; report MDI-X
+                    JUMP        rep_PHY_port_end
+
+rep_PHY_err:        CALL        mess_Error
+
+rep_PHY_port_end:   CALL        send_CRLF
+                    RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+;
+; Simple update of all port status
+;       (update of link_status signals for agregator core)
+;
+; Modified registers: s3, s4, s5, s6, s7, s8, sC
+;
+;==============================================================================;
+;==============================================================================;
+
+port_refresh_all:   LOAD        s3, 00
+                    CALL        port_refresh
+                    OUTPUT      sC, ID_MAC_0_link_status
+
+                    LOAD        s3, 01
+                    CALL        port_refresh
+                    OUTPUT      sC, ID_MAC_1_link_status
+
+                    LOAD        s3, 02
+                    CALL        port_refresh
+                    OUTPUT      sC, ID_MAC_2_link_status
+
+                    LOAD        s3, 03
+                    CALL        port_refresh
+                    OUTPUT      sC, ID_MAC_3_link_status
+
+                    RETURN
+
+;==============================================================================;
+; Refresh of status of a single PHY port
+;==============================================================================;
+;
+; Inputs:   s3 - PHY address (port); value maintained
+;
+; Outputs:  sC - link status:       0x00      offline
+;                                   0x02      online  100 Mb/s
+;                                   0x03      online 1000 Mb/s
+;
+;           s7 - PHY Copper Specific Status Register LSB
+;           s8 - PHY Copper Specific Status Register MSB
+;
+; Modified registers: s4, s5, s6, s7, s8, sC
+;
+;==============================================================================;
+
+port_refresh:       LOAD        sC, 00                  ; clear link status info
+
+
+
+
+
+
+
+
+
+
+; read link status ------------------------------------------------------------;
+                    LOAD        s4, 01                  ; register 0x01
+                    CALL        SMI_RD
+                    TEST        s5, 00000100'b          ; link is up?
+                    JUMP        Z, port_r_end           ; if not, exit (sC = 0x00)
+
+; read link speed and duplex --------------------------------------------------;
+port_r_online:      LOAD        s4, 1C                  ; register 0x1C
+                    CALL        SMI_RD
+                    AND         s5, 00011000'b          ; select only speed status field
+                    JUMP        Z, port_r_PHY_10        ;   10 Mb/s? (4:3) = 00
+                    COMPARE     s5, 00001000'b          ;  100 Mb/s? (4:3) = 01
+                    JUMP        Z, port_r_PHY_100
+                    COMPARE     s5, 00010000'b          ; 1000 Mb/s? (4:3) = 10
+                    JUMP        Z, port_r_PHY_1000
+                    JUMP        port_r_end              ; Error => offline (sC = 0x00)
+
+port_r_PHY_10:      LOAD        sC, 00000001'b          ; status: online   10 Mb/s
+                    JUMP        port_r_end
+port_r_PHY_100:     LOAD        sC, 00000010'b          ; status: online  100 Mb/s
+                    JUMP        port_r_end
+port_r_PHY_1000:    LOAD        sC, 00000011'b          ; status: online 1000 Mb/s
+
+port_r_end:         RETURN
+
+
+;==============================================================================;
+;==============================================================================;
+
+; Agregator mode selection and indication (according to link status)
+
+;==============================================================================;
+;==============================================================================;
+; Inputs:   none
+; Outputs:  none
+; Modified registers: s0, s1, s2, s4, s5, s9, sA, sB, sC, sD, sE
+;==============================================================================;
+
+AGR_Autodetect:     LOAD        s4, 00                  ; register address
+                    CALL        EEPROM_RD
+
+                    SR0         s5
+                    SR0         s5
+                    SR0         s5
+                    SR0         s5
+                    SR0         s5
+
+; CONSTANT Mode_Isolate           , 00000000'b
+; CONSTANT Mode_Loopback          , 00000001'b
+; CONSTANT Mode_Direct            , 00000010'b
+; CONSTANT Mode_AGR_Slave         , 00000011'b
+; CONSTANT Mode_AGR_Master        , 00000100'b
+; CONSTANT Mode_Autodetect        , 00000111'b
+
+                    COMPARE     s5, Mode_Autodetect
+                    JUMP        Z, AGR_Autodetect_1
+
+                    COMPARE     s5, Mode_AGR_Master
+                    JUMP        Z, Auto_Set_AGR_M
+
+                    COMPARE     s5, Mode_AGR_Slave
+                    JUMP        Z, Auto_Set_AGR_S
+
+                    COMPARE     s5, Mode_Direct
+                    JUMP        Z, Auto_Set_Direct
+
+                    COMPARE     s5, Mode_Loopback
+                    JUMP        Z, Auto_Set_Loopback
+
+                    JUMP        Auto_Set_Isolate
+
+AGR_Autodetect_1:   INPUT       sC, ID_MAC_1_link_status    ; PRI
+                    INPUT       sD, ID_MAC_2_link_status    ; LAG
+                    INPUT       sE, ID_MAC_3_link_status    ; RAD
+
+                    SL0         sD
+                    SL0         sD
+                    SL0         sE
+                    SL0         sE
+                    SL0         sE
+                    SL0         sE              ; x R L P
+                    OR          sC, sD          ; xxxx2211
+                    OR          sC, sE          ; xx332211
+
+                    COMPARE     sC, 00111111'b          ; all online?
+                    JUMP        Z, Auto_Set_AGR_M       ; Agregator Master
+                    COMPARE     sC, 00111110'b          ; all online? PRI 100Base-T
+                    JUMP        Z, Auto_Set_AGR_M       ; Agregator Master
+
+                    COMPARE     sC, 00110011'b          ; RAD and PRI online?
+                    JUMP        Z, Auto_Set_Direct      ; Direct
+                    COMPARE     sC, 00110010'b          ; RAD and PRI online? PRI 100Base-T
+                    JUMP        Z, Auto_Set_Direct      ; Direct
+
+                    COMPARE     sC, 00111100'b          ; RAD and LAG online?
+                    JUMP        Z, Auto_Set_AGR_S       ; Agregator Slave
+                    JUMP        Auto_Set_Isolate        ; Isolate
+
+Auto_Set_AGR_M:     CALL        mess_AGR
+                    CALL        mess_Master
+                    LOAD        sC, Mode_Isolate        ; patch for switching from SLAVE to MASTER mode
+                    OUTPUT      sC, ID_AGR_mode_req
+                    CALL        wait_100ms
+                    LOAD        sC, Mode_AGR_Master
+                    JUMP        AGR_mode_set
+
+Auto_Set_AGR_S:     CALL        mess_AGR
+                    CALL        mess_Slave
+                    LOAD        sC, Mode_Isolate        ; patch for switching from MASTER to SLAVE mode
+                    OUTPUT      sC, ID_AGR_mode_req
+                    CALL        wait_100ms
+                    LOAD        sC, Mode_AGR_Slave
+                    JUMP        AGR_mode_set
+
+Auto_Set_Direct:    CALL        mess_Direct
+                    LOAD        sC, Mode_Direct
+                    JUMP        AGR_mode_set
+
+Auto_Set_Isolate:   CALL        mess_Isolate
+                    LOAD        sC, Mode_Isolate
+                    JUMP        AGR_mode_set
+
+Auto_Set_Loopback:  CALL        mess_Loopback
+                    LOAD        sC, Mode_Loopback
+
+AGR_mode_set:       OUTPUT      sC, ID_AGR_mode_req
+                    CALL        send_CRLF
+                    CALL        send_CRLF
+
+                    RETURN
+
+;==============================================================================;
+;==============================================================================;

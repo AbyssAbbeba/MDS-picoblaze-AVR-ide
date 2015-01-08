@@ -1,0 +1,239 @@
+;==============================================================================;
+;
+; Tesla Agregator
+; Michal Kubicek (michal.kubicek@email.cz)
+;
+;==============================================================================;
+;
+;   CCCC     AAA    L        L        SSSS            SSSS   EEEEEEE  RRRRRR   I    AAA    L      
+;  C    C   A   A   L        L       S    S          S    S  E        R     R  I   A   A   L      
+;  C       A     A  L        L       S               S       E        R     R  I  A     A  L      
+;  C       AAAAAAA  L        L        SSSS            SSSS   EEEE     RRRRRR   I  AAAAAAA  L      
+;  C       A     A  L        L            S               S  E        R   R    I  A     A  L      
+;  C    C  A     A  L        L       S    S          S    S  E        R    R   I  A     A  L      
+;   CCCC   A     A  LLLLLLL  LLLLLLL  SSSS            SSSS   EEEEEEE  R     R  I  A     A  LLLLLLL
+;
+;==============================================================================;
+;
+;       SMI_RD
+;       SMI_WR
+;       SFP_ROM_RD
+;       SFP_PHY_RD
+;       SFP_PHY_WR
+;
+;       send_SMI_reg
+;       send_SFP_reg
+;
+;==============================================================================;
+; Procedure for reading Ethernet PHY registers via SMI interface
+;
+;  CALL         SMI_RD
+;
+; Inputs:
+;     s3 = device address (4:0)
+;     s4 = register address (4:0) / status (7:6)
+; Outputs:
+;     s3 = device address (4:0)
+;     s4 = register address; bits (7:5) are cleared
+;     s5 = data LSB
+;     s6 = data MSB
+;
+; Procedures used: NONE
+;==============================================================================;
+SMI_RD:             INPUT     s5, ID_SMI_addr       ; check SMI status
+                    TEST      s5, C0                ; is selected SMI Idle? (bit 6,7 = 0)
+                    JUMP      NZ, SMI_RD            ; if not, wait
+
+                    OUTPUT    s3, ID_PHY_SMI_addr   ; select required device (set device address)
+                    AND       s4, 1F                ; clear non-address bits of s3 register
+                    OR        s4, 80                ; set bit 7 = read operation
+                    OUTPUT    s4, ID_SMI_addr       ; initialize read operation
+                    AND       s4, 1F                ; clear non-address bits of s3 register
+; do not leave the procedure until s1 and s2 are updated from PHY!
+SMI_RD_w:           INPUT     s5, ID_SMI_addr       ; check SMI status
+                    TEST      s5, C0                ; is selected SMI Idle? (bit 6,7 = 0)
+                    JUMP      NZ, SMI_RD_w          ; if not, wait
+                    INPUT     s6, ID_SMI_datH       ; read data H
+                    INPUT     s5, ID_SMI_datL       ; read data H
+                    RETURN                          ; Return from the procedure
+
+                    
+;==============================================================================;
+; Procedure for writing into Ethernet PHY registers via SMI interface
+;
+;  CALL         SMI_WR
+;
+; Inputs:
+;     s3 = device address (4:0)
+;     s4 = register address (4:0) / status (7:6)
+;     s5 = data LSB
+;     s6 = data MSB
+; Outputs:
+;     s3 = device address (4:0)
+;     s4 = register address; bits (7:5) are cleared
+;     s5 = data LSB
+;     s6 = data MSB
+;     s7 is modified!!!
+;
+; Procedures used: NONE
+;==============================================================================;
+SMI_WR:             INPUT     s7, ID_SMI_addr       ; check SMI status
+                    TEST      s7, C0                ; is SMI Idle? (bit 6,7 = 0)
+                    JUMP      NZ, SMI_WR            ; if not, wait
+
+                    OUTPUT    s3, ID_PHY_SMI_addr   ; select required device (set device address)
+                    OUTPUT    s6, ID_SMI_datH       ; write required dataH (s2) to SMI data reg
+                    OUTPUT    s5, ID_SMI_datL       ; write required dataL (s1) to SMI data reg
+                    AND       s4, 1F                ; clear non-address bits of s3 register
+                    OR        s4, 40                ; set bit 6 = write operation
+                    OUTPUT    s4, ID_SMI_addr       ; initialize SMI write
+                    RETURN                          ; return from subroutine
+
+
+;==============================================================================;
+; Procedure for reading SFP registers on page 0 (SMI/TW interface)
+;
+;  CALL         SFP_ROM_RD
+;
+; Inputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+; Outputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+;     s5 = data
+;
+; Procedures used: NONE
+;
+;==============================================================================;
+SFP_ROM_RD:         INPUT       s5, ID_SFP_status   ; check SFP interface status
+                    TEST        s5, C0              ; SFP available?
+                    JUMP        NZ, SFP_ROM_RD        ; wait until SFP become available
+                    CALL        wait_5ms            ; 5 ms delay between two
+                                                    ; consecutive operations on TWI
+                    OUTPUT      s3, ID_SFP_TW_addr  ; Set required device
+                    OUTPUT      s4, ID_SFP_addr     ; Set required address
+                    LOAD        s5, 80              ; Read command, page 1
+                    OUTPUT      s5, ID_SFP_status   ; Initialize read operation
+wait_rd_sfp:        INPUT       s5, ID_SFP_status   ; check SFP interface status
+                    TEST        s5, 80              ; read-out complete?
+                    JUMP        NZ, wait_rd_sfp     ; wait until read-out complete
+                    INPUT       s5, ID_SFP_data     ; read data from SFP
+                    RETURN                          ; return from subroutine
+
+;==============================================================================;
+; Procedure for reading of PHY registers inside SFP (SMI/TW interface)
+;
+;  CALL         SFP_PHY_RD
+;
+; Inputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+; Outputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+;     s5 = data LSB
+;     s6 = data MSB
+;     s7 is modified!!!
+;
+; Procedures used: SFP_ROM_RD
+;
+;==============================================================================;
+
+SFP_PHY_RD:         CALL        SFP_ROM_RD          ; read MSB (to s5)
+                    LOAD        s6, s5              ; Store MSB
+                    CALL        SFP_ROM_RD          ; read LSB (to s5)
+                    RETURN                          ; return from subroutine
+
+;==============================================================================;
+; Procedure for writing into PHY registers inside SFP (SMI/TW interface)
+;
+;  CALL         SFP_PHY_WR
+;
+; Inputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+;     s5 = data LSB
+;     s6 = data MSB
+; Outputs:
+;     s3 = device address (4:0)
+;     s4 = register address
+;     s5 = data LSB
+;     s6 = data MSB
+;     s7 is modified!!!
+;
+; Procedures used: NONE
+;
+;==============================================================================;
+SFP_PHY_WR:         INPUT       s7, ID_SFP_status   ; check SFP interface status
+                    TEST        s7, C0              ; SFP available?
+                    JUMP        NZ, SFP_PHY_WR      ; wait until SFP become available
+                    CALL        wait_5ms            ; 5 ms delay between two
+                                                    ; consecutive operations on TWI
+                    OUTPUT      s3, ID_SFP_TW_addr  ; Set device address
+                    OUTPUT      s4, ID_SFP_addr     ; Set register address
+                    OUTPUT      s6, ID_SFP_data     ; Set data (MSB)
+                    LOAD        s7, 40              ; Write command
+                    OUTPUT      s7, ID_SFP_status   ; Initialize write operation
+    
+wait_wr_sfp_1:      INPUT       s7, ID_SFP_status   ; check SFP interface status
+                    TEST        s7, 40              ; write complete?
+                    JUMP        NZ, wait_wr_sfp_1   ; wait until write MSB is complete
+                    CALL        wait_5ms            ; 5 ms delay between two
+                                                    ; consecutive operations on TWI
+                    OUTPUT      s5, ID_SFP_data     ; Set data (LSB)
+                    LOAD        s7, 40              ; Write command
+                    OUTPUT      s7, ID_SFP_status   ; Initialize write operation
+
+                    RETURN                          ; return from subroutine
+
+;==============================================================================;
+; procedure for sending content of SMI register via UART after its reading
+;   send_SMI_reg    register address = s3
+;                     device address = s4
+;                               data = (s6+s5)
+;
+; <TAB>    AA RR DDDD
+;
+;==============================================================================;
+send_SMI_reg:       CALL      send_TAB
+                    LOAD      s9, s3           ; Device Address
+                    CALL      send_BYTE
+                    CALL      send_SPACE
+
+                    LOAD      s9, s4           ; Register Address
+                    CALL      send_BYTE
+                    CALL      send_SPACE
+
+                    LOAD      s9, s6           ; Data
+                    CALL      send_BYTE
+                    LOAD      s9, s5
+                    CALL      send_BYTE
+
+                    CALL      send_CRLF
+                    RETURN
+
+;==============================================================================;
+; procedure for sending content of standard SFP register via UART after its reading
+;     send_SFP_reg       register address = s3
+;                          device address = s4
+;                                    data = s5
+;
+; <TAB>    AA RR DD
+;
+;==============================================================================;
+send_SFP_reg:       CALL      send_TAB
+                    LOAD      s9, s3           ; Device Address
+                    CALL      send_BYTE
+                    CALL      send_SPACE
+
+                    LOAD      s9, s4           ; Register Address
+                    CALL      send_BYTE
+                    CALL      send_SPACE
+
+                    LOAD      s9, s5           ; Data
+                    CALL      send_BYTE
+
+                    RETURN
+
+;==============================================================================;
