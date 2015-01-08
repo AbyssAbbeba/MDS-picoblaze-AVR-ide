@@ -1047,7 +1047,7 @@ void AdjSimProcDefGui::instModified()
     }
 
     QString opCode = "0b";
-    for ( int i = ( inst->m_opCode.size() - 1); i >= 0; i-- )
+    for ( int i = ( spinBoxProgramSize->value() - 1); i >= 0; i-- )
     {
         switch ( inst->m_opCode[i] )
         {
