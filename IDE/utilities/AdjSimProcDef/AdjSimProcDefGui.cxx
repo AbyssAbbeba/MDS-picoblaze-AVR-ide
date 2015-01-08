@@ -128,6 +128,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
     spinBoxProgramSize->setValue(procDef.m_memory.m_program.m_size);
     spinBoxProgramWordSize->setValue(procDef.m_memory.m_program.m_wordSize);
     comboBoxProgramEndian->setCurrentIndex ( int(procDef.m_memory.m_program.m_endian) );
+    showHideOPCodeBits(procDef.m_memory.m_program.m_wordSize);
 
     // Data memory
     spinBoxDataMemorySize->setValue(procDef.m_memory.m_data.m_size);
@@ -174,6 +175,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
         {
             newInst->m_opCode.push_back(AdjSimProcDef::Instruction::OCB_DONT_CARE);
         }
+
         newInst->m_operands.resize(3);
         for ( unsigned int i = 0; i < newInst->m_operands.size(); i++ )
         {
@@ -386,7 +388,13 @@ void AdjSimProcDefGui::saveFile ( const QString & fileName )
         }
         for ( int i = ( int(operands.size()) - 1 ); i >= 0; i-- )
         {
-            if ( ( 0 == operands[i].m_size ) && ( -1 == operands[i].m_fixedValue ) )
+            if (
+                   (  0 == operands[i].m_size )
+                       &&
+                   ( -1 == operands[i].m_fixedValue )
+                       &&
+                   ( AdjSimProcDef::Instruction::Operand::N_HIDDEN == operands[i].m_number )
+               )
             {
                 operands.erase(operands.begin() + i);
             }
@@ -565,6 +573,31 @@ void AdjSimProcDefGui::showHideOPCodeBits ( int size )
     SHOW_HIDE_OP_CODE_BIT( 2, size)
     SHOW_HIDE_OP_CODE_BIT( 1, size)
     SHOW_HIDE_OP_CODE_BIT( 0, size)
+
+    for( int i = 0; i < treeWidgetInstructions->topLevelItemCount(); ++i )
+    {
+        QTreeWidgetItem * item = treeWidgetInstructions->topLevelItem( i );
+        AdjSimProcDef::Instruction * inst = m_instructions.find(item)->second;
+
+        QString opCode = "0b";
+        for ( int i = size; i >= 0; i-- )
+        {
+            switch ( inst->m_opCode[i] )
+            {
+                case AdjSimProcDef::Instruction::OCB_ZERO:
+                    opCode += '0';
+                    break;
+                case AdjSimProcDef::Instruction::OCB_ONE:
+                    opCode += '1';
+                    break;
+                case AdjSimProcDef::Instruction::OCB_DONT_CARE:
+                    opCode += '-';
+                    break;
+            }
+        }
+
+        item->setText(2, opCode);
+    }
 }
 
 bool AdjSimProcDefGui::maybeSave()
@@ -709,12 +742,10 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
     if ( true == instructionSelected )
     {
         inst = m_instructions[treeWidgetInstructions->selectedItems().front()];
-        showHideOPCodeBits(spinBoxProgramWordSize->value());
     }
     else
     {
         inst = & m_emptyInstruction;
-        showHideOPCodeBits(24);
     }
 
     if ( true == inst->m_mnemonic.empty() )
@@ -1003,7 +1034,7 @@ void AdjSimProcDefGui::instModified()
         inst->m_operands[2].m_OPCodePermutation.clear();
         inst->m_operands[2].m_number = AdjSimProcDef::Instruction::Operand::N_HIDDEN;
         inst->m_operands[2].m_type = (AdjSimProcDef::Instruction::Operand::Type)
-                                     (comboBoxInstOpr2Addressing->currentIndex());
+                                     (comboBoxInstOpr0Addressing->currentIndex());
         inst->m_operands[2].m_fixedValue = lineEditInstOpr2FixedValue->text().toInt();
     }
 
@@ -1047,7 +1078,7 @@ void AdjSimProcDefGui::instModified()
     }
 
     QString opCode = "0b";
-    for ( int i = ( spinBoxProgramSize->value() - 1); i >= 0; i-- )
+    for ( int i = ( inst->m_opCode.size() - 1); i >= 0; i-- )
     {
         switch ( inst->m_opCode[i] )
         {
