@@ -2226,7 +2226,7 @@ QString MainForm::translateBeforeCompilation(QString path)
             qDebug() << "MainForm: translation - cant open input stream" << filesToTranslate.at(i);
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             QString text = "Can not open input file " + filesToTranslate.at(i);
-            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
         std::ofstream outputStream((filesToTranslate.at(i).section('.',0, -2) + ".asm").toStdString(), std::ofstream::out);
@@ -2236,7 +2236,7 @@ QString MainForm::translateBeforeCompilation(QString path)
             qDebug() << "MainForm: translation - cant open output stream" << filesToTranslate.at(i).section('.',0, -2) + ".asm";
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             QString text = "Can not open output file " + filesToTranslate.at(i).section('.',0, -2) + ".asm";
-            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
 
@@ -2264,7 +2264,7 @@ QString MainForm::translateBeforeCompilation(QString path)
             for (unsigned int i = 0; i < messages.size(); i++)
             {
                 text = QString::fromStdString(messages.at(i).second) + ":" + QString::number(messages.at(i).first);
-                compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
+                compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
                 qDebug() << text;
             }
             inputStream.close();
