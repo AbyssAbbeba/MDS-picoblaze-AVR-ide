@@ -301,6 +301,7 @@ void TestOpenPICIDEAsmTrans::test ( const std::string & suffix )
             {
                 line = line.substr(pos);
                 errorLog += line;
+                errorLog += '\n';
             }
         }
         CU_FAIL("Compilation failed:\n" + errorLog);
