@@ -154,6 +154,7 @@ void ProjectCfg_Templates::setPathVHDL()
         if (ui.leVHDL->isEnabled() == false)
         {
             ui.leVHDL->setEnabled(true);
+            ui.chckVHDL->setChecked(false);
         }
         ui.leVHDL->setText(path);
     }
@@ -180,6 +181,7 @@ void ProjectCfg_Templates::setPathVerilog()
         if (ui.leVerilog->isEnabled() == false)
         {
             ui.leVerilog->setEnabled(true);
+            ui.chckVerilog->setChecked(false);
         }
         ui.leVerilog->setText(path);
     }
