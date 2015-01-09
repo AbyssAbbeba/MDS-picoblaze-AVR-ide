@@ -2224,6 +2224,9 @@ QString MainForm::translateBeforeCompilation(QString path)
         if (false == inputStream.is_open())
         {
             qDebug() << "MainForm: translation - cant open input stream" << filesToTranslate.at(i);
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            QString text = "Can not open input file " + filesToTranslate.at(i);
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
             return "";
         }
         std::ofstream outputStream((filesToTranslate.at(i).section('.',0, -2) + ".asm").toStdString(), std::ofstream::out);
@@ -2231,6 +2234,9 @@ QString MainForm::translateBeforeCompilation(QString path)
         {
             inputStream.close();
             qDebug() << "MainForm: translation - cant open output stream" << filesToTranslate.at(i).section('.',0, -2) + ".asm";
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            QString text = "Can not open output file " + filesToTranslate.at(i).section('.',0, -2) + ".asm";
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
             return "";
         }
 
