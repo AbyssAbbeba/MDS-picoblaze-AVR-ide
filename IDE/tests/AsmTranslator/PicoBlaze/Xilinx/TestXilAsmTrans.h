@@ -66,6 +66,11 @@ namespace TestXilAsmTrans
          */
         void test ( const std::string & suffix );
 
+
+        void translate ( const std::string & testName,
+                         const std::string & suffix,
+                         bool include = false );
+
         /**
          * @brief
          * @param[in] fileName1

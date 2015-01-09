@@ -33,9 +33,9 @@ AdjSimProcDef::Instruction::Instruction()
     m_operParameters.m_ignoreCarryFlag = false;
     m_opCode.assign(24, OCB_DONT_CARE);
     m_operands.resize(3);
-    m_operands[0].m_number = Operand::N_FIRST;
-    m_operands[1].m_number = Operand::N_SECOND;
-    m_operands[2].m_number = Operand::N_THIRD;
+    m_operands[0].m_number = Operand::N_HIDDEN/*N_FIRST*/;
+    m_operands[1].m_number = Operand::N_HIDDEN/*N_SECOND*/;
+    m_operands[2].m_number = Operand::N_HIDDEN/*N_THIRD*/;
 }
 
 AdjSimProcDef::Instruction::Operand::Operand()

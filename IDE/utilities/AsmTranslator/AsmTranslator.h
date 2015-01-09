@@ -85,7 +85,7 @@ class AsmTranslator
          * @brief
          * @return
          */
-        const std::vector<std::pair<unsigned int, std::string> > & getMessages() const;
+        const std::vector<std::pair<unsigned int, std::string>> & getMessages() const;
 
         /**
          * @brief
