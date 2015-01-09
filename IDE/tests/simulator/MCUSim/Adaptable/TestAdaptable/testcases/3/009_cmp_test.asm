@@ -1,6 +1,6 @@
 ; testcase for instructions compare and TEST
 
-device kcpsm6
+device "003_picoblazecopy.procdef"
     ORG         0x000
 
 
