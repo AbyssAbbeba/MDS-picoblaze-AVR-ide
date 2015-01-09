@@ -55,7 +55,7 @@ class MCUSimControl : public QThread
             UR_SIM_CURSOR     = 0x02,
             UR_MEMORY_REFRESH = 0x04
         };
-// UR_TIME_AND_PC | UR_SIM_CURSOR | UR_MEMORY_REFRESH
+
         /**
           * @brief
           */
