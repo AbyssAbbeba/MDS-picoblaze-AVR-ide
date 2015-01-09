@@ -27,6 +27,7 @@
 #include "../CompileInfo/compileinfo.h"
 #include "../HelpDockWidget/helpdockwidget.h"
 #include "../HelpWidget/helpbrowser.h"
+#include "../CallWatcher/callwatcher.h"
 
 
 
@@ -830,16 +831,21 @@ bool WDockManager::addCentralWidget(QString wName, QString wPath)
 }
 
 
-void WDockManager::addDockWidget(WidgetCode code)
+void WDockManager::addDockWidget(WidgetCode code, MCUSimControl* simControl)
 {
     //qDebug() << "WDockManager: addDockWidget()";
     WDock *newWDock;
     if (code == WSIMULATIONINFO)
     {
-        this->addSimDockWidgetP1();
+        this->addSimDockWidget(simControl);
         //qDebug() << "WDockManager: return addDockWidget()";
         return;
         //newWDock = new WDock(this, code, (QWidget *)(this->parent()));
+    }
+    else if (code == WCALLWATCHER)
+    {
+        this->addCallWatcher(simControl);
+        return;
     }
     else
     {
@@ -859,20 +865,13 @@ void WDockManager::addDockWidget(WidgetCode code)
 }
 
 
-void WDockManager::addSimDockWidgetP1()
+void WDockManager::addSimDockWidget(MCUSimControl* simControl)
 {
     //qDebug() << "WDockManager: addSimDockWidgetP1()";
-    emit getSimProjectData();
     //qDebug() << "WDockManager: return addSimDockWidgetP1()";
-}
-
-
-void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
-{
-    //qDebug() << "WDockManager: addSimDockWidgetP2()";
     if (false == this->dockWidgets)
     {
-        WDock *newWDock = new WDock(this, WSIMULATIONINFO, (QWidget *)(this->parent()), path, simControl);
+        WDock *newWDock = new WDock(this, WSIMULATIONINFO, (QWidget *)(this->parent()), simControl);
         if (getDockWidgetArea(newWDock->getArea()) != NULL)
         {
             emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
@@ -887,18 +886,53 @@ void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
     }
     else
     {
-        PicoBlazeGrid *simWidget = new PicoBlazeGrid(this->getDockWidget(WSIMULATIONINFO),
-                                                     simControl
-                                                    );
+        PicoBlazeGrid *simWidget = new PicoBlazeGrid(this->getDockWidget(WSIMULATIONINFO), simControl);
         connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
-        simWidget->setProjectPath(path);
+        //simWidget->setProjectPath(path);
         simWidget->fixHeight();
         connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
         this->openSimWidgets.append(simWidget);
         simWidget->hide();
     }
-    //qDebug() << "WDockManager: return addSimDockWidgetP2()";
+    emit getSimProjectData();
 }
+
+
+void WDockManager::addCallWatcher(MCUSimControl *simControl)
+{
+    if (false == this->dockWidgets)
+    {
+        WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
+        if (getDockWidgetArea(newWDock->getArea()) != NULL)
+        {
+            emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+            //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+        }
+        /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+        {
+            wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+        }*/
+        openDockWidgets.append(newWDock);
+        //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+    }
+    else
+    {
+        CallWatcher *callWatcher = new CallWatcher(this->getDockWidget(WCALLWATCHER), simControl);
+        //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+        //simWidget->fixHeight();
+        //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        this->openCallWatchers.append(callWatcher);
+        callWatcher->hide();
+    }
+}
+
+
+/*void WDockManager::addSimDockWidgetP2(QString path, MCUSimControl* simControl)
+{
+    //qDebug() << "WDockManager: addSimDockWidgetP2()";
+
+    //qDebug() << "WDockManager: return addSimDockWidgetP2()";
+}*/
 
 
 QDockWidget* WDockManager::getDockWidget(WidgetCode code)
@@ -1289,6 +1323,19 @@ void WDockManager::changeSimWidget(int index)
     {
         this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
     }
+    if (this->getDockWidget(WCALLWATCHER) == NULL)
+    {
+        qDebug() << "Call Watcher Dock Widget is null, should never happen";
+        return;
+    }
+    if (index >= openCallWatchers.size())
+    {
+        this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(openCallWatchers.size()-1));
+    }
+    else
+    {
+        this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
+    }
     //qDebug() << "WDockManager: changeSimWidget done";
 }
 
@@ -1296,6 +1343,7 @@ void WDockManager::changeSimWidget(int index)
 void WDockManager::deleteActiveSimWidget()
 {
     //qDebug() << "WDockManager: deleteActiveSimWidget";
+    bool removeDocks = false;
     PicoBlazeGrid *tempGrid = (PicoBlazeGrid*)(this->getDockWidget(WSIMULATIONINFO)->widget());
     int index = openSimWidgets.indexOf(tempGrid);
     if (openSimWidgets.count() > 1)
@@ -1303,7 +1351,7 @@ void WDockManager::deleteActiveSimWidget()
         this->openSimWidgets.removeAt(index);
         if (index == this->openSimWidgets.count())
         {
-            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index -1 ));
+            this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index -1));
         }
         else
         {
@@ -1315,6 +1363,36 @@ void WDockManager::deleteActiveSimWidget()
     else
     {
         this->openSimWidgets.removeAt(index);
+        removeDocks = true;
+        //delete tempGrid;
+        //tempGrid = NULL;
+    }
+
+    CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
+    int index2 = openCallWatchers.indexOf(tempWatcher);
+    if (openCallWatchers.count() > 1)
+    {
+        this->openCallWatchers.removeAt(index2);
+        if (index2 == this->openCallWatchers.count())
+        {
+            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2 -1));
+        }
+        else
+        {
+            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2));
+        }
+        delete tempWatcher;
+        tempWatcher = NULL;
+    }
+    else
+    {
+        this->openCallWatchers.removeAt(index2);
+        //delete tempWatcher;
+        //tempGrid = NULL;
+    }
+
+    if (true == removeDocks)
+    {
         while (this->openDockWidgets.count() > 0)
         {
             WDock *tmpDock = this->openDockWidgets.at(0);
@@ -1327,8 +1405,6 @@ void WDockManager::deleteActiveSimWidget()
         this->bottomAreaTabs = NULL;
         this->rightAreaTabs = NULL;
         this->dockWidgets = false;
-        //delete tempGrid;
-        //tempGrid = NULL;
     }
     //qDebug() << "WDockManager: deleteActiveSimWidget done";
 }
@@ -1511,7 +1587,6 @@ void WDockManager::showProjectEditors(QString projectPath)
 {
     for (int i = 0; i < openCentralWidgets.count(); i++)
     {
-        //qDebug() << openCentralWidgets.at(i).first->id;
         if (projectPath == openCentralWidgets.at(i).first->id)
         {
             if (m_currTabBarIndex == i)
@@ -1572,6 +1647,7 @@ void WDockManager::removeTabBar(QString projectPath)
             openCentralWidgets.removeAt(i);
             delete tab;
             wTab = NULL;
+            m_currTabBarIndex = -1;
             break;
         }
     }
@@ -1584,6 +1660,11 @@ void WDockManager::removeTabBar(QString projectPath)
         this->hideDockWidgetArea(2);
         emit centralClosed();
     }
+    /*if (NULL == wTab && openCentralWidgets.count() != 0)
+    {
+        m_currTabBarIndex = 0;
+        wTab = openCentralWidgets.at(0).first;
+    }*/
     /*if (openCentralWidgets.count() > 0)
     {
         wTab = openCentralWidgets.at(openCentralWidgets.count()-1).first;
@@ -1871,6 +1952,11 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             connect(newDock, SIGNAL(showHelpContent(const QUrl &)), parent, SLOT(setHelpBrowserPath(const QUrl &)));
             break;
         }
+        case WCALLWATCHER:
+        {
+            qDebug() << "WDockManager: invalid use of wcallwatcher constructor, should never happen";
+            break;
+        }
         default:
         {
             qDebug() << "WDockManager: unknown widget code";
@@ -1882,7 +1968,7 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
 
 
 
-WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, QString path, MCUSimControl* simControl)
+WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSimControl* simControl)
     : QObject(parentWindow)
 {
     switch (code)
@@ -1896,7 +1982,7 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, QStri
             //mainWindow->addDockWidget(Qt::BottomDockWidgetArea, wDockWidget);
             PicoBlazeGrid *newWidget = new PicoBlazeGrid(wDockWidget, simControl);
             connect(parent, SIGNAL(unhighlightSim()), newWidget, SLOT(unhighlight()));
-            newWidget->setProjectPath(path);
+            //newWidget->setProjectPath(path);
             area = 2;
             wDockWidget->setWidget(newWidget);
             wDockWidget->show();
@@ -1906,6 +1992,17 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, QStri
             parent->openSimWidgets.append(newWidget);
             //qDebug() << "WSimulationInfo: height fixed";
             //parent->connect(wDockWidget, SIGNAL(visibilityChanged(bool)), parent, SLOT(showBottomArea(bool)));
+            break;
+        }
+        case WCALLWATCHER:
+        {
+            wDockWidget = new QDockWidget("Call Watcher", parentWindow);
+            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+            CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
+            area = 1;
+            wDockWidget->setWidget(newDock);
             break;
         }
         default:
