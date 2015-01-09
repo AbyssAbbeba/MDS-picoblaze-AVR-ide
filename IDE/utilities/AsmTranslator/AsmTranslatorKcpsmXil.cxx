@@ -382,9 +382,11 @@ inline bool AsmTranslatorKcpsmXil::processInstructions ( LineFields & lineFields
         }
     }
 
-    translateIdentifiers(lineFields);
-
     std::string instruction = lineFields.getInstruction();
+    if ( "include" != instruction )
+    {
+        translateIdentifiers(lineFields);
+    }
     if ( true == instruction.empty() )
     {
         lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));

@@ -134,7 +134,7 @@ class AsmTranslatorBase
             int m_comment[2];
 
             /// @brief
-            std::vector<std::pair<int,int> > m_operands;
+            std::vector<std::pair<int,int>> m_operands;
         };
 
     ////    Constructors and Destructors    ////
