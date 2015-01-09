@@ -51,11 +51,11 @@ class MCUSimControl : public QThread
           */
         enum UpdateRequest
         {
-            UR_TIME_AND_PC = 0x01,
-            UR_SIM_CURSOR  = 0x02,
-            UR_FULL_UPDATE = 0x04
+            UR_TIME_AND_PC    = 0x01,
+            UR_SIM_CURSOR     = 0x02,
+            UR_MEMORY_REFRESH = 0x04
         };
-
+// UR_TIME_AND_PC | UR_SIM_CURSOR | UR_MEMORY_REFRESH
         /**
           * @brief
           */
