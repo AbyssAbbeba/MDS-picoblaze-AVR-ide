@@ -52,6 +52,16 @@ ProjectCfg_Templates::ProjectCfg_Templates(QWidget *parent, Project *currProject
             this,
             SLOT(checkedVerilog(int))
            );
+    connect(ui.btnVHDL,
+            SIGNAL(clicked()),
+            this,
+            SLOT(setPathVHDL())
+           );
+    connect(ui.btnVerilog,
+            SIGNAL(clicked()),
+            this,
+            SLOT(setPathVerilog())
+           );
 }
 
 
@@ -120,5 +130,57 @@ void ProjectCfg_Templates::checkedVerilog(int checked)
     {
         ui.leVerilog->setDisabled(true);
         ui.btnVerilog->setDisabled(true);
+    }
+}
+
+
+void ProjectCfg_Templates::setPathVHDL()
+{
+    QString path;
+    if (NULL == this->project)
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QString(), QString("VHDL File (*.vhd)"), 0);
+    }
+    else if (this->project->prjPath != "untracked")
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString("VHDL File (*.vhd)"), 0);
+    }
+    else
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QString(), QString("VHDL File (*.vhd)"), 0);
+    }
+    if (NULL != path)
+    {
+        if (ui.leVHDL->isEnabled() == false)
+        {
+            ui.leVHDL->setEnabled(true);
+        }
+        ui.leVHDL->setText(path);
+    }
+}
+
+
+void ProjectCfg_Templates::setPathVerilog()
+{
+    QString path;
+    if (NULL == this->project)
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QString(), QString("Verilog File (*.v)"), 0);
+    }
+    else if (this->project->prjPath != "untracked")
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString("Verilog File (*.v)"), 0);
+    }
+    else
+    {
+        path = QFileDialog::getOpenFileName(this, tr("Template File"), QString(), QString("Verilog File (*.v)"), 0);
+    }
+    if (NULL != path)
+    {
+        if (ui.leVerilog->isEnabled() == false)
+        {
+            ui.leVerilog->setEnabled(true);
+        }
+        ui.leVerilog->setText(path);
     }
 }
