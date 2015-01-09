@@ -2405,6 +2405,12 @@ void MainForm::compileProject()
         }
 
 
+        for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+        {
+            options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
+        }
+
+
         QDir pathDir(GuiCfg::getInstance().getTempPath());
         if (false == pathDir.exists())
         {
@@ -2630,6 +2636,12 @@ void MainForm::compileProject()
                 options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
+
+            for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+            {
+                options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
+            }
+
             if (m_projectMan->getActive()->compileOpt.at(0))
             {
                 options->m_symbolTable = (mainFile + ".stbl").toLocal8Bit().constData();
@@ -2802,6 +2814,11 @@ void MainForm::compileProject()
                 options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
+
+            for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+            {
+                options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
+            }
 
 
             QDir pathDir(GuiCfg::getInstance().getTempPath());
@@ -3027,6 +3044,12 @@ void MainForm::compileProject()
         else
         {
             options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
+        }
+
+
+        for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+        {
+            options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
         }
 
 
