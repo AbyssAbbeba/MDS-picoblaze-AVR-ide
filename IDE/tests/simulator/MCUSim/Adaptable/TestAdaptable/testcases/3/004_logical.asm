@@ -1,5 +1,5 @@
+device "003_picoblazecopy.procdef"
 
-    device kcpsm2
 
     ORG         0x00
     JUMP        Start

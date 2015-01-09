@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional jump and ret
-device kcpsm6
+device "003_picoblazecopy.procdef"
 org     0
 
 numero          equ             1

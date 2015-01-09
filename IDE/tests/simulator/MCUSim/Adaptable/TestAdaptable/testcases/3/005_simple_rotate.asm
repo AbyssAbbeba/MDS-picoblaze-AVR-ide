@@ -1,4 +1,4 @@
-device kcpsm6
+device "003_picoblazecopy.procdef"
 ; Program initialization
 ; --------------------
         ORG     0h                      ; Define code segment

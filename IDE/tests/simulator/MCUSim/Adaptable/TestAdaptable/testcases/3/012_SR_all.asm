@@ -1,6 +1,6 @@
     ; testing of rotate instructions
 
-device kcpsm6
+device "003_picoblazecopy.procdef"
     org 00h
 
 start:      load        s0,#128

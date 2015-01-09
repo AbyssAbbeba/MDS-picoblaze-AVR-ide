@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing run time directives, rtif rtfor, rt#WHILE
-device kcpsm6
+device "003_picoblazecopy.procdef"
 org     0
 
 start:
