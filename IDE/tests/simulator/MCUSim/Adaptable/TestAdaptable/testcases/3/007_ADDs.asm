@@ -1,8 +1,11 @@
+device "003_picoblazecopy.procdef"
+
+
 ORG 0
 JUMP    START
                         ;; step 5
                         
-device kcpsm6
+
 START:
         ADD     S0,#1
         LOAD    S2,S1

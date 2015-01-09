@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional call and ret
-device kcpsm6
+device "003_picoblazecopy.procdef"
 org     0
 
 start:

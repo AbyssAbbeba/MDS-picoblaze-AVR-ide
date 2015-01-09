@@ -1,5 +1,5 @@
 ; tEST SCRIPT FOR SUBROUTINES
-device kcpsm6
+device "003_picoblazecopy.procdef"
 org 0x00
 ;; PC == 0
 

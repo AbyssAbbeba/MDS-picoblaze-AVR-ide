@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing interrupts behavior
-device kcpsm6
+device "003_picoblazecopy.procdef"
 org     0
 
 start:
