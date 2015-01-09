@@ -52,7 +52,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit);
         //~PicoBlazeGrid();
         QWidget* getParent();
-        void setProjectPath(QString prjPath);
+        //void setProjectPath(QString prjPath);
         void fixHeight();
 
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
@@ -69,7 +69,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         QHBoxLayout *layout;
         QWidget *parent;
         //QMenu *popupMenu;
-        QString projectPath;
+        //QString projectPath;
         RegistersWidget *memRegs;
         McuMemoryView *memScratch;
         PortHexEdit *memPorts;

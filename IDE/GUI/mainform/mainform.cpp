@@ -1072,7 +1072,7 @@ void MainForm::createDockWidgets()
                );
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
-        m_wDockManager->addDockWidget(WSIMULATIONINFO);
+        m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
         m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
         m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
@@ -1105,6 +1105,7 @@ void MainForm::createDockWidgets()
                 SLOT(reload(QString))
             );
         m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
+        m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
         m_wDockManager->addDockWidget(WRIGHTHIDE);
 
         
@@ -1199,7 +1200,8 @@ void MainForm::createDockWidgets()
     }
     else
     {
-        m_wDockManager->addDockWidget(WSIMULATIONINFO);
+        m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
+        m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
     }
     //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
     //emit dockWidgetsCreated;
@@ -2214,18 +2216,27 @@ QString MainForm::translateBeforeCompilation(QString path)
         //qDebug() << "MainForm: translating file" << filesToTranslate.at(i);
         if ("psm" != filesToTranslate.at(i).section('.',-1).toLower())
         {
+            qDebug() << "MainForm: translation - wrong extension (not .psm)";
             return "";
         }
 
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
+            qDebug() << "MainForm: translation - cant open input stream" << filesToTranslate.at(i);
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            QString text = "Can not open input file " + filesToTranslate.at(i);
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
         std::ofstream outputStream((filesToTranslate.at(i).section('.',0, -2) + ".asm").toStdString(), std::ofstream::out);
         if (false == outputStream.is_open())
         {
             inputStream.close();
+            qDebug() << "MainForm: translation - cant open output stream" << filesToTranslate.at(i).section('.',0, -2) + ".asm";
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            QString text = "Can not open output file " + filesToTranslate.at(i).section('.',0, -2) + ".asm";
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
 
@@ -2249,10 +2260,12 @@ QString MainForm::translateBeforeCompilation(QString path)
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             std::vector<std::pair<unsigned int, std::string> > messages =  translator.getMessages();
             QString text;
+            qDebug() << "MainForm: translation errors:";
             for (unsigned int i = 0; i < messages.size(); i++)
             {
                 text = QString::fromStdString(messages.at(i).second) + ":" + QString::number(messages.at(i).first);
-                compileInfo->appendMessage(text, CompilerBase::MessageType::MT_GENERAL);
+                compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
+                qDebug() << text;
             }
             inputStream.close();
             outputStream.close();
@@ -3572,7 +3585,7 @@ void MainForm::exampleOpen()
  */
 void MainForm::simProjectData()
 {
-    m_wDockManager->addSimDockWidgetP2(m_projectMan->getActive()->prjPath, m_projectMan->getActive()->getSimControl());
+    //m_wDockManager->addSimDockWidgetP2(m_projectMan->getActive()->prjPath, m_projectMan->getActive()->getSimControl());
     m_wDockManager->openSimWidgets.at(m_wDockManager->openSimWidgets.count()-1)->setClock(m_projectMan->getActive()->clock,
                                                                                       m_projectMan->getActive()->clockMult
                                                                                      );
@@ -4116,6 +4129,11 @@ void MainForm::closeProject()
             if (NULL != m_projectMan->getActive())
             {
                 m_wDockManager->showProjectEditors(m_projectMan->getActive()->prjPath);
+                qDebug() << m_projectMan->getActive()->prjPath;
+                if (m_wDockManager->getTabCount() == 0)
+                {
+                    setCentralUntitled(false);
+                }
             }
         }
     }

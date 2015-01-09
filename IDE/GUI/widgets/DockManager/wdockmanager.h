@@ -58,6 +58,7 @@ class QListWidgetItem;
 class QDockWidget;
 class QVBoxLayout;
 class HelpBrowser;
+class CallWatcher;
 
 
 /**
@@ -70,9 +71,10 @@ class WDockManager : public QObject
     Q_OBJECT
     public:
         WDockManager(QWidget *parent, QWidget *centralWidget);
-        void addDockWidget(WidgetCode code);
-        void addSimDockWidgetP1();
-        void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
+        void addDockWidget(WidgetCode code, MCUSimControl *simControl = NULL);
+        void addSimDockWidget(MCUSimControl *simControl);
+        void addCallWatcher(MCUSimControl *simControl);
+        //void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
         QDockWidget* getDockWidget(WidgetCode code);
         QDockWidget* getDockWidgetArea(int area);
         void hideDockWidgetArea(int area);
@@ -120,6 +122,7 @@ class WDockManager : public QObject
         //QTabBar *leftAreaTabs;
         QTabBar *rightAreaTabs;
         QList<PicoBlazeGrid*> openSimWidgets;
+        QList<CallWatcher*> openCallWatchers;
 
     public slots:
         void changeLine(QListWidgetItem *item);
@@ -238,7 +241,7 @@ class WDock : public QObject
     Q_OBJECT
     public:
         WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow);
-        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, QString path, MCUSimControl* simControl);
+        WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSimControl* simControl);
         ~WDock();
         bool cmpCode(WidgetCode code);
         bool cmpArea(int area);

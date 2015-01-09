@@ -145,9 +145,9 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
             if (true == this->warningOptions.memReadAccess)
             {
                 error(ErrorCode::ERR_MEM_RD_ACCESS_DENIED);
-                emit stopSimSig();                                                
-            }                                                                     
-            break;                                                               
+                emit stopSimSig();
+            }
+            break;
         }
         case MCUSimMemory::EVENT_MEM_ERR_WR_ACCESS_DENIED:
         {
@@ -162,7 +162,7 @@ void McuMemoryView::handleEvent(int subsysId, int eventId, int locationOrReason,
         {
             if (true == this->warningOptions.memReadUndef)
             {
-                error(ErrorCode::ERR_MEM_RD_UNDEFINED);
+                error(ErrorCode::ERR_MEM_RD_UNDEFINED, QString::number(locationOrReason, 16));
                 emit stopSimSig();
             }
             break;

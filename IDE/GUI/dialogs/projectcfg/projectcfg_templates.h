@@ -29,6 +29,8 @@ class ProjectCfg_Templates : public QWidget
     private slots:
         void checkedVHDL(int checked);
         void checkedVerilog(int checked);
+        void setPathVHDL();
+        void setPathVerilog();
 
     private:
         void load();

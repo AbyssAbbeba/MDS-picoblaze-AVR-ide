@@ -93,7 +93,7 @@ void error(int errCode, QString detail)
         case ERR_MEM_RD_UNDEFINED:
         {
             msgBox.setIcon(QMessageBox::Warning);
-            msgBox.setText("Uninitialized value read from program memory, simulation halted");
+            msgBox.setText("Uninitialized value read from memory at address 0x" + detail + ", simulation halted");
             break;
         }
         //cpu
@@ -119,6 +119,12 @@ void error(int errCode, QString detail)
         {
             msgBox.setIcon(QMessageBox::Warning);
             msgBox.setText("Invalid opcode, simulation halted");
+            break;
+        }
+        case ERR_CPU_UNDEFINED_OPCODE:
+        {
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setText("Undefined opcode at address 0x" + detail +", simulation halted");
             break;
         }
         case ERR_CPU_INVALID_JUMP:
