@@ -1,4 +1,4 @@
-device kcpsm6
+device "003_picoblazecopy.procdef"
 
         ; file for testing and or xor instructions
         org 00h
