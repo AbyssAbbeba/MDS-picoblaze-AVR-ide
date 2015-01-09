@@ -49,6 +49,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
                                 MCUSimCPU::EVENT_CPU_PC_UNDERFLOW,
                                 MCUSimCPU::EVENT_CPU_SYS_FATAL_ERROR,
                                 MCUSimCPU::EVENT_CPU_ERR_INVALID_OPCODE,
+                                MCUSimCPU::EVENT_CPU_ERR_UNDEFINED_OPCODE,
                                 MCUSimCPU::EVENT_CPU_ERR_INVALID_JUMP,
                                 MCUSimCPU::EVENT_CPU_ERR_INVALID_CALL,
                                 MCUSimCPU::EVENT_CPU_WRN_INVALID_IRQ,
@@ -82,10 +83,10 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
             };
     controlUnit->registerObserver(this, MCUSimSubsys::ID_STACK, mask);
 
-    mask = {
+    /*mask = {
                 MCUSimMemory::EVENT_MEM_WRN_RD_UNDEFINED
            };
-    controlUnit->registerObserver(this, MCUSimSubsys::ID_MEM_CODE, mask);
+    controlUnit->registerObserver(this, MCUSimSubsys::ID_MEM_CODE, mask);*/
 
     int offsetMove = 0;
     this->lblWRK = NULL;
@@ -309,10 +310,10 @@ void PicoBlazeGrid::handleUpdateRequest(int mask)
  * @brief
  * @param
  */
-void PicoBlazeGrid::setProjectPath(QString prjPath)
+/*void PicoBlazeGrid::setProjectPath(QString prjPath)
 {
     this->projectPath = prjPath;
-}
+}*/
 
 
 /*void PicoBlazeGrid::switchPorts()
@@ -399,6 +400,15 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 if (true == this->warningOptions.cpuOpcode)
                 {
                     error(ErrorCode::ERR_CPU_INVALID_OPCODE);
+                    emit stopSimSig();
+                }
+                break;
+            }
+            case MCUSimCPU::EVENT_CPU_ERR_UNDEFINED_OPCODE:
+            {
+                if (true == this->warningOptions.cpuOpcode)
+                {
+                    error(ErrorCode::ERR_CPU_UNDEFINED_OPCODE, QString::number(locationOrReason, 16));
                     emit stopSimSig();
                 }
                 break;
@@ -623,7 +633,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
             }
         }
     }
-    else if (MCUSimSubsys::ID_MEM_CODE == subsysId)
+    /*else if (MCUSimSubsys::ID_MEM_CODE == subsysId)
     {
         switch (eventId)
         {
@@ -640,7 +650,7 @@ void PicoBlazeGrid::handleEvent(int subsysId, int eventId, int locationOrReason,
                 break;
             }
         }
-    }
+    }*/
     else
     {
         qDebug("PicoBlazeGrid: Invalid event received, event ignored.");
