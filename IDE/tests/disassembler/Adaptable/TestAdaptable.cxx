@@ -130,7 +130,7 @@ void TestAdaptable::testFunction()
         std::ifstream file ( devSpecFile, (std::ios_base::in | std::ios_base::binary) );
         if ( false == file.is_open() )
         {
-            CU_FAIL("Unable to open processor definition file.");
+            CU_FAIL("Unable to open processor definition file: " + devSpecFile);
             return;
         }
         static const long long int MAX_SIZE = 102400;
@@ -138,14 +138,14 @@ void TestAdaptable::testFunction()
         size_t len = (size_t) file.readsome (data.get(), MAX_SIZE);
         if ( true == file.bad() )
         {
-            CU_FAIL("Unable to read processor definition file.");
+            CU_FAIL("Unable to read processor definition file: " + devSpecFile);
             return;
         }
 
         std::unique_ptr<AdjSimProcDefParser> parser (new AdjSimProcDefParser(std::string(data.get(), len)));
         if ( false == parser.get()->isValid() )
         {
-            CU_FAIL("Unable to parse processor definition file.");
+            CU_FAIL("Unable to parse processor definition file: " + devSpecFile);
             return;
         }
         m_disassembler = new DAsmAdaptable(parser.get()->data());
