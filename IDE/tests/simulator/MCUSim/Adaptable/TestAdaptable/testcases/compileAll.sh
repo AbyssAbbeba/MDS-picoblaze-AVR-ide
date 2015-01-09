@@ -7,4 +7,14 @@ ARCH="Adaptable"
 
 source "../../../libCompile.sh"
 
-runBuild "../results"
+if [ ! -d "../results/" ]; then
+    mkdir "../results/"
+fi
+
+for i in *; do
+    if [ -d "${i}" ]; then
+        cd "${i}"
+        runBuild "../../results/${i}"
+        cd ..
+    fi
+done
