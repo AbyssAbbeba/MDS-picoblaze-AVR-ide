@@ -2223,14 +2223,14 @@ QString MainForm::translateBeforeCompilation(QString path)
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
-            qDebug() << "MainForm: translation - cant open input stream";
+            qDebug() << "MainForm: translation - cant open input stream" << filesToTranslate.at(i);
             return "";
         }
         std::ofstream outputStream((filesToTranslate.at(i).section('.',0, -2) + ".asm").toStdString(), std::ofstream::out);
         if (false == outputStream.is_open())
         {
             inputStream.close();
-            qDebug() << "MainForm: translation - cant open output stream";
+            qDebug() << "MainForm: translation - cant open output stream" << filesToTranslate.at(i).section('.',0, -2) + ".asm";
             return "";
         }
 
