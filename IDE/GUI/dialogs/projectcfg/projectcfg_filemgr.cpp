@@ -206,44 +206,47 @@ void ProjectCfg_FileMgr::newFile()
 void ProjectCfg_FileMgr::addFile()
 {
     //dialog window (file search)
-    QString path;
+    QStringList path;
     if (NULL == this->project)
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Source File"), QString(), QString(), 0);
     }
     else if (this->project->prjPath != "untracked")
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Source File"), QDir(this->project->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Source File"), QString(), QString(), 0);
     }
-    if (path != NULL)
+    for (int i = 0; i < path.count(); i++)
     {
         if (this->project != NULL)
         {
-            project->addFile(path, path.section('/', -1));
+            project->addFile(path.at(i), path.at(i).section('/', -1));
         }
-        QListWidgetItem *newItem = new QListWidgetItem(path.section('/', -1), ui.lstFiles);
-        newItem->setToolTip(path);
+        QListWidgetItem *newItem = new QListWidgetItem(path.at(i).section('/', -1), ui.lstFiles);
+        newItem->setToolTip(path.at(i));
         ui.lstFiles->addItem(newItem);
         if (reloadFiles == false && this->project != NULL)
         {
             emit reloadTree();
             reloadFiles = true;
         }
+        /*if (reloadFiles == false)
+        {
+            emit reloadTree();
+            reloadFiles = true;
+        }*/
+    }
+    if (path.count() > 0)
+    {
         QList<QString> files;
         for (int i = 0; i < ui.lstFiles->count(); i++)
         {
             files.append(ui.lstFiles->item(i)->text());
         }
         emit setFiles(files, this->mainFile);
-        /*if (reloadFiles == false)
-        {
-            emit reloadTree();
-            reloadFiles = true;
-        }*/
     }
 }
 

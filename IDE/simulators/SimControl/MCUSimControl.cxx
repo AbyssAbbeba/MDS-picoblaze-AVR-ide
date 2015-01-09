@@ -362,7 +362,7 @@ void MCUSimControl::stepProgram()
     m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_ALL);
     m_totalMCycles += m_simulator->executeInstruction();
     dispatchEvents();
-    emit(updateRequest(0x3));
+    emit ( updateRequest ( UR_TIME_AND_PC | UR_SIM_CURSOR ) );
 }
 
 void MCUSimControl::animateProgram()
@@ -394,7 +394,7 @@ void MCUSimControl::animateProgram()
 
         m_totalMCycles += m_simulator->executeInstruction();
         dispatchEvents();
-        emit(updateRequest(0x3));
+        emit ( updateRequest ( UR_TIME_AND_PC | UR_SIM_CURSOR ) );
         QCoreApplication::instance()->processEvents();
 
         if ( true == m_breakPointsEnabled )
@@ -434,7 +434,7 @@ void MCUSimControl::runProgram()
         {
             m_abort = false;
             m_running = false;
-            emit(updateRequest(0x7));
+            emit ( updateRequest ( UR_TIME_AND_PC | UR_SIM_CURSOR | UR_MEMORY_REFRESH ) );
             return;
         }
 
@@ -464,7 +464,7 @@ void MCUSimControl::runProgram()
                 t = t2;
                 cycleCounter = 0;
 
-                emit(updateRequest(0x1));
+                emit(updateRequest(UR_TIME_AND_PC));
                 QCoreApplication::instance()->processEvents();
             }
             else
