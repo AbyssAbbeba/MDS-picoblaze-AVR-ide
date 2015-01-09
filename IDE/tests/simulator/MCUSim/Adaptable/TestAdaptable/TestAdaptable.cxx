@@ -68,36 +68,44 @@ bool TestAdaptable::addTests ( CU_pSuite suite )
 
     std::vector<std::string> testCaseFiles;
 
-    for ( directory_iterator dir ( path("TestAdaptable") / "testcases" );
-          directory_iterator() != dir;
-          dir++ )
+    for ( directory_iterator basedir ( path("TestAdaptable") / "testcases" );
+          directory_iterator() != basedir;
+          basedir++ )
     {
-        if ( false == is_regular_file(*dir) )
+        if ( false == is_directory(*basedir) )
         {
             continue;
         }
 
-        std::string extension = dir->path().extension().string();
-        std::string testName  = dir->path().filename().string();
-
-        if ( ".in" == extension || ".asm" == extension )
+        for ( directory_iterator dir(basedir->path()); directory_iterator() != dir; dir++ )
         {
-            bool found = false;
-
-            testName.resize ( testName.size() - extension.size() );
-
-            for ( const auto & testCaseFile : testCaseFiles )
+            if ( false == is_regular_file(*dir) )
             {
-                if ( testCaseFile == testName )
-                {
-                    found = true;
-                    break;
-                }
+                continue;
             }
 
-            if ( false == found )
+            std::string extension = dir->path().extension().string();
+            std::string testName  = ( basedir->path() / dir->path().filename() ).string();
+
+            if ( ".in" == extension || ".asm" == extension )
             {
-                testCaseFiles.push_back(testName);
+                bool found = false;
+
+                testName.resize ( testName.size() - extension.size() );
+
+                for ( const auto & testCaseFile : testCaseFiles )
+                {
+                    if ( testCaseFile == testName )
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if ( false == found )
+                {
+                    testCaseFiles.push_back(testName);
+                }
             }
         }
     }
