@@ -122,11 +122,12 @@ int TestXilAsmTrans::init()
 {
     using namespace boost::filesystem;
 
+    m_translator = new AsmTranslator();
+
     m_msgInt   = new CompilerMsgIntfFile();
     m_options  = new CompilerOptions();
     m_compiler = new Compiler ( m_msgInt,
                                 system_complete( path("..") / ".." / ".." / "compiler" / "include" ).string() );
-    m_translator = new AsmTranslator();
 
     m_translator->m_config.m_letterCase[AsmTranslatorConfig::F_INSTRUCTION] = AsmTranslatorConfig::LC_UPPERCASE;
     m_translator->m_config.m_letterCase[AsmTranslatorConfig::F_DIRECTIVE]   = AsmTranslatorConfig::LC_UPPERCASE;
@@ -208,6 +209,56 @@ void TestXilAsmTrans::testFunction()
     }
 }
 
+void TestXilAsmTrans::translate ( const std::string & testName,
+                                  const std::string & suffix,
+                                  bool include )
+{
+    using namespace boost::filesystem;
+
+    path inFile = path("Xilinx") / "testcases";
+    if ( true == include )
+    {
+        inFile /= "include";
+    }
+
+    inFile /= ( testName + ".psm" );
+
+    m_translator->clear();
+    bool result = m_translator->translate ( AsmTranslator::V_KCPSM_XILINX,
+                                            ( path("Xilinx") / "results"   / (testName + suffix + ".asm") ).string(),
+                                            inFile.string(),
+                                            true );
+
+    std::string errorLog;
+    std::ofstream logFile( ( path("Xilinx") / "results" / (testName + suffix + ".log") ).string() );
+    for ( const auto & i : m_translator->getMessages() )
+    {
+        if ( 0 == i.first )
+        {
+            logFile << (testName + ".psm") << ": " << i.second << std::endl;
+        }
+        else
+        {
+            logFile << (testName + ".psm") << ":" << i.first << ": " << i.second << std::endl;
+        }
+
+        errorLog += i.second;
+        errorLog += '\n';
+    }
+
+    if ( false == result )
+    {
+        CU_FAIL("Translation failed for: " + inFile.string() + '\n' + errorLog);
+        return;
+    }
+
+    const std::vector<std::string> includedFiles = m_translator->getIncludedFiles();
+    for ( const auto & file : includedFiles )
+    {
+        translate(file.substr(0, file.size() - 4), "", true);
+    }
+}
+
 void TestXilAsmTrans::test ( const std::string & suffix )
 {
     using namespace boost::filesystem;
@@ -216,36 +267,7 @@ void TestXilAsmTrans::test ( const std::string & suffix )
 
     create_directory ( path("Xilinx") / "results" );
 
-    m_translator->clear();
-    bool result = m_translator->translate ( AsmTranslator::V_KCPSM_XILINX,
-                                            ( path("Xilinx") / "results"   / (testName + suffix + ".asm") ).string(),
-                                            ( path("Xilinx") / "testcases" / (testName + ".psm") ).string(),
-                                            true );
-
-    {
-        std::string errorLog;
-        std::ofstream logFile( ( path("Xilinx") / "results" / (testName + suffix + ".log") ).string() );
-        for ( const auto & i : m_translator->getMessages() )
-        {
-            if ( 0 == i.first )
-            {
-                logFile << (testName + ".psm") << ": " << i.second << std::endl;
-            }
-            else
-            {
-                logFile << (testName + ".psm") << ":" << i.first << ": " << i.second << std::endl;
-            }
-
-            errorLog += i.second;
-            errorLog += '\n';
-        }
-
-        if ( false == result )
-        {
-            CU_FAIL("Translation failed:\n" + errorLog);
-            return;
-        }
-    }
+    translate(testName, suffix);
 
     m_options->m_sourceFiles.clear();
     m_options->m_sourceFiles.push_back ( ( path("Xilinx") / "results" / (testName + suffix + ".asm") ).string() );
@@ -286,9 +308,8 @@ void TestXilAsmTrans::test ( const std::string & suffix )
 
     const std::string errFile = (path("Xilinx") / "results" / (testName + suffix + ".err")).string();
     dynamic_cast<CompilerMsgIntfFile*>(m_msgInt)->openFile(errFile);
-    result = m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options);
 
-    if ( false == result )
+    if ( false == m_compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, m_options) )
     {
         std::string errorLog;
         std::ifstream errLogFile(errFile);
@@ -301,6 +322,7 @@ void TestXilAsmTrans::test ( const std::string & suffix )
             {
                 line = line.substr(pos);
                 errorLog += line;
+                errorLog += '\n';
             }
         }
         CU_FAIL("Compilation failed:\n" + errorLog);
