@@ -128,8 +128,9 @@ void TestAdaptable::testFunction()
     using namespace boost::filesystem;
 
     const std::string testName = CU_get_current_test()->pName;
-
+    
     create_directory ( path("TestAdaptable") / "results" );
+    create_directory ( path("TestAdaptable") / "results" / path(testName).parent_path() );
 
     std::string inFile  = ( path("TestAdaptable") / "testcases" / (testName + "."   ) ).string();
     std::string outFile = ( path("TestAdaptable") / "results"   / (testName + ".out") ).string();
