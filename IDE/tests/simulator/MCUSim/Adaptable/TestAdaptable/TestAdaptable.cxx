@@ -85,7 +85,7 @@ bool TestAdaptable::addTests ( CU_pSuite suite )
             }
 
             std::string extension = dir->path().extension().string();
-            std::string testName  = ( basedir->path() / dir->path().filename() ).string();
+            std::string testName  = ( basedir->path().filename() / dir->path().filename() ).string();
 
             if ( ".in" == extension || ".asm" == extension )
             {
