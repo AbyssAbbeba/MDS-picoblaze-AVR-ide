@@ -1346,26 +1346,26 @@ void MainForm::newAddFile()
 void MainForm::openFile()
 {
 //     qDebug() << "MainForm: openFile()";
-    QString path;
+    QStringList path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Open File"), QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath(), QString(), 0);
     }
     else
     {
-        path = QFileDialog::getOpenFileName(this, tr("Open File"), m_lastDir, QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Open File"), m_lastDir, QString(), 0);
     }
-    if (path != NULL)
+    for (int i = 0; i < path.count(); i++)
     {
-        m_lastDir = QFileInfo(path).path();
-        QFile file(path);
+        m_lastDir = QFileInfo(path.at(i)).path();
+        QFile file(path.at(i));
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            error(ERR_OPENFILE, path);
+            error(ERR_OPENFILE, path.at(i));
         }
         else
         {
@@ -1374,29 +1374,29 @@ void MainForm::openFile()
             file.close();
             if (m_projectMan->getOpenProjects().count() > 0)
             {
-                if (false == m_wDockManager->addCentralWidget(path.section('/', -1), path))
+                if (false == m_wDockManager->addCentralWidget(path.at(i).section('/', -1), path.at(i)))
                 {
-                    return;
+                    continue;
                 }
-                m_projectMan->getActive()->addFile(path, path.section('/', -1));
+                m_projectMan->getActive()->addFile(path.at(i), path.at(i).section('/', -1));
                 m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getActive());
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getActive());
-                m_projectMan->getActive()->setFileOpened(path, true);
+                m_projectMan->getActive()->setFileOpened(path.at(i), true);
             }
             else
             {
                 //m_wDockManager->getCentralWidget()->connectAct();
                 m_projectMan->addUntrackedProject();
-                if (false == m_wDockManager->addUntrackedCentralWidget(path.section('/', -1), path))
+                if (false == m_wDockManager->addUntrackedCentralWidget(path.at(i).section('/', -1), path.at(i)))
                 {
-                    return;
+                    continue;
                 }
-                m_projectMan->addUntrackedFile(path, path.section('/', -1));
+                m_projectMan->addUntrackedFile(path.at(i), path.at(i).section('/', -1));
                 m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getUntracked());
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
             }
-            GuiCfg::getInstance().fileOpened(path);
-            m_fileWatcher.addPath(path);
+            GuiCfg::getInstance().fileOpened(path.at(i));
+            m_fileWatcher.addPath(path.at(i));
             QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -1410,7 +1410,7 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
@@ -2216,14 +2216,15 @@ QString MainForm::translateBeforeCompilation(QString path)
         //qDebug() << "MainForm: translating file" << filesToTranslate.at(i);
         if ("psm" != filesToTranslate.at(i).section('.',-1).toLower())
         {
-            qDebug() << "MainForm: translation - wrong extension (not .psm)";
+            CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
+            QString text = "File does not have .psm extension " + filesToTranslate.at(i);
+            compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
 
         std::ifstream inputStream(filesToTranslate.at(i).toStdString());
         if (false == inputStream.is_open())
         {
-            qDebug() << "MainForm: translation - cant open input stream" << filesToTranslate.at(i);
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             QString text = "Can not open input file " + filesToTranslate.at(i);
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
@@ -2233,7 +2234,6 @@ QString MainForm::translateBeforeCompilation(QString path)
         if (false == outputStream.is_open())
         {
             inputStream.close();
-            qDebug() << "MainForm: translation - cant open output stream" << filesToTranslate.at(i).section('.',0, -2) + ".asm";
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
             QString text = "Can not open output file " + filesToTranslate.at(i).section('.',0, -2) + ".asm";
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
@@ -2362,7 +2362,7 @@ void MainForm::compileProject()
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
             if ("" == newPath)
             {
-                compileInfo->appendMessage("Asm translation could not be completed (.psm extension required)." ,
+                compileInfo->appendMessage("Asm translation could not be completed." ,
                                             CompilerBase::MessageType::MT_ERROR);
                 return;
             }
@@ -2402,6 +2402,12 @@ void MainForm::compileProject()
         else
         {
             options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
+        }
+
+
+        for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+        {
+            options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
         }
 
 
@@ -2576,7 +2582,7 @@ void MainForm::compileProject()
                 if ("" == newPath)
                 {
                     qDebug() << "MainForm: compile - translator returned empty path";
-                    compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                    compileInfo->appendMessage("Asm translation could not be completed." ,
                                                 CompilerBase::MessageType::MT_ERROR);
                     return;
                 }
@@ -2628,6 +2634,12 @@ void MainForm::compileProject()
             else
             {
                 options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
+            }
+
+
+            for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+            {
+                options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
             }
 
             if (m_projectMan->getActive()->compileOpt.at(0))
@@ -2761,7 +2773,7 @@ void MainForm::compileProject()
                 QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
                 if ("" == newPath)
                 {
-                    compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                    compileInfo->appendMessage("Asm translation could not be completed." ,
                                                 CompilerBase::MessageType::MT_ERROR);
                     return;
                 }
@@ -2802,6 +2814,11 @@ void MainForm::compileProject()
                 options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
             }
 
+
+            for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+            {
+                options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
+            }
 
 
             QDir pathDir(GuiCfg::getInstance().getTempPath());
@@ -2956,7 +2973,7 @@ void MainForm::compileProject()
                                                          + "/"  +  m_projectMan->getActive()->mainFilePath);
             if ("" == newPath)
             {
-                compileInfo->appendMessage("Asm translation could not be completed (files may not have .psm extension)." ,
+                compileInfo->appendMessage("Asm translation could not be completed." ,
                                             CompilerBase::MessageType::MT_ERROR);
                 return;
             }
@@ -3027,6 +3044,12 @@ void MainForm::compileProject()
         else
         {
             options->m_vhdlTemplate = m_projectMan->getActive()->templateVHDL.toLocal8Bit().constData();
+        }
+
+
+        for (int i = 0; i < m_projectMan->getActive()->compileIncPaths.count(); i++)
+        {
+            options->m_includePathSystem.push_back(m_projectMan->getActive()->compileIncPaths.at(i).toStdString());
         }
 
 

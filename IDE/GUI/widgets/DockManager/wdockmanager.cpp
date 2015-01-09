@@ -117,7 +117,7 @@ void WDockManager::changeActiveCodeEdit(CodeEdit */*editor*/)
  */
 void WDockManager::changeCodeEditor(int index)
 {
-    qDebug() << "WDockManager: changeCodeEditor()";
+    //qDebug() << "WDockManager: changeCodeEditor()";
     if ("Help Browser" == wTab->tabToolTip(index))
     {
         if (activeCodeEdit != NULL)
