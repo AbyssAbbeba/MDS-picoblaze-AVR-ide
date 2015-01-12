@@ -1,0 +1,85 @@
+                   1     device "003_picoblazecopy.procdef"
+                   2     ; Program initialization
+                   3     ; --------------------
+  00000            4             ORG     0h                      ; Define code segment
+                   5             JUMP    start                   ; Jump to code initialization
+                   6     ;; PC == 0
+                   7
+                   8     ;; STEP
+                   9     ;; PC == 1
+                  10
+                  11
+                  12     ; Program start
+                  13     ; --------------------
+  00001           14     start:
+                  15             LOAD    s0, #15              ; Load content to shifted registers
+E: instruction LOAD cannot be used with these operands.
+                  16     ;;STEP
+                  17     ;; PC == 2
+                  18     ;; REG[0] == 15
+                  19             LOAD    s1, #30
+                  20     ;;STEP
+                  21     ;;PC == 3
+                  22     ;; REG[1]== 30
+                  23             LOAD    s3, #1
+                  24     ;;STEP
+                  25     ;;PC == 4
+                  26     ;; REG[3] == 1
+                  27             JUMP    main                    ; Execute main program loop
+                  28     ; Main loop
+                  29     ; --------------------
+                  30     ;;STEP
+                  31     ;; PC == 5
+                  32     ;; REG[3]==1
+                  33     main:
+                  34
+                  35             ; Shifting to the right
+                  36             ;;STEP
+                  37             ;;PC == 6
+                  38             ;;REG[3] == 0b10000000
+                  39             RR     s3
+                  40             ;;STEP
+                  41             ;;REG[3] == 0b01000000
+                  42             RR     s3
+                  43             ;;STEP
+                  44             ;;REG[3] == 0b00100000
+                  45             RR     s3
+                  46             ;;STEP
+                  47             ;;REG[3] == 0b00010000
+                  48             RR     s3
+                  49             ;;STEP
+                  50             ;;REG[3] == 0b00001000
+                  51             RR     s3
+                  52             ;;STEP
+                  53             ;;REG[3] == 0b00000100
+                  54             RR     s3
+                  55             ;;STEP
+                  56             ;;REG[3] == 0b00000010
+                  57             RR     s3
+                  58             ;;STEP
+                  59             ;;REG[3] == 0b00000001
+                  60             ;; PC == 13
+                  61             RR     s3
+                  62
+                  63             ; Shifting to the left
+                  64             ;;STEP
+                  65             ;;REG[3] == 0b00000010
+                  66             RL     s3
+                  67             ;;STEP
+                  68             ;;REG[3] == 0b00000100
+                  69             RL     s3
+                  70             ;;STEP
+                  71             ;;REG[3] == 0b00001000
+                  72             RL     s3
+                  73             ;;STEP
+                  74             ;;REG[3] == 0b00010000
+                  75             RL     s3
+                  76             RL     s3
+                  77             RL     s3
+                  78             RL     s3
+                  79             ;;STEP  3
+                  80             ;;REG[3] == 0b10000000
+                  81             RL     s3
+                  82             JUMP    main
+                  83
+                  84

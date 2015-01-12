@@ -1,0 +1,57 @@
+                   1     device "003_picoblazecopy.procdef"
+                   2
+                   3
+  00000            4         ORG         0x00
+                   5         JUMP        Start
+  00001            6     Start:
+                   7         ;; STEP
+                   8         ;; step 2
+                   9         ;; reg[0] == 1
+                  10         ;; step
+                  11         ;; reg[0] == 0
+                  12         LOAD        s0, #0
+E: instruction LOAD cannot be used with these operands.
+                  13         XOR         s0, #01h
+                  14         XOR         s0, #01h
+                  15
+                  16
+                  17
+                  18
+                  19         ;; STEP
+                  20         ;; REG[0] == 1
+                  21         ;;STEP
+                  22         ;; REG[1]== 2
+                  23         ;;STEP
+                  24         ;; REG[2]== 4
+                  25         ;;STEP
+                  26         ;; REG[3]== 8
+                  27
+                  28     ; Logical
+                  29         LOAD        s0,#1
+                  30         LOAD        s1,#2
+                  31         LOAD        s2,#4
+                  32         LOAD        s3,#8
+                  33         ;;STEP
+                  34         ;; REG[0] == 1
+                  35         ;;STEP
+                  36         ;;REG[0] == 0
+                  37
+                  38         AND         s0,#1
+                  39         AND         s0,s1
+                  40
+                  41         ;;STEP
+                  42         ;; REG[0]==2
+                  43         ;;STEP
+                  44         ;;REG[1] == 2
+                  45
+                  46         OR          s0,#2
+                  47         OR          s1,s1
+                  48
+                  49         ;;STEP
+                  50         ;;REG[0] == 2
+                  51         ;;STEP
+                  52         ;; REG[1] == 2
+                  53
+                  54
+                  55
+                  56

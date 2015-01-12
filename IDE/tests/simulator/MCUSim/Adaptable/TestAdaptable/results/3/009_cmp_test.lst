@@ -1,0 +1,37 @@
+                   1     ; testcase for instructions compare and TEST
+                   2
+                   3     device "003_picoblazecopy.procdef"
+  00000            4         ORG         0x000
+                   5
+                   6
+  00000            7     Start:
+                   8
+                   9                 LOAD        s0,#20
+E: instruction LOAD cannot be used with these operands.
+                  10                 LOAD        s1,#1
+                  11                 LOAD        s2,#50
+                  12                 LOAD        s3,#50
+                  13                 LOAD        s4,#20
+                  14                 LOAD        s5,#1
+                  15                 ;; step 6
+                  16                 ;; reg[0]==20
+                  17                 ;; reg[1]==1
+                  18                 ;; reg[2]==50
+                  19                 ;; reg[3]==50
+                  20                 ;; reg[4]==20
+                  21                 ;; reg[5]==1
+                  22                 COMPARE     s0,#20
+                  23                 ;; step
+                  24                 ;; interrupt
+                  25                 ;; flag[z] != false
+                  26                 ;; flag[c] != true
+                  27                 ;; flag[pz] == false
+                  28                 ;; flag[pc] == false
+                  29                 ;; flag[i] == false
+                  30                 ;; flag[ie] == false
+                  31                 ;; pc == 7
+                  32                 ;; step
+                  33                 ;; pc == 8
+                  34
+                  35
+                  36

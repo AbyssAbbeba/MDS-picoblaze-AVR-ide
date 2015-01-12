@@ -1,0 +1,72 @@
+                   1     ; TEST CASE
+                   2     ; testing conditional call and ret
+                   3     device "003_picoblazecopy.procdef"
+  00000            4     org     0
+                   5
+  00000            6     start:
+                   7
+                   8     ; call instruction
+                   9                 call        aaa
+                  10                 load        s1,#1
+E: instruction LOAD cannot be used with these operands.
+                  11     aaa:
+                  12                 load        s2,#255
+                  13                 load        s1,#1
+                  14
+                  15                 sub         s1,#1
+                  16                 load        s3,#25
+                  17                 call        Z,zero_test
+                  18                             ;; step
+                  19                             ;; pc == 2
+                  20                             ;; step 4
+                  21                             ;; flag[z] == true
+                  22                             ;; step                 # call z
+                  23                             ;; pc == 8
+                  24
+                  25                 load        s2,#255
+                  26     zero_test:
+                  27                 load        s1,#1
+                  28                 sub         s2,#12
+                  29                 call        NZ,nzero_test
+                  30                             ;; step                 # sub
+                  31                             ;; step                 # call nz
+                  32                             ;; step                 #
+                  33                             ;; flag[z] == false
+                  34                             ;; pc == 12
+                  35
+                  36                 load        s2,#255
+                  37     nzero_test:
+                  38                 load        s2,#255
+                  39                 add         s2,#10
+                  40                 call        C,c_test
+                  41
+                  42                             ;; step                 # add
+                  43                             ;; pc == 13
+                  44                             ;; step                 # call c
+                  45                             ;; pc == 14
+                  46                             ;; flag[c] == true
+                  47                             ;; pc == 14
+                  48                             ;; step                 # after call load2
+                  49                             ;; pc == 16
+                  50
+                  51                 load        s2,#255
+                  52     c_test:
+                  53                 load        s2,#255
+                  54                 add         s1,#10
+                  55                 call        NC,nc_test
+                  56
+                  57                             ;; step                 #
+                  58                             ;; pc == 17
+                  59                             ;; step                 # call
+                  60                             ;; pc == 18
+                  61                             ;; step
+                  62                             ;; flag[c] == false
+                  63                             ;; pc == 20
+                  64                 load        s1,#1
+                  65     nc_test:
+                  66                 load        s1,#1
+                  67
+                  68
+                  69
+                  70
+                  71

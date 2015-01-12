@@ -1,0 +1,28 @@
+                   1     device "003_picoblazecopy.procdef"
+                   2
+  00000            3         ORG         0x00
+                   4         JUMP        Start
+                   5         ;;STEP
+                   6         ;;PC==1
+                   7
+  00001            8     Start:
+                   9     ; Aritmetics
+                  10         LOAD        s0,#10
+E: instruction LOAD cannot be used with these operands.
+                  11         LOAD        s1,#20
+                  12         ADD         s0,s1
+                  13         ;;STEP 3
+                  14         ;; REG[0]== 30
+                  15         ;;STEP
+                  16         ;; REG[0] == 10
+                  17
+                  18         SUB         s0,s1
+                  19         CALL        Podprog
+                  20
+                  21     ;----------------------
+                  22     Podprog:
+                  23         LOAD        s3,#50
+                  24         RETURN
+                  25
+                  26
+                  27

@@ -1,0 +1,51 @@
+                   1
+                   2     device "003_picoblazecopy.procdef"
+  00000            3     ORG 0
+                   4
+                   5
+  00000            6     START:
+                   7
+                   8     ;sA = 4B which is not zero (Z=0) and with no underflow (C=0).
+                   9     ;sA = 00 which is zero (Z=1) but there was no underflow (C=0).
+                  10     ;8E – B5 = 1D9
+                  11     ;sA = D9 which is not zero (Z=0) but there was an underflow (C=1).
+                  12     ;This is equivalent to 142 – 181 = -39 where D9 hex is the twos complement representation of -39.
+                  13     ;However, it is the users responsibility to implement and interpret signed arithmetic values and operations
+                  14     LOAD sA, #8Eh                    ;8E - 43 = 4B
+E: instruction LOAD cannot be used with these operands.
+                  15     SUB sA, #43h                      ;
+                  16     LOAD sA, #8Eh                     ;8E - 8E = 00
+                  17     SUB sA, sA
+                  18     LOAD sA, #8Eh
+                  19     SUB sA, #B5h
+                  20                                     ;; step
+                  21                                     ;; reg[10] == 0x8E
+                  22                                     ;; step
+                  23                                     ;; flag[z] == false
+                  24                                     ;; flag[c] == false
+                  25                                     ;; step 2
+                  26                                     ;; flag[z] == true
+                  27                                     ;; flag[c] == false
+                  28                                     ;; step 2
+                  29                                     ;; flag[z] == false
+                  30                                     ;; flag[c] == true
+                  31
+                  32     ;Carry from previous operation [sB, sA] = A2 7B - A1 B9 = 00C2 7B – B9 = (-)C2 A2 – A1 - 1 = 00
+                  33     ;sA = C2, Z=0, C=1.
+                  34     ;sB = 00, Z=0, C=0.
+                  35     ;LOAD sA, 7B
+                  36     ;LOAD sB, A2
+                  37     ;SUB sA, B9
+                  38     ;SUBCY sB, A1
+                  39
+                  40
+                  41
+                  42     ;Zero from previous operation
+                  43     ;[sB, sA] = A2 7B - A2 7B = 0000
+                  44     ;7B – 7B = 00 sA = 00, Z=1, C=0.
+                  45     ;A2 – A2 - 0 = 00 sB = 00, Z=1, C=0.
+                  46     ;LOAD sA, 7B
+                  47     ;LOAD sB, A2
+                  48     ;SUB sA, sA
+                  49     ;SUBCY sB, sB
+                  50
