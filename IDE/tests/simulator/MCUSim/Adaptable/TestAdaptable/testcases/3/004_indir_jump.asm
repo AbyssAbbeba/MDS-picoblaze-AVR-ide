@@ -24,7 +24,7 @@ start:
         LOAD sB,#0b00000001
         ;; step 2
         ;; pc == 2
-        JUMP@ (sA,sB)
+        JUMPIDX sA,sB
         ;; step
         ;; pc == 257
 

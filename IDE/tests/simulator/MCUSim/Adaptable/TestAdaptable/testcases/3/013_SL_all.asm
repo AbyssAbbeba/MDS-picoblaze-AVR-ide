@@ -110,7 +110,7 @@ start:      load        s0,#1
             ;; flag[c] == true
             ;; flag[z] == false
 ; slx testing
-            load        s2,#1                
+/*            load        s2,#1                
             slx         s2
             ;; step 2
             ;; reg[2] == 3          
@@ -145,10 +145,10 @@ start:      load        s0,#1
             slx         s2
             ;; step 2
             ;; flag[c] == true
-            ;; flag[z] == true  
+            ;; flag[z] == true */ 
 ; sla testing
             sla         s3
-            ;; step     
+            ;; step
             ;; reg[3] == 1
             sla         s3
             ;; step
