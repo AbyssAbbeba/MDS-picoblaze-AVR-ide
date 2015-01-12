@@ -1697,6 +1697,7 @@ void Project::setMainFile(QString path, QString name)
 
     mainFileName = name;
     mainFilePath = relativePath;
+    useMainFile = true;
 
 }
 

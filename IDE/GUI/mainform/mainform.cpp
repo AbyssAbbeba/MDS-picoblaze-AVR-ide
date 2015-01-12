@@ -2950,7 +2950,7 @@ void MainForm::compileProject()
                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Project:      " + m_projectMan->getActive()->prjName,
                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("File:         " + m_projectMan->getActive()->mainFileName,
+        compileInfo->appendMessage("Main File:    " + m_projectMan->getActive()->mainFileName,
                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Architecture: Picoblaze",
                                    CompilerBase::MessageType::MT_REMARK);
