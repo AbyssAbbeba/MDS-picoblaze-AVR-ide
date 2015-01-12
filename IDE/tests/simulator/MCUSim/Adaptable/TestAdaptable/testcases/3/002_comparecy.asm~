@@ -1,6 +1,6 @@
 
 
-device "003_picoblazecopy.procdef"
+device "002_comparecy.procdef"
 
 org             0
 
