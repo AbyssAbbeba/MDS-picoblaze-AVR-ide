@@ -131,6 +131,7 @@ void ProjectCfg_Compiler::setFiles(QList<QString> files, QString mainFile)
     int index = 0;
     for (int i = 0; i < files.count(); i++)
     {
+        qDebug() << mainFile << files.at(i);
         if (mainFile == files.at(i))
         {
             index = i+1;
