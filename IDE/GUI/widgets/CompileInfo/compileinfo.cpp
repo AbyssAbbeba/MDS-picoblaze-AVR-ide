@@ -20,6 +20,7 @@ CompileInfo::CompileInfo(QWidget *parent)
 {
     this->setFont(QFont("Andale Mono", 10));
     this->setMouseTracking(true);
+    m_mode = true;
     //this->installEventFilter(this);
     //this->setWordWrap();
 }
@@ -94,13 +95,39 @@ void CompileInfo::mouseDoubleClickEvent(QMouseEvent *e)
         int line = list.at(1).section('.',0,0).toInt(&ok, 10);
         if (ok == true)
         {
-            emit errorClicked(list.at(0), line);
+            QString file = list.at(0);
+            file.remove(0,1);
+            file = m_projectPath + "/" + file;
+            if (true == m_mode)
+            {
+                emit errorClicked(file, line);
+            }
+            else
+            {
+                if (file.section('.', -1) == "asm")
+                {
+                    file = file.section('.', 0, -2) + ".psm";
+                }
+                emit errorClicked(file, line);
+            }
         }
     }
     //QString line;
     //QString wordBegin;
     //QString wordEnd;
     //qDebug() << "CompileInfo: selection: " << list.at(1).section('.',0,0).toInt();
+}
+
+
+void CompileInfo::changeAsmMode(bool mdsAsm)
+{
+    m_mode = mdsAsm;
+}
+
+
+void CompileInfo::setProjectRelativePath(QString path)
+{
+    m_projectPath = path;
 }
 
 
