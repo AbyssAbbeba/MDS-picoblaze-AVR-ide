@@ -134,41 +134,42 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             this->update = true;
             uint value;
             m_memory->directRead(locationOrReason, value);
-            //qDebug() << "RegistersWidget: location" << locationOrReason << idx;
-            if ( 7 < locationOrReason )
+            //qDebug() << "RegistersWidget: location" << locationOrReason;
+            int size = m_size/2;
+            if ( size-1 < locationOrReason )
             {
                 if (value > 99)
                 {
-                    this->item(locationOrReason-8, 5)->setText(QString::number(value, 10));
+                    this->item(locationOrReason-size, 5)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(locationOrReason-8, 5)->setText("0" + QString::number(value, 10));
+                    this->item(locationOrReason-size, 5)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(locationOrReason-8, 5)->setText("00" + QString::number(value, 10));
+                    this->item(locationOrReason-size, 5)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 15)
                 {
-                    this->item(locationOrReason-8, 6)->setText(QString::number(value, 16).toUpper());
+                    this->item(locationOrReason-size, 6)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(locationOrReason-8, 6)->setText("0" + QString::number(value, 16).toUpper());
+                    this->item(locationOrReason-size, 6)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(locationOrReason-8, 7)->setText(bin);
+                this->item(locationOrReason-size, 7)->setText(bin);
 
 
-                this->item(locationOrReason-8, 5)->setBackground(Qt::yellow);
-                this->item(locationOrReason-8, 6)->setBackground(Qt::yellow);
-                this->item(locationOrReason-8, 7)->setBackground(Qt::yellow);
+                this->item(locationOrReason-size, 5)->setBackground(Qt::yellow);
+                this->item(locationOrReason-size, 6)->setBackground(Qt::yellow);
+                this->item(locationOrReason-size, 7)->setBackground(Qt::yellow);
             }
             else
             {

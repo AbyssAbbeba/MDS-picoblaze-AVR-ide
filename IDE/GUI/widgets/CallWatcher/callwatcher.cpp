@@ -144,6 +144,10 @@ void CallWatcher::handleUpdateRequest(int mask)
     //update after run
     if (4 & mask)
     {
+        if (true == m_run)
+        {
+            m_run = false;
+        }
         ui.lstCalls->clear();
         m_run = false;
         for (int i = m_callStack.count() -1; i >=0; i--)
