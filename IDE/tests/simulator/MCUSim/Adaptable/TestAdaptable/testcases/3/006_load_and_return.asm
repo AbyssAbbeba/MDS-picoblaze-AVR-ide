@@ -1,6 +1,6 @@
 
 
-device "003_picoblazecopy.procdef"
+device "006_load_and_return.procdef"
 
 S0      REG     0x0
 S1      REG     0x1
@@ -28,7 +28,7 @@ start:
 
 print_decimal:  COMPARE s5, #10
                 JUMP C, start
-                LOAD&RETURN s0, #39
+                LDRET s0, #39
                 
 
         ;; step

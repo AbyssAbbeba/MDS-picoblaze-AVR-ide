@@ -1,5 +1,5 @@
 
-device "003_picoblazecopy.procdef"
+device "008_SUBs.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

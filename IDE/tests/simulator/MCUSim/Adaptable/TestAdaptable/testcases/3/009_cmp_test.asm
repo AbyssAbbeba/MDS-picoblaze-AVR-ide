@@ -1,6 +1,6 @@
 ; testcase for instructions compare and TEST
 
-device "003_picoblazecopy.procdef"
+device "009_cmp_test.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

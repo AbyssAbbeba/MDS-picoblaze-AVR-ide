@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "005_simple_rotate.procdef"
 S0      REG     0x0
 S1      REG     0x1
 S2      REG     0x2
