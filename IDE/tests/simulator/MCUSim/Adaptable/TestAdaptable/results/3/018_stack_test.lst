@@ -1,0 +1,39 @@
+                   1     device "003_picoblazecopy.procdef"
+                   2
+  00000            3             ORG     0h                      ; Define code segment
+                   4
+                   5     ; --------------------
+  00000            6     start:
+                   7             ;; step
+                   8             ;; PC == 3
+                   9             ;; stack[0] == 1
+                  10             ;; step
+                  11             ;; pc == 5
+                  12             ;; stack[1] == 4
+                  13             ;; step
+                  14             ;; pc == 7
+                  15             ;; stack[2] == 6
+                  16             ;; step
+                  17             ;; pc == 6
+                  18             ;; step
+                  19             ;; pc == 4
+                  20             ;; step
+                  21             ;; pc == 1
+                  22             ;; step
+                  23             ;; pc == 8
+                  24             ;; step
+                  25             ;; pc == 2
+                  26
+000 20003         27            call ahoj
+001 20008         28            call sss
+002 22000         29            jump start
+                  30
+003 20005         31     ahoj: call ahoj2
+004 25000         32           return
+                  33
+005 20007         34     ahoj2: call ahoj3
+006 25000         35            return
+                  36
+007 25000         37     ahoj3: return
+                  38
+008 25000         39     sss: return

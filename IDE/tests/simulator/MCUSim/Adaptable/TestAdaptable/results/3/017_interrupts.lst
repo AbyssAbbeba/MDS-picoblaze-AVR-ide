@@ -1,0 +1,46 @@
+                   1     ; TEST CASE
+                   2     ; testing interrupts behavior
+                   3     device "003_picoblazecopy.procdef"
+  00000            4     org     0
+                   5
+  00000            6     start:
+                   7
+                   8             ;;      flag[ie] == false
+                   9             ;;      step
+                  10             ;;      reg[0] == 10
+                  11             ;;      interrupt
+                  12             ;;      flag[ie] == false
+                  13             ;;       pc == 1
+                  14             LOAD    S0, #10
+E: instruction LOAD cannot be used with these operands.
+                  15             ;; step 2
+                  16             ;; pc == 3
+                  17             ;; flag[ie] == true
+                  18             ENABLE INTERRUPT
+                  19             ;; step
+                  20             ;; reg[0] == 249
+                  21     WAIT:   LOAD    s0,#250
+                  22             ;; step
+                  23             ;; flag[ie] == true
+                  24             ;; interrupt
+                  25             ;; pc == 5
+                  26             SUB     s0,#1
+                  27             CMP     s0,#1
+                  28             jump    NZ,WAIT
+                  29              DISABLE INTERRUPT
+                  30
+                  31     INTERRUPT:
+                  32                 ;; step
+                  33                 ;; pc == 4095
+                  34
+                  35                 STORE       s0,0
+                  36                 STORE       s1,1
+                  37                 IN          S2,0
+                  38                 OUT         S2,0
+                  39                 RETURNI ENABLE
+                  40
+                  41     org     3ffh
+                  42     jump    INTERRUPT
+                  43
+                  44
+                  45             END

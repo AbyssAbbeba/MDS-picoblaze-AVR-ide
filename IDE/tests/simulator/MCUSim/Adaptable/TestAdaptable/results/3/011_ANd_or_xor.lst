@@ -1,0 +1,39 @@
+                   1     device "003_picoblazecopy.procdef"
+                   2
+                   3             ; file for testing and or xor instructions
+  00000            4             org 00h
+                   5
+                   6
+                   7
+  00000            8     Start:
+                   9     ; Logical
+                  10         LOAD        s0,#1
+E: instruction LOAD cannot be used with these operands.
+                  11         LOAD        s1,#2
+                  12         LOAD        s2,#4
+                  13         LOAD        s3,#8
+                  14         ;;STEP 4
+                  15         ;; REG[0] == 1
+                  16
+                  17         AND         s0,#1
+                  18         AND         s0,s1
+                  19
+                  20         ;;STEP
+                  21         ;; REG[0]==1
+                  22         ;;STEP
+                  23         ;;REG[1] == 2
+                  24
+                  25         OR          s0,#2
+                  26         OR          s1,s1
+                  27
+                  28         ;;STEP
+                  29         ;;REG[0] == 2
+                  30         ;;STEP
+                  31         ;; REG[1] == 2
+                  32
+                  33         XOR         s2,s1
+                  34         XOR         s3,s1
+                  35         ;; step
+                  36         ;; reg[2] == 6
+                  37         ;; step
+                  38         ;; reg[3] == 10

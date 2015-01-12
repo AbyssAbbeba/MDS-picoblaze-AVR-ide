@@ -1,0 +1,35 @@
+                   1
+                   2     device "003_picoblazecopy.procdef"
+                   3
+  00000            4     org             0
+                   5
+  00000            6     start:
+                   7             regbank         a
+E: instruction REGBANK cannot be used with these operands.
+                   8             load            s1,#5h
+                   9             ;; step 2
+                  10             ;; reg[1] == 5
+                  11             ;; reg[0] == 0
+                  12             regbank         b
+                  13             ;; step
+                  14             ;; reg[16] == 0
+                  15             ;; reg[17] == 0
+                  16
+                  17             load            s1,#2h
+                  18             ;; step
+                  19             ;; reg[16] == 0
+                  20             ;; reg[17] == 2
+                  21
+                  22             regbank         a
+                  23             star   s0,s1
+                  24             ;; step 2
+                  25             ;; reg[1] == 5
+                  26             ;; reg[0] == 0
+                  27             regbank         b
+                  28             ;; step
+                  29             ;; reg[16] == 5
+                  30             ;; reg[17] == 2
+                  31             star   s2,#50
+                  32             regbank         a
+                  33             ;; step 2
+                  34             ;; reg[2] == 50

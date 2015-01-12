@@ -1,0 +1,54 @@
+                   1
+                   2
+                   3     device "003_picoblazecopy.procdef"
+                   4
+  00000            5         ORG         0x00
+                   6
+  00000            7     Start:
+                   8
+                   9             ;; PC == 0
+                  10
+                  11             LOAD    0x00,#1
+E: instruction LOAD cannot be used with these operands.
+                  12             ;; STEP
+                  13             ;; PC == 1
+                  14             ;; REG[0x00] == 1
+                  15             LOAD    0x00,#55
+                  16             ;; STEP
+                  17             ;; PC == 2
+                  18             ;; REG[0x00] == 55
+                  19             JUMP    HOP1
+                  20             ;; STEP
+                  21             ;; PC == 3
+                  22     HOP1:   JUMP    HOP2
+                  23             ;; STEP
+                  24             ;; PC == 4
+                  25     HOP2:   JUMP    HOP3
+                  26             ;; STEP
+                  27             ;; PC == 5
+                  28     HOP3:   JUMP    HOP4
+                  29
+                  30
+                  31             LOAD    s0,#1
+                  32             ;; STEP
+                  33             ;; PC == 7
+                  34     HOP4:   JUMP    HOP5
+                  35             ;; STEP
+                  36             ;; PC == 8
+                  37     HOP5:   JUMP    HOP6
+                  38             ;; STEP
+                  39             ;; PC == 0x0C
+                  40
+                  41             LOAD    s0,#1
+                  42             ;;STEP
+                  43             ;;PC == 13
+                  44             LOAD    s0,#1
+                  45             LOAD    s0,#1
+                  46     HOP6:   JUMP    HOP7
+                  47     HOP7:   JUMP    HOP8
+                  48             LOAD    s0,#1
+                  49             LOAD    s0,#12
+                  50     HOP8:
+                  51             ;; STEP
+                  52             ;; PC == 16
+                  53     END

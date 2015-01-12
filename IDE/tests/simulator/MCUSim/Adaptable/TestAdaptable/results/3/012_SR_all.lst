@@ -1,0 +1,197 @@
+                   1         ; testing of rotate instructions
+                   2
+                   3     device "003_picoblazecopy.procdef"
+  00000            4         org 00h
+                   5
+  00000            6     start:      load        s0,#128
+E: instruction LOAD cannot be used with these operands.
+                   7                 load        s1,#128
+                   8                 load        s2,#128
+                   9                 load        s3,#0
+                  10                 ;; step     4
+                  11                 ;; reg[0] == 128
+                  12                 ;; reg[1] == 128
+                  13                 ;; reg[2] == 128
+                  14                 ;; reg[3] == 0
+                  15     ; sr0 testing
+                  16                 sr0         s0
+                  17                 ;; step
+                  18                 ;; reg[0] == 64
+                  19                 ;; flag[c] == false
+                  20                 ;; flag[z] == false
+                  21                 sr0         s0
+                  22                 ;; step
+                  23                 ;; reg[0] == 32
+                  24                 ;; flag[c] == false
+                  25                 ;; flag[z] == false
+                  26
+                  27                 sr0         s0
+                  28                 ;; step
+                  29                 ;; reg[0] == 16
+                  30                 ;; flag[c] == false
+                  31                 ;; flag[z] == false
+                  32                 sr0         s0
+                  33                 ;; step
+                  34                 ;; reg[0] == 8
+                  35                 ;; flag[c] == false
+                  36                 ;; flag[z] == false
+                  37
+                  38                 sr0         s0
+                  39                 ;; step
+                  40                 ;; reg[0] == 4
+                  41                 ;; flag[c] == false
+                  42                 ;; flag[z] == false
+                  43                 sr0         s0
+                  44                 ;; step
+                  45                 ;; reg[0] == 2
+                  46                 ;; flag[c] == false
+                  47                 ;; flag[z] == false
+                  48                 sr0         s0
+                  49                 ;; step
+                  50                 ;; reg[0] == 1
+                  51                 ;; flag[c] == false
+                  52                 ;; flag[z] == false
+                  53                 sr0         s0
+                  54                 ;; step
+                  55                 ;; reg[0] == 0
+                  56                 ;; flag[c] == true
+                  57                 ;; flag[z] == true
+                  58
+                  59     ; sr1 testing
+                  60                 sr1         s0
+                  61                 ;; step
+                  62                 ;; reg[0] == 128
+                  63                 sr1         s0
+                  64                 ;; step
+                  65                 ;; reg[0] == 192
+                  66                 sr1         s0
+                  67                 ;; step
+                  68                 ;; reg[0] == 224
+                  69                 sr1         s0
+                  70                 ;; step
+                  71                 ;; reg[0] == 240
+                  72                 sr1         s0
+                  73                 ;; step
+                  74                 ;; reg[0] == 248
+                  75                 sr1         s0
+                  76                 ;; step
+                  77                 ;; reg[0] == 252
+                  78                 sr1         s0
+                  79                 ;; step
+                  80                 ;; reg[0] == 254
+                  81                 ;; flag[c] == false
+                  82                 ;; flag[z] == false
+                  83                 sr1         s0
+                  84                 ;; step
+                  85                 ;; reg[0] == 255
+                  86                 ;; flag[c] == false
+                  87                 ;; flag[z] == false
+                  88                 sr1         s0
+                  89                 ;; step
+                  90                 ;; reg[0] == 255
+                  91                 ;; flag[c] == true
+                  92                 ;; flag[z] == false
+                  93     ; srx testing
+                  94                 load        s2,#128
+                  95                 srx         s2
+                  96                 ;; step 2
+                  97                 ;; reg[2] == 192
+                  98                 srx         s2
+                  99                 ;; step
+                 100                 ;; reg[2] == 224
+                 101                 srx         s2
+                 102                 ;; step
+                 103                 ;; reg[2] == 240
+                 104                 srx         s2
+                 105                 ;; step
+                 106                 ;; reg[2] == 248
+                 107                 srx         s2
+                 108                 ;; step
+                 109                 ;; reg[2] == 252
+                 110                 srx         s2
+                 111                 ;; step
+                 112                 ;; reg[2] == 254
+                 113                 ;; flag[c] == false
+                 114                 ;; flag[z] == false
+                 115                 srx        s2
+                 116                 ;; step
+                 117                 ;; reg[0] == 255
+                 118                 ;; flag[c] == false
+                 119                 ;; flag[z] == false
+                 120                 srx         s2
+                 121                 ;; step
+                 122                 ;; reg[2] == 255
+                 123                 ;; flag[c] == true
+                 124                 ;; flag[z] == false
+                 125                 load        s2,#1
+                 126                 srx         s2
+                 127                 ;; step 2
+                 128                 ;; flag[c] == true
+                 129                 ;; flag[z] == true
+                 130     ; sra testing
+                 131                 sra         s3
+                 132                 ;; step
+                 133                 ;; reg[3] == 128
+                 134                 sra         s3
+                 135                 ;; step
+                 136                 ;; reg[3] == 64
+                 137                 sra         s3
+                 138                 ;; step
+                 139                 ;; reg[3] == 32
+                 140                 sra         s3
+                 141                 ;; step
+                 142                 ;; reg[3] == 16
+                 143                 sra         s3
+                 144                 ;; step
+                 145                 ;; reg[3] == 8
+                 146                 sra         s3
+                 147                 ;; step
+                 148                 ;; reg[3] == 4
+                 149                 sra         s3
+                 150                 ;; step
+                 151                 ;; reg[3] == 2
+                 152                 sra         s3
+                 153                 ;; step
+                 154                 ;; reg[3] == 1
+                 155                 sra         s3
+                 156                 ;; step
+                 157                 ;; reg[3] == 0
+                 158                 ;; flag[z] == true
+                 159                 ;; flag[c] == true
+                 160                 sra         s3
+                 161                 ;; step
+                 162                 ;; reg[3] == 128
+                 163                 ;; flag[z] == false
+                 164                 ;; flag[c] == false
+                 165     ; testing of rr
+                 166                 rr         s3
+                 167                 ;; step
+                 168                 ;; reg[3] == 64
+                 169                 rr         s3
+                 170                 ;; step
+                 171                 ;; reg[3] == 32
+                 172                 rr         s3
+                 173                 ;; step
+                 174                 ;; reg[3] == 16
+                 175                 rr         s3
+                 176                 ;; step
+                 177                 ;; reg[3] == 8
+                 178                 rr         s3
+                 179                 ;; step
+                 180                 ;; reg[3] == 4
+                 181                 rr         s3
+                 182                 ;; step
+                 183                 ;; reg[3] == 2
+                 184                 rr         s3
+                 185                 ;; step
+                 186                 ;; reg[3] == 1
+                 187                 rr         s3
+                 188                 ;; step
+                 189                 ;; reg[3] == 128
+                 190                 ;; flag[c] == true
+                 191                 ;; flag[z] == false
+                 192                 load        s3,#0
+                 193                 rr          s3
+                 194                 ;; step 2
+                 195                 ;; flag[z] == true
+                 196                 ;; flag[c] == false

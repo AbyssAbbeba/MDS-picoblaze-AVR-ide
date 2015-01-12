@@ -1,5 +1,5 @@
 
-device "003_picoblazecopy.procdef"
+device "001_star_instruction.procdef"
 
 org             0
 

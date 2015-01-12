@@ -1,0 +1,82 @@
+                   1     ; TEST CASE
+                   2     ; testing conditional et
+                   3     device "003_picoblazecopy.procdef"
+  00000            4     org     0
+                   5
+  00000            6     start:
+                   7
+                   8     ; jump instruction
+                   9                 jump        aaa
+                  10                 load        s1,#1
+E: instruction LOAD cannot be used with these operands.
+                  11     aaa:
+                  12                 load        s2,#255
+                  13                 load        s1,#1
+                  14
+                  15                 sub         s1,#1
+                  16                 load        s3,#25
+                  17                 call        _1
+                  18                             ;;
+                  19                             ;; step
+                  20                             ;; pc == 2
+                  21                             ;; step 4
+                  22                             ;; flag[z] == true
+                  23                             ;; step 2               # call z
+                  24                             ;; pc == 7
+                  25
+                  26                 load        s2,#255
+                  27     zero_test:
+                  28                 load        s1,#1
+                  29                 sub         s2,#12
+                  30                 call        _2
+                  31                             ;; step                 # sub
+                  32                             ;; step                 # call nz
+                  33                             ;; step 3               #
+                  34                             ;; flag[z] == false
+                  35                             ;; pc == 11
+                  36
+                  37                 load        s2,#255
+                  38     nzero_test:
+                  39                 load        s2,#255
+                  40                 add         s2,#10
+                  41                 call        _3
+                  42
+                  43                             ;; step                 # add
+                  44                             ;; pc == 12
+                  45                             ;; step                 # call c
+                  46                             ;; pc == 13
+                  47                             ;; step                 # after call load2
+                  48                             ;; flag[c] == true
+                  49                             ;; pc == 14
+                  50                             ;; step 2                 # call c
+                  51                             ;; pc == 15
+                  52
+                  53                 load        s2,#255
+                  54     c_test:
+                  55                 load        s2,#255
+                  56                 add         s1,#10
+                  57                 call        _4
+                  58
+                  59                             ;; step                 #
+                  60                             ;; pc == 16
+                  61                             ;; step                 # call
+                  62                             ;; pc == 17
+                  63                             ;; step
+                  64                             ;; flag[c] == false
+                  65                             ;; step 2
+                  66                             ;; pc == 19
+                  67                 load        s1,#1
+                  68     nc_test:
+                  69                 load        s1,#1
+                  70
+                  71
+                  72
+                  73     _1:
+                  74                 return      Z
+                  75     _2:
+                  76                 return      NZ
+                  77     _3:
+                  78                 return      C
+                  79     _4:
+                  80                 return      NC
+                  81
