@@ -35,6 +35,8 @@ class CompileInfo : public QTextEdit
         CompileInfo(QWidget *parent);
         void appendMessage(QString text, CompilerBase::MessageType type);
         void setFinished(bool status);
+        void changeAsmMode(bool mdsAsm);
+        void setProjectRelativePath(QString path);
 
         /*WTextEdit & operator<< (QString const &str)
         {
@@ -48,6 +50,8 @@ class CompileInfo : public QTextEdit
 
     private:
         QTextCursor prevCur;
+        bool m_mode;
+        QString m_projectPath;
 
 
     protected:

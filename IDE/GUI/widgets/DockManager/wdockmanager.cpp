@@ -1117,6 +1117,7 @@ void WDockManager::moveEditorsSlot(int from, int to)
 }
 
 
+//obsolete
 void WDockManager::setCentralByName(QString fileName)
 {
     //qDebug() << "WDockManager: setCentralByName()";
@@ -1143,7 +1144,7 @@ void WDockManager::setCentralByName(QString fileName)
 
 bool WDockManager::setCentralByPath(QString filePath)
 {
-    //qDebug() << "WDockManager: setCentralByName()";
+    //qDebug() << "WDockManager: setCentralByPath()";
     if (filePath != "")
     {
         for (int i = 0; i < this->getTabCount(); i++)
@@ -1162,7 +1163,7 @@ bool WDockManager::setCentralByPath(QString filePath)
         }
     }
     return false;
-    //qDebug() << "WDockManager: return setCentralByName()";
+    //qDebug() << "WDockManager: return setCentralByPath()";
 }
 
 
@@ -1216,8 +1217,11 @@ void WDockManager::unhighlightSimWidget()
 
 void WDockManager::highlightError(QString filename, int line)
 {
-    //qDebug() << "Line" << QDir(filename).absolutePath() << "orig" << filename;
-    this->setCentralByPath(QDir(filename).absolutePath());
+    qDebug() << "Line in file" << QDir(filename).absolutePath() << "orig" << filename;
+    if (false == this->setCentralByPath(QDir(filename).absolutePath()))
+    {
+        return;
+    }
     this->getCentralTextEdit()->scrollToLine(line);
     this->getCentralTextEdit()->selectLine(line);
 }
