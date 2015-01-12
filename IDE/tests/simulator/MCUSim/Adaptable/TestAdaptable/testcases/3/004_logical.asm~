@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "004_logical.procdef"
 
 
     ORG         0x00
