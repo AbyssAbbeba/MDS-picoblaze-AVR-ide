@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "004_indir_jump.procdef"
 
 org             0
 

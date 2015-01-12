@@ -1,6 +1,6 @@
 
 
-device "003_picoblazecopy.procdef"
+device "002_jumps.procdef"
 
     ORG         0x00
         

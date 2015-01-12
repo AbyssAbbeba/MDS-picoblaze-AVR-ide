@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "003_aritmetics.asm.procdef"
 
     ORG         0x00
     JUMP        Start

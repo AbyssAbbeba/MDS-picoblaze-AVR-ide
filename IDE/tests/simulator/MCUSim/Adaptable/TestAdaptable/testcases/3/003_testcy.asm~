@@ -1,5 +1,5 @@
 
-device "003_picoblazecopy.procdef"
+device "003_testcy.procdef"
 
 org             0
 
