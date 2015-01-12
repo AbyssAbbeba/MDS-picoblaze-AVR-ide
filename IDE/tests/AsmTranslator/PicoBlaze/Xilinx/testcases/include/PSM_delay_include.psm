@@ -29,44 +29,44 @@
 ;==============================================================================;
 ; stated delays valid for clk freq = 125 MHz
 
-wait_1s:            LOAD        s0,  37'd           ; Load s0 register
-                    LOAD        s1, 107'd           ; Load s1 register
-                    LOAD        s2, 239'd           ; Load s2 register
+wait_1s:           ; LOAD        s0,  37'd           ; Load s0 register
+                    ;LOAD        s1, 107'd           ; Load s1 register
+                   ; LOAD        s2, 239'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_100ms:         LOAD        s0, 129'd           ; Load s0 register
-                    LOAD        s1, 215'd           ; Load s1 register
-                    LOAD        s2,  24'd           ; Load s2 register
+wait_100ms:        ; LOAD        s0, 129'd           ; Load s0 register
+                   ; LOAD        s1, 215'd           ; Load s1 register
+                   ; LOAD        s2,  24'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_10ms:          LOAD        s0,  87'd           ; Load s0 register
-                    LOAD        s1,  98'd           ; Load s1 register
-                    LOAD        s2,   3'd           ; Load s2 register
+wait_10ms:       ;   LOAD        s0,  87'd           ; Load s0 register
+                  ;  LOAD        s1,  98'd           ; Load s1 register
+                  ;  LOAD        s2,   3'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_5ms:           LOAD        s0,  42'd           ; Load s0 register
-                    LOAD        s1,  49'd           ; Load s1 register
-                    LOAD        s2,   2'd           ; Load s2 register
+wait_5ms:         ;  LOAD        s0,  42'd           ; Load s0 register
+                 ;   LOAD        s1,  49'd           ; Load s1 register
+                  ;  LOAD        s2,   2'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_1ms:           LOAD        s0,   6'd           ; Load s0 register
-                    LOAD        s1,  61'd           ; Load s1 register
-                    LOAD        s2,   1'd           ; Load s2 register
+wait_1ms:        ;   LOAD        s0,   6'd           ; Load s0 register
+                 ;   LOAD        s1,  61'd           ; Load s1 register
+                  ;  LOAD        s2,   1'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_100us:         LOAD        s0,  24'd           ; Load s0 register
-                    LOAD        s1,   6'd           ; Load s1 register
-                    LOAD        s2,   1'd           ; Load s2 register
+wait_100us:       ;  LOAD        s0,  24'd           ; Load s0 register
+                   ; LOAD        s1,   6'd           ; Load s1 register
+                   ; LOAD        s2,   1'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_10us:          LOAD        s0, 153'd           ; Load s0 register
-                    LOAD        s1,   0'd           ; Load s1 register
-                    LOAD        s2,   1'd           ; Load s2 register
+wait_10us:         ; LOAD        s0, 153'd           ; Load s0 register
+                  ; LOAD        s1,   0'd           ; Load s1 register
+                    ;LOAD        s2,   1'd           ; Load s2 register
                     JUMP        wait_common
 ;------------------------------------------------------------------------------;
-wait_common:        SUB         s0, 01
-                    SUBCY       s1, 00
-                    SUBCY       s2, 00
-                    JUMP        NZ, wait_common
+wait_common:       ; SUB         s0, 01
+                   ; SUBCY       s1, 00
+                   ; SUBCY       s2, 00
+                  ;  JUMP        NZ, wait_common
                     RETURN
 ;==============================================================================;

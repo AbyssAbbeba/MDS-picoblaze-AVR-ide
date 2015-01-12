@@ -1,4 +1,4 @@
-device "01_test.procdef"
+device "001_test.procdef"
 
   XXX     define          1 * {0} + {1}/{2}+5
   YYY     define          1 + {0}
