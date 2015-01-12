@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing interrupts behavior
-device "003_picoblazecopy.procdef"
+device "017_interrupts.procdef"
 
 S0      REG     0x0
 S1      REG     0x1
@@ -33,7 +33,7 @@ start:
         ;; step 2
         ;; pc == 3
         ;; flag[ie] == true
-        ENABLE INTERRUPT  
+        ENA 
         ;; step
         ;; reg[0] == 249
 WAIT:   LOAD    s0,#250
@@ -44,7 +44,7 @@ WAIT:   LOAD    s0,#250
         SUB     s0,#1
         CMP     s0,#1
         jump    NZ,WAIT
-         DISABLE INTERRUPT
+        DIS
         
 INTERRUPT:
             ;; step
@@ -54,7 +54,7 @@ INTERRUPT:
             STORE       s1,1
             IN          S2,0
             OUT         S2,0
-            RETURNI ENABLE
+            RETURN
 
 org     3ffh
 jump    INTERRUPT

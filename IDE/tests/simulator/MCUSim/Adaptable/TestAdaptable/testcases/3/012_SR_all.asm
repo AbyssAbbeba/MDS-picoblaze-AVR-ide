@@ -1,6 +1,6 @@
     ; testing of rotate instructions
 
-device "003_picoblazecopy.procdef"
+device "012_SR_all.procdef"
 
 
 S0      REG     0x0

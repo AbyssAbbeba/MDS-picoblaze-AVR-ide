@@ -1,4 +1,4 @@
-device "003_aritmetics.asm.procdef"
+device "003_aritmetics.procdef"
 S0      REG     0x0
 S1      REG     0x1
 S2      REG     0x2

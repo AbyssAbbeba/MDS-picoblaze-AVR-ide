@@ -1,5 +1,5 @@
 ; testing of INPUT and OUTPUT instructions
-device "003_picoblazecopy.procdef"
+device "014_INput_output.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

@@ -1,3 +1,5 @@
+device "001_star_instruction.procdef"
+
 S0      REG     0x0
 S1      REG     0x1
 S2      REG     0x2
@@ -14,17 +16,20 @@ SC      REG     0xC
 SD      REG     0xD
 SE      REG     0xE
 SF      REG     0xF
-device "001_star_instruction.procdef"
+
+a define 0
+b define 1
+
 
 org             0
 
 start:
-        regbank         a
+        regbank         #a
         load            s1,#5h
         ;; step 2
         ;; reg[1] == 5
         ;; reg[0] == 0
-        regbank         b
+        regbank         #b
         ;; step
         ;; reg[16] == 0
         ;; reg[17] == 0
@@ -34,16 +39,16 @@ start:
         ;; reg[16] == 0
         ;; reg[17] == 2
 
-        regbank         a
+        regbank         #a
         star   s0,s1
         ;; step 2
         ;; reg[1] == 5
         ;; reg[0] == 0
-        regbank         b
+        regbank         #b
         ;; step
         ;; reg[16] == 5
         ;; reg[17] == 2
         star   s2,#50
-        regbank         a
+        regbank         #a
         ;; step 2
         ;; reg[2] == 50

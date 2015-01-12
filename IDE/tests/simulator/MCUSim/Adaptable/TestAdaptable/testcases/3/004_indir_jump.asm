@@ -15,14 +15,16 @@ SC      REG     0xC
 SD      REG     0xD
 SE      REG     0xE
 SF      REG     0xF
+
+
 org             0
 
 start:
-        LOAD sA, #0b00000001
-        LOAD sB, #0b00000001
+        LOAD sA,#0b00000001
+        LOAD sB,#0b00000001
         ;; step 2
         ;; pc == 2
-        JUMP@ (sA, sB)
+        JUMP@ (sA,sB)
         ;; step
         ;; pc == 257
 

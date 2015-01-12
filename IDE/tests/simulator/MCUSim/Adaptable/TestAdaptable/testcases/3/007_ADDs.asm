@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "007_ADDs.procdef"
 
 
 S0      REG     0x0

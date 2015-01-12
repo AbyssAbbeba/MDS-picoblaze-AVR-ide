@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional et
-device "003_picoblazecopy.procdef"
+device "024_conditional_return.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

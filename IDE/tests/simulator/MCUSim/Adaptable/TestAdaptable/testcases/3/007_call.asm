@@ -1,6 +1,6 @@
 
 
-device "003_picoblazecopy.procdef"
+device "007_call.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

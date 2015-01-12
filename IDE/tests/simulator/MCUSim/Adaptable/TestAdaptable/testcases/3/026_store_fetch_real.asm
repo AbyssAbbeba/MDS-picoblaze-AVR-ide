@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing conditional jump and ret
-device "003_picoblazecopy.procdef"
+device "026_store_fetch_real.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

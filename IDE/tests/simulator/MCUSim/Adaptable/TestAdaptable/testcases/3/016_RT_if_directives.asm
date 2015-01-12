@@ -1,6 +1,6 @@
 ; TEST CASE
 ; testing run time directives, rtif rtfor, rt#WHILE
-device "003_picoblazecopy.procdef"
+device "016_RT_if_directives.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

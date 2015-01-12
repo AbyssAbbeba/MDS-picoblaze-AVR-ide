@@ -1,4 +1,4 @@
-device "003_picoblazecopy.procdef"
+device "018_stack_test.procdef"
 
 S0      REG     0x0
 S1      REG     0x1

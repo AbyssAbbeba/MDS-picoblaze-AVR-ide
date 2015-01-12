@@ -1,6 +1,6 @@
 
 
-device "003_picoblazecopy.procdef"
+device "005_indir_call.procdef"
 S0      REG     0x0
 S1      REG     0x1
 S2      REG     0x2
@@ -17,6 +17,8 @@ SC      REG     0xC
 SD      REG     0xD
 SE      REG     0xE
 SF      REG     0xF
+
+
 org             0
 
 start:
@@ -24,7 +26,7 @@ start:
         LOAD sB, #0b00000001
         ;; step 2
         ;; pc == 2
-        CALL@ (sA, sB)
+        CALL@ (sA,sB)
         ;; step
         ;; pc == 257
         jump    $

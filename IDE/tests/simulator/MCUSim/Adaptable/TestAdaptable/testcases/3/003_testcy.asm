@@ -16,6 +16,8 @@ SC      REG     0xC
 SD      REG     0xD
 SE      REG     0xE
 SF      REG     0xF
+
+
 org             0
 
 start:
