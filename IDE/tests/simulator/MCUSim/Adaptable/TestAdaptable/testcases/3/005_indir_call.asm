@@ -26,7 +26,7 @@ start:
         LOAD sB, #0b00000001
         ;; step 2
         ;; pc == 2
-        CALL@ (sA,sB)
+        CALLIDX sA,sB
         ;; step
         ;; pc == 257
         jump    $

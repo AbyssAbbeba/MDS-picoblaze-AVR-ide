@@ -841,7 +841,7 @@ void MainForm::createActions()
         connect(toolLoopGenAct, SIGNAL(triggered()), this, SLOT(loopGen()));
     #endif
     #ifdef MDS_FEATURE_VHDL_WIZARD
-        toolVHDLWizardAct = new QAction(tr("VHDL Wizard"), this);
+        toolVHDLWizardAct = new QAction(QIcon(":resources/icons/bricks_vhdl.png"), tr("VHDL Wizard"), this);
         connect(toolVHDLWizardAct, SIGNAL(triggered()), this, SLOT(toolVHDLWizard()));
     #endif
 
@@ -1108,11 +1108,11 @@ void MainForm::createDockWidgets()
         m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
         m_wDockManager->addDockWidget(WRIGHTHIDE);
 
-        
+
         QApplication::processEvents();
 
         bool done = false;
-        
+
         tabList = this->findChildren<QTabBar*>();
         for (int i = 0; i < tabList.count() && false == done; i++)
         {
@@ -1138,7 +1138,7 @@ void MainForm::createDockWidgets()
                );
 
         done = false;
-        
+
         for (int i = 0; i < tabList.count() && false == done; i++)
         {
             for (int j = 0; j < tabList.at(i)->count(); j++)

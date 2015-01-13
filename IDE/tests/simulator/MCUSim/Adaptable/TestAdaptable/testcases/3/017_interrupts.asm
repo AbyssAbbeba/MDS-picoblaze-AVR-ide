@@ -42,7 +42,7 @@ WAIT:   LOAD    s0,#250
         ;; interrupt
         ;; pc == 5
         SUB     s0,#1
-        CMP     s0,#1
+        COMPARE     s0,#1
         jump    NZ,WAIT
         DIS
         

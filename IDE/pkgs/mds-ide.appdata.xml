@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2015 Moravia Microsystems, s.r.o. (http://www.moravia-microsystems.com) -->
+<application>
+ <id type="desktop">mds-ide.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>Moravia Microsystems License</project_license>
+ <name>MDS</name>
+ <summary>Multitarget Development System for PicoBlaze</summary>
+ <description>
+  <p>
+   Multitarget Development System (MDS) for PicoBlaze is graphical integrated development environment (IDE) for Xilinx's
+   PicoBlaze soft-core processors and their compatible clones. MDS is intended to be used mainly by professional
+   developers and education institutions, for hobbyists there is also noncommercial version available under a different
+   license.
+  </p><p>
+    MDS provides all the necessary functionality to develop software part of a PicoBlaze application, including source
+    code editor, assembler, disassembler, and simulator. Besides that there is also a number of features and functions
+    to make your work easier, the sole purpose of MDS is to save your time and enable development of more complex
+    applications. User is our main concern. Having the user as the center of attention, we developed this IDE to be
+    intuitive, fast and rich in features. We prefer to use state of the art technologies to keep up with the pace of
+    technological development in this area of industry, and MDS benefits from such approach. We believe you will feel
+    comfortable while working.
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default">http://www.moravia-microsystems.com/images/upload/PicoBlaze_IDE_1.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://www.moravia-microsystems.com/multitarget-development-system//</url>
+ <updatecontact>contact@moravia-microsystems.com</updatecontact>
+ <project_group>Development</project_group>
+</application>
