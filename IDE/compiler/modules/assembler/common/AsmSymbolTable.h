@@ -108,6 +108,24 @@ class AsmSymbolTable
             bool m_masked;
         };
 
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        enum PredefinedSymbolID
+        {
+            PRE_DEF_MDS_VERSION ///<
+        };
+
+    ////    Private Static Constants    ////
+    private:
+        ///
+        static const std::map<std::string, PredefinedSymbolID> PREDEFINED_SYMBOLS;
+
+        ///
+        static const CompilerExpr S_MDS_VERSION;
+
     ////    Constructors and Destructors    ////
     public:
         /**

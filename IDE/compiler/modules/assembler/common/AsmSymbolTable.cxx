@@ -16,10 +16,24 @@
 #include "AsmSymbolTable.h"
 #include "AsmMacros.h"
 
+// MDS build config.
+#include "mds.h"
+
 // Standard headers.
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+
+const std::map<std::string, AsmSymbolTable::PredefinedSymbolID> AsmSymbolTable::PREDEFINED_SYMBOLS =
+{
+    { "__MDS_VERSION__", PRE_DEF_MDS_VERSION }
+};
+
+// 16b: MSB > |MAJOR|MINOR|MINOR|PATCH| < LSB
+const CompilerExpr AsmSymbolTable::S_MDS_VERSION =
+    CompilerExpr ( CompilerValue ( ( ( PRODUCT_VERSION_MAJOR & 0x0f ) << 12 ) |
+                                   ( ( PRODUCT_VERSION_MINOR & 0xff ) <<  4 ) |
+                                   ( ( PRODUCT_VERSION_PATCH & 0x0f ) <<  0 ) ) );
 
 AsmSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                  const CompilerSourceLocation * location,
@@ -120,8 +134,13 @@ int AsmSymbolTable::addSymbol ( const std::string & name,
 
 AsmSymbolTable::SymbolType AsmSymbolTable::getType ( const std::string & name )
 {
-    auto it = m_table.find(name);
-    if ( it != m_table.end() )
+    if ( PREDEFINED_SYMBOLS.cend() != PREDEFINED_SYMBOLS.find(name) )
+    {
+        return STYPE_NUMBER;
+    }
+
+    const auto it = m_table.find(name);
+    if ( m_table.cend() != it )
     {
         return it->second.m_type;
     }
@@ -216,6 +235,16 @@ void AsmSymbolTable::removeSymbol ( const std::string & name,
                                     const CompilerSourceLocation & location,
                                     const SymbolType type )
 {
+    if ( PREDEFINED_SYMBOLS.cend() != PREDEFINED_SYMBOLS.find(name) )
+    {
+        m_compilerCore -> semanticMessage ( location,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "cannot remove predefined symbol: `%1'" )
+                                                        . arg(name.c_str())
+                                                        . toStdString() );
+        return;
+    }
+
     auto it = m_table.find(name);
     if ( it == m_table.end() )
     {
@@ -233,8 +262,13 @@ void AsmSymbolTable::removeSymbol ( const std::string & name,
 bool AsmSymbolTable::isDefined ( const std::string & name,
                                  const SymbolType type ) const
 {
-    auto it = m_table.find(name);
-    if ( ( it != m_table.cend() ) && ( STYPE_UNSPECIFIED == type || type == it->second.m_type ) )
+    if ( PREDEFINED_SYMBOLS.cend() != PREDEFINED_SYMBOLS.find(name) )
+    {
+        return true;
+    }
+
+    const auto it = m_table.find(name);
+    if ( ( m_table.cend() != it ) && ( STYPE_UNSPECIFIED == type || type == it->second.m_type ) )
     {
         return true;
     }
@@ -248,6 +282,16 @@ int AsmSymbolTable::assignValue ( const std::string & name,
                                   const SymbolType type,
                                   bool resolve )
 {
+    if ( PREDEFINED_SYMBOLS.cend() != PREDEFINED_SYMBOLS.find(name) )
+    {
+        m_compilerCore -> semanticMessage ( *location,
+                                            CompilerBase::MT_ERROR,
+                                            QObject::tr ( "cannot change value of predefined symbol: `%1'" )
+                                                        . arg(name.c_str())
+                                                        . toStdString() );
+        return -1;
+    }
+
     int finalValue = -1;
 
     std::map<std::string,Symbol>::iterator it = m_table.find(name);
@@ -276,7 +320,7 @@ int AsmSymbolTable::assignValue ( const std::string & name,
     {
         m_compilerCore -> semanticMessage ( *location,
                                             CompilerBase::MT_ERROR,
-                                            QObject::tr ( "symbol `%1' already defined with type: " )
+                                            QObject::tr ( "symbol `%1' has been already defined with type: " )
                                                         . arg ( name.c_str() )
                                                         . toStdString()
                                                         + "`" + symType2Str(it->second.m_type) +"'" );
@@ -288,17 +332,31 @@ int AsmSymbolTable::assignValue ( const std::string & name,
 const CompilerExpr * AsmSymbolTable::getValue ( const std::string & name,
                                                 const SymbolType type )
 {
-    std::map<std::string,Symbol>::iterator it = m_table.find(name);
-    if (
-           ( it != m_table.end() )
-               &&
-           ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
-               &&
-           ( false == it->second.m_masked )
-       )
     {
-        it->second.m_used = true;
-        return it->second.m_value;
+        const auto it = PREDEFINED_SYMBOLS.find(name);
+        if ( PREDEFINED_SYMBOLS.cend() != it )
+        {
+            switch ( it->second )
+            {
+                case PRE_DEF_MDS_VERSION:
+                    return &S_MDS_VERSION;
+            }
+        }
+    }
+
+    {
+        auto it = m_table.find(name);
+        if (
+               ( it != m_table.end() )
+                   &&
+               ( STYPE_UNSPECIFIED == type || type == it->second.m_type )
+                   &&
+               ( false == it->second.m_masked )
+           )
+        {
+            it->second.m_used = true;
+            return it->second.m_value;
+        }
     }
 
     return nullptr;

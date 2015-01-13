@@ -20,7 +20,8 @@ project ( CompilerModuleAsmCommon )
 
 # List of preprocessor include file search directories.
 include_directories ( "${CMAKE_SOURCE_DIR}/compiler/core/"
-                      "${CMAKE_SOURCE_DIR}/utilities/" )
+                      "${CMAKE_SOURCE_DIR}/utilities/"
+                      "${CMAKE_SOURCE_DIR}" )
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} AsmMacros.cxx

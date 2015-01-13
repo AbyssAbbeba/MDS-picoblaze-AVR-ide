@@ -668,7 +668,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_DB ( CompilerStatement * node )
         else if ( CompilerValue::TYPE_SYMBOL == type )
         {
             std::string stringValue;
-            if ( false == m_stringTable->get ( arg->lVal().m_data.m_symbol, stringValue ) )
+            if ( false == m_stringTable->get ( arg->lVal().m_data.m_symbol, stringValue, &(node->location()) ) )
             {
                 return;
             }
@@ -1204,7 +1204,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_OUTPUTK_STR_P ( CompilerStatement * nod
 
     if ( CompilerValue::TYPE_SYMBOL == type )
     {
-        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
+        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue, &(node->location())) )
         {
             m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,
@@ -1247,7 +1247,7 @@ inline void AsmPicoBlazeTreeDecoder::dir_LD_RET_SX_STR ( CompilerStatement * nod
 
     if ( CompilerValue::TYPE_SYMBOL == type )
     {
-        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue) )
+        if ( false == m_stringTable->get(val->m_data.m_symbol, stringValue, &(node->location())) )
         {
             m_compilerCore->semanticMessage ( node->location(),
                                               CompilerBase::MT_ERROR,

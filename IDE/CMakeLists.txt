@@ -66,6 +66,24 @@ mark_as_advanced ( MDS_MANUAL_PDF )
 set ( COMPILER_EXEC_TARGET "mds-compiler" )
 
 # ----------------------------------------------------------------------------------------------------------------------
+# PACKAGE VERSION
+# ----------------------------------------------------------------------------------------------------------------------
+
+string ( REGEX REPLACE "\\." ";" versionList ${PRODUCT_VERSION} )
+list ( LENGTH versionList listLength )
+list ( GET versionList 0 PRODUCT_VERSION_MAJOR )
+if ( listLength GREATER 1 )
+    list ( GET versionList 1 PRODUCT_VERSION_MINOR )
+else()
+    set ( PRODUCT_VERSION_MINOR 0 )
+endif()
+if ( listLength GREATER 2 )
+    list ( GET versionList 2 PRODUCT_VERSION_PATCH )
+else()
+    set ( PRODUCT_VERSION_PATCH 0 )
+endif()
+
+# ----------------------------------------------------------------------------------------------------------------------
 # USER OPTIONS
 # ----------------------------------------------------------------------------------------------------------------------
 

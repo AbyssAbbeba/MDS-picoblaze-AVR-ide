@@ -21,6 +21,7 @@
 #include "AsmDgbFileGen.h"
 #include "AsmSymbolTable.h"
 #include "AsmCodeListing.h"
+#include "AsmStringTable.h"
 #include "CompilerStatementTypes.h"
 
 // Support for processor definition files used Adaptable Simulator
@@ -808,6 +809,16 @@ inline AsmAdaptableTreeDecoder::CourseOfAction
             m_semanticAnalyzer->m_memoryPtr->m_code += ( charArraySize / wordSize );
             m_semanticAnalyzer->m_memoryPtr->m_code += ( 0 == ( charArraySize % wordSize ) ? 0 : 1);
         }
+        else if ( CompilerValue::TYPE_SYMBOL == arg->lVal().m_type )
+        {
+            std::string stringValue;
+            if ( true == m_semanticAnalyzer->m_stringTable->get ( arg->lVal().m_data.m_symbol,
+                                                                  stringValue,
+                                                                  &(node->location()) ) )
+            {
+                m_semanticAnalyzer->m_memoryPtr->m_code += stringValue.size();
+            }
+        }
         else
         {
             m_semanticAnalyzer->m_symbolTable->resolveSymbols(arg, m_semanticAnalyzer->m_memoryPtr->m_code);
@@ -840,6 +851,20 @@ inline void AsmAdaptableTreeDecoder::dir_DB_phase2 ( CompilerStatement * node )
             for ( int i = 0; i < charArray.m_size; i++ )
             {
                 dbData.push_back ( charArray.m_data[i] );
+            }
+        }
+        else if ( CompilerValue::TYPE_SYMBOL == arg->lVal().m_type )
+        {
+            std::string stringValue;
+            if ( false == m_semanticAnalyzer->m_stringTable->get ( arg->lVal().m_data.m_symbol,
+                                                                   stringValue,
+                                                                   &(node->location()) ) )
+            {
+                return;
+            }
+            for ( const char c : stringValue )
+            {
+                dbData.push_back ( (unsigned char) c );
             }
         }
         else
