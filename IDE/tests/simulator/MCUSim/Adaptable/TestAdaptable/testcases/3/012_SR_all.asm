@@ -1,6 +1,25 @@
     ; testing of rotate instructions
 
-device "003_picoblazecopy.procdef"
+device "012_SR_all.procdef"
+
+
+S0      REG     0x0
+S1      REG     0x1
+S2      REG     0x2
+S3      REG     0x3
+S4      REG     0x4
+S5      REG     0x5
+S6      REG     0x6
+S7      REG     0x7
+S8      REG     0x8
+S9      REG     0x9
+SA      REG     0xA
+SB      REG     0xB
+SC      REG     0xC
+SD      REG     0xD
+SE      REG     0xE
+SF      REG     0xF
+
     org 00h
 
 start:      load        s0,#128
@@ -91,42 +110,42 @@ start:      load        s0,#128
             ;; flag[c] == true
             ;; flag[z] == false
 ; srx testing
-            load        s2,#128
-            srx         s2
-            ;; step 2
-            ;; reg[2] == 192
-            srx         s2
-            ;; step
-            ;; reg[2] == 224
-            srx         s2
-            ;; step
-            ;; reg[2] == 240
-            srx         s2
-            ;; step
-            ;; reg[2] == 248
-            srx         s2
-            ;; step
-            ;; reg[2] == 252
-            srx         s2
-            ;; step
-            ;; reg[2] == 254
-            ;; flag[c] == false
-            ;; flag[z] == false
-            srx        s2
-            ;; step
-            ;; reg[0] == 255
-            ;; flag[c] == false
-            ;; flag[z] == false
-            srx         s2
-            ;; step
-            ;; reg[2] == 255
-            ;; flag[c] == true
-            ;; flag[z] == false
-            load        s2,#1
-            srx         s2
-            ;; step 2
-            ;; flag[c] == true
-            ;; flag[z] == true
+;             load        s2,#128
+;             srx         s2
+;             ;; step 2
+;             ;; reg[2] == 192
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 224
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 240
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 248
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 252
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 254
+;             ;; flag[c] == false
+;             ;; flag[z] == false
+;             srx        s2
+;             ;; step
+;             ;; reg[0] == 255
+;             ;; flag[c] == false
+;             ;; flag[z] == false
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 255
+;             ;; flag[c] == true
+;             ;; flag[z] == false
+;             load        s2,#1
+;             srx         s2
+;             ;; step 2
+;             ;; flag[c] == true
+;             ;; flag[z] == true
 ; sra testing
             sra         s3
             ;; step

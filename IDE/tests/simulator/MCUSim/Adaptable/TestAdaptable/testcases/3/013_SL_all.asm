@@ -1,6 +1,25 @@
     ; testing of rotate instructions
 
-device "003_picoblazecopy.procdef"
+device "013_SL_all.procdef"
+
+
+S0      REG     0x0
+S1      REG     0x1
+S2      REG     0x2
+S3      REG     0x3
+S4      REG     0x4
+S5      REG     0x5
+S6      REG     0x6
+S7      REG     0x7
+S8      REG     0x8
+S9      REG     0x9
+SA      REG     0xA
+SB      REG     0xB
+SC      REG     0xC
+SD      REG     0xD
+SE      REG     0xE
+SF      REG     0xF
+
     org 00h
 
 start:      load        s0,#1
@@ -91,7 +110,7 @@ start:      load        s0,#1
             ;; flag[c] == true
             ;; flag[z] == false
 ; slx testing
-            load        s2,#1                
+/*            load        s2,#1                
             slx         s2
             ;; step 2
             ;; reg[2] == 3          
@@ -126,10 +145,10 @@ start:      load        s0,#1
             slx         s2
             ;; step 2
             ;; flag[c] == true
-            ;; flag[z] == true  
+            ;; flag[z] == true */ 
 ; sla testing
             sla         s3
-            ;; step     
+            ;; step
             ;; reg[3] == 1
             sla         s3
             ;; step

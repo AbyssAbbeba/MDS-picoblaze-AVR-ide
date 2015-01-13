@@ -223,18 +223,21 @@ void ProjectTree::addFilePt1()
 
 void ProjectTree::addFilePt2(QString projectPath)
 {
-    QString path;
+    QStringList path;
     if (projectPath != "untracked")
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), projectPath, QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileNames(this, tr("Source File"), projectPath, QString(), 0, QFileDialog::DontUseNativeDialog);
     }
     else
     {
-        path = QFileDialog::getOpenFileName(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+        path = QFileDialog::getOpenFileNames(this, tr("Source File"), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     }
-    if (path != NULL)
+    if (path.count() > 0)
     {
-        emit addFile(path, path.section('/', -1));
+        for (int i = 0; i < path.count(); i++)
+        {
+            emit addFile(path.at(i), path.at(i).section('/', -1));
+        }
         //QTreeWidgetItem *treeProjFile = new QTreeWidgetItem(this->topLevelItem(0));
         //treeProjFile->setText(0, path.section('/', -1));
         //treeProjFile->setData(0, Qt::ToolTipRole, path);
