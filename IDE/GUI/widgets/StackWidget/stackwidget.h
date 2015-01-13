@@ -27,6 +27,7 @@ class MCUSimControl;
 class QPushButton;
 class QLineEdit;
 class QListWidget;
+class QLabel;
 
 
 class StackWidget : public QWidget, public MCUSimObserver
@@ -57,6 +58,8 @@ class StackWidget : public QWidget, public MCUSimObserver
         QPushButton *btnPop;
         QLineEdit *leInput;
         QListWidget *lwStack;
+        QLabel *m_lblStack;
+        QLineEdit *m_leSP;
         PicoBlazeStack * m_memory;
         MCUSimSubsys::SubsysId subsys;
         int m_startingAddress;

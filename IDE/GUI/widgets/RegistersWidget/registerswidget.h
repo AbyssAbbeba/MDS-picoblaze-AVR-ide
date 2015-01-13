@@ -16,15 +16,18 @@
 #define REGISTERSWIDGET_H
 
 
-#include <QTableWidget>
+#include <QWidget>
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 #include "../../guicfg/guicfg.h"
 
 class MCUSimControl;
 class MCUSimMemory;
+class QTableWidget;
+class QVBoxLayout;
+class QLabel;
 
-class RegistersWidget : public QTableWidget, public MCUSimObserver
+class RegistersWidget : public QWidget, public MCUSimObserver
 {
     Q_OBJECT
     public:
@@ -54,6 +57,9 @@ class RegistersWidget : public QTableWidget, public MCUSimObserver
         int m_size;
         bool update;
         GuiCfg::WarningsOpt m_warningOptions;
+        QLabel *m_lblReg;
+        QTableWidget *m_tblReg;
+        QVBoxLayout *m_layout;
 };
 
 

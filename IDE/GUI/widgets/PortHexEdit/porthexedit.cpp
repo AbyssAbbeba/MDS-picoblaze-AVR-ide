@@ -15,7 +15,7 @@
 #include "porthexedit.h"
 
 //#include <QGridLayout>
-#include <QDebug>
+#include <QtGui>
 
 #include "../HexEdit/hexedit.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
@@ -35,9 +35,15 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
    //qDebug() << "PortHexEdit: PortHexEdit()";
     std::vector<int> mask;
     this->subsys = subsys;
+    m_layout = new QGridLayout(this);
+    this->setLayout(m_layout);
+    m_layout->setVerticalSpacing(0);
+    m_layout->setHorizontalSpacing(0);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE);
     mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ);
     mask.push_back(PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_READ_END);
+    mask.push_back(MCUSimPureLogicIO::EVENT_PLIO_WRITE_END);
 	controlUnit->registerObserver(
 		this,
 		subsys,
@@ -51,6 +57,20 @@ PortHexEdit::PortHexEdit(QWidget * parent, MCUSimControl * controlUnit, MCUSimSu
 	//setLayout(m_layout);
 	//this->m_hexEditOut->hide();
     this->visibleIn = true;
+
+    m_lblRD = new QLabel("RD", this);
+    m_lblWR = new QLabel("WR", this);
+    m_lblInput = new QLabel("Input Ports", this);
+    m_lblOutput = new QLabel("Output Ports", this);
+    m_lblWR->show();
+    m_lblRD->show();
+    m_lblInput->show();
+    m_lblOutput->show();
+    m_layout->addWidget(m_lblRD, 0,4);
+    m_layout->addWidget(m_lblWR, 0,9);
+    m_layout->addWidget(m_lblInput, 0,1, Qt::AlignLeft);
+    m_layout->addWidget(m_lblOutput, 0,6, Qt::AlignLeft);
+    m_lblWRK = NULL;
 
 	deviceChanged();
    //qDebug() << "PortHexEdit: return PortHexEdit()";
@@ -92,8 +112,19 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
 	switch ( eventId )
     {
         case MCUSimPureLogicIO::EVENT_PLIO_WRITE:
+        {
+            m_lblWR->setStyleSheet("color: #00ff00");
+            uint value = m_plio->getOutputArray()[locationOrReason];
+           //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
+
+            m_hexEditOut->setVal(locationOrReason, (unsigned char)value);
+            m_hexEditOut->setHighlighted(locationOrReason, true);
+
+            break;
+        }
         case PicoBlazeIO::EVENT_PICOBLAZEIO_OUTPUTK:
         {
+            m_lblWRK->setStyleSheet("color: #00ff00");
             uint value = m_plio->getOutputArray()[locationOrReason];
            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
@@ -104,12 +135,27 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         }
         case MCUSimPureLogicIO::EVENT_PLIO_READ:
         {
+            m_lblRD->setStyleSheet("color: #00ff00");
             uint value = m_plio->getInputArray()[locationOrReason];
            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
             m_hexEditIn->setVal(locationOrReason, (unsigned char)value);
             m_hexEditIn->setHighlighted(locationOrReason, true);
 
+            break;
+        }
+        case MCUSimPureLogicIO::EVENT_PLIO_WRITE_END:
+        {
+            m_lblWR->setStyleSheet("color: none");
+            if (NULL != m_lblWRK)
+            {
+                m_lblWRK->setStyleSheet("color: none");
+            }
+            break;
+        }
+        case MCUSimPureLogicIO::EVENT_PLIO_READ_END:
+        {
+            m_lblRD->setStyleSheet("color: none");
             break;
         }
 		default:
@@ -132,6 +178,8 @@ void PortHexEdit::deviceChanged()
         qDebug() << "PortHexEdit: m_simControlUnit->getSimSubsys(this->subsys) is NULL";
     }
 	m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControlUnit->getSimSubsys(this->subsys));
+
+
     //if ( NULL == m_memory )
     //{
     //    qDebug() << "PortHexEdit: m_memory is NULL";
@@ -154,6 +202,7 @@ void PortHexEdit::deviceChanged()
     m_size = m_plio->getNumberOfPorts();
 	deleteHexEdit();
 	m_hexEditIn = new HexEdit(this, false, m_size, 8);
+    //m_hexEditIn->move(0, 20);
     m_hexEditIn->show();
     //m_hexEditIn->verticalScrollBar()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //m_hexEditIn->getTextEdit()->
@@ -162,8 +211,11 @@ void PortHexEdit::deviceChanged()
     //m_hexEditIn->horizontalScrollBar()->hide();
     //m_hexEditIn->horizontalScrollBar()->resize(0, 0);
     m_hexEditOut = new HexEdit(this, false, m_size, 8);
-    m_hexEditOut->move(m_hexEditIn->width(), 0);
+    //m_hexEditOut->move(m_hexEditIn->width(), 20);
     m_hexEditOut->show();
+    m_layout->addWidget(m_hexEditIn, 1, 0, 1, 5);
+    m_layout->addWidget(m_hexEditOut, 1, 5, 1, 5);
+    
     //m_hexEditOut->hide();
     //m_hexEditOut->verticalScrollBar()->hide();
     //m_hexEditOut->getTextEdit()->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -173,6 +225,26 @@ void PortHexEdit::deviceChanged()
     //m_hexEditOut->horizontalScrollBar()->resize(0, 0);
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
+    //this->setFixedWidth(m_hexEditIn->width() + m_hexEditOut->width());
+    //m_lblWR->move(this->width() - m_lblWR->width() - 10,0);
+    //m_lblRD->move(m_hexEditIn->width() - m_lblRD->width() - 10,0);
+    //m_lblInput->move(0,0);
+    //m_lblOutput->move(m_hexEditIn->width(), 0);
+    if (MCUSim::FAMILY_KCPSM6 == m_simControlUnit->getFamily())
+    {
+        if (NULL == m_lblWRK)
+        {
+            m_lblWRK = new QLabel("WRK  ", this);
+            m_lblWRK->show();
+            m_layout->addWidget(m_lblWRK, 0,8);
+            //m_lblWRK->move(this->width() - m_lblWR->width() - m_lblWRK->width() - 10, 0);
+        }
+    }
+    else if (NULL != m_lblWRK)
+    {
+        delete m_lblWRK;
+        m_lblWRK = NULL;
+    }
 	connect(m_hexEditIn, SIGNAL(textChanged(int)), this, SLOT(changeValueIn(int)));
     connect(m_hexEditOut, SIGNAL(textChanged(int)), this, SLOT(changeValueOut(int)));
 	//m_layout->addWidget(m_hexEditIn);
@@ -283,6 +355,12 @@ void PortHexEdit::unhighlight()
 {
     this->m_hexEditIn->unhighlight();
     this->m_hexEditOut->unhighlight();
+    m_lblRD->setStyleSheet("color: none");
+    m_lblWR->setStyleSheet("color: none");
+    if (NULL != m_lblWRK)
+    {
+        m_lblWRK->setStyleSheet("color: none");
+    }
 }
 
 
