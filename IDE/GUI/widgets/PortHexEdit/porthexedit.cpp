@@ -405,3 +405,10 @@ void PortHexEdit::updateWidget()
         //qDebug() << "PortHexEdit: out value is" << (unsigned char)value;
     }
 }
+
+
+void PortHexEdit::resizeEvent(QResizeEvent */*event*/)
+{
+    m_hexEditIn->fixHeight();
+    m_hexEditOut->fixHeight();
+}

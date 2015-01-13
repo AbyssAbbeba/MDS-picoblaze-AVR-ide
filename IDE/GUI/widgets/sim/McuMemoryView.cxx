@@ -383,3 +383,9 @@ void McuMemoryView::setWarningOpt(GuiCfg::WarningsOpt options)
 {
     this->warningOptions = options;
 }
+
+
+void McuMemoryView::resizeEvent(QResizeEvent */*event*/)
+{
+    m_hexEdit->fixHeight();
+}
