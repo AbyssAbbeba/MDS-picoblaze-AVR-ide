@@ -28,44 +28,65 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     }
     
     this->subsys = subsys;
-    this->setMinimumHeight(225);
-    this->setFixedWidth(100);
+    //this->setMinimumHeight(225);
+    this->setFixedWidth(120);
 
     this->numWidth = 3;
+
+    QFont leFont("Ubuntu Mono");
+    leFont.setPixelSize(13);
     
     this->leInput = new QLineEdit(this);
     this->lwStack = new QListWidget(this);
+    this->lwStack->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    //this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
     this->btnPush = new QPushButton("Push", this);
     this->btnPop = new QPushButton("Pop", this);
+    m_lblStack = new QLabel("Stack", this);
+    m_leSP = new QLineEdit(this);
+    m_leSP->setReadOnly(true);
 
-    this->leInput->setMaximumWidth(42);
-    this->leInput->setMaximumHeight(17);
-    this->btnPush->setMaximumWidth(27);
-    this->btnPush->setMaximumHeight(17);
-    this->btnPop->setMaximumWidth(27);
-    this->btnPop->setMaximumHeight(17);
+    m_leSP->setFont(leFont);
+    this->leInput->setFont(leFont);
 
-    this->lwStack->move(0,21);
-    this->leInput->move(0,0);
-    this->btnPush->move(44,0);
-    this->btnPop->move(72,0);
+    //this->leInput->setFixedWidth(42);
+    this->leInput->setFixedHeight(17);
+    this->leInput->setMinimumWidth(30);
+    //this->btnPush->setFixedWidth(27);
+    this->btnPush->setFixedHeight(17);
+    //this->btnPop->setFixedWidth(27);
+    this->btnPop->setFixedHeight(17);
+    m_leSP->setFixedHeight(17);
+
+    QGridLayout *layout = new QGridLayout(this);
+    layout->addWidget(m_lblStack, 0, 0, 1, 2);
+    layout->addWidget(m_leSP, 0, 2);
+    layout->addWidget(leInput, 1, 0);
+    layout->addWidget(btnPush, 1, 1);
+    layout->addWidget(btnPop, 1, 2);
+    layout->addWidget(lwStack, 2, 0, 1, 3);
+    this->setLayout(layout);
+    layout->setRowStretch(2, 1);
+
+    layout->setHorizontalSpacing(0);
+    layout->setVerticalSpacing(1);
 
     QFont fontBtn = this->btnPush->font();
     fontBtn.setPointSize(8);
     this->btnPush->setFont(fontBtn);
     this->btnPop->setFont(fontBtn);
 
-    QFont fontLE = this->leInput->font();
-    fontLE.setPointSize(9);
-    fontLE.setFamily("Ubuntu Mono");
-    this->leInput->setFont(fontLE);
+    //QFont fontLE = this->leInput->font();
+    //fontLE.setPointSize(9);
+    //fontLE.setFamily("Ubuntu Mono");
+    //this->leInput->setFont(fontLE);
     this->leInput->setMaxLength(this->numWidth);
     
     QFont fontLW = this->lwStack->font();
     fontLW.setPixelSize(13);
     fontLW.setFamily("Ubuntu Mono");
     this->lwStack->setFont(fontLW);
-    this->lwStack->setFixedWidth(100);
+    //this->lwStack->setFixedWidth(100);
     this->lwStack->setStyleSheet(QString(
                                          "QScrollBar:vertical"
                                          "{"
@@ -226,6 +247,15 @@ void StackWidget::handleEvent(int subsysId, int eventId, int locationOrReason, i
                     this->lwStack->item(this->sp-1)->setBackground(Qt::yellow);
                 }
             }
+            if (locationOrReason > 0xF)
+            {
+                m_leSP->setText("0x" + QString::number(locationOrReason, 16).toUpper());
+            }
+            else
+            {
+                m_leSP->setText("0x0" + QString::number(locationOrReason, 16).toUpper());
+            }
+            m_leSP->setStyleSheet("background-color: yellow");
             this->sp = locationOrReason;
             break;
         }
@@ -323,6 +353,7 @@ void StackWidget::unhighlight()
     {
         this->lwStack->item(this->sp-1)->setBackground(Qt::green);
     }
+    m_leSP->setStyleSheet("background-color: none");
 }
 
 

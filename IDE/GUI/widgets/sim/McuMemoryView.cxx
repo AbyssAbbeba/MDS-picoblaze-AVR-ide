@@ -17,6 +17,7 @@
 
 #include <QGridLayout>
 #include <QDebug>
+#include <QLabel>
 
 #include "../HexEdit/hexedit.h"
 #include "../../../simulators/SimControl/MCUSimControl.h"
@@ -54,8 +55,13 @@ McuMemoryView::McuMemoryView(QWidget * parent, MCUSimControl * controlUnit, MCUS
     {
         qDebug() << "McuMemoryView: controlUnit is NULL";
     }
-	m_layout = new QHBoxLayout(this);
+	m_layout = new QGridLayout(this);
+    m_lblScratch = new QLabel("Scratchpad RAM", this);
 	setLayout(m_layout);
+
+    m_layout->setVerticalSpacing(0);
+
+    m_layout->addWidget(m_lblScratch, 0, 1);
 
 	deviceChanged();
 }
@@ -271,8 +277,10 @@ void McuMemoryView::deviceChanged()
 	deleteHexEdit();
 	m_hexEdit = new HexEdit(this, false, m_size, 8);
 	connect(m_hexEdit, SIGNAL(textChanged(int)), this, SLOT(changeValue(int)));
-	m_layout->addWidget(m_hexEdit);
-
+	m_layout->addWidget(m_hexEdit, 1, 0, 1, 5);
+    m_hexEdit->fixHeight();
+    //m_hexEdit->show();
+    //this->setFixedWidth(m_hexEdit->width());
 	deviceReset();
     /*if (0 == m_size)
     {
