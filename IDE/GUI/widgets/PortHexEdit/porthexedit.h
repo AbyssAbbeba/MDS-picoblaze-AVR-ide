@@ -72,6 +72,9 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         QGridLayout *m_layout;
 
         inline void deleteHexEdit();
+        
+    protected:
+        void resizeEvent(QResizeEvent *event);
 };
 
 #endif // PORTHEXEDIT_H

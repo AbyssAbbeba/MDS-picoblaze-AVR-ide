@@ -68,6 +68,9 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         GuiCfg::WarningsOpt warningOptions;
 
         inline void deleteHexEdit();
+
+    protected:
+        void resizeEvent(QResizeEvent *event);
 };
 
 #endif // MCUMEMORYVIEW_H
