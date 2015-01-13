@@ -33,7 +33,7 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
         qDebug() << "HelpDockWidget: setupData sucks ass";
     }
 
-    //QTabWidget *tabs = new QTabWidget(this);
+    QTabWidget *tabs = new QTabWidget(this);
 
     QWidget *wCnt = new QWidget(this);
     QVBoxLayout *layoutCnt = new QVBoxLayout(wCnt);
@@ -42,15 +42,12 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     layoutCnt->addWidget((QWidget*)(helpEngine->contentWidget()));
     wCnt->setLayout(layoutCnt);
 
-    layout->addWidget(wCnt);
-    this->setLayout(layout);
-    this->show();
-    /*QWidget *wIndex = new QWidget(this);
+    QWidget *wIndex = new QWidget(this);
     QVBoxLayout *layoutIndex = new QVBoxLayout(wIndex);
     QLabel *lblIndex = new QLabel("Index", wIndex);
     layoutIndex->addWidget(lblIndex);
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
-    wIndex->setLayout(layoutIndex);*/
+    wIndex->setLayout(layoutIndex);
 
     /*QWidget *wSearch = new QWidget(this);
     QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
@@ -60,8 +57,12 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
     layoutSearch->addWidget((QWidget*)(helpEngine->searchEngine()->resultWidget()));
     wSearch->setLayout(layoutSearch);*/
 
-    //tabs->addTab(wCnt, "Content");
-    //tabs->addTab(wIndex, "Index");
+    tabs->addTab(wCnt, "Content");
+    tabs->addTab(wIndex, "Index");
+    
+    layout->addWidget(tabs);
+    this->setLayout(layout);
+    this->show();
     //tabs->addTab(wSearch, "Search");
 
     //this->resize(width, height);
@@ -72,6 +73,11 @@ HelpDockWidget::HelpDockWidget(QWidget *parent)
 
     connect((QWidget*)(helpEngine->contentWidget()),
             SIGNAL(linkActivated(const QUrl &)),
+            this,
+            SIGNAL(showHelpContent(const QUrl &))
+           );
+    connect((QWidget*)(helpEngine->indexWidget()),
+            SIGNAL(linkActivated(const QUrl &, QString)),
             this,
             SIGNAL(showHelpContent(const QUrl &))
            );
