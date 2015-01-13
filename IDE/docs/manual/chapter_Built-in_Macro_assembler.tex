@@ -147,32 +147,42 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
 
         \clearpage
         \subsubsection{Predefined Symbols}
-            These symbols are defined by default when you specify the target device (using the ``\texttt{DEVICE}'' directive). Symbols \texttt{S10}..\texttt{S1F} are defined for KCPSM2 only, symbols \texttt{S8}..\texttt{S1F} are not defined for KCPSM1-CPLD but defined for every other PicoBlaze. All these symbols are defined as register addresses.
+            \paragraph{Registers}~\\
+                These symbols are defined by default when you specify the target device (using the ``\texttt{DEVICE}'' directive). Symbols \texttt{S10}..\texttt{S1F} are defined for KCPSM2 only, symbols \texttt{S8}..\texttt{S1F} are not defined for KCPSM1-CPLD but defined for every other PicoBlaze. All these symbols are defined as register addresses.
 
-            \begin{table}[h!]
-                \centering
-                \begin{tabular}{|cc|cc|}
-                    \hline
-                    \textbf{Symbol} & \textbf{Value} & \textbf{Symbol} & \textbf{Value} \\\hline
-                    \texttt{S0}     & 0x00           & \texttt{S10}    & 0x10           \\\hline
-                    \texttt{S1}     & 0x01           & \texttt{S11}    & 0x11           \\\hline
-                    \texttt{S2}     & 0x02           & \texttt{S12}    & 0x12           \\\hline
-                    \texttt{S3}     & 0x03           & \texttt{S13}    & 0x13           \\\hline
-                    \texttt{S4}     & 0x04           & \texttt{S14}    & 0x14           \\\hline
-                    \texttt{S5}     & 0x05           & \texttt{S15}    & 0x15           \\\hline
-                    \texttt{S6}     & 0x06           & \texttt{S16}    & 0x16           \\\hline
-                    \texttt{S7}     & 0x07           & \texttt{S17}    & 0x17           \\\hline
-                    \texttt{S8}     & 0x08           & \texttt{S18}    & 0x18           \\\hline
-                    \texttt{S9}     & 0x09           & \texttt{S19}    & 0x19           \\\hline
-                    \texttt{SA}     & 0x0A           & \texttt{S1A}    & 0x1A           \\\hline
-                    \texttt{SB}     & 0x0B           & \texttt{S1B}    & 0x1B           \\\hline
-                    \texttt{SC}     & 0x0C           & \texttt{S1C}    & 0x1C           \\\hline
-                    \texttt{SD}     & 0x0D           & \texttt{S1D}    & 0x1D           \\\hline
-                    \texttt{SE}     & 0x0E           & \texttt{S1E}    & 0x1E           \\\hline
-                    \texttt{SF}     & 0x0F           & \texttt{S1F}    & 0x1F           \\\hline
-                \end{tabular}
-                \caption{Predefined symbols}
-            \end{table}
+                \begin{table}[h!]
+                    \centering
+                    \begin{tabular}{|cc|cc|}
+                        \hline
+                        \textbf{Symbol} & \textbf{Value} & \textbf{Symbol} & \textbf{Value} \\\hline
+                        \texttt{S0}     & 0x00           & \texttt{S10}    & 0x10           \\\hline
+                        \texttt{S1}     & 0x01           & \texttt{S11}    & 0x11           \\\hline
+                        \texttt{S2}     & 0x02           & \texttt{S12}    & 0x12           \\\hline
+                        \texttt{S3}     & 0x03           & \texttt{S13}    & 0x13           \\\hline
+                        \texttt{S4}     & 0x04           & \texttt{S14}    & 0x14           \\\hline
+                        \texttt{S5}     & 0x05           & \texttt{S15}    & 0x15           \\\hline
+                        \texttt{S6}     & 0x06           & \texttt{S16}    & 0x16           \\\hline
+                        \texttt{S7}     & 0x07           & \texttt{S17}    & 0x17           \\\hline
+                        \texttt{S8}     & 0x08           & \texttt{S18}    & 0x18           \\\hline
+                        \texttt{S9}     & 0x09           & \texttt{S19}    & 0x19           \\\hline
+                        \texttt{SA}     & 0x0A           & \texttt{S1A}    & 0x1A           \\\hline
+                        \texttt{SB}     & 0x0B           & \texttt{S1B}    & 0x1B           \\\hline
+                        \texttt{SC}     & 0x0C           & \texttt{S1C}    & 0x1C           \\\hline
+                        \texttt{SD}     & 0x0D           & \texttt{S1D}    & 0x1D           \\\hline
+                        \texttt{SE}     & 0x0E           & \texttt{S1E}    & 0x1E           \\\hline
+                        \texttt{SF}     & 0x0F           & \texttt{S1F}    & 0x1F           \\\hline
+                    \end{tabular}
+                    \caption{Predefined symbols for registers}
+                \end{table}
+
+            \paragraph{Other predefined symbols}~\\
+                \begin{description}
+                    \item[\_\_MDS\_VERSION\_\_]~\\ xxx
+                    \item[\_\_DATE\_\_]~\\ xxx
+                    \item[\_\_TIME\_\_]~\\ xxx
+                    \item[\_\_FILE\_\_]~\\ xxx
+                    \item[\_\_LINE\_\_]~\\ xxx
+                \end{description}
 
     \subsection{Expressions}
         \index{Expressions}
@@ -720,8 +730,12 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
             The given symbol (X) has already been defined, there cannot coexist two or more symbols with the same name in one compilation unit.
         \item[Symbol not defined: X]~\\
             The given symbol has not been defined, maybe you are trying to use it prior to its definition.
-        \item[Symbol X already defined with type Y]~\\
+        \item[Symbol X has been already defined with type: Y]~\\
             The given symbol has been already defined with type Y, you are trying to define two or more symbols with the same name but with different types. This is not allowed in this assembler, such practice often tends to lower software quality.
+        \item[Cannot remove predefined symbol: X]~\\
+            Predefine symbols like \_\_MDS\_VERSION\_\_, \_\_DATE\_\_, \_\_TIME\_\_, \_\_FILE\_\_, and \_\_LINE\_\_ cannot be redefined or deleted.
+        \item[Cannot change value of predefined symbol: X]~\\
+            Predefine symbols like \_\_MDS\_VERSION\_\_, \_\_DATE\_\_, \_\_TIME\_\_, \_\_FILE\_\_, and \_\_LINE\_\_ cannot be redefined or deleted.
         \item[Undefined value]~\\
             You are attempting to use some value whose numerical representation is unknown to the assembler.
         \item[Real numbers are not supported in this assembler]~\\
