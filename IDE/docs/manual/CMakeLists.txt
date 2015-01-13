@@ -76,14 +76,21 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                                 COMMENT "Generating MDS documentation as XHTML files with htlatex converter."
                                 COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/genXHTML.bat"
-                                        ${HTLATEX_CONVERTER} MDS_manual.tex genXHTML.log
+                                        ${HTLATEX_CONVERTER} ${TEX_COMPILER} ${MAKEINDEX_COMPILER}
+                                        MDS_manual.tex genXHTML.log MDS_manual.ind MDS_manual.4dx
                                 VERBATIM )
         else()
             add_custom_target ( manual-htlatex ALL
                                 DEPENDS manual-pdflatex
                                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                                 COMMAND bash ${CAPTURE} ${LOG_FILE} ${HTLATEX_CONVERTER}
-                                        MDS_manual.tex "xhtml,charset=utf-8,next,index=2,5" "-utf8"
+                                        MDS_manual "xhtml,charset=utf-8,next,index=2,5" "-utf8"
+                                COMMAND bash ${CAPTURE} ${LOG_FILE} ${TEX_COMPILER}
+                                        "\\def\\filename{{MDS_manual}{idx}{4dx}{ind}} \\input idxmake.4ht"
+                                COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_COMPILER}
+                                        -o MDS_manual.ind MDS_manual.4dx
+                                COMMAND bash ${CAPTURE} ${LOG_FILE} ${HTLATEX_CONVERTER}
+                                        MDS_manual "xhtml,charset=utf-8,next,index=2,5" "-utf8"
                                 COMMENT "Generating MDS documentation as XHTML files with htlatex converter."
                                 VERBATIM )
         endif()
