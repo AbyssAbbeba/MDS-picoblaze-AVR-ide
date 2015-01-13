@@ -68,6 +68,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_COMPILER} MDS_manual.idx
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
+                            COMMAND rm MDS_manual.idx
                             VERBATIM )
 
         if ( TARGET_OS STREQUAL "Windows" )
