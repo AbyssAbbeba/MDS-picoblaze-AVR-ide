@@ -1,6 +1,6 @@
 ;==============================================================================;
 ; Settings TEST
-    device "003_picoblazecopy_mem.procdef"
+    device "007_memory.procdef"
 ;==============================================================================;
 ;
 ; Tested:   Memory, Word size, registers, data memory settings

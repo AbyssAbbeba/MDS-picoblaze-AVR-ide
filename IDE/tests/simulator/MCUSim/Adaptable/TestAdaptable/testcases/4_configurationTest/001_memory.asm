@@ -1,6 +1,6 @@
 ;==============================================================================;
 ; Settings TEST
-    device "003_picoblazecopy_mem.procdef"
+    device "001_memory.procdef"
 ;==============================================================================;
 ;
 ; Tested:   Memory, Word size, registers, data memory settings
@@ -52,11 +52,15 @@
     ;;  DATA[0] == 5
     ;; PC == 3
 
+    JUMP        EndProg
+    ;; step
 
 ;
 ; Program memory
 ;==============================================================================;
-    ORG     PROG_MEM_SIZE - 1       
+    ORG     PROG_MEM_SIZE - 1
+    
+EndProg:        
     LOAD    0, #55
     ;; step
     ;; reg[0] == 55
