@@ -83,7 +83,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
                                 DEPENDS manual-pdflatex
                                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                                 COMMAND bash ${CAPTURE} ${LOG_FILE} ${HTLATEX_CONVERTER}
-                                        MDS_manual.tex "xhtml,charset=utf-8,next,3" "-utf8"
+                                        MDS_manual.tex "xhtml,charset=utf-8,next,index=2,5" "-utf8"
                                 COMMENT "Generating MDS documentation as XHTML files with htlatex converter."
                                 VERBATIM )
         endif()

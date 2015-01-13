@@ -9,10 +9,10 @@
         \index{INCLUDE}
         Compiler copies content of the specified file to line where this directive is used. Included files can include other files. Path of the included file might be specified as either absolute or relative; in case of relative path, the path is always relative to location of file in which the \texttt{INCLUDE} directive appears and optionally to any of the include path list specified as assembler option.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    INCLUDE "file_name"'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    INCLUDE "some_file.asm"'\\
             \verb'    INCLUDE "sub_dir/another_file.asm"'\\
             \verb'    INCLUDE "C:/my_dir/my_file.asm"'\\
@@ -23,10 +23,10 @@
         \index{END}
         The \texttt{END} directive informs the assembler that it has reached the end of all source code. Assembler then ignores any code following this directive so everything after this directive is threated as comment.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    END'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    LOAD  S0, S1'\\
             \verb'    END'\\
             \verb'    LOAD  S0, S1, S2, S3 ; This will not be processed by the assembler.'
@@ -36,10 +36,10 @@
         \index{EQU}
         \texttt{EQU} stands for \texttt{EQU}als, it defines a symbol and assigns it a numerical value. Such symbol is considered constant and therefore cannot be redefined. Constant symbols defined with directive \texttt{EQU} can be used as register addresses, port addresses, and many others.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> EQU <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    First_symb   EQU   0b10011100        ; Binary.'\\
             \verb'    Second_symb  EQU   47                ; Decimal.'\\
             \verb'    Third_symb   EQU   0x39              ; Hexadecimal.'\\
@@ -52,7 +52,7 @@
         \index{CONSTANT}
         This directive is nothing more or less than the \texttt{EQU} directive with another syntax.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    CONSTANT <symbol>, <expression>'
 
     \clearpage
@@ -60,10 +60,10 @@
         \index{SET}
         The \texttt{SET} directive does the same thing as the \texttt{EQU} directive, the only difference is that symbols defined with \texttt{SET} are re-definable while symbols defined with \texttt{EQU} are constant.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> SET <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    my_symbol SET   0x10           ; my_symbol = 0x10'\\
             \verb'              LOAD  S0, #my_symbol ; Loads S0 register with immediate value 0x10.'\\
             \verb''\\
@@ -74,10 +74,10 @@
         \index{VARIABLE}
         This directive is nothing more or less than the \texttt{SET} directive with another syntax.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    VARIABLE <symbol>, <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    VARIABLE  First_symb, 0b10011100        ; Binary.'\\
             \verb'    VARIABLE  Second_symb, 47               ; Decimal.'\\
             \verb'    VARIABLE  Third_symb, 0x39              ; Hexadecimal.'\\
@@ -91,10 +91,10 @@
         \index{REG}
         Symbols defined with the \texttt{REG} directive are considered to be register addresses only and cannot be used for anything else, except for that \texttt{REG} is just another \texttt{EQU}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> REG <address>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    A_reg  REG    s1'\\
             \verb'    B_reg  REG    s2'\\
             \verb'    C_reg  REG    s3'\\
@@ -108,10 +108,10 @@
         \index{NAMEREG}
         This directive is nothing more the \texttt{REG} directive with another syntax.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    NAMEREG <symbol>, <address> '
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    NAMEREG     a, s1'\\
             \verb'    NAMEREG     b, s2'\\
             \verb'    NAMEREG     x, s3'\\
@@ -126,10 +126,10 @@
         \index{DATA}
         Symbols defined with the \texttt{DATA} directive are considered to be scratch-pad ram addresses only and cannot be used for anything else, except for that \texttt{DATA} is just another \texttt{EQU}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> DATA <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    my_location   PORT    0x12'\\
             \verb''\\
             \verb'                  STORE   S0, my_location'
@@ -138,10 +138,10 @@
         \index{CODE}
         Symbols defined with the \texttt{CODE} directive are considered to be program memory addresses only and cannot be used for anything else, except for that \texttt{CODE} is just another \texttt{EQU}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> CODE <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    somewhere     CODE    0x3ff'\\
             \verb'                  ; ...'\\
             \verb'                  ORG     somewhere'\\
@@ -152,10 +152,10 @@
         \index{PORT}
         Symbols defined with the \texttt{PORT} directive are considered to be port addresses only and cannot be used for anything else, except for that \texttt{PORT} is just another \texttt{EQU}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> PORT <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    my_port       PORT    0x22'\\
             \verb''\\
             \verb'                  OUTPUT  S0, my_port'
@@ -165,11 +165,11 @@
         \index{AUTOREG}
         It will automatically assign a register at some address starting from 0x00 which is incremented with every other \texttt{AUTOREG} directive by one or, if provided, the size argument. Optionally, you can change starting address counter by adding a parameter after \texttt{AUTOREG} directive. Symbols defined with this directive have the same purpose and limitations as if they were defined with the \texttt{REG} directive. You can check assigned registers in code listing (file .lst) and symbol table (file .sym). This directive may save you some time, you can use it when you don't care which exact register will be used.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> AUTOREG <size>'
             \verb'    <symbol> AUTOREG [AT <address>]'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    reg_1  AUTOREG                ; reg_1 = 0'\\
             \verb'    reg_2  AUTOREG                ; reg_2 = 1'\\
             \verb'    reg_3  AUTOREG                ; reg_3 = 2'\\
@@ -183,11 +183,11 @@
         \index{AUTOSPR}
         This directive provides exactly the same functionality as the \texttt{AUTOREG} directive but for addresses in scratch-pad ram. Symbols defined with this directive have the same purpose and limitations as if they were defined with the DATA directive.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> AUTOSPR <size>'
             \verb'    <symbol> AUTOSPR [AT <address>]'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    my_data  AUTOSPR'\\
             \verb''\\
             \verb'             STORE    S0, my_data'
@@ -197,10 +197,10 @@
         \index{INITSPR}
         Initializes scratch-pad RAM (SPR) with the given value(s), content of such initialized memory is stored in the Secondary Assembler Output (see the compiler configuration dialog, or command line option --secondary).
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> INITSPR <value>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
             \verb'my_data2      INITSPR         0x2b'\\
             \verb''\\
@@ -215,10 +215,10 @@
         \index{ORGSPR}
         Specify address of origin for scratch-pad RAM initialization (directive \texttt{INITSPR}).
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    ORGSPR <address>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'              ORGSPR          0x10'\\
             \verb'my_data       INITSPR         "Hello PicoBlaze!" ; <-- address assigned to my_data is 0x10'\\
             \verb''\\
@@ -231,10 +231,10 @@
         \index{MERGESPR}
         Merge scratch-pad RAM initialization with program memory initialization at the specified address.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    MERGESPR <address>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'              MERGESPR        0x280'\\
             \verb'my_data       INITSPR         "Hello PicoBlaze!"'\\
             \verb''\\
@@ -246,11 +246,11 @@
         \index{STRING}
         Defines a named character string (sequence of characters) which can later be used with \texttt{LOAD \& RETURN} and \texttt{OUTPUTK} instructions, and with \texttt{DB} directive.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <name> STRING "<string>"'
             \verb'    STRING <name>, "<string>"'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'my_string     STRING          "Hello PicoBlaze!"'\\
             \verb''\\
             \verb'              LOAD & RETURN   S0, my_string'\\
@@ -262,10 +262,10 @@
         \index{DEFINE}
         Define and expression which is evaluated every time separately when used in the code. These expressions can handle unlimited number of parameters, parameters are defined in curly brackets and are numbered from 0 to infinity (in decimal radix), using expressions with parameters resembles calling a function in C language, please see the example below.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    <symbol> DEFINE <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    A     EQU     10              ; A = 10 (decimal)'\\
             \verb'    B     SET     25              ; B = 25 (decimal)'\\
             \verb'    C     DEFINE  ( A + B ) * 2   ; Value of C is unknown for now.'\\
@@ -283,12 +283,12 @@
         \index{ORG} \index{ADDRESS}
         The assembler maintains a location counter for program memory, this location counter is incremented with each assembled instruction. With \texttt{ORG} or \texttt{ADDRESS} directive this location counter can be changed to instruct the assembler to start writing the code following the \texttt{ORG} directive at the new location counter position.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    ORG     <expression>'\\
             \verb'    ADDRESS <expression>'
 
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    ORG   0x3ff             ; Suppose that 0x3ff is the address for ISR.'\\
             \verb'    JUMP  handle_interrupt'
 
@@ -297,10 +297,10 @@
         \index{SKIP}
         Do not initialize the given number of program memory words and skip to the next nearest location.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    SKIP <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    ORG   0'\\
             \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x0.'\\
             \verb'    LOAD  S0, #0x22  ; Put opcode at address 0x1.'\\
@@ -314,11 +314,11 @@
         \index{UNDEFINE} \index{UNDEF}
         All symbols can be undefined, undefined symbols are be deleted from the symbol table and compiler will not recognize them.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    UNDEFINE <symbol>'\\
             \verb'    UNDEF    <symbol>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    symbol  SET     15'\\
             \verb'            LOAD    S0, #symbol'\\
             \verb'            UNDEF   symbol'\\
@@ -329,7 +329,7 @@
         \index{DB}
         This directive initializes the program memory directly, it can be used for direct writing of instruction opcodes. Memory is initialized in two different ways: in case of string given as argument to the directive, program memory will be initialized byte by byte; in case of constants and expressions, each constant or expression initializes one instruction word. If instruction word is 18 bits wide, the MSB of the byte triplet will be trimmed to 2 bits, making entire triplet only 18 bits wide instead of 24.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    ; Expresion syntax'\\
             \verb'    DB  <expression1>  [, <expression2>, ...]'\\
             \verb''\\
@@ -342,7 +342,7 @@
             Parameter can be unlimited number of string characters, or expressions divided by comma.
 
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    DB  0x060FC                 ; Constant.'\\
             \verb'    DB  "my string"             ; String.'\\
             \verb'    DB  "my string", 2+1, 3     ; Combination of string, expression, and constant.'
@@ -351,12 +351,12 @@
         \index{LIMIT}
         Imposes user defined limit on size of register file, scratch-pad ram, or program memory. In the example below if you use 8 registers or \texttt{JUMP} to address higher than 512, compiler reports such attempt as error.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    LIMIT  D, <number> ; Size of scratch-pad RAM (D stands for data).'\\
             \verb'    LIMIT  R, <number> ; Number of registers (R stands for registers).'\\
             \verb'    LIMIT  C, <number> ; Size of program memory (C stands for code).'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    LIMIT  R, 8   ; Limit maximum register address to 7.'\\
             \verb'    LIMIT  D, 32  ; Limit maximum address in scratch-pad ram to 31. '\\
             \verb'    LIMIT  C, 512 ; Limit maximum address in program memory to 511.'
@@ -366,10 +366,10 @@
         \index{DEVICE}
         Normally, you choose the target architecture when you are creating a project. But you can also specify target architecture with \texttt{DEVICE} directive. This will affect predefined symbols.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    DEVICE <device_name>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    DEVICE kcpsm6'\\
             \verb'    DEVICE kcpsm3'\\
             \verb'    DEVICE kcpsm2'\\
@@ -380,11 +380,11 @@
         \index{LIST} \index{NOLIST}
         Temporarily turns on and off output to the code listing.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    LIST    ; Turn code listing ON.'\\
             \verb'    NOLIST  ; Turn code listing OFF.'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    NOLIST'\\
             \verb'    INCLUDE "some_file.asm" ; The included file will not appear in the code listing.'\\
             \verb'    LIST'
@@ -394,40 +394,40 @@
         \index{TITLE}
         Set title for code listing.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    TITLE  "<title text>"'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    TITLE  "My program for something, etc."'
 
     \asmdirective{MESSAGE}
         \index{MESSAGE}
         Print compiler message, the message will be printed by the compiler in the same was as errors and warnings are. Such message, however, is not considered to be neither error nor warning.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    MESSAGE "some message..."'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    MESSAGE "text text text..."'
 
     \asmdirective{ERROR}
         \index{ERROR}
         This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as an error and causes the assembler to consider the entire compilation unsuccessful.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    ERROR "error message"'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    ERROR "my error message"'
 
     \asmdirective{WARNING}
         \index{WARNING}
         This directive does the same things as the \texttt{MESSAGE} directive but in this case the printed message is considered as a warning.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'WARNING "warning message"'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'WARNING "my warning message"'
 
     \clearpage
@@ -435,7 +435,7 @@
         \index{REPEAT}
         Repeats the specified block of code for the specified number of times. \texttt{REPT} is shortcut for \texttt{REPT}, and \texttt{ENDR} is shortcut for \texttt{ENDREPEAT}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    REPEAT <number-of-repeats>'\\
             \verb'        <code>'\\
             \verb'    ENDREPEAT'\\
@@ -444,7 +444,7 @@
             \verb'        <code>'\\
             \verb'    ENDR'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    REPT          5'\\
             \verb'        SR0       sF'\\
             \verb'    ENDR'\\
@@ -461,7 +461,7 @@
         \index{\#WHILE} \index{\#ENDWHILE} \index{\#ENDW}
         Repeats the specified block of code until expression equals to zero. \texttt{\#ENDW} is shortcut for \texttt{\#ENDWHILE}.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    #WHILE <expression>'\\
             \verb'        <code>'\\
             \verb'    #ENDWHILE'\\
@@ -470,7 +470,7 @@
             \verb'        <code>'\\
             \verb'    #ENDW'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'                ld          S0, #0x44       ; (value to output)'\\
             \verb'    addr        set         0               ; (starting address)'\\
             \verb''\\
@@ -483,11 +483,11 @@
         \index{FAILJMP} \index{DEFAULT\_JUMP}
         Fills program memory with jumps to the specified address. Purpose of this directive is to provide a simple means of protection against random errors.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    FAILJMP     <expression>'\\
             \verb'    DEFAULT_JMP <expression>'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    something_is_wrong:'\\
             \verb'          ; ... do something ...'\\
             \verb''\\
@@ -533,7 +533,7 @@
         \index{IF} \index{ELSEIF} \index{ELSE} \index{ENDIF}
         To implement run-time conditions you can use \texttt{IF}, \texttt{ELSEIF}, \texttt{ELSE}, and \texttt{ENDIF} directives for better readability of you code. Assembler translates these directives as predefined macros containing \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions. You can use registers and immediate constants in conditions.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    IF      <condition>'\\
             \verb'        <code>'\\
             \verb'    ELSEIF  <condition>'\\
@@ -558,7 +558,7 @@
         \index{WHILE} \index{ENDW} \index{ENDWHILE}
         To implement run-time loops you can use the \texttt{WHILE} directive. Assembler translates the \texttt{WHILE} directive to \texttt{COMPARE}, \texttt{TEST}, and \texttt{JUMP} instructions to implement the loop. Directive \texttt{ENDWHILE} closes the loop body; \texttt{ENDW} is only shortcut for \texttt{ENDWHILE}, they can be used interchangeably.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    WHILE <condition>'\\
             \verb'          <code>'\\
             \verb'    ENDWHILE'
@@ -577,7 +577,7 @@
         \index{FOR} \index{ENDFOR} \index{ENDF}
         The \texttt{FOR} directive provides another way to relatively easily implement run-time program loops, it is best demonstrated on examples (see below). Directive \texttt{ENDFOR} closes the loop body; \texttt{ENDF} is only shortcut for \texttt{ENDFOR}, they can be used interchangeably.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    FOR   <iterator-register>, <number-of-iterations>'\\
             \verb'          <code>'\\
             \verb'    ENDFOR'\\
@@ -590,7 +590,7 @@
             \verb'          <code>'\\
             \verb'    ENDFOR'
 
-        \subsubsection{Examples}
+        \paragraph{Examples}~\\
             \verb'    ; S0 starts from 0 and goes up to 9 (S0 is incremented after each iteration).'\\
             \verb'    FOR s0, 10'\\
             \verb'        NOP'\\
@@ -700,7 +700,7 @@
         \index{LOCAL}
         Directive \texttt{LOCAL} declares a symbol as local for the macro in which it appears.
 
-        \subsubsection{Syntax}
+        \paragraph{Syntax}~\\
             \verb'    LOCAL <symbols>'
 
         \subsubsection{Example}

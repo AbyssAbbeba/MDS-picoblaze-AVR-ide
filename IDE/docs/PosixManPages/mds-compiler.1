@@ -26,24 +26,26 @@ Microsystems, s.r.o.
 ]
 
 .SH DESCRIPTION
-\fB mds\-compiler\fR is macro-assembler developend by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors.
+\fB mds\-compiler\fR is macro-assembler developed by Moravia Microsystems, s.r.o. for PicoBlaze soft-core processors.
 mds-compiler is a tool which take one or more source code files and produces compiled machine code file usable in JTAG
 loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also
 produces extensive debugging output. mds-compiler is made to run fast and extensively tested for greater reliability, it
 feature set includes various special macros and user defined macros support making it one of the world most advanced
 assemblers available on the market today for PicoBlaze soft-core processors.
 
+By default the compiler does not generate any output files, that might be useful when you simply want to check a file for errors but you do not want that when you actually need to compile something a use the resulting machine code. When you need the machine code or any other file output, you have to specify which file or files you want the compiler to generate by providing the corresponding options.
+
 For more information please consult the MDS handbook.
 
 .SH OPTIONS
 .TP
 \fB\-\-architecture\fR, \fB\-a\fI <architecture>\fR
-Specify target architecture, supported architectures are:
+\fB(MANDATORY)\fR Specify target architecture, supported architectures are:
 .IP 1.
 \fBPicoBlaze\fR: (K)constant Coded Programmable State Machine.
 .TP
 \fB\-\-language\fR, \fB\-l\fI <programming\-language>\fR
-Specify programming language, supported languages are:
+\fB(MANDATORY)\fR Specify programming language, supported languages are:
 .IP 1.
 \fBasm\fR: assembly language.
 .TP
