@@ -29,7 +29,6 @@ class QPushButton;
 class QComboBox;
 class QLineEdit;
 class QScrollArea;
-class QHBoxLayout;
 class RegistersWidget;
 class McuMemoryView;
 class PortHexEdit;
@@ -39,6 +38,7 @@ class MCUSimCPU;
 class PicoBlazeStatusFlags;
 class PicoBlazeInterruptController;
 class PicoBlazeStack;
+class QGridLayout;
 
 /**
  * @brief
@@ -66,7 +66,6 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
     private:
         //MCUSimControl *controlUnit;
         QScrollArea *m_regListScroll;
-        QHBoxLayout *layout;
         QWidget *parent;
         //QMenu *popupMenu;
         //QString projectPath;
@@ -78,12 +77,7 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
 
         QLabel *lblRegs;
         QLabel *lblScratch;
-        QLabel *lblPortsIn;
-        QLabel *lblPortsOut;
         QLabel *lblStack;
-        QLabel *lblRD;
-        QLabel *lblWRK;
-        QLabel *lblWR;
         QLabel *lblPC;
         QLabel *lblTime;
         QLabel *lblCycles;
@@ -113,6 +107,8 @@ class PicoBlazeGrid : public QWidget, public MCUSimObserver
         bool interruptSet;
 
         GuiCfg::WarningsOpt warningOptions;
+
+        QGridLayout *m_layout;
         
 
     //signals:

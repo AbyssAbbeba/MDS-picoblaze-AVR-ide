@@ -17,7 +17,7 @@
 
 ; UART bit masks
 CONSTANT UART_Tx_data_present   , 00000001'b        ; Tx   data_present - bit0
-CONSTANT UART_Tx_half_full      , 00000010'b        ;         half_full - bit1
+CONSTANT UART_Tx_half_full ()     , 00000010'b        ;         half_full - bit1
 CONSTANT UART_Tx_full           , 00000100'b        ;              full - bit2
 CONSTANT UART_Rx_data_present   , 00001000'b        ; Rx   data_present - bit3
 CONSTANT UART_Rx_half_full      , 00010000'b        ;         half_full - bit4

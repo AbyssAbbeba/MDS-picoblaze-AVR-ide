@@ -19,12 +19,12 @@
 // Forward declarations
 class HexEdit;
 class MCUSimControl;
-class QHBoxLayout;
+class QGridLayout;
+class QLabel;
 
 
 #include <cstdint>
 #include <QWidget>
-#include <QHBoxLayout>
 
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
@@ -58,15 +58,19 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
     private:
         int m_startingAddress;
         int m_size;
-        HexEdit * m_hexEdit;
-        MCUSimMemory * m_memory;
+        HexEdit *m_hexEdit;
+        MCUSimMemory *m_memory;
         MCUSimSubsys::SubsysId subsys;
+        QLabel *m_lblScratch;
 
-        QHBoxLayout * m_layout;
+        QGridLayout *m_layout;
 
         GuiCfg::WarningsOpt warningOptions;
 
         inline void deleteHexEdit();
+
+    protected:
+        void resizeEvent(QResizeEvent *event);
 };
 
 #endif // MCUMEMORYVIEW_H

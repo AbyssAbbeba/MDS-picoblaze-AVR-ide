@@ -19,7 +19,7 @@ set ( MDS_FEATURES
       MDS_FEATURE_PICOBLAZE           MDS_FEATURE_AVR8                MDS_FEATURE_PIC8
       MDS_FEATURE_MCS51               MDS_FEATURE_C_COMPILER          MDS_FEATURE_C_TESTBENCH
       MDS_FEATURE_SIM_SWITCH          MDS_FEATURE_SIM_PORT_LOGGER     MDS_FEATURE_VHDL_WIZARD
-      MDS_FEATURE_EXTERNAL_APPS )
+      MDS_FEATURE_EXTERNAL_APPS       MDS_FEATURE_SIM_CALLWATCHER )
 
 # ----------------------------------------------------------------------------------------------------------------------
 # Set internal configuration variables.
@@ -55,7 +55,8 @@ elseif ( MDS_GRADE STREQUAL "Premium" )
     set ( MDS_FEATURE_SIM_LED_PANEL             TRUE )
     set ( MDS_FEATURE_SIM_7_SEGMENT             TRUE )
     set ( MDS_FEATURE_SIM_SWITCH                TRUE )
-    set ( MDS_FEATURE_EXTERNAL_APPS             TRUE )
+    set ( MDS_FEATURE_EXTERNAL_APPS             TRUE ) 
+    set ( MDS_FEATURE_SIM_CALLWATCHER           TRUE )
 
 elseif ( MDS_GRADE STREQUAL "Professional" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
@@ -72,6 +73,7 @@ elseif ( MDS_GRADE STREQUAL "Professional" )
     set ( MDS_FEATURE_C_COMPILER                TRUE )
     set ( MDS_FEATURE_EXTERNAL_APPS             TRUE )
     set ( MDS_FEATURE_VHDL_WIZARD               TRUE )
+    set ( MDS_FEATURE_SIM_CALLWATCHER           TRUE )
 
 elseif ( MDS_GRADE STREQUAL "Ultimate" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
@@ -90,6 +92,7 @@ elseif ( MDS_GRADE STREQUAL "Ultimate" )
     set ( MDS_FEATURE_C_TESTBENCH               TRUE )
     set ( MDS_FEATURE_EXTERNAL_APPS             TRUE )
     set ( MDS_FEATURE_VHDL_WIZARD               TRUE )
+    set ( MDS_FEATURE_SIM_CALLWATCHER           TRUE )
 endif()
 
 if ( MDS_TARGET STREQUAL "PicoBlaze" )

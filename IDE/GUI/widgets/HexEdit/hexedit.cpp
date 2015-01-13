@@ -111,6 +111,9 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexAsciiEdit = NULL;
     this->prevBlock = 0;
     hexLayout = new QGridLayout(this);
+    hexLayout->setHorizontalSpacing(0);
+    hexLayout->setRowStretch(0,0);
+    hexLayout->setColumnStretch(0,0);
     hexTextEdit = new QPlainTextEdit(this);
     //hexTextEdit->setReadOnly(true);
     hexTextEdit->setOverwriteMode(true);
@@ -163,16 +166,16 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
         hexByteArray->append(0);
     }
     //hexStatusBar = new QStatusBar(this);
-    hexStatusLabel = new QLabel(this);
+    //hexStatusLabel = new QLabel(this);
     //hexStatusBar->addPermanentWidget(hexStatusLabel);
-    if (hexTextEdit->isReadOnly() == true)
+    /*if (hexTextEdit->isReadOnly() == true)
     {
         hexStatusLabel->setText("Read Only");
     }
     else
     {
         hexStatusLabel->setText("Read/Write");
-    }
+    }*/
 
     hexLayout->setSpacing(0);
 
@@ -181,7 +184,7 @@ HexEdit::HexEdit(QWidget *parent, bool AsciiPanel, int countSize, int columns)
     hexLayout->addWidget(hexLineCount, 1, 0);
     hexLayout->addWidget(hexColumnCount, 0, 1);
     hexLayout->addWidget(hexTextEdit, 1, 1);
-    hexLayout->addWidget(hexStatusLabel, 2, 1);
+    //hexLayout->addWidget(hexStatusLabel, 2, 1);
 
     if (AsciiPanel == true)
     {
