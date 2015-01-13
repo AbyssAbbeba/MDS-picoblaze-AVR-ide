@@ -196,9 +196,6 @@ elseif ( TARGET_OS STREQUAL "Windows" )
     set ( LIBRARY_OUTPUT_PATH    ${CMAKE_BINARY_DIR} )
     set ( EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR} )
 elseif ( TARGET_OS STREQUAL "Darwin" )
-#     # Link statically with std. lib.
-#     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -static-libstdc++ -static-libgcc" )
-#     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc" )
 else()
     message ( FATAL_ERROR "Target operating system \"${TARGET_OS}\" not recognized!" )
 endif()
@@ -218,6 +215,10 @@ else()
         set ( CMAKE_EXE_LINKER_FLAGS    "${CMAKE_EXE_LINKER_FLAGS}    -fuse-linker-plugin" )
         set ( CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-linker-plugin" )
     endif()
+
+#     # Link statically with C++ standard library and C standard library.
+#     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -static-libstdc++ -static-libgcc" )
+#     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -static-libstdc++ -static-libgcc" )
 endif()
 
 # ----------------------------------------------------------------------------------------------------------------------

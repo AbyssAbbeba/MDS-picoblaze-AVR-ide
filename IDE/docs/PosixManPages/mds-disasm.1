@@ -31,12 +31,12 @@ For more information please consult the MDS handbook.
 .SH OPTIONS
 .TP
 \fB\-\-arch\fR, \fB\-a\fI <architecture>\fR
-Specify processor architecture, supported architectures are:
+\fB(MANDATORY)\fR Specify processor architecture, supported architectures are:
 .IP 1.
 \fBPicoBlaze\fR : (K)constant Coded Programmable State Machine.
 .TP
 \fB\-\-family\fR, \fB\-f\fI <family>\fR
-Specify processor family, supported families for the given architectures are:
+\fB(MANDATORY)\fR Specify processor family, supported families for the given architectures are:
 .IP 1.
 For PicoBlaze: \fBkcpsm1\fR, \fBkcpsm1cpld\fR, \fBkcpsm2\fR, \fBkcpsm3\fR, and \fBkcpsm6\fR
 .TP
@@ -47,16 +47,18 @@ Specify output file where the resulting assembly language code will be stored.
 Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported
 types are:
 .IP 1.
-\fBhex\fR : Intel 8 HEX, or Intel 16 HEX,
+\fBrawhex\fR : Raw HEX dump,
 .IP 2.
-\fBsrec\fR : Motorola S-Record,
+\fBhex\fR : Intel 8 HEX, or Intel 16 HEX,
 .IP 3.
-\fBbin\fR : raw binary file,
+\fBsrec\fR : Motorola S-Record,
 .IP 4.
-\fBmem\fR : Xilinx MEM file (for PicoBlaze only),
+\fBbin\fR : raw binary file,
 .IP 5.
-\fBvhd\fR : VHDL file (for PicoBlaze only),
+\fBmem\fR : Xilinx MEM file (for PicoBlaze only),
 .IP 6.
+\fBvhd\fR : VHDL file (for PicoBlaze only),
+.IP 7.
 \fBv\fR : Verilog file (for PicoBlaze only).
 .TP
 \fB\-\-cfg\-ind\fI <indentation>\fR
