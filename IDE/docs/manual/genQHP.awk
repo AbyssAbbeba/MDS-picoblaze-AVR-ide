@@ -199,20 +199,21 @@ function genIndentation ( level ) {
                 if ( line ~ /href=".+\.html(#[^"]*)?"/ ) {
                     match ( line, /"[^\"]*"/ )
                     indexUrl = substr ( line, RSTART + 1, RLENGTH - 2 )
+
+                    if ( ( "" != indexName ) && ( "" != indexUrl ) ) {
+                        keywords [ keywordsNL++ ] = sprintf ( "%s<keyword name=\"%s\" ref=\"%s\"/>", \
+                                                            "            ", \
+                                                            indexName, \
+                                                            indexUrl )
+                    }
+
+                    indexName = ""
+                    indexUrl = ""
                 }
                 if ( line ~ /class="index-item"/ ) {
                     match ( line, />[^<>]*</ )
                     indexName = substr ( line, RSTART + 1, RLENGTH - 2 )
                     sub ( /[, ]+$/, "", indexName )
-                }
-
-                if ( ( "" != indexName ) && ( "" != indexUrl ) ) {
-                    keywords [ keywordsNL++ ] = sprintf ( "%s<keyword name=\"%s\" ref=\"%s\"/>", \
-                                                          "            ", \
-                                                          indexName, \
-                                                          indexUrl )
-                    indexName = ""
-                    indexUrl = ""
                 }
             }
 
