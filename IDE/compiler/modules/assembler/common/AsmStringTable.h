@@ -50,6 +50,24 @@ class AsmStringTable
             CompilerSourceLocation m_location;
         };
 
+    ////    Private Datatypes    ////
+    private:
+        /**
+         * @brief
+         */
+        enum PredefinedStringID
+        {
+            PRE_DEF_DATE, ///<
+            PRE_DEF_TIME, ///<
+            PRE_DEF_FILE, ///<
+            PRE_DEF_LINE  ///<
+        };
+
+    ////    Private Static Constants    ////
+    private:
+        ///
+        static const std::map<std::string, PredefinedStringID> PREDEFINED_STRINGS;
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -66,7 +84,7 @@ class AsmStringTable
         /**
          * @brief
          */
-        ~AsmStringTable();
+        ~AsmStringTable() {};
 
     ////    Public Operations    ////
     public:
@@ -77,8 +95,8 @@ class AsmStringTable
          * @param[in] location
          */
         void add ( const std::string & name,
-                       const std::string & value,
-                       const CompilerSourceLocation * location = nullptr );
+                   const std::string & value,
+                   const CompilerSourceLocation * location = nullptr );
 
         /**
          * @brief
@@ -91,10 +109,12 @@ class AsmStringTable
          * @brief
          * @param[in] name
          * @param[out] value
+         * @param[in] location
          * @return
          */
         bool get ( const std::string & name,
-                   std::string & value );
+                   std::string & value,
+                   const CompilerSourceLocation * location = nullptr );
 
         /**
          * @brief

@@ -16,13 +16,18 @@
 #include "AsmStringTable.h"
 
 // Standard headers.
+#include <ctime>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
 
-AsmStringTable::~AsmStringTable()
+const std::map<std::string, AsmStringTable::PredefinedStringID> AsmStringTable::PREDEFINED_STRINGS =
 {
-}
+    { "__DATE__", PRE_DEF_DATE },
+    { "__TIME__", PRE_DEF_TIME },
+    { "__FILE__", PRE_DEF_FILE },
+    { "__LINE__", PRE_DEF_LINE }
+};
 
 void AsmStringTable::add ( const std::string & name,
                            const std::string & value,
@@ -58,23 +63,75 @@ void AsmStringTable::add ( const std::string & name,
 
 bool AsmStringTable::find ( const std::string & name ) const
 {
+    if ( PREDEFINED_STRINGS.cend() != PREDEFINED_STRINGS.find(name) )
+    {
+        return true;
+    }
+
     return ( m_table.cend() != m_table.find(name) );
 }
 
 bool AsmStringTable::get ( const std::string & name,
-                           std::string & value )
+                           std::string & value,
+                           const CompilerSourceLocation * location )
 {
-    auto it = m_table.find(name);
-
-    if ( m_table.cend() == it )
     {
-        return false;
+        const auto it = PREDEFINED_STRINGS.find(name);
+        if ( PREDEFINED_STRINGS.cend() != it )
+        {
+            switch ( it->second )
+            {
+                case PRE_DEF_DATE: // __DATE__
+                case PRE_DEF_TIME: // __TIME__
+                {
+                    time_t rawtime;
+                    struct tm * timeinfo;
+
+                    time(&rawtime);
+                    timeinfo = localtime(&rawtime);
+
+                    char buffer[16];
+                    strftime(buffer, 16, ( ( PRE_DEF_DATE == it->second ) ? "\"%b %e %Y\"" : "\"%T\"" ), timeinfo );
+                    value = buffer;
+
+                    break;
+                }
+
+                case PRE_DEF_FILE: // __FILE__
+                case PRE_DEF_LINE: // __LINE__
+                {
+                    if ( nullptr == location )
+                    {
+                        value.clear();
+                    }
+                    else
+                    {
+                        if ( PRE_DEF_LINE == it->second )
+                        {
+                            char buffer[16];
+                            sprintf(buffer, "%d", location->m_lineStart);
+                            value = buffer;
+                        }
+                        else
+                        {
+                            value = m_compilerCore->getFileName(location->m_fileNumber);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
-    else
+
+    const auto it = m_table.find(name);
+
+    if ( m_table.cend() != it )
     {
         value = it->second.m_value;
         return true;
     }
+
+    return false;
 }
 
 void AsmStringTable::output()

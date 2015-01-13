@@ -254,19 +254,9 @@ set_directory_properties ( PROPERTIES
 #
 
 set ( CPACK_PACKAGE_VERSION ${PRODUCT_VERSION} )
-string ( REGEX REPLACE "\\." ";" versionList ${CPACK_PACKAGE_VERSION} )
-list ( LENGTH versionList listLength )
-list ( GET versionList 0 CPACK_PACKAGE_VERSION_MAJOR )
-if ( listLength GREATER 1 )
-    list ( GET versionList 1 CPACK_PACKAGE_VERSION_MINOR )
-else()
-    set ( CPACK_PACKAGE_VERSION_MINOR 0 )
-endif()
-if ( listLength GREATER 2 )
-    list ( GET versionList 2 CPACK_PACKAGE_VERSION_PATCH )
-else()
-    set ( CPACK_PACKAGE_VERSION_PATCH 0 )
-endif()
+set ( CPACK_PACKAGE_VERSION_MAJOR ${PRODUCT_VERSION_MAJOR} )
+set ( CPACK_PACKAGE_VERSION_MINOR ${PRODUCT_VERSION_MINOR} )
+set ( CPACK_PACKAGE_VERSION_PATCH ${PRODUCT_VERSION_PATCH} )
 
 #
 ## Package file name.
