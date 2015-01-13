@@ -18,7 +18,7 @@
 #include "../../../simulators/SimControl/MCUSimControl.h"
 
 RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSubsys::SubsysId subsys)
-    : QTableWidget(parent)
+    : QWidget(parent)
 {
     if ( NULL == controlUnit )
     {
@@ -26,29 +26,35 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     }
     this->setMaximumWidth(305);
     this->setMinimumWidth(305);
-    this->setColumnCount(8);
-    this->setSelectionMode(QAbstractItemView::SingleSelection);
-    this->verticalHeader()->hide();
-    this->horizontalHeader()->hide();
-    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    this->setShowGrid(false);
-    this->setColumnWidth(0, 30);
-    this->setColumnWidth(1, 30);
-    this->setColumnWidth(2, 25);
-    this->setColumnWidth(3, 65);
-    this->setColumnWidth(4, 30);
-    this->setColumnWidth(5, 30);
-    this->setColumnWidth(6, 25);
-    this->setColumnWidth(7, 65);
+    m_layout = new QVBoxLayout(this);
+    m_lblReg = new QLabel("Registers", this);
+    m_tblReg = new QTableWidget(this);
+    m_layout->addWidget(m_lblReg);
+    m_layout->addWidget(m_tblReg);
+    this->setLayout(m_layout);
+    m_tblReg->setColumnCount(8);
+    m_tblReg->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_tblReg->verticalHeader()->hide();
+    m_tblReg->horizontalHeader()->hide();
+    m_tblReg->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_tblReg->setShowGrid(false);
+    m_tblReg->setColumnWidth(0, 30);
+    m_tblReg->setColumnWidth(1, 30);
+    m_tblReg->setColumnWidth(2, 25);
+    m_tblReg->setColumnWidth(3, 65);
+    m_tblReg->setColumnWidth(4, 30);
+    m_tblReg->setColumnWidth(5, 30);
+    m_tblReg->setColumnWidth(6, 25);
+    m_tblReg->setColumnWidth(7, 65);
 
     //QFont font = this->font();
     QFont font("Ubuntu Mono");
     font.setPixelSize(13);
-    this->setFont(font);
+    m_tblReg->setFont(font);
     //font.setPointSize(9);
     //this->setFont(font);
 
-    this->setStyleSheet(QString(
+    m_tblReg->setStyleSheet(QString(
                                 "QScrollBar:vertical"
                                 "{"
                                     "border: 0px; "
@@ -89,8 +95,8 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
 
 
     deviceChanged();
-    connect(this, SIGNAL(cellChanged(int, int)), this, SLOT(updateValue(int, int)));
-    connect(this, SIGNAL(cellClicked(int,int)), this, SLOT(unhighlightCell(int, int)));
+    connect(m_tblReg, SIGNAL(cellChanged(int, int)), this, SLOT(updateValue(int, int)));
+    connect(m_tblReg, SIGNAL(cellClicked(int,int)), this, SLOT(unhighlightCell(int, int)));
 }
 
 
@@ -140,70 +146,70 @@ void RegistersWidget::handleEvent(int subsysId, int eventId, int locationOrReaso
             {
                 if (value > 99)
                 {
-                    this->item(locationOrReason-size, 5)->setText(QString::number(value, 10));
+                    m_tblReg->item(locationOrReason-size, 5)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(locationOrReason-size, 5)->setText("0" + QString::number(value, 10));
+                    m_tblReg->item(locationOrReason-size, 5)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(locationOrReason-size, 5)->setText("00" + QString::number(value, 10));
+                    m_tblReg->item(locationOrReason-size, 5)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 15)
                 {
-                    this->item(locationOrReason-size, 6)->setText(QString::number(value, 16).toUpper());
+                    m_tblReg->item(locationOrReason-size, 6)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(locationOrReason-size, 6)->setText("0" + QString::number(value, 16).toUpper());
+                    m_tblReg->item(locationOrReason-size, 6)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(locationOrReason-size, 7)->setText(bin);
+                m_tblReg->item(locationOrReason-size, 7)->setText(bin);
 
 
-                this->item(locationOrReason-size, 5)->setBackground(Qt::yellow);
-                this->item(locationOrReason-size, 6)->setBackground(Qt::yellow);
-                this->item(locationOrReason-size, 7)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason-size, 5)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason-size, 6)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason-size, 7)->setBackground(Qt::yellow);
             }
             else
             {
                 if (value > 99)
                 {
-                    this->item(locationOrReason, 1)->setText(QString::number(value, 10));
+                    m_tblReg->item(locationOrReason, 1)->setText(QString::number(value, 10));
                 }
                 else if (value > 9)
                 {
-                    this->item(locationOrReason, 1)->setText("0" + QString::number(value, 10));
+                    m_tblReg->item(locationOrReason, 1)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(locationOrReason, 1)->setText("00" + QString::number(value, 10));
+                    m_tblReg->item(locationOrReason, 1)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 15)
                 {
-                    this->item(locationOrReason, 2)->setText(QString::number(value, 16).toUpper());
+                    m_tblReg->item(locationOrReason, 2)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(locationOrReason, 2)->setText("0" + QString::number(value, 16).toUpper());
+                    m_tblReg->item(locationOrReason, 2)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(locationOrReason, 3)->setText(bin);
+                m_tblReg->item(locationOrReason, 3)->setText(bin);
 
-                this->item(locationOrReason, 1)->setBackground(Qt::yellow);
-                this->item(locationOrReason, 2)->setBackground(Qt::yellow);
-                this->item(locationOrReason, 3)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason, 1)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason, 2)->setBackground(Qt::yellow);
+                m_tblReg->item(locationOrReason, 3)->setBackground(Qt::yellow);
             }
             //qDebug() << "RegistersWidget: event: mem cell changed to" << value;
             this->update = false;
@@ -261,49 +267,49 @@ void RegistersWidget::deviceChanged()
 void RegistersWidget::deviceReset()
 {
     this->update = true;
-    this->clear();
-    this->setRowCount(m_size/2);
+    m_tblReg->clear();
+    m_tblReg->setRowCount(m_size/2);
     for (int i = 0; i < m_size/2; i++)
     {
         QTableWidgetItem *reg1 = new QTableWidgetItem("S" + QString::number(i, 16).toUpper());
         reg1->setFlags(Qt::NoItemFlags);
-        this->setItem(i, 0, reg1);
+        m_tblReg->setItem(i, 0, reg1);
 
         QTableWidgetItem *dec1 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        dec1->setBackground(this->palette().base().color());
-        this->setItem(i, 1, dec1);
+        dec1->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 1, dec1);
 
         QTableWidgetItem *hex1 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        hex1->setBackground(this->palette().base().color());
-        this->setItem(i, 2, hex1);
+        hex1->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 2, hex1);
 
         QTableWidgetItem *bin1 = new QTableWidgetItem("0000000" + QString::number(0, 2));
         bin1->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        bin1->setBackground(this->palette().base().color());
-        this->setItem(i, 3, bin1);
+        bin1->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 3, bin1);
 
         QTableWidgetItem *reg2 = new QTableWidgetItem("S" + QString::number(i + m_size/2, 16).toUpper());
         reg2->setFlags(Qt::NoItemFlags);
-        setItem(i, 4, reg2);
+        m_tblReg->setItem(i, 4, reg2);
 
         QTableWidgetItem *dec2 = new QTableWidgetItem("00" + QString::number(0, 10));
         dec2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        dec2->setBackground(this->palette().base().color());
-        this->setItem(i, 5, dec2);
+        dec2->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 5, dec2);
 
         QTableWidgetItem *hex2 = new QTableWidgetItem("0" + QString::number(0, 16));
         hex2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        hex2->setBackground(this->palette().base().color());
-        this->setItem(i, 6, hex2);
+        hex2->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 6, hex2);
 
         QTableWidgetItem *bin2 = new QTableWidgetItem("0000000" + QString::number(0, 2));
         bin2->setFlags(Qt::ItemIsEditable|Qt::ItemIsEnabled);
-        bin2->setBackground(this->palette().base().color());
-        this->setItem(i, 7, bin2);
+        bin2->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->setItem(i, 7, bin2);
 
-        this->setRowHeight(i, 17);
+        m_tblReg->setRowHeight(i, 17);
     }
     this->update = false;
 }
@@ -325,152 +331,152 @@ void RegistersWidget::updateValue(int row, int column)
         {
             //HEX
             //qDebug() << "update 1" << column + 1;
-            value = this->item(row, column)->text().toInt(0, 16);
+            value = m_tblReg->item(row, column)->text().toInt(0, 16);
             if ( 255 < value )
             {
-                this->item(row, column-1)->setText(QString::number(255, 10));
-                this->item(row, column)->setText(QString::number(255, 16).toUpper());
-                this->item(row, column+1)->setText(QString::number(255, 2));
+                m_tblReg->item(row, column-1)->setText(QString::number(255, 10));
+                m_tblReg->item(row, column)->setText(QString::number(255, 16).toUpper());
+                m_tblReg->item(row, column+1)->setText(QString::number(255, 2));
             }
             else if ( 0 > value )
             {
-                this->item(row, column-1)->setText("00" + QString::number(0, 10));
-                this->item(row, column)->setText("0" + QString::number(0, 16).toUpper());
-                this->item(row, column+1)->setText("0000000" + QString::number(0, 2));
+                m_tblReg->item(row, column-1)->setText("00" + QString::number(0, 10));
+                m_tblReg->item(row, column)->setText("0" + QString::number(0, 16).toUpper());
+                m_tblReg->item(row, column+1)->setText("0000000" + QString::number(0, 2));
             }
             else
             {
                 if (value >= 100)
                 {
-                    this->item(row, column-1)->setText(QString::number(value, 10));
+                    m_tblReg->item(row, column-1)->setText(QString::number(value, 10));
                 }
                 else if (value >= 10)
                 {
-                    this->item(row, column-1)->setText("0" + QString::number(value, 10));
+                    m_tblReg->item(row, column-1)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(row, column-1)->setText("00" + QString::number(value, 10));
+                    m_tblReg->item(row, column-1)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 0xF)
                 {
-                    this->item(row, column)->setText(QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(row, column)->setText("0" + QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(row, column+1)->setText(bin);
+                m_tblReg->item(row, column+1)->setText(bin);
             }
         }
         else if (column == 1 || column == 5)
         {
             //qDebug() << "update 2" << column + 1;
             //DEC
-            value = this->item(row, column)->text().toInt(0, 10);
+            value = m_tblReg->item(row, column)->text().toInt(0, 10);
             if ( 255 < value )
             {
-                this->item(row, column)->setText(QString::number(255, 10));
-                this->item(row, column+1)->setText(QString::number(255, 16).toUpper());
-                this->item(row, column+2)->setText(QString::number(255, 2));
+                m_tblReg->item(row, column)->setText(QString::number(255, 10));
+                m_tblReg->item(row, column+1)->setText(QString::number(255, 16).toUpper());
+                m_tblReg->item(row, column+2)->setText(QString::number(255, 2));
             }
             else if ( 0 > value )
             {
-                this->item(row, column)->setText("00" + QString::number(0, 10));
-                this->item(row, column+1)->setText("0" + QString::number(0, 16).toUpper());
-                this->item(row, column+2)->setText(QString::number(0, 2));
+                m_tblReg->item(row, column)->setText("00" + QString::number(0, 10));
+                m_tblReg->item(row, column+1)->setText("0" + QString::number(0, 16).toUpper());
+                m_tblReg->item(row, column+2)->setText(QString::number(0, 2));
             }
             else
             {
                 if (value >= 100)
                 {
-                    this->item(row, column)->setText(QString::number(value, 10));
+                    m_tblReg->item(row, column)->setText(QString::number(value, 10));
                 }
                 else if (value >= 10)
                 {
-                    this->item(row, column)->setText("0" + QString::number(value, 10));
+                    m_tblReg->item(row, column)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(row, column)->setText("00" + QString::number(value, 10));
+                    m_tblReg->item(row, column)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 0xF)
                 {
-                    this->item(row, column+1)->setText(QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column+1)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(row, column+1)->setText("0" + QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column+1)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(row, column+2)->setText(bin);
+                m_tblReg->item(row, column+2)->setText(bin);
             }
         }
         else
         {
             //qDebug() << "update 3" << column + 1;
-            value = this->item(row, column)->text().toInt(0, 2);
+            value = m_tblReg->item(row, column)->text().toInt(0, 2);
             if ( 255 < value )
             {
-                this->item(row, column-2)->setText(QString::number(255, 10));
-                this->item(row, column-1)->setText(QString::number(255, 16).toUpper());
-                this->item(row, column)->setText(QString::number(255, 2));
+                m_tblReg->item(row, column-2)->setText(QString::number(255, 10));
+                m_tblReg->item(row, column-1)->setText(QString::number(255, 16).toUpper());
+                m_tblReg->item(row, column)->setText(QString::number(255, 2));
             }
             else if ( 0 > value )
             {
-                this->item(row, column-2)->setText("00" + QString::number(0, 10));
-                this->item(row, column-1)->setText("0" + QString::number(0, 16).toUpper());
-                this->item(row, column)->setText(QString::number(0, 2));
+                m_tblReg->item(row, column-2)->setText("00" + QString::number(0, 10));
+                m_tblReg->item(row, column-1)->setText("0" + QString::number(0, 16).toUpper());
+                m_tblReg->item(row, column)->setText(QString::number(0, 2));
             }
             else
             {
                 if (value >= 100)
                 {
-                    this->item(row, column-2)->setText(QString::number(value, 10));
+                    m_tblReg->item(row, column-2)->setText(QString::number(value, 10));
                 }
                 else if (value >= 10)
                 {
-                    this->item(row, column-2)->setText("0" + QString::number(value, 10));
+                    m_tblReg->item(row, column-2)->setText("0" + QString::number(value, 10));
                 }
                 else
                 {
-                    this->item(row, column-2)->setText("00" + QString::number(value, 10));
+                    m_tblReg->item(row, column-2)->setText("00" + QString::number(value, 10));
                 }
 
                 if (value > 0xF)
                 {
-                    this->item(row, column-1)->setText(QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column-1)->setText(QString::number(value, 16).toUpper());
                 }
                 else
                 {
-                    this->item(row, column-1)->setText("0" + QString::number(value, 16).toUpper());
+                    m_tblReg->item(row, column-1)->setText("0" + QString::number(value, 16).toUpper());
                 }
                 QString bin = QString::number(value, 2);
                 for (int i = bin.size(); i < 8 ; i++)
                 {
                     bin.prepend("0");
                 }
-                this->item(row, column)->setText(bin);
+                m_tblReg->item(row, column)->setText(bin);
             }
         }
         if (column > 4)
         {
-            this->m_memory->directWrite(row+m_size/2, value);
+            m_memory->directWrite(row+m_size/2, value);
         }
         else
         {
-            this->m_memory->directWrite(row, value);
+            m_memory->directWrite(row, value);
         }
         this->update = false;
     }
@@ -482,14 +488,14 @@ void RegistersWidget::unhighlight()
 {
     //qDebug() << "RegistersWidget: unhighlight()";
     this->update = true;
-    for (int i = 0; i < this->rowCount(); i++)
+    for (int i = 0; i < m_tblReg->rowCount(); i++)
     {
-        this->item(i, 1)->setBackground(this->palette().base().color());
-        this->item(i, 2)->setBackground(this->palette().base().color());
-        this->item(i, 3)->setBackground(this->palette().base().color());
-        this->item(i, 5)->setBackground(this->palette().base().color());
-        this->item(i, 6)->setBackground(this->palette().base().color());
-        this->item(i, 7)->setBackground(this->palette().base().color());
+        m_tblReg->item(i, 1)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(i, 2)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(i, 3)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(i, 5)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(i, 6)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(i, 7)->setBackground(m_tblReg->palette().base().color());
     }
     this->update = false;
     //qDebug() << "RegistersWidget: return unhighlight()";
@@ -505,32 +511,32 @@ void RegistersWidget::updateWidget()
     {
         this->m_memory->directRead(i, value);
         //dec, hex, bin, first half, Si
-        if (value != this->item(i,1)->text().toUInt(0, 10))
+        if (value != m_tblReg->item(i,1)->text().toUInt(0, 10))
         {
-            this->item(i, 1)->setBackground(Qt::yellow);
-            this->item(i, 2)->setBackground(Qt::yellow);
-            this->item(i, 3)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 1)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 2)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 3)->setBackground(Qt::yellow);
 
             if (value < 10)
             {
-                this->item(i, 1)->setText("00" + QString::number(value, 10));
+                m_tblReg->item(i, 1)->setText("00" + QString::number(value, 10));
             }
             else if (value < 100)
             {
-                this->item(i, 1)->setText("0" + QString::number(value, 10));
+                m_tblReg->item(i, 1)->setText("0" + QString::number(value, 10));
             }
             else
             {
-                this->item(i, 1)->setText(QString::number(value, 10));
+                m_tblReg->item(i, 1)->setText(QString::number(value, 10));
             }
 
             if (value < 0x10)
             {
-                this->item(i, 2)->setText("0" + QString::number(value, 16).toUpper());
+                m_tblReg->item(i, 2)->setText("0" + QString::number(value, 16).toUpper());
             }
             else
             {
-                this->item(i, 2)->setText(QString::number(value, 16).toUpper());
+                m_tblReg->item(i, 2)->setText(QString::number(value, 16).toUpper());
             }
 
             bin = QString::number(value, 2);
@@ -538,43 +544,43 @@ void RegistersWidget::updateWidget()
             {
                 bin.prepend("0");
             }
-            this->item(i, 3)->setText(bin);
+            m_tblReg->item(i, 3)->setText(bin);
         }
         else
         {
-            this->item(i, 1)->setBackground(this->palette().base().color());
-            this->item(i, 2)->setBackground(this->palette().base().color());
-            this->item(i, 3)->setBackground(this->palette().base().color());
+            m_tblReg->item(i, 1)->setBackground(m_tblReg->palette().base().color());
+            m_tblReg->item(i, 2)->setBackground(m_tblReg->palette().base().color());
+            m_tblReg->item(i, 3)->setBackground(m_tblReg->palette().base().color());
         }
 
         //dec, hex, bin, second half, S(i+m_size/2)
         this->m_memory->directRead(i+m_size/2, value);
-        if (value != this->item(i,5)->text().toUInt(0, 10))
+        if (value != m_tblReg->item(i,5)->text().toUInt(0, 10))
         {
-            this->item(i, 5)->setBackground(Qt::yellow);
-            this->item(i, 6)->setBackground(Qt::yellow);
-            this->item(i, 7)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 5)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 6)->setBackground(Qt::yellow);
+            m_tblReg->item(i, 7)->setBackground(Qt::yellow);
 
             if (value < 10)
             {
-                this->item(i, 5)->setText("00" + QString::number(value, 10));
+                m_tblReg->item(i, 5)->setText("00" + QString::number(value, 10));
             }
             else if (value < 100)
             {
-                this->item(i, 5)->setText("0" + QString::number(value, 10));
+                m_tblReg->item(i, 5)->setText("0" + QString::number(value, 10));
             }
             else
             {
-                this->item(i, 5)->setText(QString::number(value, 10));
+                m_tblReg->item(i, 5)->setText(QString::number(value, 10));
             }
 
             if (value < 0x10)
             {
-                this->item(i, 6)->setText("0" + QString::number(value, 16).toUpper());
+                m_tblReg->item(i, 6)->setText("0" + QString::number(value, 16).toUpper());
             }
             else
             {
-                this->item(i, 6)->setText(QString::number(value, 16).toUpper());
+                m_tblReg->item(i, 6)->setText(QString::number(value, 16).toUpper());
             }
 
             bin = QString::number(value, 2);
@@ -582,13 +588,13 @@ void RegistersWidget::updateWidget()
             {
                 bin.prepend("0");
             }
-            this->item(i, 7)->setText(bin);
+            m_tblReg->item(i, 7)->setText(bin);
         }
         else
         {
-            this->item(i, 5)->setBackground(this->palette().base().color());
-            this->item(i, 6)->setBackground(this->palette().base().color());
-            this->item(i, 7)->setBackground(this->palette().base().color());
+            m_tblReg->item(i, 5)->setBackground(m_tblReg->palette().base().color());
+            m_tblReg->item(i, 6)->setBackground(m_tblReg->palette().base().color());
+            m_tblReg->item(i, 7)->setBackground(m_tblReg->palette().base().color());
         }
     }
     this->update = false;
@@ -599,15 +605,15 @@ void RegistersWidget::unhighlightCell(int row, int column)
 {
     if (column < 4)
     {
-        this->item(row, 1)->setBackground(this->palette().base().color());
-        this->item(row, 2)->setBackground(this->palette().base().color());
-        this->item(row, 3)->setBackground(this->palette().base().color());
+        m_tblReg->item(row, 1)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(row, 2)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(row, 3)->setBackground(m_tblReg->palette().base().color());
     }
     else
     {
-        this->item(row, 5)->setBackground(this->palette().base().color());
-        this->item(row, 6)->setBackground(this->palette().base().color());
-        this->item(row, 7)->setBackground(this->palette().base().color());
+        m_tblReg->item(row, 5)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(row, 6)->setBackground(m_tblReg->palette().base().color());
+        m_tblReg->item(row, 7)->setBackground(m_tblReg->palette().base().color());
     }
 }
 

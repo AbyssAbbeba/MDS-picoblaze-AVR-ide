@@ -1105,7 +1105,9 @@ void MainForm::createDockWidgets()
                 SLOT(reload(QString))
             );
         m_wDockManager->addDockWidget(WHELPDOCKWIDGET);
-        m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+        #ifdef MDS_FEATURE_SIM_CALLWATCHER
+            m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+        #endif
         m_wDockManager->addDockWidget(WRIGHTHIDE);
 
 
@@ -1201,7 +1203,9 @@ void MainForm::createDockWidgets()
     else
     {
         m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
-        m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+        #ifdef MDS_FEATURE_SIM_CALLWATCHER
+            m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+        #endif
     }
     //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
     //emit dockWidgetsCreated;

@@ -18,7 +18,6 @@
 
 
 #include <QWidget>
-//#include <QHBoxLayout>
 
 #include "../../../simulators/MCUSim/MCUSim.h"
 #include "../../../simulators/MCUSim/MCUSimSubsys.h"
@@ -30,7 +29,8 @@ class HexEdit;
 class MCUSimPureLogicIO;
 class HexEdit;
 class MCUSimControl;
-class QHBoxLayout;
+class QGridLayout;
+class QLabel;
 
 class PortHexEdit : public QWidget, public MCUSimObserver
 {
@@ -64,10 +64,17 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         HexEdit *m_hexEditOut;
         MCUSimPureLogicIO * m_plio;
         MCUSimSubsys::SubsysId subsys;
-
-        //QHBoxLayout * m_layout;
+        QLabel *m_lblRD;
+        QLabel *m_lblWR;
+        QLabel *m_lblWRK;
+        QLabel *m_lblInput;
+        QLabel *m_lblOutput;
+        QGridLayout *m_layout;
 
         inline void deleteHexEdit();
+        
+    protected:
+        void resizeEvent(QResizeEvent *event);
 };
 
 #endif // PORTHEXEDIT_H
