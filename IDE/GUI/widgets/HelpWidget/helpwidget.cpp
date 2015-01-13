@@ -43,12 +43,12 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     layoutCnt->addWidget((QWidget*)(helpEngine->contentWidget()));
     wCnt->setLayout(layoutCnt);
 
-    /*QWidget *wIndex = new QWidget(this);
+    QWidget *wIndex = new QWidget(this);
     QVBoxLayout *layoutIndex = new QVBoxLayout(wIndex);
     QLabel *lblIndex = new QLabel("Index", wIndex);
     layoutIndex->addWidget(lblIndex);
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
-    wIndex->setLayout(layoutIndex);*/
+    wIndex->setLayout(layoutIndex);
 
     /*QWidget *wSearch = new QWidget(this);
     QVBoxLayout *layoutSearch = new QVBoxLayout(wSearch);
@@ -59,7 +59,7 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
     wSearch->setLayout(layoutSearch);*/
 
     tabs->addTab(wCnt, "Content");
-    //tabs->addTab(wIndex, "Index");
+    tabs->addTab(wIndex, "Index");
     //tabs->addTab(wSearch, "Search");
 
 
@@ -81,6 +81,11 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
 
     connect((QWidget*)(helpEngine->contentWidget()),
             SIGNAL(linkActivated(const QUrl &)),
+            this->textBrowser,
+            SLOT(setSource(const QUrl &))
+           );
+    connect((QWidget*)(helpEngine->indexWidget()),
+            SIGNAL(linkActivated(const QUrl &, QString)),
             this->textBrowser,
             SLOT(setSource(const QUrl &))
            );
