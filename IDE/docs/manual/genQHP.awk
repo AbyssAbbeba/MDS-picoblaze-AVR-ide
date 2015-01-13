@@ -98,23 +98,27 @@ function genIndentation ( level ) {
 
     match ( $0, /"[^\"]*"/ )
     nodeUrn = substr ( $0, RSTART + 1, RLENGTH - 2 )
-    sub ( /#.+$/, "", nodeUrn )
 }
 
 /class="chapterToc"/ && ( start ) {
-    if ( "S" == lastClass ) {
+    if ( "C" != lastClass ) {
         if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
             sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
             nodeName = ""
             nodeUrn  = ""
         }
 
-        indent--
-        genIndentation(indent)
-        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-    }
+        while ( "C" != lastClass )
+        {
+            indent--
+            genIndentation(indent)
+            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
 
-    lastClass = "C"
+            if      ( "S"   == lastClass ) { lastClass = "C"  }
+            else if ( "SS"  == lastClass ) { lastClass = "S"  }
+            else if ( "SSS" == lastClass ) { lastClass = "SS" }
+        }
+    }
 }
 
 /class="sectionToc"/ && ( start ) {
@@ -126,9 +130,99 @@ function genIndentation ( level ) {
 
         indent++
         genIndentation(indent)
+    } else if ( ( "SS" == lastClass ) || ( "SSS" == lastClass ) ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+
+        if ( "SSS" == lastClass ) {
+            indent--
+            genIndentation(indent)
+            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+        }
     }
 
     lastClass = "S"
+}
+
+/class="subsectionToc"/ && ( start ) {
+    if ( "S" == lastClass ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
+
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent++
+        genIndentation(indent)
+    } else if ( "SSS" == lastClass ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    }
+
+    lastClass = "SS"
+}
+
+/class="subsubsectionToc"/ && ( start ) {
+    if ( "SS" == lastClass ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
+
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent++
+        genIndentation(indent)
+    }
+
+    lastClass = "SSS"
+}
+
+/class="likechapterToc"/ && ( start ) {
+    if ( "Index" == nodeName ) {
+        sub ( /#.+$/, "", nodeUrn )
+
+        indexHtmlFile = nodeUrn
+        indexStart = 0
+        indexName = ""
+        indexUrl = ""
+
+        while ( getline line < indexHtmlFile ) {
+            if ( indexStart ) {
+                if ( line ~ /href=".+\.html(#[^"]*)?"/ ) {
+                    match ( line, /"[^\"]*"/ )
+                    indexUrl = substr ( line, RSTART + 1, RLENGTH - 2 )
+                }
+                if ( line ~ /class="index-item"/ ) {
+                    match ( line, />[^<>]*</ )
+                    indexName = substr ( line, RSTART + 1, RLENGTH - 2 )
+                    sub ( /[, ]+$/, "", indexName )
+                }
+
+                if ( ( "" != indexName ) && ( "" != indexUrl ) ) {
+                    keywords [ keywordsNL++ ] = sprintf ( "%s<keyword name=\"%s\" ref=\"%s\"/>", \
+                                                          "            ", \
+                                                          indexName, \
+                                                          indexUrl )
+                    indexName = ""
+                    indexUrl = ""
+                }
+            }
+
+            if ( line ~ /class="theindex"/ ) {
+                indexStart = 1
+            } else if ( line ~ /<\/div>/ ) {
+                indexStart = 0
+            }
+        }
+    }
 }
 
 /<\/div>/ && ( start ) {
@@ -138,13 +232,30 @@ function genIndentation ( level ) {
         sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
     }
 
-    if ( "S" == lastClass ) {
+    if ( "SSS" == lastClass ) {
+        lastClass = "SS";
         indent--
         genIndentation(indent)
         sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
     }
 
-#     indent--
-#     genIndentation(indent)
-#     sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    if ( "SS" == lastClass ) {
+        lastClass = "S";
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    }
+
+    if ( "S" == lastClass ) {
+        lastClass = "C";
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    }
+
+#     if ( "C" == lastClass ) {
+#         indent--
+#         genIndentation(indent)
+#         sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+#     }
 }

@@ -4,19 +4,21 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
     \subsection{Description}
         Macro-assembler for PicoBlaze soft-core processors, this tool takes one or more source code files and produces compiled machine code file usable in JTAG loaders, processors simulators, and similar tools; along with these files containing compiled machine code compiler also produces extensive debugging output. MDS macro-assembler is made to run fast and extensively tested for greater reliability, it feature set includes various special macros and user defined macros support making it one of the world most advanced assemblers available on the market today for PicoBlaze processors.
 
+        By default the compiler does not generate any output files, that might be useful when you simply want to check a file for errors but you do not want that when you actually need to compile something a use the resulting machine code. When you need the machine code or any other file output, you have to specify which file or files you want the compiler to generate by providing the corresponding options.
+
     \subsection{Usage}
         \verb'mds-compiler  <OPTIONS>  [ -- ] [ source-file ...  ]'
 
     \subsection{Options}
         \begin{description}
             \item[--architecture, -a <architecture>]~\\
-                Specify target architecture, supported architectures are:
+                \textbf{(MANDATORY)} Specify target architecture, supported architectures are:
                 \begin{description}
                     \item[PicoBlaze] KCPSM soft-core processor
                 \end{description}
 
             \item[--language, -l <programming language>]~\\
-                Specify programming language, supported languages are:
+                \textbf{(MANDATORY)} Specify programming language, supported languages are:
                 \begin{description}
                     \item[asm] Assembly language
                 \end{description}
@@ -138,10 +140,10 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
     \subsection{Options}
         \begin{description}
             \item[--arch, -a <architecture>]~\\
-                Specify target architecture, supported architectures are: \textbf{PicoBlaze}
+                \textbf{(MANDATORY)} Specify target architecture, supported architectures are: \textbf{PicoBlaze}
 
             \item[--family, -f <family>]~\\
-                Specify processor family, supported families for the given architectures are:
+                \textbf{(MANDATORY)} Specify processor family, supported families for the given architectures are:
                 \begin{description}
                     \item[For PicoBlaze]
                         kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
@@ -153,7 +155,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
             \item[--type, -t <input-file-format>]~\\
                 Type of the input file; if none provided, disassembler will try to guess the format from input file extension, supported types are:
                 \begin{description}
-                    \item [hex]I ntel 8 HEX, or Intel 16 HEX.
+                    \item [hex] Intel 8 HEX, or Intel 16 HEX.
                     \item [srec] Motorola S-Record.
                     \item [bin] Raw binary file.
                     \item [mem] Xilinx MEM file (for PicoBlaze only).
@@ -228,7 +230,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
     \subsection{Options}
         \begin{description}
             \item[--type, -t <asm-variant>]~\\
-                Specify variant of assembly language used in the input file, possible options are:
+                \textbf{(MANDATORY)} Specify variant of assembly language used in the input file, possible options are:
                 \begin{description}
                     \item [1] Xilinx KCPSMx
                     \item [2] Mediatronix KCPSMx
@@ -236,7 +238,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
                 \end{description}
 
             \item[--output, -o <file.asm>]~\\
-                Specify output file.
+                \textbf{(MANDATORY)} Specify output file.
 
             \item[--cfg-ind <indentation>]~\\
                 Indent with:
