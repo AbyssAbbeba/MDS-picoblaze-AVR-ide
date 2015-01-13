@@ -91,7 +91,7 @@ bool AsmStringTable::get ( const std::string & name,
                     timeinfo = localtime(&rawtime);
 
                     char buffer[16];
-                    strftime(buffer, 16, ( ( PRE_DEF_DATE == it->second ) ? "\"%b %e %Y\"" : "\"%T\"" ), timeinfo );
+                    strftime(buffer, 16, ( ( PRE_DEF_DATE == it->second ) ? "%b %e %Y" : "%T" ), timeinfo );
                     value = buffer;
 
                     break;
@@ -121,6 +121,8 @@ bool AsmStringTable::get ( const std::string & name,
                 }
             }
         }
+
+        return true;
     }
 
     const auto it = m_table.find(name);
