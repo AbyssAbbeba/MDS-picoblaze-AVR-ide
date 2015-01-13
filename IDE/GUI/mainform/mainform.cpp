@@ -2950,7 +2950,7 @@ void MainForm::compileProject()
                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Project:      " + m_projectMan->getActive()->prjName,
                                    CompilerBase::MessageType::MT_REMARK);
-        compileInfo->appendMessage("File:         " + m_projectMan->getActive()->mainFileName,
+        compileInfo->appendMessage("Main File:    " + m_projectMan->getActive()->mainFileName,
                                    CompilerBase::MessageType::MT_REMARK);
         compileInfo->appendMessage("Architecture: Picoblaze",
                                    CompilerBase::MessageType::MT_REMARK);
@@ -3113,7 +3113,17 @@ void MainForm::compileProject()
     //qDebug() << QString::fromStdString(options->m_sourceFile);
     //qDebug() << mainFile;
 
-
+    CompileInfo* compileInfo = (CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget());
+    if (0 == m_projectMan->getActive()->getAsmType())
+    {
+        compileInfo->changeAsmMode(true);
+    }
+    else
+    {
+        compileInfo->changeAsmMode(false);
+    }
+    compileInfo->setProjectRelativePath(m_projectMan->getActive()->prjPath.section('/', 0, -2));
+    
     CompilerThread *compiler = new CompilerThread(GuiCfg::getInstance().getCompilerPath().toStdString());
     //    CompilerThread *compiler = new CompilerThread("../compiler/include/");
     qRegisterMetaType<std::string>("std::string");
