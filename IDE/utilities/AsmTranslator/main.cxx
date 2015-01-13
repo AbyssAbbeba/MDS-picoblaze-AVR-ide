@@ -55,14 +55,14 @@ void printHelp ( const char * executable )
 
     std::cout << QObject::tr("Options:").toStdString() << std::endl
               << QObject::tr("    --type, -t <AsmVariant>").toStdString() << std::endl
-              << QObject::tr("        Specify variant of assembly language used in the input file, possible options "
+              << QObject::tr("        (MANDATORY) Specify variant of assembly language used in the input file, possible options "
                              "are:").toStdString() << std::endl
               << QObject::tr("            1 : Xilinx KCPSMx.").toStdString() << std::endl
               << QObject::tr("            2 : Mediatronix KCPSMx.").toStdString() << std::endl
               << QObject::tr("            3 : openPICIDE KCPSMx.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    --output, -o <file.asm>").toStdString() << std::endl
-              << QObject::tr("        Specify output file.").toStdString() << std::endl
+              << QObject::tr("        (MANDATORY) Specify output file.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    --cfg-ind <indentation>").toStdString() << std::endl
               << QObject::tr("        Indent with:").toStdString() << std::endl

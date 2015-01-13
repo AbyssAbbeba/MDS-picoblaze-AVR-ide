@@ -202,6 +202,7 @@ if ( TARGET_OS STREQUAL "Linux" )
     # Install .desktop spec and application icon
     install ( FILES mds-ide.png                   DESTINATION "${INSTALL_DIR_MAIN_SHARE}/pixmaps/" )
     install ( FILES mds-ide.desktop               DESTINATION "${INSTALL_DIR_MAIN_SHARE}/applications/" )
+    install ( FILES mds-ide.appdata.xml           DESTINATION "${INSTALL_DIR_MAIN_SHARE}/appdata/" )
     install ( FILES application-x-mds-project.xml DESTINATION "${INSTALL_DIR_MAIN_SHARE}/mime/packages/" )
 
 elseif ( TARGET_OS STREQUAL "Windows" )
