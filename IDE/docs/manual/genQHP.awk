@@ -98,7 +98,6 @@ function genIndentation ( level ) {
 
     match ( $0, /"[^\"]*"/ )
     nodeUrn = substr ( $0, RSTART + 1, RLENGTH - 2 )
-#     sub ( /#.+$/, "", nodeUrn )
 }
 
 /class="chapterToc"/ && ( start ) {
@@ -184,6 +183,46 @@ function genIndentation ( level ) {
     }
 
     lastClass = "SSS"
+}
+
+/class="likechapterToc"/ && ( start ) {
+    if ( "Index" == nodeName ) {
+        sub ( /#.+$/, "", nodeUrn )
+
+        indexHtmlFile = nodeUrn
+        indexStart = 0
+        indexName = ""
+        indexUrl = ""
+
+        while ( getline line < indexHtmlFile ) {
+            if ( indexStart ) {
+                if ( line ~ /href=".+\.html(#[^"]*)?"/ ) {
+                    match ( line, /"[^\"]*"/ )
+                    indexUrl = substr ( line, RSTART + 1, RLENGTH - 2 )
+                }
+                if ( line ~ /class="index-item"/ ) {
+                    match ( line, />[^<>]*</ )
+                    indexName = substr ( line, RSTART + 1, RLENGTH - 2 )
+                    sub ( /[, ]+$/, "", indexName )
+                }
+
+                if ( ( "" != indexName ) && ( "" != indexUrl ) ) {
+                    keywords [ keywordsNL++ ] = sprintf ( "%s<keyword name=\"%s\" ref=\"%s\"/>", \
+                                                          "            ", \
+                                                          indexName, \
+                                                          indexUrl )
+                    indexName = ""
+                    indexUrl = ""
+                }
+            }
+
+            if ( line ~ /class="theindex"/ ) {
+                indexStart = 1
+            } else if ( line ~ /<\/div>/ ) {
+                indexStart = 0
+            }
+        }
+    }
 }
 
 /<\/div>/ && ( start ) {
