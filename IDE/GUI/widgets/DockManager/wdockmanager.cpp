@@ -1245,13 +1245,24 @@ void WDockManager::handleShowHideBottom(int index)
             //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
         }
     }
-    else if (false == bottomVisible)
+    else
     {
-        showDockWidgetArea(2);
-        bottomVisible = true;
-        QApplication::processEvents();
-        activeCodeEdit->changeHeight();
-        //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+        if (false == bottomVisible)
+        {
+            showDockWidgetArea(2);
+            bottomVisible = true;
+            QApplication::processEvents();
+            activeCodeEdit->changeHeight();
+            //QTimer::singleShot(50, activeCodeEdit, SLOT(changeHeight()));
+        }
+        /*else
+        {
+            if (bottomAreaTabs->tabText(index) == m_prevBotTabText)
+            {
+                qDebug() << "WDockManager: same clicked, hide bottom";
+            }
+        }
+        m_prevBotTabText = bottomAreaTabs->tabText(index);*/
     }
 }
 

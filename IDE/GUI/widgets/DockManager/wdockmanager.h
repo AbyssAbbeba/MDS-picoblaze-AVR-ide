@@ -220,6 +220,8 @@ class WDockManager : public QObject
 
         //welcome screen
         WelcomeScr *welcomeScr;
+
+        //QString m_prevBotTabText;
        
 
         //wdockwidgets previous height
