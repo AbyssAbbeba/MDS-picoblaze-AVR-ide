@@ -9,13 +9,13 @@
 ;
 ; Begin - DEFINITIONS
 ;==============================================================================;
-#define PROG_MEM_SIZE           2056
-#define DATA_MEM_SIZE           64
-#define WORD_SIZE               18
-#define REG_FILE_SIZE           16
-#define NUMBER_OF_BANKS         1
-#define PORT_ADR_WIDTH          8
-#define PORT_DATA_WIDTH         8
+PROG_MEM_SIZE           EQU           2056
+DATA_MEM_SIZE           EQU           64
+WORD_SIZE               EQU           18
+REG_FILE_SIZE           EQU           16
+NUMBER_OF_BANKS         EQU           1
+PORT_ADR_WIDTH          EQU           8
+PORT_DATA_WIDTH         EQU           8
 
 
 ; START OF PROGRAM
