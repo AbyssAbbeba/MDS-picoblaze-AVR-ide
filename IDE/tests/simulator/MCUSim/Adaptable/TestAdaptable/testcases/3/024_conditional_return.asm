@@ -89,11 +89,11 @@ nc_test:
 
 
 _1:
-            return      Z    
+            returnZ    
 _2:
-            return      NZ   
+            returnNZ
 _3:
-            return      C
+            returnC
 _4:
-            return      NC
+            returnNC
            

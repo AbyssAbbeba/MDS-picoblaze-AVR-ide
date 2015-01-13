@@ -88,7 +88,7 @@ void printHelp ( const char * executable )
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
               << QObject::tr("    -a, --arch <architecture>").toStdString() << std::endl
-              << QObject::tr("        Specify processor architecture, supported architectures are:")
+              << QObject::tr("        (MANDATORY) Specify processor architecture, supported architectures are:")
                             .toStdString() << std::endl
             #ifdef MDS_FEATURE_AVR8
               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
@@ -106,12 +106,12 @@ void printHelp ( const char * executable )
             #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
               << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
               << QObject::tr("    -d, --def <architecture>").toStdString() << std::endl
-              << QObject::tr("        Specify the exact processor architecture by processor definition file.")
+              << QObject::tr("        (MANDATORY) Specify the exact processor architecture by processor definition file.")
                             .toStdString() << std::endl
             #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << std::endl
               << QObject::tr("    -f, --family <family>").toStdString() << std::endl
-              << QObject::tr("        Specify processor family, supported families for the given architectures are:")
+              << QObject::tr("        (MANDATORY) Specify processor family, supported families for the given architectures are:")
                             .toStdString() << std::endl
               << QObject::tr("            - PicoBlaze : kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, kcpsm6.")
                             .toStdString() << std::endl

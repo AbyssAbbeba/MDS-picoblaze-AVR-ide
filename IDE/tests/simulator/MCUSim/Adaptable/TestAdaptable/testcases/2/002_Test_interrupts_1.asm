@@ -45,7 +45,7 @@ start:
         LOAD    0,#2
         ;;      step
         ;;      pc == 2
-        INTERRUPT ENABLE
+        ENA
         ;;      step
       ;  CHANGEFLAGS
         ;;      step

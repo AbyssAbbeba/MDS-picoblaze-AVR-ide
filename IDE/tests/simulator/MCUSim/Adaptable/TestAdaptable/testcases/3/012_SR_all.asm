@@ -110,42 +110,42 @@ start:      load        s0,#128
             ;; flag[c] == true
             ;; flag[z] == false
 ; srx testing
-            load        s2,#128
-            srx         s2
-            ;; step 2
-            ;; reg[2] == 192
-            srx         s2
-            ;; step
-            ;; reg[2] == 224
-            srx         s2
-            ;; step
-            ;; reg[2] == 240
-            srx         s2
-            ;; step
-            ;; reg[2] == 248
-            srx         s2
-            ;; step
-            ;; reg[2] == 252
-            srx         s2
-            ;; step
-            ;; reg[2] == 254
-            ;; flag[c] == false
-            ;; flag[z] == false
-            srx        s2
-            ;; step
-            ;; reg[0] == 255
-            ;; flag[c] == false
-            ;; flag[z] == false
-            srx         s2
-            ;; step
-            ;; reg[2] == 255
-            ;; flag[c] == true
-            ;; flag[z] == false
-            load        s2,#1
-            srx         s2
-            ;; step 2
-            ;; flag[c] == true
-            ;; flag[z] == true
+;             load        s2,#128
+;             srx         s2
+;             ;; step 2
+;             ;; reg[2] == 192
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 224
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 240
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 248
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 252
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 254
+;             ;; flag[c] == false
+;             ;; flag[z] == false
+;             srx        s2
+;             ;; step
+;             ;; reg[0] == 255
+;             ;; flag[c] == false
+;             ;; flag[z] == false
+;             srx         s2
+;             ;; step
+;             ;; reg[2] == 255
+;             ;; flag[c] == true
+;             ;; flag[z] == false
+;             load        s2,#1
+;             srx         s2
+;             ;; step 2
+;             ;; flag[c] == true
+;             ;; flag[z] == true
 ; sra testing
             sra         s3
             ;; step

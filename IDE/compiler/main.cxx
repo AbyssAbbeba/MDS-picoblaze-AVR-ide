@@ -37,6 +37,10 @@
 // OS compatibility.
 #include "../utilities/os/os.h"
 
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) || defined(__WIN32__)
+#  include <windows.h>
+#endif
+
 /**
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
@@ -78,7 +82,7 @@ void printHelp ( const char * executable )
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
               << QObject::tr("    -a, --architecture <architecture>").toStdString() << std::endl
-              << QObject::tr("        Specify target architecture, supported architectures are:")
+              << QObject::tr("        (MANDATORY) Specify target architecture, supported architectures are:")
                             .toStdString() << std::endl
             #ifdef MDS_FEATURE_AVR8
               << QObject::tr("            - avr8      : 8-bit AVR,").toStdString() << std::endl
@@ -97,7 +101,7 @@ void printHelp ( const char * executable )
               << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
             #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << QObject::tr("    -l, --language <programming language>").toStdString() << std::endl
-              << QObject::tr("        Specify programming language, supported languages are:").toStdString()<<std::endl
+              << QObject::tr("        (MANDATORY) Specify programming language, supported languages are:").toStdString()<<std::endl
             #ifdef MDS_FEATURE_C_COMPILER
               << QObject::tr("            - c   : C language,").toStdString() << std::endl
             #endif // MDS_FEATURE_C_COMPILER
@@ -307,10 +311,37 @@ int main ( int argc, char ** argv )
 {
     using namespace boost::filesystem;
 
+    path baseIncludePath;
+
+    // Determine the base include path.
+    {
+      #ifdef __linux__
+        baseIncludePath = canonical("/proc/self/exe");
+      #else // __linux__
+        char ownPth[MAX_PATH];
+        HMODULE hModule = GetModuleHandle(NULL);
+        GetModuleFileName(hModule, ownPth, (sizeof(ownPth)));
+        baseIncludePath = ownPth;
+      #endif // __linux__
+
+        baseIncludePath = baseIncludePath.parent_path();
+
+      #ifdef NDEBUG
+        baseIncludePath = baseIncludePath.parent_path();
+      #endif // NDEBUG
+
+        baseIncludePath = system_complete(baseIncludePath);
+        baseIncludePath /= "include";
+
+      #ifdef NDEBUG
+        baseIncludePath /= "mds";
+      #endif // NDEBUG
+    }
+
     bool silent = false;
     CompilerOptions opts;
     CompilerMsgIntfStdout msgInterface;
-    Compiler compiler(&msgInterface, (system_complete(path(makeHomeSafe(argv[0])).parent_path()) / "include").string());
+    Compiler compiler(&msgInterface, baseIncludePath.string());
     CompilerBase::TargetArch targetArchitecture = CompilerBase::TA_INVALID;
     CompilerBase::LangId targetLanguage = CompilerBase::LI_INVALID;
 
