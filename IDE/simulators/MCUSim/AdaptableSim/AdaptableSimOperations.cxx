@@ -243,13 +243,20 @@ inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int sourc
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
          == parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_ZERO ) )
     {
-        m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( 0 == source ) );
+        bool prevZero = true;
+        if ( false == parameters.ignoreZero() )
+        {
+            prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
+        }
+
+        m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
     }
 
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
          == parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_CARRY ) )
     {
-        m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_CARRY, (bool) ( source & ( 1 << size ) ) );
+        m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_CARRY,
+                                 (bool) ( source & ( 1 << size ) ) );
     }
 
     if ( AdaptableSimInstruction::OperParam::P_AFFECT
@@ -686,9 +693,12 @@ inline void AdaptableSimOperations::instLogOper ( const AdaptableSimInstruction 
 
     unsigned int result;
 
+    bool carry = false;
+
     switch ( operation )
     {
         case LOG_AND:
+            carry = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_CARRY);
             result = ( val0 & val1 );
             break;
         case LOG_OR:
@@ -722,6 +732,32 @@ inline void AdaptableSimOperations::instLogOper ( const AdaptableSimInstruction 
         {
             setValue ( opr0, inst.m_parameters.addressingMode(0), result );
         }
+    }
+
+    if (
+           ( LOG_AND == operation )
+               &&
+           (
+               AdaptableSimInstruction::OperParam::P_AFFECT
+                   ==
+               inst.m_parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_CARRY )
+           )
+        )
+    {
+        if ( true == inst.m_parameters.ignoreCarry() )
+        {
+            carry = false;
+        }
+
+        for ( unsigned int i = 0; i < sizeof(unsigned int); i++ )
+        {
+            if ( result & ( 1 << i ) )
+            {
+                carry = !carry;
+            }
+        }
+
+        m_statusFlags->setFlag(AdaptableSimInstruction::OperParam::F_CARRY, !carry);
     }
 }
 
