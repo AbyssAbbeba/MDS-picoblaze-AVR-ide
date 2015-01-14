@@ -280,7 +280,7 @@ void McuMemoryView::deviceChanged()
 	m_hexEdit = new HexEdit(this, false, m_size, 8);
 	connect(m_hexEdit, SIGNAL(textChanged(int)), this, SLOT(changeValue(int)));
 	m_layout->addWidget(m_hexEdit, 1, 0, 1, 5);
-    QTimer::singleShot(50, this, SLOT(fixHeight()));
+    QTimer::singleShot(300, this, SLOT(fixHeight()));
     m_hexEdit->fixHeight();
     //m_hexEdit->show();
     //this->setFixedWidth(m_hexEdit->width());
