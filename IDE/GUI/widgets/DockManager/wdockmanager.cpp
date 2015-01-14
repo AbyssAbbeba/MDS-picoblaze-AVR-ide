@@ -900,30 +900,32 @@ void WDockManager::addSimDockWidget(MCUSimControl* simControl)
 
 void WDockManager::addCallWatcher(MCUSimControl *simControl)
 {
-    if (false == this->dockWidgets)
-    {
-        WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
-        if (getDockWidgetArea(newWDock->getArea()) != NULL)
+    #ifdef MDS_FEATURE_SIM_CALLWATCHER
+        if (false == this->dockWidgets)
         {
-            emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
-            //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+            WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
+            if (getDockWidgetArea(newWDock->getArea()) != NULL)
+            {
+                emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+                //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+            }
+            /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+            {
+                wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+            }*/
+            openDockWidgets.append(newWDock);
+            //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
         }
-        /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+        else
         {
-            wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
-        }*/
-        openDockWidgets.append(newWDock);
-        //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-    }
-    else
-    {
-        CallWatcher *callWatcher = new CallWatcher(this->getDockWidget(WCALLWATCHER), simControl);
-        //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
-        //simWidget->fixHeight();
-        //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
-        this->openCallWatchers.append(callWatcher);
-        callWatcher->hide();
-    }
+            CallWatcher *callWatcher = new CallWatcher(this->getDockWidget(WCALLWATCHER), simControl);
+            //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+            //simWidget->fixHeight();
+            //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+            this->openCallWatchers.append(callWatcher);
+            callWatcher->hide();
+        }
+    #endif
 }
 
 
@@ -1338,19 +1340,21 @@ void WDockManager::changeSimWidget(int index)
     {
         this->getDockWidget(WSIMULATIONINFO)->setWidget(this->openSimWidgets.at(index));
     }
-    if (this->getDockWidget(WCALLWATCHER) == NULL)
-    {
-        qDebug() << "Call Watcher Dock Widget is null, should never happen";
-        return;
-    }
-    if (index >= openCallWatchers.size())
-    {
-        this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(openCallWatchers.size()-1));
-    }
-    else
-    {
-        this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
-    }
+    #ifdef MDS_FEATURE_SIM_CALLWATCHER
+        if (this->getDockWidget(WCALLWATCHER) == NULL)
+        {
+            qDebug() << "Call Watcher Dock Widget is null, should never happen";
+            return;
+        }
+        if (index >= openCallWatchers.size())
+        {
+            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(openCallWatchers.size()-1));
+        }
+        else
+        {
+            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
+        }
+    #endif
     //qDebug() << "WDockManager: changeSimWidget done";
 }
 
@@ -1383,28 +1387,30 @@ void WDockManager::deleteActiveSimWidget()
         //tempGrid = NULL;
     }
 
-    CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
-    int index2 = openCallWatchers.indexOf(tempWatcher);
-    if (openCallWatchers.count() > 1)
-    {
-        this->openCallWatchers.removeAt(index2);
-        if (index2 == this->openCallWatchers.count())
+    #ifdef MDS_FEATURE_SIM_CALLWATCHER
+        CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
+        int index2 = openCallWatchers.indexOf(tempWatcher);
+        if (openCallWatchers.count() > 1)
         {
-            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2 -1));
+            this->openCallWatchers.removeAt(index2);
+            if (index2 == this->openCallWatchers.count())
+            {
+                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2 -1));
+            }
+            else
+            {
+                this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2));
+            }
+            delete tempWatcher;
+            tempWatcher = NULL;
         }
         else
         {
-            this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index2));
+            this->openCallWatchers.removeAt(index2);
+            //delete tempWatcher;
+            //tempGrid = NULL;
         }
-        delete tempWatcher;
-        tempWatcher = NULL;
-    }
-    else
-    {
-        this->openCallWatchers.removeAt(index2);
-        //delete tempWatcher;
-        //tempGrid = NULL;
-    }
+    #endif
 
     if (true == removeDocks)
     {
