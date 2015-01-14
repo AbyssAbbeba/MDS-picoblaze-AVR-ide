@@ -21,10 +21,10 @@ project ( compiler )
 
 windres_rc ( OUTPUT_VAR         LIB_RC_FILE
              FILETYPE           "DLL"
-             FILE_VERSION       "1.0"
+             FILE_VERSION       ${PRODUCT_VERSION}
              FILEOS             "NT_WINDOWS32"
              FILE_DESCRIPTION   "MDS Compiler"
-             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             COMPANY_NAME       ${COMPANY_NAME}
              TARGET             ${PROJECT_NAME}
              PRODUCT_NAME       ${PRODUCT_NAME}
              PRODUCT_VERSION    ${PRODUCT_VERSION}
@@ -32,11 +32,11 @@ windres_rc ( OUTPUT_VAR         LIB_RC_FILE
 
 windres_rc ( OUTPUT_VAR         EXEC_RC_FILE
              FILETYPE           "APP"
-             FILE_VERSION       "1.0"
+             FILE_VERSION       ${PRODUCT_VERSION}
              FILEOS             "NT_WINDOWS32"
              FILE_DESCRIPTION   "MDS Compiler"
              ICON               "windres/mds-compiler.ico"
-             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             COMPANY_NAME       ${COMPANY_NAME}
              TARGET             ${COMPILER_EXEC_TARGET}
              PRODUCT_NAME       ${PRODUCT_NAME}
              PRODUCT_VERSION    ${PRODUCT_VERSION}
