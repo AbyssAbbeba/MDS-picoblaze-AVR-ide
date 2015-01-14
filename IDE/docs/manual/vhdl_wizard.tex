@@ -4,12 +4,6 @@
     \caption{VHDL Wizard}
 \end{figure}
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.5\textwidth]{img/VHDL_create_component.png}
-    \caption{VHDL Wizard}
-\end{figure}
-
 \subsubsection{Purpose of this tool}
     TEMPLATE
     This tool will automaticaly generate VHDL code for quicker connection of your picoblaze design with your VHDL design. It will take
@@ -40,6 +34,28 @@
     \end{description}
 
 \subsubsection{Create component dialog}
+    \begin{description}
+        \item [Input file]
+            Select path to your .stbl(symbol table) file generated after the compilation of you assembler source code. Note, make sure you
+            have generation of the file allowed (Project->Configure->Compiler->Options->Symbol table checked).
+        \item [Output file]
+            Select path of your generated file, which contains generated VHDL template.
+        \item [MPU\_SYS entity]
+            General look to your template entity. Every box symbolise vhdl component. There are always three default boxes. KCPSM component, Input demux.
+            and output mux. You can click to every one of them for detail info. When you create or add some custom component, it will show
+            up here.
+        \item [Existing components]
+            This list contains all your previously defined components.
+        \item [KCPSM combobox]
+            With this compobox you can select KCPSM version of your picoblaze design. It will change the declaration and instantiation of picoblaze
+            in generated vhdl file. KCPSM6 is selected by default.
+        \item [Create component button]
+            This button will open create component dialog where you can define you new component. See the next section "Create component dialog".
+        \item [Delete component button]
+            This button will remove one component from your MPU\_SYS entity.
+        \item [Generate]
+            If you have your input and output file selected. This button will trigger generation of VHDL template.
+    \end{description}
 
 \begin{figure}[h]
     \centering
@@ -47,6 +63,11 @@
     \caption{Custom component generic parameters}
 \end{figure}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.5\textwidth]{img/VHDL_create_component.png}
+    \caption{VHDL Wizard}
+\end{figure}
 
 
 \subsubsection{Create component dialog}
