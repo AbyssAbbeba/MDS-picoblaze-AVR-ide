@@ -246,7 +246,7 @@ inline unsigned int AdaptableSimOperations::setFlagsAndTrim ( unsigned int sourc
         bool prevZero = true;
         if ( false == parameters.ignoreZero() )
         {
-            prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO)
+            prevZero = m_statusFlags->getFlag(AdaptableSimInstruction::OperParam::F_ZERO);
         }
 
         m_statusFlags->setFlag ( AdaptableSimInstruction::OperParam::F_ZERO, ( prevZero && ( 0 == source ) ) );
