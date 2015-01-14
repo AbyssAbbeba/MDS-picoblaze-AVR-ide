@@ -75,50 +75,48 @@ bool AsmStringTable::get ( const std::string & name,
                            std::string & value,
                            const CompilerSourceLocation * location )
 {
+    const auto predef = PREDEFINED_STRINGS.find(name);
+    if ( PREDEFINED_STRINGS.cend() != predef )
     {
-        const auto it = PREDEFINED_STRINGS.find(name);
-        if ( PREDEFINED_STRINGS.cend() != it )
+        switch ( predef->second )
         {
-            switch ( it->second )
+            case PRE_DEF_DATE: // __DATE__
+            case PRE_DEF_TIME: // __TIME__
             {
-                case PRE_DEF_DATE: // __DATE__
-                case PRE_DEF_TIME: // __TIME__
+                time_t rawtime;
+                struct tm * timeinfo;
+
+                time(&rawtime);
+                timeinfo = localtime(&rawtime);
+
+                char buffer[16];
+                strftime(buffer, 16, ( ( PRE_DEF_DATE == predef->second ) ? "%b %e %Y" : "%T" ), timeinfo );
+                value = buffer;
+
+                break;
+            }
+
+            case PRE_DEF_FILE: // __FILE__
+            case PRE_DEF_LINE: // __LINE__
+            {
+                if ( nullptr == location )
                 {
-                    time_t rawtime;
-                    struct tm * timeinfo;
-
-                    time(&rawtime);
-                    timeinfo = localtime(&rawtime);
-
-                    char buffer[16];
-                    strftime(buffer, 16, ( ( PRE_DEF_DATE == it->second ) ? "%b %e %Y" : "%T" ), timeinfo );
-                    value = buffer;
-
-                    break;
+                    value.clear();
                 }
-
-                case PRE_DEF_FILE: // __FILE__
-                case PRE_DEF_LINE: // __LINE__
+                else
                 {
-                    if ( nullptr == location )
+                    if ( PRE_DEF_LINE == predef->second )
                     {
-                        value.clear();
+                        char buffer[16];
+                        sprintf(buffer, "%d", location->m_lineStart);
+                        value = buffer;
                     }
                     else
                     {
-                        if ( PRE_DEF_LINE == it->second )
-                        {
-                            char buffer[16];
-                            sprintf(buffer, "%d", location->m_lineStart);
-                            value = buffer;
-                        }
-                        else
-                        {
-                            value = m_compilerCore->getFileName(location->m_fileNumber);
-                        }
+                        value = m_compilerCore->getFileName(location->m_fileNumber);
                     }
-                    break;
                 }
+                break;
             }
         }
 

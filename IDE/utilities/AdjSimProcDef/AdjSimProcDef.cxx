@@ -30,8 +30,8 @@ AdjSimProcDef::Instruction::Instruction()
     m_operation = OP_NONE;
     m_operParameters.m_result = OperParameters::RES_DISCARD;
     m_operParameters.m_parity = OperParameters::P_EVEN;
-    m_operParameters.m_ignoreCarryFlag = false;
-    m_operParameters.m_ignoreZeroFlag = false;
+    m_operParameters.m_ignoreCarryFlag = true;
+    m_operParameters.m_ignoreZeroFlag = true;
     m_opCode.assign(24, OCB_DONT_CARE);
     m_operands.resize(3);
     m_operands[0].m_number = Operand::N_HIDDEN/*N_FIRST*/;
