@@ -223,7 +223,7 @@ void PortHexEdit::deviceChanged()
     //m_hexEditOut->verticalScrollBar()->resize(0, 0);
     //m_hexEditOut->horizontalScrollBar()->hide();
     //m_hexEditOut->horizontalScrollBar()->resize(0, 0);
-    QTimer::singleShot(50, this, SLOT(fixHeight()));
+    QTimer::singleShot(300, this, SLOT(fixHeight()));
     m_hexEditIn->fixHeight();
     m_hexEditOut->fixHeight();
     //this->setFixedWidth(m_hexEditIn->width() + m_hexEditOut->width());
