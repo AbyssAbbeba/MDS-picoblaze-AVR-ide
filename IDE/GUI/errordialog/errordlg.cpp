@@ -14,6 +14,7 @@
 
 #include "errordlg.h"
 #include <QMessageBox>
+#include <QDebug>
 
 /**
  * @brief Shows error according to given code
@@ -29,6 +30,7 @@ void error(int errCode, QString detail)
         {
             msgBox.setIcon(QMessageBox::Critical);
             msgBox.setText("File not found or cannot be opened\n" + detail);
+            qDebug() << "Error: file not found - " << detail;
             break;
         }
         case ERR_XML_ASSIGN:

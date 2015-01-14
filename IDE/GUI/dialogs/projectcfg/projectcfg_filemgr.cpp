@@ -30,7 +30,10 @@ ProjectCfg_FileMgr::ProjectCfg_FileMgr(QWidget *parentWidget, Project *currProje
     //this->parent = parentWidget;
     this->project = currProject;
     this->reloadFiles = false;
-    this->mainFile = project->mainFileName;
+    if (project != NULL)
+    {
+        this->mainFile = project->mainFileName;
+    }
     ui.setupUi(this);
     //load files
     if (this->project != NULL)
