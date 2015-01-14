@@ -38,15 +38,15 @@ HelpWidget::HelpWidget(QWidget *parent, int width, int height)
 
     QWidget *wCnt = new QWidget(this);
     QVBoxLayout *layoutCnt = new QVBoxLayout(wCnt);
-    QLabel *lblContent = new QLabel("Content", wCnt);
-    layoutCnt->addWidget(lblContent);
+    //QLabel *lblContent = new QLabel("Content", wCnt);
+    //layoutCnt->addWidget(lblContent);
     layoutCnt->addWidget((QWidget*)(helpEngine->contentWidget()));
     wCnt->setLayout(layoutCnt);
 
     QWidget *wIndex = new QWidget(this);
     QVBoxLayout *layoutIndex = new QVBoxLayout(wIndex);
-    QLabel *lblIndex = new QLabel("Index", wIndex);
-    layoutIndex->addWidget(lblIndex);
+    //QLabel *lblIndex = new QLabel("Index", wIndex);
+    //layoutIndex->addWidget(lblIndex);
     layoutIndex->addWidget((QWidget*)(helpEngine->indexWidget()));
     wIndex->setLayout(layoutIndex);
 
