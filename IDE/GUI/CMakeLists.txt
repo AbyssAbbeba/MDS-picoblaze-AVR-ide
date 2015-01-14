@@ -67,7 +67,7 @@ set_directory_properties ( PROPERTIES
   endif()
 
   if ( ( TARGET_OS STREQUAL "Windows" ) AND ( NOT CMAKE_BUILD_TYPE STREQUAL "Debug" ) )
-        #set ( win32 "WIN32" )
+        set ( win32 "WIN32" )
   endif()
   ADD_EXECUTABLE( mds-ide ${win32} ${RC_FILE} ${SAMPLE_SRCS} ${SAMPLE_MOC_SRCS} ${SAMPLE_RC_SRCS} ${SAMPLE_UI_HDRS} )
 
