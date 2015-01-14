@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup AdjSimProcDef
@@ -326,7 +326,6 @@ std::ostream & operator << ( std::ostream & out,
 std::ostream & operator << ( std::ostream & out,
                              const AdjSimProcDef::Instruction::Operation operation )
 {
-
     switch ( operation )
     {
         case AdjSimProcDef::Instruction::OP_NONE:          out << "NONE";                  break;

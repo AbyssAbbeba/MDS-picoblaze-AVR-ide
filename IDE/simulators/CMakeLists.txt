@@ -14,6 +14,9 @@
 # Set project name
 project ( Simulator )
 
+# Processor simulator CLI utility.
+set ( PROC_SIM_EXEC_TARGET mds-proc-sim )
+
 # ------------------------------------------------------------------------------
 # BUILD COMPONENTS IN THE SUBDIRECTORIES
 # ------------------------------------------------------------------------------
@@ -29,13 +32,25 @@ add_subdirectory ( MCUSim )
 # Windows only: generate windres RC file(s) to provide information for Windows.
 # ------------------------------------------------------------------------------
 
-windres_rc ( OUTPUT_VAR         RC_FILE
+windres_rc ( OUTPUT_VAR         LIB_RC_FILE
              FILETYPE           "DLL"
-             FILE_VERSION       "1.0"
+             FILE_VERSION       ${PRODUCT_VERSION}
              FILEOS             "NT_WINDOWS32"
              FILE_DESCRIPTION   "MDS Simulator"
-             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             COMPANY_NAME       ${COMPANY_NAME}
              TARGET             ${PROJECT_NAME}
+             PRODUCT_NAME       ${PRODUCT_NAME}
+             PRODUCT_VERSION    ${PRODUCT_VERSION}
+             YEARS              ${COPYRIGHT_YEARS} )
+
+windres_rc ( OUTPUT_VAR         PROC_SIM_EXEC_RC_FILE
+             FILETYPE           "APP"
+             FILE_VERSION       ${PRODUCT_VERSION}
+             FILEOS             "NT_WINDOWS32"
+             FILE_DESCRIPTION   "MDS Processor Simulator"
+             ICON               "windres/mds-simulator.ico"
+             COMPANY_NAME       ${COMPANY_NAME}
+             TARGET             ${PROC_SIM_EXEC_TARGET}
              PRODUCT_NAME       ${PRODUCT_NAME}
              PRODUCT_VERSION    ${PRODUCT_VERSION}
              YEARS              ${COPYRIGHT_YEARS} )
@@ -71,7 +86,7 @@ endif()
 
 ## Add a library to the project using the specified source files.
 add_library ( ${PROJECT_NAME} SHARED
-              ${RC_FILE}
+              ${LIB_RC_FILE}
 
               # Simulators.
               ${MDS_ADDITONAL_SIM_MODS}
@@ -87,6 +102,13 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
                                         DbgFile
                                         MCUDataFiles  )
 
+# Add an executable to the project using the specified source files.
+add_executable ( ${PROC_SIM_EXEC_TARGET} ${PROC_SIM_EXEC_RC_FILE} main.cxx )
+
+# Link a target to given libraries
+target_link_libraries ( ${PROC_SIM_EXEC_TARGET} ${PROJECT_NAME} )
+
+
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -94,3 +116,9 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES}
 install ( TARGETS ${PROJECT_NAME}
           RUNTIME DESTINATION ${INSTALL_DIR_BIN}
           LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+
+if ( MDS_FEATURE_CLI_TOOLS )
+    install ( TARGETS ${PROC_SIM_EXEC_TARGET}
+              RUNTIME DESTINATION ${INSTALL_DIR_BIN}
+              LIBRARY DESTINATION ${INSTALL_DIR_LIB} )
+endif()
