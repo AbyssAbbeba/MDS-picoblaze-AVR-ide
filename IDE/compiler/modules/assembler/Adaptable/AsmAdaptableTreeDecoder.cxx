@@ -393,7 +393,16 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
 
     for ( const AdjSimProcDef::Instruction & inst : m_semanticAnalyzer->m_device.m_instructionSet )
     {
-        if ( ( mnemonic != inst.m_mnemonic ) || ( inst.m_operands.size() != operandTypes.size() ) )
+        unsigned int numberOfOperands = 0;
+        for ( unsigned int i = 0; i < inst.m_operands.size(); i++ )
+        {
+            if ( -1 == inst.m_operands[i].m_fixedValue )
+            {
+                numberOfOperands++;
+            }
+        }
+
+        if ( ( mnemonic != inst.m_mnemonic ) || ( numberOfOperands != operandTypes.size() ) )
         {
             continue;
         }
