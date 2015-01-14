@@ -24,8 +24,8 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     {
         qDebug() << "RegistersWidget: controlUnit is NULL, this should never happen";
     }
-    this->setMaximumWidth(305);
-    this->setMinimumWidth(305);
+    //this->setMaximumWidth(305);
+    //this->setMinimumWidth(305);
     m_layout = new QVBoxLayout(this);
     m_lblReg = new QLabel("Registers", this);
     m_tblReg = new QTableWidget(this);
@@ -51,6 +51,7 @@ RegistersWidget::RegistersWidget(QWidget *parent, MCUSimControl * controlUnit, M
     QFont font("Ubuntu Mono");
     font.setPixelSize(13);
     m_tblReg->setFont(font);
+    this->setFixedWidth(320);
     //font.setPointSize(9);
     //this->setFont(font);
 
