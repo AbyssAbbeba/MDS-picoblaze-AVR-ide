@@ -189,7 +189,7 @@ void AdjSimProcDefGui::openFile ( const QString & fileName )
         }
 
         QString opCode = "0b";
-        for ( int i = ( newInst->m_opCode.size() - 1); i >= 0; i-- )
+        for ( int i = ( procDef.m_memory.m_program.m_wordSize - 1); i >= 0; i-- )
         {
             switch ( newInst->m_opCode[i] )
             {
