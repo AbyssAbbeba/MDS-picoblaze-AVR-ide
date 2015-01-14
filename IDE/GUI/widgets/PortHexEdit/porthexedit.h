@@ -43,7 +43,6 @@ class PortHexEdit : public QWidget, public MCUSimObserver
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
-        void fixHeight();
         void switchPorts();
         void unhighlight();
         void updateWidget();
@@ -56,6 +55,7 @@ class PortHexEdit : public QWidget, public MCUSimObserver
     public slots:
         void changeValueIn(int address);
         void changeValueOut(int address);
+        void fixHeight();
 
     private:
         int m_startingAddress;

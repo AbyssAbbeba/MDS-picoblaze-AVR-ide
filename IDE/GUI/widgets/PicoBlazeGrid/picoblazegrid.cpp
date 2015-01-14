@@ -83,7 +83,7 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     
     this->memRegs = new RegistersWidget(this, controlUnit, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS);
     //this->memRegs->move(10, 42);
-    m_layout->addWidget(memRegs, 0,0,10,1, Qt::AlignLeft);
+    m_layout->addWidget(memRegs, 0,0,10,1);
     
     if ((dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA)))->size() > 0)
     {
