@@ -43,7 +43,6 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
-        void fixHeight();
         void unhighlight();
         void updateWidget();
         int getSize();
@@ -54,6 +53,7 @@ class McuMemoryView : public QWidget, public MCUSimObserver  {
 
     public slots:
         void changeValue(int address);
+        void fixHeight();
 
     private:
         int m_startingAddress;
