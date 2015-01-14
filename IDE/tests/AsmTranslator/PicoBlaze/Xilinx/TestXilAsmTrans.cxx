@@ -248,7 +248,7 @@ void TestXilAsmTrans::translate ( const std::string & testName,
 
     if ( false == result )
     {
-        CU_FAIL("Translation failed for: " + inFile.string() + ' \n' + errorLog);
+        CU_FAIL("Translation failed for: " + inFile.string() + " \n" + errorLog);
         return;
     }
 

@@ -21,10 +21,10 @@ project ( DbgFile )
 
 windres_rc ( OUTPUT_VAR         RC_FILE
              FILETYPE           "DLL"
-             FILE_VERSION       "1.0"
+             FILE_VERSION       ${PRODUCT_VERSION}
              FILEOS             "NT_WINDOWS32"
              FILE_DESCRIPTION   "MDS Debugging Files Support"
-             COMPANY_NAME       "Moravia Microsystems, s.r.o."
+             COMPANY_NAME       ${COMPANY_NAME}
              TARGET             ${PROJECT_NAME}
              PRODUCT_NAME       ${PRODUCT_NAME}
              PRODUCT_VERSION    ${PRODUCT_VERSION}
