@@ -466,7 +466,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-76</y>
             <width>265</width>
             <height>394</height>
            </rect>
@@ -2871,9 +2871,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>167</width>
-            <height>375</height>
+            <y>-82</y>
+            <width>265</width>
+            <height>400</height>
            </rect>
           </property>
           <attribute name="label">
@@ -3143,6 +3143,13 @@
               <string>Operation parameters</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_17">
+              <item row="2" column="0" colspan="2">
+               <widget class="QCheckBox" name="checkBoxIgnoreCarry">
+                <property name="text">
+                 <string>Ignore carry flag</string>
+                </property>
+               </widget>
+              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_39">
                 <property name="text">
@@ -3193,10 +3200,10 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QCheckBox" name="checkBoxIgnoreCarry">
+              <item row="3" column="0" colspan="2">
+               <widget class="QCheckBox" name="checkBoxIgnoreZero">
                 <property name="text">
-                 <string>Ignore carry flag</string>
+                 <string>Ignore zero flag</string>
                 </property>
                </widget>
               </item>
@@ -3223,8 +3230,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>202</width>
-            <height>247</height>
+            <width>282</width>
+            <height>318</height>
            </rect>
           </property>
           <attribute name="label">

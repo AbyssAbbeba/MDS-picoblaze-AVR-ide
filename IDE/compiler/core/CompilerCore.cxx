@@ -585,7 +585,7 @@ FILE * CompilerCore::fileOpen ( const std::string & filename,
             if ( file == absoluteFileName )
             {
                 coreMessage ( MT_ERROR, QObject::tr ( "file `%1' is already opened, you might have an "
-                                                      "\"include\" loop in your code" )
+                                                      "inclusion loop in your code" )
                                                     .arg(absoluteFileName.c_str()).toStdString() );
                 return nullptr;
             }

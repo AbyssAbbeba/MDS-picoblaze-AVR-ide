@@ -112,6 +112,7 @@ class AdaptableSimInstruction
             bool discartResult  () const { return bool ( 0b1 & (m_data >> 36) ); }
             bool separateResult () const { return bool ( 0b1 & (m_data >> 35) ); }
             bool ignoreCarry    () const { return bool ( 0b1 & (m_data >> 34) ); }
+            bool ignoreZero     () const { return bool ( 0b1 & (m_data >> 39) ); }
             bool evenParity     () const { return bool ( 0b1 & (m_data >> 33) ); }
 
             Condition condition () const
