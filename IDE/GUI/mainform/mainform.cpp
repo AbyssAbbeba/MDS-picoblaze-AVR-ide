@@ -1353,7 +1353,7 @@ void MainForm::openFile()
     QStringList path;
     if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
     {
-        path = QFileDialog::getOpenFileNames(this, tr("Open File"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+        path = QFileDialog::getOpenFileNames(this, tr("Open File"), QDir(m_wDockManager->getCentralPath()).absolutePath(), QString(), 0);
     }
     else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
     {
@@ -1708,7 +1708,7 @@ bool MainForm::saveFileAs()
     {
         if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath())
         {
-            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath(), QString(), 0);
+            path = QFileDialog::getSaveFileName(this, tr("Save File As"), QDir(m_wDockManager->getCentralPath()).absolutePath(), QString(), 0);
         }
         else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
         {
@@ -5213,6 +5213,11 @@ void MainForm::setCentralUntitled(bool untracked)
 {
     QString fileName;
     if (m_wDockManager->getTabCount() == 0)
+    {
+        fileName = "untitled";
+        m_projectMan->getActive()->m_untitledCounter = 0;
+    }
+    else if (m_wDockManager->getTabCount() == 1 && m_wDockManager->getTabToolTip(0) == "Help Browser")
     {
         fileName = "untitled";
         m_projectMan->getActive()->m_untitledCounter = 0;

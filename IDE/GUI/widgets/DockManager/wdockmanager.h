@@ -116,6 +116,7 @@ class WDockManager : public QObject
         void appendTabBar(QString projectPath);
         void removeTabBar(QString projectPath);
         void setBottomAreaToExtAppOutput();
+        QString getTabToolTip(int index);
         
         bool dockWidgets;
         QTabBar *bottomAreaTabs;

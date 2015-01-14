@@ -215,27 +215,46 @@ void WDockManager::closeTab(int index, bool openUntitled)
     }
     else
     {
-        emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
+        if (openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex()) != NULL)
+        {
+            emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
+        }
     }
     emit tabClosed(wTab->tabText(index));
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
     wTab->removeTab(index);
     //wTab->tabRemoved(index);
-    if (wTab->currentIndex() < 0 && true == openUntitled)
+    if (true == openUntitled)
     {
-        if ("untracked" != wTab->id)
+        if (wTab->currentIndex() < 0)
         {
-            qDebug() << "WDockManager: closeTab() - request untitled";
-            emit requestUntitled(false);
+            if ("untracked" != wTab->id)
+            {
+                qDebug() << "WDockManager: closeTab() - request untitled";
+                emit requestUntitled(false);
+            }
+            else
+            {
+                qDebug() << "WDockManager: closeTab() - untracked request untitled";
+                emit requestUntitled(true);
+            }
+            //this->removeTabBar(wTab->id);
+            //this->hideDockWidgetArea(1);
+            //this->hideDockWidgetArea(2);
         }
-        else
+        else if (wTab->count() == 1 && wTab->tabToolTip(0) == "Help Browser")
         {
-            qDebug() << "WDockManager: closeTab() - untracked request untitled";
-            emit requestUntitled(true);
+            if ("untracked" != wTab->id)
+            {
+                qDebug() << "WDockManager: closeTab() - request untitled";
+                emit requestUntitled(false);
+            }
+            else
+            {
+                qDebug() << "WDockManager: closeTab() - untracked request untitled";
+                emit requestUntitled(true);
+            }
         }
-        //this->removeTabBar(wTab->id);
-        //this->hideDockWidgetArea(1);
-        //this->hideDockWidgetArea(2);
     }
     //qDebug() << "WDockManager: return closeTab()";
 }
@@ -287,6 +306,15 @@ WTextEdit* WDockManager::getTabTextEdit(int index)
 CodeEdit* WDockManager::getCentralWidget()
 {
     return activeCodeEdit;
+}
+
+
+QString WDockManager::getTabToolTip(int index)
+{
+    if (wTab != NULL && index < wTab->count())
+    {
+        return wTab->tabToolTip(index);
+    }
 }
 
 
