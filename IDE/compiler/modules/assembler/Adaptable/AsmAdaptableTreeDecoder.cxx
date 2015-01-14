@@ -884,7 +884,8 @@ inline void AsmAdaptableTreeDecoder::dir_DB_phase2 ( CompilerStatement * node )
         else
         {
             int value = m_semanticAnalyzer->m_symbolTable->resolveExpr(arg);
-            if ( ( wordSize >= 3 ) && ( value & 0xff0000 ) )
+
+            if ( ( wordSize >= 3 ) /*&& ( value & 0xff0000 )*/ )
             {
                 dbData.push_back ( ( value >> 16 ) & 0xff );
             }
