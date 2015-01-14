@@ -34,25 +34,23 @@
     \end{description}
 
 \subsubsection{Create component dialog}
-    With this dialog, you can define your custom component and add it to generated template. 
+    With this dialog, you can define your custom component and add it to the generated template. 
     \begin{description}
         \item [Component name]
             Name of your component.
-        \item [Tab port]
-            Select path of your generated file, which contains generated VHDL template.
-        \item [MPU\_SYS entity]
-            General look to your template entity. Every box symbolise vhdl component. There are always three default boxes. KCPSM component, Input demux.
-            and output mux. You can click to every one of them for detail info. When you create or add some custom component, it will show
-            up here.
-        \item [Existing components]
-            This list contains all your previously defined components.
-        \item [KCPSM combobox]
-            With this compobox you can select KCPSM version of your picoblaze design. It will change the declaration and instantiation of picoblaze
-            in generated vhdl file. KCPSM6 is selected by default.
-        \item [Create component button]
-            This button will open create component dialog where you can define you new component. See the next section "Create component dialog".
-        \item [Delete component button]
-            This button will remove one component from your MPU\_SYS entity.
+        \item [Tab port and generic]
+            Port tab lets you define component ports
+        \item [Port name/ Generic name]
+            Name of evvery port or generic.
+        \item [Value]
+            You can set initial value. Leaving this field empty means no initial value is needed.
+        \item [Direction/Type]
+            Direction in port tab can be IN,OUT or INOUT. In generic tab, you define type of your generic attribute. Logic means zero or one. Logic vector is bus, define with MSB and LSB numbers.
+            Integer can be number defined from range -2147483648 to +2147483647. Positive is RANGE 1 TO integer’HIGH. Natural is in RANGE 0 TO integer’HIGH.
+        \item [Bus check-box]
+            Telling generator that you
+        \item [Signal/Constant check-box]
+            If checked, generator will insert this port or attribute declared as signal or constant in VHDL template.
         \item [Generate]
             If you have your input and output file selected. This button will trigger generation of VHDL template.
     \end{description}
