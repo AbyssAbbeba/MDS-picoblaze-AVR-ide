@@ -740,11 +740,11 @@ inline void AdaptableSimOperations::instLogOper ( const AdaptableSimInstruction 
            (
                AdaptableSimInstruction::OperParam::P_AFFECT
                    ==
-               parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_CARRY )
+               inst.m_parameters.flagAttr ( AdaptableSimInstruction::OperParam::F_CARRY )
            )
         )
     {
-        if ( true == parameters.ignoreCarry() )
+        if ( true == inst.m_parameters.ignoreCarry() )
         {
             carry = false;
         }
