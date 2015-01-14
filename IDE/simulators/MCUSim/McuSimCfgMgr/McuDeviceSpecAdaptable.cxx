@@ -152,7 +152,8 @@ bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) c
             instruction.m_parameters.m_data |= 1ULL << 33;
         }
 
-        instruction.m_parameters.m_data |= ( inst.m_operParameters.m_ignoreCarryFlag ? 1ULL : 0 ) << 34;
+        instruction.m_parameters.m_data |= ( inst.m_operParameters.m_ignoreCarryFlag ? ( 1ULL << 34 ) : 0 );
+
 
         if ( AdjSimProcDef::Instruction::OperParameters::RES_STORE_IN_3RD == inst.m_operParameters.m_result )
         {
@@ -172,6 +173,8 @@ bool McuDeviceSpecAdaptable::setupSimulator ( AdaptableSimConfig & mcuConfig ) c
         {
             instruction.m_parameters.m_data |= 1ULL << 38;
         }
+
+        instruction.m_parameters.m_data |= ( inst.m_operParameters.m_ignoreZeroFlag  ? ( 1ULL << 39 ) : 0 );
 
         mcuConfig.m_configInstructionSet->m_instructions.push_back(instruction);
     }

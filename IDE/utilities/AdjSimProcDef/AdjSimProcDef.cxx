@@ -31,6 +31,7 @@ AdjSimProcDef::Instruction::Instruction()
     m_operParameters.m_result = OperParameters::RES_DISCARD;
     m_operParameters.m_parity = OperParameters::P_EVEN;
     m_operParameters.m_ignoreCarryFlag = false;
+    m_operParameters.m_ignoreZeroFlag = false;
     m_opCode.assign(24, OCB_DONT_CARE);
     m_operands.resize(3);
     m_operands[0].m_number = Operand::N_HIDDEN/*N_FIRST*/;
@@ -235,6 +236,7 @@ std::ostream & operator << ( std::ostream & out,
     }
     out << std::endl;
     out << "    Ignore Carry flag: " << definition.m_operParameters.m_ignoreCarryFlag << std::endl;
+    out << "    Ignore Zero flag: " << definition.m_operParameters.m_ignoreZeroFlag << std::endl;
 
     out << "OP code: 0b";
     for ( int i = ( definition.m_opCode.size() - 1 ); i >= 0 ; i-- )

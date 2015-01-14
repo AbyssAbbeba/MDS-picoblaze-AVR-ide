@@ -393,136 +393,141 @@ inline CompilerStatement * AsmAdaptableTreeDecoder::resolveInstruction ( const s
 
     for ( const AdjSimProcDef::Instruction & inst : m_semanticAnalyzer->m_device.m_instructionSet )
     {
-        if ( ( mnemonic == inst.m_mnemonic ) && ( inst.m_operands.size() == operandTypes.size() ) )
+        if ( ( mnemonic != inst.m_mnemonic ) || ( inst.m_operands.size() != operandTypes.size() ) )
         {
-            bool match = true;
-            for ( unsigned int i = 0; i < operandTypes.size(); i++ )
+            continue;
+        }
+
+        bool match = true;
+        for ( unsigned int i = 0; i < operandTypes.size(); i++ )
+        {
+            int operandNumber = -1;
+            if ( i < inst.m_operands.size() )
             {
-                int operandNumber = -1;
-                if ( i < inst.m_operands.size() )
+                switch ( inst.m_operands[i].m_number )
                 {
-                    switch ( inst.m_operands[i].m_number )
-                    {
-                        case AdjSimProcDef::Instruction::Operand::N_FIRST:  operandNumber =  0; break;
-                        case AdjSimProcDef::Instruction::Operand::N_SECOND: operandNumber =  1; break;
-                        case AdjSimProcDef::Instruction::Operand::N_THIRD:  operandNumber =  2; break;
-                        case AdjSimProcDef::Instruction::Operand::N_HIDDEN: operandNumber = -1; break;
-                    }
-                }
-
-                char type = ' ';
-                switch ( inst.m_operands[i].m_type )
-                {
-                    case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE:
-                        type = '#';
-                        break;
-                    case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
-                    case AdjSimProcDef::Instruction::Operand::T_DATA_INDR:
-                        type = '@';
-                        break;
-                    case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
-                    case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:
-                    case AdjSimProcDef::Instruction::Operand::T_PROGRAM:
-                    case AdjSimProcDef::Instruction::Operand::T_PORT:
-                        type = ' ';
-                        break;
-                }
-
-                if ( ( -1 != operandNumber ) && ( type != operandTypes[operandNumber] ) )
-                {
-                    match = false;
-                    break;
+                    case AdjSimProcDef::Instruction::Operand::N_FIRST:  operandNumber =  0; break;
+                    case AdjSimProcDef::Instruction::Operand::N_SECOND: operandNumber =  1; break;
+                    case AdjSimProcDef::Instruction::Operand::N_THIRD:  operandNumber =  2; break;
+                    case AdjSimProcDef::Instruction::Operand::N_HIDDEN: operandNumber = -1; break;
                 }
             }
 
-            if ( true == match )
+            char type = ' ';
+            switch ( inst.m_operands[i].m_type )
             {
-                int code = 0;
-                int mask = 0;
-                for ( unsigned int i = 0; i < inst.m_opCode.size(); i++ )
-                {
-                    switch ( inst.m_opCode[i] )
-                    {
-                        case AdjSimProcDef::Instruction::OCB_ZERO:
-                            mask |= ( 1 << i );
-                            break;
-                        case AdjSimProcDef::Instruction::OCB_ONE:
-                            code |= ( 1 << i );
-                            mask |= ( 1 << i );
-                            break;
-                        case AdjSimProcDef::Instruction::OCB_DONT_CARE:
-                            break;
-                    }
-                }
+                case AdjSimProcDef::Instruction::Operand::T_IMMEDIATE:
+                    type = '#';
+                    break;
+                case AdjSimProcDef::Instruction::Operand::T_REG_INDR:
+                case AdjSimProcDef::Instruction::Operand::T_DATA_INDR:
+                    type = '@';
+                    break;
+                case AdjSimProcDef::Instruction::Operand::T_REG_DIR:
+                case AdjSimProcDef::Instruction::Operand::T_DATA_DIR:
+                case AdjSimProcDef::Instruction::Operand::T_PROGRAM:
+                case AdjSimProcDef::Instruction::Operand::T_PORT:
+                    type = ' ';
+                    break;
+            }
 
-                CompilerStatement * db = new CompilerStatement ( node->location(),
-                                                                 ASMPICOBLAZE_DIR_DB,
-                                                                 new CompilerExpr(code, node->location()) );
-
-                for ( unsigned int i = 0; i < inst.m_operands.size(); i++ )
-                {
-                    if ( i >= operandTypes.size() )
-                    {
-                        break;
-                    }
-
-                    int operandNumber = -1;
-                    switch ( inst.m_operands[i].m_number )
-                    {
-                        case AdjSimProcDef::Instruction::Operand::N_FIRST:  operandNumber =  0; break;
-                        case AdjSimProcDef::Instruction::Operand::N_SECOND: operandNumber =  1; break;
-                        case AdjSimProcDef::Instruction::Operand::N_THIRD:  operandNumber =  2; break;
-
-                        case AdjSimProcDef::Instruction::Operand::N_HIDDEN:
-                            continue;
-                    }
-
-                    CompilerExpr * value = node->args()->at(operandNumber + 1);
-
-                    for ( int fromBit = 0; fromBit < (int) (inst.m_operands[i].m_OPCodePermutation.size()); fromBit++ )
-                    {
-                        int toBit = inst.m_operands[i].m_OPCodePermutation[fromBit];
-
-                        // ( ( value & ( 1 << fromBit ) ) >> fromBit ) << toBit
-                        CompilerExpr * operand = new CompilerExpr (
-                                                     new CompilerExpr (
-                                                         new CompilerExpr ( value->copyChainLink(),
-                                                                            CompilerExpr::OPER_BAND,
-                                                                            new CompilerExpr ( 1,
-                                                                                               CompilerExpr::OPER_SHL,
-                                                                                               fromBit,
-                                                                                               value->location() ) ),
-                                                         CompilerExpr::OPER_SHR,
-                                                         fromBit,
-                                                         value->location() ),
-                                                     CompilerExpr::OPER_SHL,
-                                                     toBit,
-                                                     value->location() );
-
-                        CompilerExpr * arg = db->args();
-                        while ( true )
-                        {
-                            if ( CompilerExpr::OPER_NONE == arg->oper() )
-                            {
-                                arg->m_operator = CompilerExpr::OPER_BOR;
-                                arg->m_rValue.m_type = CompilerValue::TYPE_EXPR;
-                                arg->m_rValue.m_data.m_expr = new CompilerExpr(operand, value->location());
-                                break;
-                            }
-                            else
-                            {
-                                arg = arg->m_rValue.m_data.m_expr;
-                            }
-                        }
-                    }
-                }
-
-                m_semanticAnalyzer->m_symbolTable->resolveSymbols ( db->args(),
-                                                                    m_semanticAnalyzer->m_memoryPtr->m_code );
-
-                return db;
+            if ( ( -1 != operandNumber ) && ( type != operandTypes[operandNumber] ) )
+            {
+                match = false;
+                break;
             }
         }
+
+        if ( false == match )
+        {
+            continue;
+        }
+
+        int code = 0;
+        int mask = 0;
+
+        for ( unsigned int i = 0; i < inst.m_opCode.size(); i++ )
+        {
+            switch ( inst.m_opCode[i] )
+            {
+                case AdjSimProcDef::Instruction::OCB_ZERO:
+                    mask |= ( 1 << i );
+                    break;
+                case AdjSimProcDef::Instruction::OCB_ONE:
+                    code |= ( 1 << i );
+                    mask |= ( 1 << i );
+                    break;
+                case AdjSimProcDef::Instruction::OCB_DONT_CARE:
+                    break;
+            }
+        }
+
+        CompilerStatement * db = new CompilerStatement ( node->location(),
+                                                         ASMPICOBLAZE_DIR_DB,
+                                                         new CompilerExpr(code, node->location()) );
+
+        for ( unsigned int i = 0; i < inst.m_operands.size(); i++ )
+        {
+            if ( i >= operandTypes.size() )
+            {
+                break;
+            }
+
+            int operandNumber = -1;
+            switch ( inst.m_operands[i].m_number )
+            {
+                case AdjSimProcDef::Instruction::Operand::N_FIRST:  operandNumber =  0; break;
+                case AdjSimProcDef::Instruction::Operand::N_SECOND: operandNumber =  1; break;
+                case AdjSimProcDef::Instruction::Operand::N_THIRD:  operandNumber =  2; break;
+
+                case AdjSimProcDef::Instruction::Operand::N_HIDDEN:
+                    continue;
+            }
+
+            CompilerExpr * value = node->args()->at(operandNumber + 1);
+
+            for ( int fromBit = 0; fromBit < (int) (inst.m_operands[i].m_OPCodePermutation.size()); fromBit++ )
+            {
+                int toBit = inst.m_operands[i].m_OPCodePermutation[fromBit];
+
+                // ( ( value & ( 1 << fromBit ) ) >> fromBit ) << toBit
+                CompilerExpr * operand = new CompilerExpr (
+                                             new CompilerExpr (
+                                                 new CompilerExpr ( value->copyChainLink(),
+                                                                    CompilerExpr::OPER_BAND,
+                                                                    new CompilerExpr ( 1,
+                                                                                       CompilerExpr::OPER_SHL,
+                                                                                       fromBit,
+                                                                                       value->location() ) ),
+                                                 CompilerExpr::OPER_SHR,
+                                                 fromBit,
+                                                 value->location() ),
+                                             CompilerExpr::OPER_SHL,
+                                             toBit,
+                                             value->location() );
+
+                CompilerExpr * arg = db->args();
+                while ( true )
+                {
+                    if ( CompilerExpr::OPER_NONE == arg->oper() )
+                    {
+                        arg->m_operator = CompilerExpr::OPER_BOR;
+                        arg->m_rValue.m_type = CompilerValue::TYPE_EXPR;
+                        arg->m_rValue.m_data.m_expr = new CompilerExpr(operand, value->location());
+                        break;
+                    }
+                    else
+                    {
+                        arg = arg->m_rValue.m_data.m_expr;
+                    }
+                }
+            }
+        }
+
+        m_semanticAnalyzer->m_symbolTable->resolveSymbols ( db->args(),
+                                                            m_semanticAnalyzer->m_memoryPtr->m_code );
+
+        return db;
     }
 
     m_semanticAnalyzer->m_compilerCore->semanticMessage ( node->location(),

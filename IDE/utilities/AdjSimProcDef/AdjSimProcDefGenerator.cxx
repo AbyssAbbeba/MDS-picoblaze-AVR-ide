@@ -18,7 +18,7 @@
 #include <cstdio>
 
 const char * AdjSimProcDefGenerator::FILE_HEADER = "MDS processor definition file";
-const char * AdjSimProcDefGenerator::FILE_VERSION = "1.0";
+const char * AdjSimProcDefGenerator::FILE_VERSION = "1.1";
 
 inline void writeInt ( std::string & target,
                        char * buffer,
@@ -133,6 +133,7 @@ AdjSimProcDefGenerator::AdjSimProcDefGenerator ( const AdjSimProcDef & def )
         writeInt ( m_data, buffer, instruction.m_operParameters.m_result );
         writeInt ( m_data, buffer, instruction.m_operParameters.m_parity );
         writeBool ( m_data, instruction.m_operParameters.m_ignoreCarryFlag );
+        writeBool ( m_data, instruction.m_operParameters.m_ignoreZeroFlag );
 
         // Mnemonic
         m_data += instruction.m_mnemonic;

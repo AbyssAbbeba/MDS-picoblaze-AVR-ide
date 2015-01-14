@@ -45,8 +45,7 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
     \subsection{Comments}
         Comments in source code are ignored by the assembler (they are supposed to serve only as notes to the developer). MDS assembler uses two types of comments: single-line comment starting with ``\texttt{;}'' (semicolon) character and ending with the end of line, and multi-line comments starting with ``\texttt{/*}'' sequence (slash followed by asterisk) and ending with ``\texttt{*/}'' sequence (asterisk followed by slash), like in the C language.
 
-        \paragraph{Example}
-            ~\\
+        \paragraph{Example}~\\
             \verb'    ; Single-line comment'\\
             \verb'    '\\
             \verb'    /*'\\
@@ -122,20 +121,18 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
         \index{Symbols}
         Symbols are user defined symbolic names for numbers and addresses used in the program. Symbol names consist of upper and lower case letters, digits, and underscore character (``\_''), their length is not limited, they are case insensitive and they have to be different from language keywords. Symbol names cannot start with digit. Be aware of that there cannot coexists two or more symbols which differs only by letter casing, for instance ``\texttt{abc}'' and ``\texttt{ABC}'' are considered by this assembler to be the same symbol. Symbols have to be defined before they are used.
 
-        \paragraph{Example}
-        ~\\
-        \verb'    first_symbol      EQU     0b100111 ; Binary radix, number.'\\
-        \verb'    second_symbol     SET     047      ; Octal radix, number.'\\
-        \verb'    third_symbol      REG     39       ; Decimal radix, register address.'\\
-        \verb'    fourth_symbol     DATA    0x27     ; Hexadecimal radix, scratch-pad ram address.'\\
-        \verb'    fifth_symbol      CODE    0x27     ; Hexadecimal radix, program memory address.'\\
-        \verb'    my_label:                          ; Program memory address, defined using label.'
+        \paragraph{Example}~\\
+            \verb'    first_symbol      EQU     0b100111 ; Binary radix, number.'\\
+            \verb'    second_symbol     SET     047      ; Octal radix, number.'\\
+            \verb'    third_symbol      REG     39       ; Decimal radix, register address.'\\
+            \verb'    fourth_symbol     DATA    0x27     ; Hexadecimal radix, scratch-pad ram address.'\\
+            \verb'    fifth_symbol      CODE    0x27     ; Hexadecimal radix, program memory address.'\\
+            \verb'    my_label:                          ; Program memory address, defined using label.'
 
         \subsubsection{Special Symbols}
             MDS assembler supports only one special symbol, this symbol is always automatically defined on every line containing an instruction (or the \texttt{DB} directive), it is symbol ``\texttt{\$}''. ``\texttt{\$}'' contains address in the program memory where ``this instruction'' is going to be placed by the assembler.
 
-            \paragraph{Example}
-                ~\\
+            \paragraph{Example}~\\
                 \verb'    ; Since $ conatins the address of the JUMP instruction,'\\
                 \verb'    ; this jump results in infinite loop.'\\
                 \verb'    JUMP    $'\\
@@ -175,18 +172,19 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
                     \caption{Predefined symbols for registers}
                 \end{table}
 
+            \enlargethispage{2\baselineskip}
             \paragraph{Other predefined symbols}
                 \begin{description}
                     \item[\_\_MDS\_VERSION\_\_]~\\
                         This constant contains current version of your MDS installation. It is a 16 bit BCD coded integer containing 3 numbers: VMMP where V stands for major version number, MM stands for minor version number, and P stands for patch number. For example, if your MDS version was for instance 1.2.3, value of this constant would be 0x1023; or if your MDS version was 3.2.1, the value would be 0x3021.
                     \item[\_\_DATE\_\_]~\\
-                        This is a string\footnote{Please see the \texttt{STRING} directive for details on what the strings are and what they can be used for.} containing the current date formatted as "Feb 12 1996, it contains 11 characters; and if the day of the month is less than 10, it is padded with a space on the left. Its the same as in the ISO C language preprocessor.
+                        This is a string\footnote{Please see the \texttt{STRING} directive (\ref{STRING directive}) for details on what the strings are and what they can be used for.} containing the current date formatted as "Jan 19 2015, it contains 11 characters; and if the day of the month is less than 10, it is padded with a space on the left. Its the same as in the ISO C language.
                     \item[\_\_TIME\_\_]~\\
-                        This is a string containing the current time formatted as "13:18:06, it contains 8 characters. Its the same as in the ISO C language preprocessor.
+                        This is a string containing the current time formatted as "13:18:06, it contains 8 characters. Its the same as in the ISO C language.
                     \item[\_\_FILE\_\_]~\\
-                        This is a string containing name of the current input file.
+                        A string containing the name of the current input file including its full path.
                     \item[\_\_LINE\_\_]~\\
-                        This is a string containing line number in the current input file.
+                        This string contains line number in the current input file.
                 \end{description}
 
     \subsection{Expressions}
@@ -227,8 +225,8 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
                 6        & \texttt{>}    & greater than            & \texttt{12 > 11}           \\\hline
                 6        & \texttt{>=}   & greater or equal than   & \texttt{12 >= 11}          \\\hline
                 7        & \texttt{==}   & equal to                & \texttt{11 == 11}          \\\hline
-                7        & \texttt{!=}   & not equal to            & \texttt{A != B}           \\\hline
-                7        & \texttt{<>}   & not equal to            & \texttt{A <> B}           \\\hline
+                7        & \texttt{!=}   & not equal to            & \texttt{A != B}            \\\hline
+                7        & \texttt{<>}   & not equal to            & \texttt{A <> B}            \\\hline
                 8        & \texttt{\&}   & bitwise AND             & \texttt{48 \& 16}          \\\hline
                 8        & \texttt{|}    & bitwise OR              & \texttt{370q | 7}          \\\hline
                 9        & \texttt{\&\&} & logical AND             & \texttt{48 \&\& 16}        \\\hline
@@ -890,7 +888,9 @@ MDS macro-assembler for PicoBlaze is a two stage fast macro-assembler inspired b
         \item[Instruction word is only X bits wide, value Y trimmed to Z]~\\
             When using the \texttt{DB} directive to directly initialize the program memory, values exceeding bit width of the instruction opcode on your processor are automatically trimmed from left to fit the opcode width.
         \item[Unable to locate file X in base path Y, or include path(s): Z]~\\
-            This indicates that one of your include files (i.e. files included into your source code using the \textt{INCLUDE} directive) cannot be located in the directories which you specified to search for included files (include directories).
-        \item[File X is already opened, you might have an "include" loop in your code]~\\
+            This indicates that one of your include files (i.e. files included into your source code using the \texttt{INCLUDE} directive) cannot be located in the directories which you specified to search for included files (include directories).
+        \item[File X is already opened, you might have an inclusion loop in your code]~\\
+            This usually happens when you include a file from another file which includes the first file, or when a file includes itself.
         \item[I/O error, cannot read the source file properly]~\\
+            Some of the source files is not readable, this might be caused by permissions set on that file.
     \end{description}

@@ -137,6 +137,7 @@ class AdjSimProcDef
                 } m_parity;
 
                 bool m_ignoreCarryFlag;
+                bool m_ignoreZeroFlag;
             };
 
             enum Operation

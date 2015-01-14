@@ -882,6 +882,7 @@ void AdjSimProcDefGui::on_treeWidgetInstructions_itemSelectionChanged()
     comboBoxInstParity->setCurrentIndex(int(inst->m_operParameters.m_parity));
     comboBoxInstResult->setCurrentIndex(int(inst->m_operParameters.m_result));
     checkBoxIgnoreCarry->setCheckState(inst->m_operParameters.m_ignoreCarryFlag ? Qt::Checked : Qt::Unchecked);
+    checkBoxIgnoreZero->setCheckState(inst->m_operParameters.m_ignoreZeroFlag ? Qt::Checked : Qt::Unchecked);
     comboBoxInstConditionType->setCurrentIndex(int(inst->m_condition.m_type));
     comboBoxInstConditionFlag->setCurrentIndex(int(inst->m_condition.m_flag));
     spinBoxInstTimePositive->setValue(inst->m_time.m_positive);
@@ -1052,6 +1053,7 @@ void AdjSimProcDefGui::instModified()
     inst->m_operParameters.m_result = (AdjSimProcDef::Instruction::OperParameters::Result)
                                       comboBoxInstResult->currentIndex();
     inst->m_operParameters.m_ignoreCarryFlag = ( Qt::Checked == checkBoxIgnoreCarry->checkState() );
+    inst->m_operParameters.m_ignoreZeroFlag = ( Qt::Checked == checkBoxIgnoreZero->checkState() );
 
     inst->m_condition.m_type = (AdjSimProcDef::Instruction::Condition::Type) comboBoxInstConditionType->currentIndex();
     inst->m_condition.m_flag = (AdjSimProcDef::Instruction::ProcessorFlag) comboBoxInstConditionFlag->currentIndex();
@@ -1250,6 +1252,8 @@ inline void AdjSimProcDefGui::setupConnections()
     connect ( comboBoxInstParity,           SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( comboBoxInstResult,           SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( checkBoxIgnoreCarry,          SIGNAL(stateChanged(int)),           SLOT(instModified()) );
+    connect ( checkBoxIgnoreZero,           SIGNAL(stateChanged(int)),           SLOT(instModified()) );
+
     connect ( comboBoxInstConditionType,    SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( comboBoxInstConditionFlag,    SIGNAL(currentIndexChanged(int)),    SLOT(instModified()) );
     connect ( spinBoxInstTimePositive,      SIGNAL(valueChanged(int)),           SLOT(instModified()) );

@@ -16,6 +16,7 @@
 #include "AdjSimProcDefParser.h"
 #include "AdjSimProcDefGenerator.h"
 
+#include <cstdio>
 #include <cstdlib>
 #include <iostream>
 #include <stdexcept>
@@ -120,8 +121,17 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
         {
             throw std::runtime_error("Unknown file format.");
         }
+
         readString(def, token, pos);
-        if ( 0 != token.compare(AdjSimProcDefGenerator::FILE_VERSION) )
+        int versionMajor, versionMinor;
+        int versionMajorThis, versionMinorThis;
+        sscanf(token.c_str(), "%d.%d", &versionMajor, &versionMinor);
+        sscanf(AdjSimProcDefGenerator::FILE_VERSION, "%d.%d", &versionMajorThis, &versionMinorThis);
+        if (
+               ( versionMajorThis < versionMajor )
+                   ||
+               ( ( versionMajorThis == versionMajor ) && ( versionMinorThis < versionMinor ) )
+            )
         {
             throw std::runtime_error("Incompatible file version.");
         }
@@ -207,6 +217,10 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
             readInt(def, (int&) instruction.m_operParameters.m_result, pos );
             readInt(def, (int&) instruction.m_operParameters.m_parity, pos );
             readBool(def, instruction.m_operParameters.m_ignoreCarryFlag, pos);
+            if ( ( versionMajor >= 1 ) && ( versionMinor >= 1 ) )
+            {
+                readBool(def, instruction.m_operParameters.m_ignoreZeroFlag, pos);
+            }
 
             // Mnemonic
             readString(def, instruction.m_mnemonic, pos);

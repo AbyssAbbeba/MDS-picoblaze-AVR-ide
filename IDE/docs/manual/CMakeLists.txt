@@ -50,7 +50,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
     # List of additional files that will be cleaned as a part of the "make clean" stage.
     file ( GLOB CLEAN_HTLATEX *.html *.css *.4ct *.4tc *.lg *.tc *.dvi *.idv *.tmp *.xref texput.log genXHTML.log )
     set ( CLEAN_MAKEINDEX "MDS_manual.idx;MDS_manual.ind;MDS_manual.ilg;MDS_manual.4dx;MDS_manual.4ix;MDS_manual.lot" )
-    set ( CLEAN_QHELP     "${MANUAL_QHC};${MANUAL_QCH};MDS_manual.qhp" )
+    set ( CLEAN_QHELP     "${MANUAL_QHC};${MANUAL_QCH};MDS_manual.qhp;idxmake.log" )
     set ( CLEAN_LATEX     "${MANUAL_PDF};MDS_manual.log;MDS_manual.toc;MDS_manual.aux;MDS_manual.out;MDS_manual" )
     set ( MAN_CLEAN_FILES "${LOG_FILE};${CLEAN_LATEX};${CLEAN_QHELP};${CLEAN_MAKEINDEX};${CLEAN_HTLATEX}" )
     set_directory_properties ( PROPERTIES
@@ -65,7 +65,7 @@ if ( LATEX_FOUND AND Q_HELP_TOOLS_FOUND )
         add_custom_target ( manual-pdflatex ALL
                             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                             COMMENT "Generating MDS documentation as PDF with PDF LaTeX."
-                            COMMAND bash -c "[ -e MDS_manual.ind ] && rm MDS_manual.ind"
+                            COMMAND bash -c "[ -e MDS_manual.ind ] && rm MDS_manual.ind; exit 0"
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${MAKEINDEX_COMPILER} MDS_manual.idx
                             COMMAND bash ${CAPTURE} ${LOG_FILE} ${PDFLATEX_COMPILER} -interaction nonstopmode MDS_manual.tex
