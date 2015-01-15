@@ -28,6 +28,7 @@ SET( SAMPLE_MOC_HDRS
 # some .ui files
 SET( SAMPLE_UIS
     ./callwatcher.ui
+    ./calllistwidget.ui
 )
 
 

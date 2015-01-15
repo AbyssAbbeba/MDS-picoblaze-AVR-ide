@@ -220,7 +220,7 @@ void WDockManager::closeTab(int index, bool openUntitled)
             emit saveCodeEdit(openCentralWidgets.at(m_currTabBarIndex).second->at(wTab->currentIndex())->getCodeEdit(), true);
         }
     }
-    emit tabClosed(wTab->tabText(index));
+    emit tabClosed(wTab->tabToolTip(index));
     openCentralWidgets.at(m_currTabBarIndex).second->removeAt(index);
     wTab->removeTab(index);
     //wTab->tabRemoved(index);

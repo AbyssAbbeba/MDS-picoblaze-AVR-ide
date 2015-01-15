@@ -5,17 +5,18 @@
 \end{figure}
 
 \subsubsection{Purpose of this tool}
-    TEMPLATE
-    This tool will automaticaly generate VHDL code for quicker connection of your picoblaze design with your VHDL design. It will take
-    PORTs declared in your assembler design and generates appropriate constants and input/output multiplexers.
+    This tool is used for quicker connection between picoblaze and your vhdl design. It can help you, when you don't want spend too much time writing  peripheral logic for picoblaze
+    and your VHDL components. It will automatically take PORT symbols from your assembler file and generates appropriate constants and input/output multiplexers. Final product of
+    this program is one ENTITY containing your custom components, port constants, all necessary signals/constants and declaration of KCPSM design. In case somehow change your design, you
+    can just click generate again and your vhdl file will adjust to new or edited values.  
 
 \subsubsection{Main window}
     \begin{description}
         \item [Input file]
-            Select path to your .stbl(symbol table) file generated after the compilation of you assembler source code. Note, make sure you
+            VHDL wizard reads the symbol table file and extracts all symbols declared with PORT, PORTIN and PORTOUT directives. Select path to your .stbl(symbol table) file generated after the compilation of you assembler source code. Note, make sure you
             have generation of the file allowed (Project->Configure->Compiler->Options->Symbol table checked).
         \item [Output file]
-            Select path of your generated file, which contains generated VHDL template.
+            Select path for your generated VHDL template.
         \item [MPU\_SYS entity]
             General look to your template entity. Every box symbolise vhdl component. There are always three default boxes. KCPSM component, Input demux.
             and output mux. You can click to every one of them for detail info. When you create or add some custom component, it will show
