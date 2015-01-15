@@ -64,6 +64,7 @@ class VhdlMain : public QWidget
      bool m_xmlEditFlag;
      bool createWidget;
      unsigned int m_xmlNumber,m_editNumber;
+     int m_hex; 
 
      enum genericType {
          LOGIC = 0,
