@@ -3902,7 +3902,10 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
+        if (false != m_wDockManager->getCentralPath().isEmpty
+            && "untracked" != m_wDockManager->getCentralPath()
+            && "Help Browser" != m_wDockManager->getCentralPath()
+           )
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -3973,7 +3976,10 @@ void MainForm::toolFileConvert()
 {
     #ifdef MDS_FEATURE_FILECONVERTER
         FileConvertDlg *dlg = new FileConvertDlg(this);
-        if ("" != m_wDockManager->getCentralPath() && "untracked" != m_wDockManager->getCentralPath() && "Help Browser" != m_wDockManager->getCentralPath())
+        if (false != m_wDockManager->getCentralPath().isEmpty()
+            && "untracked" != m_wDockManager->getCentralPath()
+            && "Help Browser" != m_wDockManager->getCentralPath()
+           )
         {
             dlg->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
         }
@@ -5508,6 +5514,21 @@ void MainForm::toolVHDLWizard()
 {
     #ifdef MDS_FEATURE_VHDL_WIZARD
         VhdlMain *vhdlmain = new VhdlMain(0);
+        if (false == m_wDockManager->getCentralPath().isEmpty()
+            && "untracked" != m_wDockManager->getCentralPath()
+            && "Help Browser" != m_wDockManager->getCentralPath()
+           )
+        {
+            vhdlmain->setPath(QDir(m_wDockManager->getCentralPath().section('/',0, -2)).absolutePath());
+        }
+        else if (m_projectMan->getActive() != NULL && m_projectMan->getActive()->prjPath != "untracked")
+        {
+            vhdlmain->setPath(QDir(m_projectMan->getActive()->prjPath.section('/',0, -2)).absolutePath());
+        }
+        else
+        {
+            vhdlmain->setPath(m_lastDir);
+        }
         vhdlmain->show();
     #endif
 }
