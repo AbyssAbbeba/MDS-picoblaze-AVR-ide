@@ -102,7 +102,7 @@ void PicoBlazeInstructionSet::irq()
         logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_WRN_INVALID_IRQ, m_pc );
     }
 
-    logEvent ( EVENT_CPU_IRQ, m_pc );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_IRQ, m_pc );
     m_stack -> pushOnStack ( m_pc );
     m_pc = m_config.m_interruptVector;
 }
