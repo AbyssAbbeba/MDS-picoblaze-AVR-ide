@@ -282,9 +282,10 @@ inline void PicoBlazeInstructionSet1::inst_CALL ( const unsigned int opCode )
     instructionEnter ( PicoBlazeInsNames::INS_CALL );
 
     // Execute call.
-    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    const unsigned int addr = ( opCode & 0xff );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
     m_stack->pushOnStack ( m_pc );
-    setProgramCounter ( opCode & 0xff );
+    setProgramCounter ( addr );
     m_actSubprogCounter++;
 }
 
