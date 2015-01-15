@@ -33,7 +33,11 @@
    <item row="0" column="5">
     <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>...</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../../resources/icons/projOpen.png</normaloff>../../resources/icons/projOpen.png</iconset>
      </property>
     </widget>
    </item>
@@ -56,7 +60,11 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>...</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>../../resources/icons/projOpen.png</normaloff>../../resources/icons/projOpen.png</iconset>
      </property>
     </widget>
    </item>
