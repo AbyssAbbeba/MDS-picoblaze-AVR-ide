@@ -1809,7 +1809,7 @@ void VhdlMain::loadFile()
     // get path
 
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path,"*.stbl");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path, tr("Symbol table (*.stbl);; All files (*.*)"));
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
@@ -3329,7 +3329,7 @@ void VhdlMain::busChecked()
     }
 }
 
-void VhdlMain::valueEditingFinished(QString textValue)
+void VhdlMain::valueEditingFinished(QString /*textValue*/)
 {
     if ( ( false == ui2.checkBus_9->isChecked() ) && ( ui2.editValue_9->text().toInt(0,10) > 1 ) )
     {
