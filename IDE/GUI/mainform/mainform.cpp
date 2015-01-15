@@ -1118,6 +1118,7 @@ void MainForm::createDockWidgets()
         QApplication::processEvents();
 
         bool done = false;
+        bool tabsFound = false;
 
         tabList = this->findChildren<QTabBar*>();
         for (int i = 0; i < tabList.count() && false == done; i++)
@@ -1144,18 +1145,72 @@ void MainForm::createDockWidgets()
                );
 
         done = false;
+        tabsFound = false;
 
+        qDebug() << "tab count" << tabList.count();
         for (int i = 0; i < tabList.count() && false == done; i++)
         {
             for (int j = 0; j < tabList.at(i)->count(); j++)
             {
-                if ("Help" == tabList.at(i)->tabText(j))
+                qDebug() << tabList.at(i)->tabText(j);
+                if ("Breakpoints" == tabList.at(i)->tabText(j))
                 {
-                    m_wDockManager->rightAreaTabs = tabList.at(i);
+                    qDebug() << "Found 1/6";
+                    m_wDockManager->getDockWidget(WBREAKPOINTLIST)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Breakpoints");
+                    tabList.at(i)->setTabWhatsThis(j, "Breakpoints");
                     done = true;
-                    m_wDockManager->rightAreaTabs->setCurrentIndex(j);
-                    break;
                 }
+                else if ("Help" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    qDebug() << "Found 4/6";
+                    m_wDockManager->getDockWidget(WHELPDOCKWIDGET)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, " ");
+                    tabList.at(i)->setTabToolTip(j, "Help");
+                    tabList.at(i)->setTabWhatsThis(j, "Help");
+                    tabList.at(i)->setCurrentIndex(j);
+                }
+                else if ("Bookmarks" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    qDebug() << "Found 2/6";
+                    m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Bookmarks");
+                    tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
+                }
+                else if ("Call Watcher" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    qDebug() << "Found 5/6";
+                    m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Call Watcher");
+                    tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
+                }
+                else if ("Macros" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    qDebug() << "Found 3/6";
+                    m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Macros");
+                    tabList.at(i)->setTabWhatsThis(j, "Macros");
+                }
+                else if ("Hide" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    qDebug() << "Found 6/6";
+                    m_wDockManager->getDockWidget(WRIGHTHIDE)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Hide");
+                    tabList.at(i)->setTabWhatsThis(j, "Hide");
+                }
+                
+                if (true == done && tabsFound == false)
+                {
+                    //m_wDockManager->rightAreaTabs->setCurrentIndex(j);
+                    m_wDockManager->rightAreaTabs = tabList.at(i);
+                    tabsFound = true;
+                }
+
             }
         }
         if (NULL == m_wDockManager->rightAreaTabs)
@@ -5024,11 +5079,14 @@ void MainForm::shortcutChangeTabRight()
 
 void MainForm::reloadTabIcons()
 {
+    qDebug() << "reloadTabIcons()";
     for (int i = 0; i < m_wDockManager->rightAreaTabs->count(); i++)
     {
-        QString text = m_wDockManager->rightAreaTabs->tabText(i);
+        QString text = m_wDockManager->rightAreaTabs->tabWhatsThis(i);
+        qDebug() << text;
         if ("Breakpoints" == text)
         {
+            qDebug() << "Found 1/6";
             QPixmap pixmap(":resources/icons/breakpoint.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5037,6 +5095,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Bookmarks" == text)
         {
+            qDebug() << "Found 2/6";
             QPixmap pixmap(":resources/icons/bullet_star.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5045,6 +5104,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Macros" == text)
         {
+            qDebug() << "Found 3/6";
             QPixmap pixmap(":resources/icons/brick.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5053,7 +5113,17 @@ void MainForm::reloadTabIcons()
         }
         else if ("Help" == text)
         {
+            qDebug() << "Found 4/6";
             QPixmap pixmap(":resources/icons/help.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Call Watcher" == text)
+        {
+            qDebug() << "Found 5/6";
+            QPixmap pixmap(":resources/icons/door_in.png");
             QMatrix rm;
             rm.rotate(-90);
             pixmap = pixmap.transformed(rm);
@@ -5061,6 +5131,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Hide" == text)
         {
+            qDebug() << "Found 6/6";
             QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
             QMatrix rm;
             rm.rotate(-90);

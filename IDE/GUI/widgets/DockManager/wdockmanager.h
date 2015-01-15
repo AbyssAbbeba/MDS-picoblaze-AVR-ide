@@ -263,5 +263,4 @@ class WDock : public QObject
         int area;
 };
 
-
 #endif
