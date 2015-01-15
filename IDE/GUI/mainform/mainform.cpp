@@ -3902,7 +3902,7 @@ void MainForm::toolTranslate()
 {
     #ifdef MDS_FEATURE_TRANSLATOR
         TranslatorDlg *dlg = new TranslatorDlg(this);
-        if (false != m_wDockManager->getCentralPath().isEmpty
+        if (false != m_wDockManager->getCentralPath().isEmpty()
             && "untracked" != m_wDockManager->getCentralPath()
             && "Help Browser" != m_wDockManager->getCentralPath()
            )
