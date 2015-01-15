@@ -103,6 +103,18 @@ bool PicoBlazeInstructionSet6::isValid() const
     return ( MCUSim::FAMILY_KCPSM6 == m_config.m_dev );
 }
 
+void PicoBlazeInstructionSet6::forceReturn()
+{
+    if ( m_statusFlags->getInterrupted() > 0 )
+    {
+        returnFromInterrupt();
+    }
+    else
+    {
+        returnFromSubroutine();
+    }
+}
+
 int PicoBlazeInstructionSet6::execInstruction()
 {
     const int pcOrig = m_pc;
@@ -1186,7 +1198,7 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_DISABLE ( const unsigned int 
 
     // RETURNI DISABLE
     m_statusFlags -> setInte ( false );
-    returni();
+    returnFromInterrupt();
 }
 
 inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
@@ -1195,10 +1207,10 @@ inline void PicoBlazeInstructionSet6::inst_RETURNI_ENABLE ( const unsigned int )
 
     // RETURNI ENABLE
     m_statusFlags -> setInte ( true );
-    returni();
+    returnFromInterrupt();
 }
 
-inline void PicoBlazeInstructionSet6::returni()
+inline void PicoBlazeInstructionSet6::returnFromInterrupt()
 {
 
     // Chech whether there is an ISR in progress to return from.
@@ -1214,6 +1226,20 @@ inline void PicoBlazeInstructionSet6::returni()
     }
 
     // Return from ISR (Interrupt Service Routine).
+    setProgramCounter ( m_stack->popFromStack() );
+}
+
+inline void PicoBlazeInstructionSet6::returnFromSubroutine()
+{
+    if ( 0 == m_actSubprogCounter )
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
+    }
+    else
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
+        m_actSubprogCounter--;
+    }
     setProgramCounter ( m_stack->popFromStack() );
 }
 
@@ -1409,16 +1435,7 @@ void PicoBlazeInstructionSet6::inst_RETURN ( const unsigned int opCode )
     }
 
     // Execute return from subprogram.
-    if ( 0 == m_actSubprogCounter )
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
-    }
-    else
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
-        m_actSubprogCounter--;
-    }
-    setProgramCounter ( m_stack->popFromStack() );
+    returnFromSubroutine();
 }
 
 void PicoBlazeInstructionSet6::inst_RETURN_Z ( const unsigned int opCode )
