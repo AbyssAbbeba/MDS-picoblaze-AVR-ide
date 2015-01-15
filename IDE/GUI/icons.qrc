@@ -82,6 +82,7 @@
     <file>resources/icons/bullet_arrow_down.png</file>
     <file>resources/icons/bullet_arrow_right.png</file>
     <file>resources/icons/bricks_vhdl.png</file>
+    <file>resources/icons/door_in.png</file>
     <file>resources/xml/mcuspecfile.xml</file>
     <file>resources/fonts/Ubuntu/UbuntuMono-R.ttf</file>
     <file>resources/fonts/Ubuntu/UbuntuMono-RI.ttf</file>

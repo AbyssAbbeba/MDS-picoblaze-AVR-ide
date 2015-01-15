@@ -22,8 +22,9 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
     ui.setupUi(this);
-    
-    m_cpu = dynamic_cast<MCUSimCPU*>(controlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+
+    m_simControl = controlUnit;
+    m_cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_intAddr = 0;
     m_run = false;
     std::vector<int> mask;
@@ -33,7 +34,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
                 MCUSimCPU::EVENT_CPU_IRQ,
                 MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR
             };
-    controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
+    m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
 
     
@@ -43,7 +44,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
             SLOT(returnSlot())
            );
     
-    connect(controlUnit,
+    connect(m_simControl,
             SIGNAL(updateRequest(int)),
             this,
             SLOT(handleUpdateRequest(int))
@@ -54,6 +55,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
 void CallWatcher::returnSlot()
 {
     m_cpu->forceReturn();
+    m_simControl->dispatchEvents();
 }
 
 
@@ -84,7 +86,7 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.insert(0, detail);
                 if (false == m_run)
                 {
-                    QListWidgetItem *item = new QListWidgetItem(ui.lstCalls);
+                    QListWidgetItem *item = new QListWidgetItem();
                     ui.lstCalls->insertItem(0, item);
 
                     CallItemWidget *itemWidget = new CallItemWidget(this, "CALL", locationOrReason, detail);
@@ -102,7 +104,11 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.removeFirst();
                 if (false == m_run)
                 {
-                    ui.lstCalls->takeItem(ui.lstCalls->count() -1);
+                    QListWidgetItem *item = ui.lstCalls->takeItem(0);
+                    if (item != NULL)
+                    {
+                        delete item;
+                    }
                 }
                 break;
             }
@@ -114,7 +120,7 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.insert(0, detail);
                 if (false == m_run)
                 {
-                    QListWidgetItem *item = new QListWidgetItem(ui.lstCalls);
+                    QListWidgetItem *item = new QListWidgetItem();
                     ui.lstCalls->insertItem(0, item);
 
                     CallItemWidget *itemWidget = new CallItemWidget(this, "INTERRUPT", locationOrReason, m_intAddr);
@@ -132,7 +138,11 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.removeFirst();
                 if (false == m_run)
                 {
-                    ui.lstCalls->takeItem(ui.lstCalls->count() -1);
+                    QListWidgetItem *item = ui.lstCalls->takeItem(0);
+                    if (item != NULL)
+                    {
+                        delete item;
+                    }
                 }
                 break;
             }
