@@ -110,6 +110,7 @@ bool AsmAdaptableTreeDecoder::phase1 ( CompilerStatement * codeTree,
             case ASMPICOBLAZE_DIR_NOLIST:   dir_NOLIST   ( node ); break;
             case ASMPICOBLAZE_DIR_MACRO:    dir_MACRO    ( node ); break;
             case ASMPICOBLAZE_DIR_TITLE:    dir_TITLE    ( node ); break;
+            case ASMPICOBLAZE_DIR_ENTITY:   dir_ENTITY   ( node ); break;
             case ASMPICOBLAZE_INCLUDE:      dir_INCLUDE  ( node ); break;
             case ASMPICOBLAZE_DIR_UNDEFINE: dir_UNDEFINE ( node ); break;
             case ASMPICOBLAZE_LABEL:        label        ( node ); break;
@@ -1150,6 +1151,16 @@ inline void AsmAdaptableTreeDecoder::dir_MACRO ( CompilerStatement * node )
     node->m_branch = nullptr;
 }
 
+inline void AsmAdaptableTreeDecoder::dir_ENTITY ( CompilerStatement * node )
+{
+    const CompilerValue * nameVal;
+    for ( nameVal = &( node->args()->lVal() );
+          CompilerValue::TYPE_EXPR == nameVal->m_type;
+          nameVal = &( nameVal->m_data.m_expr->lVal() ) );
+
+    m_entityName = std::string( (char*) nameVal->m_data.m_array.m_data, nameVal->m_data.m_array.m_size );
+}
+
 inline void AsmAdaptableTreeDecoder::dir_TITLE ( CompilerStatement * node )
 {
     const CompilerValue::Data::CharArray & argCharArray = node->args()->lVal().m_data.m_array;
@@ -1472,4 +1483,14 @@ bool AsmAdaptableTreeDecoder::isBlank ( const CompilerExpr * expr ) const
     {
         return false;
     }
+}
+
+const std::string & AsmAdaptableTreeDecoder::getEntityName ( const std::string & defaultValue ) const
+{
+    if ( true == m_entityName.empty() )
+    {
+        return defaultValue;
+    }
+
+    return m_entityName;
 }

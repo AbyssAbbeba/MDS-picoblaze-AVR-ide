@@ -1338,7 +1338,10 @@ void MainForm::newAddFile()
         //pridani do projektu
         m_projectMan->addFile(path, path.section('/', -1));
         m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getActive());
-        m_fileWatcher.addPath(path);
+        if (false == m_fileWatcher.files().contains(path))
+        {
+            m_fileWatcher.addPath(path);
+        }
     }
     //qDebug() << "MainForm: return newAddFile()";
 }
@@ -1373,6 +1376,7 @@ void MainForm::openFile()
         QFile file(path.at(i));
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "error in openFile()";
             error(ERR_OPENFILE, path.at(i));
         }
         else
@@ -1404,7 +1408,10 @@ void MainForm::openFile()
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
             }
             GuiCfg::getInstance().fileOpened(path.at(i));
-            m_fileWatcher.addPath(path.at(i));
+            if (false == m_fileWatcher.files().contains(path.at(i)))
+            {
+                m_fileWatcher.addPath(path.at(i));
+            }
             QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -1418,17 +1425,17 @@ void MainForm::openFile()
  */
 void MainForm::openFilePath(QString path, QString parentProjectPath)
 {
-    qDebug() << "MainForm: openFilePath()";
+    //qDebug() << "MainForm: openFilePath()";
     //QDir thisDir(".");
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
-    qDebug() << path;
+    //qDebug() << path;
     if (false == path.isEmpty())
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            //qDebug() << "Mainform: openFilePath error" << path;
+            qDebug() << "error in openFilePath()";
             error(ERR_OPENFILE, path);
         }
         else
@@ -1500,11 +1507,14 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             {
                 qDebug() << "MainForm: openfilepath - some error here";
             }*/
-            m_fileWatcher.addPath(path);
+            if (false == m_fileWatcher.files().contains(path))
+            {
+                m_fileWatcher.addPath(path);
+            }
             QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
-    qDebug() << "MainForm: return openFilePath()";
+    //qDebug() << "MainForm: return openFilePath()";
 }
 
 
@@ -1677,6 +1687,7 @@ bool MainForm::saveFile()
         QFile file(m_wDockManager->getCentralPath());
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
+            qDebug() << "error in saveFile()";
             error(ERR_OPENFILE, m_wDockManager->getCentralPath());
             return false;
         }
@@ -1793,6 +1804,7 @@ bool MainForm::saveFileAs()
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
+            qDebug() << "error in saveFileAs()";
             error(ERR_OPENFILE, path);
         }
         else
@@ -1943,6 +1955,7 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
             QFile file(path);
             if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
+                qDebug() << "error in saveFile(CodeEdit*)";
                 error(ERR_OPENFILE, path);
             }
             else
@@ -1951,7 +1964,7 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
                 fout << editor->getTextEdit()->toPlainText();
                 file.close();
                 editor->setSaved();
-                qDebug() << "mainform: editor saved";
+                //qDebug() << "mainform: editor saved";
             }
             QApplication::processEvents();
             m_fileWatcher.blockSignals(false);
@@ -2030,6 +2043,7 @@ void MainForm::openProject()
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "error in openProject()";
             error(ERR_OPENFILE, path);
         }
         else
@@ -2055,6 +2069,7 @@ bool MainForm::openProject(QString path)
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "error in openProject(QString)";
             error(ERR_OPENFILE, path);
             return false;
         }
@@ -5153,7 +5168,6 @@ void MainForm::fileChanged(QString path)
 
 void MainForm::reloadFile(QString path)
 {
-    qDebug() << "reloadFile(): " << path;
     if (true == path.isEmpty())
     {
         return;
@@ -5161,6 +5175,7 @@ void MainForm::reloadFile(QString path)
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        qDebug() << "error in reloadFile()";
         error(ERR_OPENFILE, path);
     }
     else
@@ -5171,7 +5186,6 @@ void MainForm::reloadFile(QString path)
         file.close();
         QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
     }
-    qDebug() << "return reloadFile()";
 }
 
 
@@ -5186,6 +5200,7 @@ void MainForm::reloadCurrentFile()
         QFile file(m_wDockManager->getCentralPath());
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
+            qDebug() << "error in reloadCurrentFile()";
             error(ERR_OPENFILE, m_wDockManager->getCentralPath());
         }
         else
@@ -5209,6 +5224,7 @@ void MainForm::reloadCurrentFile()
             QFile file(m_wDockManager->getCentralPath());
             if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
             {
+                qDebug() << "error in reloadCurrentFile()";
                 error(ERR_OPENFILE, m_wDockManager->getCentralPath());
             }
             else

@@ -325,11 +325,12 @@ void ProjectTree::newFilePt2(QString projectPath)
             }
         }
     }
-    if (path != NULL)
+    if (false == path.isEmpty())
     {
         QFile file(path);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
+            qDebug() << "ProjectTree: error in newFilePt2()";
             error(ERR_OPENFILE);
         }
         else
