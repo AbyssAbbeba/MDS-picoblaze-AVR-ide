@@ -1235,3 +1235,9 @@ void CodeEdit::findAndReplace(QString find, QString replace, bool all, bool case
 {
     m_textEdit->findAndReplace(find, replace, all, caseSensitive);
 }
+
+
+void CodeEdit::resizeEvent(QResizeEvent */*event*/)
+{
+    changeHeight();
+}

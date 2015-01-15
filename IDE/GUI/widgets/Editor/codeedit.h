@@ -161,6 +161,9 @@ class CodeEdit : public QWidget
         Find *m_findDialog;
         FindAndReplace *m_findAndReplaceDialog;
         JumpToLine *m_jumpToLineDialog;
+        
+    protected:
+        void resizeEvent(QResizeEvent *event);
 };
 
 
