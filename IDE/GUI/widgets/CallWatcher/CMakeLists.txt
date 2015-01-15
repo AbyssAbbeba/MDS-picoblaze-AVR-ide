@@ -18,6 +18,7 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
 SET( SAMPLE_SRCS
 	./callwatcher.cpp
+    ./callitemwidget.cpp
 )
 
 # another list, this time it includes all header files that should be treated with moc
@@ -28,7 +29,7 @@ SET( SAMPLE_MOC_HDRS
 # some .ui files
 SET( SAMPLE_UIS
     ./callwatcher.ui
-    ./calllistwidget.ui
+    ./callitemwidget.ui
 )
 
 
