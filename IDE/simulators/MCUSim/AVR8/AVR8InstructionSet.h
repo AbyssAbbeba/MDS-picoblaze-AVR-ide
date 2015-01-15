@@ -286,6 +286,11 @@ class AVR8InstructionSet : public MCUSimCPU
          */
         virtual void reset ( MCUSimBase::ResetMode mode ) override;
 
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() override;
+
         /// @name Processor Instructions
         //@{
             /**
@@ -1649,6 +1654,16 @@ class AVR8InstructionSet : public MCUSimCPU
          * @return
          */
         inline void instructionEnter ( AVR8InsNames::Instructions instName );
+
+        /**
+         * @brief
+         */
+        inline int returnFromInterrupt();
+
+        /**
+         * @brief
+         */
+        inline int returnFromSubroutine();
 
     ////    Protected Attributes    ////
     protected:

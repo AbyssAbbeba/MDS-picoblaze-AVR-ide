@@ -59,6 +59,11 @@ void AdaptableSimInstructionSet::reset ( MCUSimBase::ResetMode mode )
     }
 }
 
+void AdaptableSimInstructionSet::forceReturn()
+{
+    // Not applicable.
+}
+
 inline void AdaptableSimInstructionSet::newConfig()
 {
     size_t numberOfInstr = 0;

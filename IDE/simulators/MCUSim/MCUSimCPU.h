@@ -87,6 +87,11 @@ class MCUSimCPU : public MCUSimSubsys
          */
         virtual void setProgramCounter ( unsigned int newPc ) = 0;
 
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() = 0;
+
     ////    Inline Protected Operations    ////
     protected:
         /**
