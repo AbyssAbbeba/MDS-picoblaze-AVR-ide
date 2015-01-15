@@ -35,10 +35,6 @@
      <property name="text">
       <string/>
      </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../resources/icons/projOpen.png</normaloff>../../resources/icons/projOpen.png</iconset>
-     </property>
     </widget>
    </item>
    <item row="1" column="0">
@@ -61,10 +57,6 @@
      </property>
      <property name="text">
       <string/>
-     </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>../../resources/icons/projOpen.png</normaloff>../../resources/icons/projOpen.png</iconset>
      </property>
     </widget>
    </item>
