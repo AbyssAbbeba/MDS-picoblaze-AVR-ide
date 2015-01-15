@@ -1239,7 +1239,7 @@ void Project::saveProject()
     QFile *file = new QFile(prjPath);
     if(!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        error(ERR_OPENFILE);
+        error(ERR_OPENFILE, prjPath);
         return;
     }
 
