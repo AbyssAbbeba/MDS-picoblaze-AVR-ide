@@ -13,6 +13,7 @@
 
 
 #include <QtGui>
+#include "../../mds.h"
 #include "wdockmanager.h"
 #include "../Editor/wtextedit.h"
 #include "../WelcomeScr/welcomescr.h"
@@ -315,6 +316,7 @@ QString WDockManager::getTabToolTip(int index)
     {
         return wTab->tabToolTip(index);
     }
+    return QString();
 }
 
 
@@ -929,11 +931,13 @@ void WDockManager::addSimDockWidget(MCUSimControl* simControl)
 void WDockManager::addCallWatcher(MCUSimControl *simControl)
 {
     #ifdef MDS_FEATURE_SIM_CALLWATCHER
+    qDebug() << "add call watcher";
         if (false == this->dockWidgets)
         {
             WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
             if (getDockWidgetArea(newWDock->getArea()) != NULL)
             {
+                qDebug() << "add call watcher 2";
                 emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
                 //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
             }
@@ -1240,7 +1244,7 @@ void WDockManager::addDockW(Qt::DockWidgetArea area, QDockWidget* dockWidget)
 
 void WDockManager::unhighlightSimWidget()
 {
-    qDebug() << "WDockManager: unhighlight";
+    //qDebug() << "WDockManager: unhighlight";
     emit unhighlightSim();
 }
 
