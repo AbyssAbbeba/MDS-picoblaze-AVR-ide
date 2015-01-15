@@ -131,7 +131,7 @@ AdjSimProcDefParser::AdjSimProcDefParser ( const std::string & def )
                ( versionMajorThis < versionMajor )
                    ||
                ( ( versionMajorThis == versionMajor ) && ( versionMinorThis < versionMinor ) )
-            )
+           )
         {
             throw std::runtime_error("Incompatible file version.");
         }

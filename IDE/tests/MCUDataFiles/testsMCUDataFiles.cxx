@@ -15,13 +15,8 @@
 
 #include "testsMCUDataFiles.h"
 
-//
-#include "HexFile.h"
-#include "BinFile.h"
-#include "SrecFile.h"
-#include "XilMemFile.h"
-#include "XilVHDLFile.h"
-#include "XilVerilogFile.h"
+// MCU memory data container libraries.
+#include "MCUDataFiles.h"
 
 // Standard header files.
 #include <string>
