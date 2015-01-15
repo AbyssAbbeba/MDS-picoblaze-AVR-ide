@@ -38,18 +38,31 @@
 \subsubsection{Create component dialog}
     You can define your custom component and add it to the generated entity or save it for later usage. You can \textbf{remove} or \textbf{edit} existing components by
     right-clicking them in the field "Existing components".
+    
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.7\textwidth]{img/VHDL_create_generic.png}
+    \caption{Custom component generic parameters}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.7\textwidth]{img/VHDL_create_component.png}
+    \caption{VHDL port parameters}
+\end{figure}
+
     \begin{description}
         \item [Component name]
             Name of your custom component.
         \item [Tab port and generic]
-            Port tab lets you define component ports. 
+            Port tab lets you define component ports.
         \item [Port name/ Generic name]
             Name of evvery port or generic attribute. Names (or identifiers) may consist of letters, numbers and underscore.
         \item [Value]
             You can set the initial value. Leaving this field empty means no initial value is needed.
         \item [Direction/Type]
             Direction in port tab can be IN,OUT or INOUT. In generic tab, you define type of your generic attribute. Logic means zero or one. Logic vector is a bus, defined with MSB and LSB numbers.
-            Integer can be number defined from range \-2147483648 to \+2147483647. Positive is RANGE 1 TO integer’HIGH. Natural is in RANGE 0 TO integer’HIGH.
+            Integer can be number defined from range -2147483648 to +2147483647. Positive is RANGE 1 TO integer’HIGH. Natural is in RANGE 0 TO integer’HIGH.
         \item [Bus check-box]
             Telling generator, that this port is bus. Checking this will enable MSB(most significant bit) and LSB(least significant bit) field, which represents width of your bus.
             This check box in generic tab makes sense only for logic vector type of attribute.
@@ -58,26 +71,8 @@
         \item [Save and add button]
             Component will be added to MPU\_SYS entity and saved for later usage. Component name will appear in list "Existing components" and can be edited or added to current entity any time.
         \item [Add button]
-            This button will add component to the current entity only once. 
+            This button will add component to the current entity only once.
         \item [Generate]
-            If you have your input and output file selected. This button will trigger generation of VHDL template.
+            If you have your input and output file selected. This button will trigger generation of VHDL template.\\
     \end{description}
     
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.5\textwidth]{img/VHDL_create_generic.png}
-    \caption{Custom component generic parameters}
-\end{figure}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.5\textwidth]{img/VHDL_create_component.png}
-    \caption{VHDL Wizard}
-\end{figure}
-
-
-\subsubsection{Create component dialog}
-    Phasellus sit amet quam nec nulla euismod dignissim. Fusce ante felis, tincidunt nec egestas id, interdum a magna. Curabitur felis nisl, placerat quis ex eget, iaculis eleifend tellus. Praesent finibus ac mauris feugiat consequat. Praesent a faucibus quam, quis fermentum felis. Nam porta tellus sed eros blandit viverra. In rhoncus viverra mi et varius. Morbi sodales egestas sollicitudin. Pellentesque euismod risus id magna posuere, et mattis mi dictum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ullamcorper tortor eget lectus ultricies ultricies. Aliquam in nunc ac tortor pellentesque sodales. Nullam posuere sollicitudin ligula quis condimentum. Maecenas dolor orci, tempor non tristique id, aliquet eget eros. Praesent malesuada facilisis lacus a vulputate.
-
-\subsubsection{Examples}
-    Quisque fermentum ligula augue, id ullamcorper libero auctor vulputate. Mauris mollis velit leo, in scelerisque lorem maximus ut. Proin vehicula libero nec odio sagittis, vel tempor ante imperdiet. Suspendisse dui neque, luctus ac pretium vulputate, porttitor at lectus. Fusce sem sapien, semper eu faucibus a, cursus nec diam. Aliquam accumsan metus sed odio dapibus, eget vulputate felis pretium. Proin ut lorem vel elit ultrices commodo. Donec vitae finibus ex.
