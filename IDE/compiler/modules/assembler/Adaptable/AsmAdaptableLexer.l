@@ -242,6 +242,7 @@ DIS_INT_INST            "disable"{WS}"interrupt"
 \.?"orgspr"             { return D_ORGSPR;     }
 \.?"initspr"            { return D_INITSPR;    }
 \.?"mergespr"           { return D_MERGESPR;   }
+\.?"entity"             { return D_ENTITY;     }
 \.?"macro"              { return D_MACRO;      }
 \.?"end"                {
                             // Close the current file

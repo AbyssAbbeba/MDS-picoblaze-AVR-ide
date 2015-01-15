@@ -330,9 +330,16 @@ CompilerStatement * CompilerCore::loadDevSpecCode ( const std::string & deviceNa
     return result;
 }
 
-std::string CompilerCore::getBaseName()
+std::string CompilerCore::getBaseName ( bool withExtension )
 {
-    return boost::filesystem::path(m_opts->m_sourceFiles[0]).filename().string();
+    if ( true == withExtension )
+    {
+        return boost::filesystem::path(m_opts->m_sourceFiles[0]).filename().string();
+    }
+    else
+    {
+        return boost::filesystem::path(m_opts->m_sourceFiles[0]).filename().stem().string();
+    }
 }
 
 std::string CompilerCore::getBaseIncludeDir()
