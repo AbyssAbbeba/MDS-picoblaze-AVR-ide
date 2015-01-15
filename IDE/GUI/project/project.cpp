@@ -1235,12 +1235,17 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 void Project::saveProject()
 {
     qDebug() << "saveProject()";
+    if (QDir(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project").absolutePath() == prjPath)
+    {
+        return;
+    }
     QDir project(QFileInfo(prjPath).dir());
 
     QFile *file = new QFile(prjPath);
     if(!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         error(ERR_OPENFILE, prjPath);
+        qDebug() << "return saveProject()";
         return;
     }
 
