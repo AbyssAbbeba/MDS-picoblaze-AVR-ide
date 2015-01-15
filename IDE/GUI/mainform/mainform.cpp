@@ -56,6 +56,10 @@
 #include "../widgets/PicoBlazeGrid/picoblazegrid.h"
 #include "../widgets/Editor/wtextedit.h"
 
+#ifdef MDS_FEATURE_SIM_CALLWATCHER
+    #include "../widgets/CallWatcher/callwatcher.h"
+#endif
+
 #ifdef MDS_FEATURE_EXTERNAL_APPS
     #include "../widgets/ExtAppOutput/extappoutput.h"
 #endif
@@ -3279,6 +3283,9 @@ void MainForm::simulationRunHandle()
             this->simulationDisableBreakpointsAct->setDisabled(true);
             this->simulationRunStatus = true;
         }
+        #ifdef MDS_FEATURE_SIM_CALLWATCHER
+            ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setRun(simulationRunStatus);
+        #endif
         m_projectMan->getSimulated()->run();
     }
 }
@@ -3455,6 +3462,11 @@ void MainForm::simulationFlowHandle()
                 m_projectMan->getSimulated()->setBreakpoints(false);
             }
             m_wDockManager->setBottomAreaToSimulationInfo();
+            #ifdef MDS_FEATURE_SIM_CALLWATCHER
+                CallWatcher *watcher = (CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget());
+                watcher->setInterruptAddr(m_projectMan->getActive()->intVector);
+                watcher->setSimulated(true);
+            #endif
         }
         else
         {
@@ -3561,6 +3573,9 @@ void MainForm::simulationFlowHandle()
         #endif
         projectConfigAct->setEnabled(true);
         projectCompileAct->setEnabled(true);
+        #ifdef MDS_FEATURE_SIM_CALLWATCHER
+            ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setSimulated(false);
+        #endif
         m_projectMan->getSimulated()->stop();
         //this->unhighlight();
         //this->m_wDockManager->getCentralTextEdit()->clearHighlight();
@@ -4371,6 +4386,9 @@ void MainForm::pauseSimulation()
             this->simulationBreakpointAct->setEnabled(true);
             this->simulationDisableBreakpointsAct->setEnabled(true);
             this->simulationRunStatus = false;
+            #ifdef MDS_FEATURE_SIM_CALLWATCHER
+                ((CallWatcher*)(m_wDockManager->getDockWidget(WCALLWATCHER)->widget()))->setRun(simulationRunStatus);
+            #endif
             return;
         }
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CallListWidget</class>
- <widget class="QWidget" name="CallListWidget">
+ <class>CallItemWidget</class>
+ <widget class="QWidget" name="CallItemWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,8 +10,14 @@
     <height>58</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>callListWidget</string>
+   <string>callItemWidget</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

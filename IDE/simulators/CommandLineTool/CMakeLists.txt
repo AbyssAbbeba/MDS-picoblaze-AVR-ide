@@ -35,6 +35,9 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
 
+# List of preprocessor include file search directories.
+include_directories ( "${CMAKE_SOURCE_DIR}" )
+
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME} ${RC_FILE} main.cxx )
 
