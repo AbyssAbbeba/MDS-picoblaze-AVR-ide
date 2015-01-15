@@ -64,6 +64,8 @@ class VhdlMain : public QWidget
      bool m_xmlEditFlag;
      bool createWidget;
      unsigned int m_xmlNumber,m_editNumber;
+     int m_hex;
+     QString m_path;
 
      enum genericType {
          LOGIC = 0,
@@ -124,6 +126,7 @@ class VhdlMain : public QWidget
      genericType getEnum(QString & inString);
      int getNumberOfInstances(QString & componentToInstantiate, bool Declaration);
      void editSelectedComponent(unsigned int position);
+     void setPath(QString in_path);
 
 private slots:
    void customMenuRequested(QPoint pos);

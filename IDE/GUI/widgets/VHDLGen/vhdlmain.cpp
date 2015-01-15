@@ -85,6 +85,15 @@ VhdlMain::VhdlMain(QWidget *parent) :
 
     ui->Output->setReadOnly(true);
     ui->Input->setReadOnly(true);
+
+     ui->pushButton->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+     ui->pushButton_2->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+     ui->pushDelete->setIcon(QPixmap(":/resources/icons/cancel.png"));
+     ui->pushGenerate->setIcon(QPixmap(":/resources/icons/cog.png"));
+     ui->pushButton_4->setIcon(QPixmap(":/resources/icons/add.png"));
+     // cancel.png == delte  pushDelete
+     // add.png  //create  pushButton_4
+     // cog.png   generate        pushGenerate
     //QStringList attributes;
    // picoBlaze.name = "MPU_SYS_core";
    // portName << "clk" << "port_id" << "write_strobe" << "k_write_strobe" << "out_port" << "read_strobe"
@@ -652,7 +661,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 //         qDebug() << "right click";
 //     }
 
-    if ( rectList.contains("componentRect") == true)
+    if ( rectList.contains("projOpencomponentRect") == true)
     {
         if ( this->componentRect->contains( pressEvent->pos() ) == true)
         {
@@ -1792,9 +1801,14 @@ void VhdlMain::pushCancel()
     createWidget = false;
 }
 
+void VhdlMain::setPath(QString in_path)
+{
+  m_path = in_path;    
+}
+
 void VhdlMain::saveFile()
 {
-    savePath = QFileDialog::getSaveFileName(this,"Output file",".");
+    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path);
     ui->Output->setText(savePath);
     //ui->infoLabel->setText("");
 }
@@ -1804,7 +1818,7 @@ void VhdlMain::loadFile()
     // get path
 
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.stbl");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path, tr("Symbol table (*.stbl);; All files (*.*)"));
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
@@ -1926,6 +1940,7 @@ void VhdlMain::printToFile()
     int sec = Time.second();
     int hour = Time.hour();
     int min = Time.minute();
+
 
     // create file to write
     qDebug()<< savePath;
@@ -2050,9 +2065,10 @@ void VhdlMain::printToFile()
                             }
                             else
                             {
+                                m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                 out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                     << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ";" << endl;
+                                out << ":= X" << '"' << QString::number( m_hex, 16).toUpper() << '"' << ";" << endl;
                             }
                         break;
                     case INTEGER:
@@ -2188,9 +2204,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ";" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ";" << endl;
                         }
                         else
                         {
@@ -2355,15 +2372,17 @@ void VhdlMain::printToFile()
                                 {
                                     if ( genericComponent[i].genericName[p+1].isEmpty() == true)
                                     {
+                                        m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                         out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                             << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                        out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ");" << endl;
+                                        out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ");" << endl;
                                     }
                                     else
                                     {
+                                        m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                         out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                             << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                        out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ";" << endl;
+                                        out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ";" << endl;
                                     }
                                 }
                             break;
@@ -2502,9 +2521,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ");" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ");" << endl;
                         }
                         else
                         {
@@ -2516,9 +2536,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ";" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper()  << '"' << ";" << endl;
                         }
                         else
                         {
@@ -2685,7 +2706,7 @@ void VhdlMain::printToFile()
             out << ' ';
         }
         out << "=>";
-        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection"  "\n";
+        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection;"  "\n";
     }
     for (unsigned int i = 0; i < portInCount; i++)
     {
@@ -2696,7 +2717,7 @@ void VhdlMain::printToFile()
             out << ' ';
         }
         out << "=>";
-        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection"  "\n";
+        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection;"  "\n";
     }
 
     out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << "  =>" << '\t' << "NULL;" << "\n";
@@ -2719,12 +2740,12 @@ void VhdlMain::printToFile()
             countNumber = getNumberOfInstances(definedComponent[i].name, false );
             if ( countNumber > 1)
             {
-                out << definedComponent[i].name << countNumber;
-                out << " : " << definedComponent[i].name << "_" << countNumber <<"\n";
+                out << definedComponent[i].name << "_"  << countNumber << "_i";
+                out << " : " << definedComponent[i].name << countNumber <<"\n";
             }
             else
             {
-                out << definedComponent[i].name << " : " << definedComponent[i].name<< "_i " <<"\n";
+                out << definedComponent[i].name << "_i"  << " : " << definedComponent[i].name <<"\n";
             }
             if ( false == genericComponent[i].genericName[0].isEmpty() )
             {
@@ -2783,7 +2804,7 @@ void VhdlMain::printToFile()
     ui->InfoLabel->setText("Done");
     
     printedComponents.clear();
-    return;
+    printedComponentsDeclaration.clear();
 }
 
 int VhdlMain::getNumberOfInstances(QString & componentToInstantiate, bool Declaration)
@@ -3317,7 +3338,7 @@ void VhdlMain::busChecked()
     }
 }
 
-void VhdlMain::valueEditingFinished(QString textValue)
+void VhdlMain::valueEditingFinished(QString /*textValue*/)
 {
     if ( ( false == ui2.checkBus_9->isChecked() ) && ( ui2.editValue_9->text().toInt(0,10) > 1 ) )
     {
@@ -3477,7 +3498,10 @@ void VhdlMain::valueEditingFinished(QString textValue)
 
 void VhdlMain::componentWizardConstruct()
 {
-    // editing signals
+    ui2.pushSaveAdd->setIcon(QPixmap(":/resources/icons/disk.png"));
+    ui2.pushOk->setIcon(QPixmap(":/resources/icons/add.png"));
+    ui2.pushCancel->setIcon(QPixmap(":/resources/icons/cancel.png"));// editing signals
+    
     connect(ui2.editValue_9,
             SIGNAL(textChanged(QString)),
             this,
