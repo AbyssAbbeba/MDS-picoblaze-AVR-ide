@@ -19,10 +19,10 @@
 #include <QWidget>
 #include <QList>
 #include "ui_callwatcher.h"
-#include "ui_calllistwidget.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 
 class MCUSimControl;
+class MCUSimCPU;
 
 
 class CallWatcher : public QWidget, public MCUSimObserver
@@ -34,6 +34,9 @@ class CallWatcher : public QWidget, public MCUSimObserver
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
+        void setRun(bool run);
+        void setInterruptAddr(int addr);
+        void setSimulated(bool simulated);
 
     private slots:
         void returnSlot();
@@ -41,11 +44,13 @@ class CallWatcher : public QWidget, public MCUSimObserver
 
     private:
         Ui_CallWatcher ui;
-        Ui_CallListWidget ui_widget;
-        MCUSimControl *m_simControlUnit;
+        MCUSimCPU *m_cpu;
         //0 call, 1 int, 2 ret, 3 reti
         QList<int> m_callStack;
+        QList<int> m_locationStack;
+        QList<int> m_detailStack;
         bool m_run;
+        int m_intAddr;
 };
 
 
