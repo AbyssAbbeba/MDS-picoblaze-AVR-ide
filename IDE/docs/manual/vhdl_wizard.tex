@@ -47,30 +47,36 @@
     \begin{description}
         \item [Component name]
             Name of your custom component.
-
         \item[Tab PORT]
             Port tab lets you define component ports.
             \begin{description}
-                \item[abc] abc
+                \item[Port name]
+                    Name of every port. Names (or identifiers) may consist of letters, numbers, and underscore.
+                \item [Value]
+                    You can set the initial value. Leaving this field empty means no initial value is needed.
+                \item [Direction]
+                    Direction in port tab can be IN, OUT or INOUT.
+                \item [Bus check-box]
+                    Telling generator, that this port is bus. Checking this will enable MSB(most significant bit) and LSB(least significant bit) field, which represents width of your bus.
+                \item [Signal check-box]
+                    If checked, generator will insert this port declared as signal in VHDL template.
             \end{description}
-
         \item[Tab GENERIC]
+            Port tab lets you define generic attributes of defined component.
             \begin{description}
-                \item[abc] abc
+                \item[Port name]
+                    Name of every generic attribute. Names (or identifiers) may consist of letters, numbers, and underscore.
+                \item [Value]
+                    You can set the initial value. Leaving this field empty means no initial value is needed.
+                \item [Type]
+                    Defines type of your generic attribute. Logic means zero or one. Logic vector is a bus, defined with MSB and LSB numbers.
+                    Integer can be number defined in range from -2147483648 to +2147483647. Positive is RANGE 1 TO integer’HIGH. Natural is in RANGE 0 TO integer’HIGH.
+                \item [Bus check-box]
+                    Telling generator, that this port is bus. Checking this will enable MSB(most significant bit) and LSB(least significant bit) field, which represents width
+                    of your bus. This check box in generic tab makes sense only for logic vector type of attribute.
+                \item [Constant check-box]
+                    If checked, generator will insert this attribute declared as constant in VHDL template.
             \end{description}
-
-        \item [Port name/ Generic name]
-            Name of every port or generic attribute. Names (or identifiers) may consist of letters, numbers, and underscore.
-        \item [Value]
-            You can set the initial value. Leaving this field empty means no initial value is needed.
-        \item [Direction/Type]
-            Direction in port tab can be IN, OUT or INOUT. In generic tab, you define type of your generic attribute. Logic means zero or one. Logic vector is a bus, defined with MSB and LSB numbers.
-            Integer can be number defined in range from -2147483648 to +2147483647. Positive is RANGE 1 TO integer’HIGH. Natural is in RANGE 0 TO integer’HIGH.
-        \item [Bus check-box]
-            Telling generator, that this port is bus. Checking this will enable MSB(most significant bit) and LSB(least significant bit) field, which represents width of your bus.
-            This check box in generic tab makes sense only for logic vector type of attribute.
-        \item [Signal/Constant check-box]
-            If checked, generator will insert this port or generic attribute declared as signal or constant in VHDL template.
         \item [Save and add button]
             Component will be added to MPU\_SYS entity and saved for later usage. Component name will appear in list "Existing components" and can be edited or added to current entity any time.
         \item [Add button]
