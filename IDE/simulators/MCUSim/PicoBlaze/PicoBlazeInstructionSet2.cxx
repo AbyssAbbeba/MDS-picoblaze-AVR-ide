@@ -261,7 +261,7 @@ void PicoBlazeInstructionSet2::inst_CALL ( const unsigned int opCode )
     }
 
     // Execute call.
-    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
