@@ -1799,7 +1799,7 @@ void VhdlMain::setPath(QString in_path)
 
 void VhdlMain::saveFile()
 {
-    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path,"*.stbl");
+    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path);
     ui->Output->setText(savePath);
     //ui->infoLabel->setText("");
 }
@@ -1809,7 +1809,7 @@ void VhdlMain::loadFile()
     // get path
 
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path);
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path,"*.stbl");
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
