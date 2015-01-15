@@ -2622,13 +2622,13 @@ void VhdlMain::printToFile()
     {
         out << "Pico_sleep <= '0';" << endl;
     }
-    out << "Pico_int <= Pico_int_ack;" << endl << endl;
+    out << "Pico_int   <= Pico_int_ack;" << endl << endl;
 
     // input and output multiplexer, using existing port ids
     // OUTPUT MULTIPLEXER
     out << "-------------------------------------------------" <<"\n";
     out << "--" << endl;
-    out << "--output multiplexer using PORT_ids from your assembler design ( generated from .sym file)" << endl;
+    out << "--output multiplexer using PORT_ids from your assembler design ( generated from .stbl file)" << endl;
     out << "--" << endl;
     out << "-------------------------------------------------" <<"\n";
     out << " output_ports:" << " PROCESS(clk) BEGIN" << "\n";
@@ -2659,7 +2659,7 @@ void VhdlMain::printToFile()
         out << '\t' << '\t' << "Desired output connection" << '\t' << "<=" << " Pico_Data_out;" << "\n";
     }
 
-    out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << '\t' << '\t' << "  => NULL;" << "\n";
+    out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << "  => NULL;" << "\n";
     out << '\t' << '\t' << '\t' << "END IF;" << "\n";
     out << '\t' << '\t' << "END IF;" << "\n";
     out << '\t' << "END IF;" << "\n";
@@ -2668,7 +2668,7 @@ void VhdlMain::printToFile()
     // INPUT MULTIPLEXER
     out << "-------------------------------------------------" <<"\n";
     out << "--" << endl;
-    out << "--input multiplexer using PORT_ids from your assembler design ( generated from .sym file)" << endl;
+    out << "--input multiplexer using PORT_ids from your assembler design ( generated from .stbl file)" << endl;
     out << "--" << endl;
     out << "-------------------------------------------------" <<"\n";
     out << " input_ports:" << " PROCESS(clk) BEGIN" << "\n";
@@ -2699,7 +2699,7 @@ void VhdlMain::printToFile()
         out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection"  "\n";
     }
 
-    out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << '\t' << '\t' << "  =>" << '\t' << "NULL;" << "\n";
+    out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << "  =>" << '\t' << "NULL;" << "\n";
     out << '\t' << '\t' << '\t' << "END IF;" << "\n";
     out << '\t' << '\t' << "END IF;" << "\n";
     out << '\t' << "END IF;" << "\n";
