@@ -2981,6 +2981,16 @@ void VhdlMain::componentWizardInitialization()
     ui2.editLSB_47->setDisabled(true);
     ui2.editLSB_48->setDisabled(true);
 
+    ui2.checkBus_41->setDisabled(true);
+    ui2.checkBus_42->setDisabled(true);
+    ui2.checkBus_43->setDisabled(true);
+    ui2.checkBus_44->setDisabled(true);
+    ui2.checkBus_45->setDisabled(true);
+    ui2.checkBus_46->setDisabled(true);
+    ui2.checkBus_47->setDisabled(true);
+    ui2.checkBus_48->setDisabled(true);
+
+
     ui2.editMSB_41->setDisabled(true);
     ui2.editMSB_42->setDisabled(true);
     ui2.editMSB_43->setDisabled(true);
@@ -3209,7 +3219,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_24->setDisabled(true);
     }
     // GENERIC TAB
-    if ( true == ui2.checkBus_41->isChecked())
+    if ( true == ui2.checkBus_41->isChecked() && true == ui2.checkBus_41->isEnabled() )
     {
         ui2.editLSB_41->setDisabled(false);
         ui2.editMSB_41->setDisabled(false);
@@ -3221,7 +3231,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_41->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_42->isChecked())
+    if ( true == ui2.checkBus_42->isChecked() && true == ui2.checkBus_42->isEnabled())
     {
         ui2.editLSB_42->setDisabled(false);
         ui2.editMSB_42->setDisabled(false);
@@ -3233,7 +3243,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_42->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_43->isChecked())
+    if ( true == ui2.checkBus_43->isChecked() && true == ui2.checkBus_43->isEnabled())
     {
         ui2.editLSB_43->setDisabled(false);
         ui2.editMSB_43->setDisabled(false);
@@ -3245,7 +3255,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_43->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_44->isChecked())
+    if ( true == ui2.checkBus_44->isChecked() && true == ui2.checkBus_44->isEnabled())
     {
         ui2.editLSB_44->setDisabled(false);
         ui2.editMSB_44->setDisabled(false);
@@ -3257,7 +3267,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_44->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_45->isChecked())
+    if ( true == ui2.checkBus_45->isChecked() && true == ui2.checkBus_45->isEnabled())
     {
         ui2.editLSB_45->setDisabled(false);
         ui2.editMSB_45->setDisabled(false);
@@ -3269,7 +3279,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_45->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_46->isChecked())
+    if ( true == ui2.checkBus_46->isChecked() && true == ui2.checkBus_46->isEnabled())
     {
         ui2.editLSB_46->setDisabled(false);
         ui2.editMSB_46->setDisabled(false);
@@ -3281,7 +3291,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_46->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_47->isChecked())
+    if ( true == ui2.checkBus_47->isChecked() && true == ui2.checkBus_47->isEnabled())
     {
         ui2.editLSB_47->setDisabled(false);
         ui2.editMSB_47->setDisabled(false);
@@ -3293,7 +3303,7 @@ void VhdlMain::busChecked()
         ui2.editMSB_47->setDisabled(true);
 
     }
-    if ( true == ui2.checkBus_48->isChecked())
+    if ( true == ui2.checkBus_48->isChecked() && true == ui2.checkBus_48->isEnabled())
     {
         ui2.editLSB_48->setDisabled(false);
         ui2.editMSB_48->setDisabled(false);
