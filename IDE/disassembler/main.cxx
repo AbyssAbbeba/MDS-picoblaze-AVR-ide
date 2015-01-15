@@ -31,13 +31,7 @@
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 // MCU memory data container libraries.
-#include "MCUDataFiles/HexFile.h"
-#include "MCUDataFiles/BinFile.h"
-#include "MCUDataFiles/SrecFile.h"
-#include "MCUDataFiles/XilMemFile.h"
-#include "MCUDataFiles/XilVHDLFile.h"
-#include "MCUDataFiles/XilVerilogFile.h"
-#include "MCUDataFiles/RawHexDumpFile.h"
+#include "MCUDataFiles/MCUDataFiles.h"
 
 // Standard headers.
 #include <cctype>

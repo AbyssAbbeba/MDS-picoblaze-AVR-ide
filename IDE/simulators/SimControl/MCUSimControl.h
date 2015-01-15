@@ -140,7 +140,7 @@ class MCUSimControl : public QThread
          * @param[in] deviceName
          * @param[in] procDef
          */
-        MCUSimControl ( const char * deviceName,
+        MCUSimControl ( const std::string & deviceName,
                         const AdjSimProcDef * procDef = NULL );
 
         /**
@@ -379,7 +379,7 @@ class MCUSimControl : public QThread
          * @param[in] procDef
          * @return
          */
-        bool changeDevice ( const char * deviceName,
+        bool changeDevice ( const std::string & deviceName,
                             const AdjSimProcDef * procDef = NULL );
 
     ////    Qt Signals    ////
