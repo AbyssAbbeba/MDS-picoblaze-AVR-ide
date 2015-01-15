@@ -50,13 +50,13 @@ StackWidget::StackWidget(QWidget *parent, MCUSimControl * controlUnit, MCUSimSub
     this->leInput->setFont(leFont);
 
     //this->leInput->setFixedWidth(42);
-    this->leInput->setFixedHeight(17);
+    this->leInput->setFixedHeight(19);
     this->leInput->setMinimumWidth(30);
     //this->btnPush->setFixedWidth(27);
-    this->btnPush->setFixedHeight(17);
+    this->btnPush->setFixedHeight(19);
     //this->btnPop->setFixedWidth(27);
-    this->btnPop->setFixedHeight(17);
-    m_leSP->setFixedHeight(17);
+    this->btnPop->setFixedHeight(19);
+    m_leSP->setFixedHeight(19);
 
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(m_lblStack, 0, 0, 1, 2);

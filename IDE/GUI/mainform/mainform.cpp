@@ -1365,6 +1365,10 @@ void MainForm::openFile()
     }
     for (int i = 0; i < path.count(); i++)
     {
+        if (path.at(i).isEmpty())
+        {
+            continue;
+        }
         m_lastDir = QFileInfo(path.at(i)).path();
         QFile file(path.at(i));
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1419,7 +1423,7 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
     //QDir projectDir(QFileInfo(m_projectMan->activeProject->prjPath).dir());
     //QString absoluteFilePath = QFileInfo(m_projectMan->getActive()->prjPath).dir().path() + "/" + path;
     qDebug() << path;
-    if (NULL != path)
+    if (false == path.isEmpty())
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -1559,11 +1563,15 @@ void MainForm::addFile()
 bool MainForm::saveFile()
 {
     //qDebug() << "MainForm: saveFile()";
+    if (m_wDockManager->getCentralPath().isNull())
+    {
+        return false;
+    }
     if (m_wDockManager->getCentralPath() == "Help Browser")
     {
         return false;
     }
-    if (m_wDockManager->getCentralPath() == NULL || m_wDockManager->getCentralPath() == "untracked")
+    if (m_wDockManager->getCentralPath().isEmpty() || m_wDockManager->getCentralPath() == "untracked")
     {
         return saveFileAs();
     }
@@ -1779,7 +1787,7 @@ bool MainForm::saveFileAs()
             }
         }
     }
-    if (path != NULL)
+    if (false == path.isEmpty())
     {
         m_fileWatcher.blockSignals(true);
         QFile file(path);
@@ -1929,7 +1937,7 @@ bool MainForm::saveFile(CodeEdit *editor, bool ask)
         {
             path = editor->getPath();
         }
-        if (path != NULL)
+        if (false == path.isEmpty())
         {
             m_fileWatcher.blockSignals(true);
             QFile file(path);
@@ -2014,7 +2022,7 @@ void MainForm::openProject()
         path= QFileDialog::getOpenFileName (this, tr("Open Project"), m_lastDir, tr("Project (*.mds-project)"), 0);
     }
 
-    if (path.isEmpty() == false && m_projectMan->isOpened(path) == false)
+    if (false == path.isEmpty() && false == m_projectMan->isOpened(path))
     {
     //nacteni projektu
         //qDebug() << path;
@@ -2042,7 +2050,7 @@ void MainForm::openProject()
 bool MainForm::openProject(QString path)
 {
     //qDebug() << "MainForm: openProject()";
-    if (false == m_projectMan->isOpened(path))
+    if (false == path.isEmpty() && false == m_projectMan->isOpened(path))
     {
         QFile file(path);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -5103,7 +5111,7 @@ void MainForm::jmpToBookmarkPrevSlot()
 
 void MainForm::fileClosed(QString path)
 {
-    qDebug() << "MainForm: file closed";
+    qDebug() << "MainForm: file closed" << path;
     if ("Help Browser" != path)
     {
         m_fileWatcher.removePath(path);
@@ -5145,7 +5153,8 @@ void MainForm::fileChanged(QString path)
 
 void MainForm::reloadFile(QString path)
 {
-    if (path == "")
+    qDebug() << "reloadFile(): " << path;
+    if (true == path.isEmpty())
     {
         return;
     }
@@ -5162,11 +5171,16 @@ void MainForm::reloadFile(QString path)
         file.close();
         QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
     }
+    qDebug() << "return reloadFile()";
 }
 
 
 void MainForm::reloadCurrentFile()
 {
+    if (NULL == m_wDockManager->getCentralWidget() || m_wDockManager->getCentralPath().isEmpty())
+    {
+        return;
+    }
     if (false == m_wDockManager->getCentralWidget()->isChanged())
     {
         QFile file(m_wDockManager->getCentralPath());
