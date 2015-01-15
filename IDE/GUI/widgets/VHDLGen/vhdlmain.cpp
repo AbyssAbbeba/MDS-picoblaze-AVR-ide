@@ -85,6 +85,15 @@ VhdlMain::VhdlMain(QWidget *parent) :
 
     ui->Output->setReadOnly(true);
     ui->Input->setReadOnly(true);
+
+     ui->pushButton->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+     ui->pushButton_2->setIcon(QPixmap(":/resources/icons/projOpen.png"));
+     ui->pushDelete->setIcon(QPixmap(":/resources/icons/cancel.png"));
+     ui->pushGenerate->setIcon(QPixmap(":/resources/icons/cog.png"));
+     ui->pushButton_4->setIcon(QPixmap(":/resources/icons/add.png"));
+     // cancel.png == delte  pushDelete
+     // add.png  //create  pushButton_4
+     // cog.png   generate        pushGenerate
     //QStringList attributes;
    // picoBlaze.name = "MPU_SYS_core";
    // portName << "clk" << "port_id" << "write_strobe" << "k_write_strobe" << "out_port" << "read_strobe"
@@ -652,7 +661,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 //         qDebug() << "right click";
 //     }
 
-    if ( rectList.contains("componentRect") == true)
+    if ( rectList.contains("projOpencomponentRect") == true)
     {
         if ( this->componentRect->contains( pressEvent->pos() ) == true)
         {
@@ -1799,7 +1808,7 @@ void VhdlMain::setPath(QString in_path)
 
 void VhdlMain::saveFile()
 {
-    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path,"*.stbl");
+    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path);
     ui->Output->setText(savePath);
     //ui->infoLabel->setText("");
 }
@@ -1809,7 +1818,7 @@ void VhdlMain::loadFile()
     // get path
 
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path);
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path, tr("Symbol table (*.stbl);; All files (*.*)"));
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
@@ -3329,7 +3338,7 @@ void VhdlMain::busChecked()
     }
 }
 
-void VhdlMain::valueEditingFinished(QString textValue)
+void VhdlMain::valueEditingFinished(QString /*textValue*/)
 {
     if ( ( false == ui2.checkBus_9->isChecked() ) && ( ui2.editValue_9->text().toInt(0,10) > 1 ) )
     {
@@ -3489,7 +3498,10 @@ void VhdlMain::valueEditingFinished(QString textValue)
 
 void VhdlMain::componentWizardConstruct()
 {
-    // editing signals
+    ui2.pushSaveAdd->setIcon(QPixmap(":/resources/icons/disk.png"));
+    ui2.pushOk->setIcon(QPixmap(":/resources/icons/add.png"));
+    ui2.pushCancel->setIcon(QPixmap(":/resources/icons/cancel.png"));// editing signals
+    
     connect(ui2.editValue_9,
             SIGNAL(textChanged(QString)),
             this,
