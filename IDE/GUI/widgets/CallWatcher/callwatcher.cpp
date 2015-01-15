@@ -86,7 +86,7 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.insert(0, detail);
                 if (false == m_run)
                 {
-                    QListWidgetItem *item = new QListWidgetItem(ui.lstCalls);
+                    QListWidgetItem *item = new QListWidgetItem();
                     ui.lstCalls->insertItem(0, item);
 
                     CallItemWidget *itemWidget = new CallItemWidget(this, "CALL", locationOrReason, detail);
@@ -104,7 +104,11 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.removeFirst();
                 if (false == m_run)
                 {
-                    ui.lstCalls->takeItem(ui.lstCalls->count() -1);
+                    QListWidgetItem *item = ui.lstCalls->takeItem(0);
+                    if (item != NULL)
+                    {
+                        delete item;
+                    }
                 }
                 break;
             }
@@ -116,7 +120,7 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.insert(0, detail);
                 if (false == m_run)
                 {
-                    QListWidgetItem *item = new QListWidgetItem(ui.lstCalls);
+                    QListWidgetItem *item = new QListWidgetItem();
                     ui.lstCalls->insertItem(0, item);
 
                     CallItemWidget *itemWidget = new CallItemWidget(this, "INTERRUPT", locationOrReason, m_intAddr);
@@ -134,7 +138,11 @@ void CallWatcher::handleEvent(int subsysId, int eventId, int locationOrReason, i
                 m_detailStack.removeFirst();
                 if (false == m_run)
                 {
-                    ui.lstCalls->takeItem(ui.lstCalls->count() -1);
+                    QListWidgetItem *item = ui.lstCalls->takeItem(0);
+                    if (item != NULL)
+                    {
+                        delete item;
+                    }
                 }
                 break;
             }

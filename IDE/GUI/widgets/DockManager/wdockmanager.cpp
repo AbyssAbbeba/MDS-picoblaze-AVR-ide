@@ -1057,7 +1057,7 @@ void WDockManager::showDockWidgetArea(int area)
             {
                 case 1:
                 {
-                    if ("Hide" != rightAreaTabs->tabText(rightAreaTabs->currentIndex()))
+                    if ("Hide" != rightAreaTabs->tabWhatsThis(rightAreaTabs->currentIndex()))
                     {
                         //(*i)->getQDockWidget()->setFixedWidth(wDockRightPrevWidth);
                         (*i)->getQDockWidget()->setMaximumWidth(500);
@@ -1327,7 +1327,7 @@ void WDockManager::handleShowHideRight(int index)
     {
         return;
     }
-    if ("Hide" == rightAreaTabs->tabText(index))
+    if ("Hide" == rightAreaTabs->tabWhatsThis(index))
     {
         if (true == rightVisible)
         {
@@ -1865,6 +1865,9 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             wDockWidget = new QDockWidget("Bookmarks", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            QLabel *lbl = new QLabel("Bookmarks", wDockWidget);
+
+            wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBookmarkList(wDockWidget);
@@ -1875,8 +1878,12 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
         case WBREAKPOINTLIST:
         {
             wDockWidget = new QDockWidget("Breakpoints", parentWindow);
+            //wDockWidget->setToolTip("Breakpoints");
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            QLabel *lbl = new QLabel("Breakpoints", wDockWidget);
+
+            wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             //mainWindow->addDockWidget(Qt::RightDockWidgetArea, wDockWidget);
             parent->createBreakpointList(wDockWidget);
@@ -1976,6 +1983,9 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             wDockWidget = new QDockWidget("Macros", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            QLabel *lbl = new QLabel("Macros", wDockWidget);
+
+            wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
             area = 1;
@@ -1998,6 +2008,9 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             wDockWidget = new QDockWidget("Help", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            QLabel *lbl = new QLabel("Help", wDockWidget);
+            
+            wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             HelpDockWidget *newDock = new HelpDockWidget(wDockWidget);
             area = 1;
@@ -2052,6 +2065,9 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSi
             wDockWidget = new QDockWidget("Call Watcher", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+            QLabel *lbl = new QLabel("Call Watcher", wDockWidget);
+
+            wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
             area = 1;
