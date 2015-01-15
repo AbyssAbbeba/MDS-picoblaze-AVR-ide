@@ -244,8 +244,8 @@ PicoBlazeGrid::PicoBlazeGrid(QWidget *parent, MCUSimControl *controlUnit)
     //this->btnInte->move(1080 - offsetMove, 200);
     m_layout->addWidget(btnInte, 8,10,1,2);
 
-    m_layout->addItem(new QSpacerItem(1,1, QSizePolicy::Minimum, QSizePolicy::Expanding), 9,10,1,1);
-    m_layout->addItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Minimum), 0,12,1,1);
+    m_layout->addItem(new QSpacerItem(1,1, QSizePolicy::Minimum, QSizePolicy::Expanding), 9,10,1,2);
+    m_layout->addItem(new QSpacerItem(1,1, QSizePolicy::Expanding, QSizePolicy::Minimum), 0,12,9,1);
 
     QFont btnFont = this->btnIntr->font();
     btnFont.setPointSize(9);
