@@ -24,13 +24,7 @@
 #include <algorithm>
 
 // MCUDataFiles
-#include "HexFile.h"
-#include "BinFile.h"
-#include "SrecFile.h"
-#include "XilMemFile.h"
-#include "XilVHDLFile.h"
-#include "DbgFileNative.h"
-#include "XilVerilogFile.h"
+#include "MCUDataFiles.h"
 
 // Moravia Microsystems, s.r.o. proprietary Debugger File
 #include "DbgFileNative.h"

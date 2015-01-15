@@ -75,7 +75,7 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          * @param[in] procDef
          * @return
          */
-        bool setupSimulator ( const char * mcuName,
+        bool setupSimulator ( const std::string & mcuName,
                               MCUSimConfig & mcuConfig,
                               const AdjSimProcDef * procDef = NULL ) const;
 
@@ -84,7 +84,7 @@ class McuSimCfgMgr : public QXmlDefaultHandler
          * @param[in] mcuName
          * @return
          */
-        const McuDeviceSpec * getDeviceSpec ( const char * mcuName ) const;
+        const McuDeviceSpec * getDeviceSpec ( const std::string & mcuName ) const;
 
     ////    Private Operations    ////
     private:

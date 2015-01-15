@@ -14,12 +14,7 @@
 
 #include <QtGui>
 #include "disasmdlg.h"
-#include "../../../utilities/MCUDataFiles/HexFile.h"
-#include "../../../utilities/MCUDataFiles/BinFile.h"
-#include "../../../utilities/MCUDataFiles/SrecFile.h"
-#include "../../../utilities/MCUDataFiles/XilMemFile.h"
-#include "../../../utilities/MCUDataFiles/XilVerilogFile.h"
-#include "../../../utilities/MCUDataFiles/XilVHDLFile.h"
+#include "../../../utilities/MCUDataFiles/MCUDataFiles.h"
 #include "../../../disassembler/PicoBlaze/DAsmPicoBlazeKcpsm6.h"
 #include "../../../disassembler/PicoBlaze/DAsmPicoBlazeKcpsm3.h"
 #include "../../../disassembler/PicoBlaze/DAsmPicoBlazeKcpsm2.h"
@@ -105,7 +100,7 @@ void DisAsmDialog::create()
         }
         else if ( "kcpsm3" == family )
         {
-            
+
             disasm = new DAsmPicoBlazeKcpsm3();
             memFileBPR = 3;
             opCodeSize = XilHDLFile::SIZE_18b;
@@ -230,9 +225,9 @@ void DisAsmDialog::create()
     {
         config.m_tabSize = 4;
     }
-    
+
     disasm->m_config = config;
-    
+
     bool finalResult = disasm->disassemble(*dataFile);
 
     if ( true == finalResult )
@@ -259,7 +254,7 @@ void DisAsmDialog::create()
             editor->getTextEdit()->append(QString::fromStdString(messages.at(i)));
         }*/
     }
-    
+
     accept();
 }
 

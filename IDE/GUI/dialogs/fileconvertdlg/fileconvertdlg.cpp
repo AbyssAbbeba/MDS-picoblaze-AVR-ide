@@ -4,7 +4,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
  * @ingroup  FileConvertDlg
@@ -13,14 +13,7 @@
 
 #include <QtGui>
 #include "fileconvertdlg.h"
-#include "../../../utilities/MCUDataFiles/HexFile.h"
-#include "../../../utilities/MCUDataFiles/BinFile.h"
-#include "../../../utilities/MCUDataFiles/SrecFile.h"
-#include "../../../utilities/MCUDataFiles/XilMemFile.h"
-#include "../../../utilities/MCUDataFiles/XilVerilogFile.h"
-#include "../../../utilities/MCUDataFiles/XilVHDLFile.h"
-#include "../../../utilities/MCUDataFiles/RawHexDumpFile.h"
-#include "../../../utilities/MCUDataFiles/DataFile.h"
+#include "../../../utilities/MCUDataFiles/MCUDataFiles.h"
 
 FileConvertDlg::FileConvertDlg(QWidget *parent)
     : QDialog(parent)

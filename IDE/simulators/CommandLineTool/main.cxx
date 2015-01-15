@@ -22,6 +22,7 @@
 // Standard headers.
 #include <utility>
 #include <cstring>
+#include <fstream>
 #include <iostream>
 
 // Used for i18n only.
@@ -34,6 +35,20 @@
 // OS compatibility.
 #include "utilities/os/os.h"
 
+// MCU memory data container libraries.
+#include "utilities/MCUDataFiles/MCUDataFiles.h"
+
+// MCU native debug file.
+#include "utilities/DbgFile/DbgFileNative.h"
+
+// Simulator control unit.
+#include "../SimControl/MCUSimControl.h"
+
+// Library for working with processor definition files.
+#include "utilities/AdjSimProcDef/AdjSimProcDef.h"
+#include "utilities/AdjSimProcDef/AdjSimProcDefParser.h"
+
+
 /**
  * @brief Program version string.
  * @note Be careful with this value, it might be expected in "[0-9]+\.[0-9]+(\.[0-9]+)?" format.
@@ -43,9 +58,9 @@ static const char * VERSION = MDS_VERSION;
 /// @brief Program exit codes.
 enum ExitCode
 {
-    EXIT_CODE_SUCCESS   = 0, ///< Everything went smoothly and simulation was successful.
-    EXIT_ERROR_COMPILER = 1, ///< Simulator attempted to execute the given task but for some reason without success.
-    EXIT_ERROR_CLI      = 2  ///< Command line interface did not understand the task, simulator was not even started.
+    EXIT_CODE_SUCCESS    = 0, ///< Everything went smoothly and simulation was successful.
+    EXIT_ERROR_SIMULATOR = 1, ///< Simulator attempted to execute the given task but for some reason without success.
+    EXIT_ERROR_CLI       = 2  ///< Command line interface did not understand the task, simulator was not even started.
 };
 
 /**
@@ -74,16 +89,6 @@ inline void printHelp ( const char * executable )
               << std::endl;
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
-              << QObject::tr("    -a, --architecture <architecture>").toStdString() << std::endl
-              << QObject::tr("        (MANDATORY) Specify target processor architecture, supported architectures are:")
-                            .toStdString() << std::endl
-            #ifdef MDS_FEATURE_PICOBLAZE
-              << QObject::tr("            - PicoBlaze : (K)constant Coded Programmable State Machine.")
-                            .toStdString() << std::endl
-            #endif // MDS_FEATURE_PICOBLAZE
-            #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
-              << QObject::tr("            - Adaptable : User defined soft-core processor.").toStdString() << std::endl
-            #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << std::endl
               << QObject::tr("    -g, --debug-file <full file name>").toStdString() << std::endl
               << QObject::tr("        (MANDATORY) Specify MDS native debug file.").toStdString() << std::endl
@@ -107,6 +112,13 @@ inline void printHelp ( const char * executable )
               << QObject::tr("            - srec   : Motorola S-Record,").toStdString() << std::endl
               << QObject::tr("            - bin    : raw binary file,").toStdString() << std::endl
               << std::endl
+            #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+              << QObject::tr("    -p, --proc-def-file <processor definition file>").toStdString() << std::endl
+              << QObject::tr("        Specify architecture for user defined processor, this option makes sense")
+                            .toStdString() << std::endl
+              << QObject::tr("        only if --device=Adaptable").toStdString() << std::endl
+              << std::endl
+            #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
               << QObject::tr("    -h, --help").toStdString() << std::endl
               << QObject::tr("        Print this message.").toStdString() << std::endl
               << std::endl
@@ -119,9 +131,9 @@ inline void printHelp ( const char * executable )
               << std::endl;
 
     std::cout << QObject::tr("Examples:").toStdString() << std::endl
-              << QObject::tr("  %1 --architecture=PicoBlaze --device=kcpsm6 --debug-file=abc.dbg --code-file=abc.hex --code-file-type=ihex")
+              << QObject::tr("  %1 --device=kcpsm6 --debug-file=abc.dbg --code-file=abc.mem --code-file-type=mem")
                             .arg(executable).toStdString() << std::endl
-              << QObject::tr("  %1 -a PicoBlaze -d kcpsm6 -g abc.dbg -c abc.hex -t ihex")
+              << QObject::tr("  %1 -d kcpsm6 -g abc.dbg -c abc.hex -t ihex")
                             .arg(executable).toStdString() << std::endl
               << std::endl;
 }
@@ -143,6 +155,8 @@ void printUsage ( const char * executable )
  */
 int main ( int argc, char ** argv )
 {
+    using namespace boost::filesystem;
+
     if ( 1 == argc )
     {
         std::cerr << QObject::tr("Error: option required.").toStdString() << std::endl;
@@ -151,7 +165,7 @@ int main ( int argc, char ** argv )
     }
 
     // Basic settings.
-    std::string architecture;
+    std::string procDefFile;
     std::string device;
     std::string debugFile;
     std::string codeFile;
@@ -161,14 +175,14 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVsa:d:g:c:t:";
+    const char * shortopts = ":hVsp:d:g:c:t:";
     static const struct option longopts[] =
     {
         { "help",           no_argument,       0,   'h' },
         { "version",        no_argument,       0,   'V' },
         { "silent",         no_argument,       0,   's' },
 
-        { "architecture",   required_argument, 0,   'a' },
+        { "proc-def-file",  required_argument, 0,   'p' },
         { "device",         required_argument, 0,   'd' },
         { "debug-file",     required_argument, 0,   'g' },
         { "code-file",      required_argument, 0,   'c' },
@@ -192,8 +206,8 @@ int main ( int argc, char ** argv )
                 silent = true;
                 break;
 
-            case 'a': // --architecture=<architecture>
-                architecture = optarg;
+            case 'p': // --proc-def=<proc-def-file>
+                procDefFile = optarg;
                 break;
             case 'd': // --dev=<device_name>
                 device = optarg;
@@ -239,7 +253,7 @@ int main ( int argc, char ** argv )
         printIntro();
     }
 
-    std::cout << "architecture=" << architecture << '\n';
+    std::cout << "procDefFile=" << procDefFile << '\n';
     std::cout << "device=" << device << '\n';
     std::cout << "debugFile=" << debugFile << '\n';
     std::cout << "codeFile=" << codeFile << '\n';
@@ -251,7 +265,6 @@ int main ( int argc, char ** argv )
     {
         { &device,       QObject::tr("device").toStdString() },
         { &debugFile,    QObject::tr("debug file").toStdString() },
-        { &architecture, QObject::tr("architecture").toStdString() },
         { &codeFile,     QObject::tr("machine code file").toStdString() },
         { &codeFileType, QObject::tr("machine code file type").toStdString() },
         { nullptr,       "" }
@@ -269,6 +282,167 @@ int main ( int argc, char ** argv )
     {
         return EXIT_ERROR_CLI;
     }
+
+    DbgFile * dbgFile = nullptr;
+    DataFile * dataFile = nullptr;
+    AdjSimProcDef * procDef = nullptr;
+    MCUSimControl * simControl = nullptr;
+
+    try
+    {
+        int memFileBPR = -1;
+        XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::OPCodeSize(-1);
+
+        codeFile = path(makeHomeSafe(codeFile)).make_preferred().string();
+
+        if ( "kcpsm1cpld" == device )
+        {
+            memFileBPR = 2;
+            opCodeSize = XilHDLFile::SIZE_16b;
+        }
+        else if ( "kcpsm1" == device )
+        {
+            memFileBPR = 2;
+            opCodeSize = XilHDLFile::SIZE_16b;
+        }
+        else if ( "kcpsm2" == device )
+        {
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
+        }
+        else if ( "kcpsm3" == device )
+        {
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
+        }
+        else if ( "kcpsm6" == device )
+        {
+            memFileBPR = 3;
+            opCodeSize = XilHDLFile::SIZE_18b;
+        }
+
+        if ( "hex" == codeFileType )
+        {
+            // Intel 8 HEX, or Intel 16 HEX
+            dataFile = new HexFile(codeFile);
+        }
+        else if ( "srec" == codeFileType )
+        {
+            // Motorola S-Record
+            dataFile = new SrecFile(codeFile);
+        }
+        else if ( "bin" == codeFileType )
+        {
+            // Raw binary file
+            dataFile = new BinFile(codeFile);
+        }
+        else if ( "rawhex" == codeFileType )
+        {
+            // Raw HEX dump
+            dataFile = new RawHexDumpFile(RawHexDumpFile::OPCodeSize(opCodeSize), codeFile);
+        }
+        else if ( "vhd" == codeFileType )
+        {
+            // VHDL file
+            if ( -1 == opCodeSize )
+            {
+                std::cerr << QObject::tr("Error: cannot use VHDL file for this device.").toStdString() << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilVHDLFile(codeFile, "", "", opCodeSize);
+        }
+        else if ( "v" == codeFileType )
+        {
+            // Verilog file
+            if ( -1 == opCodeSize )
+            {
+                std::cerr << QObject::tr("Error: cannot use Verilog file for this device.").toStdString() << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilVerilogFile(codeFile, "", "", opCodeSize);
+        }
+        else if ( "mem" == codeFileType )
+        {
+            // Xilinx MEM file
+            if ( -1 == memFileBPR )
+            {
+                std::cerr << QObject::tr("Error: cannot use MEM file for this device.").toStdString() << std::endl;
+                return EXIT_ERROR_CLI;
+            }
+            dataFile = new XilMemFile(codeFile, memFileBPR);
+        }
+        else
+        {
+            // Unknown
+            std::cerr << QObject::tr("Error: %1 is not valid file type specification.")
+                                    .arg(codeFileType.c_str()).toStdString() << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+    }
+    catch ( const DataFileException & e )
+    {
+        std::cerr << QObject::tr("Error: unable to read the specified machine code file: `%1', reason: ")
+                                .arg(codeFile.c_str()).toStdString()
+                  << e.toString() << std::endl;
+        return EXIT_ERROR_SIMULATOR;
+    }
+
+  #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+    if ( "Adaptable" == device )
+    {
+        if ( true == procDefFile.empty() )
+        {
+            std::cerr << QObject::tr("Error: processor definition file has to be specified when using "
+                                     "the Adaptable architecture.").toStdString() << std::endl;
+            return EXIT_ERROR_CLI;
+        }
+
+        procDefFile = path(makeHomeSafe(procDefFile)).make_preferred().string();
+
+        std::string data;
+        std::ifstream file(procDefFile, std::ios_base::in | std::ios_base::binary);
+        while ( false == file.eof() )
+        {
+            if ( true == file.bad() )
+            {
+                std::cerr << QObject::tr("Error: unable to read the processor definition file: %1.")
+                                        .arg(procDefFile.c_str()).toStdString() << std::endl;
+                return EXIT_ERROR_SIMULATOR;
+            }
+
+            data += (char) file.get();
+        }
+
+        try
+        {
+            AdjSimProcDefParser procDefParser(data);
+            procDef = new AdjSimProcDef(procDefParser.data());
+        }
+        catch ( const std::runtime_error & e )
+        {
+            std::cerr << QObject::tr("Error: processor definition file %1 is contains invalid data:")
+                                    .arg(procDefFile.c_str()).toStdString() << std::endl;
+            std::cerr << e.what() << std::endl;
+            return EXIT_ERROR_SIMULATOR;
+        }
+    }
+  #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+
+    try
+    {
+        debugFile = path(makeHomeSafe(debugFile)).make_preferred().string();
+        dbgFile = new DbgFileNative(debugFile);
+    }
+    catch ( const DbgFile::Exception & e )
+    {
+        std::cerr << QObject::tr("Error: unable to read the specified debug file: `%1', reason: ")
+                                .arg(debugFile.c_str()).toStdString()
+                  << e.toString() << std::endl;
+        return EXIT_ERROR_SIMULATOR;
+    }
+
+//     simControl = new MCUSimControl(device, procDef);
+//     simControl->startSimulation(dbgFile, dataFile);
 
     std::string input;
     while ( false == std::cin.eof() )
