@@ -248,7 +248,7 @@ inline void AsmAdaptableSemanticAnalyzer::genMachineCode()
     XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::SIZE_16b;
     std::string vTemplate = "default.v";
     std::string vhdlTemplate = "default.vhd";
-    std::string name = m_compilerCore->getBaseName();
+    std::string name = m_treeDecoder->getEntityName(m_compilerCore->getBaseName(false));
 
     AsmMachineCodeGen::Endianness endianness = (
         ( AdjSimProcDef::Memory::Program::END_BIG == m_device.m_memory.m_program.m_endian )

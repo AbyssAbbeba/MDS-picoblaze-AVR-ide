@@ -333,9 +333,10 @@ class CompilerCore : public CompilerBase,
 
             /**
              * @brief
+             * @param[in] withExtension
              * @return
              */
-            virtual std::string getBaseName() override;
+            virtual std::string getBaseName ( bool withExtension = true ) override;
         //@}
 
     ////    Inline Public Operations    ////

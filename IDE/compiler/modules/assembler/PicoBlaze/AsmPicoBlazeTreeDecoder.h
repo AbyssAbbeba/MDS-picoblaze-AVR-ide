@@ -142,6 +142,13 @@ class AsmPicoBlazeTreeDecoder
          */
         void phase3();
 
+        /**
+         * @brief
+         * @param[in] defaultValue
+         * @return
+         */
+        const std::string & getEntityName ( const std::string & defaultValue ) const;
+
     ////    Private Operations    ////
     private:
         /**
@@ -213,6 +220,12 @@ class AsmPicoBlazeTreeDecoder
          * @param[in,out] node
          */
         inline void dir_TITLE ( CompilerStatement * node );
+
+        /**
+         * @brief
+         * @param[in,out] node
+         */
+        inline void dir_ENTITY ( CompilerStatement * node );
 
         /**
          * @brief
@@ -452,6 +465,9 @@ class AsmPicoBlazeTreeDecoder
 
         ///
         CompilerSourceLocation m_mergeSprLoc;
+
+        ///
+        std::string m_entityName;
 };
 
 #endif // ASMPICOBLAZETREEDECODER_H

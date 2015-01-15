@@ -211,7 +211,7 @@ inline void AsmPicoBlazeSemanticAnalyzer::genMachineCode()
     XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::SIZE_18b;
     std::string vTemplate;
     std::string vhdlTemplate;
-    std::string name = m_compilerCore->getBaseName();
+    std::string name = m_treeDecoder->getEntityName(m_compilerCore->getBaseName(false));
 
     switch ( m_device )
     {
