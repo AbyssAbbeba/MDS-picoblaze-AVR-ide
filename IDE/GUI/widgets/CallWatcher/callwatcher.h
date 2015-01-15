@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QList>
 #include "ui_callwatcher.h"
+#include "ui_calllistwidget.h"
 #include "../../../simulators/SimControl/MCUSimObserver.h"
 
 class MCUSimControl;
@@ -40,6 +41,7 @@ class CallWatcher : public QWidget, public MCUSimObserver
 
     private:
         Ui_CallWatcher ui;
+        Ui_CallListWidget ui_widget;
         MCUSimControl *m_simControlUnit;
         //0 call, 1 int, 2 ret, 3 reti
         QList<int> m_callStack;
