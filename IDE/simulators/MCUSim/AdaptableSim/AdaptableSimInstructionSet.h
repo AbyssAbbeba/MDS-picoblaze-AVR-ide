@@ -120,6 +120,11 @@ class AdaptableSimInstructionSet : public MCUSimCPU
          */
         void irq();
 
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() override;
+
     ////    Protected Operations    ////
     protected:
         /**

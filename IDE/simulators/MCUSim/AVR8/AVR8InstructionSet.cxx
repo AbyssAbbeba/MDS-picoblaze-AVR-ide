@@ -236,6 +236,18 @@ void AVR8InstructionSet::reset ( MCUSimBase::ResetMode mode )
     }
 }
 
+void AVR8InstructionSet::forceReturn()
+{
+    if ( true == m_interruptController->interrupted() )
+    {
+        returnFromInterrupt();
+    }
+    else
+    {
+        returnFromSubroutine();
+    }
+}
+
 inline void AVR8InstructionSet::mcuReset()
 {
     if ( false == (*m_fusesAndLocks)[AVR8FusesAndLocks::FUSE_BOOTRST] )
@@ -2619,34 +2631,8 @@ int AVR8InstructionSet::inst_RET ( const unsigned int )
 {
     instructionEnter(AVR8InsNames::INS_RET);
 
-    // Load the return address from the stack
-    unsigned int returnAddress = m_dataMemory->popFromStack() | (m_dataMemory->popFromStack() << 8);
-    if ( m_config.m_pcWidth > PCWIDTH_16 )
-    {
-        returnAddress |= m_dataMemory->popFromStack() << 16;
-    }
-
-    // Execute return from subprogram
-    if ( 0 == m_actSubprogCounter )
-    {
-        logEvent(EVENT_CPU_ERR_INVALID_RET, m_pc);
-    }
-    else
-    {
-        logEvent(EVENT_CPU_RETURN, m_pc);
-        m_actSubprogCounter--;
-    }
-    m_pc = returnAddress;
-
-    // Determinate hos many cycles this takes
-    if ( PCWIDTH_22 == m_config.m_pcWidth )
-    {
-        return 5;
-    }
-    else
-    {
-        return 4;
-    }
+    // Execute return from subprogram.
+    return returnFromSubroutine();
 }
 
 /*
@@ -2659,35 +2645,8 @@ int AVR8InstructionSet::inst_RETI ( const unsigned int )
 {
     instructionEnter(AVR8InsNames::INS_RETI);
 
-    // Load the return address from the stack
-    unsigned int returnAddress = m_dataMemory->popFromStack() | (m_dataMemory->popFromStack() << 8);
-    if ( m_config.m_pcWidth > PCWIDTH_16 )
-    {
-        returnAddress |= m_dataMemory->popFromStack() << 16;
-    }
-
-    // Execute return from subprogram
-    if ( true == m_interruptController->interrupted() )
-    {
-        logEvent(EVENT_CPU_ERR_INVALID_RETI, m_pc);
-    }
-    else
-    {
-        // Make interrupt controller forget about the last interrupt
-        logEvent(EVENT_CPU_RETURN_FROM_ISR, m_pc);
-        m_interruptController->reti();
-    }
-    m_pc = returnAddress;
-
-    // Determinate hos many cycles this takes
-    if ( PCWIDTH_22 == m_config.m_pcWidth )
-    {
-        return 5;
-    }
-    else
-    {
-        return 4;
-    }
+    // Execute return from subprogram.
+    return returnFromInterrupt();
 }
 
 /*
@@ -4414,4 +4373,67 @@ inline int AVR8InstructionSet::inst_DES_K ( const unsigned int opCode )
 
     // If the DES instruction is succeeding a non-DES instruction, an extra cycle is inserted.
     return ( ( AVR8InsNames::INS_DES == m_lastInstruction ) ? 1 : 2 );
+}
+
+inline int AVR8InstructionSet::returnFromInterrupt()
+{
+    // Load the return address from the stack
+    unsigned int returnAddress = m_dataMemory->popFromStack() | (m_dataMemory->popFromStack() << 8);
+    if ( m_config.m_pcWidth > PCWIDTH_16 )
+    {
+        returnAddress |= m_dataMemory->popFromStack() << 16;
+    }
+
+    if ( true == m_interruptController->interrupted() )
+    {
+        logEvent(EVENT_CPU_ERR_INVALID_RETI, m_pc);
+    }
+    else
+    {
+        // Make interrupt controller forget about the last interrupt
+        logEvent(EVENT_CPU_RETURN_FROM_ISR, m_pc);
+        m_interruptController->reti();
+    }
+    m_pc = returnAddress;
+
+    // Determinate how many cycles this takes.
+    if ( PCWIDTH_22 == m_config.m_pcWidth )
+    {
+        return 5;
+    }
+    else
+    {
+        return 4;
+    }
+}
+
+inline int AVR8InstructionSet::returnFromSubroutine()
+{
+    // Load the return address from the stack
+    unsigned int returnAddress = m_dataMemory->popFromStack() | (m_dataMemory->popFromStack() << 8);
+    if ( m_config.m_pcWidth > PCWIDTH_16 )
+    {
+        returnAddress |= m_dataMemory->popFromStack() << 16;
+    }
+
+    if ( 0 == m_actSubprogCounter )
+    {
+        logEvent(EVENT_CPU_ERR_INVALID_RET, m_pc);
+    }
+    else
+    {
+        logEvent(EVENT_CPU_RETURN, m_pc);
+        m_actSubprogCounter--;
+    }
+    m_pc = returnAddress;
+
+    // Determinate hos many cycles this takes
+    if ( PCWIDTH_22 == m_config.m_pcWidth )
+    {
+        return 5;
+    }
+    else
+    {
+        return 4;
+    }
 }

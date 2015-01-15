@@ -107,6 +107,11 @@ class PIC8InstructionSet : public MCUSimCPU
          * @param[in] mode
          */
         virtual void reset ( MCUSimBase::ResetMode mode ) override;
+        
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() override;
 
         /**
          * @brief

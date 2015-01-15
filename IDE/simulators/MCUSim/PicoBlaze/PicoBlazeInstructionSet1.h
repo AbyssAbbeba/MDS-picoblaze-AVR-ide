@@ -56,6 +56,11 @@ class PicoBlazeInstructionSet1 : public PicoBlazeInstructionSet
          */
         virtual bool isValid() const override;
 
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() override;
+
     ////    Instruction Operations - Public Operations and Inline Public Operations    ////
     public:
         /**
@@ -150,7 +155,6 @@ class PicoBlazeInstructionSet1 : public PicoBlazeInstructionSet
                 inline void inst_RETURNI_DIS ( const unsigned int opCode );
                 inline void inst_ENABLE_INT  ( const unsigned int opCode );
                 inline void inst_DISABLE_INT ( const unsigned int opCode );
-                inline void inst_RETURNI_aux ();
             //@}
 
             /// @name Logical Group
@@ -196,6 +200,16 @@ class PicoBlazeInstructionSet1 : public PicoBlazeInstructionSet
          * @param[in] instName
          */
         inline void instructionEnter ( PicoBlazeInsNames::Instructions instName );
+
+        /**
+         * @brief
+         */
+        inline void returnFromInterrupt();
+
+        /**
+         * @brief
+         */
+        inline void returnFromSubroutine();
 };
 
 #endif // PICOBLAZEINSTRUCTIONSET1_H

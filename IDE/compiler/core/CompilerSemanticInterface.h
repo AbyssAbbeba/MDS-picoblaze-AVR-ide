@@ -152,9 +152,10 @@ class CompilerSemanticInterface
 
         /**
          * @brief
+         * @param[in] withExtension
          * @return
          */
-        virtual std::string getBaseName() = 0;
+        virtual std::string getBaseName ( bool withExtension = true ) = 0;
 
     ////    Public Attributes    ////
     public:
