@@ -4,7 +4,8 @@
     - Added Memory Watcher
     - GUI polishing
     - New assembler command line options
-    - New predefined constants in assembler
+    - New predefined constants in assembler (see manual for details)
+    - New assembler directive - ENTITY
     - Improved documentation handling (added functioning index)
 
 1.2 (6.1.2015)

@@ -723,6 +723,7 @@ namespace CompilerStatementTypes
             ASMPICOBLAZE_DIR_EXPAND,            ///<
             ASMPICOBLAZE_DIR_NOEXPAND,          ///<
             ASMPICOBLAZE_DIR_TITLE,             ///<
+            ASMPICOBLAZE_DIR_ENTITY,            ///<
             ASMPICOBLAZE_DIR_MESSG,             ///<
             ASMPICOBLAZE_DIR_ERROR,             ///<
             ASMPICOBLAZE_DIR_WARNING,           ///<
