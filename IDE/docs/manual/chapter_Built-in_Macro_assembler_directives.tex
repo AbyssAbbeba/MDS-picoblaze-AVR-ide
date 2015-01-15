@@ -148,6 +148,7 @@
             \verb'                  ; ...'\\
             \verb'                  CALL    somewhere'
 
+    \clearpage
     \asmdirective{PORT}
         \index{PORT}
         Symbols defined with the \texttt{PORT} directive are considered to be port addresses only and cannot be used for anything else, except for that \texttt{PORT} is just another \texttt{EQU}.
@@ -157,6 +158,30 @@
 
         \paragraph{Examples}~\\
             \verb'    my_port       PORT    0x22'\\
+            \verb''\\
+            \verb'                  OUTPUT  S0, my_port'
+
+    \asmdirective{PORTIN}
+        \index{PORTIN}
+        Symbols defined with the \texttt{PORTIN} behaves the same as if they were defined with the \texttt{PORT} directive but with one exception, \texttt{PORTIN} is intended for specifying input port addresses and some tools might rely on that. Generally it is a good idea to avoid using \texttt{PORT} as much as possible and use \texttt{PORTIN} and \texttt{PORTOUT} instead.
+
+        \paragraph{Syntax}~\\
+            \verb'    <symbol> PORTIN <expression>'
+
+        \paragraph{Examples}~\\
+            \verb'    my_port       PORTIN  0x22'\\
+            \verb''\\
+            \verb'                  INPUT   S0, my_port'
+
+    \asmdirective{PORTOUT}
+        \index{PORTOUT}
+        Symbols defined with the \texttt{PORTOUT} behaves the same as if they were defined with the \texttt{PORT} directive but with one exception, \texttt{PORTOUT} is intended for specifying output port addresses and some tools might rely on that. Generally it is a good idea to avoid using \texttt{PORT} as much as possible and use \texttt{PORTIN} and \texttt{PORTOUT} instead.
+
+        \paragraph{Syntax}~\\
+            \verb'    <symbol> PORTOUT <expression>'
+
+        \paragraph{Examples}~\\
+            \verb'    my_port       PORTOUT 0x22'\\
             \verb''\\
             \verb'                  OUTPUT  S0, my_port'
 
@@ -492,6 +517,17 @@
             \verb'          ; ... do something ...'\\
             \verb''\\
             \verb'    FAILJMP  something_is_wrong'
+
+    \clearpage
+    \asmdirective{ENTITY}
+        \index{ENTITY}
+        Specifies VHDL entity name to use when filling VHDL template, by default the entity name is the base name of your source code file (without file extension, case sensitive). Entity name is case sensitive and has to be enclosed in double quotes ("). Assembler does not check whether the entity name is a valid VHDL identifier!
+
+        \paragraph{Syntax}~\\
+            \verb'    ENTITY  "<name>"'\\
+
+        \paragraph{Examples}~\\
+            \verb'    entity   "my_entity_abc"'
 
 \clearpage
 \section{Code generation directives}

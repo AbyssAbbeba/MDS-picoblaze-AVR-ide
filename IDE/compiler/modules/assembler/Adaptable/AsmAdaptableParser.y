@@ -145,7 +145,7 @@
 %token D_VARIABLE       D_SET           D_DEFINE        D_UNDEFINE      D_ENDR
 %token D_AUTOREG        D_AUTOSPR       D_DATA          D_DEVICE        D_ADDRESS
 %token D_FAILJMP        D_ORGSPR        D_INITSPR       D_MERGESPR      D_PORTIN
-%token D_PORTOUT
+%token D_PORTOUT        D_ENTITY
 
 /* Other terminal symbols */
 %token COMMENT
@@ -236,6 +236,7 @@
 %type<stmt>     dir_db_a        dir_endm_a      dir_expand_a    dir_noexpand_a  dir_autospr_a
 %type<stmt>     dir_data        dir_limit       dir_device      dir_failjmp     dir_orgspr
 %type<stmt>     dir_initspr     dir_mergespr    ifelse_blocks   dir_portin      dir_portout
+%type<stmt>     dir_entity
 
 /*
  * Symbol destructors:
@@ -411,6 +412,7 @@ directive:
     | dir_failjmp   { $$ = $1; }    | dir_mergespr  { $$ = $1; }
     | dir_orgspr    { $$ = $1; }    | dir_initspr   { $$ = $1; }
     | dir_portin    { $$ = $1; }    | dir_portout   { $$ = $1; }
+    | dir_entity    { $$ = $1; }
 ;
 dir_cond_asm:
       if_block ifelse_blocks
@@ -1492,6 +1494,9 @@ dir_messg:
                                         $label->completeDelete();
                                     }
     | D_MESSG                       { /* Syntax error */ $$ = nullptr; ARG_REQUIRED_D(@D_MESSG, "MESSG"); }
+;
+dir_entity:
+      D_ENTITY string               { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_ENTITY, $string); }
 ;
 dir_title:
       D_TITLE string                { $$ = new CompilerStatement(LOC(@$), ASMPICOBLAZE_DIR_TITLE, $string); }
