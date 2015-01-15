@@ -63,6 +63,10 @@ void TranslatorDlg::setPath()
  */
 void TranslatorDlg::create()
 {
+    if (true == ui.lePath->text().isEmpty())
+    {
+        return;
+    }
     QFile file(this->ui.lePath->text());
     if (false == file.exists())
     {
