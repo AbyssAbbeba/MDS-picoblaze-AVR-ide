@@ -441,8 +441,17 @@ int main ( int argc, char ** argv )
         return EXIT_ERROR_SIMULATOR;
     }
 
-//     simControl = new MCUSimControl(device, procDef);
-//     simControl->startSimulation(dbgFile, dataFile);
+    simControl = new MCUSimControl(device, procDef);
+    simControl->startSimulation(dbgFile, dataFile);
+
+    if ( false == simControl->getMessages().empty() )
+    {
+        for ( const auto & msg : simControl->getMessages() )
+        {
+            std::cerr << QObject::tr("Error: ").toStdString() << msg << std::endl;
+        }
+        return EXIT_ERROR_SIMULATOR;
+    }
 
     std::string input;
     while ( false == std::cin.eof() )
