@@ -144,12 +144,17 @@ class MCUSimControl : public QThread
                         const AdjSimProcDef * procDef = NULL );
 
         /**
-         * @brief Destructor
+         * @brief
          */
         virtual ~MCUSimControl();
 
     ////    Public Operations    ////
     public:
+        /**
+         * @brief
+         */
+        void dispatchEvents();
+
         /**
          * @brief This method can be called multiple times to register an observer to multiple subsystems
          * @param[in,out] observer
@@ -290,11 +295,6 @@ class MCUSimControl : public QThread
          * @param[in] readOnly
          */
         void allObservers_setReadOnly ( bool readOnly );
-
-        /**
-         * @brief
-         */
-        void dispatchEvents();
 
     ////    Inline Private Operations    ////
     private:

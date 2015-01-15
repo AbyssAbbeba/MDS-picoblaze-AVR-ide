@@ -129,6 +129,11 @@ void PIC8InstructionSet::reset ( MCUSimBase::ResetMode mode )
     }
 }
 
+void PIC8InstructionSet::forceReturn()
+{
+    // TODO: not implemeted yet
+}
+
 inline void PIC8InstructionSet::mcuReset()
 {
     m_pc = 0;

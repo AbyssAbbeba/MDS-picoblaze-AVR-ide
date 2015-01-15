@@ -86,6 +86,18 @@ bool PicoBlazeInstructionSet1::isValid() const
     return ( MCUSim::FAMILY_KCPSM1 == m_config.m_dev );
 }
 
+void PicoBlazeInstructionSet1::forceReturn()
+{
+    if ( m_statusFlags->getInterrupted() > 0 )
+    {
+        returnFromInterrupt();
+    }
+    else
+    {
+        returnFromSubroutine();
+    }
+}
+
 int PicoBlazeInstructionSet1::execInstruction()
 {
     const int pcOrig = m_pc;
@@ -281,16 +293,7 @@ inline void PicoBlazeInstructionSet1::inst_RETURN ( const unsigned int )
     instructionEnter ( PicoBlazeInsNames::INS_RETURN );
 
     // Execute return from subprogram.
-    if ( 0 == m_actSubprogCounter )
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
-    }
-    else
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
-        m_actSubprogCounter--;
-    }
-    setProgramCounter ( m_stack->popFromStack() );
+    returnFromSubroutine();
 }
 
 void PicoBlazeInstructionSet1::inst_ADD_sx_kk ( const unsigned int opCode )
@@ -507,7 +510,7 @@ inline void PicoBlazeInstructionSet1::inst_RETURNI_DIS ( const unsigned int )
 
     // RETURNI DISABLE
     m_statusFlags -> setInte ( false );
-    inst_RETURNI_aux();
+    returnFromInterrupt();
 }
 
 inline void PicoBlazeInstructionSet1::inst_RETURNI_ENA ( const unsigned int )
@@ -516,10 +519,10 @@ inline void PicoBlazeInstructionSet1::inst_RETURNI_ENA ( const unsigned int )
 
     // RETURNI ENABLE
     m_statusFlags -> setInte ( true );
-    inst_RETURNI_aux();
+    returnFromInterrupt();
 }
 
-inline void PicoBlazeInstructionSet1::inst_RETURNI_aux()
+inline void PicoBlazeInstructionSet1::returnFromInterrupt()
 {
     // Chech whether there is an ISR in progress to return from.
     if ( m_statusFlags->getInterrupted() <= 0 )
@@ -534,6 +537,20 @@ inline void PicoBlazeInstructionSet1::inst_RETURNI_aux()
     }
 
     // Return from ISR (Interrupt Service Routine).
+    setProgramCounter ( m_stack->popFromStack() );
+}
+
+inline void PicoBlazeInstructionSet1::returnFromSubroutine()
+{
+    if ( 0 == m_actSubprogCounter )
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
+    }
+    else
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
+        m_actSubprogCounter--;
+    }
     setProgramCounter ( m_stack->popFromStack() );
 }
 
