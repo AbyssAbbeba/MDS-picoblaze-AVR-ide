@@ -113,7 +113,7 @@ void printHelp ( const char * executable )
               << QObject::tr("    -f, --family <family>").toStdString() << std::endl
               << QObject::tr("        (MANDATORY) Specify processor family, supported families for the given architectures are:")
                             .toStdString() << std::endl
-              << QObject::tr("            - PicoBlaze : kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, kcpsm6.")
+              << QObject::tr("            - PicoBlaze : kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6.")
                             .toStdString() << std::endl
               << std::endl
               << QObject::tr("    -o, --out <output file>").toStdString() << std::endl
