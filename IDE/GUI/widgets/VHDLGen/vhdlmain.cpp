@@ -2050,9 +2050,10 @@ void VhdlMain::printToFile()
                             }
                             else
                             {
+                                m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                 out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                     << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ";" << endl;
+                                out << ":= X" << '"' << QString::number( m_hex, 16).toUpper() << '"' << ";" << endl;
                             }
                         break;
                     case INTEGER:
@@ -2188,9 +2189,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ";" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ";" << endl;
                         }
                         else
                         {
@@ -2355,15 +2357,17 @@ void VhdlMain::printToFile()
                                 {
                                     if ( genericComponent[i].genericName[p+1].isEmpty() == true)
                                     {
+                                        m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                         out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                             << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                        out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ");" << endl;
+                                        out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ");" << endl;
                                     }
                                     else
                                     {
+                                        m_hex = genericComponent[i].genericValue[p].toInt(0,10);
                                         out << "STD_LOGIC_VECTOR(" << genericComponent[i].msbNumber[p]
                                             << " DOWNTO " << genericComponent[i].lsbNumber[p] << ")";
-                                        out << ":= d" << '"' << genericComponent[i].genericValue[p] << '"' << ";" << endl;
+                                        out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ";" << endl;
                                     }
                                 }
                             break;
@@ -2502,9 +2506,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ");" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper() << '"' << ");" << endl;
                         }
                         else
                         {
@@ -2516,9 +2521,10 @@ void VhdlMain::printToFile()
                     {
                         if ( false == definedComponent[i].portValue[p].isEmpty() )
                         {
+                            m_hex = definedComponent[i].portValue[p].toInt(0,10);
                             out << "STD_LOGIC_VECTOR(" << definedComponent[i].msbNumber.at(p)
                                 << " DOWNTO " << definedComponent[i].lsbNumber.at(p) << ")";
-                            out << ":= d" << '"' << definedComponent[i].portValue[p] << '"' << ";" << endl;
+                            out << ":= X" << '"' << QString::number( m_hex,16).toUpper()  << '"' << ";" << endl;
                         }
                         else
                         {
@@ -2685,7 +2691,7 @@ void VhdlMain::printToFile()
             out << ' ';
         }
         out << "=>";
-        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection"  "\n";
+        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection;"  "\n";
     }
     for (unsigned int i = 0; i < portInCount; i++)
     {
@@ -2696,7 +2702,7 @@ void VhdlMain::printToFile()
             out << ' ';
         }
         out << "=>";
-        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection"  "\n";
+        out << '\t' << "Pico_Data_in " << "<= " << '\t' << "Desired input connection;"  "\n";
     }
 
     out << '\t' << '\t' << '\t' << '\t' << "WHEN OTHERS" << '\t' << '\t' << "  =>" << '\t' << "NULL;" << "\n";
@@ -2719,12 +2725,12 @@ void VhdlMain::printToFile()
             countNumber = getNumberOfInstances(definedComponent[i].name, false );
             if ( countNumber > 1)
             {
-                out << definedComponent[i].name << countNumber;
-                out << " : " << definedComponent[i].name << "_" << countNumber <<"\n";
+                out << definedComponent[i].name << "_"  << countNumber << "_i";
+                out << " : " << definedComponent[i].name << countNumber <<"\n";
             }
             else
             {
-                out << definedComponent[i].name << " : " << definedComponent[i].name<< "_i " <<"\n";
+                out << definedComponent[i].name << "_i"  << " : " << definedComponent[i].name <<"\n";
             }
             if ( false == genericComponent[i].genericName[0].isEmpty() )
             {
