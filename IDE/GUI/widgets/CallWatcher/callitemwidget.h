@@ -29,6 +29,7 @@ class CallItemWidget : public QWidget
 
     private:
         Ui_CallItemWidget ui;
+        int numWidth;
 };
 
 

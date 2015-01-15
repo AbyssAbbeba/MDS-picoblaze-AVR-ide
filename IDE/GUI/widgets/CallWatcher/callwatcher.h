@@ -45,6 +45,7 @@ class CallWatcher : public QWidget, public MCUSimObserver
     private:
         Ui_CallWatcher ui;
         MCUSimCPU *m_cpu;
+        MCUSimControl *m_simControl;
         //0 call, 1 int, 2 ret, 3 reti
         QList<int> m_callStack;
         QList<int> m_locationStack;

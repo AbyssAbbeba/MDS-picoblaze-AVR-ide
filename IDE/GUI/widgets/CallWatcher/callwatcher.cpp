@@ -22,8 +22,9 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
     : QWidget(parent)
 {
     ui.setupUi(this);
-    
-    m_cpu = dynamic_cast<MCUSimCPU*>(controlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+
+    m_simControl = controlUnit;
+    m_cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
     m_intAddr = 0;
     m_run = false;
     std::vector<int> mask;
@@ -33,7 +34,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
                 MCUSimCPU::EVENT_CPU_IRQ,
                 MCUSimCPU::EVENT_CPU_RETURN_FROM_ISR
             };
-    controlUnit->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
+    m_simControl->registerObserver(this, MCUSimSubsys::ID_CPU, mask);
 
 
     
@@ -43,7 +44,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
             SLOT(returnSlot())
            );
     
-    connect(controlUnit,
+    connect(m_simControl,
             SIGNAL(updateRequest(int)),
             this,
             SLOT(handleUpdateRequest(int))
@@ -54,6 +55,7 @@ CallWatcher::CallWatcher(QWidget *parent, MCUSimControl *controlUnit)
 void CallWatcher::returnSlot()
 {
     m_cpu->forceReturn();
+    m_simControl->dispatchEvents();
 }
 
 
