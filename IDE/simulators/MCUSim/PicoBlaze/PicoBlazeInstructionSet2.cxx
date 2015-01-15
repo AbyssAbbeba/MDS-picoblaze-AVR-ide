@@ -64,6 +64,18 @@ bool PicoBlazeInstructionSet2::isValid() const
     return ( MCUSim::FAMILY_KCPSM2 == m_config.m_dev );
 }
 
+void PicoBlazeInstructionSet2::forceReturn()
+{
+    if ( m_statusFlags->getInterrupted() > 0 )
+    {
+        returnFromInterrupt();
+    }
+    else
+    {
+        returnFromSubroutine();
+    }
+}
+
 int PicoBlazeInstructionSet2::execInstruction()
 {
     const int pcOrig = m_pc;
@@ -306,16 +318,7 @@ void PicoBlazeInstructionSet2::inst_RETURN ( const unsigned int opCode )
     }
 
     // Execute return from subprogram.
-    if ( 0 == m_actSubprogCounter )
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
-    }
-    else
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
-        m_actSubprogCounter--;
-    }
-    setProgramCounter ( m_stack->popFromStack() );
+    returnFromSubroutine();
 }
 
 void PicoBlazeInstructionSet2::inst_ADD0 ( const unsigned int opCode )
@@ -547,20 +550,8 @@ void PicoBlazeInstructionSet2::inst_RETURNI ( const unsigned int opCode )
         return;
     }
 
-    // Chech whether there is an ISR in progress to return from.
-    if ( m_statusFlags->getInterrupted() <= 0 )
-    {
-        m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
-    }
-    else
-    {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN_FROM_ISR, m_pc );
-        m_interruptController->returni();
-    }
-
     // Return from ISR (Interrupt Service Routine).
-    setProgramCounter ( m_stack->popFromStack() );
+    returnFromInterrupt();
 }
 
 inline void PicoBlazeInstructionSet2::inst_ENABLE_INT ( const unsigned int )
@@ -1007,4 +998,36 @@ void PicoBlazeInstructionSet2::inst_OUTPUT1 ( const unsigned int opCode )
 
     // Perform the operation (OUTPUT sX, (sY)).
     m_io -> output ( m_registers -> read ( sY ), m_registers -> read ( sX ) );
+}
+
+inline void PicoBlazeInstructionSet2::returnFromInterrupt()
+{
+    // Chech whether there is an ISR in progress to return from.
+    if ( m_statusFlags->getInterrupted() <= 0 )
+    {
+        m_statusFlags -> setInterrupted ( 1 );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
+    }
+    else
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN_FROM_ISR, m_pc );
+        m_interruptController->returni();
+    }
+
+    // Return from ISR (Interrupt Service Routine).
+    setProgramCounter ( m_stack->popFromStack() );
+}
+
+inline void PicoBlazeInstructionSet2::returnFromSubroutine()
+{
+    if ( 0 == m_actSubprogCounter )
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RET, m_pc );
+    }
+    else
+    {
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_RETURN, m_pc );
+        m_actSubprogCounter--;
+    }
+    setProgramCounter ( m_stack->popFromStack() );
 }

@@ -46,6 +46,11 @@ class PicoBlazeInstructionSet3 : public PicoBlazeInstructionSet
          */
         virtual bool isValid() const override;
 
+        /**
+         * @brief Perform forced return from subroutine or ISR.
+         */
+        virtual void forceReturn() override;
+
     ////    Instruction Operations - Public Operations and Inline Public Operations    ////
     public:
         /**
@@ -152,6 +157,16 @@ class PicoBlazeInstructionSet3 : public PicoBlazeInstructionSet
          * @param[in] instName
          */
         inline void instructionEnter ( PicoBlazeInsNames::Instructions instName );
+
+        /**
+         * @brief
+         */
+        inline void returnFromInterrupt();
+
+        /**
+         * @brief
+         */
+        inline void returnFromSubroutine();
 };
 
 #endif // PICOBLAZEINSTRUCTIONSET3_H
