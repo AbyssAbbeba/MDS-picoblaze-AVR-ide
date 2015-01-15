@@ -1338,7 +1338,10 @@ void MainForm::newAddFile()
         //pridani do projektu
         m_projectMan->addFile(path, path.section('/', -1));
         m_wDockManager->getCentralWidget()->setParentProject(m_projectMan->getActive());
-        m_fileWatcher.addPath(path);
+        if (false == m_fileWatcher.files().contains(path))
+        {
+            m_fileWatcher.addPath(path);
+        }
     }
     //qDebug() << "MainForm: return newAddFile()";
 }
@@ -1405,7 +1408,10 @@ void MainForm::openFile()
                 m_wDockManager->getTabWidget(m_wDockManager->getTabCount() - 1)->setParentProject(m_projectMan->getUntracked());
             }
             GuiCfg::getInstance().fileOpened(path.at(i));
-            m_fileWatcher.addPath(path.at(i));
+            if (false == m_fileWatcher.files().contains(path.at(i)))
+            {
+                m_fileWatcher.addPath(path.at(i));
+            }
             QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
@@ -1501,7 +1507,10 @@ void MainForm::openFilePath(QString path, QString parentProjectPath)
             {
                 qDebug() << "MainForm: openfilepath - some error here";
             }*/
-            m_fileWatcher.addPath(path);
+            if (false == m_fileWatcher.files().contains(path))
+            {
+                m_fileWatcher.addPath(path);
+            }
             QTimer::singleShot(100, this->m_wDockManager->getCentralWidget(), SLOT(changeHeight()));
         }
     }
