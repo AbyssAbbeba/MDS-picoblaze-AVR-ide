@@ -1332,7 +1332,7 @@ void PicoBlazeInstructionSet6::inst_CALL_aaa ( const unsigned int opCode )
     const unsigned int addr = ( opCode & 0xfff );
 
     // Execute call.
-    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
@@ -1348,7 +1348,7 @@ void PicoBlazeInstructionSet6::inst_CALL_Z_aaa ( const unsigned int opCode )
     // Call, if ZERO.
     if ( true == m_statusFlags -> getZero() )
     {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1365,7 +1365,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NZ_aaa ( const unsigned int opCode )
     // Call, if NOT ZERO.
     if ( false == m_statusFlags -> getZero() )
     {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1382,7 +1382,7 @@ void PicoBlazeInstructionSet6::inst_CALL_C_aaa ( const unsigned int opCode )
     // Call, if CARRY.
     if ( true == m_statusFlags -> getCarry() )
     {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1399,7 +1399,7 @@ void PicoBlazeInstructionSet6::inst_CALL_NC_aaa ( const unsigned int opCode )
     // Call, if NOT CARRY.
     if ( false == m_statusFlags -> getCarry() )
     {
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
         m_stack->pushOnStack ( m_pc );
         setProgramCounter ( addr );
         m_actSubprogCounter++;
@@ -1417,7 +1417,7 @@ void PicoBlazeInstructionSet6::inst_CALL_sX_sY ( const unsigned int opCode )
     unsigned int addr = ( ( m_registers->read(sX) & 0x0f ) << 8 ) | m_registers->read(sY);
 
     // Execute call.
-    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, PicoBlazeInsNames::INS_CALL );
+    logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_CALL, m_pc, addr );
     m_stack->pushOnStack ( m_pc );
     setProgramCounter ( addr );
     m_actSubprogCounter++;
