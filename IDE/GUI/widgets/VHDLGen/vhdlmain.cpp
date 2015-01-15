@@ -1792,9 +1792,14 @@ void VhdlMain::pushCancel()
     createWidget = false;
 }
 
+void VhdlMain::setPath(QString in_path)
+{
+  m_path = in_path;    
+}
+
 void VhdlMain::saveFile()
 {
-    savePath = QFileDialog::getSaveFileName(this,"Output file",".");
+    savePath = QFileDialog::getSaveFileName(this,"Output file", m_path,"*.stbl");
     ui->Output->setText(savePath);
     //ui->infoLabel->setText("");
 }
@@ -1804,7 +1809,7 @@ void VhdlMain::loadFile()
     // get path
 
     loadPath.clear();
-    loadPath = QFileDialog::getOpenFileName(this,"Input file",".","*.stbl");
+    loadPath = QFileDialog::getOpenFileName(this,"Input file",m_path);
     QFile file(loadPath);
     ui->Input->setText(loadPath);
 
@@ -1926,6 +1931,7 @@ void VhdlMain::printToFile()
     int sec = Time.second();
     int hour = Time.hour();
     int min = Time.minute();
+
 
     // create file to write
     qDebug()<< savePath;
@@ -2789,7 +2795,7 @@ void VhdlMain::printToFile()
     ui->InfoLabel->setText("Done");
     
     printedComponents.clear();
-    return;
+    printedComponentsDeclaration.clear();
 }
 
 int VhdlMain::getNumberOfInstances(QString & componentToInstantiate, bool Declaration)
