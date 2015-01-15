@@ -2,7 +2,7 @@
 #
 # Library for working with processor definition files used by Adaptable Simulator.
 #
-# (C) copyright 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # ==============================================================================
 

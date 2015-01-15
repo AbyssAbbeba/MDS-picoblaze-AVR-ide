@@ -65,7 +65,7 @@
 #define BOOST_FILESYSTEM_NO_DEPRECATED
 #include "boost/filesystem.hpp"
 
-MCUSimControl::MCUSimControl ( const char * deviceName,
+MCUSimControl::MCUSimControl ( const std::string & deviceName,
                                const AdjSimProcDef * procDef )
                              : m_simulator(nullptr),
                                m_dbgFile(nullptr)
@@ -493,7 +493,7 @@ void MCUSimControl::resetProgram()
     m_lastBrkPntStop.clear();
 }
 
-bool MCUSimControl::changeDevice ( const char * deviceName,
+bool MCUSimControl::changeDevice ( const std::string & deviceName,
                                    const AdjSimProcDef * procDef )
 {
     if ( nullptr != m_simulator )
@@ -505,22 +505,22 @@ bool MCUSimControl::changeDevice ( const char * deviceName,
     if ( false ) {}
     #ifdef MDS_FEATURE_PICOBLAZE
     else if (
-           ( 0 == strcmp("kcpsm1cpld", deviceName) )
+           ( "kcpsm1cpld" == deviceName )
                ||
-           ( 0 == strcmp("kcpsm1", deviceName) )
+           ( "kcpsm1" == deviceName )
                ||
-           ( 0 == strcmp("kcpsm2", deviceName) )
+           ( "kcpsm2" == deviceName )
                ||
-           ( 0 == strcmp("kcpsm3", deviceName) )
+           ( "kcpsm3" == deviceName )
                ||
-           ( 0 == strcmp("kcpsm6", deviceName) )
+           ( "kcpsm6" == deviceName )
        )
     {
         m_architecture = MCUSim::ARCH_PICOBLAZE;
     }
     #endif // MDS_FEATURE_PICOBLAZE
     #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
-    else if ( 0 == strcmp("AdaptableSim", deviceName) )
+    else if ( "AdaptableSim" == deviceName )
     {
         m_architecture = MCUSim::ARCH_ADAPTABLE;
     }

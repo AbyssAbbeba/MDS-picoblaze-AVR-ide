@@ -251,7 +251,7 @@ bool McuSimCfgMgr::startElement ( const QString &
     return true;
 }
 
-bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
+bool McuSimCfgMgr::setupSimulator ( const std::string & mcuName,
                                     MCUSimConfig & mcuConfig,
                                     const AdjSimProcDef *
                                     #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
@@ -265,23 +265,23 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
     {
         MCUSimBase::Family dev;
 
-        if ( 0 == strcmp("kcpsm6", mcuName) )
+        if ( "kcpsm6" == mcuName )
         {
             dev = MCUSim::FAMILY_KCPSM6;
         }
-        else if ( 0 == strcmp("kcpsm3", mcuName) )
+        else if ( "kcpsm3" == mcuName )
         {
             dev = MCUSim::FAMILY_KCPSM3;
         }
-        else if ( 0 == strcmp("kcpsm2", mcuName) )
+        else if ( "kcpsm2" == mcuName )
         {
             dev = MCUSim::FAMILY_KCPSM2;
         }
-        else if ( 0 == strcmp("kcpsm1", mcuName) )
+        else if ( "kcpsm1" == mcuName )
         {
             dev = MCUSim::FAMILY_KCPSM1;
         }
-        else if ( 0 == strcmp("kcpsm1cpld", mcuName) )
+        else if ( "kcpsm1cpld" == mcuName )
         {
             dev = MCUSim::FAMILY_KCPSM1CPLD;
         }
@@ -302,7 +302,7 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
     }
   #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
-    const QString name = mcuName;
+    const QString name = mcuName.c_str();
     const int size = m_devices.size();
 
     int idx = -1;
@@ -344,9 +344,9 @@ bool McuSimCfgMgr::setupSimulator ( const char * mcuName,
     return true;
 }
 
-const McuDeviceSpec * McuSimCfgMgr::getDeviceSpec ( const char * mcuName ) const
+const McuDeviceSpec * McuSimCfgMgr::getDeviceSpec ( const std::string & mcuName ) const
 {
-    const QString name = mcuName;
+    const QString name = mcuName.c_str();
     const int size = m_devices.size();
 
     int idx = -1;
