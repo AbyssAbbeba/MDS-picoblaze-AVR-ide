@@ -1234,6 +1234,7 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
 
 void Project::saveProject()
 {
+    qDebug() << "saveProject()";
     QDir project(QFileInfo(prjPath).dir());
 
     QFile *file = new QFile(prjPath);
@@ -1509,6 +1510,7 @@ void Project::saveProject()
 
     QTextStream xmlStream(file);
     xmlStream << domDoc.toString();
+    qDebug() << "return saveProject()";
 }
 
 
