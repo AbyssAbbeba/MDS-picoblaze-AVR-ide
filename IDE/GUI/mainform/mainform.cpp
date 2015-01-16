@@ -1116,6 +1116,7 @@ void MainForm::createDockWidgets()
 
 
         QApplication::processEvents();
+        QApplication::processEvents();
 
         bool done = false;
         bool tabsFound = false;
@@ -1126,6 +1127,18 @@ void MainForm::createDockWidgets()
             for (int j = 0; j < tabList.at(i)->count(); j++)
             {
                 if ("Compiler Messages" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    done = true;
+                    break;
+                }
+                else if ("Simulator" == tabList.at(i)->tabText(j))
+                {
+                    m_wDockManager->bottomAreaTabs = tabList.at(i);
+                    done = true;
+                    break;
+                }
+                else if ("External Applications" == tabList.at(i)->tabText(j))
                 {
                     m_wDockManager->bottomAreaTabs = tabList.at(i);
                     done = true;
@@ -1170,6 +1183,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabToolTip(j, "Help");
                     tabList.at(i)->setTabWhatsThis(j, "Help");
                     tabList.at(i)->setCurrentIndex(j);
+                    done = true;
                 }
                 else if ("Bookmarks" == tabList.at(i)->tabText(j) && true == done)
                 {
@@ -1178,6 +1192,7 @@ void MainForm::createDockWidgets()
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Bookmarks");
                     tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
+                    done = true;
                 }
                 else if ("Call Watcher" == tabList.at(i)->tabText(j) && true == done)
                 {
@@ -1186,6 +1201,7 @@ void MainForm::createDockWidgets()
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Call Watcher");
                     tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
+                    done = true;
                 }
                 else if ("Macros" == tabList.at(i)->tabText(j) && true == done)
                 {
@@ -1194,6 +1210,7 @@ void MainForm::createDockWidgets()
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Macros");
                     tabList.at(i)->setTabWhatsThis(j, "Macros");
+                    done = true;
                 }
                 else if ("Hide" == tabList.at(i)->tabText(j) && true == done)
                 {
