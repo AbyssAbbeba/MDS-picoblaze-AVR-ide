@@ -1060,20 +1060,7 @@ void VhdlMain::pushDelete()
         qDebug() << "returned";
         return;
     }
-    // if so, delete
-  //  qDebug() << "list " << existingNamesList;
-   // QString helpStr = definedComponent[componentCnt - 1].name;
 
-  //  if ( true == existingNamesList.contains(helpStr))
-   // {
-  //  for (int i = 0; i < existingNamesList.size(); i++)
-  //  {
-  //      if ( existingNamesList[i] == helpStr)
-  //      {
-  //          existingNamesList.removeAt(i);
- //           break;
- //       }
-  //  }
 //    }
     definedComponent[componentCnt - 1].name.clear();
   //  qDebug() << "list after" << existingNamesList;
@@ -1970,6 +1957,7 @@ void VhdlMain::printToFile()
     out << "-------------------------------------------------" <<"\n";
     out << "ENTITY " << entityName << " IS"<<"\n";
     out << "    PORT(" <<"\n";
+    out << "         );" << endl;
     out << "END " << entityName <<"\n" <<"\n";
 
     out << "-------------------------------------------------" <<"\n";
