@@ -104,7 +104,7 @@ void Projectdlg_General::setPath()
 
 QString Projectdlg_General::getPath()
 {
-    return ui.lePath->text();
+    return QDir(ui.lePath->text()).absolutePath();
 }
 
 
