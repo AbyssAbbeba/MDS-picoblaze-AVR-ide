@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Assembler
@@ -131,8 +131,14 @@ inline void AsmDgbFileGen::outputToContainer ( CompilerSemanticInterface * compi
 {
     int numberOfFiles = (int) compilerCore->listSourceFiles().size();
 
+    std::vector<std::pair<std::string,FILE*>> sourceFiles = compilerCore->listSourceFiles();
+    for ( auto & srcFile : sourceFiles )
+    {
+        srcFile.first = boost::filesystem::make_relative ( compilerCore->getBasePath(), srcFile.first ) . string();
+    }
+
     target->directSetupPrepare();
-    target->directSetupFiles ( compilerCore->listSourceFiles() );
+    target->directSetupFiles ( sourceFiles );
 
     for ( const auto & dbgRecord : m_data )
     {
