@@ -28,6 +28,10 @@ SET( SAMPLE_MOC_HDRS
 )
 
 
+if ( MDS_FEATURE_SIM_CALLWATCHER )
+    list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "CallWatcher" )
+endif()
+
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
@@ -41,7 +45,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser ExtAppOutput HelpDockWidget HelpWidget CallWatcher)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${WDOCKMANAGER_ADDITONAL_LIBS} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser ExtAppOutput HelpDockWidget HelpWidget)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

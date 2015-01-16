@@ -57,7 +57,6 @@ if ( MDS_FEATURE_SIM_PORT_LOGGER )
 endif()
 if ( MDS_FEATURE_SIM_CALLWATCHER )
     list ( APPEND MDS_ADDITONAL_LIBS "CallWatcher" )
-    
 endif()
 if ( MDS_FEATURE_VHDL_WIZARD )
     list ( APPEND MDS_ADDITONAL_LIBS "VHDLGen" )

@@ -2062,16 +2062,18 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSi
         }
         case WCALLWATCHER:
         {
-            wDockWidget = new QDockWidget("Call Watcher", parentWindow);
-            wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
-            wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
-            QLabel *lbl = new QLabel("Call Watcher", wDockWidget);
+            #ifdef MDS_FEATURE_SIM_CALLWATCHER
+                wDockWidget = new QDockWidget("Call Watcher", parentWindow);
+                wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+                wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+                QLabel *lbl = new QLabel("Call Watcher", wDockWidget);
 
-            wDockWidget->setTitleBarWidget(lbl);
-            parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
-            CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
-            area = 1;
-            wDockWidget->setWidget(newDock);
+                wDockWidget->setTitleBarWidget(lbl);
+                parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+                CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
+                area = 1;
+                wDockWidget->setWidget(newDock);
+            #endif
             break;
         }
         default:
