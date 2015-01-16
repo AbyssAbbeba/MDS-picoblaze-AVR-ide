@@ -82,7 +82,6 @@ VhdlMain::VhdlMain(QWidget *parent) :
             SLOT(customMenuRequested(QPoint))
             );
 
-
     ui->Output->setReadOnly(true);
     ui->Input->setReadOnly(true);
 
@@ -661,7 +660,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 //         qDebug() << "right click";
 //     }
 
-    if ( rectList.contains("projOpencomponentRect") == true)
+    if ( rectList.contains("componentRect") == true)
     {
         if ( this->componentRect->contains( pressEvent->pos() ) == true)
         {
@@ -678,7 +677,7 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         RectInfo->setWindowTitle("Component info");
         RectInfo->setWindowModality(Qt::ApplicationModal);
         RectInfo->show();
-
+                                        
         const int tabStop = 4; // 4 characters
         ui3.textInfo->setReadOnly(true);
         // get names and values of port directives, put them into global structures
@@ -895,8 +894,6 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
     {
          if ( this->componentObject[p-1]->contains( pressEvent->pos() ) == true)
          {
-             qDebug()<< "inside IF";
-
              this->RectInfo = new QWidget(0);
              // define new widget
              ui3.setupUi(RectInfo);
@@ -3489,7 +3486,19 @@ void VhdlMain::componentWizardConstruct()
     ui2.pushSaveAdd->setIcon(QPixmap(":/resources/icons/disk.png"));
     ui2.pushOk->setIcon(QPixmap(":/resources/icons/add.png"));
     ui2.pushCancel->setIcon(QPixmap(":/resources/icons/cancel.png"));// editing signals
-    
+
+    // TO DO
+    //STD_ULOGIC
+    // ‘U’,uninitialized
+    // ‘X’,strong 0 or 1 (= unknown)
+    // ‘0’strong 0
+    // ‘1’,strong 1
+    // ‘Z’,high impedance
+    // ‘W’,weak 0 or 1 (= unknown)
+    // ‘L’,weak 0
+    // ‘H’,weak 1
+    // ‘-’,don`t care)
+
     connect(ui2.editValue_9,
             SIGNAL(textChanged(QString)),
             this,
