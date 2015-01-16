@@ -459,33 +459,33 @@ int main ( int argc, char ** argv )
         std::getline(std::cin, input);
         std::cout << "input='"<<input<<"'\n";
 
-	unsigned int pos = 0;
-	const unsigned int size = input.size();
-	std::string command;
+        unsigned int pos = 0;
+        const unsigned int size = input.size();
+        std::string command;
         while ( pos < size )
         {
             char in = input[pos++];
             if ( ( ' ' == in ) || ( '\t' == in ) )
-	    {
-	    	if ( true == command.empty() )
-		{
-		    	continue;
-		}
-		else
-		{
-			break;
-		}
-	    }
+            {
+                if ( true == command.empty() )
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-	    command += in;
+            command += in;
         }
 
-	std::cout << "command = '"<<command<<"'\n";
-	if ( "exit" == command )
-	{
-	    std::cout << "Exiting on user request." << std::endl;
-	    break;
-	}
+        std::cout << "command = '"<<command<<"'\n";
+        if ( "exit" == command )
+        {
+            std::cout << "Exiting on user request." << std::endl;
+            break;
+        }
     }
 
     return EXIT_CODE_SUCCESS;

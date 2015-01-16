@@ -1077,7 +1077,9 @@ void MainForm::createDockWidgets()
          */
         m_wDockManager->addDockWidget(WCOMPILEINFO);
         m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
+      #ifdef MDS_FEATURE_EXTERNAL_APPS
         m_wDockManager->addDockWidget(WEXTAPPOUTPUT);
+      #endif // MDS_FEATURE_EXTERNAL_APPS
         m_wDockManager->addDockWidget(WBOTTOMHIDE);
         /*#ifdef Q_OS_WIN
             Sleep(50);
@@ -1220,7 +1222,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabToolTip(j, "Hide");
                     tabList.at(i)->setTabWhatsThis(j, "Hide");
                 }
-                
+
                 if (true == done && tabsFound == false)
                 {
                     //m_wDockManager->rightAreaTabs->setCurrentIndex(j);
@@ -3226,7 +3228,7 @@ void MainForm::compileProject()
         compileInfo->changeAsmMode(false);
     }
     compileInfo->setProjectRelativePath(m_projectMan->getActive()->prjPath.section('/', 0, -2));
-    
+
     CompilerThread *compiler = new CompilerThread(GuiCfg::getInstance().getCompilerPath().toStdString());
     //    CompilerThread *compiler = new CompilerThread("../compiler/include/");
     qRegisterMetaType<std::string>("std::string");
@@ -3456,7 +3458,7 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             compileProject();
             return;
         }
-        
+
         int start;
         if (m_projectMan->getActive()->prjPath == "untracked")
         {
@@ -3515,7 +3517,7 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             //file = "";
         }
         m_projectMan->setSimulated(m_projectMan->getActive());
-        
+
         if (NULL != dbgFile && NULL != dataFile)
         {
             qDebug() << "in dbg && data";
