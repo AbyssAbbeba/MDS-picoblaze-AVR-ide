@@ -2299,11 +2299,11 @@ QString MainForm::translateBeforeCompilation(QString path)
 
     for (int i = 0; i < filesToTranslate.count(); i++)
     {
-        //qDebug() << "MainForm: translating file" << filesToTranslate.at(i);
+        qDebug() << "MainForm: translating file" << QDir::cleanPath(filesToTranslate.at(i));
         if ("psm" != filesToTranslate.at(i).section('.',-1).toLower())
         {
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
-            QString text = "File does not have .psm extension " + filesToTranslate.at(i);
+            QString text = "File does not have .psm extension " + QDir::cleanPath(filesToTranslate.at(i));
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
@@ -2312,7 +2312,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         if (false == inputStream.is_open())
         {
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
-            QString text = "Can not open input file " + filesToTranslate.at(i);
+            QString text = "Can not open input file " + QDir::cleanPath(filesToTranslate.at(i));
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
@@ -2321,7 +2321,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         {
             inputStream.close();
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
-            QString text = "Can not open output file " + filesToTranslate.at(i).section('.',0, -2) + ".asm";
+            QString text = "Can not open output file " + QDir::cleanPath(filesToTranslate.at(i).section('.',0, -2)) + ".asm";
             compileInfo->appendMessage(text, CompilerBase::MessageType::MT_ERROR);
             return "";
         }
