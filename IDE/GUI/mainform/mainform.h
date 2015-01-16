@@ -46,6 +46,8 @@ class QPixmap;
 class SaveDialog;
 class QSignalMapper;
 class QToolButton;
+class DataFile;
+class DbgFile;
 
 /*
 #ifdef MDS_FEATURE_FILECONVERTER
@@ -111,7 +113,7 @@ class MainForm : public QMainWindow
         void simulationStep();
         void simulationRunHandle();
         void simulationAnimateHandle();
-        void simulationFlowHandle();
+        void simulationFlowHandle(DbgFile *dbgFile = NULL, DataFile *dataFile = NULL);
         void simulationReset();
         void toolDisassemble();
         void toolTranslate();
@@ -153,6 +155,7 @@ class MainForm : public QMainWindow
         void setEditorReadOnly(bool readOnly);
         void addUntrackedFile(QString name, QString path);
         void reloadCompileInfo(const std::string &text, CompilerBase::MessageType type);
+        void compilationSimData(DbgFile *dgbFile, DataFile *dataFile);
         void compilationFinished(bool success);
         void startProjectConfig(Project *project);
         void help();
