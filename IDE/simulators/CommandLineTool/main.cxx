@@ -458,25 +458,54 @@ int main ( int argc, char ** argv )
     {
         std::getline(std::cin, input);
         std::cout << "input='"<<input<<"'\n";
+
+	unsigned int pos = 0;
+	const unsigned int size = input.size();
+	std::string command;
+        while ( pos < size )
+        {
+            char in = input[pos++];
+            if ( ( ' ' == in ) || ( '\t' == in ) )
+	    {
+	    	if ( true == command.empty() )
+		{
+		    	continue;
+		}
+		else
+		{
+			break;
+		}
+	    }
+
+	    command += in;
+        }
+
+	std::cout << "command = '"<<command<<"'\n";
+	if ( "exit" == command )
+	{
+	    std::cout << "Exiting on user request." << std::endl;
+	    break;
+	}
     }
 
     return EXIT_CODE_SUCCESS;
 }
 
 /*
-CLI options:
--a, --architecture
--d, --device
--g, --debug-file
--c, --code-file
--t. --code-file-type
--h, --help
--V, --version
--s, --silent
+ *
+== CLI options ==
+ -a, --architecture
+ -d, --device
+ -g, --debug-file
+ -c, --code-file
+ -t. --code-file-type
+ -h, --help
+ -V, --version
+ -s, --silent
 
 <exec> [OPTIONS]
 
-Commands:
+== Commands ==
 set
  - pc <address>
  - flag <flag> <value>
@@ -493,10 +522,13 @@ file
  - load <space> <type> <file>
  - save <space> <type> <file>
 
-step
-// animate
-// run
-// stop
-reset
+sim
+ - step
+ - animate
+ - run
+ - halt
+ - reset
+
+exit [<code>]
 
  */

@@ -132,6 +132,12 @@ function clean() {
     do
         rm -fv $(find -type f -name "${fileGlob}")
     done
+
+    for file in pkgs/*; do
+        if [ -L "${file}" ]; then
+            rm -v "${file}"
+        fi
+    done
 }
 
 function repoSync() {
