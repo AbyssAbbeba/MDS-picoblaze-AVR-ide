@@ -24,12 +24,17 @@
 #include "../Editor/baseeditor.h"
 #include "../PicoBlazeGrid/picoblazegrid.h"
 #include "../TabBar/tabbar.h"
-#include "../ExtAppOutput/extappoutput.h"
 #include "../CompileInfo/compileinfo.h"
 #include "../HelpDockWidget/helpdockwidget.h"
 #include "../HelpWidget/helpbrowser.h"
-#include "../CallWatcher/callwatcher.h"
 
+#ifdef MDS_FEATURE_EXTERNAL_APPS
+#  include "../ExtAppOutput/extappoutput.h"
+#endif //MDS_FEATURE_EXTERNAL_APPS
+
+#ifdef MDS_FEATURE_SIM_CALLWATCHER
+#  include "../CallWatcher/callwatcher.h"
+#endif //MDS_FEATURE_SIM_CALLWATCHER
 
 
 /**
@@ -822,7 +827,7 @@ bool WDockManager::addCentralWidget(QString wName, QString wPath)
         {
             qDebug() << "WDockManager: wTab hidden";
         }*/
-        
+
         //testovaci nazev
         //wTab->setTabText(wTab->currentIndex(), "aa.asm");
         //add tab tooltip with path
@@ -1138,7 +1143,7 @@ void WDockManager::changeLine(QListWidgetItem *item)
     a = a.left(a.length() - 1);
     this->getCentralWidget()->getTextEdit()->setPosition(a.toInt());
     //qDebug() << "WDockManager: return changeLine()";
-    
+
 }
 
 
@@ -1729,7 +1734,7 @@ void WDockManager::removeTabBar(QString projectPath)
     /*    wTab = NULL;
         if (NULL != activeCodeEdit)
         {
-            
+
         }*/
     //}
 }
@@ -1989,9 +1994,10 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             AsmMacroAnalyser *newDock = new AsmMacroAnalyser(wDockWidget);
             area = 1;
-            wDockWidget->setWidget(newDock); 
+            wDockWidget->setWidget(newDock);
             break;
         }
+        #ifdef MDS_FEATURE_EXTERNAL_APPS
         case WEXTAPPOUTPUT:
         {
             wDockWidget = new QDockWidget("External Applications", parentWindow);
@@ -2003,13 +2009,14 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             wDockWidget->setWidget(newDock);
             break;
         }
+        #endif // MDS_FEATURE_EXTERNAL_APPS
         case WHELPDOCKWIDGET:
         {
             wDockWidget = new QDockWidget("Help", parentWindow);
             wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
             wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
             QLabel *lbl = new QLabel("Help", wDockWidget);
-            
+
             wDockWidget->setTitleBarWidget(lbl);
             parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
             HelpDockWidget *newDock = new HelpDockWidget(wDockWidget);

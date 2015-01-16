@@ -16,12 +16,12 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 # with SET() command you can change variables or define new ones
-# here we define SAMPLE_SRCS variable that contains a list of all .cpp files 
+# here we define SAMPLE_SRCS variable that contains a list of all .cpp files
 # note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
        ./wdockmanager.cpp
 )
-  
+
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
        ./wdockmanager.h
@@ -30,6 +30,10 @@ SET( SAMPLE_MOC_HDRS
 
 if ( MDS_FEATURE_SIM_CALLWATCHER )
     list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "CallWatcher" )
+endif()
+
+if ( MDS_FEATURE_EXTERNAL_APPS )
+    list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "ExtAppOutput" )
 endif()
 
 # ------------------------------------------------------------------------------
@@ -45,7 +49,7 @@ add_library(${PROJECT_NAME}
 	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${WDOCKMANAGER_ADDITONAL_LIBS} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser ExtAppOutput HelpDockWidget HelpWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${WDOCKMANAGER_ADDITONAL_LIBS} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser HelpDockWidget HelpWidget)
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}
