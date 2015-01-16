@@ -161,7 +161,8 @@ macro ( INCLUDE_LIBRARIES_TO_INSTALLATION_PACKAGE TARGET_DIRECTORY COMPILER_DIRE
         endforeach()
 
         install ( FILES ${symLinks} DESTINATION ${TARGET_DIRECTORY} )
-        set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${symLinks}" )
+        get_directory_property ( files2clean DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ADDITIONAL_MAKE_CLEAN_FILES )
+        set_directory_properties ( PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${files2clean};${symLinks}" )
     endif()
 
     # Set selected files to install.
@@ -245,9 +246,10 @@ set ( PACKAGE_DETAILED_DESCRIPTION "${CPACK_PACKAGE_DESCRIPTION_SUMMARY}\n MDS i
 file ( READ "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense-${MDS_VARIANT}.txt" licenseTerms )
 file ( WRITE "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" "${licenseTerms}" )
 configure_file ( "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt" @ONLY )
+get_directory_property ( files2clean DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ADDITIONAL_MAKE_CLEAN_FILES )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES
-                           "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt;${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" )
+                           "${files2clean};${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt;${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" )
 
 #
 ## Package version.
