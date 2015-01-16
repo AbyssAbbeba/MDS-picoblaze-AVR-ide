@@ -126,6 +126,14 @@ void ProjectDialog::bCreate()
         prjDir.mkpath(".");
     }
     QFile file(this->prjdlg_general->getPath() + "/" + this->prjdlg_general->getName() + ".mds-project");
+    if (true == file.exists())
+    {
+        QString text = "File " + file.fileName() + " already exists. Do you want to rewrite the file anyway?";
+        if (QMessageBox::Yes != QMessageBox::question(this, "File Exists", text, QMessageBox::Yes|QMessageBox::No))
+        {
+            return;
+        }
+    }
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QMessageBox msgBox;

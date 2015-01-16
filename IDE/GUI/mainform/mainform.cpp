@@ -1147,15 +1147,15 @@ void MainForm::createDockWidgets()
         done = false;
         tabsFound = false;
 
-        qDebug() << "tab count" << tabList.count();
+        //qDebug() << "tab count" << tabList.count();
         for (int i = 0; i < tabList.count() && false == done; i++)
         {
             for (int j = 0; j < tabList.at(i)->count(); j++)
             {
-                qDebug() << tabList.at(i)->tabText(j);
+                //qDebug() << tabList.at(i)->tabText(j);
                 if ("Breakpoints" == tabList.at(i)->tabText(j))
                 {
-                    qDebug() << "Found 1/6";
+                    //qDebug() << "Found 1/6";
                     m_wDockManager->getDockWidget(WBREAKPOINTLIST)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Breakpoints");
@@ -1164,7 +1164,7 @@ void MainForm::createDockWidgets()
                 }
                 else if ("Help" == tabList.at(i)->tabText(j) && true == done)
                 {
-                    qDebug() << "Found 4/6";
+                    //qDebug() << "Found 4/6";
                     m_wDockManager->getDockWidget(WHELPDOCKWIDGET)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, " ");
                     tabList.at(i)->setTabToolTip(j, "Help");
@@ -1173,7 +1173,7 @@ void MainForm::createDockWidgets()
                 }
                 else if ("Bookmarks" == tabList.at(i)->tabText(j) && true == done)
                 {
-                    qDebug() << "Found 2/6";
+                    //qDebug() << "Found 2/6";
                     m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Bookmarks");
@@ -1181,7 +1181,7 @@ void MainForm::createDockWidgets()
                 }
                 else if ("Call Watcher" == tabList.at(i)->tabText(j) && true == done)
                 {
-                    qDebug() << "Found 5/6";
+                    //qDebug() << "Found 5/6";
                     m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Call Watcher");
@@ -1189,7 +1189,7 @@ void MainForm::createDockWidgets()
                 }
                 else if ("Macros" == tabList.at(i)->tabText(j) && true == done)
                 {
-                    qDebug() << "Found 3/6";
+                    //qDebug() << "Found 3/6";
                     m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Macros");
@@ -1197,7 +1197,7 @@ void MainForm::createDockWidgets()
                 }
                 else if ("Hide" == tabList.at(i)->tabText(j) && true == done)
                 {
-                    qDebug() << "Found 6/6";
+                    //qDebug() << "Found 6/6";
                     m_wDockManager->getDockWidget(WRIGHTHIDE)->setWindowTitle(QString());
                     //tabList.at(i)->setTabText(j, "");
                     tabList.at(i)->setTabToolTip(j, "Hide");
@@ -3224,7 +3224,29 @@ void MainForm::compileProject()
             this,
             SLOT(compilationFinished(bool))
            );
-    compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options);
+    if (true == this->simulationRequest)
+    {
+        connect(compiler,
+                SIGNAL(simDataGenerated(DbgFile*, DataFile*)),
+                this,
+                SLOT(compilationSimData(DbgFile*, DataFile*))
+               );
+        compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options, true);
+    }
+    else
+    {
+        compiler->compile(CompilerBase::LI_ASM, CompilerBase::TA_PICOBLAZE, options);
+    }
+}
+
+
+void MainForm::compilationSimData(DbgFile *dgbFile, DataFile *dataFile)
+{
+    if (true == this->simulationRequest)
+    {
+        this->simulationFlowHandle(dgbFile, dataFile);
+        this->simulationRequest = false;
+    }
 }
 
 
@@ -3239,11 +3261,11 @@ void MainForm::compilationFinished(bool success)
     {
         qDebug() << "Success";
         ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()))->setFinished(true);
-        if (true == this->simulationRequest)
+        /*if (true == this->simulationRequest)
         {
             this->simulationFlowHandle();
             this->simulationRequest = false;
-        }
+        }*/
     }
     else
     {
@@ -3400,8 +3422,9 @@ void MainForm::simulationReset()
 /**
  * @brief Slot. Starts/stops simulation.
  */
-void MainForm::simulationFlowHandle()
+void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
 {
+    qDebug() << "simulationFlowHandle()";
     if (false == simulationStatus)
     {
         QString file = "";
@@ -3416,69 +3439,79 @@ void MainForm::simulationFlowHandle()
             compileProject();
             return;
         }
+        
+        int start;
         if (m_projectMan->getActive()->prjPath == "untracked")
         {
             this->saveFile();
             file = m_wDockManager->getCentralPath();
             dumpFiles = GuiCfg::getInstance().getTempPath() + "/" + m_wDockManager->getCentralName();
         }
-        else
+        else if ( false == m_projectMan->getActive()->useMainFile )
         {
-            if ( false == m_projectMan->getActive()->useMainFile )
+            //check if enabled, if it isnt, simulate current file
+            this->saveFile();
+
+            QDir prjDir(m_projectMan->getActive()->prjPath.section('/',0, -2));
+            QDir fileDir;
+            QString filePath;
+
+            bool found = false;
+
+            for (int i = 0; i < m_projectMan->getActive()->filePaths.count(); i++)
             {
-                //check if enabled, if it isnt, simulate current file
-                this->saveFile();
-
-                QDir prjDir(m_projectMan->getActive()->prjPath.section('/',0, -2));
-                QDir fileDir;
-                QString filePath;
-
-                bool found = false;
-
-                for (int i = 0; i < m_projectMan->getActive()->filePaths.count(); i++)
+                filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + m_projectMan->getActive()->filePaths.at(i));
+                /*fileDir.setPath(prjDir.absolutePath()
+                                + "/"
+                                + m_projectMan->getActive()->filePaths.at(i).section('/',0, -2)
+                            );*/
+                //qDebug() << "MainForm: central path:" << m_wDockManager->getCentralPath();
+                //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + m_projectMan->getActive()->fileNames.at(i));
+                //qDebug() << filePath;
+                //qDebug() << m_wDockManager->getCentralPath();
+                if (filePath == m_wDockManager->getCentralPath())
                 {
-                    filePath = QDir::cleanPath(prjDir.absolutePath() + "/" + m_projectMan->getActive()->filePaths.at(i));
-                    /*fileDir.setPath(prjDir.absolutePath()
-                                    + "/"
-                                    + m_projectMan->getActive()->filePaths.at(i).section('/',0, -2)
-                                );*/
-                    //qDebug() << "MainForm: central path:" << m_wDockManager->getCentralPath();
-                    //qDebug() << "MainForm: file path" << QDir::cleanPath(fileDir.absolutePath() + "/" + m_projectMan->getActive()->fileNames.at(i));
-                    //qDebug() << filePath;
-                    //qDebug() << m_wDockManager->getCentralPath();
-                    if (filePath == m_wDockManager->getCentralPath())
-                    {
-                        found = true;
-                        break;
-                    }
+                    found = true;
+                    break;
                 }
-                if (true == found)
-                {
-                    file = filePath;
-                    dumpFiles = prjDir.absolutePath() + "/" + m_wDockManager->getCentralName();
-                }
-                else
-                {
-                    if (m_projectMan->getUntracked() != NULL)
-                    {
-                        m_projectMan->addUntrackedProject();
-                        m_projectMan->setActive(m_projectMan->getUntracked());
-                    }
-                    file = filePath;
-                    dumpFiles = GuiCfg::getInstance().getTempPath() + "/" + m_wDockManager->getCentralName();
-                }
+            }
+            if (true == found)
+            {
+                file = filePath;
+                dumpFiles = prjDir.absolutePath() + "/" + m_wDockManager->getCentralName();
             }
             else
             {
-                this->saveProject();
-                //simulate main file
-                //file = "";
+                if (m_projectMan->getUntracked() != NULL)
+                {
+                    m_projectMan->addUntrackedProject();
+                    m_projectMan->setActive(m_projectMan->getUntracked());
+                }
+                file = filePath;
+                dumpFiles = GuiCfg::getInstance().getTempPath() + "/" + m_wDockManager->getCentralName();
             }
+        }
+        else
+        {
+            this->saveProject();
+            //simulate main file
+            //file = "";
+        }
+        m_projectMan->setSimulated(m_projectMan->getActive());
+        
+        if (NULL != dbgFile && NULL != dataFile)
+        {
+            qDebug() << "in dbg && data";
+            m_projectMan->setSimulated(m_projectMan->getActive());
+            start = m_projectMan->getActive()->start(file, dumpFiles, dbgFile, dataFile);
+            qDebug() << "afterStart";
+        }
+        else
+        {
+            start = m_projectMan->getActive()->start(file, dumpFiles);
         }
         //qDebug() << "MainForm: sim file" << file;
         //qDebug() << "MainForm: sim dump file" << dumpFiles;
-        m_projectMan->setSimulated(m_projectMan->getActive());
-        int start = m_projectMan->getActive()->start(file, dumpFiles);
         if ( 0 == start )
         {
             delete this->icon_simFlow;
@@ -4593,6 +4626,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                                  std::vector<std::pair<const std::string *, unsigned int>> prev2,
                                  QList<QColor*> colors)
 {
+    qDebug() << "mainform: simHighlightLines()";
     QString tmpFile;
     QSet<QString> files;
     int compatibility = m_projectMan->getSimulated()->getAsmType();
@@ -5079,23 +5113,24 @@ void MainForm::shortcutChangeTabRight()
 
 void MainForm::reloadTabIcons()
 {
-    qDebug() << "reloadTabIcons()";
+    //qDebug() << "reloadTabIcons()";
     for (int i = 0; i < m_wDockManager->rightAreaTabs->count(); i++)
     {
         QString text = m_wDockManager->rightAreaTabs->tabWhatsThis(i);
-        qDebug() << text;
+        //qDebug() << text;
         if ("Breakpoints" == text)
         {
-            qDebug() << "Found 1/6";
+            //qDebug() << "Found 1/6";
             QPixmap pixmap(":resources/icons/breakpoint.png");
             QMatrix rm;
             rm.rotate(-90);
             pixmap = pixmap.transformed(rm);
             m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+            //m_wDockManager->rightAreaTabs->setTabToolTip(i,"Breakpoints");
         }
         else if ("Bookmarks" == text)
         {
-            qDebug() << "Found 2/6";
+            //qDebug() << "Found 2/6";
             QPixmap pixmap(":resources/icons/bullet_star.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5104,7 +5139,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Macros" == text)
         {
-            qDebug() << "Found 3/6";
+            //qDebug() << "Found 3/6";
             QPixmap pixmap(":resources/icons/brick.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5113,7 +5148,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Help" == text)
         {
-            qDebug() << "Found 4/6";
+            //qDebug() << "Found 4/6";
             QPixmap pixmap(":resources/icons/help.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5122,7 +5157,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Call Watcher" == text)
         {
-            qDebug() << "Found 5/6";
+            //qDebug() << "Found 5/6";
             QPixmap pixmap(":resources/icons/door_in.png");
             QMatrix rm;
             rm.rotate(-90);
@@ -5131,7 +5166,7 @@ void MainForm::reloadTabIcons()
         }
         else if ("Hide" == text)
         {
-            qDebug() << "Found 6/6";
+            //qDebug() << "Found 6/6";
             QPixmap pixmap(":resources/icons/bullet_arrow_right.png");
             QMatrix rm;
             rm.rotate(-90);

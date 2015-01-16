@@ -1863,7 +1863,7 @@ void Project::setupSim(QString family)
  * @return 0 - started; >0 - not started;
  * @details  1 - sim not started; 2 - getLineNumber error; 3 - files do not exist; 4 - files modified;
  */
-int Project::start(QString file, QString dumpFiles)
+int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *dataFile)
 {
     //qDebug() << "Project: start()";
     //parentWindow->getWDockManager()->setEditorsReadOnly(true);
@@ -1871,77 +1871,98 @@ int Project::start(QString file, QString dumpFiles)
     {
         //qDebug() << "Project: start() after ";
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
-        QString hexPath;
-        QString asmPath;
-        if (file != "")
+        if (NULL != dbgFile && NULL != dataFile)
         {
-            asmPath = file;
-            if (dumpFiles != "")
+            PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+            set->m_config.m_interruptVector = (unsigned int)this->intVector;
+            set->m_config.m_hwbuild = (uint8_t)this->hwBuild;
+
+            if ( false == m_simControlUnit->startSimulation(dbgFile, dataFile) )
             {
-                hexPath = dumpFiles.section('.',0,-2);
-                if (hexPath == "")
+                qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
+                std::vector<std::string> messages = m_simControlUnit->getMessages();
+                for (unsigned int i = 0; i < messages.size(); i++)
                 {
-                    hexPath = dumpFiles;
+                    qDebug() << QString::fromStdString(messages.at(i));
                 }
-            }
-            else
-            {
-                hexPath = file.section('.',0,-2);
-                if (hexPath == "")
-                {
-                    hexPath = dumpFiles;
-                }
+                //qDebug() << "Project: start return 1";
+                return 1;
             }
         }
         else
         {
-            QDir dir(prjPath.section('/',0, -2));
-            hexPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath.section('.',0,-2)));
-            asmPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
-            if (hexPath == "")
+            QString hexPath;
+            QString asmPath;
+            if (file != "")
             {
-                hexPath = asmPath;
+                asmPath = file;
+                if (dumpFiles != "")
+                {
+                    hexPath = dumpFiles.section('.',0,-2);
+                    if (hexPath == "")
+                    {
+                        hexPath = dumpFiles;
+                    }
+                }
+                else
+                {
+                    hexPath = file.section('.',0,-2);
+                    if (hexPath == "")
+                    {
+                        hexPath = dumpFiles;
+                    }
+                }
             }
-        }
-        //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
-        QFileInfo infoAsm(asmPath);
-        QFileInfo infoHex(hexPath + ".ihex");
-        QFileInfo infoDbg(hexPath + ".dbg");
-        //qDebug() << "Project: sim file" << asmPath;
-        //qDebug() << "Project: sim dump file" << hexPath;
-        if ( false == infoHex.exists()
-          || false == infoDbg.exists()
-          || 0 == infoHex.size()
-          || 0 == infoDbg.size()
-           )
-        {
-            //qDebug() << "Project: files do not exist";
-            return 3;
-        }
-        if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
-        {
-            //qDebug() << "Project: files modified";
-            return 4;
-        }
-        std::string stdPath = hexPath.toLocal8Bit().constData();
-
-        PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
-        set->m_config.m_interruptVector = (unsigned int)this->intVector;
-        set->m_config.m_hwbuild = (uint8_t)this->hwBuild;
-
-        if ( false == m_simControlUnit->startSimulation(stdPath,
-                                                        m_simControlUnit->COMPILER_NATIVE,
-                                                        m_simControlUnit->DBGFILEID_HEX)
-           )
-        {
-            qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
-            std::vector<std::string> messages = m_simControlUnit->getMessages();
-            for (unsigned int i = 0; i < messages.size(); i++)
+            else
             {
-                qDebug() << QString::fromStdString(messages.at(i));
+                QDir dir(prjPath.section('/',0, -2));
+                hexPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath.section('.',0,-2)));
+                asmPath = QDir::cleanPath(dir.absoluteFilePath(mainFilePath));
+                if (hexPath == "")
+                {
+                    hexPath = asmPath;
+                }
             }
-            //qDebug() << "Project: start return 1";
-            return 1;
+            //QString hexPath = prjPath.section('/',0, -2) + "/" + mainFileName.section('.',0,-2);
+            QFileInfo infoAsm(asmPath);
+            QFileInfo infoHex(hexPath + ".ihex");
+            QFileInfo infoDbg(hexPath + ".dbg");
+            //qDebug() << "Project: sim file" << asmPath;
+            //qDebug() << "Project: sim dump file" << hexPath;
+            if ( false == infoHex.exists()
+            || false == infoDbg.exists()
+            || 0 == infoHex.size()
+            || 0 == infoDbg.size()
+            )
+            {
+                //qDebug() << "Project: files do not exist";
+                return 3;
+            }
+            if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
+            {
+                //qDebug() << "Project: files modified";
+                return 4;
+            }
+            std::string stdPath = hexPath.toLocal8Bit().constData();
+
+            PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
+            set->m_config.m_interruptVector = (unsigned int)this->intVector;
+            set->m_config.m_hwbuild = (uint8_t)this->hwBuild;
+
+            if ( false == m_simControlUnit->startSimulation(stdPath,
+                                                            m_simControlUnit->COMPILER_NATIVE,
+                                                            m_simControlUnit->DBGFILEID_HEX)
+               )
+            {
+                qDebug() << "Project: m_simControlUnit->startSimulation() returned false";
+                std::vector<std::string> messages = m_simControlUnit->getMessages();
+                for (unsigned int i = 0; i < messages.size(); i++)
+                {
+                    qDebug() << QString::fromStdString(messages.at(i));
+                }
+                //qDebug() << "Project: start return 1";
+                return 1;
+            }
         }
         //else
         //{

@@ -28,6 +28,7 @@ if ( MDS_FEATURE_DISASSEMBLER )
 endif()
 if ( MDS_FEATURE_TRANSLATOR )
     list ( APPEND MDS_ADDITONAL_LIBS "TranslatorDlg" )
+    list ( APPEND MDS_ADDITONAL_LIBS "AsmTranslator" )
 endif()
 if ( MDS_FEATURE_LICENCE_CERTIFICATE )
     list ( APPEND MDS_ADDITONAL_LIBS "LicenseWidget" )
@@ -52,7 +53,14 @@ if ( MDS_FEATURE_SIM_SWITCH )
     list ( APPEND MDS_ADDITONAL_LIBS "SimSwitch" )
 endif()
 if ( MDS_FEATURE_SIM_PORT_LOGGER )
-list ( APPEND MDS_ADDITONAL_LIBS "SimPortLogger" )
+    list ( APPEND MDS_ADDITONAL_LIBS "SimPortLogger" )
+endif()
+if ( MDS_FEATURE_SIM_CALLWATCHER )
+    list ( APPEND MDS_ADDITONAL_LIBS "CallWatcher" )
+    
+endif()
+if ( MDS_FEATURE_VHDL_WIZARD )
+    list ( APPEND MDS_ADDITONAL_LIBS "VHDLGen" )
 endif()
 
 # ------------------------------------------------------------------------------
@@ -72,7 +80,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
                         Simulator       compiler        Project         Editor          GuiCfg
                         WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode
-                        AsmTranslator   ExtAppOutput    VHDLGen         CallWatcher )
+                        ExtAppOutput )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
