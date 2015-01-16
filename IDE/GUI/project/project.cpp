@@ -1873,7 +1873,6 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
         //QString hexPath = prjPath.section('/',0, -2) + "/build/" + mainFileName.section('.',0,-2);
         if (NULL != dbgFile && NULL != dataFile)
         {
-            qDebug() << "project: in dbg and data";
             PicoBlazeInstructionSet *set = dynamic_cast<PicoBlazeInstructionSet*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::ID_CPU));
             set->m_config.m_interruptVector = (unsigned int)this->intVector;
             set->m_config.m_hwbuild = (uint8_t)this->hwBuild;
@@ -2017,9 +2016,7 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
         qDebug() << QString::fromStdString(*(m_currSim.at(i).first));
     }*/
     emit setEditorReadOnly(true);
-    qDebug() << "project: After start";
     emit simHighlightLines(m_currSim, m_prevSim, m_prevSim2, this->simColors);
-    qDebug() << "project: after highlight";
     m_prevSim = m_currSim;
     //qDebug() << "Project: return start()";
     return 0;
