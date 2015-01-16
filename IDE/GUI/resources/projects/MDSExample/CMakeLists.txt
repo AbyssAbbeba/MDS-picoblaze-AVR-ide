@@ -62,7 +62,8 @@ foreach ( PSM_FILE ${PSM_FILES} )
 endforeach ( PSM_FILE )
 
 # List of additional files that will be cleaned as a part of the "make clean" stage.
-file ( GLOB COMPILATION_RESULTS *.bin *.dbg *.ihex *.lst *.mem *.mtbl *.rawhex *.srec *.stbl *.v *.vhd *~ )
+file ( GLOB COMPILATION_RESULTS *.bin *.dbg *.ihex *.lst *.mem *.mtbl *.rawhex
+	*.srec *.stbl *.v *.vhd *.strtbl *~ )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES "${COMPILATION_RESULTS}" )
 

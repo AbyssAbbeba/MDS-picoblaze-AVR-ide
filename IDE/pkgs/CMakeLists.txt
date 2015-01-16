@@ -249,7 +249,7 @@ configure_file ( "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" "${CMAKE_CURREN
 get_directory_property ( files2clean DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} ADDITIONAL_MAKE_CLEAN_FILES )
 set_directory_properties ( PROPERTIES
                            ADDITIONAL_MAKE_CLEAN_FILES
-                           "${files2clean};${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt;${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in" )
+                           "${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt;${CMAKE_CURRENT_SOURCE_DIR}/pkglicense.txt.in;${files2clean}" )
 
 #
 ## Package version.
