@@ -43,6 +43,8 @@ class QDockWidget;
 class QFile;
 class QTreeWidgetItem;
 class QColor;
+class DataFile;
+class DbgFile;
 
 
 /*typedef enum LangType {
@@ -114,7 +116,7 @@ class Project : public QObject
         void saveProject();
         void setupSim();
         void setupSim(QString family);
-        int start(QString file = "", QString dumpFiles = "");
+        int start(QString file = "", QString dumpFiles = "", DbgFile *dbgFile = NULL, DataFile *dataFile = NULL);
         void setBreakpoints(bool set);
         void stop();
         void reset();
