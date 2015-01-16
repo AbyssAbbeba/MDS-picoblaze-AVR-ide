@@ -3242,7 +3242,6 @@ void MainForm::compileProject()
 
 void MainForm::compilationSimData(DbgFile *dgbFile, DataFile *dataFile)
 {
-        qDebug() << "compilationSimData()";
     if (true == this->simulationRequest)
     {
         this->simulationFlowHandle(dgbFile, dataFile);
