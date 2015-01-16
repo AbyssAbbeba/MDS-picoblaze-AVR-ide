@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup Assembler
@@ -103,7 +103,7 @@ inline bool AsmMachineCodeGen::reserve ( unsigned int maxAddr )
 
     maxAddr++;
 
-    // "Align" maxAddr to a multiply of INITIAL_MAX_SIZE.
+    // Align maxAddr to a multiply of INITIAL_MAX_SIZE.
     if ( 0 != ( maxAddr % INITIAL_MAX_SIZE ) )
     {
         maxAddr += ( INITIAL_MAX_SIZE - ( maxAddr % INITIAL_MAX_SIZE ) );
