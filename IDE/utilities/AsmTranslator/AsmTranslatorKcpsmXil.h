@@ -35,6 +35,38 @@
  */
 class AsmTranslatorKcpsmXil : public AsmTranslatorBase
 {
+    ////    Public Static Constants    ////
+    public:
+        /// @brief
+        static const boost::regex m_reWhiteSpace;
+
+        /// @brief
+        static const boost::regex m_reLabel;
+
+        /// @brief
+        static const boost::regex m_reInstruction;
+
+        /// @brief
+        static const boost::regex m_reWord;
+
+        /// @brief
+        static const boost::regex m_reOperand;
+
+        /// @brief
+        static const boost::regex m_reOperandSep;
+
+        /// @brief
+        static const boost::regex m_reComment;
+
+        /// @brief
+        static const boost::regex m_reAtMark;
+
+        /// @brief
+        static const boost::regex m_reAndReturn;
+
+        /// @brief
+        static const boost::regex m_reLdAndRet;
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -116,38 +148,6 @@ class AsmTranslatorKcpsmXil : public AsmTranslatorBase
          * @param[in,out] id
          */
         inline void removeTrailingDollar ( std::string & id );
-
-    ////    Public Attributes    ////
-    public:
-        /// @brief
-        static const boost::regex m_reWhiteSpace;
-
-        /// @brief
-        static const boost::regex m_reLabel;
-
-        /// @brief
-        static const boost::regex m_reInstruction;
-
-        /// @brief
-        static const boost::regex m_reWord;
-
-        /// @brief
-        static const boost::regex m_reOperand;
-
-        /// @brief
-        static const boost::regex m_reOperandSep;
-
-        /// @brief
-        static const boost::regex m_reComment;
-
-        /// @brief
-        static const boost::regex m_reAtMark;
-
-        /// @brief
-        static const boost::regex m_reAndReturn;
-
-        /// @brief
-        static const boost::regex m_reLdAndRet;
 
     ////    Private Attributes    ////
     private:
