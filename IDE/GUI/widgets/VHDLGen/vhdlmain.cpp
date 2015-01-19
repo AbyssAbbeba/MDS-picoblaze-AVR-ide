@@ -58,8 +58,6 @@ VhdlMain::VhdlMain(QWidget *parent) :
         componentHighlight[i] = false;
     }
 
-   // qDebug() << "hi";
-
     portCount = 0;
     portInCount = 0;
     portOutCount = 0;
