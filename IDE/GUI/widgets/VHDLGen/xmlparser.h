@@ -46,7 +46,6 @@ public:
         return componentName;
     }
 
-    qDebug()<< "hi";
     void writeXml(unsigned int structIndex);
     void readXml();
     void getDirFiles();
@@ -59,10 +58,10 @@ public:
 private:
 
 signals:
-    
+
 public slots:
 
-    
+
 };
 
 #endif // XMLPARSER_H
