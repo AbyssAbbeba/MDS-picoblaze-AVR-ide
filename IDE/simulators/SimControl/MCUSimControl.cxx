@@ -365,8 +365,14 @@ void MCUSimControl::stepProgram()
     emit ( updateRequest ( UR_TIME_AND_PC | UR_SIM_CURSOR ) );
 }
 
-void MCUSimControl::animateProgram()
+void MCUSimControl::animateProgram ( bool thread )
 {
+    if ( true == thread )
+    {
+        m_threadCmd.m_animate = true;
+        return;
+    }
+
     if ( nullptr == m_simulator )
     {
         return;
@@ -404,9 +410,15 @@ void MCUSimControl::animateProgram()
     }
 }
 
-void MCUSimControl::runProgram()
+void MCUSimControl::runProgram ( bool thread )
 {
     constexpr unsigned int MAX_REFRESH_FREQ_HZ = 20;
+
+    if ( true == thread )
+    {
+        m_threadCmd.m_run = true;
+        return;
+    }
 
     if ( nullptr == m_simulator )
     {
@@ -1007,4 +1019,40 @@ inline bool MCUSimControl::BrkPntStop::check ( const int file,
 
     m_brkPnts.push_back ( { line, file, true } );
     return false;
+}
+
+void MCUSimControl::run()
+{
+    while ( true )
+    {
+        if ( true == m_threadCmd.m_exit )
+        {
+            return;
+        }
+        else if ( true == m_threadCmd.m_run )
+        {
+            m_threadCmd.m_run = false;
+            runProgram(false);
+        }
+        else if ( true == m_threadCmd.m_animate )
+        {
+            m_threadCmd.m_animate = false;
+            animateProgram(false);
+        }
+
+        msleep(1);
+    }
+}
+
+MCUSimControl::ThreadCmd::ThreadCmd()
+{
+    m_exit = false;
+    m_run = false;
+    m_animate = false;
+}
+
+void MCUSimControl::abortAndExit()
+{
+    m_abort = true;
+    m_threadCmd.m_exit = true;
 }

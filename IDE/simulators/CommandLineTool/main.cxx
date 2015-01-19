@@ -28,7 +28,7 @@ int main ( int argc, char ** argv )
 }
 
 /*
- *
+
 == CLI options ==
  -a, --architecture
  -d, --device
@@ -54,17 +54,19 @@ get
  - memory <space> <address> [ .. <end-address>]
  - size <what>
  - cycles // machine cycles
+//  - locations
 file
  - load <space> <type> <file>
  - save <space> <type> <file>
 
 sim
- - step <steps>
-//  - animate
-//  - run
-//  - halt
+ - step [<steps>]
+ - animate
+ - run
+ - halt
  - reset
 
 exit [<code>]
+help [<command>]
 
  */

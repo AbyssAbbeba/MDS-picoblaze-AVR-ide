@@ -146,6 +146,31 @@ class SimCmdLine
                                      const std::string & input,
                                      unsigned int & pos );
 
+        /**
+         * @brief
+         * @param[in] subcommand
+         */
+        inline void helpCommand ( const std::string & subcommand );
+
+        /**
+         * @brief
+         * @param[in] flag
+         */
+        inline void flagCommand ( const std::string & flag );
+
+        /**
+         * @brief
+         * @param[in] flag
+         * @param[in] value
+         */
+        inline void flagCommand ( const std::string & flag,
+                                  const std::string & value );
+
+        /**
+         * @brief
+         */
+        inline void done();
+
     ////    Private Attributes    ////
     private:
         /// @name Basic settings
