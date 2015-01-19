@@ -18,7 +18,7 @@
 #     will be automatically replaced with appropriate XML tag sequences by this
 #     script.
 #
-# (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+# (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
 #
 # author: Martin Ošmera <martin.osmera@moravia-microsystems.com>
 #
@@ -52,140 +52,7 @@ function genIndentation ( level ) {
     }
 }
 
-( FILENAME ~ /\.qhp\.in$/ ) {
-    if ( RESFILE ) {
-        printf("") > RESFILE
-
-        if ( $0 ~ /@GENQHP_SECTIONS@/ ) {
-            for ( i = 0; i < sectionsNL; i++ ) {
-                print ( sections[i] ) >> RESFILE
-            }
-        } else if ( $0 ~ /@GENQHP_KEYWORDS@/ ) {
-            for ( i = 0; i < keywordsNL; i++ ) {
-                print ( keywords[i] ) >> RESFILE
-            }
-        } else {
-            print($0) >> RESFILE
-        }
-    }
-
-    next
-}
-
-/div class="tableofcontents"/ {
-    start = 1
-
-#     sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, NAME, INDEX_FILE )
-
-    lastClass = "C"
-#     indent++
-    genIndentation(indent)
-}
-
-/href=".+\.html(#[^"]*)?"/ && ( start ) {
-    if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
-    }
-
-    match ( $0, />[^<>]*</ )
-    nodeName = substr ( $0, RSTART + 1, RLENGTH - 2 )
-
-    if ( "Contents" == nodeName )
-    {
-        nodeName = ""
-        next
-    }
-
-    match ( $0, /"[^\"]*"/ )
-    nodeUrn = substr ( $0, RSTART + 1, RLENGTH - 2 )
-}
-
-/class="chapterToc"/ && ( start ) {
-    if ( "C" != lastClass ) {
-        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
-            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
-            nodeName = ""
-            nodeUrn  = ""
-        }
-
-        while ( "C" != lastClass )
-        {
-            indent--
-            genIndentation(indent)
-            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-
-            if      ( "S"   == lastClass ) { lastClass = "C"  }
-            else if ( "SS"  == lastClass ) { lastClass = "S"  }
-            else if ( "SSS" == lastClass ) { lastClass = "SS" }
-        }
-    }
-}
-
-/class="sectionToc"/ && ( start ) {
-    if ( "C" == lastClass ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
-
-        nodeName = ""
-        nodeUrn  = ""
-
-        indent++
-        genIndentation(indent)
-    } else if ( ( "SS" == lastClass ) || ( "SSS" == lastClass ) ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
-        nodeName = ""
-        nodeUrn  = ""
-
-        indent--
-        genIndentation(indent)
-        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-
-        if ( "SSS" == lastClass ) {
-            indent--
-            genIndentation(indent)
-            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-        }
-    }
-
-    lastClass = "S"
-}
-
-/class="subsectionToc"/ && ( start ) {
-    if ( "S" == lastClass ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
-
-        nodeName = ""
-        nodeUrn  = ""
-
-        indent++
-        genIndentation(indent)
-    } else if ( "SSS" == lastClass ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
-        nodeName = ""
-        nodeUrn  = ""
-
-        indent--
-        genIndentation(indent)
-        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-    }
-
-    lastClass = "SS"
-}
-
-/class="subsubsectionToc"/ && ( start ) {
-    if ( "SS" == lastClass ) {
-        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
-
-        nodeName = ""
-        nodeUrn  = ""
-
-        indent++
-        genIndentation(indent)
-    }
-
-    lastClass = "SSS"
-}
-
-/class="likechapterToc"/ && ( start ) {
+function handleIndex() {
     if ( "Index" == nodeName ) {
         sub ( /#.+$/, "", nodeUrn )
 
@@ -223,10 +90,180 @@ function genIndentation ( level ) {
                 indexStart = 0
             }
         }
+
+        nodeName = ""
+        nodeUrn = ""
+    }
+}
+
+( FILENAME ~ /\.qhp\.in$/ ) {
+    if ( RESFILE ) {
+        printf("") > RESFILE
+
+        if ( $0 ~ /@GENQHP_SECTIONS@/ ) {
+            for ( i = 0; i < sectionsNL; i++ ) {
+                print ( sections[i] ) >> RESFILE
+            }
+        } else if ( $0 ~ /@GENQHP_KEYWORDS@/ ) {
+            for ( i = 0; i < keywordsNL; i++ ) {
+                print ( keywords[i] ) >> RESFILE
+            }
+        } else {
+            print($0) >> RESFILE
+        }
+    }
+
+    next
+}
+
+/div class="tableofcontents"/ {
+    start = 1
+
+    lastClass = "C"
+    genIndentation(indent)
+}
+
+/href=".+\.html(#[^"]*)?"/ && ( start ) {
+    if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+        sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+    }
+
+    match ( $0, />[^<>]*</ )
+    nodeName = substr ( $0, RSTART + 1, RLENGTH - 2 )
+
+    if ( "Contents" == nodeName )
+    {
+        nodeName = ""
+        next
+    }
+
+    match ( $0, /"[^\"]*"/ )
+    nodeUrn = substr ( $0, RSTART + 1, RLENGTH - 2 )
+}
+
+/class="chapterToc"/ && ( start ) {
+    handleIndex()
+    if ( "C" != lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+            nodeName = ""
+            nodeUrn  = ""
+        }
+
+        while ( "C" != lastClass )
+        {
+            indent--
+            genIndentation(indent)
+            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+
+            if      ( "S"   == lastClass ) { lastClass = "C"  }
+            else if ( "SS"  == lastClass ) { lastClass = "S"  }
+            else if ( "SSS" == lastClass ) { lastClass = "SS" }
+        }
+    }
+}
+
+/class="sectionToc"/ && ( start ) {
+    handleIndex()
+    if ( "C" == lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
+        }
+
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent++
+        genIndentation(indent)
+    } else if ( ( "SS" == lastClass ) || ( "SSS" == lastClass ) ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+        }
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+
+        if ( "SSS" == lastClass ) {
+            indent--
+            genIndentation(indent)
+            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+        }
+    }
+
+    lastClass = "S"
+}
+
+/class="subsectionToc"/ && ( start ) {
+    handleIndex()
+    if ( "S" == lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
+        }
+
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent++
+        genIndentation(indent)
+    } else if ( "SSS" == lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+        }
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent--
+        genIndentation(indent)
+        sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+    }
+
+    lastClass = "SS"
+}
+
+/class="subsubsectionToc"/ && ( start ) {
+    handleIndex()
+    if ( "SS" == lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\">", indentCh, nodeName, nodeUrn )
+        }
+
+        nodeName = ""
+        nodeUrn  = ""
+
+        indent++
+        genIndentation(indent)
+    }
+
+    lastClass = "SSS"
+}
+
+/class="likechapterToc"/ && ( start ) {
+    handleIndex()
+    if ( "C" != lastClass ) {
+        if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
+            sections [ sectionsNL++ ] = sprintf ( "%s<section title=\"%s\" ref=\"%s\"/>", indentCh, nodeName, nodeUrn )
+            nodeName = ""
+            nodeUrn  = ""
+        }
+
+        while ( "C" != lastClass )
+        {
+            indent--
+            genIndentation(indent)
+            sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
+
+            if      ( "S"   == lastClass ) { lastClass = "C"  }
+            else if ( "SS"  == lastClass ) { lastClass = "S"  }
+            else if ( "SSS" == lastClass ) { lastClass = "SS" }
+        }
     }
 }
 
 /<\/div>/ && ( start ) {
+    handleIndex()
     start = 0
 
     if ( ( "" != nodeName ) && ( "" != nodeUrn ) ) {
@@ -253,10 +290,4 @@ function genIndentation ( level ) {
         genIndentation(indent)
         sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
     }
-
-#     if ( "C" == lastClass ) {
-#         indent--
-#         genIndentation(indent)
-#         sections [ sectionsNL++ ] = sprintf ( "%s</section>", indentCh )
-#     }
 }

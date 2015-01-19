@@ -70,6 +70,10 @@
  * @defgroup McuSimCfgMgr MCU simulator configuration manager
  * @ingroup MCUSim
  * MCU simulator configuration management.
+ *
+ * @defgroup SimCmdLine Simulator CLI
+ * @ingroup MCUSim
+ *
  */
 
 /**

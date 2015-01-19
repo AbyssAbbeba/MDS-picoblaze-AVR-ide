@@ -39,7 +39,10 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 include_directories ( "${CMAKE_SOURCE_DIR}" )
 
 # Add an executable to the project using the specified source files.
-add_executable ( ${PROJECT_NAME} ${RC_FILE} main.cxx )
+add_executable ( ${PROJECT_NAME}
+                 ${RC_FILE}
+                 main.cxx
+                 SimCmdLine.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} Simulator os )

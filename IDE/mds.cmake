@@ -56,6 +56,8 @@ elseif ( MDS_GRADE STREQUAL "Premium" )
     set ( MDS_FEATURE_SIM_7_SEGMENT             TRUE )
     set ( MDS_FEATURE_SIM_SWITCH                TRUE )
     set ( MDS_FEATURE_EXTERNAL_APPS             TRUE )
+    set ( MDS_FEATURE_VHDL_WIZARD               TRUE )
+    set ( MDS_FEATURE_SIM_CALLWATCHER           TRUE )
 
 elseif ( MDS_GRADE STREQUAL "Professional" )
     set ( MDS_FEATURE_CONVERTER_TOOL            TRUE )
