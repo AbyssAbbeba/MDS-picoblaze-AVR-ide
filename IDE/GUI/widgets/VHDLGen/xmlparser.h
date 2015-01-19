@@ -58,10 +58,10 @@ public:
 private:
 
 signals:
-    
+
 public slots:
 
-    
+
 };
 
 #endif // XMLPARSER_H
