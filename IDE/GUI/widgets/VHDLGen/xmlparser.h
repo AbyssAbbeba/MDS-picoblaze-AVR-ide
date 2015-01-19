@@ -46,7 +46,6 @@ public:
         return componentName;
     }
 
-    qDebug()<< "hi";
     void writeXml(unsigned int structIndex);
     void readXml();
     void getDirFiles();
