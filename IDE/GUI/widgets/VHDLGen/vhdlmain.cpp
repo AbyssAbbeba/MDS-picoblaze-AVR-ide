@@ -40,6 +40,40 @@ VhdlMain::VhdlMain(QWidget *parent) :
     ui->comboKcpsm->addItems(items2);
     ui->comboKcpsm->setCurrentIndex(4);
 
+    //node_t * test_list = new node_t(0);
+
+    node_t * curr, * head, * tempLink;
+    int i;
+
+    head = NULL;
+
+    //addField()
+       //curr = new node_t;
+       //curr = (item *)malloc(sizeof(item));
+       //curr->val = 1;
+       //curr->next  = head;
+       //head = curr;
+
+       for(i=1;i<=5;i++)
+       {
+          curr = new node_t;
+          curr->val = i;
+          curr->next  = head;
+          head = curr;
+       }
+
+        curr = head;
+       while(curr != NULL)
+       {
+            qDebug() << "Current : \n" << curr->val;
+            curr = curr->next ;
+       }
+       qDebug() << "First : \n" << head;
+
+
+
+
+
     rectList << "componentRect";
     this->componentRect = new QRect(20, 170, 200, 25);
 
@@ -50,6 +84,7 @@ VhdlMain::VhdlMain(QWidget *parent) :
     setMouseTracking ( true );
     //ui2->setupUi(widget);
     this->setWindowTitle("VHDL wizard");
+
 
     // variable initializations
 
@@ -691,7 +726,6 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
 
-
         QString port;
         port.clear();
         QTextStream out(&port);
@@ -707,64 +741,64 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         }
         out << "PORTS:" << endl;
         
-    switch ( ui->comboKcpsm->currentIndex() )
-    {
-        // kcpsmcpld
-        case 0:
-            out << " Pico_Data_in" <<"\n";
-            out << " Pico_Data_out" <<"\n";
-            out << " Pico_Port_ID" <<"\n";
-            out << " Pico_rd" <<"\n";
-            out << " Pico_wr" <<"\n";
-            out << " Pico_int" <<"\n";
-            out << " Pico_clk" <<"\n";
-            break;
-        // kcpsm1
-        case 1:
-            out << " Pico_Data_in" <<"\n";
-            out << " Pico_Data_out" <<"\n";
-            out << " Pico_Port_ID" <<"\n";
-            out << " Pico_rd" <<"\n";
-            out << " Pico_wr" <<"\n";
-            out << " Pico_int" <<"\n";
-            out << " Pico_clk" <<"\n";
-            break;
-        // kcpsm2
-        case 2:
-            out << " Pico_Data_in" <<"\n";
-            out << " Pico_Data_out" <<"\n";
-            out << " Pico_Port_ID" <<"\n";
-            out << " Pico_rd" <<"\n";
-            out << " Pico_wr" <<"\n";
-            out << " Pico_int" <<"\n";
-            out << " Pico_clk" <<"\n";
-            break;
-        // kcpsm3
-        case 3:
-            out << " Pico_Data_in" <<"\n";
-            out << " Pico_Data_out" <<"\n";
-            out << " Pico_Port_ID" <<"\n";
-            out << " Pico_rd" <<"\n";
-            out << " Pico_wr" <<"\n";
-            out << " Pico_int" <<"\n";
-            out << " Pico_int_ack" <<"\n";
-            out << " Pico_clk" <<"\n";
-            break;
-        // kcpsm6
-        case 4:
-            out << " Pico_Data_in" <<"\n";
-            out << " Pico_Data_out" <<"\n";
-            out << " Pico_Port_ID" <<"\n";
-            out << " Pico_rd" <<"\n";
-            out << " Pico_wr" <<"\n";
-            out << " Pico_k_wr" <<"\n";
-            out << " Pico_int" <<"\n";
-            out << " Pico_int_ack" <<"\n";
-            out << " Pico_clk" <<"\n";
-            out << " Pico_sleep" <<"\n";
-            break;
-        default: qDebug() << "wrong kcpsm selected";
-            break;
+        switch ( ui->comboKcpsm->currentIndex() )
+        {
+            // kcpsmcpld
+            case 0:
+                out << " Pico_Data_in" <<"\n";
+                out << " Pico_Data_out" <<"\n";
+                out << " Pico_Port_ID" <<"\n";
+                out << " Pico_rd" <<"\n";
+                out << " Pico_wr" <<"\n";
+                out << " Pico_int" <<"\n";
+                out << " Pico_clk" <<"\n";
+                break;
+            // kcpsm1
+            case 1:
+                out << " Pico_Data_in" <<"\n";
+                out << " Pico_Data_out" <<"\n";
+                out << " Pico_Port_ID" <<"\n";
+                out << " Pico_rd" <<"\n";
+                out << " Pico_wr" <<"\n";
+                out << " Pico_int" <<"\n";
+                out << " Pico_clk" <<"\n";
+                break;
+            // kcpsm2
+            case 2:
+                out << " Pico_Data_in" <<"\n";
+                out << " Pico_Data_out" <<"\n";
+                out << " Pico_Port_ID" <<"\n";
+                out << " Pico_rd" <<"\n";
+                out << " Pico_wr" <<"\n";
+                out << " Pico_int" <<"\n";
+                out << " Pico_clk" <<"\n";
+                break;
+            // kcpsm3
+            case 3:
+                out << " Pico_Data_in" <<"\n";
+                out << " Pico_Data_out" <<"\n";
+                out << " Pico_Port_ID" <<"\n";
+                out << " Pico_rd" <<"\n";
+                out << " Pico_wr" <<"\n";
+                out << " Pico_int" <<"\n";
+                out << " Pico_int_ack" <<"\n";
+                out << " Pico_clk" <<"\n";
+                break;
+            // kcpsm6
+            case 4:
+                out << " Pico_Data_in" <<"\n";
+                out << " Pico_Data_out" <<"\n";
+                out << " Pico_Port_ID" <<"\n";
+                out << " Pico_rd" <<"\n";
+                out << " Pico_wr" <<"\n";
+                out << " Pico_k_wr" <<"\n";
+                out << " Pico_int" <<"\n";
+                out << " Pico_int_ack" <<"\n";
+                out << " Pico_clk" <<"\n";
+                out << " Pico_sleep" <<"\n";
+                break;
+            default: qDebug() << "wrong kcpsm selected";
+                break;
     }
 
         cursor_textinfo.insertText(port);
@@ -889,11 +923,12 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         ui3.textInfo->setTextCursor(cursor_textinfo);
     }
 
-    unsigned int p = 1;
-    while ( true == this->componentObject[p-1]->isValid())
+    unsigned int p = 0;
+    while ( true == this->componentObject[p]->isValid())
     {
-         if ( this->componentObject[p-1]->contains( pressEvent->pos() ) == true)
+         if ( this->componentObject[p]->contains( pressEvent->pos() ) == true)
          {
+             qDebug() << "component rectangle" << p;
              this->RectInfo = new QWidget(0);
              // define new widget
              ui3.setupUi(RectInfo);
@@ -919,63 +954,63 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
              portString.clear();
              QTextStream out(&portString);
 
-                 out << " COMPONENT NAME: "<< endl;
-                 out << "      "<< definedComponent[p-1].name << endl;
-                 out << endl;
-                 int pIngen = 0;
-                 if (  false == genericComponent[p-1].genericName.at(pIngen).isEmpty())
+             out << " COMPONENT NAME: "<< endl;
+             out << "      "<< definedComponent[p].name << endl;
+             out << endl;
+             int pIngen = 0;
+             if (  false == genericComponent[p].genericName.at(pIngen).isEmpty())
+             {
+                 out << " GENERIC: " <<"\n" <<"\n";
+             }
+             while ( false == genericComponent[p].genericName.at(pIngen).isEmpty() )
+             {
+                 out << "      " << genericComponent[p].genericName.at(pIngen);
+                 m_spaceNum = tabsNumber(genericComponent[p].genericName.at(pIngen));
+                 for (unsigned int  l = 0; l <= m_spaceNum; l++)
                  {
-                     out << " GENERIC: " <<"\n" <<"\n";
+                     out << ' ';
                  }
-                 while ( false == genericComponent[p-1].genericName.at(pIngen).isEmpty() )
+                 if ( genericComponent[p].genericValue.at(pIngen).isEmpty() == false )
                  {
-                     out << "      " << genericComponent[p-1].genericName.at(pIngen);
-                     m_spaceNum = tabsNumber(genericComponent[p-1].genericName.at(pIngen));
-                     for (unsigned int  l = 0; l <= m_spaceNum; l++)
-                     {
-                         out << ' ';
-                     }
-                     if ( genericComponent[p-1].genericValue.at(pIngen).isEmpty() == false )
-                     {
-                         out << ": " << genericComponent[p-1].genericValue[pIngen] << endl;
-                     }
-                     else
-                     {
-                         out << endl;
-                     }
-                     pIngen++;
+                     out << ": " << genericComponent[p].genericValue[pIngen] << endl;
                  }
-                 out << endl;
-                 out << " PORTS: " <<"\n" <<"\n";
-                 unsigned int pIn;
-                 pIn = 0;
-                 while ( true != definedComponent[p-1].portName.at(pIn).isEmpty() )
+                 else
                  {
-                     out << "      " << definedComponent[p-1].portName.at(pIn);
                      out << endl;
-                     pIn++;
                  }
-                 cursor_textinfo.insertText(portString);
-                 ui3.textInfo->setTextCursor(cursor_textinfo);
-                 ui3.textInfo->setTextCursor(QTextCursor(ui3.textInfo->document()));
-                 ui3.textInfo->find("PORTS:");
-                 cursor_textinfo = ui3.textInfo->textCursor();
-                 cursor_textinfo.setCharFormat(format);
-                 cursor_textinfo.setPosition(0);
-                 ui3.textInfo->setTextCursor(cursor_textinfo);
-                 ui3.textInfo->find("GENERIC:");
-                 cursor_textinfo = ui3.textInfo->textCursor();
-                 cursor_textinfo.setCharFormat(format);
-                 cursor_textinfo.setPosition(0);
-                 ui3.textInfo->setTextCursor(cursor_textinfo);
-                 ui3.textInfo->find("COMPONENT NAME:");
-                 cursor_textinfo = ui3.textInfo->textCursor();
-                 cursor_textinfo.setCharFormat(format);
-                 cursor_textinfo.setPosition(0);
-                 ui3.textInfo->setTextCursor(cursor_textinfo);
-                 break;
+                 pIngen++;
+             }
+             out << endl;
+             out << " PORTS: " <<"\n" <<"\n";
+             unsigned int pIn;
+             pIn = 0;
+             while ( true != definedComponent[p].portName.at(pIn).isEmpty() )
+             {
+                 out << "      " << definedComponent[p].portName.at(pIn);
+                 out << endl;
+                 pIn++;
+             }
+             cursor_textinfo.insertText(portString);
+             ui3.textInfo->setTextCursor(cursor_textinfo);
+             ui3.textInfo->setTextCursor(QTextCursor(ui3.textInfo->document()));
+             ui3.textInfo->find("PORTS:");
+             cursor_textinfo = ui3.textInfo->textCursor();
+             cursor_textinfo.setCharFormat(format);
+             cursor_textinfo.setPosition(0);
+             ui3.textInfo->setTextCursor(cursor_textinfo);
+             ui3.textInfo->find("GENERIC:");
+             cursor_textinfo = ui3.textInfo->textCursor();
+             cursor_textinfo.setCharFormat(format);
+             cursor_textinfo.setPosition(0);
+             ui3.textInfo->setTextCursor(cursor_textinfo);
+             ui3.textInfo->find("COMPONENT NAME:");
+             cursor_textinfo = ui3.textInfo->textCursor();
+             cursor_textinfo.setCharFormat(format);
+             cursor_textinfo.setPosition(0);
+             ui3.textInfo->setTextCursor(cursor_textinfo);
+             break;
         }
-         p++;
+        p++;
     }
     update();
 }
