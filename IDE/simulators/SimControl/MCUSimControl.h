@@ -133,6 +133,24 @@ class MCUSimControl : public QThread
                 std::list<BrkPnt> m_brkPnts;
         };
 
+        /**
+         * @brief
+         */
+        struct ThreadCmd
+        {
+            /// @brief
+            ThreadCmd();
+
+            ///
+            bool m_exit;
+
+            ///
+            bool m_run;
+
+            ///
+            bool m_animate;
+        };
+
     ////    Constructors and Destructors    ////
     public:
         /**
@@ -278,6 +296,8 @@ class MCUSimControl : public QThread
          */
         unsigned long long getTotalMCycles() const;
 
+        void abortAndExit();
+
     ////    Private Operations    ////
     private:
         /**
@@ -295,6 +315,8 @@ class MCUSimControl : public QThread
          * @param[in] readOnly
          */
         void allObservers_setReadOnly ( bool readOnly );
+
+        virtual void run() override;
 
     ////    Inline Private Operations    ////
     private:
@@ -360,13 +382,15 @@ class MCUSimControl : public QThread
 
         /**
          * @brief
+         * @param[in] thread
          */
-        void animateProgram();
+        void animateProgram ( bool thread = false );
 
         /**
          * @brief
+         * @param[in] thread
          */
-        void runProgram();
+        void runProgram ( bool thread = false );
 
         /**
          * @brief
@@ -435,6 +459,9 @@ class MCUSimControl : public QThread
 
         /// @brief
         BrkPntStop m_lastBrkPntStop;
+
+        /// @brief
+        ThreadCmd m_threadCmd;
 
         /// @brief
         bool m_running;

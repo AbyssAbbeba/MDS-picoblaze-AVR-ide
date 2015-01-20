@@ -386,6 +386,7 @@ inline SimCmdLine::ExitCode SimCmdLine::initializeSim()
         return EXIT_ERROR_SIMULATOR;
     }
 
+    m_simControl->start();
     return EXIT_CODE_SUCCESS;
 }
 
@@ -416,6 +417,11 @@ inline SimCmdLine::ExitCode SimCmdLine::commandLoop()
     return EXIT_CODE_SUCCESS;
 }
 
+inline void SimCmdLine::done()
+{
+    std::cout << "done" << std::endl;
+}
+
 inline void SimCmdLine::processCommand ( const std::string & command,
                                          const std::string & subcommand,
                                          const std::string & input,
@@ -439,16 +445,37 @@ inline void SimCmdLine::processCommand ( const std::string & command,
                     }
                 }
             }
+            if ( steps < 1 )
+            {
+                std::cout << QObject::tr("Error: number of steps has to be a positive integer.").toStdString()
+                          << std::endl;
+                return;
+            }
             for ( int i = 0; i < steps; i++ )
             {
                 m_simControl->stepProgram();
             }
-            std::cout << "DONE" << std::endl;
+            done();
         }
         else if ( "reset" == subcommand )
         {
             m_simControl->resetProgram();
-            std::cout << "DONE" << std::endl;
+            done();
+        }
+        else if ( "animate" == subcommand )
+        {
+            m_simControl->animateProgram(true);
+            done();
+        }
+        else if ( "run" == subcommand )
+        {
+            m_simControl->runProgram(true);
+            done();
+        }
+        else if ( "halt" == subcommand )
+        {
+            m_simControl->stopSimulation();
+            done();
         }
         else
         {
@@ -459,14 +486,51 @@ inline void SimCmdLine::processCommand ( const std::string & command,
     {
         if ( "pc" == subcommand )
         {
+            int value;
+            std::string argument;
+            readWord(argument, input, pos);
+            if ( false == readInt(value, argument) )
+            {
+                return;
+            }
+
+            if ( value < 0 )
+            {
+                std::cout << QObject::tr("Error: program counter cannot be set to a negative value.").toStdString()
+                          << std::endl;
+                return;
+            }
+
+            MCUSimMemory * codeMem = dynamic_cast<MCUSimMemory*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_MEM_CODE));
+            if ( value >= codeMem->size() )
+            {
+                std::cout << QObject::tr ( "Error: program counter set to the specified value would exceed the size "
+                                           "of program memory." ).toStdString()
+                          << std::endl;
+                return;
+            }
+
+            MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
+            cpu->setProgramCounter((unsigned int) value);
+            done();
         }
         else if ( "flag" == subcommand )
         {
+            std::string flag;
+            std::string value;
+
+            readWord(flag, input, pos);
+            readWord(value, input, pos);
+
+            flagCommand(flag, value);
         }
         else if ( "memory" == subcommand )
         {
         }
         else if ( "size" == subcommand )
+        {
+        }
+        else if ( "breakpoint" == subcommand )
         {
         }
         else
@@ -480,10 +544,13 @@ inline void SimCmdLine::processCommand ( const std::string & command,
         {
             MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
             std::cout << cpu->getProgramCounter() << std::endl;
-            std::cout << "DONE" << std::endl;
+            done();
         }
         else if ( "flag" == subcommand )
         {
+            std::string flag;
+            readWord(flag, input, pos);
+            flagCommand(flag);
         }
         else if ( "memory" == subcommand )
         {
@@ -491,7 +558,10 @@ inline void SimCmdLine::processCommand ( const std::string & command,
         else if ( "cycles" == subcommand )
         {
             std::cout << m_simControl->getTotalMCycles() << std::endl;
-            std::cout << "DONE" << std::endl;
+            done();
+        }
+        else if ( "locations" == subcommand )
+        {
         }
         else
         {
@@ -511,6 +581,10 @@ inline void SimCmdLine::processCommand ( const std::string & command,
             subcmdInvalid = true;
         }
     }
+    else if ( "help" == command )
+    {
+        helpCommand(subcommand);
+    }
     else if ( "exit" == command )
     {
         std::cout << QObject::tr("Exiting on user request.").toStdString() << std::endl;
@@ -523,6 +597,8 @@ inline void SimCmdLine::processCommand ( const std::string & command,
                 return;
             }
         }
+        m_simControl->abortAndExit();
+        m_simControl->wait();
         exit(code);
     }
     else
@@ -534,6 +610,19 @@ inline void SimCmdLine::processCommand ( const std::string & command,
     {
         std::cerr << QObject::tr("Error: invalid subcommand: ").toStdString() << subcommand << std::endl;
     }
+}
+
+inline void SimCmdLine::flagCommand ( const std::string & flag )
+{
+}
+
+inline void SimCmdLine::flagCommand ( const std::string & flag,
+                                      const std::string & value )
+{
+}
+
+inline void SimCmdLine::helpCommand ( const std::string & subcommand )
+{
 }
 
 bool SimCmdLine::readInt ( int & out,
@@ -586,7 +675,7 @@ bool SimCmdLine::readInt ( int & out,
     }
     else
     {
-        std::cerr << QObject::tr("Error: number: ").toStdString() << in << std::endl;
+        std::cerr << QObject::tr("Error: not a valid number: ").toStdString() << in << std::endl;
         return false;
     }
 
