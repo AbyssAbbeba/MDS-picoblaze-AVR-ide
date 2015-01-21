@@ -44,6 +44,13 @@ class VhdlMain : public QWidget
     /**
     * @brief Variable list
     */
+    typedef struct node {
+        int val;
+        struct node * next;
+    } node_t;
+
+    //typedef struct list_el item;
+
 
      QStringList printedComponents, printedComponentsDeclaration;
      QStringList longerList, splitList2, splitList1;
@@ -111,7 +118,7 @@ class VhdlMain : public QWidget
          QStringList msbNumber;
          QStringList lsbNumber;
 
-     } genericComponent[21];
+     } genericComponent[21];       
 
      QString entityName;
      QString loadPath,savePath;
