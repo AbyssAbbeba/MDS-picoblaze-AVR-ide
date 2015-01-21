@@ -21,6 +21,8 @@
 // getopt_long() function.
 #include <getopt.h>
 
+#include "SimCmdLineCommands.h"
+
 // Standard headers.
 #include <utility>
 #include <cstring>
@@ -54,16 +56,6 @@
 
 const char * SimCmdLine::VERSION = MDS_VERSION;
 
-constexpr boost::regex::flag_type reFlags = ( boost::regex::extended | boost::regex::icase | boost::regex::optimize );
-const boost::regex SimCmdLine::m_reBinaryPrefix      = boost::regex ( "0b[01]+",     reFlags );
-const boost::regex SimCmdLine::m_reBinarySuffix      = boost::regex ( "[01]+b",      reFlags );
-const boost::regex SimCmdLine::m_reOctalPrefix       = boost::regex ( "0[0-7]+",     reFlags );
-const boost::regex SimCmdLine::m_reOctalSuffix       = boost::regex ( "[0-7]+[oq]",  reFlags );
-const boost::regex SimCmdLine::m_reDecimalPrefix     = boost::regex ( "[0-9]+",      reFlags );
-const boost::regex SimCmdLine::m_reDecimalSuffix     = boost::regex ( "[0-9]+d",     reFlags );
-const boost::regex SimCmdLine::m_reHexadecimalPrefix = boost::regex ( "0x[0-9A-F]+", reFlags );
-const boost::regex SimCmdLine::m_reHexadecimalSuffix = boost::regex ( "[0-9A-F]+h",  reFlags );
-
 SimCmdLine::ExitCode SimCmdLine::main ( int argc,
                                         char ** argv )
 {
@@ -79,7 +71,8 @@ SimCmdLine::ExitCode SimCmdLine::main ( int argc,
         return exitCode;
     }
 
-    if ( EXIT_CODE_SUCCESS != ( exitCode = commandLoop() ) )
+    SimCmdLineCommands cmd(m_simControl);
+    if ( EXIT_CODE_SUCCESS != ( exitCode = cmd.commandLoop() ) )
     {
         return exitCode;
     }
@@ -221,95 +214,100 @@ inline SimCmdLine::ExitCode SimCmdLine::initializeSim()
     m_procDef = nullptr;
     m_simControl = nullptr;
 
+    int memFileBPR = -1;
+    XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::OPCodeSize(-1);
+
+    m_codeFile = path(makeHomeSafe(m_codeFile)).make_preferred().string();
+
+    if ( "kcpsm1cpld" == m_device )
+    {
+        memFileBPR = 2;
+        opCodeSize = XilHDLFile::SIZE_16b;
+    }
+    else if ( "kcpsm1" == m_device )
+    {
+        memFileBPR = 2;
+        opCodeSize = XilHDLFile::SIZE_16b;
+    }
+    else if ( "kcpsm2" == m_device )
+    {
+        memFileBPR = 3;
+        opCodeSize = XilHDLFile::SIZE_18b;
+    }
+    else if ( "kcpsm3" == m_device )
+    {
+        memFileBPR = 3;
+        opCodeSize = XilHDLFile::SIZE_18b;
+    }
+    else if ( "kcpsm6" == m_device )
+    {
+        memFileBPR = 3;
+        opCodeSize = XilHDLFile::SIZE_18b;
+    }
+
+    const auto fileType = S_FILE_TYPE.find(m_codeFileType);
+    if ( S_FILE_TYPE.cend() == fileType )
+    {
+        // Unknown file type.
+        std::cerr << QObject::tr("Error: %1 is not a valid file type specification.")
+                                .arg(m_codeFileType.c_str()).toStdString() << std::endl;
+        return EXIT_ERROR_CLI;
+    }
+
     try
     {
-        int memFileBPR = -1;
-        XilHDLFile::OPCodeSize opCodeSize = XilHDLFile::OPCodeSize(-1);
+        switch ( fileType->second )
+        {
+            case FT_INTEL_HEX:
+                // Intel 8 HEX, or Intel 16 HEX
+                m_dataFile = new HexFile(m_codeFile);
+                break;
 
-        m_codeFile = path(makeHomeSafe(m_codeFile)).make_preferred().string();
+            case FT_S_REC:
+                // Motorola S-Record
+                m_dataFile = new SrecFile(m_codeFile);
+                break;
 
-        if ( "kcpsm1cpld" == m_device )
-        {
-            memFileBPR = 2;
-            opCodeSize = XilHDLFile::SIZE_16b;
-        }
-        else if ( "kcpsm1" == m_device )
-        {
-            memFileBPR = 2;
-            opCodeSize = XilHDLFile::SIZE_16b;
-        }
-        else if ( "kcpsm2" == m_device )
-        {
-            memFileBPR = 3;
-            opCodeSize = XilHDLFile::SIZE_18b;
-        }
-        else if ( "kcpsm3" == m_device )
-        {
-            memFileBPR = 3;
-            opCodeSize = XilHDLFile::SIZE_18b;
-        }
-        else if ( "kcpsm6" == m_device )
-        {
-            memFileBPR = 3;
-            opCodeSize = XilHDLFile::SIZE_18b;
-        }
+            case FT_RAW_BIN:
+                // Raw binary file
+                m_dataFile = new BinFile(m_codeFile);
+                break;
 
-        if ( "hex" == m_codeFileType )
-        {
-            // Intel 8 HEX, or Intel 16 HEX
-            m_dataFile = new HexFile(m_codeFile);
-        }
-        else if ( "srec" == m_codeFileType )
-        {
-            // Motorola S-Record
-            m_dataFile = new SrecFile(m_codeFile);
-        }
-        else if ( "bin" == m_codeFileType )
-        {
-            // Raw binary file
-            m_dataFile = new BinFile(m_codeFile);
-        }
-        else if ( "rawhex" == m_codeFileType )
-        {
-            // Raw HEX dump
-            m_dataFile = new RawHexDumpFile(RawHexDumpFile::OPCodeSize(opCodeSize), m_codeFile);
-        }
-        else if ( "vhd" == m_codeFileType )
-        {
-            // VHDL file
-            if ( -1 == opCodeSize )
-            {
-                std::cerr << QObject::tr("Error: cannot use VHDL file for this device.").toStdString() << std::endl;
-                return EXIT_ERROR_CLI;
-            }
-            m_dataFile = new XilVHDLFile(m_codeFile, "", "", opCodeSize);
-        }
-        else if ( "v" == m_codeFileType )
-        {
-            // Verilog file
-            if ( -1 == opCodeSize )
-            {
-                std::cerr << QObject::tr("Error: cannot use Verilog file for this device.").toStdString() << std::endl;
-                return EXIT_ERROR_CLI;
-            }
-            m_dataFile = new XilVerilogFile(m_codeFile, "", "", opCodeSize);
-        }
-        else if ( "mem" == m_codeFileType )
-        {
-            // Xilinx MEM file
-            if ( -1 == memFileBPR )
-            {
-                std::cerr << QObject::tr("Error: cannot use MEM file for this device.").toStdString() << std::endl;
-                return EXIT_ERROR_CLI;
-            }
-            m_dataFile = new XilMemFile(m_codeFile, memFileBPR);
-        }
-        else
-        {
-            // Unknown
-            std::cerr << QObject::tr("Error: %1 is not valid file type specification.")
-                                    .arg(m_codeFileType.c_str()).toStdString() << std::endl;
-            return EXIT_ERROR_CLI;
+            case FT_RAW_HEX:
+                // Raw HEX dump
+                m_dataFile = new RawHexDumpFile(RawHexDumpFile::OPCodeSize(opCodeSize), m_codeFile);
+                break;
+
+            case FT_VHDL:
+                // VHDL file
+                if ( -1 == opCodeSize )
+                {
+                    std::cerr << QObject::tr("Error: cannot use VHDL file for this device.").toStdString() << std::endl;
+                    return EXIT_ERROR_CLI;
+                }
+                m_dataFile = new XilVHDLFile(m_codeFile, "", "", opCodeSize);
+                break;
+
+            case FT_VERILOG:
+                // Verilog file
+                if ( -1 == opCodeSize )
+                {
+                    std::cerr << QObject::tr("Error: cannot use Verilog file for this device.").toStdString()
+                              << std::endl;
+                    return EXIT_ERROR_CLI;
+                }
+                m_dataFile = new XilVerilogFile(m_codeFile, "", "", opCodeSize);
+                break;
+
+            case FT_MEM:
+                // Xilinx MEM file
+                if ( -1 == memFileBPR )
+                {
+                    std::cerr << QObject::tr("Error: cannot use MEM file for this device.").toStdString() << std::endl;
+                    return EXIT_ERROR_CLI;
+                }
+                m_dataFile = new XilMemFile(m_codeFile, memFileBPR);
+                break;
         }
     }
     catch ( const DataFileException & e )
@@ -390,306 +388,6 @@ inline SimCmdLine::ExitCode SimCmdLine::initializeSim()
     return EXIT_CODE_SUCCESS;
 }
 
-inline SimCmdLine::ExitCode SimCmdLine::commandLoop()
-{
-    std::string input;
-    std::string command;
-    std::string subcommand;
-    unsigned int pos;
-
-    while ( false == std::cin.eof() )
-    {
-        if ( true == std::cin.bad() )
-        {
-            std::cerr << QObject::tr("Error: unable to read input.").toStdString() << std::endl;
-            return EXIT_ERROR_CLI;
-        }
-
-        std::getline(std::cin, input);
-
-        pos = 0;
-        readWord(command, input, pos);
-        readWord(subcommand, input, pos);
-
-        processCommand(command, subcommand, input, pos);
-    }
-
-    return EXIT_CODE_SUCCESS;
-}
-
-inline void SimCmdLine::done()
-{
-    std::cout << "done" << std::endl;
-}
-
-inline void SimCmdLine::processCommand ( const std::string & command,
-                                         const std::string & subcommand,
-                                         const std::string & input,
-                                         unsigned int & pos )
-{
-    bool subcmdInvalid = false;
-
-    if ( "sim" == command )
-    {
-        if ( "step" == subcommand )
-        {
-            int steps = 1;
-            {
-                std::string argument;
-                readWord(argument, input, pos);
-                if ( false == argument.empty() )
-                {
-                    if ( false == readInt(steps, argument) )
-                    {
-                        return;
-                    }
-                }
-            }
-            if ( steps < 1 )
-            {
-                std::cout << QObject::tr("Error: number of steps has to be a positive integer.").toStdString()
-                          << std::endl;
-                return;
-            }
-            for ( int i = 0; i < steps; i++ )
-            {
-                m_simControl->stepProgram();
-            }
-            done();
-        }
-        else if ( "reset" == subcommand )
-        {
-            m_simControl->resetProgram();
-            done();
-        }
-        else if ( "animate" == subcommand )
-        {
-            m_simControl->animateProgram(true);
-            done();
-        }
-        else if ( "run" == subcommand )
-        {
-            m_simControl->runProgram(true);
-            done();
-        }
-        else if ( "halt" == subcommand )
-        {
-            m_simControl->stopSimulation();
-            done();
-        }
-        else
-        {
-            subcmdInvalid = true;
-        }
-    }
-    else if ( "set" == command )
-    {
-        if ( "pc" == subcommand )
-        {
-            int value;
-            std::string argument;
-            readWord(argument, input, pos);
-            if ( false == readInt(value, argument) )
-            {
-                return;
-            }
-
-            if ( value < 0 )
-            {
-                std::cout << QObject::tr("Error: program counter cannot be set to a negative value.").toStdString()
-                          << std::endl;
-                return;
-            }
-
-            MCUSimMemory * codeMem = dynamic_cast<MCUSimMemory*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_MEM_CODE));
-            if ( value >= codeMem->size() )
-            {
-                std::cout << QObject::tr ( "Error: program counter set to the specified value would exceed the size "
-                                           "of program memory." ).toStdString()
-                          << std::endl;
-                return;
-            }
-
-            MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
-            cpu->setProgramCounter((unsigned int) value);
-            done();
-        }
-        else if ( "flag" == subcommand )
-        {
-            std::string flag;
-            std::string value;
-
-            readWord(flag, input, pos);
-            readWord(value, input, pos);
-
-            flagCommand(flag, value);
-        }
-        else if ( "memory" == subcommand )
-        {
-        }
-        else if ( "size" == subcommand )
-        {
-        }
-        else if ( "breakpoint" == subcommand )
-        {
-        }
-        else
-        {
-            subcmdInvalid = true;
-        }
-    }
-    else if ( "get" == command )
-    {
-        if ( "pc" == subcommand )
-        {
-            MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
-            std::cout << cpu->getProgramCounter() << std::endl;
-            done();
-        }
-        else if ( "flag" == subcommand )
-        {
-            std::string flag;
-            readWord(flag, input, pos);
-            flagCommand(flag);
-        }
-        else if ( "memory" == subcommand )
-        {
-        }
-        else if ( "cycles" == subcommand )
-        {
-            std::cout << m_simControl->getTotalMCycles() << std::endl;
-            done();
-        }
-        else if ( "locations" == subcommand )
-        {
-        }
-        else
-        {
-            subcmdInvalid = true;
-        }
-    }
-    else if ( "file" == command )
-    {
-        if ( "load" == subcommand )
-        {
-        }
-        else if ( "save" == subcommand )
-        {
-        }
-        else
-        {
-            subcmdInvalid = true;
-        }
-    }
-    else if ( "help" == command )
-    {
-        helpCommand(subcommand);
-    }
-    else if ( "exit" == command )
-    {
-        std::cout << QObject::tr("Exiting on user request.").toStdString() << std::endl;
-
-        int code = 0;
-        if ( false == subcommand.empty() )
-        {
-            if ( false == readInt(code, subcommand) )
-            {
-                return;
-            }
-        }
-        m_simControl->abortAndExit();
-        m_simControl->wait();
-        exit(code);
-    }
-    else
-    {
-        std::cerr << QObject::tr("Error: invalid command: ").toStdString() << command << std::endl;
-    }
-
-    if ( true == subcmdInvalid )
-    {
-        std::cerr << QObject::tr("Error: invalid subcommand: ").toStdString() << subcommand << std::endl;
-    }
-}
-
-inline void SimCmdLine::flagCommand ( const std::string & flag )
-{
-}
-
-inline void SimCmdLine::flagCommand ( const std::string & flag,
-                                      const std::string & value )
-{
-}
-
-inline void SimCmdLine::helpCommand ( const std::string & subcommand )
-{
-}
-
-bool SimCmdLine::readInt ( int & out,
-                           const std::string & in )
-{
-    using namespace boost;
-
-    int base = 0;
-    int start = 0;
-    int end = (int) in.size();
-
-    if ( true == regex_match(in, m_reBinaryPrefix) )
-    {
-        start = 2;
-        base = 2;
-    }
-    else if ( true == regex_match(in, m_reBinarySuffix) )
-    {
-        base = 2;
-        end--;
-    }
-    else if ( true == regex_match(in, m_reOctalPrefix) )
-    {
-        start = 1;
-        base = 8;
-    }
-    else if ( true == regex_match(in, m_reOctalSuffix) )
-    {
-        base = 8;
-        end--;
-    }
-    else if ( true == regex_match(in, m_reDecimalPrefix) )
-    {
-        base = 10;
-    }
-    else if ( true == regex_match(in, m_reDecimalSuffix) )
-    {
-        base = 10;
-        end--;
-    }
-    else if ( true == regex_match(in, m_reHexadecimalPrefix) )
-    {
-        start = 2;
-        base = 16;
-    }
-    else if ( true == regex_match(in, m_reHexadecimalSuffix) )
-    {
-        base = 16;
-        end--;
-    }
-    else
-    {
-        std::cerr << QObject::tr("Error: not a valid number: ").toStdString() << in << std::endl;
-        return false;
-    }
-
-    long number = strtol(in.substr(start, end).c_str(), nullptr, base);
-    if ( ( number > INT_MAX ) || ( number < INT_MIN ) )
-    {
-        std::cerr << QObject::tr("Error: number exceeds allowed range: ").toStdString() << in << std::endl;
-        return false;
-    }
-
-    out = (int) number;
-    return true;
-}
-
 void SimCmdLine::printIntro()
 {
     std::cout << QObject::tr("MDS processor simulator v%1").arg(VERSION).toStdString() << std::endl
@@ -761,29 +459,4 @@ inline void SimCmdLine::printHelp ( const char * executable )
 void SimCmdLine::printUsage ( const char * executable )
 {
     std::cout << QObject::tr("Please type `%1 -h' for help.").arg(executable).toStdString() << std::endl;
-}
-
-void SimCmdLine::readWord ( std::string & word,
-                            const std::string & input,
-                            unsigned int & pos)
-{
-    word.clear();
-
-    while ( pos < input.size() )
-    {
-        char in = input[pos++];
-        if ( ( ' ' == in ) || ( '\t' == in ) )
-        {
-            if ( true == word.empty() )
-            {
-                continue;
-            }
-            else
-            {
-                break;
-            }
-        }
-
-        word += in;
-    }
 }

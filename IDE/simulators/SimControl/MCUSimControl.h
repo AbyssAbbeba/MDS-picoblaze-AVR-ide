@@ -296,7 +296,15 @@ class MCUSimControl : public QThread
          */
         unsigned long long getTotalMCycles() const;
 
+        /**
+         * @brief
+         */
         void abortAndExit();
+
+        std::map<unsigned int, std::pair<int, int>> & getBreakpoints()
+        {
+            return m_breakpoints;
+        }
 
     ////    Private Operations    ////
     private:
@@ -316,6 +324,9 @@ class MCUSimControl : public QThread
          */
         void allObservers_setReadOnly ( bool readOnly );
 
+        /**
+         * @brief
+         */
         virtual void run() override;
 
     ////    Inline Private Operations    ////

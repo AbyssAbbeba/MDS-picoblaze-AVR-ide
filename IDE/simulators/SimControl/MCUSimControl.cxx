@@ -729,13 +729,17 @@ void MCUSimControl::dispatchEvents()
             }
         #endif // NDEBUG
 
-        std::vector<std::pair<MCUSimObserver*, uint64_t> >::iterator it;
-        for ( it = m_observers[subsysId].begin(); it != m_observers[subsysId].end(); ++it )
+        for ( auto observer : m_observers[subsysId] )
         {
-            if ( (1 << eventId) & it->second )
+            if ( (1 << eventId) & observer.second )
             {
-                it->first->handleEvent(subsysId, eventId, locationOrReason, detail);
+                observer.first->handleEvent(subsysId, eventId, locationOrReason, detail);
             }
+        }
+
+        for ( auto observer : m_observers[MCUSimSubsys::ID_INVALID] )
+        {
+            observer.first->handleEvent(subsysId, eventId, locationOrReason, detail);
         }
     }
 }

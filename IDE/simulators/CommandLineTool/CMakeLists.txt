@@ -36,13 +36,17 @@ windres_rc ( OUTPUT_VAR         RC_FILE
 # ------------------------------------------------------------------------------
 
 # List of preprocessor include file search directories.
-include_directories ( "${CMAKE_SOURCE_DIR}" )
+include_directories ( "${CMAKE_SOURCE_DIR}"
+                      "${CMAKE_SOURCE_DIR}/simulators/MCUSim/" )
 
 # Add an executable to the project using the specified source files.
 add_executable ( ${PROJECT_NAME}
                  ${RC_FILE}
                  main.cxx
-                 SimCmdLine.cxx )
+                 SimCmdLine.cxx
+                 SimCmdLineBase.cxx
+                 SimCmdLineObserver.cxx
+                 SimCmdLineCommands.cxx )
 
 # Link a target to given libraries
 target_link_libraries ( ${PROJECT_NAME} Simulator os )

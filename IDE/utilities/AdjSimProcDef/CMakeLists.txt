@@ -19,7 +19,7 @@ project ( AdjSimProcDef )
 # ------------------------------------------------------------------------------
 
 # Create Qt user interfaces Wrappers.
-QT4_WRAP_UI( UI_FILES AdjSimProcDefGuiWidget.ui )
+qt4_wrap_ui( UI_FILES AdjSimProcDefGuiWidget.ui )
 
 ## Take Qt specific C++ header file(s) and compile them using Qt Meta Object Compiler.
 qt4_wrap_cpp ( MOC_FILES AdjSimProcDefGui.h )
