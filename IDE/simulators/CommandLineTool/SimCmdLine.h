@@ -25,42 +25,19 @@ class MCUSimControl;
 // Standard headers.
 #include <string>
 
-// Boost regular expressions library.
-#include "boost/regex.hpp"
+#include "SimCmdLineBase.h"
 
 /**
  * @brief
  * @ingroup SimCmdLine
  * @class SimCmdLine
  */
-class SimCmdLine
+class SimCmdLine : public SimCmdLineBase
 {
     ////    Public Static Constants    ////
     public:
         /// @brief
         static const char * VERSION;
-
-        /// @brief
-        static const boost::regex m_reOctalPrefix;
-        static const boost::regex m_reOctalSuffix;
-        static const boost::regex m_reBinaryPrefix;
-        static const boost::regex m_reBinarySuffix;
-        static const boost::regex m_reDecimalPrefix;
-        static const boost::regex m_reDecimalSuffix;
-        static const boost::regex m_reHexadecimalPrefix;
-        static const boost::regex m_reHexadecimalSuffix;
-
-    ////    Public Datatypes    ////
-    public:
-        /**
-         * @brief
-         */
-        enum ExitCode
-        {
-            EXIT_CODE_SUCCESS    = 0, ///<
-            EXIT_ERROR_SIMULATOR = 1, ///<
-            EXIT_ERROR_CLI       = 2  ///<
-        };
 
     ////    Public Operations    ////
     public:
@@ -75,25 +52,6 @@ class SimCmdLine
 
     ////    Private Operations    ////
     private:
-        /**
-         * @brief
-         * @param[out] word
-         * @param[in] input
-         * @param[in,out] pos
-         */
-        void readWord ( std::string & word,
-                        const std::string & input,
-                        unsigned int & pos);
-
-        /**
-         * @brief
-         * @param[out] out
-         * @param[in] in
-         * @return
-         */
-        bool readInt ( int & out,
-                       const std::string & in );
-
         /**
          * @brief
          * @param[in] executable
@@ -130,46 +88,8 @@ class SimCmdLine
 
         /**
          * @brief
-         * @return
          */
-        inline ExitCode commandLoop();
-
-        /**
-         * @brief
-         * @param[in] command
-         * @param[in] subcommand
-         * @param[in] input
-         * @param[in,out] pos
-         */
-        inline void processCommand ( const std::string & command,
-                                     const std::string & subcommand,
-                                     const std::string & input,
-                                     unsigned int & pos );
-
-        /**
-         * @brief
-         * @param[in] subcommand
-         */
-        inline void helpCommand ( const std::string & subcommand );
-
-        /**
-         * @brief
-         * @param[in] flag
-         */
-        inline void flagCommand ( const std::string & flag );
-
-        /**
-         * @brief
-         * @param[in] flag
-         * @param[in] value
-         */
-        inline void flagCommand ( const std::string & flag,
-                                  const std::string & value );
-
-        /**
-         * @brief
-         */
-        inline void done();
+        inline void setUpEventObserver();
 
     ////    Private Attributes    ////
     private:

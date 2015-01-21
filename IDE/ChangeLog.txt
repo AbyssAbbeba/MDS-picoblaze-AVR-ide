@@ -1,12 +1,14 @@
 1.3
-    - Added support for automated VHDL entity generation
     - Added Call Watcher
     - Added Memory Watcher
+    - Added support for automated VHDL entity generation
+
+1.2.3 (19.1.2015)
     - GUI polishing
     - New assembler command line options
     - New predefined constants in assembler (see manual for details)
     - New assembler directive - ENTITY
-    - Improved documentation handling (added functioning index)
+    - Improved documentation handling (added index)
 
 1.2 (6.1.2015)
     - Added compatibility mode for Xilinx PSM syntax

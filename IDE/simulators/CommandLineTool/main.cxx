@@ -47,14 +47,15 @@ set
  - flag <flag> <value>
  - memory <space> <address> <value>
  - size <what> <value>
-//  - breakpoint <file:line> <value>
+ - breakpoint <file:line> <value>
 get
  - pc
  - flag <flag>
- - memory <space> <address> [ .. <end-address>]
+ - memory <space> <address> [ <end-address>]
  - size <what>
  - cycles // machine cycles
-//  - locations
+ - breakpoints
+ - locations
 file
  - load <space> <type> <file>
  - save <space> <type> <file>
