@@ -170,3 +170,27 @@ void PicoBlazeStack::storeInDataFile ( DataFile * file ) const
         }
     }
 }
+
+void PicoBlazeStack::eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail )
+{
+    switch ( Event(eventId) )
+    {
+        case EVENT_STACK_OVERFLOW:
+            out << ">>> stack_overflow @ " << locationOrReason << " : " << detail << std::endl;
+            return;
+        case EVENT_STACK_UNDERFLOW:
+            out << ">>> stack_underflow @ " << locationOrReason << " : " << detail << std::endl;
+            return;
+        case EVENT_STACK_SP_CHANGED:
+            out << ">>> stack_sp_changed : " << locationOrReason << std::endl;
+            return;
+
+        case EVENT_STACK__MAX__:
+            break;
+    }
+
+    MCUSimMemory::eventToString(out, eventId, locationOrReason, detail);
+}

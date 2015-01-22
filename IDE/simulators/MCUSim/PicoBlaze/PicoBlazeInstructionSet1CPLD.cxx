@@ -985,7 +985,7 @@ inline void PicoBlazeInstructionSet1CPLD::returnFromInterrupt()
     if ( m_statusFlags->getInterrupted() <= 0 )
     {
         m_statusFlags -> setInterrupted ( 1 );
-        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI );
+        logEvent ( MCUSimEventLogger::FLAG_HI_PRIO, EVENT_CPU_ERR_INVALID_RETI, m_pc );
     }
     else
     {

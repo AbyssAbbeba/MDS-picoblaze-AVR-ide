@@ -19,6 +19,9 @@
 #include "MCUSimBase.h"
 #include "MCUSimEventLogger.h"
 
+#include <string>
+#include <ostream>
+
 /**
  * @brief
  * @ingroup MCUSim
@@ -98,6 +101,18 @@ class MCUSimSubsys
          * @param[in] mode
          */
         virtual void reset ( MCUSimBase::ResetMode mode ) = 0;
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail );
 
     ////    Inline Public Operations    ////
     public:

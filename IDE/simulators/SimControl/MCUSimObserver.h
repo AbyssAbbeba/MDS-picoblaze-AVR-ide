@@ -42,12 +42,6 @@ class MCUSimObserver
     public:
         /**
          * @brief
-         * @param[in,out] managedBy
-         */
-        void setControlUnit ( MCUSimControl * managedBy );
-
-        /**
-         * @brief
          * @param[in] subsysId
          * @param[in] eventId
          * @param[in] locationOrReason
@@ -73,6 +67,17 @@ class MCUSimObserver
          * @param[in] readOnly
          */
         virtual void setReadOnly ( bool readOnly ) = 0;
+
+        /**
+         * @brief
+         */
+        virtual void initialized();
+
+        /**
+         * @brief
+         * @param[in,out] managedBy
+         */
+        void setControlUnit ( MCUSimControl * managedBy );
 
     ////    Protected Attributes    ////
     protected:

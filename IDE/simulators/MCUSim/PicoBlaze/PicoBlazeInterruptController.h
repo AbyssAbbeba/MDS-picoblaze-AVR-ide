@@ -94,6 +94,18 @@ class PicoBlazeInterruptController : public MCUSimSubsys
          */
         void returni();
 
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
+
     ////    Inline Public Operations    ////
     public:
         /**

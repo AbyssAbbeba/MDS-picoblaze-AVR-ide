@@ -108,6 +108,18 @@ class MCUSimPureLogicIO : public MCUSimSubsys
         virtual void write ( unsigned int port,
                              unsigned int value ) = 0;
 
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
+
     ////    Inline Public Operations    ////
     public:
         /**

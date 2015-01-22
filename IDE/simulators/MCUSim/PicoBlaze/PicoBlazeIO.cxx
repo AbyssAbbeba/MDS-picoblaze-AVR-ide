@@ -127,3 +127,24 @@ void PicoBlazeIO::write ( unsigned int port,
 
     logEvent ( EVENT_PICOBLAZEIO_WRITE, port, m_inputBitArray [ port ] );
 }
+
+void PicoBlazeIO::eventToString ( std::ostream & out,
+                                  int eventId,
+                                  int locationOrReason,
+                                  int detail )
+{
+    switch ( Event(eventId) )
+    {
+        case EVENT_PICOBLAZEIO_WRITE:
+            out << ">>> io_write @ " << locationOrReason << " : " << detail << std::endl;
+            return;
+        case EVENT_PICOBLAZEIO_OUTPUTK:
+            out << ">>> io_outputk @ " << locationOrReason << " : " << detail << std::endl;
+            return;
+
+        case EVENT_PICOBLAZEIO__MAX__:
+            break;
+    }
+
+    MCUSimPureLogicIO::eventToString(out, eventId, locationOrReason, detail);
+}
