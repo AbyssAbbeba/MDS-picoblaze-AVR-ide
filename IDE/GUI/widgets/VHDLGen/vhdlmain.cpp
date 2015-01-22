@@ -42,10 +42,10 @@ VhdlMain::VhdlMain(QWidget *parent) :
 
     //node_t * test_list = new node_t(0);
 
-    node_t * curr, * head, * tempLink;
-    int i;
+    //node_t * curr, * head, * tempLink;
+    //int i;
 
-    head = NULL;
+    //head = NULL;
 
     //addField()
        //curr = new node_t;
@@ -54,24 +54,15 @@ VhdlMain::VhdlMain(QWidget *parent) :
        //curr->next  = head;
        //head = curr;
 
-       for(i=1;i<=5;i++)
-       {
-          curr = new node_t;
-          curr->val = i;
-          curr->next  = head;
-          head = curr;
-       }
+       //for(i=1;i<=5;i++)
+       //{
+         // curr = new node_t;
+         // curr->val = i;
+         // curr->next  = head;
+         // head = curr;
+       //}
 
-        curr = head;
-       while(curr != NULL)
-       {
-            qDebug() << "Current : \n" << curr->val;
-            curr = curr->next ;
-       }
-       qDebug() << "First : \n" << head;
-
-
-
+     //   curr = head;
 
 
     rectList << "componentRect";
@@ -688,6 +679,245 @@ void VhdlMain::editSelectedComponent(unsigned int position)
       ui2.editValue_48->setText(xmlParser.xmlGenericComponent[position].xmlGenericValue.at(7));
 }
 
+void VhdlMain::editExistingComponent()
+{
+    unsigned int position;
+    position = editIndex;
+
+    ui2.editName->setText(definedComponent[position].name);
+
+    ui2.editPort_9->setText(definedComponent[position].portName.at(0));
+    ui2.editPort_10->setText(definedComponent[position].portName.at(1));
+    ui2.editPort_11->setText(definedComponent[position].portName.at(2));
+    ui2.editPort_12->setText(definedComponent[position].portName.at(3));
+    ui2.editPort_13->setText(definedComponent[position].portName.at(4));
+    ui2.editPort_14->setText(definedComponent[position].portName.at(5));
+    ui2.editPort_15->setText(definedComponent[position].portName.at(6));
+    ui2.editPort_16->setText(definedComponent[position].portName.at(7));
+    ui2.editPort_17->setText(definedComponent[position].portName.at(8));
+    ui2.editPort_18->setText(definedComponent[position].portName.at(9));
+    ui2.editPort_19->setText(definedComponent[position].portName.at(10));
+    ui2.editPort_20->setText(definedComponent[position].portName.at(11));
+    ui2.editPort_21->setText(definedComponent[position].portName.at(12));
+    ui2.editPort_22->setText(definedComponent[position].portName.at(13));
+    ui2.editPort_23->setText(definedComponent[position].portName.at(14));
+    ui2.editPort_24->setText(definedComponent[position].portName.at(15));
+    ui2.editPort_25->setText(definedComponent[position].portName.at(16));
+
+// get port directions
+    int numDirection[17];
+    for (int i = 0; i < 17; i++)
+    {
+        if (definedComponent[position].portDirection.at(i) == "in")
+            numDirection[i] = 0;
+        if (definedComponent[position].portDirection.at(i) == "out")
+            numDirection[i] = 1;
+        if (definedComponent[position].portDirection.at(i) == "inout")
+            numDirection[i] = 2;
+    }
+
+    ui2.comboDirection_9->setCurrentIndex(numDirection[0]);
+    ui2.comboDirection_10->setCurrentIndex(numDirection[1]);
+    ui2.comboDirection_11->setCurrentIndex(numDirection[2]);
+    ui2.comboDirection_12->setCurrentIndex(numDirection[3]);
+    ui2.comboDirection_13->setCurrentIndex(numDirection[4]);
+    ui2.comboDirection_14->setCurrentIndex(numDirection[5]);
+    ui2.comboDirection_15->setCurrentIndex(numDirection[6]);
+    ui2.comboDirection_16->setCurrentIndex(numDirection[7]);
+    ui2.comboDirection_17->setCurrentIndex(numDirection[8]);
+    ui2.comboDirection_18->setCurrentIndex(numDirection[9]);
+    ui2.comboDirection_19->setCurrentIndex(numDirection[10]);
+    ui2.comboDirection_20->setCurrentIndex(numDirection[11]);
+    ui2.comboDirection_21->setCurrentIndex(numDirection[12]);
+    ui2.comboDirection_22->setCurrentIndex(numDirection[13]);
+    ui2.comboDirection_23->setCurrentIndex(numDirection[14]);
+    ui2.comboDirection_24->setCurrentIndex(numDirection[15]);
+    ui2.comboDirection_25->setCurrentIndex(numDirection[16]);
+
+    // get buses
+    ui2.checkBus_9->setChecked(definedComponent[position].bus[0]);
+    ui2.checkBus_10->setChecked(definedComponent[position].bus[1]);
+    ui2.checkBus_11->setChecked(definedComponent[position].bus[2]);
+    ui2.checkBus_12->setChecked(definedComponent[position].bus[3]);
+    ui2.checkBus_13->setChecked(definedComponent[position].bus[4]);
+    ui2.checkBus_14->setChecked(definedComponent[position].bus[5]);
+    ui2.checkBus_15->setChecked(definedComponent[position].bus[6]);
+    ui2.checkBus_16->setChecked(definedComponent[position].bus[7]);
+    ui2.checkBus_17->setChecked(definedComponent[position].bus[8]);
+    ui2.checkBus_18->setChecked(definedComponent[position].bus[9]);
+    ui2.checkBus_19->setChecked(definedComponent[position].bus[10]);
+    ui2.checkBus_20->setChecked(definedComponent[position].bus[11]);
+    ui2.checkBus_21->setChecked(definedComponent[position].bus[12]);
+    ui2.checkBus_22->setChecked(definedComponent[position].bus[13]);
+    ui2.checkBus_23->setChecked(definedComponent[position].bus[14]);
+    ui2.checkBus_24->setChecked(definedComponent[position].bus[15]);
+    ui2.checkBus_25->setChecked(definedComponent[position].bus[16]);
+
+    // get buses
+    ui2.checkSignal_9->setChecked(definedComponent[position].signal[0]);
+    ui2.checkSignal_10->setChecked(definedComponent[position].signal[1]);
+    ui2.checkSignal_11->setChecked(definedComponent[position].signal[2]);
+    ui2.checkSignal_12->setChecked(definedComponent[position].signal[3]);
+    ui2.checkSignal_13->setChecked(definedComponent[position].signal[4]);
+    ui2.checkSignal_14->setChecked(definedComponent[position].signal[5]);
+    ui2.checkSignal_15->setChecked(definedComponent[position].signal[6]);
+    ui2.checkSignal_16->setChecked(definedComponent[position].signal[7]);
+    ui2.checkSignal_17->setChecked(definedComponent[position].signal[8]);
+    ui2.checkSignal_18->setChecked(definedComponent[position].signal[9]);
+    ui2.checkSignal_19->setChecked(definedComponent[position].signal[10]);
+    ui2.checkSignal_20->setChecked(definedComponent[position].signal[11]);
+    ui2.checkSignal_21->setChecked(definedComponent[position].signal[12]);
+    ui2.checkSignal_22->setChecked(definedComponent[position].signal[13]);
+    ui2.checkSignal_23->setChecked(definedComponent[position].signal[14]);
+    ui2.checkSignal_24->setChecked(definedComponent[position].signal[15]);
+    ui2.checkSignal_25->setChecked(definedComponent[position].signal[16]);
+
+    // get msb numbers
+
+        ui2.editMSB_9->setText(definedComponent[position].msbNumber.at(0));
+        ui2.editMSB_10->setText(definedComponent[position].msbNumber.at(1));
+        ui2.editMSB_11->setText(definedComponent[position].msbNumber.at(2));
+        ui2.editMSB_12->setText(definedComponent[position].msbNumber.at(3));
+        ui2.editMSB_13->setText(definedComponent[position].msbNumber.at(4));
+        ui2.editMSB_14->setText(definedComponent[position].msbNumber.at(5));
+        ui2.editMSB_15->setText(definedComponent[position].msbNumber.at(6));
+        ui2.editMSB_16->setText(definedComponent[position].msbNumber.at(7));
+        ui2.editMSB_17->setText(definedComponent[position].msbNumber.at(8));
+        ui2.editMSB_18->setText(definedComponent[position].msbNumber.at(9));
+        ui2.editMSB_19->setText(definedComponent[position].msbNumber.at(10));
+        ui2.editMSB_20->setText(definedComponent[position].msbNumber.at(11));
+        ui2.editMSB_21->setText(definedComponent[position].msbNumber.at(12));
+        ui2.editMSB_22->setText(definedComponent[position].msbNumber.at(13));
+        ui2.editMSB_23->setText(definedComponent[position].msbNumber.at(14));
+        ui2.editMSB_24->setText(definedComponent[position].msbNumber.at(15));
+        ui2.editMSB_25->setText(definedComponent[position].msbNumber.at(16));
+
+    // get lsb numbers
+        ui2.editLSB_9->setText(definedComponent[position].lsbNumber.at(0));
+        ui2.editLSB_10->setText(definedComponent[position].lsbNumber.at(1));
+        ui2.editLSB_11->setText(definedComponent[position].lsbNumber.at(2));
+        ui2.editLSB_12->setText(definedComponent[position].lsbNumber.at(3));
+        ui2.editLSB_13->setText(definedComponent[position].lsbNumber.at(4));
+        ui2.editLSB_14->setText(definedComponent[position].lsbNumber.at(5));
+        ui2.editLSB_15->setText(definedComponent[position].lsbNumber.at(6));
+        ui2.editLSB_16->setText(definedComponent[position].lsbNumber.at(7));
+        ui2.editLSB_17->setText(definedComponent[position].lsbNumber.at(8));
+        ui2.editLSB_18->setText(definedComponent[position].lsbNumber.at(9));
+        ui2.editLSB_19->setText(definedComponent[position].lsbNumber.at(10));
+        ui2.editLSB_20->setText(definedComponent[position].lsbNumber.at(11));
+        ui2.editLSB_21->setText(definedComponent[position].lsbNumber.at(12));
+        ui2.editLSB_22->setText(definedComponent[position].lsbNumber.at(13));
+        ui2.editLSB_23->setText(definedComponent[position].lsbNumber.at(14));
+        ui2.editLSB_24->setText(definedComponent[position].lsbNumber.at(15));
+        ui2.editLSB_25->setText(definedComponent[position].lsbNumber.at(16));
+
+    // get initialized numbers
+
+        ui2.editValue_9->setText(definedComponent[position].portValue.at(0));
+        ui2.editValue_10->setText(definedComponent[position].portValue.at(1));
+        ui2.editValue_11->setText(definedComponent[position].portValue.at(2));
+        ui2.editValue_12->setText(definedComponent[position].portValue.at(3));
+        ui2.editValue_13->setText(definedComponent[position].portValue.at(4));
+        ui2.editValue_14->setText(definedComponent[position].portValue.at(5));
+        ui2.editValue_15->setText(definedComponent[position].portValue.at(6));
+        ui2.editValue_16->setText(definedComponent[position].portValue.at(7));
+        ui2.editValue_17->setText(definedComponent[position].portValue.at(8));
+        ui2.editValue_18->setText(definedComponent[position].portValue.at(9));
+        ui2.editValue_19->setText(definedComponent[position].portValue.at(10));
+        ui2.editValue_20->setText(definedComponent[position].portValue.at(11));
+        ui2.editValue_21->setText(definedComponent[position].portValue.at(12));
+        ui2.editValue_22->setText(definedComponent[position].portValue.at(13));
+        ui2.editValue_23->setText(definedComponent[position].portValue.at(14));
+        ui2.editValue_24->setText(definedComponent[position].portValue.at(15));
+        ui2.editValue_25->setText(definedComponent[position].portValue.at(16));
+
+    // ***** GENERIC ******
+    // get names of declared ports
+         ui2.editPort_41->setText(genericComponent[position].genericName.at(0));
+         ui2.editPort_42->setText(genericComponent[position].genericName.at(1));
+         ui2.editPort_43->setText(genericComponent[position].genericName.at(2));
+         ui2.editPort_44->setText(genericComponent[position].genericName.at(3));
+         ui2.editPort_45->setText(genericComponent[position].genericName.at(4));
+         ui2.editPort_46->setText(genericComponent[position].genericName.at(5));
+         ui2.editPort_47->setText(genericComponent[position].genericName.at(6));
+         ui2.editPort_48->setText(genericComponent[position].genericName.at(7));
+
+    // get port directions
+          //<< "logic" << "logicVector" << "integer" << "positive" << "natural";
+         for (int i = 0; i < 8; i++)
+         {
+             if (genericComponent[position].portType.at(i) == "logic")
+                 numDirection[i] = 0;
+             if (genericComponent[position].portType.at(i) == "logicVector")
+                 numDirection[i] = 1;
+             if (genericComponent[position].portType.at(i) == "integer")
+                 numDirection[i] = 2;
+             if (genericComponent[position].portType.at(i) == "positive")
+                 numDirection[i] = 3;
+             if (genericComponent[position].portType.at(i) == "natural")
+                 numDirection[i] = 4;
+         }
+
+      ui2.comboType_41->setCurrentIndex(numDirection[0]);
+      ui2.comboType_42->setCurrentIndex(numDirection[1]);
+      ui2.comboType_43->setCurrentIndex(numDirection[2]);
+      ui2.comboType_44->setCurrentIndex(numDirection[3]);
+      ui2.comboType_45->setCurrentIndex(numDirection[4]);
+      ui2.comboType_46->setCurrentIndex(numDirection[5]);
+      ui2.comboType_47->setCurrentIndex(numDirection[6]);
+      ui2.comboType_48->setCurrentIndex(numDirection[7]);
+
+    // get buses
+    ui2.checkBus_41->setChecked(genericComponent[position].bus[0]);
+    ui2.checkBus_42->setChecked(genericComponent[position].bus[1]);
+    ui2.checkBus_43->setChecked(genericComponent[position].bus[2]);
+    ui2.checkBus_44->setChecked(genericComponent[position].bus[3]);
+    ui2.checkBus_45->setChecked(genericComponent[position].bus[4]);
+    ui2.checkBus_46->setChecked(genericComponent[position].bus[5]);
+    ui2.checkBus_47->setChecked(genericComponent[position].bus[6]);
+    ui2.checkBus_48->setChecked(genericComponent[position].bus[7]);
+
+    // get buses
+    ui2.checkSignal_41->setChecked(genericComponent[position].constant[0]);
+    ui2.checkSignal_42->setChecked(genericComponent[position].constant[1]);
+    ui2.checkSignal_43->setChecked(genericComponent[position].constant[2]);
+    ui2.checkSignal_44->setChecked(genericComponent[position].constant[3]);
+    ui2.checkSignal_45->setChecked(genericComponent[position].constant[4]);
+    ui2.checkSignal_46->setChecked(genericComponent[position].constant[5]);
+    ui2.checkSignal_47->setChecked(genericComponent[position].constant[6]);
+    ui2.checkSignal_48->setChecked(genericComponent[position].constant[7]);
+
+    // get msb numbers
+      ui2.editMSB_41->setText(genericComponent[position].msbNumber.at(0));
+      ui2.editMSB_42->setText(genericComponent[position].msbNumber.at(1));
+      ui2.editMSB_43->setText(genericComponent[position].msbNumber.at(2));
+      ui2.editMSB_44->setText(genericComponent[position].msbNumber.at(3));
+      ui2.editMSB_45->setText(genericComponent[position].msbNumber.at(4));
+      ui2.editMSB_46->setText(genericComponent[position].msbNumber.at(5));
+      ui2.editMSB_47->setText(genericComponent[position].msbNumber.at(6));
+      ui2.editMSB_48->setText(genericComponent[position].msbNumber.at(7));
+
+    // get lsb numbers
+      ui2.editLSB_41->setText(genericComponent[position].lsbNumber.at(0));
+      ui2.editLSB_42->setText(genericComponent[position].lsbNumber.at(1));
+      ui2.editLSB_11->setText(genericComponent[position].lsbNumber.at(2));
+      ui2.editLSB_44->setText(genericComponent[position].lsbNumber.at(3));
+      ui2.editLSB_45->setText(genericComponent[position].lsbNumber.at(4));
+      ui2.editLSB_46->setText(genericComponent[position].lsbNumber.at(5));
+      ui2.editLSB_47->setText(genericComponent[position].lsbNumber.at(6));
+      ui2.editLSB_48->setText(genericComponent[position].lsbNumber.at(7));
+
+    // get initialized numbers
+      ui2.editValue_41->setText(genericComponent[position].genericValue.at(0));
+      ui2.editValue_42->setText(genericComponent[position].genericValue.at(1));
+      ui2.editValue_11->setText(genericComponent[position].genericValue.at(2));
+      ui2.editValue_44->setText(genericComponent[position].genericValue.at(3));
+      ui2.editValue_45->setText(genericComponent[position].genericValue.at(4));
+      ui2.editValue_46->setText(genericComponent[position].genericValue.at(5));
+      ui2.editValue_47->setText(genericComponent[position].genericValue.at(6));
+      ui2.editValue_48->setText(genericComponent[position].genericValue.at(7));
+}
+
 void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 {
 //     if(pressEvent->button() == Qt::RightButton)
@@ -936,6 +1166,20 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
              RectInfo->setWindowModality(Qt::ApplicationModal);
              RectInfo->show();
 
+             connect(ui3.pushRemove,
+                     SIGNAL(clicked()),
+                     SLOT(pushRemove())
+                     );
+             connect(ui3.pushEditInfo,
+                     SIGNAL(clicked()),
+                     SLOT(pushEditRect())
+                     );
+
+             // which component to edit or remove if needed
+             qDebug() << "remove index is " << p;
+             removeIndex = p;
+             editIndex = p;
+
              const int tabStop = 4; // 4 characters
 
              QFontMetrics metrics(ui3.textInfo->font());
@@ -1084,6 +1328,141 @@ void VhdlMain::createComponent1()
     createWidget = true;
 }
 
+void VhdlMain::pushRemove()
+{
+    // remove index 0-20
+    if (removeIndex >= 20 || componentCnt == 0)
+    {
+        qDebug() << "too much components or none component";
+        return;
+    }
+
+    if (componentCnt == 1)
+    {
+        definedComponent[componentCnt - 1].name.clear();
+
+        // TODO > clear same
+        definedComponent[componentCnt - 1].portName.clear();
+        definedComponent[componentCnt - 1].portDirection.clear();
+        definedComponent[componentCnt - 1].portValue.clear();
+        definedComponent[componentCnt - 1].lsbNumber.clear();
+        definedComponent[componentCnt - 1].msbNumber.clear();
+
+        // generic deletion
+        genericComponent[componentCnt - 1].genericName.clear();
+        genericComponent[componentCnt - 1].portType.clear();
+        genericComponent[componentCnt - 1].genericValue.clear();
+        genericComponent[componentCnt - 1].lsbNumber.clear();
+        genericComponent[componentCnt - 1].msbNumber.clear();
+
+        //delete this->componentObject[componentCnt-1];
+        this->componentObject[componentCnt-1]->setRect(0,0,0,0);
+        componentCnt--;
+        update();
+        this->RectInfo->close();
+        return;
+    }
+    else
+    {
+        definedComponent[removeIndex].name.clear();
+        // TODO > clear same
+        definedComponent[removeIndex].portName.clear();
+        definedComponent[removeIndex].portDirection.clear();
+        definedComponent[removeIndex].portValue.clear();
+        definedComponent[removeIndex].lsbNumber.clear();
+        definedComponent[removeIndex].msbNumber.clear();
+
+        // generic deletion
+        genericComponent[removeIndex].genericName.clear();
+        genericComponent[removeIndex].portType.clear();
+        genericComponent[removeIndex].genericValue.clear();
+        genericComponent[removeIndex].lsbNumber.clear();
+        genericComponent[removeIndex].msbNumber.clear();
+
+        for(unsigned int i = removeIndex; false == definedComponent[i + 1].name.isEmpty(); i++)
+        {
+            definedComponent[i].name = definedComponent[i + 1].name;
+            // TODO > clear same
+            definedComponent[i].portName = definedComponent[i + 1].portName;
+            definedComponent[i].portDirection = definedComponent[i + 1].portDirection;
+            definedComponent[i].portValue = definedComponent[i + 1].portValue;
+            definedComponent[i].lsbNumber = definedComponent[i + 1].lsbNumber;
+            definedComponent[i].msbNumber = definedComponent[i + 1].msbNumber;
+
+            // generic deletion
+            genericComponent[i].genericName = genericComponent[i + 1].genericName;
+            genericComponent[i].portType = genericComponent[i + 1].portType;
+            genericComponent[i].genericValue = genericComponent[i + 1].genericValue;
+            genericComponent[i].lsbNumber = genericComponent[i + 1].lsbNumber;
+            genericComponent[i].msbNumber = genericComponent[i + 1].msbNumber;
+        }
+
+        definedComponent[componentCnt - 1].name.clear();
+        // TODO > clear same
+        definedComponent[componentCnt - 1].portName.clear();
+        definedComponent[componentCnt - 1].portDirection.clear();
+        definedComponent[componentCnt - 1].portValue.clear();
+        definedComponent[componentCnt - 1].lsbNumber.clear();
+        definedComponent[componentCnt - 1].msbNumber.clear();
+
+        // generic deletion
+        genericComponent[componentCnt - 1].genericName.clear();
+        genericComponent[componentCnt - 1].portType.clear();
+        genericComponent[componentCnt - 1].genericValue.clear();
+        genericComponent[componentCnt - 1].lsbNumber.clear();
+        genericComponent[componentCnt - 1].msbNumber.clear();
+
+
+        //delete this->componentObject[componentCnt-1];
+       // this->componentObject[removeIndex]->setRect(0,0,0,0);
+        this->componentObject[componentCnt - 1]->setRect(0,0,0,0);
+        componentCnt--;
+        if (componentCnt == 0)
+        {
+            update();
+            this->RectInfo->close();
+        }
+        else
+        {
+            //redraw
+            for(unsigned int i = 0; i < componentCnt; i++)
+            {
+                xPos = 20;
+                yPos = 145 + componentCnt * 25;
+                yPosNew = 145 + ( componentCnt - 10) * 25;
+
+
+                if ( this->componentObject[componentCnt-1]->isValid() == false )
+                {
+                    if ( componentCnt > 10)
+                    {
+                        this->componentObject[componentCnt-1] = new QRect ( xPos + 200, yPosNew  , 200, 25);
+                    }
+                    else
+                    {
+                        this->componentObject[componentCnt-1] = new QRect ( xPos, yPos , 200, 25);
+                    }
+                }
+
+            }
+        }
+        update();
+        this->RectInfo->close();
+    }
+
+}
+
+void VhdlMain::pushEditRect()
+{
+    // create gui
+    createComponent1();
+    // maybe this flag to false? haha
+    createWidget = false;
+    ui2.pushSaveAdd->setVisible(false);
+
+    editExistingComponent();
+}
+
 void VhdlMain::pushDelete()
 {
     // nothing to delete
@@ -1103,14 +1482,6 @@ void VhdlMain::pushDelete()
     definedComponent[componentCnt - 1].portValue.clear();
     definedComponent[componentCnt - 1].lsbNumber.clear();
     definedComponent[componentCnt - 1].msbNumber.clear();
-
-    // delete xmlComponent also
- //   xmlParser.xmlDefinedComponent[componentCnt - 1].xmlName.clear();
- //   xmlParser.xmlDefinedComponent[componentCnt - 1].xmlPortName.clear();
- //   xmlParser.xmlDefinedComponent[componentCnt - 1].xmlPortDirection.clear();
- //   xmlParser.xmlDefinedComponent[componentCnt - 1].xmlPortValue.clear();
-  //  xmlParser.xmlDefinedComponent[componentCnt - 1].xmlLsbNumber.clear();
-  //  xmlParser.xmlDefinedComponent[componentCnt - 1].xmlMsbNumber.clear();
 
     // generic deletion
     genericComponent[componentCnt - 1].genericName.clear();
@@ -1196,6 +1567,7 @@ void VhdlMain::pushOk()
             return;
         }
     }
+
     componentCnt++;
     if ( componentCnt == 21)
     {
