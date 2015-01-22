@@ -26,13 +26,6 @@
  */
 class SimCmdLineObserver : public MCUSimObserver
 {
-    ////    Constructors and Destructors    ////
-    public:
-        /**
-         * @brief
-         */
-        SimCmdLineObserver() : m_trackTime ( false ) {}
-
     ////    Public Operations    ////
     public:
         /**
@@ -61,18 +54,6 @@ class SimCmdLineObserver : public MCUSimObserver
          * @brief
          */
         virtual void setReadOnly ( bool ) override {};
-
-        /**
-         * @brief
-         */
-        void setTrackTime ( bool trackTime )
-        {
-            m_trackTime = trackTime;
-        }
-
-    ////    Private Attributes    ////
-    private:
-        bool m_trackTime;
 };
 
 #endif // SIMCMDLINEOBSERVER_H

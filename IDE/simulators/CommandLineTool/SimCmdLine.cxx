@@ -372,7 +372,7 @@ inline SimCmdLine::ExitCode SimCmdLine::initializeSim()
         return EXIT_ERROR_SIMULATOR;
     }
 
-    m_simControl = new MCUSimControl(m_device, m_procDef);
+    m_simControl = new MCUSimControl(m_device, m_procDef, true);
     m_simControl->startSimulation(m_dbgFile, m_dataFile);
 
     if ( false == m_simControl->getMessages().empty() )

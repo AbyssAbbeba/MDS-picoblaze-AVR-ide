@@ -40,3 +40,14 @@ endif()
 if ( MDS_FEATURE_ADAPTABLE_SIMULATOR )
     add_subdirectory ( AdaptableSim )
 endif()
+
+# ------------------------------------------------------------------------------
+# COMPILATION OPTIONS
+# ------------------------------------------------------------------------------
+
+add_library ( ${PROJECT_NAME} OBJECT
+              MCUSimIO.cxx
+              MCUSimCPU.cxx
+              MCUSimSubsys.cxx
+              MCUSimMemory.cxx
+              MCUSimPureLogicIO.cxx )

@@ -5,7 +5,7 @@
  *
  * ...
  *
- * (C) copyright 2013, 2014 Moravia Microsystems, s.r.o.
+ * (C) copyright 2013, 2014, 2015 Moravia Microsystems, s.r.o.
  *
  * @author Martin Ošmera <martin.osmera@moravia-microsystems.com>
  * @ingroup MCUSim
@@ -91,6 +91,18 @@ class MCUSimCPU : public MCUSimSubsys
          * @brief Perform forced return from subroutine or ISR.
          */
         virtual void forceReturn() = 0;
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
 
     ////    Inline Protected Operations    ////
     protected:

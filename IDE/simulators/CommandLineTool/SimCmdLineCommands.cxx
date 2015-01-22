@@ -42,9 +42,6 @@
 // MCU native debug file.
 #include "utilities/DbgFile/DbgFileNative.h"
 
-// Simulator control unit.
-#include "../SimControl/MCUSimControl.h"
-
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
 #   include "AdaptableSim/AdaptableSimStatusFlagsBase.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
@@ -92,11 +89,23 @@ SimCmdLineBase::ExitCode SimCmdLineCommands::commandLoop()
 
         std::getline(std::cin, input);
 
+        size_t comment = input.find('#');
+        if ( std::string::npos != comment )
+        {
+            input.resize(comment);
+        }
+
         pos = 0;
         readWord(command, input, pos);
         readWord(subcommand, input, pos);
 
         processCommand(command, subcommand, input, pos);
+
+        if ( input.size() != pos )
+        {
+            input = input.substr(pos);
+            std::cerr << QObject::tr("Warning: `%1' ignored.").arg(input.c_str()).toStdString() << std::endl;
+        }
     }
 
     return EXIT_CODE_SUCCESS;
@@ -118,6 +127,12 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
     {
         if ( "step" == subcommand )
         {
+            if ( MCUSimControl::SS_IDLE != m_simControl->getSimState() )
+            {
+                std::cout << QObject::tr("Error: simulation is already in progress.").toStdString() << std::endl;
+                return;
+            }
+
             int steps = 1;
             {
                 std::string argument;
@@ -144,24 +159,33 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
         }
         else if ( "reset" == subcommand )
         {
+            Mutex mutex(m_simControl);
             m_simControl->resetProgram();
             done();
         }
         else if ( "animate" == subcommand )
         {
-            m_eventObserver.setTrackTime(true);
+            if ( MCUSimControl::SS_IDLE != m_simControl->getSimState() )
+            {
+                std::cout << QObject::tr("Error: simulation is already in progress.").toStdString() << std::endl;
+                return;
+            }
             m_simControl->animateProgram(true);
             done();
         }
         else if ( "run" == subcommand )
         {
+            if ( MCUSimControl::SS_IDLE != m_simControl->getSimState() )
+            {
+                std::cout << QObject::tr("Error: simulation is already in progress.").toStdString() << std::endl;
+                return;
+            }
             m_simControl->runProgram(true);
             done();
         }
         else if ( "halt" == subcommand )
         {
             m_simControl->stopSimulation();
-            m_eventObserver.setTrackTime(false);
             done();
         }
         else
@@ -171,6 +195,8 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
     }
     else if ( "set" == command )
     {
+        Mutex mutex(m_simControl);
+
         if ( "pc" == subcommand )
         {
             int value;
@@ -209,7 +235,7 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
             readWord(flag, input, pos);
             readWord(value, input, pos);
 
-            if ( ( "1" != value ) || ( "0" != value ) )
+            if ( ( "1" != value ) && ( "0" != value ) )
             {
                 std::cout << QObject::tr ( "Error: value has to be either 0 or 1." ).toStdString() << std::endl;
                 return;
@@ -309,13 +335,13 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
                 return;
             }
 
-            if ( ( "1" != value ) || ( "0" != value ) )
+            if ( ( false == value.empty() ) && ( "1" != value ) && ( "0" != value ) )
             {
                 std::cout << QObject::tr ( "Error: value has to be either 0 or 1." ).toStdString() << std::endl;
                 return;
             }
 
-            breakpointCommand ( file, line, ( "1" == value ) );
+            breakpointCommand ( file, line, ( "0" != value ) );
         }
         else
         {
@@ -324,6 +350,8 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
     }
     else if ( "get" == command )
     {
+        Mutex mutex(m_simControl);
+
         if ( "pc" == subcommand )
         {
             MCUSimCPU * cpu = dynamic_cast<MCUSimCPU*>(m_simControl->getSimSubsys(MCUSimSubsys::ID_CPU));
@@ -401,6 +429,8 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
     }
     else if ( "file" == command )
     {
+        Mutex mutex(m_simControl);
+
         std::string space;
         std::string type;
         std::string file;
@@ -1189,5 +1219,29 @@ void SimCmdLineCommands::readWord ( std::string & word,
         }
 
         word += in;
+    }
+}
+
+SimCmdLineCommands::Mutex::Mutex ( MCUSimControl * simControl ) : m_simControl ( simControl )
+{
+    m_simState = m_simControl->getSimState();
+    if ( MCUSimControl::SS_IDLE != m_simState )
+    {
+        m_simControl->stopSimulation();
+    }
+}
+
+SimCmdLineCommands::Mutex::~Mutex()
+{
+    switch ( m_simState )
+    {
+        case MCUSimControl::SS_IDLE:
+            break;
+        case MCUSimControl::SS_RUN:
+            m_simControl->runProgram(true);
+            break;
+        case MCUSimControl::SS_ANIMATION:
+            m_simControl->animateProgram(true);
+            break;
     }
 }
