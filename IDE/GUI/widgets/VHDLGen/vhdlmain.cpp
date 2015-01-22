@@ -94,6 +94,7 @@ VhdlMain::VhdlMain(QWidget *parent) :
     m_xmlNumber = 0;
     m_xmlEditSpaceNum = 0;
     createWidget = false;
+    editExist = false;
 
     bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave";
 
@@ -918,6 +919,249 @@ void VhdlMain::editExistingComponent()
       ui2.editValue_48->setText(genericComponent[position].genericValue.at(7));
 }
 
+void VhdlMain::saveEditedComponent()
+{
+    definedComponent[editIndex].name = ui2.editName->text();
+    if ( true == definedComponent[editIndex].name.isEmpty())
+    {
+        QMessageBox::warning ( this, "Name", "Please insert valid component name");
+        return;
+    }
+
+    definedComponent[editIndex].portName.clear();
+    definedComponent[editIndex].portDirection.clear();
+    definedComponent[editIndex].portValue.clear();
+    definedComponent[editIndex].lsbNumber.clear();
+    definedComponent[editIndex].msbNumber.clear();
+    genericComponent[editIndex].genericName.clear();
+    genericComponent[editIndex].genericValue.clear();
+    genericComponent[editIndex].lsbNumber.clear();
+    genericComponent[editIndex].msbNumber.clear();
+    genericComponent[editIndex].portType.clear();
+
+    // get names of declared ports
+    definedComponent[editIndex].portName << ui2.editPort_9->text()
+         << ui2.editPort_10->text()
+         << ui2.editPort_11->text()
+         << ui2.editPort_12->text()
+         << ui2.editPort_13->text()
+         << ui2.editPort_14->text()
+         << ui2.editPort_15->text()
+         << ui2.editPort_16->text()
+         << ui2.editPort_17->text()
+         << ui2.editPort_18->text()
+         << ui2.editPort_19->text()
+         << ui2.editPort_20->text()
+         << ui2.editPort_21->text()
+         << ui2.editPort_22->text()
+         << ui2.editPort_23->text()
+         << ui2.editPort_24->text()
+         << ui2.editPort_25->text()
+         << "";             // for checking if last
+    qDebug() << ui2.editPort_9->text() << ui2.editPort_10->text() << ui2.editPort_11->text() << ui2.editPort_12->text() << "port text";
+
+    qDebug() << definedComponent[editIndex].portName << "defined component portnames";
+    // get port directions
+    definedComponent[editIndex].portDirection << ui2.comboDirection_9->currentText()
+          << ui2.comboDirection_10->currentText()
+          << ui2.comboDirection_11->currentText()
+          << ui2.comboDirection_12->currentText()
+          << ui2.comboDirection_13->currentText()
+          << ui2.comboDirection_14->currentText()
+          << ui2.comboDirection_15->currentText()
+          << ui2.comboDirection_16->currentText()
+          << ui2.comboDirection_17->currentText()
+          << ui2.comboDirection_18->currentText()
+          << ui2.comboDirection_19->currentText()
+          << ui2.comboDirection_20->currentText()
+          << ui2.comboDirection_21->currentText()
+          << ui2.comboDirection_22->currentText()
+          << ui2.comboDirection_23->currentText()
+          << ui2.comboDirection_24->currentText()
+          << ui2.comboDirection_25->currentText();
+
+    // get buses
+    definedComponent[editIndex].bus[0] = ui2.checkBus_9->isChecked();
+    definedComponent[editIndex].bus[1] = ui2.checkBus_10->isChecked();
+    definedComponent[editIndex].bus[2] = ui2.checkBus_11->isChecked();
+    definedComponent[editIndex].bus[3] = ui2.checkBus_12->isChecked();
+    definedComponent[editIndex].bus[4] = ui2.checkBus_13->isChecked();
+    definedComponent[editIndex].bus[5] = ui2.checkBus_14->isChecked();
+    definedComponent[editIndex].bus[6] = ui2.checkBus_15->isChecked();
+    definedComponent[editIndex].bus[7] = ui2.checkBus_16->isChecked();
+    definedComponent[editIndex].bus[8] = ui2.checkBus_17->isChecked();
+    definedComponent[editIndex].bus[9] = ui2.checkBus_18->isChecked();
+    definedComponent[editIndex].bus[10] = ui2.checkBus_19->isChecked();
+    definedComponent[editIndex].bus[11] = ui2.checkBus_20->isChecked();
+    definedComponent[editIndex].bus[12] = ui2.checkBus_21->isChecked();
+    definedComponent[editIndex].bus[13] = ui2.checkBus_22->isChecked();
+    definedComponent[editIndex].bus[14] = ui2.checkBus_23->isChecked();
+    definedComponent[editIndex].bus[15] = ui2.checkBus_24->isChecked();
+    definedComponent[editIndex].bus[16] = ui2.checkBus_25->isChecked();
+
+    // get buses
+    definedComponent[editIndex].signal[0] = ui2.checkSignal_9->isChecked();
+    definedComponent[editIndex].signal[1] = ui2.checkSignal_10->isChecked();
+    definedComponent[editIndex].signal[2] = ui2.checkSignal_11->isChecked();
+    definedComponent[editIndex].signal[3] = ui2.checkSignal_12->isChecked();
+    definedComponent[editIndex].signal[4] = ui2.checkSignal_13->isChecked();
+    definedComponent[editIndex].signal[5] = ui2.checkSignal_14->isChecked();
+    definedComponent[editIndex].signal[6] = ui2.checkSignal_15->isChecked();
+    definedComponent[editIndex].signal[7] = ui2.checkSignal_16->isChecked();
+    definedComponent[editIndex].signal[8] = ui2.checkSignal_17->isChecked();
+    definedComponent[editIndex].signal[9] = ui2.checkSignal_18->isChecked();
+    definedComponent[editIndex].signal[10] = ui2.checkSignal_19->isChecked();
+    definedComponent[editIndex].signal[11] = ui2.checkSignal_20->isChecked();
+    definedComponent[editIndex].signal[12] = ui2.checkSignal_21->isChecked();
+    definedComponent[editIndex].signal[13] = ui2.checkSignal_22->isChecked();
+    definedComponent[editIndex].signal[14] = ui2.checkSignal_23->isChecked();
+    definedComponent[editIndex].signal[15] = ui2.checkSignal_24->isChecked();
+    definedComponent[editIndex].signal[16] = ui2.checkSignal_25->isChecked();
+
+    // get msb numbers
+    definedComponent[editIndex].msbNumber
+      << ui2.editMSB_9->text()
+      << ui2.editMSB_10->text()
+      << ui2.editMSB_11->text()
+      << ui2.editMSB_12->text()
+      << ui2.editMSB_13->text()
+      << ui2.editMSB_14->text()
+      << ui2.editMSB_15->text()
+      << ui2.editMSB_16->text()
+      << ui2.editMSB_17->text()
+      << ui2.editMSB_18->text()
+      << ui2.editMSB_19->text()
+      << ui2.editMSB_20->text()
+      << ui2.editMSB_21->text()
+      << ui2.editMSB_22->text()
+      << ui2.editMSB_23->text()
+      << ui2.editMSB_24->text()
+      << ui2.editMSB_25->text();
+
+    // get lsb numbers
+    definedComponent[editIndex].lsbNumber
+        <<  ui2.editLSB_9->text()
+        << ui2.editLSB_10->text()
+        << ui2.editLSB_11->text()
+        << ui2.editLSB_12->text()
+        << ui2.editLSB_13->text()
+        << ui2.editLSB_14->text()
+        << ui2.editLSB_15->text()
+        << ui2.editLSB_16->text()
+        << ui2.editLSB_17->text()
+        << ui2.editLSB_18->text()
+        << ui2.editLSB_19->text()
+        << ui2.editLSB_20->text()
+        << ui2.editLSB_21->text()
+        << ui2.editLSB_22->text()
+        << ui2.editLSB_23->text()
+        << ui2.editLSB_24->text()
+        << ui2.editLSB_25->text();
+
+    // get initialized numbers
+    definedComponent[editIndex].portValue
+        << ui2.editValue_9->text()
+        << ui2.editValue_10->text()
+        << ui2.editValue_11->text()
+        << ui2.editValue_12->text()
+        << ui2.editValue_13->text()
+        << ui2.editValue_14->text()
+        << ui2.editValue_15->text()
+        << ui2.editValue_16->text()
+        << ui2.editValue_17->text()
+        << ui2.editValue_18->text()
+        << ui2.editValue_19->text()
+        << ui2.editValue_20->text()
+        << ui2.editValue_21->text()
+        << ui2.editValue_22->text()
+        << ui2.editValue_23->text()
+        << ui2.editValue_24->text()
+        << ui2.editValue_25->text();
+
+    // IF GENERIC IS SELECTED, iNSERT GENERIC PARAMTERS
+    // ************************************************
+
+    // get names of declared ports
+    genericComponent[editIndex].genericName << ui2.editPort_41->text()
+         << ui2.editPort_42->text()
+         << ui2.editPort_43->text()
+         << ui2.editPort_44->text()
+         << ui2.editPort_45->text()
+         << ui2.editPort_46->text()
+         << ui2.editPort_47->text()
+         << ui2.editPort_48->text()
+         << "";             // for checking if last
+
+    // get port directions
+    genericComponent[editIndex].portType << ui2.comboType_41->currentText()
+          << ui2.comboType_42->currentText()
+          << ui2.comboType_43->currentText()
+          << ui2.comboType_44->currentText()
+          << ui2.comboType_45->currentText()
+          << ui2.comboType_46->currentText()
+          << ui2.comboType_47->currentText()
+          << ui2.comboType_48->currentText();
+
+    // get buses
+    genericComponent[editIndex].bus[0] = ui2.checkBus_41->isChecked();
+    genericComponent[editIndex].bus[1] = ui2.checkBus_42->isChecked();
+    genericComponent[editIndex].bus[2] = ui2.checkBus_43->isChecked();
+    genericComponent[editIndex].bus[3] = ui2.checkBus_44->isChecked();
+    genericComponent[editIndex].bus[4] = ui2.checkBus_45->isChecked();
+    genericComponent[editIndex].bus[5] = ui2.checkBus_46->isChecked();
+    genericComponent[editIndex].bus[6] = ui2.checkBus_47->isChecked();
+    genericComponent[editIndex].bus[7] = ui2.checkBus_48->isChecked();
+
+    // get buses
+    genericComponent[editIndex].constant[0] = ui2.checkSignal_41->isChecked();
+    genericComponent[editIndex].constant[1] = ui2.checkSignal_42->isChecked();
+    genericComponent[editIndex].constant[2] = ui2.checkSignal_43->isChecked();
+    genericComponent[editIndex].constant[3] = ui2.checkSignal_44->isChecked();
+    genericComponent[editIndex].constant[4] = ui2.checkSignal_45->isChecked();
+    genericComponent[editIndex].constant[5] = ui2.checkSignal_46->isChecked();
+    genericComponent[editIndex].constant[6] = ui2.checkSignal_47->isChecked();
+    genericComponent[editIndex].constant[7] = ui2.checkSignal_48->isChecked();
+
+    // get msb numbers
+    genericComponent[editIndex].msbNumber     << ui2.editMSB_41->text()
+      << ui2.editMSB_42->text()
+      << ui2.editMSB_43->text()
+      << ui2.editMSB_44->text()
+      << ui2.editMSB_45->text()
+      << ui2.editMSB_46->text()
+      << ui2.editMSB_47->text()
+      << ui2.editMSB_48->text();
+
+    // get lsb numbers
+    genericComponent[editIndex].lsbNumber     << ui2.editLSB_41->text()
+      << ui2.editLSB_42->text()
+      << ui2.editLSB_11->text()
+      << ui2.editLSB_44->text()
+      << ui2.editLSB_45->text()
+      << ui2.editLSB_46->text()
+      << ui2.editLSB_47->text()
+      << ui2.editLSB_48->text();
+
+    // get initialized numbers
+    genericComponent[editIndex].genericValue     << ui2.editValue_41->text()
+      << ui2.editValue_42->text()
+      << ui2.editValue_11->text()
+      << ui2.editValue_44->text()
+      << ui2.editValue_45->text()
+      << ui2.editValue_46->text()
+      << ui2.editValue_47->text()
+      << ui2.editValue_48->text();
+
+    qDebug() << componentCnt << " component cnt ";
+    // chceck if there is another component with same name, if so, add index to it
+
+    update();
+    createWidget = false;
+    editExist = false;
+    this->componentWizard->close();
+    this->RectInfo->close();
+}
+
 void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
 {
 //     if(pressEvent->button() == Qt::RightButton)
@@ -1456,6 +1700,7 @@ void VhdlMain::pushEditRect()
 {
     // create gui
     createComponent1();
+    editExist = true;
     // maybe this flag to false? haha
     createWidget = false;
     ui2.pushSaveAdd->setVisible(false);
@@ -1558,6 +1803,16 @@ void VhdlMain::saveAdd()
 
 void VhdlMain::pushOk()
 {   
+    qDebug() << editExist << "edit exist flag";
+    // this function is handled, when button is pressed from edit mode
+    if ( editExist == true)
+    {
+        saveEditedComponent();
+        return;
+    }
+    qDebug() << "tunesmim byt";
+
+    // for checking if there are duplicate components
     if ( true == createWidget)
     {
         if (    ( true == xmlParser.Devices.contains(ui2.editName->text()))

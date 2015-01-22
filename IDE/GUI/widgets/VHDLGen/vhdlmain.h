@@ -70,6 +70,7 @@ class VhdlMain : public QWidget
      bool m_xmlNumberFlag;
      bool m_xmlEditFlag;
      bool createWidget;
+     bool editExist;
      unsigned int m_xmlNumber,m_editNumber;
      int m_hex;
      QString m_path;
@@ -136,6 +137,7 @@ class VhdlMain : public QWidget
      void editSelectedComponent(unsigned int position);
      void setPath(QString in_path);
      void editExistingComponent();
+     void saveEditedComponent();
 
 private slots:
    void pushRemove();
