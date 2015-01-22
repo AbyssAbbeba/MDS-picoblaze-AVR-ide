@@ -354,7 +354,7 @@ void PIC8DataMemory::write ( int addr,
     }
     else if ( -2 == absoluteAddr )
     {
-        logEvent(EVENT_MEM_ERR_WR_ACCESS_DENIED, -PIC8RegNames::INDF);
+        logEvent(EVENT_MEM_ERR_WR_ACCESS_DENIED, addr, -PIC8RegNames::INDF);
         return;
     }
 
@@ -416,7 +416,7 @@ unsigned int PIC8DataMemory::read ( int addr )
     }
     else if ( -2 == absoluteAddr )
     {
-        logEvent(EVENT_MEM_ERR_RD_ACCESS_DENIED, -PIC8RegNames::INDF);
+        logEvent(EVENT_MEM_ERR_RD_ACCESS_DENIED, addr, -PIC8RegNames::INDF);
         return 0;
     }
 

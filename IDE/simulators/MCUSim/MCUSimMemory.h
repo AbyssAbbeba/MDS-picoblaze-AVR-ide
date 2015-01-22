@@ -16,6 +16,8 @@
 #ifndef MCUSIMMEMORY_H
 #define MCUSIMMEMORY_H
 
+class DataFile;
+
 #include "MCUSimSubsys.h"
 
 /**
@@ -33,11 +35,11 @@ class MCUSimMemory : public MCUSimSubsys
         enum MemorySpace
         {
             SP_INVALID = 0,                 ///<
-            SP_DATA    = ID_MEM_DATA,       ///< Internal data memory.
             SP_CODE    = ID_MEM_CODE,       ///< Internal program memory.
-            SP_STACK   = ID_STACK,          ///< Internal separate stack.
+            SP_DATA    = ID_MEM_DATA,       ///< Internal data memory.
             SP_EEPROM  = ID_MEM_EEPROM,     ///< Internal data EEPROM.
             SP_REGS    = ID_MEM_REGISTERS,  ///< Internal processor registers.
+            SP_STACK   = ID_STACK,          ///< Internal separate stack.
 
             SP__MAX__                       ///<
         };
@@ -83,7 +85,7 @@ class MCUSimMemory : public MCUSimSubsys
                 EVENT_MEM_INF_WR_ADDR_OVERFLOW,    ///< "address = ( address % size )" happened during write
             //@}
 
-            EVENT_MEM__MAX__                        ///< Number of elements in this enumeration.
+            EVENT_MEM__MAX__                       ///< Number of elements in this enumeration.
         };
 
         /**
@@ -165,6 +167,18 @@ class MCUSimMemory : public MCUSimSubsys
          * @param[in,out] file
          */
         virtual void storeInDataFile ( DataFile * file ) const = 0;
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
 
     ////    Inline Public Operations    ////
     public:

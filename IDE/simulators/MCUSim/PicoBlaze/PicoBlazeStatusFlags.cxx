@@ -53,3 +53,36 @@ void PicoBlazeStatusFlags::returni()
     setCarry(getPreCarry());
     setInterrupted(getInterrupted() - 1);
 }
+
+void PicoBlazeStatusFlags::eventToString ( std::ostream & out,
+                                           int eventId,
+                                           int locationOrReason,
+                                           int detail )
+{
+    switch ( Event(eventId) )
+    {
+        case EVENT_FLAGS_Z_CHANGED:
+            out << ">>> flags_z_changed : " << detail << std::endl;
+            return;
+        case EVENT_FLAGS_C_CHANGED:
+            out << ">>> flags_c_changed : " << detail << std::endl;
+            return;
+        case EVENT_FLAGS_PZ_CHANGED:
+            out << ">>> flags_pz_changed : " << detail << std::endl;
+            return;
+        case EVENT_FLAGS_PC_CHANGED:
+            out << ">>> flags_pc_changed : " << detail << std::endl;
+            return;
+        case EVENT_FLAGS_IE_CHANGED:
+            out << ">>> flags_ie_changed : " << detail << std::endl;
+            return;
+        case EVENT_FLAGS_INT_CHANGED:
+            out << ">>> flags_int_changed : " << detail << std::endl;
+            return;
+
+        case EVENT_FLAGS__MAX__:
+            break;
+    }
+
+    MCUSimSubsys::eventToString(out, eventId, locationOrReason, detail);
+}

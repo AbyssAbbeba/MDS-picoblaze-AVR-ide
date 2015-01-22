@@ -66,3 +66,27 @@ void PicoBlazeInterruptController::returni()
     m_registers->setBank(m_regBank);
     logEvent ( EVENT_INT_LEAVING_INTERRUPT );
 }
+
+void PicoBlazeInterruptController::eventToString ( std::ostream & out,
+                                                   int eventId,
+                                                   int locationOrReason,
+                                                   int detail )
+{
+    switch ( Event(eventId) )
+    {
+        case EVENT_INT_IRQ_DENIED:
+            out << ">>> int_irq_denied" << std::endl;
+            return;
+        case EVENT_INT_ENTERING_INTERRUPT:
+            out << ">>> int_entering_interrupt" << std::endl;
+            return;
+        case EVENT_INT_LEAVING_INTERRUPT:
+            out << ">>> int_leaving_interrupt" << std::endl;
+            return;
+
+        case EVENT_INT__MAX__:
+            break;
+    }
+
+    MCUSimSubsys::eventToString(out, eventId, locationOrReason, detail);
+}

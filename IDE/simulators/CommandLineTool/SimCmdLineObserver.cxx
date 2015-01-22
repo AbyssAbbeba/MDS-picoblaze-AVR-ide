@@ -29,18 +29,14 @@ void SimCmdLineObserver::handleEvent ( int subsysId,
                                        int locationOrReason,
                                        int detail )
 {
-    switch ( subsysId )
+    MCUSimSubsys * subsys = m_simControlUnit->getSimSubsys ( MCUSimSubsys::SubsysId(subsysId) );
+    if ( nullptr != subsys )
     {
-        case MCUSimSubsys::ID_CPU:
-            switch ( eventId )
-            {
-                case MCUSimCPU::EVENT_CPU_PC_CHANGED:
-                    if ( true == m_trackTime )
-                    {
-                        std::cout << m_simControlUnit->getTotalMCycles() << ' ' << locationOrReason << std::endl;
-                    }
-                    break;
-            }
-            break;
+        subsys->eventToString(std::cout, eventId, locationOrReason, detail);
+    }
+
+    if ( ( MCUSimSubsys::ID_CPU == subsysId ) && ( MCUSimCPU::EVENT_CPU_PC_CHANGED == eventId ) )
+    {
+        std::cout << ">>> cycles " << m_simControlUnit->getTotalMCycles() << std::endl;
     }
 }

@@ -16,12 +16,12 @@
 #ifndef SIMCMDLINECOMMANDS_H
 #define SIMCMDLINECOMMANDS_H
 
-// Forward declarations.
-class MCUSimControl;
-
 // Standard headers.
 #include <map>
 #include <string>
+
+// Simulator control unit.
+#include "../SimControl/MCUSimControl.h"
 
 #include "SimCmdLineBase.h"
 #include "SimCmdLineObserver.h"
@@ -49,6 +49,20 @@ class SimCmdLineCommands : public SimCmdLineBase
             SP_CODE,    ///<
             SP_STACK,   ///<
             SP_REGS     ///<
+        };
+
+        /**
+         * @brief
+         */
+        class Mutex
+        {
+            public:
+                Mutex ( MCUSimControl * simControl );
+                ~Mutex();
+
+            private:
+                MCUSimControl * const m_simControl;
+                MCUSimControl::SimulatorState m_simState;
         };
 
     ////    Private Static Constants    ////

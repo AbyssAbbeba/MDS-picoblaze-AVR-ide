@@ -49,6 +49,7 @@ class PicoBlazeIO : public MCUSimPureLogicIO
         {
             EVENT_PICOBLAZEIO_WRITE   = EVENT_PLIO__MAX__, ///<
             EVENT_PICOBLAZEIO_OUTPUTK,
+            
             EVENT_PICOBLAZEIO__MAX__                       ///<
         };
 
@@ -155,6 +156,18 @@ class PicoBlazeIO : public MCUSimPureLogicIO
          */
         virtual void write ( unsigned int port,
                              unsigned int value ) override;
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
 
     ////    Inline Public Operations    ////
     public:

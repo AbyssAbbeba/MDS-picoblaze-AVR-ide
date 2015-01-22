@@ -59,6 +59,16 @@ class MCUSimControl : public QThread
         /**
           * @brief
           */
+        enum SimulatorState
+        {
+            SS_IDLE,
+            SS_RUN,
+            SS_ANIMATION
+        };
+
+        /**
+          * @brief
+          */
         enum CompilerID
         {
             COMPILER_NATIVE,    ///< Native compiler, i.e. our own compiler - Moravia Microsystems Compiler
@@ -157,9 +167,11 @@ class MCUSimControl : public QThread
          * @brief
          * @param[in] deviceName
          * @param[in] procDef
+         * @param[in] textMode
          */
         MCUSimControl ( const std::string & deviceName,
-                        const AdjSimProcDef * procDef = NULL );
+                        const AdjSimProcDef * procDef = NULL,
+                        bool textMode = false );
 
         /**
          * @brief
@@ -301,10 +313,17 @@ class MCUSimControl : public QThread
          */
         void abortAndExit();
 
-        std::map<unsigned int, std::pair<int, int>> & getBreakpoints()
-        {
-            return m_breakpoints;
-        }
+        /**
+         * @brief
+         * @return
+         */
+        std::map<unsigned int, std::pair<int, int>> & getBreakpoints();
+
+        /**
+         * @brief
+         * @return
+         */
+        SimulatorState getSimState() const;
 
     ////    Private Operations    ////
     private:
@@ -475,10 +494,16 @@ class MCUSimControl : public QThread
         ThreadCmd m_threadCmd;
 
         /// @brief
+        SimulatorState m_simState;
+
+        /// @brief
         bool m_running;
 
         /// @brief
         bool m_abort;
+
+        /// @brief
+        const bool m_textMode;
 };
 
 #endif // MCUSIMCONTROL_H

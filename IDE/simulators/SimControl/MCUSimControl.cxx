@@ -66,12 +66,15 @@
 #include "boost/filesystem.hpp"
 
 MCUSimControl::MCUSimControl ( const std::string & deviceName,
-                               const AdjSimProcDef * procDef )
+                               const AdjSimProcDef * procDef,
+                               bool textMode )
                              : m_simulator(nullptr),
-                               m_dbgFile(nullptr)
+                               m_dbgFile(nullptr),
+                               m_textMode ( textMode )
 {
     m_abort = false;
     m_running = false;
+    m_simState = SS_IDLE;
 
     m_breakPointsEnabled = true;
     changeDevice(deviceName, procDef);
@@ -386,6 +389,7 @@ void MCUSimControl::animateProgram ( bool thread )
 
     m_abort = false;
     m_running = true;
+    m_simState = SS_ANIMATION;
 
     m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_ALL);
 
@@ -395,6 +399,7 @@ void MCUSimControl::animateProgram ( bool thread )
         {
             m_abort = false;
             m_running = false;
+            m_simState = SS_IDLE;
             return;
         }
 
@@ -433,6 +438,7 @@ void MCUSimControl::runProgram ( bool thread )
 
     m_abort = false;
     m_running = true;
+    m_simState = SS_RUN;
 
     m_simulatorLog->setFilter(MCUSimEventLogger::FLAG_HI_PRIO);
 
@@ -446,6 +452,7 @@ void MCUSimControl::runProgram ( bool thread )
         {
             m_abort = false;
             m_running = false;
+            m_simState = SS_IDLE;
             emit ( updateRequest ( UR_TIME_AND_PC | UR_SIM_CURSOR | UR_MEMORY_REFRESH ) );
             return;
         }
@@ -846,7 +853,14 @@ inline bool MCUSimControl::checkBreakpoint()
 
     if ( true == stop )
     {
-        emit(breakpointReached());
+        if ( true == m_textMode )
+        {
+            std::cout << ">>> breakpoint @ " << it->first << std::endl;
+        }
+        else
+        {
+            emit(breakpointReached());
+        }
     }
 
     m_lastBrkPntStop.close();
@@ -1050,8 +1064,8 @@ void MCUSimControl::run()
 
 MCUSimControl::ThreadCmd::ThreadCmd()
 {
-    m_exit = false;
     m_run = false;
+    m_exit = false;
     m_animate = false;
 }
 
@@ -1059,4 +1073,15 @@ void MCUSimControl::abortAndExit()
 {
     m_abort = true;
     m_threadCmd.m_exit = true;
+}
+
+std::map<unsigned int, std::pair<int, int>> & MCUSimControl::getBreakpoints()
+{
+    m_breakPointsSet = true;
+    return m_breakpoints;
+}
+
+MCUSimControl::SimulatorState MCUSimControl::getSimState() const
+{
+    return m_simState;
 }
