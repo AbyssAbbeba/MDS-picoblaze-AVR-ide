@@ -40,6 +40,8 @@ class PicoBlazeStack : public MCUSimMemory
             EVENT_STACK_OVERFLOW = EVENT_MEM__MAX__,  ///< Stack capacity has already been exhausted by the previous push.
             EVENT_STACK_UNDERFLOW,                    ///< A value has been popped from the stack while the stack was already empty.
             EVENT_STACK_SP_CHANGED,                   ///<
+
+            EVENT_STACK__MAX__
         };
 
         /**
@@ -117,6 +119,18 @@ class PicoBlazeStack : public MCUSimMemory
          * @param[in,out] file File data container.
          */
         virtual void storeInDataFile ( DataFile * file ) const override;
+
+        /**
+         * @brief
+         * @param[in,out] out
+         * @param[in] eventId
+         * @param[in] locationOrReason
+         * @param[in] detail
+         */
+        virtual void eventToString ( std::ostream & out,
+                                     int eventId,
+                                     int locationOrReason,
+                                     int detail ) override;
 
     ////    Inline Public Operations    ////
     public:

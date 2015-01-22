@@ -30,4 +30,9 @@ MCUSimObserver::~MCUSimObserver()
 void MCUSimObserver::setControlUnit ( MCUSimControl * managedBy )
 {
     m_simControlUnit = managedBy;
+    initialized();
+}
+
+void MCUSimObserver::initialized()
+{
 }

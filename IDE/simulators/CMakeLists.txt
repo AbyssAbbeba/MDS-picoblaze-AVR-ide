@@ -83,6 +83,7 @@ add_library ( ${PROJECT_NAME} SHARED
 
               # Support functions.
               $<TARGET_OBJECTS:SimControl>
+              $<TARGET_OBJECTS:MCUSimulator>
               $<TARGET_OBJECTS:McuSimCfgMgr> )
 
 # Link the target to given libraries.
