@@ -221,6 +221,9 @@ class CompilerOptions
 
             /// Enables additional warning and/or error messages.
             bool m_strict;
+
+            ///
+            std::vector<std::string> m_define;
         //@}
 };
 

@@ -57,6 +57,7 @@
 
 #include <ctime>
 #include <cstring>
+#include <iostream>
 
 #include <QDebug>
 #include <QCoreApplication>
@@ -68,8 +69,8 @@
 MCUSimControl::MCUSimControl ( const std::string & deviceName,
                                const AdjSimProcDef * procDef,
                                bool textMode )
-                             : m_simulator(nullptr),
-                               m_dbgFile(nullptr),
+                             : m_simulator ( nullptr ),
+                               m_dbgFile ( nullptr ),
                                m_textMode ( textMode )
 {
     m_abort = false;
@@ -683,9 +684,9 @@ void MCUSimControl::registerObserver ( MCUSimObserver * observer,
     observer->setControlUnit(this);
 }
 
-inline void MCUSimControl::registerObserver ( MCUSimObserver * observer,
-                                              MCUSimSubsys::SubsysId simSubsysToObserve,
-                                              uint64_t events )
+void MCUSimControl::registerObserver ( MCUSimObserver * observer,
+                                       MCUSimSubsys::SubsysId simSubsysToObserve,
+                                       uint64_t events )
 {
     unregisterSpecificObserver(MCUSimSubsys::SubsysId(simSubsysToObserve), observer);
     m_observers[simSubsysToObserve].push_back({observer, events});

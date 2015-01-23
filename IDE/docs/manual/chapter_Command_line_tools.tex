@@ -83,7 +83,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
             \item[-{}-device, -d <device>]~\\
                 Specify exact target device, options are:
                 \begin{description}
-                    \item[For PicoBlaze]
+                    \item[For PicoBlaze]~\\
                         kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
                 \end{description}
 
@@ -110,6 +110,11 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
 
             \item[-{}-secondary <.hex file>]~\\
                 Specify target file for SPR initialization, output format is Intel HEX.
+
+            \item[-{}-define, -D <name{[}=value{]}>]~\\
+                Define a symbol with the given name. Value is optional, the default value is 1; value has to be a decimal number, if specified. Symbol defined using this option is of type ``number'' and is re-definable. This option is particularly useful in conjunction with the conditional compilation directives (\texttt{\#IFDEF}, \texttt{\#IF}, \texttt{\#ELSE}, etc.) Example:~\\
+                \verb'mds-compiler -D SKIP_LOOPS -D DEFAULT_TIMEOUT=10 ...'
+
         \end{description}
 
     \subsection{Notes}
@@ -145,7 +150,7 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
             \item[-{}-family, -f <family>]~\\
                 \textbf{(MANDATORY)} Specify processor family, supported families for the given architectures are:
                 \begin{description}
-                    \item[For PicoBlaze]
+                    \item[For PicoBlaze]~\\
                         kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
                 \end{description}
 
@@ -303,9 +308,159 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
             \item \verb'mds-translator --type=1 --output=final_file.asm my_file.psm'\\
         \end{itemize}
 
+\clearpage
 \section{Simulator}
     \subsection{Description}
-    \subsection{Usage}
-    \subsection{Options}
-    \subsection{Notes}
-    \subsection{Examples}
+        The main purpose of this tool is to provide means to use the MDS's processor simulator in user written scripts in which the user needs to simulate a processor. For instance you can write a script in Tcl, Python, Bash, etc. and use the mds-proc-sim to test your programs written for PicoBlaze. You can do things like: feed your program with some input and read its output, connect several processors together and make them exchange data, you can even view contents of registers, and all other memories, watch subroutine calls and interrupts, set breakpoints, and many other tasks.
+
+        This tool implements command line interface for the simulator engine. It listens to simple commands, like ``\texttt{sim~step}'' or ``\texttt{get~pc}''. Each command must be on separate line, empty lines are ignored, and everything after the `\texttt{\#}' character is threated as comment and ignored. Response to each command is either `done', or `Error: <message>' or `Warning: <message>'. Some commands print some values, in that case these values are printed before the `done' string. This command line interface is case sensitive.
+
+        Input consists of sequence of text lines separated by LF, each line may contains several words separated by spaces or tabs. Input is taken from standard input, output is written to standard output, and error and warning messages are written to standard error output (if possible). End of line character is LF (Line Feed), CR characters at the end of line are ignored as white space.
+
+    \subsection{Invocation}
+        \verb'mds-proc-sim  <OPTIONS>'
+
+        \subsubsection{Options}
+            \begin{description}
+                \item[-g, -{}-debug-file <full file name>]~\\
+                    \textbf{(MANDATORY)} Specify MDS native debug file.
+
+                \item[-d, -{}-device <device>]~\\
+                    \textbf{(MANDATORY)} Specify exact device for simulation.
+                        \begin{description}
+                            \item[For PicoBlaze]~\\
+                                kcpsm1, kcpsm1cpld, kcpsm2, kcpsm3, and kcpsm6
+                        \end{description}
+
+                \item[-c, -{}-code-file <full file name>]~\\
+                    \textbf{(MANDATORY)} Specify file with machine code for simulation.
+
+                \item[-t, -{}-code-file-type <file type>]~\\
+                    \textbf{(MANDATORY)} Specify type of the machine code file, supported are:
+                        \begin{description}
+                            \item [hex] Intel 8 HEX, or Intel 16 HEX.
+                            \item [srec] Motorola S-Record.
+                            \item [bin] Raw binary file.
+                            \item [mem] Xilinx MEM file (for PicoBlaze only).
+                            \item [vhd] VHDL file (for PicoBlaze only).
+                            \item [v] Verilog file (for PicoBlaze only).
+                            \item [rawhex] Raw HEX dump (for PicoBlaze only).
+                        \end{description}
+
+                \item[-p, -{}-proc-def-file <processor definition file>]~\\
+                    Specify architecture for user defined processor, this option makes sense only if --device=Adaptable
+
+                \item[-h, -{}-help]~\\
+                    Print a brief help message.
+
+                \item[-V, -{}-version]~\\
+                    Print version information and exit.
+
+                \item[-s, -{}-silent]~\\
+                    Be less verbose
+            \end{description}
+
+        \subsubsection{Examples}
+            \verb'mds-proc-sim -d kcpsm6 -g Example1.dbg -c Example1.ihex -t hex'
+
+    \subsection{Commands}
+        Commands might have several subcommands and might take arguments, arguments might be optional; if an argument is a number, it might be hexadecimal, decimal, octal, or binary; radix is specified with either prefix or suffix notation in the same way as in the assembler (examples: \texttt{0xff}, \texttt{255}, \texttt{0377}, \texttt{0b11111111}; or \texttt{ffh}, \texttt{255d}, \texttt{377q}, \texttt{11111111b}). When simulator responses to a command with a number, this number is always decimal; when there are more that one number in the response, these numbers are separated by a single space. Each response is written on separate line.
+
+        \begin{description}
+            \item[set]~\\
+                Set something, subcommands:
+                \begin{description}
+                    \item[pc <address>]~\\
+                        Set program counter, i.e. jump somewhere, e.g. ``set pc 0x3ff'' - jump to 0x3ff.
+                    \item[flag <flag> <value>]~\\
+                        Set processor flag, flag is one of: {C, Z, IE, I, pC, pZ}, value is either 0 or 1; pC is pre-Carry and pZ is pre-Zero (i.e. before ISR), I is interrupt, and IE is interrupt enable.
+                    \item[memory <space> <address> <value>]~\\
+                        Set some location in memory to some value, space is one of: { portin, portout, register, data, code, stack} (where ``code'' is program memory). E.g. ``set memory register 0x0 0x22'' - set S0 to 0x22.
+                    \item[size <space> <value>]~\\
+                        Resize the specified memory. E.g. ``set size code 128'' - reduces size of program memory to 128.
+                    \item[breakpoint <file:line> {[}<value>{]}]~\\
+                        Set breakpoint, value is either 0 or 1, value is optional and 1 is default, 1 means set and 0 means unset. Please use ``get locations'' to see where breakpoints can actually be set.
+                \end{description}
+
+            \item[get]~\\
+                Get something, subcommands:
+                \begin{description}
+                    \item[pc]~\\
+                        Get current value of program counter.
+                    \item[flag <flag>]~\\
+                        Get processor flag (see ``set flag'' command for details).
+                    \item[memory <space> <address> {[}<end-address>{]}]~\\
+                        Read memory, when end-address is specified
+                    \item[size <space>]~\\
+                        Get size of some memory.
+                    \item[cycles]~\\
+                        Get total number of machine cycles executed on the simulated processor.
+                    \item[breakpoints]~\\
+                        List breakpoints.
+                    \item[locations]~\\
+                        List locations where it makes sense to set a breakpoint.
+                \end{description}
+
+            \item[file]~\\
+                Load or save a file, subcommands:
+                \begin{description}
+                    \item[load <space> <type> <file>]~\\
+                        Load contents of the specified file (<file>) into the specified memory (<space>), <type> is type of file, <file> is file name.
+                    \item[save <space> <type> <file>]~\\
+                        Save contents of the specified memory (<space>) into the specified file (<file>).
+                \end{description}
+
+            \item[sim]~\\
+                Simulate program.
+                \begin{description}
+                    \item[step {[}<steps>{]}]~\\
+                        Step, optionally execute <steps> steps.
+                    \item[run]~\\
+                        Run program. (This forks from the main thread, further commands are protected by mutexes.)
+                    \item[animate]~\\
+                        Animate program. (This forks from the main thread, further commands are protected by mutexes.)
+                    \item[halt]~\\
+                        Halt program animation or run.
+                    \item[reset]~\\
+                        Reset processor.
+                    \item[irq]~\\
+                        Interrupt request.
+                \end{description}
+
+            \item[exit {[}<code>{]}]~\\
+                Exit with exit code <code>; if <code> is not specified, exit with code 0.
+
+            \item[help {[}<command>{]}]~\\
+                Print a brief help message.
+        \end{description}
+
+        \subsubsection{Example}
+            \begin{tabular}{l|l}
+                \textbf{Input}          & \textbf{Output} \\
+                \hline
+                \verb'get cycles'       & \\
+                                        & \verb'0'\\
+                                        & \verb'done'\\
+                \hline
+                \verb'sim step'         & \\
+                                        & \verb'done'\\
+                \hline
+                \verb'get cycles'       & \\
+                                        & \verb'1'\\
+                                        & \verb'done'\\
+                \hline
+                \verb'sim step 0xA'     & \\
+                                        & \verb'done'\\
+                \hline
+                \verb'get cycles'       & \\
+                                        & \verb'11'\\
+                                        & \verb'done'\\
+            \end{tabular}
+
+    \subsection{Events}
+        When something changes in the simulator, for instance content of some register, simulator prints a message like: ``\texttt{>{}>{}>~<event>~@~<location>~:~<detail>}''. An event message always starts with ``\texttt{>{}>{}> }'' sequence so it can be easily identified and handled in user written simulation scripts which use this tool for actual simulation.
+
+%     \subsection{Notes}
+%         \begin{itemize}
+%             \item
+%         \end{itemize}
