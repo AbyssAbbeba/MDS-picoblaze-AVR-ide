@@ -44,10 +44,12 @@
 
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
 #   include "AdaptableSim/AdaptableSimStatusFlagsBase.h"
+#   include "AdaptableSim/AdaptableSimInterruptController.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 #ifdef MDS_FEATURE_PICOBLAZE
 #   include "PicoBlaze/PicoBlazeStatusFlagsBase.h"
+#   include "PicoBlaze/PicoBlazeInterruptController.h"
 #endif // MDS_FEATURE_PICOBLAZE
 
 const std::map<std::string, SimCmdLineCommands::MemorySpace> SimCmdLineCommands::S_MEM_SPACE =
@@ -224,6 +226,7 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
                     {
                         intrCtrl->irq();
                     }
+                    break;
                 }
               #endif // MDS_FEATURE_PICOBLAZE
               #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
@@ -235,6 +238,7 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
                     {
                         intrCtrl->irq();
                     }
+                    break;
                 }
               #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
                 default:
