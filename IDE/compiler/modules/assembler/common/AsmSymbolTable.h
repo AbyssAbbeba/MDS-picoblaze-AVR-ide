@@ -135,9 +135,7 @@ class AsmSymbolTable
          * @return
          */
         AsmSymbolTable ( CompilerSemanticInterface * compilerCore,
-                         CompilerOptions * opts )
-                       : m_compilerCore ( compilerCore ),
-                         m_opts ( opts ) {};
+                         CompilerOptions * opts );
 
         /**
          * @brief
@@ -146,6 +144,11 @@ class AsmSymbolTable
 
     ////    Public Operations    ////
     public:
+        /**
+         * @brief
+         */
+        void defineSymbolsFromOptions();
+
         /**
          * @brief
          * @param[in] name
