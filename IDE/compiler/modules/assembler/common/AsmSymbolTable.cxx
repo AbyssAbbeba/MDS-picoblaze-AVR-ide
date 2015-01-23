@@ -21,8 +21,12 @@
 
 // Standard headers.
 #include <cstdio>
+#include <cctype>
 #include <cstring>
 #include <fstream>
+#include <climits>
+#include <cstdlib>
+#include <algorithm>
 
 const std::map<std::string, AsmSymbolTable::PredefinedSymbolID> AsmSymbolTable::PREDEFINED_SYMBOLS =
 {
@@ -34,6 +38,90 @@ const CompilerExpr AsmSymbolTable::S_MDS_VERSION =
     CompilerExpr ( CompilerValue ( ( ( PRODUCT_VERSION_MAJOR & 0x0f ) << 12 ) |
                                    ( ( PRODUCT_VERSION_MINOR & 0xff ) <<  4 ) |
                                    ( ( PRODUCT_VERSION_PATCH & 0x0f ) <<  0 ) ) );
+
+AsmSymbolTable::AsmSymbolTable ( CompilerSemanticInterface * compilerCore,
+                                 CompilerOptions * opts )
+                               : m_compilerCore ( compilerCore ),
+                                 m_opts ( opts )
+{
+}
+
+void AsmSymbolTable::defineSymbolsFromOptions()
+{
+    for ( const auto & def : m_opts->m_define )
+    {
+        int value = 1;
+        std::string name;
+
+        bool validName = true;
+        bool validValue = true;
+
+        size_t pos = def.find('=');
+        if ( std::string::npos == pos )
+        {
+            name = def;
+        }
+        else
+        {
+            std::string valueString = def.substr(pos + 1);
+
+            name = def.substr(0, pos);
+            validValue = !valueString.empty();
+
+            for ( unsigned int i = 0; i < valueString.size(); i++ )
+            {
+                if ( 0 == isdigit(valueString[i]) )
+                {
+                    validValue = false;
+                    break;
+                }
+            }
+
+            if ( false == validValue )
+            {
+                m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                    CompilerBase::MT_ERROR,
+                                                    QObject::tr ( "invalid value: " ).toStdString()
+                                                                + '`' + valueString + '\'' );
+            }
+            else
+            {
+                value = atoi(valueString.c_str());
+            }
+        }
+
+        if ( ( true == name.empty() ) || ( ( '_' != name[0] ) && ( 0 == isalpha(name[0]) ) ) )
+        {
+            validName = false;
+        }
+        else
+        {
+            for ( unsigned int i = 1; i < name.size(); i++ )
+            {
+                if ( 0 == isalnum(name[i]) )
+                {
+                    validName = false;
+                    break;
+                }
+            }
+        }
+
+        if ( false == validName )
+        {
+            m_compilerCore -> semanticMessage ( CompilerSourceLocation(),
+                                                CompilerBase::MT_ERROR,
+                                                QObject::tr ( "invalid name: " ).toStdString()
+                                                            + '`' + name + '\'' );
+        }
+        else if ( true == validValue )
+        {
+            std::transform(name.begin(), name.end(), name.begin(), ::toupper);
+
+            CompilerExpr valueExpr(value);
+            addSymbol(name, &valueExpr, nullptr, STYPE_NUMBER, true, true);
+        }
+    }
+}
 
 AsmSymbolTable::Symbol::Symbol ( const CompilerExpr * value,
                                  const CompilerSourceLocation * location,
@@ -93,7 +181,17 @@ int AsmSymbolTable::addSymbol ( const std::string & name,
         if ( true == resolve )
         {
             finalValue = (int) resolveExpr(value);
-            CompilerExpr finalValueExpr(finalValue, *location);
+
+            CompilerExpr finalValueExpr;
+            if ( nullptr == location )
+            {
+                finalValueExpr = CompilerExpr (finalValue);
+            }
+            else
+            {
+                finalValueExpr = CompilerExpr (finalValue, *location);
+            }
+
             m_table.insert ( std::pair<std::string,Symbol> ( name,
                                                              Symbol ( &finalValueExpr,
                                                                       location,

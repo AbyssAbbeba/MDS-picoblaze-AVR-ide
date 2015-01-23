@@ -151,6 +151,7 @@ void AsmAdaptableSemanticAnalyzer::process ( CompilerStatement * codeTree )
 {
     m_memoryPtr->clear();
 
+    m_symbolTable->defineSymbolsFromOptions();
     m_codeListing->loadSourceFiles();
     printCodeTree(codeTree);
 

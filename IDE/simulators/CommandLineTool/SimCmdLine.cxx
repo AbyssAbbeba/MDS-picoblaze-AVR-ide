@@ -125,10 +125,10 @@ SimCmdLine::ExitCode SimCmdLine::parseCLI ( int argc,
         {
             case 'h': // --help
                 printHelp(argv[0]);
-                return EXIT_CODE_SUCCESS;
+                return EXIT_ERROR_CLI;
             case 'V': // --version
                 std::cout << QObject::tr("VERSION: %1").arg(VERSION).toStdString() << std::endl;
-                return EXIT_CODE_SUCCESS;
+                return EXIT_ERROR_CLI;
             case 's': // --silent
                 m_silent = true;
                 break;
@@ -407,7 +407,6 @@ inline void SimCmdLine::printHelp ( const char * executable )
               << std::endl;
 
     std::cout << QObject::tr("Available program options:").toStdString() << std::endl
-              << std::endl
               << QObject::tr("    -g, --debug-file <full file name>").toStdString() << std::endl
               << QObject::tr("        (MANDATORY) Specify MDS native debug file.").toStdString() << std::endl
               << std::endl
@@ -444,7 +443,7 @@ inline void SimCmdLine::printHelp ( const char * executable )
               << QObject::tr("        Print version information and exit.").toStdString() << std::endl
               << std::endl
               << QObject::tr("    -s, --silent").toStdString() << std::endl
-              << QObject::tr("        Do not print any warnings, errors, or any other messages, stay silent.")
+              << QObject::tr("        Be less verbose.")
                             .toStdString() << std::endl
               << std::endl;
 
