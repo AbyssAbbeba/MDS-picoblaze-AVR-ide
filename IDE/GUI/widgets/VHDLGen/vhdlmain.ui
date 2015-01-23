@@ -158,7 +158,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Delete component</string>
+      <string>Delete last component</string>
      </property>
     </widget>
    </item>

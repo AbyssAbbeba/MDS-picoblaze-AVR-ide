@@ -40,6 +40,9 @@ VhdlMain::VhdlMain(QWidget *parent) :
     ui->comboKcpsm->addItems(items2);
     ui->comboKcpsm->setCurrentIndex(4);
 
+    // set enter to generate
+    m_keyWatcher = 0;
+
     //node_t * test_list = new node_t(0);
 
     //node_t * curr, * head, * tempLink;
@@ -209,9 +212,10 @@ VhdlMain::genericType VhdlMain::getEnum(QString & inString)
     if ( inString == "integer")     return INTEGER;
     if ( inString == "positive")    return POSITIVE;
     if ( inString == "natural")     return NATURAL;
+    return ERROR;
 }
 
-void VhdlMain::paintEvent(QPaintEvent *e)
+void VhdlMain::paintEvent(QPaintEvent* /*e*/)
 {
     // initial definitions (pens, points, rect)
     QPainter painter;
@@ -282,6 +286,7 @@ void VhdlMain::paintEvent(QPaintEvent *e)
     // draw components acording to their names,
     if ( 0 == componentCnt)
     {
+        ui->pushDelete->setDisabled(true);
         if ( true == m_componentRectHighlight)
         {
             painter.setPen(blackpenRect);
@@ -300,6 +305,7 @@ void VhdlMain::paintEvent(QPaintEvent *e)
     else
     {
         rectList.clear();
+        ui->pushDelete->setDisabled(false);
         //delete this->componentRect;
     }
 
@@ -1205,6 +1211,9 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
 
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
+
         QString port;
         port.clear();
         QTextStream out(&port);
@@ -1324,6 +1333,8 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
 
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
 
         QString port;
         port.clear();
@@ -1372,6 +1383,10 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         QTextCharFormat format = cursor_textinfo.charFormat();
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
+
+
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
 
         QString port;
         port.clear();
@@ -1705,6 +1720,7 @@ void VhdlMain::pushEditRect()
 {
     // create gui
     createComponent1();
+    ui2.pushOk->setText("OK");
     editExist = true;
     // maybe this flag to false? haha
     createWidget = false;
@@ -1740,10 +1756,20 @@ void VhdlMain::pushDelete()
     genericComponent[componentCnt - 1].lsbNumber.clear();
     genericComponent[componentCnt - 1].msbNumber.clear();
 
+    //adjustNameCount(componentCnt - 1);
     //delete this->componentObject[componentCnt-1];
     this->componentObject[componentCnt-1]->setRect(0,0,0,0);
     componentCnt--;
     update();
+}
+
+void VhdlMain::adjustNameCount(unsigned int ValIndex)
+{
+  //  if ( existingNamesList.contains(definedComponent[valIndex].name) == true)
+ //   {
+ //       existingNamesList.removeOne(definedComponent[valIndex].name);
+  //  //    indexCounter.removeOne(definedComponent[valIndex].name);
+   // }
 }
 
 void VhdlMain::validateName(unsigned int ValIndex)
@@ -2487,17 +2513,17 @@ void VhdlMain::loadFile()
     QString line = in.readLine();
     while (!line.isNull())
     {
-        if ( true == line.contains("portout", Qt::CaseInsensitive) )
+        if ( true == line.contains(" portout ", Qt::CaseInsensitive) )
         {
             portOutList << line;
             portOutCount++;
         }
-        else if ( true == line.contains("portin", Qt::CaseInsensitive) )
+        else if ( true == line.contains(" portin ", Qt::CaseInsensitive) )
         {
             portInList << line;
             portInCount++;
         }
-        else if ( true == line.contains("port", Qt::CaseInsensitive) )
+        else if ( true == line.contains(" port ", Qt::CaseInsensitive) )
         {
             portList << line;
             portCount++;
@@ -2592,7 +2618,6 @@ void VhdlMain::printToFile()
     int hour = Time.hour();
     int min = Time.minute();
 
-
     // create file to write
     qDebug()<< savePath;
     QFile outFile(savePath);
@@ -2681,10 +2706,12 @@ void VhdlMain::printToFile()
         for ( unsigned int i = 0; i < componentCnt; i++)
         {
             unsigned int p = 0;
+            qDebug() << genericComponent[i].genericName[p] << "generic empty?";
             while ( false == genericComponent[i].genericName[p].isEmpty() )
             {
                 if ( false == genericComponent[i].constant[p])
                 {
+                    p++;
                     continue;
                 }
 
@@ -3500,6 +3527,27 @@ unsigned int VhdlMain::tabsNumber(QString inputString)
     else
     {
         return tabsNum - 70;
+    }
+}
+
+void VhdlMain::keyPressEvent(QKeyEvent *event)
+{
+    // set key funcionality
+    // 0 = main window, 1 = create component
+    switch( m_keyWatcher )
+    {
+        case 0:
+        if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+            {
+            qDebug() << "key pressed1";
+            }
+            break;
+        case 1:
+            if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+            {
+            qDebug() << "key pressed2";
+            }
+            break;
     }
 }
 
