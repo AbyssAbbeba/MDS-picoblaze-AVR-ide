@@ -321,8 +321,13 @@ void VhdlMain::paintEvent(QPaintEvent *e)
         {
             QString str;
             str = definedComponent[p].name;
-            str.chop( definedComponent[p].name.size() - 27 );
+            while(str.size() > 30)
+            {
+                str.chop(1);
+            }
+            str.chop(20);
             str.append("...");
+            //str.chop( definedComponent[p].name.size() - 27 );
             painter.drawText(*componentObject[p], Qt::AlignCenter, str);
         }
         else
