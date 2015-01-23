@@ -70,9 +70,11 @@ class VhdlMain : public QWidget
      bool m_xmlNumberFlag;
      bool m_xmlEditFlag;
      bool createWidget;
+     bool editExist;
      unsigned int m_xmlNumber,m_editNumber;
      int m_hex;
      QString m_path;
+     unsigned int removeIndex,editIndex;
 
      enum genericType {
          LOGIC = 0,
@@ -134,8 +136,12 @@ class VhdlMain : public QWidget
      int getNumberOfInstances(QString & componentToInstantiate, bool Declaration);
      void editSelectedComponent(unsigned int position);
      void setPath(QString in_path);
+     void editExistingComponent();
+     void saveEditedComponent();
 
 private slots:
+   void pushRemove();
+   void pushEditRect();
    void customMenuRequested(QPoint pos);
    void RemoveXml();
    void pushEditSlot();
