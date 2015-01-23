@@ -1190,6 +1190,7 @@ inline void SimCmdLineCommands::breakpointCommand ( const std::string & file,
 
 inline void SimCmdLineCommands::helpCommand ( const std::string & subcommand )
 {
+    std::cout << ">>> RTFM";
 }
 
 bool SimCmdLineCommands::readInt ( int & out,
