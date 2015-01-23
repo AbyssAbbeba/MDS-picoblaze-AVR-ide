@@ -197,7 +197,11 @@ void CompilerCore::coreMessage ( const CompilerSourceLocation & location,
         }
     }
 
-    if ( ( -1 != location.m_fileNumber ) && ( location.m_fileNumber < (int) m_openedFiles.size() ) )
+    if ( false == location.isSet() )
+    {
+        m_msgInterface->message ( ( msgType2str(type) + text + "." ), type );
+    }
+    else if ( ( -1 != location.m_fileNumber ) && ( location.m_fileNumber < (int) m_openedFiles.size() ) )
     {
         m_msgInterface->message ( ( locationToStr(location) + ": " + msgType2str(type) + text + "." ), type );
     }

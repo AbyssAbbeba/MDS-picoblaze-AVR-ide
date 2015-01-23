@@ -355,7 +355,7 @@ int main ( int argc, char ** argv )
     // Disable error messages from getopt_long().
     opterr = 0;
 
-    const char * shortopts = ":hVca:p:m:s:l:x:d:D:b:S:t:WERNI:P:";
+    const char * shortopts = ":hVca:p:m:s:l:x:d:D:b:S:t:WERNI:P:D:";
     static const struct option longopts[] =
     {
         { "help",        no_argument,       0,   'h' },
@@ -382,6 +382,7 @@ int main ( int argc, char ** argv )
         { "srec",        required_argument, 0,   'S' },
         { "include",     required_argument, 0,   'I' },
         { "precompile",  required_argument, 0,   'P' },
+        { "define",      required_argument, 0,   'D' },
 
         { "vhdl",        required_argument, 0, 0x100 },
         { "verilog",     required_argument, 0, 0x101 },
@@ -475,6 +476,9 @@ int main ( int argc, char ** argv )
                 break;
             case 'P': // --precompile=<file>
                 opts.m_prcTarget = optarg;
+                break;
+            case 'D': // --define
+                opts.m_define.push_back(optarg);
                 break;
             case 0x100: // --vhdl=<file>
                 opts.m_vhdlFile = optarg;

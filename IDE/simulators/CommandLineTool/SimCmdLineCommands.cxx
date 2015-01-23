@@ -44,10 +44,12 @@
 
 #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
 #   include "AdaptableSim/AdaptableSimStatusFlagsBase.h"
+#   include "AdaptableSim/AdaptableSimInterruptController.h"
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 #ifdef MDS_FEATURE_PICOBLAZE
 #   include "PicoBlaze/PicoBlazeStatusFlagsBase.h"
+#   include "PicoBlaze/PicoBlazeInterruptController.h"
 #endif // MDS_FEATURE_PICOBLAZE
 
 const std::map<std::string, SimCmdLineCommands::MemorySpace> SimCmdLineCommands::S_MEM_SPACE =
@@ -89,22 +91,37 @@ SimCmdLineBase::ExitCode SimCmdLineCommands::commandLoop()
 
         std::getline(std::cin, input);
 
+        // Remove comments
         size_t comment = input.find('#');
         if ( std::string::npos != comment )
         {
             input.resize(comment);
         }
 
+        // Remove trailing white space.
+        if ( false == input.empty() )
+        {
+            while ( isspace(input.back()) )
+            {
+                input.pop_back();
+            }
+        }
+
         pos = 0;
         readWord(command, input, pos);
         readWord(subcommand, input, pos);
+
+        if ( true == command.empty() )
+        {
+            continue;
+        }
 
         processCommand(command, subcommand, input, pos);
 
         if ( input.size() != pos )
         {
             input = input.substr(pos);
-            std::cerr << QObject::tr("Warning: `%1' ignored.").arg(input.c_str()).toStdString() << std::endl;
+            std::cerr << QObject::tr("Warning: trailing `%1' ignored.").arg(input.c_str()).toStdString() << std::endl;
         }
     }
 
@@ -127,6 +144,8 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
     {
         if ( "step" == subcommand )
         {
+            Mutex mutex(m_simControl);
+
             if ( MCUSimControl::SS_IDLE != m_simControl->getSimState() )
             {
                 std::cout << QObject::tr("Error: simulation is already in progress.").toStdString() << std::endl;
@@ -134,6 +153,7 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
             }
 
             int steps = 1;
+
             {
                 std::string argument;
                 readWord(argument, input, pos);
@@ -145,16 +165,19 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
                     }
                 }
             }
+
             if ( steps < 1 )
             {
                 std::cout << QObject::tr("Error: number of steps has to be a positive integer.").toStdString()
                           << std::endl;
                 return;
             }
+
             for ( int i = 0; i < steps; i++ )
             {
                 m_simControl->stepProgram();
             }
+
             done();
         }
         else if ( "reset" == subcommand )
@@ -186,6 +209,44 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
         else if ( "halt" == subcommand )
         {
             m_simControl->stopSimulation();
+            done();
+        }
+        else if ( "irq" == subcommand )
+        {
+            Mutex mutex(m_simControl);
+
+            switch ( m_simControl->getArch() )
+            {
+              #ifdef MDS_FEATURE_PICOBLAZE
+                case MCUSimBase::ARCH_PICOBLAZE:
+                {
+                    MCUSimSubsys * subSys = m_simControl->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS);
+                    PicoBlazeInterruptController * intrCtrl = dynamic_cast<PicoBlazeInterruptController*>(subSys);
+                    if ( nullptr != intrCtrl )
+                    {
+                        intrCtrl->irq();
+                    }
+                    break;
+                }
+              #endif // MDS_FEATURE_PICOBLAZE
+              #ifdef MDS_FEATURE_ADAPTABLE_SIMULATOR
+                case MCUSimBase::ARCH_ADAPTABLE:
+                {
+                    MCUSimSubsys * subSys = m_simControl->getSimSubsys(MCUSimSubsys::ID_INTERRUPTS);
+                    AdaptableSimInterruptController * intrCtrl = dynamic_cast<AdaptableSimInterruptController*>(subSys);
+                    if ( nullptr != intrCtrl )
+                    {
+                        intrCtrl->irq();
+                    }
+                    break;
+                }
+              #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
+                default:
+                    std::cerr << QObject::tr("Error: this command is not supported for this architecture").toStdString()
+                              << std::endl;
+                    return;
+            }
+
             done();
         }
         else
@@ -273,11 +334,6 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
             if ( valueInt < 0 )
             {
                 std::cerr << QObject::tr("Error: value cannot be negative.").toStdString() << std::endl;
-                return;
-            }
-            else if ( valueInt > 0xff )
-            {
-                std::cerr << QObject::tr("Error: value has to be representable in 8 bits.").toStdString() << std::endl;
                 return;
             }
 
@@ -500,6 +556,8 @@ inline void SimCmdLineCommands::fileCommand ( const std::string & file,
                                               FileType type,
                                               bool save )
 {
+    using namespace boost::filesystem;
+
     MCUSimSubsys::SubsysId subsysId = MCUSimSubsys::ID_INVALID;
     switch ( space )
     {
@@ -537,22 +595,24 @@ inline void SimCmdLineCommands::fileCommand ( const std::string & file,
         default:           dataFile = nullptr;        break;
     }
 
+    std::string filename = path(makeHomeSafe(file)).make_preferred().string();
+
     try
     {
         if ( true == save )
         {
             memory->storeInDataFile(dataFile);
-            dataFile->save(file, false);
+            dataFile->save(filename, false);
         }
         else
         {
-            dataFile->clearAndLoad(file);
+            dataFile->clearAndLoad(filename);
             memory->loadDataFile(dataFile);
         }
     }
     catch ( const DataFileException & e )
     {
-        std::cerr << QObject::tr("Error: unable to use file: `%1', reason: ") .arg(file.c_str()).toStdString()
+        std::cerr << QObject::tr("Error: unable to use file: `%1', reason: ") .arg(filename.c_str()).toStdString()
                   << e.toString() << std::endl;
         return;
     }
@@ -1130,6 +1190,7 @@ inline void SimCmdLineCommands::breakpointCommand ( const std::string & file,
 
 inline void SimCmdLineCommands::helpCommand ( const std::string & subcommand )
 {
+    std::cout << ">>> RTFM";
 }
 
 bool SimCmdLineCommands::readInt ( int & out,
