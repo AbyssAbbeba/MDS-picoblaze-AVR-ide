@@ -2669,7 +2669,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portInOut[i].value,16).toUpper() << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portInOut[i].value > 15)
+            {
+                out<< QString::number(portInOut[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portInOut[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     if ( 0 != portInCount )
@@ -2682,8 +2690,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portIn[i].value,16).toUpper();
-            out << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portIn[i].value > 15)
+            {
+                out<< QString::number(portIn[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portIn[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     if ( 0 != portOutCount )
@@ -2696,8 +2711,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portOut[i].value,16).toUpper();
-            out << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portOut[i].value > 15)
+            {
+                out<< QString::number(portOut[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portOut[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     // print generic CONSTANTS if Generic is available
