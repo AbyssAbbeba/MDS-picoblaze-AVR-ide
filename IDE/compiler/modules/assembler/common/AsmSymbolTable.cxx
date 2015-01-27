@@ -98,7 +98,7 @@ void AsmSymbolTable::defineSymbolsFromOptions()
         {
             for ( unsigned int i = 1; i < name.size(); i++ )
             {
-                if ( 0 == isalnum(name[i]) )
+                if ( ( '_' != name[i] ) && ( 0 == isalnum(name[i]) ) )
                 {
                     validName = false;
                     break;
