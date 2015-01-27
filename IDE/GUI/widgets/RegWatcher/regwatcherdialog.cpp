@@ -15,7 +15,7 @@
 #include <QtGui>
 #include "regwatcherdialog.h"
 
-RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks)
+RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks, int offset)
     : QDialog(parent)
 {
     ui.setupUi(this);
@@ -32,6 +32,7 @@ RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks)
     }
 
     m_regbanks = regbanks;
+    m_bankOffset = offset;
     
     QRegExpValidator *validatorAddress = new QRegExpValidator(QRegExp("0x[\\da-fA-F]+"), ui.leAddress);
     ui.leAddress->setValidator(validatorAddress);
@@ -40,10 +41,10 @@ RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks)
 
 void RegWatcherDialog::emitNewItem()
 {
-    if (true == ui.cmbBank->isVisible())
+    if (true == m_regbanks)
     {
         bool ok;
-        emit newItem(ui.leName->text(), ui.cmbType->currentIndex(), ui.leAddress->text().toInt(&ok, 16)+ui.cmbBank->currentIndex()*16);
+        emit newItem(ui.leName->text(), ui.cmbType->currentIndex(), ui.leAddress->text().toInt(&ok, 16)+ui.cmbBank->currentIndex()*m_bankOffset);
     }
     else
     {

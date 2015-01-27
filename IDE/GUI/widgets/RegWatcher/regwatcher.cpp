@@ -46,7 +46,7 @@ void RegWatcher::addItem()
 {
     if (MCUSim::FAMILY_KCPSM6 == m_simControl->getFamily())
     {
-        RegWatcherDialog dlg(this, true);
+        RegWatcherDialog dlg(this, true, 16);
         connect(&dlg,
                 SIGNAL(newItem(QString, int, int)),
                 this,

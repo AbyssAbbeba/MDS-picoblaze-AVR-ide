@@ -80,6 +80,7 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
     m_simControl = controlUnit;
     m_type = type;
     m_address = address;
+    this->show();
     
     deviceChanged();
 }
