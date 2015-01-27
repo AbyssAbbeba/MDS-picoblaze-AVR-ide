@@ -10,7 +10,7 @@ class XmlParser : public QWidget
 public:
     explicit XmlParser(QWidget *parent = 0);
     //QFile  file1,file2,file3;
-    QFile file[7];
+    QFile file[13];
     QStringList componentName;
     QStringList m_componentList;
     QStringList Devices,filters;
