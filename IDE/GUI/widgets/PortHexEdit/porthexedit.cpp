@@ -115,7 +115,7 @@ void PortHexEdit::handleEvent(int subsysId, int eventId, int locationOrReason, i
         {
             m_lblWR->setStyleSheet("color: #00ff00");
             uint value = m_plio->getOutputArray()[locationOrReason];
-           //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
+            //qDebug() << "PortHexEdit: event: mem cell changed to" << (unsigned char)value;
 
             m_hexEditOut->setVal(locationOrReason, (unsigned char)value);
             m_hexEditOut->setHighlighted(locationOrReason, true);

@@ -95,6 +95,6 @@ void RegWatcher::createItem(QString name, int type, int address)
     itemWidget->show();
 
     ui.lstItems->setItemWidget(item, itemWidget);
-    item->setSizeHint(QSize(0,itemWidget->height()));
+    item->setSizeHint(QSize(itemWidget->width(),itemWidget->height()));
     ui.btnRemove->setEnabled(true);
 }
