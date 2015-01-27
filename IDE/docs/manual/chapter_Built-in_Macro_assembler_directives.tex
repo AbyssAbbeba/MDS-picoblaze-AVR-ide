@@ -689,23 +689,23 @@
             \verb'    abc     equ     14           ; Assign number 14 to symbol abc.'\\
             \verb'    xyz     equ     10           ; Assign number 10 to symbol abc.'\\
             \verb''\\
-            \verb'    ifdef abc                    ; <--+ Assemble only if symbol abc has been defined.'\\
-            \verb'      if ( abc = 13 )            ;    | <--+ Assemble if 13 has been assigned to symbol abc.'\\
+            \verb'    #ifdef abc                   ; <--+ Assemble only if symbol abc has been defined.'\\
+            \verb'      #if ( abc = 13 )           ;    | <--+ Assemble if 13 has been assigned to symbol abc.'\\
             \verb'            load     S0, #0b1101 ;    |    |'\\
-            \verb'      elseif ( abc = 14 )        ;    | <--+ Assemble if 14 has been assigned to symbol abc.'\\
+            \verb'      #elseif ( abc = 14 )       ;    | <--+ Assemble if 14 has been assigned to symbol abc.'\\
             \verb'            load     S0, #0x21   ;    |    |'\\
-            \verb'      elseifn ( abc % 2 )        ;    | <--+ Assemble if the value assigned to symbol abc is even.'\\
+            \verb'      #elseifn ( abc % 2 )       ;    | <--+ Assemble if the value assigned to symbol abc is even.'\\
             \verb'            load     S0, #abc    ;    |    |'\\
-            \verb'      else                       ;    | <--+ Else ..'\\
+            \verb'      #else                      ;    | <--+ Else ..'\\
             \verb'            load     S0, #077    ;    |    |'\\
-            \verb'      endif                      ;    | <--+'\\
-            \verb'    elseifndef xyz               ; <--+ Assemble if symbol xyz has NOT been defined.'\\
+            \verb'      #endif                     ;    | <--+'\\
+            \verb'    #elseifndef xyz              ; <--+ Assemble if symbol xyz has NOT been defined.'\\
             \verb'            clrr     S0          ;    |'\\
-            \verb'    else                         ; <--+ Else ...'\\
-            \verb'      ifn ( xyz mod 2 )          ;    | <--+ Assemble if ( yxz modulo 2 ) is 0.'\\
+            \verb'    #else                        ; <--+ Else ...'\\
+            \verb'      #ifn ( xyz mod 2 )         ;    | <--+ Assemble if ( yxz modulo 2 ) is 0.'\\
             \verb'            load     S0, #128    ;    |    |'\\
-            \verb'      endif                      ;    | <--+'\\
-            \verb'    endif                        ; <--+'
+            \verb'      #endif                     ;    | <--+'\\
+            \verb'    #endif                       ; <--+'
         }
 
 \clearpage
