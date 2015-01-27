@@ -51,7 +51,7 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
         }
         case 2:
         {
-            ui.lblType->setText("O/PORT");
+            ui.lblType->setText("Out PORT");
             std::vector<int> mask;
             mask =  {
                         MCUSimPureLogicIO::EVENT_PLIO_WRITE
@@ -61,7 +61,7 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
         }
         case 3:
         {
-            ui.lblType->setText("I/PORT");
+            ui.lblType->setText("In PORT");
             std::vector<int> mask;
             mask =  {
                         MCUSimPureLogicIO::EVENT_PLIO_READ
@@ -80,7 +80,6 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
     m_simControl = controlUnit;
     m_type = type;
     m_address = address;
-    this->show();
     
     deviceChanged();
 }
@@ -98,6 +97,7 @@ void RegWatcherWidget::handleEvent(int subsysId, int eventId, int locationOrReas
                 uint value = 0;
                 m_memory->directRead(m_address, value);
                 ui.lblValue->setText("0x" + QString::number(value, 16).toUpper());
+                ui.lblValue->setStyleSheet("QLabel { background-color : yellow; }");
             }
             break;
         }
@@ -105,7 +105,9 @@ void RegWatcherWidget::handleEvent(int subsysId, int eventId, int locationOrReas
         {
             if (locationOrReason == m_address && m_address < m_size)
             {
-                ui.lblValue->setText("0x" + QString::number(m_plio->getOutputArray()[m_address], 16).toUpper());
+                //qDebug() << (unsigned char) m_plio->getOutputArray()[m_address];
+                ui.lblValue->setText("0x" + QString::number((unsigned char)m_plio->getOutputArray()[m_address], 16).toUpper());
+                ui.lblValue->setStyleSheet("QLabel { background-color : yellow; }");
             }
             break;
         }
@@ -113,7 +115,8 @@ void RegWatcherWidget::handleEvent(int subsysId, int eventId, int locationOrReas
         {
             if (locationOrReason == m_address && m_address < m_size)
             {
-                ui.lblValue->setText("0x" + QString::number(m_plio->getInputArray()[m_address], 16).toUpper());
+                ui.lblValue->setText("0x" + QString::number((unsigned char)m_plio->getInputArray()[m_address], 16).toUpper());
+                ui.lblValue->setStyleSheet("QLabel { background-color : yellow; }");
             }
             break;
         }
@@ -229,6 +232,7 @@ void RegWatcherWidget::deviceReset()
             break;
         }
     }
+    ui.lblValue->setStyleSheet("QLabel { background-color : none; }");
 }
 
 
