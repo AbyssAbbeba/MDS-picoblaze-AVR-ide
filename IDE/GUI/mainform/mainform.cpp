@@ -1781,7 +1781,7 @@ bool MainForm::saveFile()
         }
         else
         {
-            qDebug() << m_fileWatcher.files();
+            //qDebug() << m_fileWatcher.files();
             QTextStream fout(&file);
             fout << m_wDockManager->getCentralTextEdit()->toPlainText();
             file.close();
@@ -5289,7 +5289,7 @@ void MainForm::fileClosed(QString path)
     if ("Help Browser" != path)
     {
         m_fileWatcher.removePath(path);
-        qDebug() << m_fileWatcher.files();
+        //qDebug() << m_fileWatcher.files();
         m_projectMan->getActive()->setFileOpened(path, false);
     }
     else

@@ -261,12 +261,6 @@ void RegistersWidget::deviceChanged()
     }*/
     m_size = m_memory->size();
 
-    deviceReset();
-}
-
-
-void RegistersWidget::deviceReset()
-{
     this->update = true;
     m_tblReg->clear();
     m_tblReg->setRowCount(m_size/2);
@@ -313,6 +307,15 @@ void RegistersWidget::deviceReset()
         m_tblReg->setRowHeight(i, 17);
     }
     this->update = false;
+
+    deviceReset();
+}
+
+
+void RegistersWidget::deviceReset()
+{
+    this->updateWidget();
+    this->unhighlight();
 }
 
 

@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QList>
+#include <QString>
 #include "ui_regwatcher.h"
 
 class MCUSimControl;
@@ -32,7 +33,9 @@ class RegWatcher : public QWidget
     private slots:
         void addItem();
         void removeItem();
-        void createItem(QString name, int type, int address);
+        void createItem(QString name, int type, int address, int regbank);
+        void editItem();
+        void editCurrentItem(QString name, int type, int address, int regbank);
 
     private:
         Ui_RegWatcher ui;

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>304</width>
+    <width>310</width>
     <height>319</height>
    </rect>
   </property>
@@ -14,15 +14,29 @@
    <string>Memory Watcher</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="3">
+   <item row="1" column="0" colspan="5">
+    <widget class="QListWidget" name="lstItems"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QPushButton" name="btnEdit">
+     <property name="text">
+      <string>Edit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
     <widget class="QPushButton" name="btnAdd">
      <property name="text">
       <string>Add</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QListWidget" name="lstItems"/>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="btnRemove">
+     <property name="text">
+      <string>Remove</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1">
     <spacer name="horizontalSpacer">
@@ -36,13 +50,6 @@
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="0" column="2">
-    <widget class="QPushButton" name="btnRemove">
-     <property name="text">
-      <string>Remove</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
