@@ -13,7 +13,7 @@
 .\"
 .\" ====================================================================================================================
 
-.TH "mds-compiler" "1" "December 2014" "User Commands"
+.TH "mds-compiler" "1" "January 2015" "User Commands"
 .SH NAME
 mds-compiler \- Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia
 Microsystems, s.r.o.
@@ -129,6 +129,11 @@ Specify target file for generation of MEM file.
 .TP
 \fB\-\-raw\-hex\-dump\fI <.hex\-file>\fR
 Specify target file for Raw Hex Dump (sequence of 5 digit long hexadecimal numbers separated by CRLF sequence).
+.TP
+\fB\-\-define, \fB\-D\fR \fI <name[=value]>\fR
+Define a symbol with the given name. Value is optional, the default value is 1; value has to be a decimal number, if
+specified. Symbol defined using this option is of type number and is re-definable. This option is particularly useful in
+conjunction with the conditional compilation directives
 
 .SH NOTES
 .IP 1.
@@ -157,6 +162,9 @@ Assembly language variant translator used by the Multitarget Development System 
 .TP
 .BR mds-disasm (1)
 Disassembler for embedded applications used by the Multitarget Development System by Moravia Microsystems.
+.TP
+.BR mds-proc-sim (1)
+Processor simulator used by the Multitarget Development System by Moravia Microsystems.
 
 .SH AUTHOR
 (C) Moravia Microsystems, s.r.o.

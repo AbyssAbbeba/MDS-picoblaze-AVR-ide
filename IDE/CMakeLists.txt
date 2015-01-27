@@ -49,7 +49,7 @@ set ( CMAKE_CXX_FLAGS_MINSIZEREL   "${CMAKE_C_FLAGS_MINSIZEREL}" )
 # ----------------------------------------------------------------------------------------------------------------------
 
 # General product and company information.
-set ( PRODUCT_VERSION    "1.2.5" )
+set ( PRODUCT_VERSION    "1.3" )
 set ( PRODUCT_NAME_SHORT "MDS" )
 set ( COMPANY_REG_NO     "01435655" )
 set ( COPYRIGHT_YEARS    "2013, 2014, 2015" )

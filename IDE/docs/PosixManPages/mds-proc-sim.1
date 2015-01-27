@@ -1,0 +1,96 @@
+.\" ====================================================================================================================
+.\"
+.\"  M   M  OO  RRR    A   V   V III   A      M   M III  OOO  RRR   OO   SSSS Y   Y  SSSS TTTTT EEEEE M   M  SSSS
+.\"  MM MM O  O R  R  A A  V   V  I   A A     MM MM  I  O     R  R O  O S      Y Y  S       T   E     MM MM S
+.\"  M M M O  O RRR  A   A V   V  I  A   A    M M M  I  O     RRR  O  O  SS     Y    SS     T   EEEEE M M M  SS
+.\"  M   M O  O RR   AAAAA  V V   I  AAAAA    M   M  I  O     RR   O  O    SS   Y      SS   T   E     M   M    SS
+.\"  M   M O  O R R  A   A  V V   I  A   A    M   M  I  O     R R  O  O      S  Y        S  T   E     M   M      S
+.\"  M   M  OO  R  R A   A   V   III A   A    M   M III  OOO  R  R  OO   SSSS   Y    SSSS   T   EEEEE M   M  SSSS
+.\"
+.\" (C) copyright 2015 Moravia Microsystems, s.r.o.
+.\"     trida Kpt. Jarose 1946/35, 602 00 Brno, CZ, European Union
+.\"     http://www.moravia-microsystems.com
+.\"
+.\" ====================================================================================================================
+
+.TH "mds-proc-sim" "1" "January 2015" "User Commands"
+.SH NAME
+mds\-proc\-sim \- Processor simulator used by the Multitarget Development System by Moravia Microsystems, s.r.o.
+.SH USAGE
+.B mds\-proc\-sim
+.I <OPTIONS>
+
+.SH DESCRIPTION
+The main purpose of this tool is to provide means to use the MDS's processor simulator in user written scripts in which
+the user needs to simulate a processor. For instance you can write a script in Tcl, Python, Bash, etc. and use the
+mds\-proc\-sim to test your programs written for PicoBlaze. You can do things like: feed your program with some input
+and read its output, connect several processors together and make them exchange data, you can even view contents of
+registers, and all other memories, watch subroutine calls and interrupts, set breakpoints, and many other tasks.
+
+For more information please consult the MDS handbook.
+
+.SH OPTIONS
+.TP
+\fB\-\-debug\-file\fR, \fB\-g\fI <full\-file\-name>\fR
+\fB(MANDATORY)\fR Specify MDS native debug file.
+.TP
+\fB\-\-device\fR, \fB\-d\fI <device>\fR
+\fB(MANDATORY)\fR Specify exact device for simulation.
+.IP 1.
+For PicoBlaze: \fBkcpsm1\fR, \fBkcpsm1cpld\fR, \fBkcpsm2\fR, \fBkcpsm3\fR, and \fBkcpsm6\fR
+.TP
+\fB\-\-code\-file\fR, \fB\-c\fI <full\-file\-name>\fR
+\fB(MANDATORY)\fR Specify file with machine code for simulation.
+.TP
+\fB\-\-code\-file\-type\fR, \fB\-t\fI <file\-type>\fR
+\fB(MANDATORY)\fR Specify type of the machine code file, supported are:
+.IP 1.
+\fBrawhex\fR : Raw HEX dump,
+.IP 2.
+\fBhex\fR : Intel 8 HEX, or Intel 16 HEX,
+.IP 3.
+\fBsrec\fR : Motorola S-Record,
+.IP 4.
+\fBbin\fR : raw binary file,
+.IP 5.
+\fBmem\fR : Xilinx MEM file (for PicoBlaze only),
+.IP 6.
+\fBvhd\fR : VHDL file (for PicoBlaze only),
+.IP 7.
+\fBv\fR : Verilog file (for PicoBlaze only).
+.TP
+\fB\-\-proc\-def\-file\fI <processor-definition-file>\fR
+Specify architecture for user defined processor, this option makes sense only if \-\-device=Adaptable
+.TP
+\fB\-\-silent\fR, \fB\-s\fR
+Be less verbose
+.TP
+\fB\-\-help\fR, \fB\-h\fR
+Print help message.
+.TP
+\fB\-\-version\fR, \fB\-V\fR
+Print disassembler version and exit.
+
+.SH NOTES
+.IP 1.
+Type \fBhelp\fR for list of available commands.
+
+.SH "SEE ALSO"
+.TP
+.BR mds-compiler (1)
+Compiler for processors, microcontrolles, etc. used by the Multitarget Development System by Moravia Microsystems.
+.TP
+.BR mds-disasm (1)
+Disassembler used by the Multitarget Development System by Moravia Microsystems.
+.TP
+.BR mds-translator (1)
+Assembly language variant translator used by the Multitarget Development System by Moravia Microsystems.
+
+.SH AUTHOR
+(C) Moravia Microsystems, s.r.o.
+.br
+trida Kpt. Jarose 1946/35, CZ-602 00
+.br
+Brno, Czech Republic, European Union
+.br
+http://www.moravia-microsystems.com
