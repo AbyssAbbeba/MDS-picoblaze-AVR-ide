@@ -453,6 +453,11 @@ inline void SimCmdLine::printHelp ( const char * executable )
               << QObject::tr("  %1 -d kcpsm6 -g abc.dbg -c abc.hex -t ihex")
                             .arg(executable).toStdString() << std::endl
               << std::endl;
+
+    std::cout << QObject::tr("Commands:").toStdString() << std::endl
+              << QObject::tr("  There are several commands, type `help' for more information, or consult the user "
+                             "manual.").toStdString() << std::endl
+              << std::endl;
 }
 
 void SimCmdLine::printUsage ( const char * executable )

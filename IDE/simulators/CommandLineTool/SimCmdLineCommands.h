@@ -150,9 +150,17 @@ class SimCmdLineCommands : public SimCmdLineBase
 
         /**
          * @brief
-         * @param[in] subcommand
+         * @param[in] command
          */
-        inline void helpCommand ( const std::string & subcommand );
+        inline void helpCommand ( const std::string & command );
+
+        /**
+         * @brief
+         * @param[in] key
+         * @param[in] value
+         */
+        inline void configCommand ( const std::string & key,
+                                    const std::string & value );
 
         /**
          * @brief

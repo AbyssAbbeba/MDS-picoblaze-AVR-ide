@@ -1,0 +1,177 @@
+<component Name="PWM">
+	<portName1>clk</portName1>
+	<portName2>Reset</portName2>
+	<portName3>Ena</portName3>
+	<portName4>Duty</portName4>
+	<portName5>PWM_out</portName5>
+	<portName6>PWM_n_out</portName6>
+	<portName7></portName7>
+	<portName8></portName8>
+	<portName9></portName9>
+	<portName10></portName10>
+	<portName11></portName11>
+	<portName12></portName12>
+	<portName13></portName13>
+	<portName14></portName14>
+	<portName15></portName15>
+	<portName16></portName16>
+	<portName17></portName17>
+	<portValue1 value=""/>
+	<portValue2 value=""/>
+	<portValue3 value=""/>
+	<portValue4 value=""/>
+	<portValue5 value=""/>
+	<portValue6 value=""/>
+	<portValue7 value=""/>
+	<portValue8 value=""/>
+	<portValue9 value=""/>
+	<portValue10 value=""/>
+	<portValue11 value=""/>
+	<portValue12 value=""/>
+	<portValue13 value=""/>
+	<portValue14 value=""/>
+	<portValue15 value=""/>
+	<portValue16 value=""/>
+	<portValue17 value=""/>
+	<portDirection1>in</portDirection1>
+	<portDirection2>in</portDirection2>
+	<portDirection3>in</portDirection3>
+	<portDirection4>in</portDirection4>
+	<portDirection5>out</portDirection5>
+	<portDirection6>out</portDirection6>
+	<portDirection7>in</portDirection7>
+	<portDirection8>in</portDirection8>
+	<portDirection9>in</portDirection9>
+	<portDirection10>in</portDirection10>
+	<portDirection11>in</portDirection11>
+	<portDirection12>in</portDirection12>
+	<portDirection13>in</portDirection13>
+	<portDirection14>in</portDirection14>
+	<portDirection15>in</portDirection15>
+	<portDirection16>in</portDirection16>
+	<portDirection17>in</portDirection17>
+	<bus1 value="false"/>
+	<bus2 value="false"/>
+	<bus3 value="false"/>
+	<bus4 value="true"/>
+	<bus5 value="true"/>
+	<bus6 value="true"/>
+	<bus7 value="false"/>
+	<bus8 value="false"/>
+	<bus9 value="false"/>
+	<bus10 value="false"/>
+	<bus11 value="false"/>
+	<bus12 value="false"/>
+	<bus13 value="false"/>
+	<bus14 value="false"/>
+	<bus15 value="false"/>
+	<bus16 value="false"/>
+	<bus17 value="false"/>
+	<signal1 signal="false"/>
+	<signal2 signal="true"/>
+	<signal3 signal="true"/>
+	<signal4 signal="true"/>
+	<signal5 signal="true"/>
+	<signal6 signal="true"/>
+	<signal7 signal="false"/>
+	<signal8 signal="false"/>
+	<signal9 signal="false"/>
+	<signal10 signal="false"/>
+	<signal11 signal="false"/>
+	<signal12 signal="false"/>
+	<signal13 signal="false"/>
+	<signal14 signal="false"/>
+	<signal15 signal="false"/>
+	<signal16 signal="false"/>
+	<signal17 signal="false"/>
+	<msbNumber1 number="0"/>
+	<msbNumber2 number="0"/>
+	<msbNumber3 number="0"/>
+	<msbNumber4 number="7"/>
+	<msbNumber5 number="7"/>
+	<msbNumber6 number="7"/>
+	<msbNumber7 number="0"/>
+	<msbNumber8 number="0"/>
+	<msbNumber9 number="0"/>
+	<msbNumber10 number="0"/>
+	<msbNumber11 number="0"/>
+	<msbNumber12 number="0"/>
+	<msbNumber13 number="0"/>
+	<msbNumber14 number="0"/>
+	<msbNumber15 number="0"/>
+	<msbNumber16 number="0"/>
+	<msbNumber17 number="0"/>
+	<lsbNumber1 number="0"/>
+	<lsbNumber2 number="0"/>
+	<lsbNumber3 number="0"/>
+	<lsbNumber4 number="0"/>
+	<lsbNumber5 number="0"/>
+	<lsbNumber6 number="0"/>
+	<lsbNumber7 number="0"/>
+	<lsbNumber8 number="0"/>
+	<lsbNumber9 number="0"/>
+	<lsbNumber10 number="0"/>
+	<lsbNumber11 number="0"/>
+	<lsbNumber12 number="0"/>
+	<lsbNumber13 number="0"/>
+	<lsbNumber14 number="0"/>
+	<lsbNumber15 number="0"/>
+	<lsbNumber16 number="0"/>
+	<lsbNumber17 number="0"/>
+	<genericName1></genericName1>
+	<genericName2></genericName2>
+	<genericName3></genericName3>
+	<genericName4></genericName4>
+	<genericName5></genericName5>
+	<genericName6></genericName6>
+	<genericName7></genericName7>
+	<genericName8></genericName8>
+	<genericValue1 value=""/>
+	<genericValue2 value=""/>
+	<genericValue3 value=""/>
+	<genericValue4 value=""/>
+	<genericValue5 value=""/>
+	<genericValue6 value=""/>
+	<genericValue7 value=""/>
+	<genericValue8 value=""/>
+	<portType1>logic</portType1>
+	<portType2>logic</portType2>
+	<portType3>logic</portType3>
+	<portType4>logic</portType4>
+	<portType5>logic</portType5>
+	<portType6>logic</portType6>
+	<portType7>logic</portType7>
+	<portType8>logic</portType8>
+	<genBus1 value="false"/>
+	<genBus2 value="false"/>
+	<genBus3 value="false"/>
+	<genBus4 value="false"/>
+	<genBus5 value="false"/>
+	<genBus6 value="false"/>
+	<genBus7 value="false"/>
+	<genBus8 value="false"/>
+	<constant1 constant="false"/>
+	<constant2 constant="false"/>
+	<constant3 constant="false"/>
+	<constant4 constant="false"/>
+	<constant5 constant="false"/>
+	<constant6 constant="false"/>
+	<constant7 constant="false"/>
+	<constant8 constant="false"/>
+	<genMsbNumber1 number="0"/>
+	<genMsbNumber2 number="0"/>
+	<genMsbNumber3 number="0"/>
+	<genMsbNumber4 number="7"/>
+	<genMsbNumber5 number="7"/>
+	<genMsbNumber6 number="7"/>
+	<genMsbNumber7 number="0"/>
+	<genMsbNumber8 number="0"/>
+	<genLsbNumber1 number="0"/>
+	<genLsbNumber2 number="0"/>
+	<genLsbNumber3 number="0"/>
+	<genLsbNumber4 number="0"/>
+	<genLsbNumber5 number="0"/>
+	<genLsbNumber6 number="0"/>
+	<genLsbNumber7 number="0"/>
+	<genLsbNumber8 number="0"/>
+</component>
