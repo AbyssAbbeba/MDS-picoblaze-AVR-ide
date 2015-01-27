@@ -59,6 +59,7 @@ class QDockWidget;
 class QVBoxLayout;
 class HelpBrowser;
 class CallWatcher;
+class RegWatcher;
 
 
 /**
@@ -74,6 +75,7 @@ class WDockManager : public QObject
         void addDockWidget(WidgetCode code, MCUSimControl *simControl = NULL);
         void addSimDockWidget(MCUSimControl *simControl);
         void addCallWatcher(MCUSimControl *simControl);
+        void addRegWatcher(MCUSimControl *simControl);
         //void addSimDockWidgetP2(QString path, MCUSimControl* simControl);
         QDockWidget* getDockWidget(WidgetCode code);
         QDockWidget* getDockWidgetArea(int area);
@@ -124,6 +126,7 @@ class WDockManager : public QObject
         QTabBar *rightAreaTabs;
         QList<PicoBlazeGrid*> openSimWidgets;
         QList<CallWatcher*> openCallWatchers;
+        QList<RegWatcher*> openRegWatchers;
 
     public slots:
         void changeLine(QListWidgetItem *item);

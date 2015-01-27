@@ -29,12 +29,18 @@
 #include "../HelpWidget/helpbrowser.h"
 
 #ifdef MDS_FEATURE_EXTERNAL_APPS
-#  include "../ExtAppOutput/extappoutput.h"
+    #include "../ExtAppOutput/extappoutput.h"
 #endif //MDS_FEATURE_EXTERNAL_APPS
 
 #ifdef MDS_FEATURE_SIM_CALLWATCHER
-#  include "../CallWatcher/callwatcher.h"
+    #include "../CallWatcher/callwatcher.h"
 #endif //MDS_FEATURE_SIM_CALLWATCHER
+
+#ifdef MDS_FEATURE_SIM_REGWATCHER
+    #include "../RegWatcher/regwatcher.h"
+#endif //MDS_FEATURE_SIM_REGWATCHER
+
+
 
 
 /**
@@ -882,6 +888,11 @@ void WDockManager::addDockWidget(WidgetCode code, MCUSimControl* simControl)
         this->addCallWatcher(simControl);
         return;
     }
+    else if (code == WREGWATCHER)
+    {
+        this->addRegWatcher(simControl);
+        return;
+    }
     else
     {
         newWDock = new WDock(this, code, (QWidget *)(this->parent()));
@@ -933,10 +944,41 @@ void WDockManager::addSimDockWidget(MCUSimControl* simControl)
 }
 
 
+void WDockManager::addRegWatcher(MCUSimControl *simControl)
+{
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+        if (false == this->dockWidgets)
+        {
+            WDock *newWDock = new WDock(this, WREGWATCHER, (QWidget *)(this->parent()), simControl);
+            if (getDockWidgetArea(newWDock->getArea()) != NULL)
+            {
+                emit tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+                //wMainWindow->tabifyDockWidget(getDockWidgetArea(newWDock->getArea()), newWDock->getQDockWidget());
+            }
+            /*if (wDockBotPrevHeight < newWDock->getQDockWidget()->height())
+            {
+                wDockBotPrevHeight = newWDock->getQDockWidget()->widget()->height();
+            }*/
+            openDockWidgets.append(newWDock);
+            //connect(newWDock, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+        }
+        else
+        {
+            RegWatcher *regWatcher = new RegWatcher(this->getDockWidget(WREGWATCHER), simControl);
+            //connect(this, SIGNAL(unhighlightSim()), simWidget, SLOT(unhighlight()));
+            //simWidget->fixHeight();
+            //connect(simWidget, SIGNAL(stopSimSig()), this, SLOT(stopSimSlot()));
+            this->openRegWatchers.append(regWatcher);
+            regWatcher->hide();
+        }
+    #endif
+}
+
+
 void WDockManager::addCallWatcher(MCUSimControl *simControl)
 {
     #ifdef MDS_FEATURE_SIM_CALLWATCHER
-    qDebug() << "add call watcher";
+        //qDebug() << "add call watcher";
         if (false == this->dockWidgets)
         {
             WDock *newWDock = new WDock(this, WCALLWATCHER, (QWidget *)(this->parent()), simControl);
@@ -1392,6 +1434,21 @@ void WDockManager::changeSimWidget(int index)
             this->getDockWidget(WCALLWATCHER)->setWidget(this->openCallWatchers.at(index));
         }
     #endif
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+        if (this->getDockWidget(WREGWATCHER) == NULL)
+        {
+            qDebug() << "Reg Watcher Dock Widget is null, should never happen";
+            return;
+        }
+        if (index >= openRegWatchers.size())
+        {
+            this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(openRegWatchers.size()-1));
+        }
+        else
+        {
+            this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index));
+        }
+    #endif
     //qDebug() << "WDockManager: changeSimWidget done";
 }
 
@@ -1425,6 +1482,7 @@ void WDockManager::deleteActiveSimWidget()
     }
 
     #ifdef MDS_FEATURE_SIM_CALLWATCHER
+    {
         CallWatcher *tempWatcher = (CallWatcher*)(this->getDockWidget(WCALLWATCHER)->widget());
         int index2 = openCallWatchers.indexOf(tempWatcher);
         if (openCallWatchers.count() > 1)
@@ -1447,6 +1505,33 @@ void WDockManager::deleteActiveSimWidget()
             //delete tempWatcher;
             //tempGrid = NULL;
         }
+    }
+    #endif
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+    {
+        RegWatcher *tempWatcher = (RegWatcher*)(this->getDockWidget(WREGWATCHER)->widget());
+        int index2 = openRegWatchers.indexOf(tempWatcher);
+        if (openRegWatchers.count() > 1)
+        {
+            this->openRegWatchers.removeAt(index2);
+            if (index2 == this->openRegWatchers.count())
+            {
+                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2 -1));
+            }
+            else
+            {
+                this->getDockWidget(WREGWATCHER)->setWidget(this->openRegWatchers.at(index2));
+            }
+            delete tempWatcher;
+            tempWatcher = NULL;
+        }
+        else
+        {
+            this->openRegWatchers.removeAt(index2);
+            //delete tempWatcher;
+            //tempGrid = NULL;
+        }
+    }
     #endif
 
     if (true == removeDocks)
@@ -2030,6 +2115,11 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow)
             qDebug() << "WDockManager: invalid use of wcallwatcher constructor, should never happen";
             break;
         }
+        case WREGWATCHER:
+        {
+            qDebug() << "WDockManager: invalid use of wregwatcher constructor, should never happen";
+            break;
+        }
         default:
         {
             qDebug() << "WDockManager: unknown widget code";
@@ -2078,6 +2168,22 @@ WDock::WDock(WDockManager *parent, WidgetCode code, QWidget *parentWindow, MCUSi
                 wDockWidget->setTitleBarWidget(lbl);
                 parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
                 CallWatcher *newDock = new CallWatcher(wDockWidget, simControl);
+                area = 1;
+                wDockWidget->setWidget(newDock);
+            #endif
+            break;
+        }
+        case WREGWATCHER:
+        {
+            #ifdef MDS_FEATURE_SIM_REGWATCHER
+                wDockWidget = new QDockWidget("Reg Watcher", parentWindow);
+                wDockWidget->setAllowedAreas(Qt::RightDockWidgetArea);
+                wDockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+                QLabel *lbl = new QLabel("Reg Watcher", wDockWidget);
+
+                wDockWidget->setTitleBarWidget(lbl);
+                parent->addDockW(Qt::RightDockWidgetArea, wDockWidget);
+                RegWatcher *newDock = new RegWatcher(wDockWidget, simControl);
                 area = 1;
                 wDockWidget->setWidget(newDock);
             #endif

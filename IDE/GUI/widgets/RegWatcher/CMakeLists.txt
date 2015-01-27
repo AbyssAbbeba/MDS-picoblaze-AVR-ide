@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # Set project name
-project(WDockManager)
+project(RegWatcher)
 
 # Set the minimum required version of CMake
 cmake_minimum_required(VERSION 2.8)
@@ -15,34 +15,34 @@ set(CMAKE_VERBOSE_MAKEFILE OFF)
 
 
 
-# with SET() command you can change variables or define new ones
 # here we define SAMPLE_SRCS variable that contains a list of all .cpp files
-# note that we don't need \ at the end of line
 SET( SAMPLE_SRCS
-       ./wdockmanager.cpp
+	./regwatcher.cpp
+    ./regwatcherwidget.cpp
+    ./regwatcherdialog.cpp
 )
 
 # another list, this time it includes all header files that should be treated with moc
 SET( SAMPLE_MOC_HDRS
-       ./wdockmanager.h
+    ./regwatcher.h
+	./regwatcherwidget.h
+    ./regwatcherdialog.h
 )
 
+# some .ui files
+SET( SAMPLE_UIS
+    ./regwatcher.ui
+    ./regwatcherwidget.ui
+    ./regwatcherdialog.ui
+)
 
-if ( MDS_FEATURE_SIM_CALLWATCHER )
-    list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "CallWatcher" )
-endif()
-
-if ( MDS_FEATURE_SIM_REGWATCHER )
-    list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "RegWatcher" )
-endif()
-
-if ( MDS_FEATURE_EXTERNAL_APPS )
-    list ( APPEND WDOCKMANAGER_ADDITONAL_LIBS "ExtAppOutput" )
-endif()
 
 # ------------------------------------------------------------------------------
 # COMPILATION OPTIONS
 # ------------------------------------------------------------------------------
+
+# this will run uic on .ui files:
+QT4_WRAP_UI( SAMPLE_UI_HDRS ${SAMPLE_UIS} )
 
 # and finally this will run moc:
 QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
@@ -50,10 +50,17 @@ QT4_WRAP_CPP( SAMPLE_MOC_SRCS ${SAMPLE_MOC_HDRS} )
 ## Add a library to the project using the specified source files,
  # in this case it will procude dynamic C++ library.
 add_library(${PROJECT_NAME}
-	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS})
+	${SAMPLE_MOC_SRCS} ${SAMPLE_SRCS} ${SAMPLE_UI_HDRS})
 
 
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${WDOCKMANAGER_ADDITONAL_LIBS} PicoBlazeGrid BreakpointList BookmarkList TabBar Editor CompileInfo WelcomeScr AsmMacroAnalyser HelpDockWidget HelpWidget)
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} Simulator)
+
+
+# ------------------------------------------------------------------------------
+# BUILD COMPONENTS IN THE SUBDIRECTORIES
+# ------------------------------------------------------------------------------
+
+
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS ${PROJECT_NAME}

@@ -60,6 +60,10 @@
     #include "../widgets/CallWatcher/callwatcher.h"
 #endif
 
+#ifdef MDS_FEATURE_SIM_REGWATCHER
+    #include "../widgets/RegWatcher/regwatcher.h"
+#endif
+
 #ifdef MDS_FEATURE_EXTERNAL_APPS
     #include "../widgets/ExtAppOutput/extappoutput.h"
 #endif
@@ -1114,6 +1118,9 @@ void MainForm::createDockWidgets()
         #ifdef MDS_FEATURE_SIM_CALLWATCHER
             m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
         #endif
+        #ifdef MDS_FEATURE_SIM_REGWATCHER
+            m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
+        #endif
         m_wDockManager->addDockWidget(WRIGHTHIDE);
 
 
@@ -1283,6 +1290,9 @@ void MainForm::createDockWidgets()
         m_wDockManager->addDockWidget(WSIMULATIONINFO, m_projectMan->getActive()->getSimControl());
         #ifdef MDS_FEATURE_SIM_CALLWATCHER
             m_wDockManager->addDockWidget(WCALLWATCHER, m_projectMan->getActive()->getSimControl());
+        #endif
+        #ifdef MDS_FEATURE_SIM_REGWATCHER
+            m_wDockManager->addDockWidget(WREGWATCHER, m_projectMan->getActive()->getSimControl());
         #endif
     }
     //QTimer::singleShot(50, this, SLOT(reloadTabIcons()));
@@ -4645,7 +4655,7 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                                  std::vector<std::pair<const std::string *, unsigned int>> prev2,
                                  QList<QColor*> colors)
 {
-    qDebug() << "mainform: simHighlightLines()";
+    //qDebug() << "mainform: simHighlightLines()";
     QString tmpFile;
     QSet<QString> files;
     int compatibility = m_projectMan->getSimulated()->getAsmType();

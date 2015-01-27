@@ -75,6 +75,7 @@ class VhdlMain : public QWidget
      int m_hex;
      QString m_path;
      unsigned int removeIndex,editIndex;
+     int m_keyWatcher;
 
      enum genericType {
          LOGIC = 0,
@@ -84,7 +85,8 @@ class VhdlMain : public QWidget
          NATURAL = 4,
          REAL = 5,
          STRING = 6,
-         INVALID = 7
+         INVALID = 7,
+         ERROR = 8
      };
 
      /**
@@ -138,6 +140,7 @@ class VhdlMain : public QWidget
      void setPath(QString in_path);
      void editExistingComponent();
      void saveEditedComponent();
+     void adjustNameCount(unsigned int);
 
 private slots:
    void pushRemove();
@@ -188,9 +191,10 @@ private:
     Ui_RectClick ui3;
 
 protected:
-    void paintEvent(QPaintEvent *e);
+    void paintEvent(QPaintEvent*);
     void mousePressEvent(QMouseEvent* pressEvent);
     void mouseMoveEvent ( QMouseEvent * moveEvent );
+    void keyPressEvent(QKeyEvent *);
 };
 
 #endif // VHDLMAIN_H
