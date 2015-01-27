@@ -144,6 +144,7 @@ void RegWatcherWidget::handleEvent(int subsysId, int eventId, int locationOrReas
 
 void RegWatcherWidget::deviceChanged()
 {
+    qDebug() << "devicechanged";
     switch (m_type)
     {
         case 0:
@@ -245,6 +246,7 @@ void RegWatcherWidget::deviceReset()
         {
             uint value = 0;
             m_memory->directRead(m_address, value);
+            qDebug() << "device reset reg" << value;
             ui.lblValue->setText("0x" + QString::number(value, 16).toUpper());
             break;
         }
@@ -275,7 +277,7 @@ void RegWatcherWidget::deviceReset()
 }
 
 
-void RegWatcherWidget::setReadOnly(bool readOnly)
+void RegWatcherWidget::setReadOnly(bool /*readOnly*/)
 {
 }
 

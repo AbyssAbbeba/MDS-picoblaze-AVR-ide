@@ -34,8 +34,12 @@ RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks)
 
     m_regbanks = regbanks;
     
+    QRegExpValidator *validatorName = new QRegExpValidator(QRegExp("[\\S]{0,10}"), ui.leName);
+    ui.leName->setValidator(validatorName);
+    
     QRegExpValidator *validatorAddress = new QRegExpValidator(QRegExp("0x[\\da-fA-F]+"), ui.leAddress);
     ui.leAddress->setValidator(validatorAddress);
+    
     ui.leName->setFocus(Qt::OtherFocusReason);
 }
 
@@ -48,7 +52,6 @@ RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks, QString name,
     connect(ui.leAddress, SIGNAL(textEdited(const QString&)), this, SLOT(checkIfValid()));
     connect(ui.leName, SIGNAL(textEdited(const QString&)), this, SLOT(checkIfValid()));
     connect(ui.cmbType, SIGNAL(currentIndexChanged(int)), this, SLOT(updateBanks(int)));
-    ui.btnBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     if (false == regbanks)
     {
@@ -57,9 +60,13 @@ RegWatcherDialog::RegWatcherDialog(QWidget *parent, bool regbanks, QString name,
     }
 
     m_regbanks = regbanks;
-
+    
+    QRegExpValidator *validatorName = new QRegExpValidator(QRegExp("[\\S]{0,10}"), ui.leName);
+    ui.leName->setValidator(validatorName);
+    
     QRegExpValidator *validatorAddress = new QRegExpValidator(QRegExp("0x[\\da-fA-F]+"), ui.leAddress);
     ui.leAddress->setValidator(validatorAddress);
+    
     ui.leName->setFocus(Qt::OtherFocusReason);
 
     ui.leName->setText(name);
