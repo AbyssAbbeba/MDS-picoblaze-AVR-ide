@@ -43,31 +43,6 @@ VhdlMain::VhdlMain(QWidget *parent) :
     // set enter to generate
     m_keyWatcher = 0;
 
-    //node_t * test_list = new node_t(0);
-
-    //node_t * curr, * head, * tempLink;
-    //int i;
-
-    //head = NULL;
-
-    //addField()
-       //curr = new node_t;
-       //curr = (item *)malloc(sizeof(item));
-       //curr->val = 1;
-       //curr->next  = head;
-       //head = curr;
-
-       //for(i=1;i<=5;i++)
-       //{
-         // curr = new node_t;
-         // curr->val = i;
-         // curr->next  = head;
-         // head = curr;
-       //}
-
-     //   curr = head;
-
-
     rectList << "componentRect";
     this->componentRect = new QRect(20, 170, 200, 25);
 
@@ -4549,7 +4524,6 @@ void VhdlMain::componentWizardConstruct()
             this,
             SLOT(saveAdd())
            );
-    return;
 }
 
 void VhdlMain::typeIndexChanged1( int index)
@@ -4567,11 +4541,11 @@ void VhdlMain::typeIndexChanged1( int index)
         default:
         {
             ui2.checkBus_41->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
-    emit valueEditingFinished("text in lineEdit");
+    valueEditingFinished("text in lineEdit");
 }
 
 void VhdlMain::typeIndexChanged2( int index)
@@ -4589,7 +4563,7 @@ void VhdlMain::typeIndexChanged2( int index)
         default:
         {
             ui2.checkBus_42->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4610,7 +4584,7 @@ void VhdlMain::typeIndexChanged3( int index)
         default:
         {
             ui2.checkBus_43->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4631,7 +4605,7 @@ void VhdlMain::typeIndexChanged4( int index)
         default:
         {
             ui2.checkBus_44->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4652,7 +4626,7 @@ void VhdlMain::typeIndexChanged5( int index)
         default:
         {
             ui2.checkBus_45->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4673,7 +4647,7 @@ void VhdlMain::typeIndexChanged6( int index)
         default:
         {
             ui2.checkBus_46->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4694,7 +4668,7 @@ void VhdlMain::typeIndexChanged7( int index)
         default:
         {
             ui2.checkBus_47->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4715,7 +4689,7 @@ void VhdlMain::typeIndexChanged8( int index)
         default:
         {
             ui2.checkBus_48->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
