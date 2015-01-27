@@ -48,6 +48,7 @@
 #endif // MDS_FEATURE_ADAPTABLE_SIMULATOR
 
 #ifdef MDS_FEATURE_PICOBLAZE
+#   include "PicoBlaze/PicoBlazeInstructionSet.h"
 #   include "PicoBlaze/PicoBlazeStatusFlagsBase.h"
 #   include "PicoBlaze/PicoBlazeInterruptController.h"
 #endif // MDS_FEATURE_PICOBLAZE
@@ -398,6 +399,18 @@ inline void SimCmdLineCommands::processCommand ( const std::string & command,
             }
 
             breakpointCommand ( file, line, ( "0" != value ) );
+        }
+        else if ( "config" == subcommand )
+        {
+            Mutex mutex(m_simControl);
+
+            std::string key;
+            std::string value;
+
+            readWord(key, input, pos);
+            readWord(value, input, pos);
+
+            configCommand(key, value);
         }
         else
         {
@@ -1188,9 +1201,186 @@ inline void SimCmdLineCommands::breakpointCommand ( const std::string & file,
     done();
 }
 
-inline void SimCmdLineCommands::helpCommand ( const std::string & subcommand )
+inline void SimCmdLineCommands::helpCommand ( const std::string & command )
 {
-    std::cout << ">>> RTFM";
+    if ( true == command.empty() )
+    {
+        std::cout << QObject::tr("Commands:").toStdString() << std::endl;
+        std::cout << QObject::tr("  * set <subcommand> [ <args...> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Set something in the simulator.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * get  <subcommand> [ <args...> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Get some information from the simulator.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * file <subcommand> [ <args...> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Load or save a file with memory dump.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * sim <subcommand> [ <args...> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Simulate program.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * exit [ <code> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Exit this command line interface.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * help [ <command> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("      Print a brief help message about the commands.").toStdString() << std::endl
+                  << std::endl;
+    }
+    else if ( "set" == command )
+    {
+        std::cout << QObject::tr("Command set.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("Set something in the simulator, this command has the following subcommands:")
+                                .toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set pc <address>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Set program counter to <address>. For example `set pc 0x3ff' executes "
+                                 "unconditional jump at address 0x3ff.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set flag <flag> <value>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Set processor flag. <flag> has to be one of {C, Z, IE, I, pC, pZ} (C is Carry, Z is Zero, pC is pre-Carry (Carry before ISR), pZ is pre-Zero (Zero before ISR), I is interrupt, and IE is interrupt enable), <value> has to be either 0 or 1.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set memory <space> <address> <value>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Change content of the <space> memory or I/O at <address>. <space> has to be one of { portin, portout, register, data, code, stack} where `code' is program memory, `data' is scratch-pad ram, and others should be obvious). For example ``\texttt{set memory register 0 0x22}''  sets register at address 0 (i.e. S0) to value 0x22.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("    When dealing with memory banks, address is always absolute i.e. not respecting boundary of bank size; this can be demonstrated on an example: suppose there are 2 banks, bank size is 16 and memory size is 32, address 1 in the 1st bank is 1 while the address in the other bank is 16+1=17.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("    When the provided value has higher bit width than what can be stored at the given location, the value is automatically silently trimmed from the right; for example when the given value is 0x123 while it is supposed to be 8-bit number, the value stored will be 0x23.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set size <space> <size>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Resize the <space> memory or I/O to new size of <size>. (Use with care.) For example `set size code 128' reduces size of the program memory to 128.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set breakpoint <file:line> [ <value> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("    Set breakpoint at <file:line>, <value> is optional and may be set either to 0 or 1, 1 is default, 1 means set and 0 means unset. Please use command `get locations' to see at which locations breakpoints can actually be set. Breakpoints are effective only in run mode or animation mode.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * set config <key> <value>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Alter processor or simulator configuration.").toStdString() << std::endl;
+        std::cout << QObject::tr("    <key> might be:").toStdString() << std::endl;
+        std::cout << QObject::tr("      - `hwbuild' : for which the <value> is an 8-bit number.").toStdString() << std::endl;
+        std::cout << QObject::tr("      - `interrupt_vector' : for which the <key> is an address to program memory.").toStdString() << std::endl;
+    }
+    else if ( "get" == command )
+    {
+        std::cout << QObject::tr("Command get.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("Get some information from the simulator, this command has the following subcommands:")
+                                .toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get pc").toStdString() << std::endl;
+        std::cout << QObject::tr("    Get current value of the program counter.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get flag <flag>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Get processor flag, please see the `set flag' command for details concerning which flags can be retrieved.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get memory <space> <address> [ <end-address> ]").toStdString() << std::endl;
+        std::cout << QObject::tr("    Read memory or I/O. When <end-address> is specified, this command will output a space separated list of decimal values read from the memory in range [ <address>, <end-address>].").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get size <space>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Get size of the specified memory or I/O, please see `set size' command for additional details.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get cycles").toStdString() << std::endl;
+        std::cout << QObject::tr("    Get total number of machine cycles executed on the simulated processor so far. This value is automatically set to zero when the simulator is reseted using the `sim reset' command.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get breakpoints").toStdString() << std::endl;
+        std::cout << QObject::tr("    List breakpoints set by user using the `set breakpoint' command.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * get locations").toStdString() << std::endl;
+        std::cout << QObject::tr("    List source locations (i.e. files and line numbers) where it is possible to set a breakpoint.").toStdString() << std::endl << std::endl;
+    }
+    else if ( "file" == command )
+    {
+        std::cout << QObject::tr("Command file.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("Load or save a file with memory dump; this commands recognizes the same file types at the `--code-file-type' command line option, and memory spaces are the same as with the `set memory' command.").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("This command has the following subcommands:").toStdString() << std::endl << std::endl;
+
+        std::cout << QObject::tr("  * file load <space> <type> <file>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Load contents of the specified file (<file>) into the specified memory (<space>), <type> is type of file, <file> is file name.").toStdString() << std::endl << std::endl;
+        std::cout << QObject::tr("  * file save <space> <type> <file>").toStdString() << std::endl;
+        std::cout << QObject::tr("    Save contents of the specified memory (<space>) into the specified file (<file>).").toStdString() << std::endl << std::endl;
+    }
+/*
+    else if ( "sim" == command )
+    {
+        std::cout << QObject::tr("Command sim.").toStdString() << std::endl << std::endl;
+
+            \item[sim]~\\
+                Simulate program.
+                \begin{description}
+                    \item[step \texttt{{[} <steps> {]}}]~\\
+                        Step, optionally execute \texttt{<steps>} steps.
+                    \item[run]~\\
+                        Run program. Program animation will run in a separate thread while this tool continues to listen and answer to commands. It is safe to use all other commands while the simulator is running, e.g. ``\texttt{set~memory~...}'', etc.
+                    \item[animate]~\\
+                        Animate program. Program animation will run in a separate thread while this tool continues to listen and answer to commands. It is safe to use all other commands while the simulator is running, e.g. ``\texttt{set~memory~...}'', etc.
+                    \item[halt]~\\
+                        Halt program animation or run.
+                    \item[reset]~\\
+                        Reset simulated processor.
+                    \item[irq]~\\
+                        Invoke an interrupt request.
+                \end{description}
+    }
+    else if ( "exit" == command )
+    {
+
+            \item[exit \texttt{{[} <code> {]}}]~\\
+                Exit this command line interface with exit code \texttt{<code>}; if the \texttt{<code>} is not specified, default exit code with value of 0 will be used.
+    }
+    else if ( "help" == command )
+    {
+            \item[help \texttt{{[} <command> {]}}]~\\
+                Print a brief help message about the commands; if optional \texttt{<command>} is specified, this command prints a message concerning specifically the given \texttt{<command>}.
+    }
+*/
+    else
+    {
+        std::cerr << QObject::tr("Error: command `%1' not recognized.").arg(command.c_str()).toStdString() << std::endl;
+    }
+}
+
+inline void SimCmdLineCommands::configCommand ( const std::string & key,
+                                                const std::string & value )
+{
+    switch ( m_simControl->getArch() )
+    {
+      #ifdef MDS_FEATURE_PICOBLAZE
+        case MCUSimBase::ARCH_PICOBLAZE:
+        {
+            MCUSimSubsys * subSys = m_simControl->getSimSubsys(MCUSimCPU::ID_CPU);
+            PicoBlazeInstructionSet * cpu = dynamic_cast<PicoBlazeInstructionSet*>(subSys);
+            if ( nullptr == cpu )
+            {
+                return;
+            }
+
+            int valueInt;
+            if ( false == readInt(valueInt, value) )
+            {
+                return;
+            }
+
+            if ( valueInt < 0 )
+            {
+                std::cerr << QObject::tr("Error: value cannot be negative").toStdString() << std::endl;
+                return;
+            }
+
+            if ( "hwbuild" == key )
+            {
+                cpu->m_config.m_hwbuild = (uint8_t) valueInt;
+            }
+            else if ( "interrupt_vector" == key )
+            {
+                cpu->m_config.m_interruptVector = (unsigned int) valueInt;
+            }
+            else
+            {
+                std::cerr << QObject::tr("Error: invalid key: %1").arg(key.c_str()).toStdString() << std::endl;
+                return;
+            }
+
+            break;
+        }
+      #endif // MDS_FEATURE_PICOBLAZE
+        default:
+            std::cerr << QObject::tr("Error: this command is not supported for this architecture").toStdString()
+                      << std::endl;
+            return;
+    }
+
+    done();
 }
 
 bool SimCmdLineCommands::readInt ( int & out,

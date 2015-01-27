@@ -74,7 +74,8 @@ VhdlMain::VhdlMain(QWidget *parent) :
     createWidget = false;
     editExist = false;
 
-    bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave";
+    bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave" << "Debouncer" << "FIFO buffer"
+                   << "PS2_keyboard" << "PWM"<< "Serializer" << "TMDS Encoder"<< "VGA_controler";
 
     entityName = "MPU_SYS";
 
@@ -169,7 +170,7 @@ void VhdlMain::insertItem( QListWidgetItem *componentItem )
 
 void VhdlMain::addExistingComponent(unsigned int xmlNumber)
 {
-    if ( 99 == xmlNumber)
+    if ( 999 == xmlNumber)
     {
         qDebug()<< "xmlnumber wrong > " << xmlNumber;
         return;
@@ -364,6 +365,41 @@ void VhdlMain::RemoveXml()
         QMessageBox::warning ( this, "Edit", "This component is read only");
         return;
     }
+    if ( componentToRemove == "Debouncer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "FIFO buffer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "PS2_keyboard")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "PWM")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "Serializer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "TMDS Encoder")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "VGA_controler")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
     QFile FileToRemove;
     FileToRemove.setFileName(QDir::homePath() + "/.mds/" + componentToRemove + ".xml");
 
@@ -415,6 +451,41 @@ void VhdlMain::pushEditSlot()
            return;
        }
        if ( selectedText == "SPI_slave")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "Debouncer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "FIFO buffer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "PS2_keyboard")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "PWM")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "Serializer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "TMDS Encoder")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "VGA_controler")
        {
            QMessageBox::warning ( this, "Edit", "This component is read only");
            return;

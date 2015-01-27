@@ -136,10 +136,10 @@ void PicoBlazeIO::eventToString ( std::ostream & out,
     switch ( Event(eventId) )
     {
         case EVENT_PICOBLAZEIO_WRITE:
-            out << ">>> io_write @ " << locationOrReason << " : " << detail << std::endl;
+            out << ">>> plio_write @ " << locationOrReason << " : " << detail << std::endl;
             return;
         case EVENT_PICOBLAZEIO_OUTPUTK:
-            out << ">>> io_outputk @ " << locationOrReason << " : " << detail << std::endl;
+            out << ">>> plio_outputk @ " << locationOrReason << " : " << detail << std::endl;
             return;
 
         case EVENT_PICOBLAZEIO__MAX__:

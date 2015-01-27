@@ -59,7 +59,7 @@ unsigned int XmlParser::insertExistingComponent(QString & componentToAdd)
             return i;
         }
     }
-    return 99;
+    return 999;
 }
 
 void XmlParser::writeXml(unsigned int structIndex)
@@ -246,6 +246,34 @@ void XmlParser::readXml()
     file[5].setFileName(":resources/xml/VHDLgen/SPI_slave.txt");
     file[5].open((QIODevice::ReadOnly | QIODevice::Text));
     xmlReadDevice(&file[5],getFreeRoom() - 1);
+
+    file[6].setFileName(":resources/xml/VHDLgen/Debouncer.xml");
+    file[6].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[6],getFreeRoom() - 1);
+
+    file[7].setFileName(":resources/xml/VHDLgen/FIFO buffer.xml");
+    file[7].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[7],getFreeRoom() - 1);
+
+    file[8].setFileName(":resources/xml/VHDLgen/PS2_keyboard.xml");
+    file[8].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[8],getFreeRoom() - 1);
+
+    file[9].setFileName(":resources/xml/VHDLgen/PWM.xml");
+    file[9].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[9],getFreeRoom() - 1);
+
+    file[10].setFileName(":resources/xml/VHDLgen/Serializer.xml");
+    file[10].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[10],getFreeRoom() - 1);
+
+    file[11].setFileName(":resources/xml/VHDLgen/TMDS Encoder.xml");
+    file[11].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[11],getFreeRoom() - 1);
+
+    file[12].setFileName(":resources/xml/VHDLgen/VGA_controler.xml");
+    file[12].open((QIODevice::ReadOnly | QIODevice::Text));
+    xmlReadDevice(&file[12],getFreeRoom() - 1);
 
     getDirFiles();
     for ( int i=0; i < Devices.size(); i++)
