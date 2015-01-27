@@ -24,7 +24,7 @@ class RegWatcherDialog : public QDialog
 {
     Q_OBJECT
     public:
-        RegWatcherDialog(QWidget *parent, bool regbanks);
+        RegWatcherDialog(QWidget *parent, bool regbanks, int offset = 0);
 
     signals:
         void newItem(QString name, int type, int address);
@@ -37,6 +37,7 @@ class RegWatcherDialog : public QDialog
     private:
         Ui_RegWatcherDialog ui;
         bool m_regbanks;
+        int m_bankOffset;
 };
 
 

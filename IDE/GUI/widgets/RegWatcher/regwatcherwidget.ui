@@ -34,6 +34,9 @@
        <bold>true</bold>
       </font>
      </property>
+     <property name="toolTip">
+      <string>Name</string>
+     </property>
      <property name="text">
       <string>Name</string>
      </property>
@@ -41,6 +44,9 @@
    </item>
    <item>
     <widget class="QLabel" name="lblType">
+     <property name="toolTip">
+      <string>Type</string>
+     </property>
      <property name="text">
       <string>Type</string>
      </property>
@@ -48,6 +54,9 @@
    </item>
    <item>
     <widget class="QLabel" name="lblAddress">
+     <property name="toolTip">
+      <string>Address</string>
+     </property>
      <property name="text">
       <string>Address</string>
      </property>
@@ -55,6 +64,9 @@
    </item>
    <item>
     <widget class="QLabel" name="lblValue">
+     <property name="toolTip">
+      <string>Value</string>
+     </property>
      <property name="text">
       <string>Value</string>
      </property>
