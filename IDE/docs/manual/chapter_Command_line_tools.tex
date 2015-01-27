@@ -213,8 +213,8 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
                     \item [o] Octal.
                 \end{description}
 
-            \item[-{}-help, -h]~\\
-                Print help message.
+%             \item[-{}-help, -h]~\\
+%                 Print help message.
 
             \item[-{}-version, -V]~\\
                 Print disassembler version and exit.
@@ -364,22 +364,32 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
             \verb'mds-proc-sim -d kcpsm6 -g Example1.dbg -c Example1.ihex -t hex'
 
     \subsection{Commands}
-        Commands might have several subcommands and might take arguments, arguments might be optional; if an argument is a number, it might be hexadecimal, decimal, octal, or binary; radix is specified with either prefix or suffix notation in the same way as in the assembler (examples: \texttt{0xff}, \texttt{255}, \texttt{0377}, \texttt{0b11111111}; or \texttt{ffh}, \texttt{255d}, \texttt{377q}, \texttt{11111111b}). When simulator responses to a command with a number, this number is always decimal; when there are more that one number in the response, these numbers are separated by a single space. Each response is written on separate line.
+        Commands might have several subcommands and might take arguments, arguments might be optional; if an argument is a number, it might be hexadecimal, decimal, octal, or binary; radix is specified with either prefix or suffix notation in the same way as in the assembler (examples: \texttt{0xff}, \texttt{255}, \texttt{0377}, \texttt{0b11111111}; or \texttt{ffh}, \texttt{255d}, \texttt{377q}, \texttt{11111111b}). When simulator responses to a command with a number, this number is always decimal; when there are more that one number in the response, these numbers are separated by a single space. There are no negative or real numbers, all numbers have to be nonnegative integers in both input and output. Each response is written on separate line.
 
         \begin{description}
             \item[set]~\\
-                Set something, subcommands:
+                Set something in the simulator, this command has the following subcommands:
                 \begin{description}
                     \item[pc \texttt{<address>}]~\\
-                        Set program counter, i.e. jump somewhere, e.g. ``set pc 0x3ff'' - jump to 0x3ff.
+                        Set program counter to \texttt{<address>}. For example ``\texttt{set pc 0x3ff}'' executes unconditional jump at address 0x3ff.
                     \item[flag \texttt{<flag> <value>}]~\\
-                        Set processor flag, flag is one of: {C, Z, IE, I, pC, pZ}, value is either 0 or 1; pC is pre-Carry and pZ is pre-Zero (i.e. before ISR), I is interrupt, and IE is interrupt enable.
+                        Set processor flag. \texttt{<flag>} has to be one of \{C, Z, IE, I, pC, pZ\} (C is Carry, Z is Zero, pC is pre-Carry (Carry before ISR), pZ is pre-Zero (Zero before ISR), I is interrupt, and IE is interrupt enable), \texttt{<value>} has to be either ``0'' or ``1''.
                     \item[memory \texttt{<space> <address> <value>}]~\\
-                        Set some location in memory to some value, space is one of: { portin, portout, register, data, code, stack} (where ``code'' is program memory). E.g. ``set memory register 0x0 0x22'' - set S0 to 0x22.
-                    \item[size \texttt{<space> <value>}]~\\
-                        Resize the specified memory. E.g. ``set size code 128'' - reduces size of program memory to 128.
+                        Change content of the \texttt{<space>} memory or I/O at \texttt{<address>}. \texttt{<space>} has to be one of { portin, portout, register, data, code, stack} where ``code'' is program memory, ``data'' is scratch-pad ram, and others should be obvious). For example ``\texttt{set memory register 0 0x22}''  sets register at address 0 (i.e. S0) to value 0x22.
+
+                        When dealing with memory banks, address is always absolute i.e. not respecting boundary of bank size; this can be demonstrated on an example: suppose there are 2 banks, bank size is 16 and memory size is 32, address 1 in the 1st bank is 1 while the address in the other bank is $16+1=17$.
+
+                        When the provided value has higher bit width than what can be stored at the given location, the value is automatically silently trimmed from the right; for example when the given value is 0x123 while it is supposed to be 8-bit number, the value stored will be 0x23.
+                    \item[size \texttt{<space> <size>}]~\\
+                        Resize the \texttt{<space>} memory or I/O to new size of \texttt{<size>}. (Use with care.) For example ``\texttt{set size code 128}'' reduces size of the program memory to 128.
                     \item[breakpoint \texttt{<file:line> {[} <value> {]}}]~\\
-                        Set breakpoint, value is either 0 or 1, value is optional and 1 is default, 1 means set and 0 means unset. Please use ``get locations'' to see where breakpoints can actually be set.
+                        Set breakpoint at \texttt{<file:line>}, \texttt{<value>} is optional and may be set either to 0 or 1, 1 is default, 1 means set and 0 means unset. Please use command ``\texttt{get locations}'' to see at which locations breakpoints can actually be set. Breakpoints are effective only in run mode or animation mode.
+                    \item[config \texttt{<key> <value>}]
+                        Alter processor or simulator configuration. \texttt{<key>} might be:
+                            \begin{itemize}
+                                \item \texttt{hwbuild} for which the \texttt{<key>} is an 8-bit number.
+                                \item \texttt{interrupt\_vector} for which the \texttt{<key>} is an address to program memory.
+                            \end{itemize}
                 \end{description}
 
             \item[get]~\\
@@ -475,32 +485,112 @@ Assembler, Disassembler, and Assembler Translator may also be invoked from comma
 
         \begin{description}
             \item[General simulator events]~\\
-                ...
+                These events are not related to any specific part of the simulated processor.
                 \begin{description}
-                    \item[event-id: \texttt{cycles}]~\\
+                    \item[\texttt{>{}>{}> cycles <value>}]~\\
                         Total number of \texttt{<value>} machine cycles has been executed so far.
-                    \item[event-id: \texttt{breakpoint}]~\\
-                        Breakpoint reached at address specified in \texttt{<location>}.
+                    \item[\texttt{>{}>{}> breakpoint @ <location>}]~\\
+                        Breakpoint reached at address specified by \texttt{<location>}.
                 \end{description}
+
             \item[Processor flags related events]~\\
-                All have \texttt{<detail>} which is either \texttt{0} or \texttt{1} and indicates the new value of the concerned flag.
+                All these events have \texttt{<detail>} which is either \texttt{0} or \texttt{1} and indicates the new value of the concerned flag.
                 \begin{description}
-                    \item[event-id: \texttt{flags\_z\_changed}]~\\
-                        Zero flag has been changed.
-                    \item[event-id: \texttt{flags\_c\_changed}]~\\
+                    \item[\texttt{>{}>{}> flags\_z\_changed : <detail>}]~\\
+                        Zero flag has been changed to \texttt{<detail>}.
+                    \item[\texttt{>{}>{}> flags\_c\_changed : <detail>}]~\\
                         Carry flag has been changed.
-                    \item[event-id: \texttt{flags\_pz\_changed}]~\\
+                    \item[\texttt{>{}>{}> flags\_pz\_changed : <detail>}]~\\
                         Pre-zero flag has been changed.
-                    \item[event-id: \texttt{flags\_pc\_changed}]~\\
+                    \item[\texttt{>{}>{}> flags\_pc\_changed : <detail>}]~\\
                         Pre-carry flag has been changed.
-                    \item[event-id: \texttt{flags\_ie\_changed}]~\\
+                    \item[\texttt{>{}>{}> flags\_ie\_changed : <detail>}]~\\
                         Interrupt enable flag has been changed.
-                    \item[event-id: \texttt{flags\_int\_changed}]~\\
+                    \item[\texttt{>{}>{}> flags\_int\_changed : <detail>}]~\\
                         Interrupt flag has been changed.
                 \end{description}
-%                 \item[Stack]~\\
-% out << ">>> stack_overflow @ " << locationOrReason << " : " << detail << std::endl;
-% out << ">>> stack_underflow @ " << locationOrReason << " : " << detail << std::endl;
-% out << ">>> stack_sp_changed : " << locationOrReason << std::endl;
-%                 \item[Interrupts]~\\
+
+            \item[Stack related events]~\\
+                \begin{description}
+                    \item[\texttt{>{}>{}> stack\_overflow @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> stack\_underflow @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> stack\_sp\_changed : <detail>}]~\\
+                \end{description}
+
+            \item[Interrupts related events]~\\
+                \begin{description}
+                    \item[\texttt{>{}>{}> int\_irq\_denied}]~\\
+                    \item[\texttt{>{}>{}> int\_entering\_interrupt}]~\\
+                    \item[\texttt{>{}>{}> int\_leaving\_interrupt}]~\\
+                \end{description}
+
+            \item[Instruction set related events]~\\
+                \begin{description}
+                    \item[\texttt{>{}>{}> cpu\_undefined\_opcode @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_invalid\_opcode @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_invalid\_irq @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_invalid\_ret @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_invalid\_reti @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_pc\_overflow <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_pc\_underflow <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_pc\_changed <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_call @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_return @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_irq @ <location>}]~\\
+                    \item[\texttt{>{}>{}> cpu\_return\_from\_isr @ <location>}]~\\
+                \end{description}
+
+            \item[Memory related events]~\\
+                Possible values of \texttt{<attribute>} are:
+                \begin{description}
+                    \item[\texttt{data}]~\\
+                    \item[\texttt{code}]~\\
+                    \item[\texttt{stack}]~\\
+                    \item[\texttt{eeprom}]~\\
+                    \item[\texttt{register}]~\\
+                \end{description}
+
+                \begin{description}
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_sys\_fatal\_error}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_rd\_nonexistent @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_wr\_nonexistent @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_rd\_not\_implemented @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_wr\_not\_implemented @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_rd\_access\_denied @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_err\_wr\_access\_denied @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_rd\_undefined @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_rd\_default @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_rd\_write\_only @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_wr\_read\_only @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_rd\_par\_write\_only @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_wr\_par\_read\_only @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_rd\_reserved\_read @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wrn\_wr\_reserved\_written @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_inf\_wr\_val\_changed @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_inf\_wr\_val\_written @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_inf\_rd\_val\_read @ <location>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_rd\_addr\_overflow @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> (<attribute>) mem\_wr\_addr\_overflow @ <location> : <detail>}]~\\
+                \end{description}
+
+            \item[Input/Output related events]~\\
+                \begin{description}
+                    \item[\texttt{>{}>{}> io\_write @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> io\_outputk @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> plio\_read @ <location>}]~\\
+                    \item[\texttt{>{}>{}> plio\_read\_end}]~\\
+                    \item[\texttt{>{}>{}> plio\_write @ <location> : <detail>}]~\\
+                    \item[\texttt{>{}>{}> plio\_write\_end}]~\\
+                    \item[\texttt{>{}>{}> io\_indeterminable\_log @ <location>}]~\\
+                \end{description}
+        \end{description}
+
+    \subsection{Notes}
+        \begin{description}
+            \item[Safety]~\\
+                The simulator never crashes no matter what the input might be. Error states are always responded with appropriate error message or are just silently ignored.
+            \item[Usability]~\\
+                This simulator interface is not meant for the user to hand write commands and directly read results, it is intended to be used in scripts.
+            \item[Complexity]~\\
+                This tool is generally relatively modest in terms of memory usage and runs very fast in run mode (command ``\texttt{sim~run}''). The only thing which might heavily slow it down is the textual input and output; if you plan to use this tool in your scripts, please try to use the run mode as much as possible to preserve some speed advantage.
         \end{description}
