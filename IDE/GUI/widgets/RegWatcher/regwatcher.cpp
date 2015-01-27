@@ -27,6 +27,7 @@ RegWatcher::RegWatcher(QWidget *parent, MCUSimControl *controlUnit)
     m_simControl = controlUnit;
 
     ui.btnRemove->setEnabled(false);
+    ui.btnEdit->setEnabled(false);
 
     connect(ui.btnRemove,
             SIGNAL(clicked()),
@@ -39,6 +40,12 @@ RegWatcher::RegWatcher(QWidget *parent, MCUSimControl *controlUnit)
             this,
             SLOT(addItem())
            );
+    
+    connect(ui.btnEdit,
+            SIGNAL(clicked()),
+            this,
+            SLOT(editItem())
+           );
 }
 
 
@@ -46,11 +53,11 @@ void RegWatcher::addItem()
 {
     if (MCUSim::FAMILY_KCPSM6 == m_simControl->getFamily())
     {
-        RegWatcherDialog dlg(this, true, 16);
+        RegWatcherDialog dlg(this, true);
         connect(&dlg,
-                SIGNAL(newItem(QString, int, int)),
+                SIGNAL(newItem(QString, int, int, int)),
                 this,
-                SLOT(createItem(QString, int, int))
+                SLOT(createItem(QString, int, int, int))
                );
         dlg.exec();
     }
@@ -58,9 +65,9 @@ void RegWatcher::addItem()
     {
         RegWatcherDialog dlg(this, false);
         connect(&dlg,
-                SIGNAL(newItem(QString, int, int)),
+                SIGNAL(newItem(QString, int, int, int)),
                 this,
-                SLOT(createItem(QString, int, int))
+                SLOT(createItem(QString, int, int, int))
                );
         dlg.exec();
     }
@@ -83,18 +90,67 @@ void RegWatcher::removeItem()
     if (ui.lstItems->count() == 0)
     {
         ui.btnRemove->setEnabled(false);
+        ui.btnEdit->setEnabled(false);
     }
 }
 
-void RegWatcher::createItem(QString name, int type, int address)
+void RegWatcher::createItem(QString name, int type, int address, int regbank)
 {
-    qDebug() << "Add item";
+    //qDebug() << "Add item";
     QListWidgetItem *item = new QListWidgetItem(ui.lstItems);
 
-    RegWatcherWidget *itemWidget = new RegWatcherWidget(this, m_simControl, name, type, address);
+    RegWatcherWidget *itemWidget = new RegWatcherWidget(this, m_simControl, name, type, address, regbank);
     itemWidget->show();
 
     ui.lstItems->setItemWidget(item, itemWidget);
     item->setSizeHint(QSize(itemWidget->width(),itemWidget->height()));
     ui.btnRemove->setEnabled(true);
+    ui.btnEdit->setEnabled(true);
+}
+
+
+void RegWatcher::editItem()
+{
+    if (ui.lstItems->currentItem() != NULL)
+    {
+        RegWatcherWidget *itemWidget = (RegWatcherWidget*)(ui.lstItems->itemWidget(ui.lstItems->currentItem()));
+        QString name = itemWidget->getName();
+        int type = itemWidget->getType();
+        int address = itemWidget->getAddress();
+        int regbank = itemWidget->getRegbank();
+        if (MCUSim::FAMILY_KCPSM6 == m_simControl->getFamily())
+        {
+            RegWatcherDialog dlg(this, true, name, address, type, regbank);
+            connect(&dlg,
+                    SIGNAL(editItem(QString, int, int, int)),
+                    this,
+                    SLOT(editCurrentItem(QString, int, int, int))
+                );
+            dlg.exec();
+        }
+        else
+        {
+            RegWatcherDialog dlg(this, false, name, address, type, regbank);
+            connect(&dlg,
+                    SIGNAL(editItem(QString, int, int, int)),
+                    this,
+                    SLOT(editCurrentItem(QString, int, int, int))
+                );
+            dlg.exec();
+        }
+    }
+}
+
+
+void RegWatcher::editCurrentItem(QString name, int type, int address, int regbank)
+{
+    if (ui.lstItems->currentItem() != NULL)
+    {
+        RegWatcherWidget *itemWidget = (RegWatcherWidget*)(ui.lstItems->itemWidget(ui.lstItems->currentItem()));
+        itemWidget->setRegbank(regbank);
+        itemWidget->setType(type);
+        itemWidget->setAddress(address);
+        itemWidget->setName(name);
+        itemWidget->deviceChanged();
+    }
 }

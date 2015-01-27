@@ -32,11 +32,20 @@ class RegWatcherWidget : public QWidget, public MCUSimObserver
 {
     Q_OBJECT
     public:
-        RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, QString name, int type, int address);
+        RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, QString name, int type, int address, int regbank = -1);
         void handleEvent(int subsysId, int eventId, int locationOrReason, int detail);
         void deviceChanged();
         void deviceReset();
         void setReadOnly(bool readOnly);
+        void unhighlight();
+        int getAddress();
+        QString getName();
+        int getType();
+        int getRegbank();
+        void setAddress(int address);
+        void setName(QString name);
+        void setType(int type);
+        void setRegbank(int regbank);
 
     private slots:
         void handleUpdateRequest(int mask);
@@ -47,6 +56,8 @@ class RegWatcherWidget : public QWidget, public MCUSimObserver
         int m_address;
         int m_type;
         int m_size;
+        int m_regbank;
+        int m_baseAddress;
         MCUSimPureLogicIO *m_plio;
         MCUSimMemory *m_memory;
 };
