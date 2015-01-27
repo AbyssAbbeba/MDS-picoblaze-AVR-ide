@@ -64,6 +64,10 @@ if ( MDS_FEATURE_SIM_CALLWATCHER )
     add_subdirectory(CallWatcher)
 endif()
 
+if ( MDS_FEATURE_SIM_REGWATCHER )
+    add_subdirectory(RegWatcher)
+endif()
+
 if ( MDS_FEATURE_LICENCE_CERTIFICATE )
     add_subdirectory(LicenseInitWidget)
     add_subdirectory(LicenseWidget)
