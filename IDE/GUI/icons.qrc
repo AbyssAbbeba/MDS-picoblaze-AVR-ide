@@ -97,5 +97,12 @@
     <file>resources/xml/VHDLgen/I2C_interface.txt</file>
     <file>resources/xml/VHDLgen/LCD_interface.txt</file>
     <file>resources/xml/VHDLgen/SPI_slave.txt</file>
+    <file>resources/xml/VHDLgen/Debouncer.xml</file>
+    <file>resources/xml/VHDLgen/FIFO buffer.xml</file>
+    <file>resources/xml/VHDLgen/PS2_keyboard.xml</file>
+    <file>resources/xml/VHDLgen/PWM.xml</file>
+    <file>resources/xml/VHDLgen/Serializer.xml</file>
+    <file>resources/xml/VHDLgen/TMDS Encoder.xml</file>
+    <file>resources/xml/VHDLgen/VGA_controler.xml</file>
   </qresource>
 </RCC>

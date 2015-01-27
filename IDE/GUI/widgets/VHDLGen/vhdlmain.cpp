@@ -40,30 +40,8 @@ VhdlMain::VhdlMain(QWidget *parent) :
     ui->comboKcpsm->addItems(items2);
     ui->comboKcpsm->setCurrentIndex(4);
 
-    //node_t * test_list = new node_t(0);
-
-    //node_t * curr, * head, * tempLink;
-    //int i;
-
-    //head = NULL;
-
-    //addField()
-       //curr = new node_t;
-       //curr = (item *)malloc(sizeof(item));
-       //curr->val = 1;
-       //curr->next  = head;
-       //head = curr;
-
-       //for(i=1;i<=5;i++)
-       //{
-         // curr = new node_t;
-         // curr->val = i;
-         // curr->next  = head;
-         // head = curr;
-       //}
-
-     //   curr = head;
-
+    // set enter to generate
+    m_keyWatcher = 0;
 
     rectList << "componentRect";
     this->componentRect = new QRect(20, 170, 200, 25);
@@ -96,7 +74,8 @@ VhdlMain::VhdlMain(QWidget *parent) :
     createWidget = false;
     editExist = false;
 
-    bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave";
+    bootDeviceList << "UART" << "Buttons" << "Leds" << "I2C_interface" << "LCD_interface" << "SPI_slave" << "Debouncer" << "FIFO buffer"
+                   << "PS2_keyboard" << "PWM"<< "Serializer" << "TMDS Encoder"<< "VGA_controler";
 
     entityName = "MPU_SYS";
 
@@ -191,7 +170,7 @@ void VhdlMain::insertItem( QListWidgetItem *componentItem )
 
 void VhdlMain::addExistingComponent(unsigned int xmlNumber)
 {
-    if ( 99 == xmlNumber)
+    if ( 999 == xmlNumber)
     {
         qDebug()<< "xmlnumber wrong > " << xmlNumber;
         return;
@@ -209,9 +188,10 @@ VhdlMain::genericType VhdlMain::getEnum(QString & inString)
     if ( inString == "integer")     return INTEGER;
     if ( inString == "positive")    return POSITIVE;
     if ( inString == "natural")     return NATURAL;
+    return ERROR;
 }
 
-void VhdlMain::paintEvent(QPaintEvent *e)
+void VhdlMain::paintEvent(QPaintEvent* /*e*/)
 {
     // initial definitions (pens, points, rect)
     QPainter painter;
@@ -282,6 +262,7 @@ void VhdlMain::paintEvent(QPaintEvent *e)
     // draw components acording to their names,
     if ( 0 == componentCnt)
     {
+        ui->pushDelete->setDisabled(true);
         if ( true == m_componentRectHighlight)
         {
             painter.setPen(blackpenRect);
@@ -300,6 +281,7 @@ void VhdlMain::paintEvent(QPaintEvent *e)
     else
     {
         rectList.clear();
+        ui->pushDelete->setDisabled(false);
         //delete this->componentRect;
     }
 
@@ -383,6 +365,41 @@ void VhdlMain::RemoveXml()
         QMessageBox::warning ( this, "Edit", "This component is read only");
         return;
     }
+    if ( componentToRemove == "Debouncer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "FIFO buffer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "PS2_keyboard")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "PWM")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "Serializer")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "TMDS Encoder")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
+    if ( componentToRemove == "VGA_controler")
+    {
+        QMessageBox::warning ( this, "Edit", "This component is read only");
+        return;
+    }
     QFile FileToRemove;
     FileToRemove.setFileName(QDir::homePath() + "/.mds/" + componentToRemove + ".xml");
 
@@ -434,6 +451,41 @@ void VhdlMain::pushEditSlot()
            return;
        }
        if ( selectedText == "SPI_slave")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "Debouncer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "FIFO buffer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "PS2_keyboard")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "PWM")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "Serializer")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "TMDS Encoder")
+       {
+           QMessageBox::warning ( this, "Edit", "This component is read only");
+           return;
+       }
+       if ( selectedText == "VGA_controler")
        {
            QMessageBox::warning ( this, "Edit", "This component is read only");
            return;
@@ -1205,6 +1257,9 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
 
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
+
         QString port;
         port.clear();
         QTextStream out(&port);
@@ -1324,6 +1379,8 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
 
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
 
         QString port;
         port.clear();
@@ -1372,6 +1429,10 @@ void VhdlMain::mousePressEvent(QMouseEvent* pressEvent)
         QTextCharFormat format = cursor_textinfo.charFormat();
         format.setForeground(QBrush(Qt::blue));
         format.setFontWeight(QFont::Bold);
+
+
+        ui3.pushEditInfo->setVisible(false);
+        ui3.pushRemove->setVisible(false);
 
         QString port;
         port.clear();
@@ -1705,6 +1766,7 @@ void VhdlMain::pushEditRect()
 {
     // create gui
     createComponent1();
+    ui2.pushOk->setText("OK");
     editExist = true;
     // maybe this flag to false? haha
     createWidget = false;
@@ -1740,10 +1802,20 @@ void VhdlMain::pushDelete()
     genericComponent[componentCnt - 1].lsbNumber.clear();
     genericComponent[componentCnt - 1].msbNumber.clear();
 
+    //adjustNameCount(componentCnt - 1);
     //delete this->componentObject[componentCnt-1];
     this->componentObject[componentCnt-1]->setRect(0,0,0,0);
     componentCnt--;
     update();
+}
+
+void VhdlMain::adjustNameCount(unsigned int ValIndex)
+{
+  //  if ( existingNamesList.contains(definedComponent[valIndex].name) == true)
+ //   {
+ //       existingNamesList.removeOne(definedComponent[valIndex].name);
+  //  //    indexCounter.removeOne(definedComponent[valIndex].name);
+   // }
 }
 
 void VhdlMain::validateName(unsigned int ValIndex)
@@ -2487,17 +2559,17 @@ void VhdlMain::loadFile()
     QString line = in.readLine();
     while (!line.isNull())
     {
-        if ( true == line.contains("portout", Qt::CaseInsensitive) )
+        if ( true == line.contains(" portout ", Qt::CaseInsensitive) )
         {
             portOutList << line;
             portOutCount++;
         }
-        else if ( true == line.contains("portin", Qt::CaseInsensitive) )
+        else if ( true == line.contains(" portin ", Qt::CaseInsensitive) )
         {
             portInList << line;
             portInCount++;
         }
-        else if ( true == line.contains("port", Qt::CaseInsensitive) )
+        else if ( true == line.contains(" port ", Qt::CaseInsensitive) )
         {
             portList << line;
             portCount++;
@@ -2592,7 +2664,6 @@ void VhdlMain::printToFile()
     int hour = Time.hour();
     int min = Time.minute();
 
-
     // create file to write
     qDebug()<< savePath;
     QFile outFile(savePath);
@@ -2644,7 +2715,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portInOut[i].value,16).toUpper() << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portInOut[i].value > 15)
+            {
+                out<< QString::number(portInOut[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portInOut[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     if ( 0 != portInCount )
@@ -2657,8 +2736,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portIn[i].value,16).toUpper();
-            out << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portIn[i].value > 15)
+            {
+                out<< QString::number(portIn[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portIn[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     if ( 0 != portOutCount )
@@ -2671,8 +2757,15 @@ void VhdlMain::printToFile()
             {
                 out << ' ';
             }
-            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"' << QString::number(portOut[i].value,16).toUpper();
-            out << '"' << ';' << endl;
+            out << ": STD_LOGIC_VECTOR( 7 DOWNTO 0):= X"  << '"';
+            if ( portOut[i].value > 15)
+            {
+                out<< QString::number(portOut[i].value,16).toUpper() << '"' << ';' << endl;
+            }
+            else
+            {
+                out<< QString::number(portOut[i].value,16).toUpper().prepend("0") << '"' << ';' << endl;
+            }
         }
     }
     // print generic CONSTANTS if Generic is available
@@ -2681,10 +2774,12 @@ void VhdlMain::printToFile()
         for ( unsigned int i = 0; i < componentCnt; i++)
         {
             unsigned int p = 0;
+            qDebug() << genericComponent[i].genericName[p] << "generic empty?";
             while ( false == genericComponent[i].genericName[p].isEmpty() )
             {
                 if ( false == genericComponent[i].constant[p])
                 {
+                    p++;
                     continue;
                 }
 
@@ -3500,6 +3595,27 @@ unsigned int VhdlMain::tabsNumber(QString inputString)
     else
     {
         return tabsNum - 70;
+    }
+}
+
+void VhdlMain::keyPressEvent(QKeyEvent *event)
+{
+    // set key funcionality
+    // 0 = main window, 1 = create component
+    switch( m_keyWatcher )
+    {
+        case 0:
+        if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+            {
+            qDebug() << "key pressed1";
+            }
+            break;
+        case 1:
+            if(event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
+            {
+            qDebug() << "key pressed2";
+            }
+            break;
     }
 }
 
@@ -4479,7 +4595,6 @@ void VhdlMain::componentWizardConstruct()
             this,
             SLOT(saveAdd())
            );
-    return;
 }
 
 void VhdlMain::typeIndexChanged1( int index)
@@ -4497,11 +4612,11 @@ void VhdlMain::typeIndexChanged1( int index)
         default:
         {
             ui2.checkBus_41->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
-    emit valueEditingFinished("text in lineEdit");
+    valueEditingFinished("text in lineEdit");
 }
 
 void VhdlMain::typeIndexChanged2( int index)
@@ -4519,7 +4634,7 @@ void VhdlMain::typeIndexChanged2( int index)
         default:
         {
             ui2.checkBus_42->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4540,7 +4655,7 @@ void VhdlMain::typeIndexChanged3( int index)
         default:
         {
             ui2.checkBus_43->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4561,7 +4676,7 @@ void VhdlMain::typeIndexChanged4( int index)
         default:
         {
             ui2.checkBus_44->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4582,7 +4697,7 @@ void VhdlMain::typeIndexChanged5( int index)
         default:
         {
             ui2.checkBus_45->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4603,7 +4718,7 @@ void VhdlMain::typeIndexChanged6( int index)
         default:
         {
             ui2.checkBus_46->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4624,7 +4739,7 @@ void VhdlMain::typeIndexChanged7( int index)
         default:
         {
             ui2.checkBus_47->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
@@ -4645,7 +4760,7 @@ void VhdlMain::typeIndexChanged8( int index)
         default:
         {
             ui2.checkBus_48->setDisabled(false);
-            emit busChecked();
+            busChecked();
         }
             break;
     }
