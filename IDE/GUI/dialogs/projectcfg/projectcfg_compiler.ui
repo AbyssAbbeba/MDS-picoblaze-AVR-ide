@@ -7,13 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>260</height>
+    <height>359</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="9" column="0" colspan="3">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Maximum macro expansion depth</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="3">
+    <widget class="QSpinBox" name="sbMacroDepth"/>
+   </item>
+   <item row="11" column="3">
+    <widget class="QSpinBox" name="sbWhileIteration"/>
+   </item>
    <item row="6" column="3">
     <widget class="QCheckBox" name="chckRawHexFile">
      <property name="text">
@@ -90,6 +103,29 @@
      </property>
     </widget>
    </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Advanced</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="3">
+    <widget class="QSpinBox" name="sbFileDepth"/>
+   </item>
+   <item row="11" column="0" colspan="3">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Maximum repeat and #while iterations</string>
+     </property>
+    </widget>
+   </item>
    <item row="4" column="2">
     <widget class="QCheckBox" name="chckStringList">
      <property name="text">
@@ -155,6 +191,26 @@
    </item>
    <item row="1" column="0" colspan="3">
     <widget class="QComboBox" name="cmbMainFile"/>
+   </item>
+   <item row="12" column="0" colspan="2">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="10" column="0" colspan="3">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Maximum file inclusion depth</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
