@@ -20,10 +20,16 @@
 #include "../../../simulators/MCUSim/PicoBlaze/PicoBlazeIO.h"
 
 
-RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, QString name, int type, int address)
+RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, QString name, int type, int address, int regbank)
     : QWidget(parent)
 {
     ui.setupUi(this);
+    
+    m_simControl = controlUnit;
+    m_type = type;
+    m_address = address;
+    m_baseAddress = address;
+    m_regbank = regbank;
 
     ui.lblName->setText(name);
 
@@ -31,7 +37,18 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
     {
         case 0:
         {
-            ui.lblType->setText("REG");
+            if (0 == regbank)
+            {
+                ui.lblType->setText("REG_A");
+            }
+            else if (1 == regbank)
+            {
+                ui.lblType->setText("REG_B");
+            }
+            else
+            {
+                ui.lblType->setText("REG");
+            }
             std::vector<int> mask;
             mask =  {
                         MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN
@@ -76,10 +93,6 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
     }
 
     ui.lblAddress->setText("0x" + QString::number(address, 16));
-    
-    m_simControl = controlUnit;
-    m_type = type;
-    m_address = address;
     
     deviceChanged();
 }
@@ -131,25 +144,52 @@ void RegWatcherWidget::handleEvent(int subsysId, int eventId, int locationOrReas
 
 void RegWatcherWidget::deviceChanged()
 {
+    qDebug() << "devicechanged";
     switch (m_type)
     {
         case 0:
         {
-            m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_REGISTERS));
+            m_memory = dynamic_cast<MCUSimMemory*>(m_simControl->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_REGISTERS));
             m_size = m_memory->size();
-            if (m_address >= m_size)
+            if (0 == m_regbank)
             {
-                ui.lblAddress->setStyleSheet("QLabel { background-color : red; }");
+                if (m_address >= m_size/2)
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : red; }");
+                }
+                else
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : none; }");
+                }
+            }
+            else if (1 == m_regbank)
+            {
+                m_address = m_baseAddress + m_size/2;
+                if (m_address >= m_size)
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : red; }");
+                }
+                else
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : none; }");
+                }
             }
             else
             {
-                ui.lblAddress->setStyleSheet("QLabel { background-color : none; }");
+                if (m_address >= m_size)
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : red; }");
+                }
+                else
+                {
+                    ui.lblAddress->setStyleSheet("QLabel { background-color : none; }");
+                }
             }
             break;
         }
         case 1:
         {
-            m_memory = dynamic_cast<MCUSimMemory*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA));
+            m_memory = dynamic_cast<MCUSimMemory*>(m_simControl->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_DATA));
             m_size = m_memory->size();
             if (m_address >= m_size)
             {
@@ -163,7 +203,7 @@ void RegWatcherWidget::deviceChanged()
         }
         case 2:
         {
-            m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_PLIO));
+            m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControl->getSimSubsys(MCUSimSubsys::SubsysId::ID_PLIO));
             m_size = m_plio->getNumberOfPorts();
             if (m_address >= m_size)
             {
@@ -177,7 +217,7 @@ void RegWatcherWidget::deviceChanged()
         }
         case 3:
         {
-            m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControlUnit->getSimSubsys(MCUSimSubsys::SubsysId::ID_PLIO));
+            m_plio = dynamic_cast<MCUSimPureLogicIO*>(m_simControl->getSimSubsys(MCUSimSubsys::SubsysId::ID_PLIO));
             m_size = m_plio->getNumberOfPorts();
             if (m_address >= m_size)
             {
@@ -206,6 +246,7 @@ void RegWatcherWidget::deviceReset()
         {
             uint value = 0;
             m_memory->directRead(m_address, value);
+            qDebug() << "device reset reg" << value;
             ui.lblValue->setText("0x" + QString::number(value, 16).toUpper());
             break;
         }
@@ -236,11 +277,124 @@ void RegWatcherWidget::deviceReset()
 }
 
 
-void RegWatcherWidget::setReadOnly(bool readOnly)
+void RegWatcherWidget::setReadOnly(bool /*readOnly*/)
 {
 }
 
 
 void RegWatcherWidget::handleUpdateRequest(int mask)
 {
+}
+
+
+void RegWatcherWidget::unhighlight()
+{
+    ui.lblValue->setStyleSheet("QLabel { background-color : none; }");
+}
+
+
+int RegWatcherWidget::getAddress()
+{
+    return m_baseAddress;
+}
+
+
+QString RegWatcherWidget::getName()
+{
+    return ui.lblName->text();
+}
+
+
+int RegWatcherWidget::getType()
+{
+    return m_type;
+}
+
+
+int RegWatcherWidget::getRegbank()
+{
+    return m_regbank;
+}
+
+
+void RegWatcherWidget::setAddress(int address)
+{
+    m_address = address;
+    m_baseAddress = address;
+    ui.lblAddress->setText("0x" + QString::number(address, 16));
+}
+
+
+void RegWatcherWidget::setName(QString name)
+{
+    ui.lblName->setText(name); 
+}
+
+
+void RegWatcherWidget::setType(int type)
+{
+    switch (type)
+    {
+        case 0:
+        {
+            if (0 == m_regbank)
+            {
+                ui.lblType->setText("REG_A");
+            }
+            else if (1 == m_regbank)
+            {
+                ui.lblType->setText("REG_B");
+            }
+            else
+            {
+                ui.lblType->setText("REG");
+            }
+            std::vector<int> mask;
+            mask =  {
+                        MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN
+                    };
+            m_simControl->registerObserver(this, MCUSimSubsys::SubsysId::ID_MEM_REGISTERS, mask);
+            break;
+        }
+        case 1:
+        {
+            ui.lblType->setText("RAM");
+            std::vector<int> mask;
+            mask =  {
+                        MCUSimMemory::EVENT_MEM_INF_WR_VAL_WRITTEN
+                    };
+            m_simControl->registerObserver(this, MCUSimSubsys::SubsysId::ID_MEM_DATA, mask);
+            break;
+        }
+        case 2:
+        {
+            ui.lblType->setText("Out PORT");
+            std::vector<int> mask;
+            mask =  {
+                        MCUSimPureLogicIO::EVENT_PLIO_WRITE
+                    };
+            m_simControl->registerObserver(this, MCUSimSubsys::SubsysId::ID_PLIO, mask);
+            break;
+        }
+        case 3:
+        {
+            ui.lblType->setText("In PORT");
+            std::vector<int> mask;
+            mask =  {
+                        MCUSimPureLogicIO::EVENT_PLIO_READ
+                    };
+            m_simControl->registerObserver(this, MCUSimSubsys::SubsysId::ID_PLIO, mask);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
+}
+
+
+void RegWatcherWidget::setRegbank(int regbank)
+{
+    m_regbank = regbank;
 }

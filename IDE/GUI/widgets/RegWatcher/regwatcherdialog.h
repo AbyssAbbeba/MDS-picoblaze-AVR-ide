@@ -24,13 +24,16 @@ class RegWatcherDialog : public QDialog
 {
     Q_OBJECT
     public:
-        RegWatcherDialog(QWidget *parent, bool regbanks, int offset = 0);
+        RegWatcherDialog(QWidget *parent, bool regbanks);
+        RegWatcherDialog(QWidget *parent, bool regbanks, QString name, int address, int type, int regbank);
 
     signals:
-        void newItem(QString name, int type, int address);
+        void newItem(QString name, int type, int address, int regbank = -1);
+        void editItem(QString name, int type, int address, int regbank = -1);
 
     private slots:
         void emitNewItem();
+        void emitEditItem();
         void checkIfValid();
         void updateBanks(int index);
 
