@@ -41,6 +41,7 @@ class ProjectCfg_Compiler : public QWidget
         ProjectCfg_Compiler(QWidget *parentWidget, Project *currProject);
         void save();
         QList<bool> getOpt();
+        QList<int> getDepths();
 
     signals:
         void setMainFile(QString mainFile);
