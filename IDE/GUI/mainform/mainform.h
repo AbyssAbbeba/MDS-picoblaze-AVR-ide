@@ -21,6 +21,9 @@
 #include <QMainWindow>
 #include <QFileSystemWatcher>
 #include <QProcess>
+#include <QList>
+#include <QString>
+#include <QDateTime>
 #include "../../compiler/core/CompilerOptions.h"
 #include "../../compiler/CompilerThread.h"
 #include "../compatibilitymode/compatibilitymode.h"
@@ -219,6 +222,7 @@ class MainForm : public QMainWindow
         void stderrExtApp(int processNumber);
         void stdoutExtApp(int processNumber);
         void disableHelpActions(bool disable);
+        void clearFileTimestamps();
 
     signals:
         void unhighlightSim();
@@ -386,6 +390,8 @@ class MainForm : public QMainWindow
         QSignalMapper *m_errorSignalMapper;
         QSignalMapper *m_stderrSignalMapper;
         QSignalMapper *m_stdoutSignalMapper;
+
+        QList<QPair<QString, QDateTime>> m_fileTimeStamps;
 
     protected:
         void closeEvent(QCloseEvent *event);
