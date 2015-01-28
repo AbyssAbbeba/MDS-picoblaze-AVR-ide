@@ -58,6 +58,9 @@ endif()
 if ( MDS_FEATURE_SIM_CALLWATCHER )
     list ( APPEND MDS_ADDITONAL_LIBS "CallWatcher" )
 endif()
+if ( MDS_FEATURE_REG_CALLWATCHER )
+    list ( APPEND MDS_ADDITONAL_LIBS "RegWatcher" )
+endif()
 if ( MDS_FEATURE_VHDL_WIZARD )
     list ( APPEND MDS_ADDITONAL_LIBS "VHDLGen" )
 endif()
@@ -78,8 +81,7 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         WDockManager    MCUDataFiles    InterfaceCfg    ErrorDialog     ProjectTree
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
                         Simulator       compiler        Project         Editor          GuiCfg
-                        WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode
-                        RegWatcher )
+                        WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS
