@@ -26,6 +26,7 @@
 #include <QPair>
 //#include "mainform.h"
 #include "../enums/enums.h"
+#include "../widgets/RegWatcher/regwatcherexportstruct.h"
 
 
 //class MainForm;
@@ -125,6 +126,7 @@ class Project : public QObject
         void animate();
         MCUSimControl* getSimControl();
         void setCompileOpt(QList<bool> opt);
+        void setCompileDepths(QList<int> depths);
         void setCompileIncPaths(QList<QString> paths);
         void setUseMainFile(bool enabled);
         void setIntVector(int value);
@@ -149,6 +151,8 @@ class Project : public QObject
         void setAsmType(int type);
         int getAsmType();
         void setFileOpened(QString path, bool opened);
+        void setRegWatchers(QList<RegWatcherExportStruct> regWatchers);
+        QList<RegWatcherExportStruct> getRegWatchers();
 
         QDockWidget *prjDockWidget;
         ProjectTree *prjTreeWidget;
@@ -169,8 +173,9 @@ class Project : public QObject
         QList<QString> fileNames;
         QList<QString> filePaths;
         QList<bool> m_fileStats;
-        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL, StringList
         QList<bool> compileOpt;
+        QList<int> compileDepths;
         QStringList compileIncPaths;
 
         //templates
@@ -240,6 +245,7 @@ class Project : public QObject
         QList<QColor*> simColors;
 
         int m_asmType;
+        QList<RegWatcherExportStruct> m_regWatchers;
         
         QTreeWidgetItem *treeProjName;
         QTreeWidgetItem *treeProjSource;

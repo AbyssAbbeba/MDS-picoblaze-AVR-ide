@@ -311,6 +311,10 @@ void GuiCfg::setDefaultProject()
     this->compileOpt.append(true);
     this->compileOpt.append(true);
 
+    this->compileDepths.append(-1);
+    this->compileDepths.append(-1);
+    this->compileDepths.append(-1);
+
     this->defaultVerilog = true;
     this->defaultVHDL = true;
     this->templateVerilog = "";
@@ -655,6 +659,12 @@ int GuiCfg::getProjectProgMemSize()
 QList<bool> GuiCfg::getProjectCompOpt()
 {
     return this->compileOpt;
+}
+
+
+QList<int> GuiCfg::getProjectCompDepth()
+{
+    return this->compileDepths;
 }
 
 

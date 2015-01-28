@@ -428,7 +428,12 @@ MainForm::~MainForm()
 
     while (m_projectMan->getOpenProjects().count() > 0)
     {
+        #ifdef MDS_FEATURE_SIM_REGWATCHER
+            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+            m_projectMan->getActive()->setRegWatchers(regWatcher->exportWidgets());
+        #endif
         m_projectMan->closeProject(m_projectMan->getActive());
+        m_wDockManager->deleteActiveSimWidget();
     }
     GuiCfg::getInstance().saveConfig();
     QApplication::closeAllWindows();
@@ -2248,6 +2253,12 @@ void MainForm::projectOpened()
             m_wDockManager->getCentralWidget()->setBookmarksLines(m_projectMan->getActive()->getBookmarksForFileAbsolute(m_wDockManager->getCentralWidget()->getPath()));
         }*/
     }
+
+    #ifdef MDS_FEATURE_SIM_REGWATCHER
+            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+            regWatcher->importWidgets(m_projectMan->getActive()->getRegWatchers());
+    #endif
+    
     if (projectTabs != NULL )
     {
         //qDebug() << "count: " << projectTabs->count();
@@ -2628,6 +2639,9 @@ void MainForm::compileProject()
                                   + ".strtbl"
                                   ).toLocal8Bit().constData();
         }
+
+        options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+        options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         //return;
     }
     else if ( false == m_projectMan->getActive()->useMainFile )
@@ -2809,6 +2823,9 @@ void MainForm::compileProject()
             {
                 options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
             }
+            
+            options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+            options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         }
         else
         {
@@ -3039,6 +3056,9 @@ void MainForm::compileProject()
             {
                 options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
             }
+            
+            options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+            options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
         }
         //return;
     }
@@ -3220,6 +3240,9 @@ void MainForm::compileProject()
         {
             options->m_stringTable = ( mainFile + ".strtbl").toLocal8Bit().constData();
         }
+        
+        options->m_maxMacroExp = m_projectMan->getActive()->compileDepths.at(0);
+        options->m_maxInclusion = m_projectMan->getActive()->compileDepths.at(1);
     }
 
 
@@ -4282,6 +4305,10 @@ void MainForm::closeProject()
             m_wDockManager->closeFile(QDir::cleanPath(path.absoluteFilePath(project->filePaths.at(i))), false);
         }*/
         //qDebug() << "MainForm: delete active sim widget";
+        #ifdef MDS_FEATURE_SIM_REGWATCHER
+            RegWatcher *regWatcher = (RegWatcher*)(m_wDockManager->getDockWidget(WREGWATCHER)->widget());
+            project->setRegWatchers(regWatcher->exportWidgets());
+        #endif
         m_wDockManager->deleteActiveSimWidget();
         m_wDockManager->removeTabBar(project->prjPath);
         //qDebug() << "MainForm: remove dock widget";

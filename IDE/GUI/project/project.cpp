@@ -382,6 +382,11 @@ Project::Project(QFile *file, ProjectMan *parent)
         compileOpt.append(false);
     }
 
+    for (int i = 0; i < 3; i++)
+    {
+        compileDepths.append(-1);
+    }
+
     fileCount = 0;
     parentManager = parent;
     this->m_simControlUnit = NULL;
@@ -478,6 +483,25 @@ Project::Project(QFile *file, ProjectMan *parent)
                                 fileCount++;
                             }
                             xmlFilesNode = xmlFilesNode.nextSibling();
+                        }
+                    }
+                    else if (xmlElement.tagName() == "Watchers")
+                    {
+                        QDomNode xmlWatchersNode = xmlElement.firstChild();
+                        QDomElement xmlWatchersElement;
+                        while (!xmlWatchersNode.isNull())
+                        {
+                            xmlWatchersElement = xmlWatchersNode.toElement();
+                            if (xmlWatchersElement.tagName() == "Watcher")
+                            {
+                                RegWatcherExportStruct watcherStruct;
+                                watcherStruct.name = xmlWatchersElement.attribute("name", "");
+                                watcherStruct.address = xmlWatchersElement.attribute("address", "").toInt();
+                                watcherStruct.type = xmlWatchersElement.attribute("type", "").toInt();
+                                watcherStruct.regbank = xmlWatchersElement.attribute("regbank", "").toInt();
+                                m_regWatchers.append(watcherStruct);
+                            }
+                            xmlWatchersNode = xmlWatchersNode.nextSibling();
                         }
                     }
                     else if (xmlElement.tagName() == "Mainfile")
@@ -579,7 +603,13 @@ Project::Project(QFile *file, ProjectMan *parent)
                         {
                             //qDebug() << "node";
                             xmlCompilerElement = xmlCompilerNode.toElement();
-                            if (xmlCompilerElement.tagName() == "Options")
+                            if (xmlCompilerElement.tagName() == "Depths")
+                            {
+                                compileDepths[0] = (xmlCompilerElement.attribute("macro", "").toInt());
+                                compileDepths[1] = (xmlCompilerElement.attribute("file", "").toInt());
+                                compileDepths[2] = (xmlCompilerElement.attribute("repeat", "").toInt());
+                            }
+                            else if (xmlCompilerElement.tagName() == "Options")
                             {
                                 QDomNode xmlCompileOptNode = xmlCompilerElement.firstChild();
                                 QDomElement xmlCompileOptElem;
@@ -896,6 +926,7 @@ Project::Project(ProjectMan *parent)
     this->mainFileName = "";
     this->mainFilePath = "";
     this->compileOpt = GuiCfg::getInstance().getProjectCompOpt();
+    this->compileDepths = GuiCfg::getInstance().getProjectCompDepth();
     this->defaultVHDL = GuiCfg::getInstance().getProjectDefVHDL();
     this->defaultVerilog = GuiCfg::getInstance().getProjectDefVerilog();
     this->templateVHDL =  GuiCfg::getInstance().getProjectPathVHDL();
@@ -1054,9 +1085,11 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     //this->treeProjUntitled->setText(0, "Untitled");
 
 //     
-    for (int i = 0; i < 13; i++)
+    
+    
+    for (int i = 0; i < 3; i++)
     {
-        compileOpt.append(false);
+        compileDepths.append(-1);
     }
 
     this->family = arch;
@@ -1119,44 +1152,63 @@ Project::Project(QString name, QString path, QString arch, LangType lang, QFile 
     QDomElement xmlCompilerOpt = domDoc.createElement("Options");
     QDomElement xmlSymbolTbl = domDoc.createElement("SymbolTable");
     xmlSymbolTbl.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlSymbolTbl);
     QDomElement xmlMacroTbl = domDoc.createElement("MacroTable");
     xmlMacroTbl.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlMacroTbl);
     QDomElement xmlDbgFile = domDoc.createElement("DebugFile");
     xmlDbgFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlDbgFile);
     QDomElement xmlCodeTree = domDoc.createElement("CodeTree");
     xmlCodeTree.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlCodeTree);
     QDomElement xmlLstFile = domDoc.createElement("ListFile");
     xmlLstFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlLstFile);
     QDomElement xmlHexFile = domDoc.createElement("HexFile");
     xmlHexFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlHexFile);
     QDomElement xmlBinFile = domDoc.createElement("BinFile");
     xmlBinFile.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlBinFile);
     QDomElement xmlSRecFile = domDoc.createElement("SRecFile");
     xmlSRecFile.setAttribute("enable", "false");
+    compileOpt.append(false);
     xmlCompilerOpt.appendChild(xmlSRecFile);
     QDomElement xmlMemFile = domDoc.createElement("MemFile");
     xmlMemFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlMemFile);
     QDomElement xmlRawHexFile = domDoc.createElement("RawHexFile");
     xmlRawHexFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlRawHexFile);
     QDomElement xmlVerilogFile = domDoc.createElement("VerilogFile");
     xmlVerilogFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlVerilogFile);
     QDomElement xmlVHDLFile = domDoc.createElement("VHDLFile");
     xmlVHDLFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     QDomElement xmlStringFile = domDoc.createElement("StringFile");
     xmlStringFile.setAttribute("enable", "true");
+    compileOpt.append(true);
     xmlCompilerOpt.appendChild(xmlStringFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
+
+    QDomElement xmlCompilerDepth = domDoc.createElement("Depths");
+    xmlCompilerDepth.setAttribute("macro", compileDepths.at(0));
+    xmlCompilerDepth.setAttribute("file", compileDepths.at(1));
+    xmlCompilerDepth.setAttribute("repeat", compileDepths.at(2));
+    xmlCompiler.appendChild(xmlCompilerDepth);
 
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
     QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
@@ -1237,6 +1289,7 @@ void Project::saveProject()
     qDebug() << "saveProject()";
     if (QDir(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project").absolutePath() == prjPath)
     {
+        qDebug() << "example read only";
         return;
     }
     QDir project(QFileInfo(prjPath).dir());
@@ -1245,7 +1298,7 @@ void Project::saveProject()
     if(!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         error(ERR_OPENFILE, prjPath);
-        qDebug() << "return saveProject()";
+        qDebug() << "return saveProject() error";
         return;
     }
 
@@ -1279,6 +1332,19 @@ void Project::saveProject()
     xmlAsmType.setAttribute("value", m_asmType);
     xmlGeneral.appendChild(xmlAsmType);
     xmlRoot.appendChild(xmlGeneral);
+
+    QDomElement xmlRegs = domDoc.createElement("Watchers");
+    qDebug() << "saving watchers" << m_regWatchers.count();
+    for (int i = 0; i < m_regWatchers.count(); i++)
+    {
+        QDomElement xmlReg = domDoc.createElement("Watcher");
+        xmlReg.setAttribute("name", m_regWatchers.at(i).name);
+        xmlReg.setAttribute("address", m_regWatchers.at(i).address);
+        xmlReg.setAttribute("type", m_regWatchers.at(i).type);
+        xmlReg.setAttribute("regbank", m_regWatchers.at(i).regbank);
+        xmlRegs.appendChild(xmlReg);
+    }
+    xmlRoot.appendChild(xmlRegs);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
     //qDebug() << "Project: saving" << this->fileCount << "files";
@@ -1480,7 +1546,7 @@ void Project::saveProject()
     {
         xmlVHDLFile.setAttribute("enable", "false");
     }
-    QDomElement xmlStringFile = domDoc.createElement("StringList");
+    QDomElement xmlStringFile = domDoc.createElement("StringFile");
     if (true == this->compileOpt.at(12))
     {
         xmlStringFile.setAttribute("enable", "true");
@@ -1491,6 +1557,12 @@ void Project::saveProject()
     }
     xmlCompilerOpt.appendChild(xmlVHDLFile);
     xmlCompiler.appendChild(xmlCompilerOpt);
+
+    QDomElement xmlCompilerDepth = domDoc.createElement("Depths");
+    xmlCompilerDepth.setAttribute("macro", compileDepths.at(0));
+    xmlCompilerDepth.setAttribute("file", compileDepths.at(1));
+    xmlCompilerDepth.setAttribute("repeat", compileDepths.at(2));
+    xmlCompiler.appendChild(xmlCompilerDepth);
 
     QDomElement xmlCompilerTemplates = domDoc.createElement("Templates");
     QDomElement xmlVHDLTemplate = domDoc.createElement("VHDL");
@@ -2195,10 +2267,18 @@ void Project::startCfgDlgCore()
 
 void Project::setCompileOpt(QList<bool> opt)
 {
-
     for (int i = 0; i < opt.size(); i++)
     {
         this->compileOpt[i] = opt.at(i);
+    }
+}
+
+
+void Project::setCompileDepths(QList<int> depths)
+{
+    for (int i = 0; i < depths.size(); i++)
+    {
+        this->compileDepths[i] = depths.at(i);
     }
 }
 
@@ -2796,4 +2876,16 @@ void Project::setFileOpened(QString path, bool opened)
             break;
         }
     }
+}
+
+
+void Project::setRegWatchers(QList<RegWatcherExportStruct> regWatchers)
+{
+    m_regWatchers = regWatchers;
+}
+
+
+QList<RegWatcherExportStruct> Project::getRegWatchers()
+{
+    return m_regWatchers;
 }

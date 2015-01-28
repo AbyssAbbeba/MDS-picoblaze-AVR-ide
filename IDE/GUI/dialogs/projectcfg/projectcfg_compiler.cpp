@@ -95,7 +95,12 @@ void ProjectCfg_Compiler::save()
     opt.append(this->ui.chckVHDLFile->isChecked());
     opt.append(this->ui.chckStringList->isChecked());
     
+    QList<int> depths;
+    depths.append(this->ui.sbMacroDepth->value());
+    depths.append(this->ui.sbFileDepth->value());
+    
     this->project->setCompileOpt(opt);
+    this->project->setCompileDepths(depths);
     this->project->setUseMainFile(this->ui.chckMain->isChecked());
 }
 
@@ -121,6 +126,15 @@ QList<bool> ProjectCfg_Compiler::getOpt()
     opt.append(this->ui.chckStringList->isChecked());
 
     return opt;
+}
+
+
+QList<int> ProjectCfg_Compiler::getDepths()
+{
+    QList<int> depths;
+    depths.append(this->ui.sbMacroDepth->value());
+    depths.append(this->ui.sbFileDepth->value());
+    return depths;
 }
 
 
