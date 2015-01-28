@@ -93,6 +93,12 @@ RegWatcherWidget::RegWatcherWidget(QWidget *parent, MCUSimControl *controlUnit, 
     }
 
     ui.lblAddress->setText("0x" + QString::number(address, 16));
+
+    connect(m_simControl,
+            SIGNAL(updateRequest(int)),
+            this,
+            SLOT(handleUpdateRequest(int))
+           );
     
     deviceChanged();
 }
