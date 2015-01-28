@@ -23,6 +23,7 @@
 #include "../../utilities/os/os.h"
 #include "../../simulators/MCUSim/PicoBlaze/PicoBlazeInstructionSet.h"
 #include "../errordialog/errordlg.h"
+#include "../compatibilitymode/compatibilitymode.h"
 
 
 
@@ -2012,7 +2013,9 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
             }
             if (infoAsm.lastModified() > infoHex.lastModified() || infoAsm.lastModified() > infoDbg.lastModified())
             {
-                //qDebug() << "Project: files modified";
+                qDebug() << "Project: file modified" << infoAsm.lastModified();
+                qDebug() << "Project: hex modified" << infoHex.lastModified();
+                qDebug() << "Project: dbg modified" << infoDbg.lastModified();
                 return 4;
             }
             std::string stdPath = hexPath.toLocal8Bit().constData();
@@ -2095,7 +2098,7 @@ int Project::start(QString file, QString dumpFiles, DbgFile *dbgFile, DataFile *
 }
 
 
-void Project::setBreakpoints(bool set)
+void Project::setBreakpoints(bool set, bool compatibilityMode, CompatibilityMode *mode)
 {
     using namespace boost::filesystem;
     if (true == set)
@@ -2109,29 +2112,57 @@ void Project::setBreakpoints(bool set)
             }
             std::vector<std::pair<std::string, std::set<unsigned int>>> breakpointsVector;
             QString relativePath;
+            QString absolutePath;
             QDir prjDir(simulatedFile.section('/', 0, -2));
-            for (int i = 0; i < this->breakPoints.count(); i++)
+            if (false == compatibilityMode)
             {
-                //qDebug() << "Project: breakpoint list at" << i;
-                std::set<unsigned int> breakpointsSet;
-                foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                for (int i = 0; i < this->breakPoints.count(); i++)
                 {
-                    breakpointsSet.insert(value);
+                    //qDebug() << "Project: breakpoint list at" << i;
+                    std::set<unsigned int> breakpointsSet;
+                    foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                    {
+                        breakpointsSet.insert(value);
+                    }
+                    //qDebug() << "Path" << this->breakPoints.at(i).first;
+                    const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
+                    relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file)));
+                    //qDebug() << "Project: absoluteFilePath" << relativePath;
+                    breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
                 }
-                //qDebug() << "Path" << this->breakPoints.at(i).first;
-                const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
-                relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file)));
-                //qDebug() << "Project: absoluteFilePath" << relativePath;
-                breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
             }
-            for (unsigned int i = 0; i < breakpointsVector.size(); i++)
+            else
             {
-                //qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
-                //foreach (const unsigned int &value, breakpointsVector.at(i).second)
-                //{
-                    //qDebug() << "Project: breakpoint line" << value;
-                //}
+                for (int i = 0; i < this->breakPoints.count(); i++)
+                {
+                    //qDebug() << "Project: breakpoint list at" << i;
+                    const std::string file = breakPoints.at(i).first.toLocal8Bit().constData();
+                    if (true == QString::fromStdString(file).section('.',0,-2).isEmpty())
+                    {
+                        relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file) + ".asm"));
+                    }
+                    else
+                    {
+                        relativePath = QDir::cleanPath(prjDir.relativeFilePath(QString::fromStdString(file).section('.',0,-2) + ".asm"));
+                    }
+                    std::set<unsigned int> breakpointsSet;
+                    foreach (const unsigned int &value, this->breakPoints.at(i).second)
+                    {
+                        breakpointsSet.insert(mode->getNewLine(QString::fromStdString(file), value));
+                    }
+                    //qDebug() << "Path" << this->breakPoints.at(i).first;
+                    //qDebug() << "Project: absoluteFilePath" << relativePath;
+                    breakpointsVector.push_back ( std::make_pair ( relativePath.toStdString(), breakpointsSet ) );
+                }
             }
+            /*for (unsigned int i = 0; i < breakpointsVector.size(); i++)
+            {
+                qDebug() << "Project: breakpoint file" << QString::fromStdString(breakpointsVector.at(i).first);
+                foreach (const unsigned int &value, breakpointsVector.at(i).second)
+                {
+                    qDebug() << "Project: breakpoint line" << value;
+                }
+            }*/
             m_simControlUnit->setBreakPoints(breakpointsVector);
         }
     }
