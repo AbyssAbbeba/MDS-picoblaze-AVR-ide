@@ -189,6 +189,7 @@ bool AsmTranslatorKcpsmMed::process ( std::string & line,
                 if ( true == secondPass )
                 {
                     m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+                    m_inverseLineMap->insert({lineNumber, lineNumber + m_prologue.size()});
 
                     begin = match[0].second;
                     boost::regex_search(begin, line.cend(), match, m_reWord);
@@ -377,6 +378,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( LineFields & lineFields,
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
             m_lineMap->insert({m_prologue.size(), lineNumber});
+                    m_inverseLineMap->insert({lineNumber, m_prologue.size()});
             m_messages->push_back ( { lineNumber,
                                       QObject::tr ( "Warning: directive `constant' should be used prior to "
                                                     "any instructions." )
@@ -460,6 +462,7 @@ inline bool AsmTranslatorKcpsmMed::processDirectives ( LineFields & lineFields,
 
             shiftLineMap(1);
             m_lineMap->insert({1, lineNumber});
+            m_inverseLineMap->insert({lineNumber, 1});
         }
 
         lineFields.replaceAll(autoIndent(lineFields.m_line, indSz()));
@@ -553,6 +556,7 @@ inline bool AsmTranslatorKcpsmMed::processInstructions ( LineFields & lineFields
                                                          unsigned int lineNumber )
 {
     m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+    m_inverseLineMap->insert({lineNumber, lineNumber + m_prologue.size()});
     translateIdentifiers(lineFields);
 
     std::string instruction = lineFields.getInstruction();

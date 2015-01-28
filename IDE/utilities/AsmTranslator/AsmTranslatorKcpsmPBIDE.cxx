@@ -114,6 +114,7 @@ bool AsmTranslatorKcpsmPBIDE::process ( std::string & line,
                 if ( true == secondPass )
                 {
                     m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+                    m_inverseLineMap->insert({lineNumber, lineNumber + m_prologue.size()});
 
                     begin = match[0].second;
                     boost::regex_search(begin, line.cend(), match, m_reWord);
@@ -278,6 +279,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processDirectives ( LineFields & lineFields
             m_prologue.push_back(autoIndent(&substitute, indSz(), true));
             lineFields.replaceAll("; >>>>> (line moved to the beginning) <<<<<");
             m_lineMap->insert({m_prologue.size(), lineNumber});
+            m_inverseLineMap->insert({lineNumber, m_prologue.size()});
             m_messages->push_back ( { lineNumber,
                                       QObject::tr ( "Warning: directive `constant' should be used prior to "
                                                     "any instructions." )
@@ -322,6 +324,7 @@ inline bool AsmTranslatorKcpsmPBIDE::processInstructions ( LineFields & lineFiel
                                                            unsigned int lineNumber )
 {
     m_lineMap->insert({lineNumber + m_prologue.size(), lineNumber});
+    m_inverseLineMap->insert({lineNumber, lineNumber + m_prologue.size()});
 
     {
         std::string op0 = lineFields.getOperand(0);

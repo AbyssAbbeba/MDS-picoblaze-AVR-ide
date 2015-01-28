@@ -63,7 +63,7 @@ bool AsmTranslator::translate ( Variant variant,
         return false;
     }
 
-    translator->setup(&m_messages, &m_lineMap, &m_includedFiles);
+    translator->setup(&m_messages, &m_lineMap, &m_inverseLineMap, &m_includedFiles);
     translator->m_config = &m_config;
     bool result = translate(translator, output, input);
     delete translator;
@@ -189,9 +189,16 @@ const std::vector<std::pair<unsigned int, std::string> > & AsmTranslator::getMes
     return m_messages;
 }
 
-const std::map<unsigned int, unsigned int> & AsmTranslator::getLineMap() const
+const std::map<unsigned int, unsigned int> & AsmTranslator::getLineMap ( bool inverse ) const
 {
-    return m_lineMap;
+    if ( true == inverse )
+    {
+        return m_inverseLineMap;
+    }
+    else
+    {
+        return m_lineMap;
+    }
 }
 
 const std::vector<std::string> & AsmTranslator::getIncludedFiles() const
