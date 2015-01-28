@@ -152,6 +152,7 @@ void ProjectDialog::bCreate()
 
         
         projectMan->getActive()->setCompileOpt(this->prjdlg_compiler->getOpt());
+        projectMan->getActive()->setCompileDepths(this->prjdlg_compiler->getDepths());
         projectMan->getActive()->setCompileIncPaths(this->prjdlg_comppaths->getPaths());
         
         QStringList paths = this->prjdlg_filemgr->getPaths();

@@ -140,6 +140,8 @@ loop_1:     out         S0, @S1
 
 
             ; Infinite loop, and end of assembly.
+            load s0,#10
+            input s0,0
             jump        $
             end
 

@@ -8,7 +8,7 @@
  *
  * @author Erik Chalupa <erik.chalupa@moravia-microsystems.com>
  * @ingroup GUI
- * @file callwatcher.h
+ * @file regwatcher.h
  */
 
 
@@ -20,6 +20,7 @@
 #include <QList>
 #include <QString>
 #include "ui_regwatcher.h"
+#include "regwatcherexportstruct.h"
 
 class MCUSimControl;
 
@@ -29,6 +30,8 @@ class RegWatcher : public QWidget
     Q_OBJECT
     public:
         RegWatcher(QWidget *parent, MCUSimControl *controlUnit);
+        QList<RegWatcherExportStruct> exportWidgets();
+        void importWidgets(QList<RegWatcherExportStruct> list);
 
     private slots:
         void addItem();

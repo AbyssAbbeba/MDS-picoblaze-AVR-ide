@@ -122,20 +122,20 @@ main_loop:          CALL        I2C_LED_service         ; read from 0x00
 
 ;==============================================================================;
 
-INCLUDE "include/PSM_addr_const_include.psm"
-INCLUDE "include/PSM_SYS_init_include.psm"
-INCLUDE "include/PSM_delay_include.psm"
-INCLUDE "include/PSM_UART_text_include.psm"
-INCLUDE "include/PSM_serial_include.psm"
-INCLUDE "include/PSM_PHY_include.psm"
-INCLUDE "include/PSM_SFP_include.psm"
-INCLUDE "include/PSM_ISR_main_include.psm"
-INCLUDE "include/PSM_ISR_UART_include.psm"
-INCLUDE "include/PSM_ISR_PHY_include.psm"
-INCLUDE "include/PSM_ISR_FIFO_over_include.psm"
-INCLUDE "include/PSM_I2C_service_include.psm"
-INCLUDE "include/PSM_HOST_service_include.psm"
-INCLUDE "include/PSM_I2C_radio_emul_include.psm"
+INCLUDE "PSM_addr_const_include.psm"
+INCLUDE "PSM_SYS_init_include.psm"
+INCLUDE "PSM_delay_include.psm"
+INCLUDE "PSM_UART_text_include.psm"
+INCLUDE "PSM_serial_include.psm"
+INCLUDE "PSM_PHY_include.psm"
+INCLUDE "PSM_SFP_include.psm"
+INCLUDE "PSM_ISR_main_include.psm"
+INCLUDE "PSM_ISR_UART_include.psm"
+INCLUDE "PSM_ISR_PHY_include.psm"
+INCLUDE "PSM_ISR_FIFO_over_include.psm"
+INCLUDE "PSM_I2C_service_include.psm"
+INCLUDE "PSM_HOST_service_include.psm"
+INCLUDE "PSM_I2C_radio_emul_include.psm"
 
 ;==============================================================================;
 ; Interrupt jump instruction

@@ -154,3 +154,38 @@ void RegWatcher::editCurrentItem(QString name, int type, int address, int regban
         itemWidget->deviceChanged();
     }
 }
+
+
+QList<RegWatcherExportStruct> RegWatcher::exportWidgets()
+{
+    qDebug() << "exportWidgets";
+    QList<RegWatcherExportStruct> list;
+    for (int i = 0; i < ui.lstItems->count(); i++)
+    {
+        RegWatcherExportStruct exportStruct;
+        RegWatcherWidget *itemWidget = (RegWatcherWidget*)(ui.lstItems->itemWidget(ui.lstItems->item(i)));
+        exportStruct.name = itemWidget->getName();
+        exportStruct.type = itemWidget->getType();
+        exportStruct.address = itemWidget->getAddress();
+        exportStruct.regbank = itemWidget->getRegbank();
+        list.append(exportStruct);
+    }
+    return list;
+}
+
+void RegWatcher::importWidgets(QList<RegWatcherExportStruct> list)
+{
+    qDebug() << "importWidgets";
+    for (int i = 0; i < list.count(); i++)
+    {
+        QListWidgetItem *item = new QListWidgetItem(ui.lstItems);
+
+        RegWatcherWidget *itemWidget = new RegWatcherWidget(this, m_simControl, list.at(i).name, list.at(i).type, list.at(i).address, list.at(i).regbank);
+        itemWidget->show();
+
+        ui.lstItems->setItemWidget(item, itemWidget);
+        item->setSizeHint(QSize(itemWidget->width(),itemWidget->height()));
+        ui.btnRemove->setEnabled(true);
+        ui.btnEdit->setEnabled(true);
+    }
+}
