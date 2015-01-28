@@ -1199,7 +1199,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setCurrentIndex(j);
                     done = true;
                 }
-                else if ("Bookmarks" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Bookmarks" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 2/6";
                     m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
@@ -1208,7 +1208,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
                     done = true;
                 }
-                else if ("Call Watcher" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Call Watcher" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 5/6";
                     m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
@@ -1217,7 +1217,16 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
                     done = true;
                 }
-                else if ("Macros" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Reg Watcher" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    //qDebug() << "Found 5/6";
+                    m_wDockManager->getDockWidget(WREGWATCHER)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Reg Watcher");
+                    tabList.at(i)->setTabWhatsThis(j, "Reg Watcher");
+                    done = true;
+                }
+                else if ("Macros" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 3/6";
                     m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
@@ -5226,6 +5235,15 @@ void MainForm::reloadTabIcons()
         {
             //qDebug() << "Found 5/6";
             QPixmap pixmap(":resources/icons/door_in.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Reg Watcher" == text)
+        {
+            //qDebug() << "Found 5/6";
+            QPixmap pixmap(":resources/icons/reg_watch.png");
             QMatrix rm;
             rm.rotate(-90);
             pixmap = pixmap.transformed(rm);
