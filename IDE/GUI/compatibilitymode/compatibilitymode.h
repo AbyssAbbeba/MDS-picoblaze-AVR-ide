@@ -35,12 +35,15 @@ class CompatibilityMode
     public:
         CompatibilityMode();
         int getOrigLine(QString file, int newLine);
+        int getNewLine(QString file, int origLine);
         void appendFileMap(QString file, std::map<unsigned int, unsigned int> map);
+        void appendReverseFileMap(QString file, std::map<unsigned int, unsigned int> map);
         void clearFileMaps();
         bool loaded();
 
     private:
         QList<QPair<QString, std::map<unsigned int, unsigned int>>> m_maps;
+        QList<QPair<QString, std::map<unsigned int, unsigned int>>> m_mapsReverse;
         
 };
 
