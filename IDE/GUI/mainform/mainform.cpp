@@ -1199,7 +1199,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setCurrentIndex(j);
                     done = true;
                 }
-                else if ("Bookmarks" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Bookmarks" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 2/6";
                     m_wDockManager->getDockWidget(WBOOKMARKLIST)->setWindowTitle(QString());
@@ -1208,7 +1208,7 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabWhatsThis(j, "Bookmarks");
                     done = true;
                 }
-                else if ("Call Watcher" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Call Watcher" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 5/6";
                     m_wDockManager->getDockWidget(WCALLWATCHER)->setWindowTitle(QString());
@@ -1217,7 +1217,16 @@ void MainForm::createDockWidgets()
                     tabList.at(i)->setTabWhatsThis(j, "Call Watcher");
                     done = true;
                 }
-                else if ("Macros" == tabList.at(i)->tabText(j) && true == done)
+                else if ("Reg Watcher" == tabList.at(i)->tabText(j) && true == done)
+                {
+                    //qDebug() << "Found 5/6";
+                    m_wDockManager->getDockWidget(WREGWATCHER)->setWindowTitle(QString());
+                    //tabList.at(i)->setTabText(j, "");
+                    tabList.at(i)->setTabToolTip(j, "Reg Watcher");
+                    tabList.at(i)->setTabWhatsThis(j, "Reg Watcher");
+                    done = true;
+                }
+                else if ("Macros" == tabList.at(i)->tabText(j))
                 {
                     //qDebug() << "Found 3/6";
                     m_wDockManager->getDockWidget(WASMMACROANALYSER)->setWindowTitle(QString());
@@ -2320,7 +2329,7 @@ bool MainForm::saveProject()
 
 QString MainForm::translateBeforeCompilation(QString path)
 {
-    //qDebug() << "MainForm: translating";
+    qDebug() << "MainForm: translating" << path;
     m_compatibilityMode.clearFileMaps();
     QList<QString> filesToTranslate;
     filesToTranslate.append(path);
@@ -2340,6 +2349,7 @@ QString MainForm::translateBeforeCompilation(QString path)
     for (int i = 0; i < filesToTranslate.count(); i++)
     {
         qDebug() << "MainForm: translating file" << QDir::cleanPath(filesToTranslate.at(i));
+        qDebug() << filesToTranslate.at(i);
         if ("psm" != filesToTranslate.at(i).section('.',-1).toLower())
         {
             CompileInfo *compileInfo = ((CompileInfo*)(m_wDockManager->getDockWidget(WCOMPILEINFO)->widget()));
@@ -2372,6 +2382,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         if ( true == finalResult )
         {
             m_compatibilityMode.appendFileMap(filesToTranslate.at(i).section('.',0, -2) + ".asm", translator.getLineMap());
+            m_compatibilityMode.appendReverseFileMap(filesToTranslate.at(i).section('.',0, -2) + ".psm", translator.getLineMap(true));
             std::vector<std::string> includedFiles = translator.getIncludedFiles();
             for (unsigned int j = 0; j < includedFiles.size(); j++)
             {
@@ -2403,7 +2414,7 @@ QString MainForm::translateBeforeCompilation(QString path)
         inputStream.close();
         outputStream.close();
     }
-
+    qDebug() << "MainForm: translation done" << newPath;
     return newPath;
 }
 
@@ -2486,7 +2497,7 @@ void MainForm::compileProject()
         if (0 != m_projectMan->getActive()->getAsmType())
         {
             QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
-            if ("" == newPath)
+            if (true == newPath.isEmpty())
             {
                 compileInfo->appendMessage("Asm translation could not be completed." ,
                                             CompilerBase::MessageType::MT_ERROR);
@@ -2708,7 +2719,7 @@ void MainForm::compileProject()
             if (0 != m_projectMan->getActive()->getAsmType())
             {
                 QString newPath = translateBeforeCompilation(filePath);
-                if ("" == newPath)
+                if (true == newPath.isEmpty())
                 {
                     qDebug() << "MainForm: compile - translator returned empty path";
                     compileInfo->appendMessage("Asm translation could not be completed." ,
@@ -2903,7 +2914,7 @@ void MainForm::compileProject()
             if (0 != m_projectMan->getActive()->getAsmType())
             {
                 QString newPath = translateBeforeCompilation(m_wDockManager->getCentralPath());
-                if ("" == newPath)
+                if (true == newPath.isEmpty())
                 {
                     compileInfo->appendMessage("Asm translation could not be completed." ,
                                                 CompilerBase::MessageType::MT_ERROR);
@@ -2959,7 +2970,7 @@ void MainForm::compileProject()
                 pathDir.mkpath(".");
             }
 
-            QDir prjDir;
+            //QDir prjDir;
             if ("" == m_wDockManager->getCentralName().section('.',0,-2))
             {
                 mainFile = pathDir.absolutePath()
@@ -3106,7 +3117,7 @@ void MainForm::compileProject()
         {
             QString newPath = translateBeforeCompilation(m_projectMan->getActive()->prjPath.section('/',0, -2)
                                                          + "/"  +  m_projectMan->getActive()->mainFilePath);
-            if ("" == newPath)
+            if (true == newPath.isEmpty())
             {
                 compileInfo->appendMessage("Asm translation could not be completed." ,
                                             CompilerBase::MessageType::MT_ERROR);
@@ -3128,11 +3139,11 @@ void MainForm::compileProject()
         {
             if ("" == m_projectMan->getActive()->mainFileName.section('.',0,-2))
             {
-                mainFile = "./" +  m_projectMan->getActive()->mainFileName.section('.',0,-2);
+                mainFile =  prjDir.absolutePath() + "/" + m_projectMan->getActive()->mainFileName;
             }
             else
             {
-                mainFile = "./" +  m_projectMan->getActive()->mainFileName;
+                mainFile =  prjDir.absolutePath() + "/" + m_projectMan->getActive()->mainFileName.section('.',0,-2);
             }
         }
         else
@@ -3141,13 +3152,13 @@ void MainForm::compileProject()
             {
                 mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
                         + "/"
-                        +  m_projectMan->getActive()->mainFilePath;
+                        +  m_projectMan->getActive()->mainFileName;
             }
             else
             {
                 mainFile = fileDir.relativeFilePath(prjDir.absolutePath())
                         + "/"
-                        +  m_projectMan->getActive()->mainFilePath.section('.',0,-2);
+                        +  m_projectMan->getActive()->mainFileName.section('.',0,-2);
             }
         }
 
@@ -3262,6 +3273,7 @@ void MainForm::compileProject()
     }
     compileInfo->setProjectRelativePath(m_projectMan->getActive()->prjPath.section('/', 0, -2));
 
+    //qDebug() << "MainForm: compiling";
     CompilerThread *compiler = new CompilerThread(GuiCfg::getInstance().getCompilerPath().toStdString());
     //    CompilerThread *compiler = new CompilerThread("../compiler/include/");
     qRegisterMetaType<std::string>("std::string");
@@ -3487,6 +3499,7 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
         }
         if (0 != m_projectMan->getActive()->getAsmType() && false == m_compatibilityMode.loaded())
         {
+            qDebug() << "Compatibility loaded:" << m_compatibilityMode.loaded();
             simulationRequest = true;
             compileProject();
             return;
@@ -3594,7 +3607,14 @@ void MainForm::simulationFlowHandle(DbgFile *dbgFile, DataFile *dataFile)
             if (true == simulationBreakpointsEnabled)
             {
                 //qDebug() << "MainForm: simulationBreakpointsEnabled true";
-                m_projectMan->getSimulated()->setBreakpoints(true);
+                if (0 != m_projectMan->getActive()->getAsmType())
+                {
+                    m_projectMan->getSimulated()->setBreakpoints(true, true, &m_compatibilityMode);
+                }
+                else
+                {
+                    m_projectMan->getSimulated()->setBreakpoints(true);
+                }
             }
             else
             {
@@ -4839,10 +4859,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                     m_wDockManager->setCentralByPath(simulatedFilePath);
                     if (0 != compatibility)
                     {
-                        int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                                + QString::fromStdString(*(std::get<0>(prev.at(i)))),
-                                                                  std::get<1>(prev.at(i))
-                                                                 );
+                        int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                                 + QString::fromStdString(*(std::get<0>(prev.at(i))))),
+                                                                   std::get<1>(prev.at(i))
+                                                                  );
                         m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(1));
                     }
                     else
@@ -4868,8 +4888,8 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             m_wDockManager->setCentralByPath(simulatedFilePath);
             if (0 != compatibility)
             {
-                int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                        +  QString::fromStdString(*(std::get<0>(prev.at(0)))),
+                int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                         + QString::fromStdString(*(std::get<0>(prev.at(0))))),
                                                            std::get<1>(prev.at(0))
                                                           );
                 m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(1));
@@ -4903,10 +4923,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                     m_wDockManager->setCentralByPath(simulatedFilePath);
                     if (0 != compatibility)
                     {
-                        int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                                + QString::fromStdString(*(std::get<0>(prev2.at(i)))),
-                                                                  std::get<1>(prev2.at(i))
-                                                                 );
+                        int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                                 + QString::fromStdString(*(std::get<0>(prev2.at(i))))),
+                                                                   std::get<1>(prev2.at(i))
+                                                                  );
                         m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(2));
                     }
                     else
@@ -4932,8 +4952,8 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             m_wDockManager->setCentralByPath(simulatedFilePath);
             if (0 != compatibility)
             {
-                int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                        +  QString::fromStdString(*(std::get<0>(prev2.at(0)))),
+                int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                         + QString::fromStdString(*(std::get<0>(prev2.at(0))))),
                                                            std::get<1>(prev2.at(0))
                                                           );
                 m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(2));
@@ -4967,10 +4987,10 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
                     m_wDockManager->setCentralByPath(simulatedFilePath);
                     if (0 != compatibility)
                     {
-                        int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                                + QString::fromStdString(*(std::get<0>(curr.at(i)))),
-                                                                  std::get<1>(curr.at(i))
-                                                                 );
+                        int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                                 + QString::fromStdString(*(std::get<0>(curr.at(i))))),
+                                                                   std::get<1>(curr.at(i))
+                                                                  );
                         m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(0));
                     }
                     else
@@ -4995,8 +5015,8 @@ void MainForm::simHighlightLines(std::vector<std::pair<const std::string *, unsi
             m_wDockManager->setCentralByPath(simulatedFilePath);
             if (0 != compatibility)
             {
-                int line = m_compatibilityMode.getOrigLine(simulatedFileChop
-                                                        +  QString::fromStdString(*(std::get<0>(curr.at(0)))),
+                int line = m_compatibilityMode.getOrigLine(QDir::cleanPath(simulatedFileChop
+                                                         + QString::fromStdString(*(std::get<0>(curr.at(0))))),
                                                            std::get<1>(curr.at(0))
                                                           );
                 m_wDockManager->getCentralTextEdit()->highlightLineAppend(line - 1, colors.at(0));
@@ -5215,6 +5235,15 @@ void MainForm::reloadTabIcons()
         {
             //qDebug() << "Found 5/6";
             QPixmap pixmap(":resources/icons/door_in.png");
+            QMatrix rm;
+            rm.rotate(-90);
+            pixmap = pixmap.transformed(rm);
+            m_wDockManager->rightAreaTabs->setTabIcon(i, QIcon(pixmap));
+        }
+        else if ("Reg Watcher" == text)
+        {
+            //qDebug() << "Found 5/6";
+            QPixmap pixmap(":resources/icons/reg_watch.png");
             QMatrix rm;
             rm.rotate(-90);
             pixmap = pixmap.transformed(rm);
