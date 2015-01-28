@@ -176,6 +176,7 @@ class GuiCfg_Items
         bool useMainFile;
         //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
         QList<bool> compileOpt;
+        QList<int> compileDepths;
 
         bool defaultVerilog;
         bool defaultVHDL;

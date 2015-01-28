@@ -126,6 +126,7 @@ class Project : public QObject
         void animate();
         MCUSimControl* getSimControl();
         void setCompileOpt(QList<bool> opt);
+        void setCompileDepths(QList<int> depths);
         void setCompileIncPaths(QList<QString> paths);
         void setUseMainFile(bool enabled);
         void setIntVector(int value);
@@ -172,8 +173,9 @@ class Project : public QObject
         QList<QString> fileNames;
         QList<QString> filePaths;
         QList<bool> m_fileStats;
-        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL
+        //Symbol, Macro, Debug, Code, List, Hex, Bin, SRec, Mem, RawHex, Verilog, VHDL, StringList
         QList<bool> compileOpt;
+        QList<int> compileDepths;
         QStringList compileIncPaths;
 
         //templates
