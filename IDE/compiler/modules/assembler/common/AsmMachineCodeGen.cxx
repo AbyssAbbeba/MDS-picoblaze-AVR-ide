@@ -185,7 +185,7 @@ void AsmMachineCodeGen::output ( AsmMachineCodeGen::WordSize wordSize,
     if ( true == compilerCore->m_simulatorData.m_genSimData )
     {
         BinFile * dataFile = new BinFile(sizeB(wordSize));
-        saveMachineCode(wordSize, byteOrder, dataFile, opts->m_binFile, compilerCore);
+        output(wordSize, byteOrder, dataFile);
         compilerCore->m_simulatorData.m_simData = dataFile;
     }
 
