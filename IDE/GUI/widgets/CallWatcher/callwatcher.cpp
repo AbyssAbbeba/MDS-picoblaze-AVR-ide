@@ -167,7 +167,7 @@ void CallWatcher::handleUpdateRequest(int mask)
             m_run = false;
         }
         qDebug() << "CallWatcher: afterRun" << m_callStack.count();
-        //ui.lstCalls->clear();
+        ui.lstCalls->clear();
         for (int i = 0; i < m_callStack.count(); i++)
         {
             if (0 == m_callStack.at(i))

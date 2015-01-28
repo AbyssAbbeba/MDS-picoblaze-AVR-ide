@@ -78,7 +78,8 @@ target_link_libraries ( ${PROJECT_NAME} ${QT_LIBRARIES} ${MDS_ADDITONAL_LIBS}
                         WDockManager    MCUDataFiles    InterfaceCfg    ErrorDialog     ProjectTree
                         AboutWidget     CompileInfo     ProjectDlg      ProjectCfg      HelpWidget
                         Simulator       compiler        Project         Editor          GuiCfg
-                        WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode )
+                        WelcomeWidget   SaveDlg         WelcomeScr      CompatibilityMode
+                        RegWatcher )
 
 # ------------------------------------------------------------------------------
 # INSTALLATION OPTIONS

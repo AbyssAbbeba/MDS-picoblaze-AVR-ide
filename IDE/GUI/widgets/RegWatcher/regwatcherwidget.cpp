@@ -151,7 +151,7 @@ void RegWatcherWidget::deviceChanged()
         {
             m_memory = dynamic_cast<MCUSimMemory*>(m_simControl->getSimSubsys(MCUSimSubsys::SubsysId::ID_MEM_REGISTERS));
             m_size = m_memory->size();
-            if (0 == m_regbank)
+            if (MCUSim::FAMILY_KCPSM6 == m_simControl->getFamily() && 0 == m_regbank)
             {
                 if (m_address >= m_size/2)
                 {
@@ -162,7 +162,7 @@ void RegWatcherWidget::deviceChanged()
                     ui.lblAddress->setStyleSheet("QLabel { background-color : none; }");
                 }
             }
-            else if (1 == m_regbank)
+            else if (MCUSim::FAMILY_KCPSM6 == m_simControl->getFamily() && 1 == m_regbank)
             {
                 m_address = m_baseAddress + m_size/2;
                 if (m_address >= m_size)
@@ -246,7 +246,7 @@ void RegWatcherWidget::deviceReset()
         {
             uint value = 0;
             m_memory->directRead(m_address, value);
-            qDebug() << "device reset reg" << value;
+            //qDebug() << "device reset reg" << value;
             ui.lblValue->setText("0x" + QString::number(value, 16).toUpper());
             break;
         }
@@ -259,13 +259,13 @@ void RegWatcherWidget::deviceReset()
         }
         case 2:
         {
-            ui.lblValue->setText("0x" + QString::number(m_plio->getOutputArray()[m_address], 16).toUpper());
+            ui.lblValue->setText("0x" + QString::number((unsigned char)m_plio->getOutputArray()[m_address], 16).toUpper());
             
             break;
         }
         case 3:
         {
-            ui.lblValue->setText("0x" + QString::number(m_plio->getInputArray()[m_address], 16).toUpper());
+            ui.lblValue->setText("0x" + QString::number((unsigned char)m_plio->getInputArray()[m_address], 16).toUpper());
             break;
         }
         default:
@@ -284,6 +284,12 @@ void RegWatcherWidget::setReadOnly(bool /*readOnly*/)
 
 void RegWatcherWidget::handleUpdateRequest(int mask)
 {
+     //update after run
+    if (MCUSimControl::UR_MEMORY_REFRESH  & mask)
+    {
+        deviceReset();
+        ui.lblValue->setStyleSheet("QLabel { background-color : yellow; }");
+    }
 }
 
 

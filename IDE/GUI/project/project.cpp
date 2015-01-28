@@ -480,6 +480,25 @@ Project::Project(QFile *file, ProjectMan *parent)
                             xmlFilesNode = xmlFilesNode.nextSibling();
                         }
                     }
+                    else if (xmlElement.tagName() == "Watchers")
+                    {
+                        QDomNode xmlWatchersNode = xmlElement.firstChild();
+                        QDomElement xmlWatchersElement;
+                        while (!xmlWatchersNode.isNull())
+                        {
+                            xmlWatchersElement = xmlWatchersNode.toElement();
+                            if (xmlWatchersElement.tagName() == "Watcher")
+                            {
+                                RegWatcherExportStruct watcherStruct;
+                                watcherStruct.name = xmlWatchersElement.attribute("name", "");
+                                watcherStruct.address = xmlWatchersElement.attribute("address", "").toInt();
+                                watcherStruct.type = xmlWatchersElement.attribute("type", "").toInt();
+                                watcherStruct.regbank = xmlWatchersElement.attribute("regbank", "").toInt();
+                                m_regWatchers.append(watcherStruct);
+                            }
+                            xmlWatchersNode = xmlWatchersNode.nextSibling();
+                        }
+                    }
                     else if (xmlElement.tagName() == "Mainfile")
                     {
                         if (xmlElement.attribute("name", "") != ""
@@ -1279,6 +1298,19 @@ void Project::saveProject()
     xmlAsmType.setAttribute("value", m_asmType);
     xmlGeneral.appendChild(xmlAsmType);
     xmlRoot.appendChild(xmlGeneral);
+
+    QDomElement xmlRegs = domDoc.createElement("Watchers");
+    qDebug() << "saving watchers" << m_regWatchers.count();
+    for (int i = 0; i < m_regWatchers.count(); i++)
+    {
+        QDomElement xmlReg = domDoc.createElement("Watcher");
+        xmlReg.setAttribute("name", m_regWatchers.at(i).name);
+        xmlReg.setAttribute("address", m_regWatchers.at(i).address);
+        xmlReg.setAttribute("type", m_regWatchers.at(i).type);
+        xmlReg.setAttribute("regbank", m_regWatchers.at(i).regbank);
+        xmlRegs.appendChild(xmlReg);
+    }
+    xmlRoot.appendChild(xmlRegs);
 
     QDomElement xmlFiles = domDoc.createElement("Files");
     //qDebug() << "Project: saving" << this->fileCount << "files";
@@ -2796,4 +2828,16 @@ void Project::setFileOpened(QString path, bool opened)
             break;
         }
     }
+}
+
+
+void Project::setRegWatchers(QList<RegWatcherExportStruct> regWatchers)
+{
+    m_regWatchers = regWatchers;
+}
+
+
+QList<RegWatcherExportStruct> Project::getRegWatchers()
+{
+    return m_regWatchers;
 }
