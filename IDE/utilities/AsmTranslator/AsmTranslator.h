@@ -89,9 +89,10 @@ class AsmTranslator
 
         /**
          * @brief
+         * @param[in] inverse
          * @return
          */
-        const std::map<unsigned int, unsigned int> & getLineMap() const;
+        const std::map<unsigned int, unsigned int> & getLineMap ( bool inverse = false ) const;
 
         /**
          * @brief
@@ -129,6 +130,9 @@ class AsmTranslator
 
         /// @brief
         std::map<unsigned int, unsigned int> m_lineMap;
+
+        /// @brief
+        std::map<unsigned int, unsigned int> m_inverseLineMap;
 
         /// @brief
         std::vector<std::string> m_includedFiles;

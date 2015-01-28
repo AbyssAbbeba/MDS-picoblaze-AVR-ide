@@ -161,11 +161,13 @@ class AsmTranslatorBase
          * @brief
          * @param[in,out] messages
          * @param[in,out] lineMap
+         * @param[in,out] inverseLineMap
          * @param[in,out] includedFiles
          * @return
          */
         void setup ( std::vector<std::pair<unsigned int, std::string> > * messages,
                      std::map<unsigned int, unsigned int> * lineMap,
+                     std::map<unsigned int, unsigned int> * inverseLineMap,
                      std::vector<std::string> * includedFiles );
 
     ////    Protected Operations    ////
@@ -211,6 +213,9 @@ class AsmTranslatorBase
 
         /// @brief
         std::map<unsigned int, unsigned int> * m_lineMap;
+
+        /// @brief
+        std::map<unsigned int, unsigned int> * m_inverseLineMap;
 
         /// @brief
         std::vector<std::string> * m_includedFiles;
