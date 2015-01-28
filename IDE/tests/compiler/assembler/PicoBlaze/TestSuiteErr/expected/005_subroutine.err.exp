@@ -39,6 +39,7 @@ MT_WARNING: 005_subroutine.asm:179.1-179.30: Warning: reusing already reserved s
 MT_ERROR: 005_subroutine.asm:181.18-181.20: Error: symbol not defined: `S3'.
 MT_WARNING: 005_subroutine.asm:181.1-181.31: Warning: reusing already reserved space in register file memory at address: 0x1.
 MT_ERROR: 005_subroutine.asm:183.1-183.30: Error: symbol already defined: "BIT_MASK".
+MT_WARNING: Warning: exact device not specified, using KCPSM6 by default.
 MT_ERROR: 005_subroutine.asm:64.25-64.32: Error: symbol not defined: `LO_BYTE'.
 MT_ERROR: 005_subroutine.asm:66.25-66.32: Error: symbol not defined: `HI_BYTE'.
 MT_ERROR: 005_subroutine.asm:71.25-71.27: Error: symbol not defined: `SX'.
