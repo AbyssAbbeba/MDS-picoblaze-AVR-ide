@@ -1256,6 +1256,7 @@ void Project::saveProject()
     qDebug() << "saveProject()";
     if (QDir(GuiCfg::getInstance().getExamplePath() + "/MDSExample.mds-project").absolutePath() == prjPath)
     {
+        qDebug() << "example read only";
         return;
     }
     QDir project(QFileInfo(prjPath).dir());
@@ -1264,7 +1265,7 @@ void Project::saveProject()
     if(!file->open(QIODevice::WriteOnly | QIODevice::Text))
     {
         error(ERR_OPENFILE, prjPath);
-        qDebug() << "return saveProject()";
+        qDebug() << "return saveProject() error";
         return;
     }
 
